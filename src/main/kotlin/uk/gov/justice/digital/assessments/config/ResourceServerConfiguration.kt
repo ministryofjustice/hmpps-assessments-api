@@ -36,6 +36,7 @@ class ResourceServerConfiguration : WebSecurityConfigurerAdapter() {
                     auth.antMatchers(
                                     "/webjars/**", "/favicon.ico", "/csrf",
                                     "/health/**", "/info",
+                                    "/ping",
                                     "/v2/api-docs",
                                     "/swagger-ui.html", "/swagger-resources", "/swagger-resources/configuration/ui",
                                     "/swagger-resources/configuration/security"
