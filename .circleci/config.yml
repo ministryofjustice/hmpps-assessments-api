@@ -46,8 +46,6 @@ workflows:
             branches:
               only:
                 - main
-          requires:
-            - validate
       - hmpps/deploy_env:
           name: deploy_dev
           env: "dev"
@@ -56,6 +54,7 @@ workflows:
               only:
                 - main
           requires:
+            - validate
             - helm_lint
             - build_docker
 #      - request-preprod-approval:
