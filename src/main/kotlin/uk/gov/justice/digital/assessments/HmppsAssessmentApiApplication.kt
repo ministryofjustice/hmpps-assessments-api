@@ -4,8 +4,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class OffenderAssessmentApiApplication
+class HmppsAssessmentApiApplication
 
 fun main(args: Array<String>) {
-    runApplication<OffenderAssessmentApiApplication>(*args)
+    runApplication<HmppsAssessmentApiApplication>(*args)
 }
