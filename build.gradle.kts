@@ -44,6 +44,7 @@ dependencies {
     implementation( "com.google.code.gson:gson:2.8.6")
     implementation("com.google.guava:guava:29.0-jre")
     implementation("org.apache.commons:commons-lang3:3.10")
+    implementation("org.postgresql:postgresql")
     runtimeOnly("com.h2database:h2:1.4.200")
     runtimeOnly("org.flywaydb:flyway-core:6.3.3")
 
@@ -58,5 +59,7 @@ dependencies {
     testImplementation("io.jsonwebtoken:jjwt:0.9.1")
     implementation("com.nimbusds:nimbus-jose-jwt:8.17")
     testImplementation("com.github.tomakehurst:wiremock-standalone:2.26.3")
+
+
 }
 

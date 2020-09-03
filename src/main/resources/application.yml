@@ -10,7 +10,11 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: ${oauth.endpoint.url:http://localhost:9090/auth}/issuer
-
+  datasource:
+    url: 'jdbc:h2:mem:testdb;Mode=PostgreSQL'
+  h2:
+    console:
+      enabled: true
   jpa:
     hibernate:
       ddl-auto: none
