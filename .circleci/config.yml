@@ -84,4 +84,4 @@ workflows:
     jobs:
       - owasp/gradle_owasp_dependency_check:
           executor: hmpps/java
-          no-output-timeout: 20m
+          no_output_timeout: 20m
