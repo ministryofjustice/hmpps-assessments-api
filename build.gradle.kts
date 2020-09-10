@@ -1,6 +1,6 @@
 
 plugins {
-    id("uk.gov.justice.hmpps.gradle-spring-boot") version "0.4.2"
+    id("uk.gov.justice.hmpps.gradle-spring-boot") version "1.0.2"
     kotlin("plugin.spring") version "1.3.72"
     kotlin("plugin.jpa") version "1.3.72"
     kotlin("plugin.allopen") version "1.3.61"
@@ -31,22 +31,22 @@ dependencies {
     implementation("javax.annotation:javax.annotation-api:1.3.2")
     implementation("javax.xml.bind:jaxb-api:2.4.0-b180830.0359")
     implementation("javax.activation:activation:1.1.1")
-    implementation("com.sun.xml.bind:jaxb-impl:3.0.0-M1")
+    implementation("com.sun.xml.bind:jaxb-impl:3.0.0-M4")
     implementation("com.sun.xml.bind:jaxb-core:2.3.0.1")
     implementation("javax.inject:javax.inject:1")
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.11.0.rc1")
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.0.rc1")
-    implementation("io.springfox:springfox-swagger2:2.9.2")
-    implementation("io.springfox:springfox-swagger-ui:2.9.2")
-    implementation("commons-io:commons-io:2.6")
-    implementation("com.zaxxer:HikariCP:3.4.2")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.11.2")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.2")
+    implementation("io.springfox:springfox-swagger2:3.0.0")
+    implementation("io.springfox:springfox-swagger-ui:3.0.0")
+    implementation("commons-io:commons-io:2.8.0")
+    implementation("com.zaxxer:HikariCP:3.4.5")
 
     implementation( "com.google.code.gson:gson:2.8.6")
     implementation("com.google.guava:guava:29.0-jre")
-    implementation("org.apache.commons:commons-lang3:3.10")
+    implementation("org.apache.commons:commons-lang3:3.11")
     implementation("org.postgresql:postgresql")
     runtimeOnly("com.h2database:h2:1.4.200")
-    runtimeOnly("org.flywaydb:flyway-core:6.3.3")
+    runtimeOnly("org.flywaydb:flyway-core:6.5.5")
 
     testRuntimeOnly("com.h2database:h2:1.4.200")
     testAnnotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
@@ -55,10 +55,10 @@ dependencies {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
         exclude(module = "mockito-core")
     }
-    testImplementation("com.ninja-squad:springmockk:2.0.1")
+    testImplementation("com.ninja-squad:springmockk:2.0.3")
     testImplementation("io.jsonwebtoken:jjwt:0.9.1")
-    implementation("com.nimbusds:nimbus-jose-jwt:8.17")
-    testImplementation("com.github.tomakehurst:wiremock-standalone:2.26.3")
+    implementation("com.nimbusds:nimbus-jose-jwt:9.0")
+    testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.1")
 
 
 }
