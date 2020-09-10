@@ -41,7 +41,6 @@ abstract class IntegrationTest {
         }
     }
 
-
     init {
         SecurityContextHolder.getContext().authentication = TestingAuthenticationToken("user", "pw")
         // Resolves an issue where Wiremock keeps previous sockets open from other tests causing connection resets
@@ -62,4 +61,3 @@ abstract class IntegrationTest {
         return { it.set(HttpHeaders.AUTHORIZATION, "Bearer $token") }
     }
 }
-
