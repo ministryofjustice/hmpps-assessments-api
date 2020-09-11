@@ -1,10 +1,10 @@
 
 plugins {
     id("uk.gov.justice.hmpps.gradle-spring-boot") version "1.0.2"
-    kotlin("plugin.spring") version "1.4.10"
-    kotlin("plugin.jpa") version "1.4.10"
-    kotlin("plugin.allopen") version "1.4.10"
-    kotlin("kapt") version "1.4.10"
+    kotlin("plugin.spring") version "1.3.72"
+    kotlin("plugin.jpa") version "1.3.72"
+    kotlin("plugin.allopen") version "1.3.61"
+    kotlin("kapt") version "1.3.72"
 }
 
 allOpen {
@@ -44,7 +44,7 @@ dependencies {
     implementation( "com.google.code.gson:gson:2.8.6")
     implementation("com.google.guava:guava:29.0-jre")
     implementation("org.apache.commons:commons-lang3:3.11")
-    implementation("org.postgresql:postgresql:42.2.16")
+    implementation("org.postgresql:postgresql")
     runtimeOnly("com.h2database:h2:1.4.200")
     runtimeOnly("org.flywaydb:flyway-core:6.5.5")
 
@@ -57,6 +57,9 @@ dependencies {
     }
     testImplementation("com.ninja-squad:springmockk:2.0.3")
     testImplementation("io.jsonwebtoken:jjwt:0.9.1")
-    implementation("com.nimbusds:nimbus-jose-jwt:9.0")
+    implementation("com.nimbusds:nimbus-jose-jwt:8.17")
     testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.1")
+
+
 }
+
