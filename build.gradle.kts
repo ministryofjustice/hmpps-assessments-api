@@ -1,6 +1,6 @@
 
 plugins {
-    id("uk.gov.justice.hmpps.gradle-spring-boot") version "1.0.2"
+    id("uk.gov.justice.hmpps.gradle-spring-boot") version "1.0.4"
     kotlin("plugin.spring") version "1.3.72"
     kotlin("plugin.jpa") version "1.3.72"
     kotlin("plugin.allopen") version "1.3.61"
@@ -16,6 +16,8 @@ allOpen {
 configurations {
     implementation { exclude(mapOf("module" to "tomcat-jdbc")) }
 }
+
+
 
 dependencies {
 
@@ -58,8 +60,7 @@ dependencies {
     testImplementation("com.ninja-squad:springmockk:2.0.3")
     testImplementation("io.jsonwebtoken:jjwt:0.9.1")
     implementation("com.nimbusds:nimbus-jose-jwt:8.17")
-    testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.1")
-
-
+    testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
 }
+
 
