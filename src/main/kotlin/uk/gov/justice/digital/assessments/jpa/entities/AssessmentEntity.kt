@@ -8,7 +8,7 @@ import javax.persistence.*
 class AssessmentEntity (
 
         @Id
-        @Column(name = "ID")
+        @Column(name = "ASSESSMENT_ID")
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         val assessmentId: Long? = null,
 
