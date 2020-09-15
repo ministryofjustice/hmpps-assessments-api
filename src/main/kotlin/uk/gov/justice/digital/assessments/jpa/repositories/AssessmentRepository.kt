@@ -11,8 +11,8 @@ interface AssessmentRepository : JpaRepository<AssessmentEntity, String> {
     fun findBySupervisionId(supervisionId: String?): Optional<AssessmentEntity> {
         val existingAssessments = findAll(Example.of(AssessmentEntity(supervisionId = supervisionId)))
         if (existingAssessments.isEmpty())
-            return Optional.empty();
+            return Optional.empty()
 
-        return Optional.of(existingAssessments.get(0))
+        return Optional.of(existingAssessments[0])
     }
 }
