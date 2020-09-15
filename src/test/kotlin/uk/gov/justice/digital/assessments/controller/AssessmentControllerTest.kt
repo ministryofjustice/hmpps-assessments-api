@@ -22,44 +22,35 @@ class AssessmentControllerTest : IntegrationTest() {
 
     @Test
     fun `create a new assessment returns assessment`() {
-        webTestClient.post().uri("/assessments/supervision")
-                .bodyValue(CreateAssessmentDto("SupervisionId"))
-                .headers(setAuthorisation())
-                .exchange()
-                .expectStatus().isOk
-                .expectBody<AssessmentDto>()
-                .consumeWith {
-                    val assessment = it.responseBody
-                    assertThat(assessment?.assessmentId).isEqualTo(1)
-                    assertThat(assessment?.supervisionId).isEqualTo("SupervisionId")
-                    assertThat(assessment?.createdDate).isEqualToIgnoringMinutes(LocalDateTime.now())
-                }
+        val assessment = createAssessment("SupervisionId")
+
+        assertThat(assessment.assessmentId).isEqualTo(1)
+        assertThat(assessment.supervisionId).isEqualTo("SupervisionId")
+        assertThat(assessment.createdDate).isEqualToIgnoringMinutes(LocalDateTime.now())
     }
 
     @Test
     fun `trying to create an assessment when one already exists returns the existing assessment`() {
         // create assessment
-        val assessment = webTestClient.post().uri("/assessments/supervision")
-                .bodyValue(CreateAssessmentDto("ExistingSupervisionId"))
-                .headers(setAuthorisation())
-                .exchange()
-                .expectStatus().isOk
-                .expectBody<AssessmentDto>()
-                .returnResult()
-                .responseBody
+        val assessment = createAssessment("ExistingSupervisionId")
 
         // try and create another
-        val existing = webTestClient.post().uri("/assessments/supervision")
-                .bodyValue(CreateAssessmentDto("ExistingSupervisionId"))
-                .headers(setAuthorisation())
-                .exchange()
-                .expectStatus().isOk
-                .expectBody<AssessmentDto>()
-                .returnResult()
-                .responseBody
+        val existing = createAssessment("ExistingSupervisionId")
 
         assertThat(existing.assessmentId).isEqualTo(assessment.assessmentId)
         assertThat(existing.supervisionId).isEqualTo(assessment.supervisionId)
         assertThat(existing.createdDate).isEqualTo(assessment.createdDate)
+    }
+
+    private fun createAssessment(supervisionId: String): AssessmentDto {
+        val assessment = webTestClient.post().uri("/assessments/supervision")
+                .bodyValue(CreateAssessmentDto(supervisionId))
+                .headers(setAuthorisation())
+                .exchange()
+                .expectStatus().isOk
+                .expectBody<AssessmentDto>()
+                .returnResult()
+                .responseBody
+        return assessment!!
     }
 }
