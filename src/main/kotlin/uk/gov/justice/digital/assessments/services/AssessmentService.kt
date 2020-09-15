@@ -17,9 +17,9 @@ class AssessmentService (private val assessmentRepository: AssessmentRepository)
     }
 
     fun createNewAssessment(supervisionId : String?) : AssessmentDto {
-        val existingAssessments = assessmentRepository.findAll(Example.of(AssessmentEntity(supervisionId = supervisionId)))
-        if (!existingAssessments.isEmpty())
-            return AssessmentDto.from(existingAssessments.get(0))
+        val existingAssessment = assessmentRepository.findBySupervisionId(supervisionId)
+        if (!existingAssessment.isEmpty())
+            return AssessmentDto.from(existingAssessment.get())
         
         val newAssessment = assessmentRepository.save(AssessmentEntity(supervisionId = supervisionId, createdDate = LocalDateTime.now()))
         return AssessmentDto.from(newAssessment)
