@@ -41,7 +41,6 @@ class ResourceServerConfiguration : WebSecurityConfigurerAdapter() {
                                     "/swagger-ui.html", "/swagger-resources", "/swagger-resources/configuration/ui",
                                     "/swagger-resources/configuration/security"
                             ).permitAll()
-                            .antMatchers("/**").hasAnyRole("OASYS_READ_ONLY")
                             .anyRequest()
                             .authenticated()
                 }.oauth2ResourceServer().jwt().jwtAuthenticationConverter(AuthAwareTokenConverter())
