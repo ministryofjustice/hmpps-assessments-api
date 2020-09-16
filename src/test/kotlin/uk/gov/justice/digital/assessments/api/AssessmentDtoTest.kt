@@ -10,7 +10,7 @@ import java.time.LocalDateTime
 class AssessmentDtoTest {
 
     @Test
-    fun `Builds valid Assessment DTO`() {
+    fun `builds valid Assessment DTO`() {
 
         val assessmentEntity = AssessmentEntity(1,
                 "SupervisionId",

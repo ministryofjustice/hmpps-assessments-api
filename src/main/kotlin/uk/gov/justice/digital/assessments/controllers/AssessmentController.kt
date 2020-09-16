@@ -13,6 +13,8 @@ import uk.gov.justice.digital.assessments.services.AssessmentService
 
 @RestController
 class AssessmentController(val assessmentService : AssessmentService) {
+@Api(value = "Assessment resources", tags = ["Assessment"])
+class AssessmentController(val assessmentService : AssessmentService) {
 
     @RequestMapping(path = ["/assessments/supervision"], method = [RequestMethod.POST])
     @Operation(description = "Creates a new assessment for a supervision")
