@@ -1,6 +1,6 @@
 
 plugins {
-    id("uk.gov.justice.hmpps.gradle-spring-boot") version "1.0.4"
+    id("uk.gov.justice.hmpps.gradle-spring-boot") version "1.0.5"
     kotlin("plugin.spring") version "1.3.72"
     kotlin("plugin.jpa") version "1.3.72"
     kotlin("plugin.allopen") version "1.3.61"
@@ -17,7 +17,9 @@ configurations {
     implementation { exclude(mapOf("module" to "tomcat-jdbc")) }
 }
 
-
+dependencyCheck {
+    suppressionFiles.add("hmpps-assessments-api-suppressions.xml")
+}
 
 dependencies {
 
@@ -48,7 +50,7 @@ dependencies {
     implementation("org.apache.commons:commons-lang3:3.11")
     implementation("org.postgresql:postgresql")
     runtimeOnly("com.h2database:h2:1.4.200")
-    runtimeOnly("org.flywaydb:flyway-core:6.5.5")
+    runtimeOnly("org.flywaydb:flyway-core:6.5.6")
 
     testRuntimeOnly("com.h2database:h2:1.4.200")
     testAnnotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
