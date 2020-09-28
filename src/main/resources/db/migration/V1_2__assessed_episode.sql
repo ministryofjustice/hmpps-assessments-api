@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS assessed_episode
     episode_id      SERIAL      PRIMARY KEY,
     user_id         TEXT        NOT NULL,
     created_date    TIMESTAMP   NOT NULL,
+    end_date        TIMESTAMP,
     change_reason   TEXT        NOT NULL,
     assessment_id   SERIAL      NOT NULL,
     FOREIGN KEY (assessment_id)

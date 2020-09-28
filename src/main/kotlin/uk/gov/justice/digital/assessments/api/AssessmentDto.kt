@@ -1,9 +1,11 @@
 package uk.gov.justice.digital.assessments.api
 
+import io.swagger.annotations.ApiModel
 import io.swagger.annotations.ApiModelProperty
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEntity
 import java.time.LocalDateTime
 
+@ApiModel(description = "The Assessment Model")
 class AssessmentDto (
 
     @ApiModelProperty(value = "Assessment primary key", example = "1234")
