@@ -11,6 +11,7 @@ import uk.gov.justice.digital.assessments.api.ErrorResponse
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.web.bind.annotation.ResponseStatus
 
 
 @ControllerAdvice
@@ -21,36 +22,42 @@ class ControllerAdvice {
     }
 
     @ExceptionHandler(EntityNotFoundException::class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     fun handle(e: EntityNotFoundException): ResponseEntity<ErrorResponse?> {
         log.info("EntityNotFoundException: {}", e.message)
         return ResponseEntity(ErrorResponse(status= 404, developerMessage = e.message), HttpStatus.NOT_FOUND)
     }
 
     @ExceptionHandler(MethodArgumentNotValidException::class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     fun handle(e: MethodArgumentNotValidException): ResponseEntity<ErrorResponse?> {
         log.info("MethodArgumentNotValidException: {}", e.message)
         return ResponseEntity(ErrorResponse(status= 400, developerMessage = e.message), HttpStatus.BAD_REQUEST)
     }
 
     @ExceptionHandler(HttpMessageConversionException::class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     fun handle(e: HttpMessageConversionException): ResponseEntity<*> {
         log.error("HttpMessageConversionException: {}", e.message)
         return ResponseEntity(ErrorResponse(status= 400, developerMessage = e.message), HttpStatus.BAD_REQUEST)
     }
 
     @ExceptionHandler(HttpMessageNotReadableException::class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     fun handle(e: HttpMessageNotReadableException): ResponseEntity<ErrorResponse?> {
         log.error("HttpMessageNotReadableException: {}", e.message)
         return ResponseEntity(ErrorResponse(status= 400, developerMessage = e.message), HttpStatus.BAD_REQUEST)
     }
 
     @ExceptionHandler(IllegalArgumentException::class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     fun handle(e: IllegalArgumentException): ResponseEntity<ErrorResponse?> {
         log.error("IllegalArgumentException: {}", e.message)
         return ResponseEntity(ErrorResponse(status= 400, developerMessage = e.message), HttpStatus.BAD_REQUEST)
     }
 
     @ExceptionHandler(Exception::class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     fun handle(e: Exception): ResponseEntity<ErrorResponse?> {
         log.error("Exception: {}", e.message)
         return ResponseEntity(ErrorResponse(status=500,developerMessage="Internal Server Error. Check Logs",

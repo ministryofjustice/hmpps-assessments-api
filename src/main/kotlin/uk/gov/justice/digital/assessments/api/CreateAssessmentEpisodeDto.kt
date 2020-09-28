@@ -1,8 +1,9 @@
 package uk.gov.justice.digital.assessments.api
 
-import io.swagger.annotations.ApiModel
+import io.swagger.v3.oas.annotations.media.Schema
 
-@ApiModel(description = "Create a new Assessment Episode request")
+
 data class CreateAssessmentEpisodeDto(
-        val changeReason: String
+                @Schema(description ="The reason triggering the creation of a new episode", required=true)
+                val changeReason: String
 )
