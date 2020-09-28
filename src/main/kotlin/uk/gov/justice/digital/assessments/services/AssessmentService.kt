@@ -28,7 +28,7 @@ class AssessmentService(private val assessmentRepository: AssessmentRepository) 
         }
 
         val newAssessment = assessmentRepository.save(AssessmentEntity(supervisionId = supervisionId, createdDate = LocalDateTime.now()))
-        log.info("Existing assessment found for supervision $supervisionId")
+        log.info("New assessment created for supervision $supervisionId")
         return AssessmentDto.from(newAssessment)
     }
 

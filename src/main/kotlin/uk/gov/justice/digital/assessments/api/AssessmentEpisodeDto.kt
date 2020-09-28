@@ -8,22 +8,22 @@ import java.time.LocalDateTime
 @ApiModel(description = "Assessment Episode of Change Model")
 class AssessmentEpisodeDto (
 
-    @ApiModelProperty(value = "Episode primary key", example = "1234")
+        @ApiModelProperty(value = "Episode primary key", example = "1234")
     val episodeId: Long? = null,
 
-    @ApiModelProperty(value = "Assessment primary key", example = "1234")
+        @ApiModelProperty(value = "Assessment primary key", example = "1234")
     val assessmentId: Long? = null,
 
-    @ApiModelProperty(value = "Reason for Change", example = "CHANGE_OF_ADDRESS")
-    val reasonFotChange: String? = null,
+        @ApiModelProperty(value = "Reason for Change", example = "CHANGE_OF_ADDRESS")
+    val reasonForChange: String? = null,
 
-    @ApiModelProperty(value = "Episode start timestamp")
+        @ApiModelProperty(value = "Episode start timestamp")
     val created: LocalDateTime? = null,
 
-    @ApiModelProperty(value = "Episode start timestamp")
+        @ApiModelProperty(value = "Episode end timestamp")
     val ended: LocalDateTime? = null,
 
-    @ApiModelProperty(value = "Answers associated with this episode")
+        @ApiModelProperty(value = "Answers associated with this episode")
     val answers: Set<Any> = mutableSetOf()
 
 ) {

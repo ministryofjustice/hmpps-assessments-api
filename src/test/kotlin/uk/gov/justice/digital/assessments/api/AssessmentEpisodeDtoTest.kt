@@ -28,7 +28,7 @@ class AssessmentEpisodeDtoTest {
         Assertions.assertThat(episodeDto?.answers).isEmpty()
         Assertions.assertThat(episodeDto?.created).isEqualTo(episodeEntity.createdDate)
         Assertions.assertThat(episodeDto?.ended).isEqualTo(episodeEntity.endDate)
-        Assertions.assertThat(episodeDto?.reasonFotChange).isEqualTo(episodeEntity.changeReason)
+        Assertions.assertThat(episodeDto?.reasonForChange).isEqualTo(episodeEntity.changeReason)
     }
 
 }

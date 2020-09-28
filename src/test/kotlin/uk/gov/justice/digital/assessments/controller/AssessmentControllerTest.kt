@@ -102,10 +102,10 @@ class AssessmentControllerTest : IntegrationTest() {
                 .returnResult()
                 .responseBody
 
-        assertThat(episode.assessmentId).isEqualTo(1)
-        assertThat(episode.created).isEqualToIgnoringSeconds(LocalDateTime.of(2019,11,14,9,0))
-        assertThat(episode.ended).isNull()
-        assertThat(episode.answers).isEmpty()
+        assertThat(episode?.assessmentId).isEqualTo(1)
+        assertThat(episode?.created).isEqualToIgnoringSeconds(LocalDateTime.of(2019,11,14,9,0))
+        assertThat(episode?.ended).isNull()
+        assertThat(episode?.answers).isEmpty()
     }
 
     @Test
