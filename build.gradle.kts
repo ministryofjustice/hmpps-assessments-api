@@ -40,8 +40,9 @@ dependencies {
     implementation("javax.inject:javax.inject:1")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.11.2")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.2")
-    implementation("io.springfox:springfox-swagger2:3.0.0")
-    implementation("io.springfox:springfox-swagger-ui:3.0.0")
+    implementation("org.springdoc:springdoc-openapi-ui:1.4.7")
+    implementation("org.springdoc:springdoc-openapi-data-rest:1.4.7")
+    implementation("org.springdoc:springdoc-openapi-kotlin:1.4.7")
     implementation("commons-io:commons-io:2.8.0")
     implementation("com.zaxxer:HikariCP:3.4.5")
 

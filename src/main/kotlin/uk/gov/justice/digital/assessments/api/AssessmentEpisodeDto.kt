@@ -1,30 +1,28 @@
 package uk.gov.justice.digital.assessments.api
 
-import io.swagger.annotations.ApiModel
-import io.swagger.annotations.ApiModelProperty
+import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
 import java.time.LocalDateTime
 
-@ApiModel(description = "Assessment Episode of Change Model")
-class AssessmentEpisodeDto (
+class AssessmentEpisodeDto(
 
-        @ApiModelProperty(value = "Episode primary key", example = "1234")
-    val episodeId: Long? = null,
+        @Schema(description = "Episode primary key", example = "1234")
+        val episodeId: Long? = null,
 
-        @ApiModelProperty(value = "Assessment primary key", example = "1234")
-    val assessmentId: Long? = null,
+        @Schema(description = "Assessment primary key", example = "1234")
+        val assessmentId: Long? = null,
 
-        @ApiModelProperty(value = "Reason for Change", example = "CHANGE_OF_ADDRESS")
-    val reasonForChange: String? = null,
+        @Schema(description = "Reason for Change", example = "CHANGE_OF_ADDRESS")
+        val reasonForChange: String? = null,
 
-        @ApiModelProperty(value = "Episode start timestamp")
-    val created: LocalDateTime? = null,
+        @Schema(description = "Episode start timestamp")
+        val created: LocalDateTime? = null,
 
-        @ApiModelProperty(value = "Episode end timestamp")
-    val ended: LocalDateTime? = null,
+        @Schema(description = "Episode end timestamp")
+        val ended: LocalDateTime? = null,
 
-        @ApiModelProperty(value = "Answers associated with this episode")
-    val answers: Set<Any> = mutableSetOf()
+        @Schema(description = "Answers associated with this episode")
+        val answers: Set<Any> = mutableSetOf()
 
 ) {
     companion object {
@@ -34,7 +32,7 @@ class AssessmentEpisodeDto (
         }
 
         fun from(episode: AssessmentEpisodeEntity?): AssessmentEpisodeDto? {
-            if(episode == null) return null
+            if (episode == null) return null
             return AssessmentEpisodeDto(
                     episode.episodeId,
                     episode.assessment?.assessmentId,

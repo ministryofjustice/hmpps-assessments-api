@@ -1,8 +1,8 @@
 package uk.gov.justice.digital.assessments.api
 
-import io.swagger.annotations.ApiModel
+import io.swagger.v3.oas.annotations.media.Schema
 
-@ApiModel(description = "Create a new Assessment request")
 data class CreateAssessmentDto(
+        @Schema(description = "Supervision ID", example = "CRN1", required = true)
         val supervisionId: String? = null
 )
