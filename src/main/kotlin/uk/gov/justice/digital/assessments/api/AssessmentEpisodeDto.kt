@@ -3,14 +3,18 @@ package uk.gov.justice.digital.assessments.api
 import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
 import java.time.LocalDateTime
+import java.util.*
 
 class AssessmentEpisodeDto(
 
         @Schema(description = "Episode primary key", example = "1234")
         val episodeId: Long? = null,
 
-        @Schema(description = "Assessment primary key", example = "1234")
-        val assessmentId: Long? = null,
+        @Schema(description = "Episode UUID", example = "1234")
+        val episodeUuid: UUID? = null,
+
+        @Schema(description = "Assessment UUID foreign key", example = "1234")
+        val assessmentUuid: UUID? = null,
 
         @Schema(description = "Reason for Change", example = "CHANGE_OF_ADDRESS")
         val reasonForChange: String? = null,
@@ -35,7 +39,8 @@ class AssessmentEpisodeDto(
             if (episode == null) return null
             return AssessmentEpisodeDto(
                     episode.episodeId,
-                    episode.assessment?.assessmentId,
+                    episode.episodeUuid,
+                    episode.assessment?.assessmentUuid,
                     episode.changeReason,
                     episode.createdDate,
                     episode.endDate,

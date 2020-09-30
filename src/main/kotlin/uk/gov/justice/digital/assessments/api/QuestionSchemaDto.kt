@@ -3,11 +3,15 @@ package uk.gov.justice.digital.assessments.api
 import io.swagger.annotations.ApiModelProperty
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
 import java.time.LocalDateTime
+import java.util.*
 
-data class QuestionSchemaDto (
+data class QuestionSchemaDto(
 
         @ApiModelProperty(value = "Question Schema primary key", example = "1234")
-        val questionSchemaId: Long,
+        val questionSchemaId: Long?,
+
+        @ApiModelProperty(value = "Question Schema UUID", example = "")
+        val questionSchemaUuid: UUID?,
 
         @ApiModelProperty(value = "Question Code", example = "RSR_23")
         val questionCode: String? = null,
@@ -28,21 +32,31 @@ data class QuestionSchemaDto (
         val questionText: String? = null,
 
         @ApiModelProperty(value = "Question Help Text", example = "")
-        val questionHelpText: String? = null
-) {
+        val questionHelpText: String? = null,
+
+        @ApiModelProperty(value = "List of Reference Answers", example = "")
+        val answerSchemas: Collection<AnswerSchemaDto>,
+
+        ) {
 
     companion object {
 
-        fun from(questionSchema: QuestionSchemaEntity): QuestionSchemaDto {
+        fun from(questionSchemas: Collection<QuestionSchemaEntity>?): List<QuestionSchemaDto> {
+            return questionSchemas?.map { from(it) }?.toList().orEmpty()
+        }
+
+        fun from(questionSchema: QuestionSchemaEntity?): QuestionSchemaDto {
             return QuestionSchemaDto(
-                    questionSchema.questionSchemaId,
-                    questionSchema.questionCode,
-                    questionSchema.oasysQuestionCode,
-                    questionSchema.questionStartDate,
-                    questionSchema.questionEndDate,
-                    questionSchema.answerType,
-                    questionSchema.questionText,
-                    questionSchema.questionHelpText
+                    questionSchema?.questionSchemaId,
+                    questionSchema?.questionSchemaUuid,
+                    questionSchema?.questionCode,
+                    questionSchema?.oasysQuestionCode,
+                    questionSchema?.questionStartDate,
+                    questionSchema?.questionEndDate,
+                    questionSchema?.answerType,
+                    questionSchema?.questionText,
+                    questionSchema?.questionHelpText,
+                    AnswerSchemaDto.from(questionSchema?.answerSchemaEntities)
             )
         }
     }

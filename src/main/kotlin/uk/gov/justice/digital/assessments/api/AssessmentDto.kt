@@ -3,11 +3,15 @@ package uk.gov.justice.digital.assessments.api
 import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEntity
 import java.time.LocalDateTime
+import java.util.*
 
 class AssessmentDto (
 
-    @Schema(description ="Assessment primary key", example = "1234")
+    @Schema(description = "Assessment primary key", example = "1234")
     val assessmentId: Long? = null,
+
+    @Schema(description = "Assessment primary key", example = "1234")
+    val assessmentUuid: UUID? = null,
 
     @Schema(description = "Supervision ID", example = "1234")
     val supervisionId: String? = null,
@@ -24,6 +28,7 @@ class AssessmentDto (
         fun from(assessment: AssessmentEntity): AssessmentDto {
             return AssessmentDto(
                     assessment.assessmentId,
+                    assessment.assessmentUuid,
                     assessment.supervisionId,
                     assessment.createdDate,
                     assessment.completedDate

@@ -1,6 +1,8 @@
 package uk.gov.justice.digital.assessments.jpa.entities
 
+import java.io.Serializable
 import java.time.LocalDateTime
+import java.util.*
 import javax.persistence.*
 
 @Entity
@@ -11,6 +13,9 @@ class AssessmentEntity(
         @Column(name = "ASSESSMENT_ID")
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         val assessmentId: Long? = null,
+
+        @Column(name = "ASSESSMENT_UUID")
+        val assessmentUuid: UUID = UUID.randomUUID(),
 
         @Column(name = "SUPERVISION_ID")
         val supervisionId: String? = null,
@@ -24,7 +29,7 @@ class AssessmentEntity(
         @OneToMany(mappedBy = "assessment", cascade = [CascadeType.ALL])
         val episodes: MutableCollection<AssessmentEpisodeEntity> = mutableListOf()
 
-) {
+):Serializable {
     fun getCurrentEpisode(): AssessmentEpisodeEntity? {
         return episodes.firstOrNull { it.endDate == null }
     }
@@ -36,6 +41,6 @@ class AssessmentEntity(
         }
         val newEpisode = AssessmentEpisodeEntity(assessment = this, createdDate = LocalDateTime.now(), changeReason = changeReason, userId = user)
         episodes.add(newEpisode)
-        return newEpisode;
+        return newEpisode
     }
 }

@@ -2,7 +2,6 @@ package uk.gov.justice.digital.assessments.services
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.assessments.api.AssessmentDto
 import uk.gov.justice.digital.assessments.api.AssessmentEpisodeDto
@@ -10,6 +9,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import java.time.LocalDateTime
+import java.util.*
 import javax.transaction.Transactional
 
 @Service
@@ -33,25 +33,25 @@ class AssessmentService(private val assessmentRepository: AssessmentRepository) 
     }
 
     @Transactional
-    fun createNewEpisode(assessmentId: Long, reason: String): AssessmentEpisodeDto? {
-        val assessment = assessmentRepository.findByIdOrNull(assessmentId) ?:
-            throw EntityNotFoundException("Assessment $assessmentId not found")
+    fun createNewEpisode(assessmentUuid: UUID, reason: String): AssessmentEpisodeDto? {
+        val assessment = assessmentRepository.findByAssessmentUuid(assessmentUuid) ?:
+            throw EntityNotFoundException("Assessment $assessmentUuid not found")
         val episode = assessment.newEpisode(reason)
-        log.info("new episode created for assessment $assessmentId")
+        log.info("new episode created for assessment $assessmentUuid")
         return AssessmentEpisodeDto.from(episode)
     }
 
-    fun getAssessmentEpisodes(assessmentId: Long): Collection<AssessmentEpisodeDto>? {
-        val assessment = assessmentRepository.findByIdOrNull(assessmentId) ?:
-        throw EntityNotFoundException("Assessment $assessmentId not found")
-        log.info("Found ${assessment.episodes.size} for assessment $assessmentId")
+    fun getAssessmentEpisodes(assessmentUuid: UUID): Collection<AssessmentEpisodeDto>? {
+        val assessment = assessmentRepository.findByAssessmentUuid(assessmentUuid) ?:
+        throw EntityNotFoundException("Assessment $assessmentUuid not found")
+        log.info("Found ${assessment.episodes.size} for assessment $assessmentUuid")
         return AssessmentEpisodeDto.from(assessment.episodes)
     }
 
-    fun getCurrentAssessmentEpisode(assessmentId: Long): AssessmentEpisodeDto {
-        val assessment = assessmentRepository.findByIdOrNull(assessmentId) ?:
-        throw EntityNotFoundException("Assessment $assessmentId not found")
+    fun getCurrentAssessmentEpisode(assessmentUuid: UUID): AssessmentEpisodeDto {
+        val assessment = assessmentRepository.findByAssessmentUuid(assessmentUuid) ?:
+        throw EntityNotFoundException("Assessment $assessmentUuid not found")
         return AssessmentEpisodeDto.from(assessment.getCurrentEpisode())?:
-        throw EntityNotFoundException("No current Episode for $assessmentId")
+        throw EntityNotFoundException("No current Episode for $assessmentUuid")
     }
 }

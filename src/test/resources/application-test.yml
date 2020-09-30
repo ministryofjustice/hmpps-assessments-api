@@ -1,15 +1,15 @@
 server:
   tomcat:
-    remote-ip-header: x-forwarded-for
-    protocol_header: x-forwarded-proto
+    remoteip:
+      remote-ip-header: x-forwarded-for
+      protocol-header: x-forwarded-proto
 
 spring:
   datasource:
     url: 'jdbc:h2:mem:testdb;Mode=PostgreSQL'
     type: com.zaxxer.hikari.HikariDataSource
-    properties:
-      hibernate:
-        show_sql: true
+  jpa:
+    show_sql: true
   security:
     oauth2:
       resourceserver:
