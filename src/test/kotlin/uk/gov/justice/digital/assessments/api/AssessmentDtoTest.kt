@@ -5,14 +5,17 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEntity
 import java.time.LocalDateTime
+import java.util.*
 
 @DisplayName("Assessment DTO Tests")
 class AssessmentDtoTest {
 
     @Test
-    fun `Builds valid Assessment DTO`() {
+    fun `builds valid Assessment DTO`() {
 
-        val assessmentEntity = AssessmentEntity(1,
+        val assessmentEntity = AssessmentEntity(
+                1,
+                UUID.randomUUID(),
                 "SupervisionId",
                 LocalDateTime.of(2019,8,1, 8,0),
                 LocalDateTime.of(2020,8,1, 8,0))
