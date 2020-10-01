@@ -24,4 +24,5 @@ class GroupEntity(
 
     @Column (name = "help_text")
     val helpText: String? = null
+
 ) : Serializable

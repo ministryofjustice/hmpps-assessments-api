@@ -1,40 +1,40 @@
 package uk.gov.justice.digital.assessments.api
 
-import io.swagger.annotations.ApiModelProperty
+import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
 import java.time.LocalDateTime
 import java.util.*
 
 data class QuestionSchemaDto(
 
-        @ApiModelProperty(value = "Question Schema primary key", example = "1234")
+        @Schema(description = "Question Schema primary key", example = "1234")
         val questionSchemaId: Long?,
 
-        @ApiModelProperty(value = "Question Schema UUID", example = "")
+        @Schema(description = "Question Schema UUID", example = "0e5e0848-6ab0-4b1b-a354-f7894913d8e4")
         val questionSchemaUuid: UUID?,
 
-        @ApiModelProperty(value = "Question Code", example = "RSR_23")
+        @Schema(description = "Question Code", example = "RSR_23")
         val questionCode: String? = null,
 
-        @ApiModelProperty(value = "OASys Question Code", example = "RSR_23")
+        @Schema(description = "OASys Question Code", example = "RSR_23")
         val oasysQuestionCode: String? = null,
 
-        @ApiModelProperty(value = "Question Start Date", example = "2020-01-02T16:00:00")
+        @Schema(description = "Question Start Date", example = "2020-01-02T16:00:00")
         val questionStart: LocalDateTime? = null,
 
-        @ApiModelProperty(value = "Question End Date", example = "2020-01-02T16:00:00")
+        @Schema(description = "Question End Date", example = "2020-01-02T16:00:00")
         val questionEnd: LocalDateTime? = null,
 
-        @ApiModelProperty(value = "Answer Type", example = "FreeText")
+        @Schema(description = "Answer Type", example = "Free Text")
         val answerType: String? = null,
 
-        @ApiModelProperty(value = "Question Text", example = "")
+        @Schema(description = "Question Text", example = "Some question text")
         val questionText: String? = null,
 
-        @ApiModelProperty(value = "Question Help Text", example = "")
+        @Schema(description = "Question Help Text", example = "Some question help text")
         val questionHelpText: String? = null,
 
-        @ApiModelProperty(value = "List of Reference Answers", example = "")
+        @Schema(description = "List of Reference Answer Schemas")
         val answerSchemas: Collection<AnswerSchemaDto>,
 
         ) {

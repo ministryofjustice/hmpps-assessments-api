@@ -1,19 +1,34 @@
 package uk.gov.justice.digital.assessments.api
 
+import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionGroupEntity
-import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
 import java.time.LocalDateTime
 import java.util.*
 
 data class QuestionGroupDto (
 
+    @Schema(description = "Question Group primary key", example = "1234")
     val questionGroupId : Long,
+
+    @Schema(description = "Question Group UUID", example = "0e5e0848-6ab0-4b1b-a354-f7894913d8e4")
     val questionGroupUuid: UUID,
+
+    @Schema(description = "Reference Questions")
     val questionRefs : List<GetQuestionsForGroupDto>,
+
+    @Schema(description = "Reference Group")
     val group : GroupDto,
+
+    @Schema(description = "Question Group Name", example = "Group Name")
     val groupName : String? = null,
+
+    @Schema(description = "Parent Question Group UUID", example = "0e5e0848-6ab0-4b1b-a354-f7894913d8e4")
     val parentGroupUUID: UUID? = null,
+
+    @Schema(description = "Question Group Start Date", example = "2020-01-02T16:00:00")
     val groupStart : LocalDateTime? = null,
+
+    @Schema(description = "Question Group End Date", example = "2020-01-02T16:00:00")
     val groupEnd : LocalDateTime? = null
 
 ) {
@@ -31,42 +46,6 @@ data class QuestionGroupDto (
                     groupName = questionGroup.groupName,
                     parentGroupUUID = questionGroup.parentGroupId,
             )
-        }
-    }
-
-    data class GetQuestionsForGroupDto(
-            val questionSchemaId: Long?,
-            val questionSchemaUuid: UUID?,
-            val questionCode: String? = null,
-            val oasysQuestionCode: String? = null,
-            val questionStart: LocalDateTime? = null,
-            val questionEnd: LocalDateTime? = null,
-            val answerSchemas: Collection<AnswerSchemaDto>? = null,
-            val answerType: String? = null,
-            val questionText: String? = null,
-            val questionHelpText: String? = null,
-            val displayOrder : String? = null,
-            val mandatory : String? = null,
-            val validation : String? = null,
-    ){ 
-        companion object{
-        
-        fun from(questionSchemaEntity: QuestionSchemaEntity, questionGroupEntity: QuestionGroupEntity): GetQuestionsForGroupDto{
-            return GetQuestionsForGroupDto(
-                questionSchemaId = questionSchemaEntity.questionSchemaId,
-                questionSchemaUuid = questionSchemaEntity.questionSchemaUuid,
-                questionCode = questionSchemaEntity.questionCode,
-                oasysQuestionCode = questionSchemaEntity.oasysQuestionCode,
-                questionStart = questionSchemaEntity.questionStartDate,
-                questionEnd = questionSchemaEntity.questionEndDate,
-                answerSchemas = AnswerSchemaDto.from(questionSchemaEntity.answerSchemaEntities),
-                answerType = questionSchemaEntity.answerType,
-                questionText = questionSchemaEntity.questionText,
-                questionHelpText = questionSchemaEntity.questionHelpText,
-                displayOrder = questionGroupEntity.displayOrder,
-                mandatory = questionGroupEntity.mandatory,
-                validation = questionGroupEntity.validation
-            ) }
         }
     }
 }

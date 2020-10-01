@@ -10,7 +10,7 @@ class AssessmentDto (
     @Schema(description = "Assessment primary key", example = "1234")
     val assessmentId: Long? = null,
 
-    @Schema(description = "Assessment primary key", example = "1234")
+    @Schema(description = "Assessment UUID", example = "0e5e0848-6ab0-4b1b-a354-f7894913d8e4")
     val assessmentUuid: UUID? = null,
 
     @Schema(description = "Supervision ID", example = "1234")
@@ -21,6 +21,7 @@ class AssessmentDto (
 
     @Schema(description = "Completed Date", example = "2020-01-02T16:00:00")
     val completedDate: LocalDateTime? = null
+
 ) {
 
     companion object {

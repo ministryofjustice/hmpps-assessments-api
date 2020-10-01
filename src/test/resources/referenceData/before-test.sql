@@ -1,5 +1,6 @@
+-- noinspection SqlResolveForFile
 
-INSERT INTO QUESTION_SCHEMA (question_schema_id, question_schema_uuid, question_code, oasys_question_code, question_start, question_end, answer_type, question_text, question_help_text)
+INSERT INTO question_schema (question_schema_id, question_schema_uuid, question_code, oasys_question_code, question_start, question_end, answer_type, question_text, question_help_text)
 VALUES (1, '11111111-1111-1111-1111-111111111111', 'RSR_01', 'RSR_01', '2019-11-14 08:11:53.177108', null, 'radio', 'Question text', 'Help text');
 
 INSERT INTO answer_schema (answer_schema_id, answer_schema_uuid, answer_schema_code, question_schema_uuid, answer_start, answer_end, value, text)

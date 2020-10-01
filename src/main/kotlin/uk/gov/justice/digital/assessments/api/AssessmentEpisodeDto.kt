@@ -10,7 +10,7 @@ class AssessmentEpisodeDto(
         @Schema(description = "Episode primary key", example = "1234")
         val episodeId: Long? = null,
 
-        @Schema(description = "Episode UUID", example = "1234")
+        @Schema(description = "Episode UUID", example = "0e5e0848-6ab0-4b1b-a354-f7894913d8e4")
         val episodeUuid: UUID? = null,
 
         @Schema(description = "Assessment UUID foreign key", example = "1234")
@@ -19,10 +19,10 @@ class AssessmentEpisodeDto(
         @Schema(description = "Reason for Change", example = "CHANGE_OF_ADDRESS")
         val reasonForChange: String? = null,
 
-        @Schema(description = "Episode start timestamp")
+        @Schema(description = "Episode start timestamp", example = "2020-01-02T16:00:00")
         val created: LocalDateTime? = null,
 
-        @Schema(description = "Episode end timestamp")
+        @Schema(description = "Episode end timestamp", example = "2020-01-02T16:00:00")
         val ended: LocalDateTime? = null,
 
         @Schema(description = "Answers associated with this episode")
@@ -45,7 +45,6 @@ class AssessmentEpisodeDto(
                     episode.createdDate,
                     episode.endDate,
                     emptySet()
-
             )
         }
     }

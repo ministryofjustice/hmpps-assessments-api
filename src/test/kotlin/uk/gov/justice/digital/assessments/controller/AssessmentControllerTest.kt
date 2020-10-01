@@ -40,16 +40,13 @@ class AssessmentControllerTest : IntegrationTest() {
 
     @Test
     fun `trying to create an assessment when one already exists returns the existing assessment`() {
-        // create assessment
-        val assessment = createAssessment("ExistingSupervisionId")
+        val existingAssessment = createAssessment("ExistingSupervisionId")
+        val assessmentDto = createAssessment("ExistingSupervisionId")
 
-        // try and create another
-        val existing = createAssessment("ExistingSupervisionId")
-
-        assertThat(existing.assessmentId).isEqualTo(assessment.assessmentId)
-        assertThat(existing.assessmentUuid).isEqualTo(assessment.assessmentUuid)
-        assertThat(existing.supervisionId).isEqualTo(assessment.supervisionId)
-        assertThat(existing.createdDate).isEqualTo(assessment.createdDate)
+        assertThat(assessmentDto.assessmentId).isEqualTo(existingAssessment.assessmentId)
+        assertThat(assessmentDto.assessmentUuid).isEqualTo(existingAssessment.assessmentUuid)
+        assertThat(assessmentDto.supervisionId).isEqualTo(existingAssessment.supervisionId)
+        assertThat(assessmentDto.createdDate).isEqualTo(existingAssessment.createdDate)
     }
 
     @Test
@@ -90,7 +87,6 @@ class AssessmentControllerTest : IntegrationTest() {
                 .headers(setAuthorisation())
                 .exchange()
                 .expectStatus().isNotFound
-
     }
 
     @Test
@@ -117,7 +113,6 @@ class AssessmentControllerTest : IntegrationTest() {
                 .headers(setAuthorisation())
                 .exchange()
                 .expectStatus().isNotFound
-
     }
 
     private fun createAssessment(supervisionId: String): AssessmentDto {

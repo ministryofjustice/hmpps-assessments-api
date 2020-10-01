@@ -30,6 +30,7 @@ class AssessmentEntity(
         val episodes: MutableCollection<AssessmentEpisodeEntity> = mutableListOf()
 
 ):Serializable {
+
     fun getCurrentEpisode(): AssessmentEpisodeEntity? {
         return episodes.firstOrNull { it.endDate == null }
     }

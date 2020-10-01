@@ -1,24 +1,24 @@
 package uk.gov.justice.digital.assessments.api
 
-import io.swagger.annotations.ApiModelProperty
+import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.assessments.jpa.entities.GroupEntity
 import java.util.*
 
 class GroupDto (
 
-        @ApiModelProperty
+        @Schema(description = "Group primary key", example = "1234")
         val groupId: Long,
 
-        @ApiModelProperty
+        @Schema(description = "Group UUID foreign key", example = "0e5e0848-6ab0-4b1b-a354-f7894913d8e4")
         val groupUuid: UUID,
 
-        @ApiModelProperty
+        @Schema(description = "Group Heading", example = "Some group heading")
         val heading: String? = null,
 
-        @ApiModelProperty
+        @Schema(description = "Group Subheading", example = "Some group subheading")
         val subheading: String? = null,
 
-        @ApiModelProperty
+        @Schema(description = "Group Help-text", example = "Some group help text")
         val helpText: String? = null
 ){
     companion object{

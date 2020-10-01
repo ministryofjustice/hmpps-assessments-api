@@ -18,8 +18,8 @@ class AnswerSchemaEntity (
         @Column (name = "answer_schema_code")
         val answerSchemaCode: String? = null,
 
-        @ManyToOne(fetch = FetchType.LAZY)
-        @JoinColumn (name = "question_schema_uuid")
+        @ManyToOne
+        @JoinColumn (name = "question_schema_uuid", referencedColumnName = "question_schema_uuid")
         val questionSchema: QuestionSchemaEntity? = null,
 
         @Column (name = "answer_start")

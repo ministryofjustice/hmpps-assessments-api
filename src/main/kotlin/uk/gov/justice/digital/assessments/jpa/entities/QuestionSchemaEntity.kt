@@ -38,6 +38,7 @@ class QuestionSchemaEntity(
         @Column(name = "question_help_text")
         val questionHelpText: String? = null,
 
-        @OneToMany(mappedBy = "questionSchema")
+        @OneToMany(mappedBy = "questionSchema", fetch = FetchType.EAGER)
         val answerSchemaEntities: Collection<AnswerSchemaEntity>
+
 ) : Serializable
