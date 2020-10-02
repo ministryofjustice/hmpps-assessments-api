@@ -17,8 +17,8 @@ import java.util.*
 @AutoConfigureWebTestClient
 class QuestionControllerTest : IntegrationTest() {
 
-    private val groupUuid = "22222222-2222-2222-2222-222222222222"
-    private val questionSchemaUuid = "11111111-1111-1111-1111-111111111111"
+    private val groupUuid = "e353f3df-113d-401c-a3c0-14239fc17cf9"
+    private val questionSchemaUuid = "fd412ca8-d361-47ab-a189-7acb8ae0675b"
     private val answerSchemaUuid = "464e25da-f843-43b6-8223-4af415abda0c"
 
     @Test

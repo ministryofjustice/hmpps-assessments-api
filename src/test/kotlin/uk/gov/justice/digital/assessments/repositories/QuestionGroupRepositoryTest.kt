@@ -17,8 +17,12 @@ class QuestionGroupRepositoryTest(@Autowired val questionGroupRepository: Questi
 
     @Test
     fun `return all Questions for Group`() {
-        val questionGroupEntity = questionGroupRepository.findByGroupGroupUuid(UUID.fromString("22222222-2222-2222-2222-222222222222"))
+        val groupUuid = UUID.fromString("e353f3df-113d-401c-a3c0-14239fc17cf9")
+        val questionSchemaUuid = UUID.fromString("fd412ca8-d361-47ab-a189-7acb8ae0675b")
+
+        val questionGroupEntity = questionGroupRepository.findByGroupGroupUuid(groupUuid)
+
         assertThat(questionGroupEntity).hasSize(1)
-        assertThat(questionGroupEntity?.map{a -> a.questionSchema.questionSchemaUuid}).contains(UUID.fromString("11111111-1111-1111-1111-111111111111"))
+        assertThat(questionGroupEntity?.map{a -> a.questionSchema.questionSchemaUuid}).contains(questionSchemaUuid)
     }
 }
