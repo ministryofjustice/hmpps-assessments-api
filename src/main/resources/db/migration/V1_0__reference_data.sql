@@ -38,8 +38,8 @@ CREATE TABLE IF NOT EXISTS question_group
 (
     question_group_id       SERIAL      PRIMARY KEY,
     question_group_uuid     UUID        NOT NULL unique,
-    question_schema_uuid    UUID        NOT NULL,
     group_uuid              UUID        NOT NULL,
+    question_schema_uuid    UUID        NOT NULL,
     display_order           TEXT,
     mandatory               TEXT        NOT NULL,
     validation              TEXT,
