@@ -10,11 +10,11 @@ VALUES  (201, '11111111-1111-1111-1111-111111111201', 'surname', 'OL3 CI1', '201
         (207, '11111111-1111-1111-1111-111111111207', 'gender', 'OL3 CI7', '2019-11-14 08:11:53.177108', null, 'freetext', 'Gender', null),
         (208, '11111111-1111-1111-1111-111111111208', 'religion', 'OL3 CI8', '2019-11-14 08:11:53.177108', null, 'freetext', 'Religion', null);
 
-INSERT INTO grouping (group_id, group_uuid, group_name, heading, subheading, help_text, group_start, group_end)
+INSERT INTO grouping (group_id, group_uuid, group_code, heading, subheading, help_text, group_start, group_end)
 VALUES  (201, '22222222-2222-2222-2222-222222222201', 'oasys', 'Layer 3', null, null, '2019-11-14 08:11:53.177108', null),
         (202, '22222222-2222-2222-2222-222222222202', 'oasys_case_id', 'Case Identification', null, null, '2019-11-14 08:11:53.177108', null),
-        (203, '22222222-2222-2222-2222-222222222203', 'bcst', 'BCST', null, null, '2019-11-14 08:11:53.177108', null),
-        (204, '22222222-2222-2222-2222-222222222204', 'bcst_case_id', 'Case Identification', null, null, '2019-11-14 08:11:53.177108', null);
+        (203, '22222222-2222-2222-2222-222222222203', 'bcst', 'BCST', 'Basic Custody Screen Tool', null, '2019-11-14 08:11:53.177108', null),
+        (204, '22222222-2222-2222-2222-222222222204', 'bcst_case_id', 'Case Identification', null, 'Offender and sentence details', '2019-11-14 08:11:53.177108', null);
 
 -- Layer 3 Case Identification
 INSERT INTO question_group (question_group_id, question_group_uuid, question_schema_uuid, group_uuid, display_order, mandatory, validation)

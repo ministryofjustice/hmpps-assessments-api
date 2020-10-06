@@ -53,10 +53,10 @@ class QuestionControllerTest : IntegrationTest() {
                 .returnResult()
                 .responseBody
 
-        assertThat(questionsGroup?.group?.groupUuid).isEqualTo(UUID.fromString(groupUuid))
+        assertThat(questionsGroup?.groupId).isEqualTo(UUID.fromString(groupUuid))
 
-        val questionRefs = questionsGroup?.questionRefs
-        assertThat(questionRefs?.get(0)?.questionSchemaUuid).isEqualTo(UUID.fromString(questionSchemaUuid))
+        val questionRefs = questionsGroup?.contents
+        assertThat(questionRefs?.get(0)?.questionId).isEqualTo(UUID.fromString(questionSchemaUuid))
 
         val answerRefs = questionRefs?.get(0)?.answerSchemas
         assertThat(answerRefs?.get(0)?.answerSchemaUuid).isEqualTo(UUID.fromString(answerSchemaUuid))
