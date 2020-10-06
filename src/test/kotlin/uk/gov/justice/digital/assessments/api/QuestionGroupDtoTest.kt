@@ -54,5 +54,7 @@ class QuestionGroupDtoTest {
         assertThat(dto.title).isEqualTo(simpleGroup.heading)
         assertThat(dto.subheading).isEqualTo(simpleGroup.subheading)
         assertThat(dto.helpText).isEqualTo(simpleGroup.helpText)
+
+        assertThat(dto.contents.size).isEqualTo(1)
     }
 }

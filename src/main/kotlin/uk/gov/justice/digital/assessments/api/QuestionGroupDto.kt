@@ -20,8 +20,8 @@ data class QuestionGroupDto (
     @Schema(description = "Group Help-text", example = "Some group help text")
     val helpText: String? = null,
 
-    @Schema(description = "Reference Questions")
-    val questionRefs : List<GetQuestionsForGroupDto>,
+    @Schema(description = "Questions and Groups")
+    val contents : List<GetQuestionsForGroupDto>,
 ) {
     companion object {
 
@@ -36,7 +36,7 @@ data class QuestionGroupDto (
                     title = group.heading,
                     subheading = group.subheading,
                     helpText = group.helpText,
-                    questionRefs = questionRefs
+                    contents = questionRefs
             )
         }
     }
