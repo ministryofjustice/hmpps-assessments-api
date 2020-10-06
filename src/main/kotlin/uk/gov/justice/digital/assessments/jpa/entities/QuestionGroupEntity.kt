@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.assessments.jpa.entities
 
-import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.*
 
@@ -24,12 +23,6 @@ class QuestionGroupEntity (
     @JoinColumn(name = "group_uuid", referencedColumnName = "group_uuid")
     val group : GroupEntity,
 
-    @Column(name = "group_name")
-    val groupName : String? = null,
-
-    @Column(name = "parent_group_uuid")
-    val parentGroupId : UUID? = null,
-
     @Column(name = "display_order")
     val displayOrder : String? = null,
 
@@ -38,10 +31,4 @@ class QuestionGroupEntity (
 
     @Column(name = "validation")
     val validation : String? = null,
-
-    @Column(name = "group_start")
-    val groupStart : LocalDateTime? = null,
-
-    @Column(name = "group_end")
-    val groupEnd : LocalDateTime? = null
 )
