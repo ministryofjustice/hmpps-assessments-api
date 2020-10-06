@@ -41,10 +41,9 @@ CREATE TABLE IF NOT EXISTS question_group
     question_group_id       SERIAL      PRIMARY KEY,
     question_group_uuid     UUID        NOT NULL unique,
     group_uuid              UUID        NOT NULL,
-    question_schema_uuid    UUID        NOT NULL,
+    content_uuid            UUID        NOT NULL,
     display_order           TEXT,
     mandatory               TEXT        NOT NULL,
     validation              TEXT,
-    FOREIGN KEY (question_schema_uuid) REFERENCES question_schema(question_schema_uuid),
     FOREIGN KEY (group_uuid) REFERENCES grouping(group_uuid)
 );

@@ -16,7 +16,7 @@ class QuestionGroupEntity (
     val uuid : UUID = UUID.randomUUID(),
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "question_schema_uuid", referencedColumnName = "question_schema_uuid")
+    @JoinColumn(name = "content_uuid", referencedColumnName = "question_schema_uuid")
     val questionSchema : QuestionSchemaEntity,
 
     @ManyToOne

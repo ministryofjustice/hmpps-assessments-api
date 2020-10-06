@@ -17,7 +17,7 @@ VALUES  (201, '22222222-2222-2222-2222-222222222201', 'oasys', 'Layer 3', null, 
         (204, '22222222-2222-2222-2222-222222222204', 'bcst_case_id', 'Case Identification', null, 'Offender and sentence details', '2019-11-14 08:11:53.177108', null);
 
 -- Layer 3 Case Identification
-INSERT INTO question_group (question_group_id, question_group_uuid, question_schema_uuid, group_uuid, display_order, mandatory, validation)
+INSERT INTO question_group (question_group_id, question_group_uuid, content_uuid, group_uuid, display_order, mandatory, validation)
 VALUES  (201, '33333333-3333-3333-3333-333333333201', '11111111-1111-1111-1111-111111111201', '22222222-2222-2222-2222-222222222202', '1', 'no', null),
         (202, '33333333-3333-3333-3333-333333333202', '11111111-1111-1111-1111-111111111202', '22222222-2222-2222-2222-222222222202', '1', 'no', null),
         (203, '33333333-3333-3333-3333-333333333203', '11111111-1111-1111-1111-111111111203', '22222222-2222-2222-2222-222222222202', '1', 'no', null),
@@ -28,7 +28,7 @@ VALUES  (201, '33333333-3333-3333-3333-333333333201', '11111111-1111-1111-1111-1
         (208, '33333333-3333-3333-3333-333333333208', '11111111-1111-1111-1111-111111111208', '22222222-2222-2222-2222-222222222202', '1', 'no', null);
 
 -- BCST Case Identification
-INSERT INTO question_group (question_group_id, question_group_uuid, question_schema_uuid, group_uuid, display_order, mandatory, validation)
+INSERT INTO question_group (question_group_id, question_group_uuid, content_uuid, group_uuid, display_order, mandatory, validation)
 VALUES  (209, '33333333-3333-3333-3333-333333333209', '11111111-1111-1111-1111-111111111201', '22222222-2222-2222-2222-222222222204', '1', 'no', null),
         (210, '33333333-3333-3333-3333-333333333210', '11111111-1111-1111-1111-111111111202', '22222222-2222-2222-2222-222222222204', '1', 'no', null),
         (211, '33333333-3333-3333-3333-333333333211', '11111111-1111-1111-1111-111111111205', '22222222-2222-2222-2222-222222222204', '1', 'no', null),

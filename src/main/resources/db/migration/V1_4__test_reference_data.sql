@@ -28,7 +28,7 @@ VALUES  (1, '22222222-2222-2222-2222-222222222221', 'SARA', 'SARA', null, null, 
         (2, '22222222-2222-2222-2222-222222222222', 'SR15', 'Criminal History', 'Past assault of family members', null, '2019-11-14 08:11:53.177108', null),
         (3, '22222222-2222-2222-2222-222222222223', 'SR18', 'Criminal History', 'Past assault of strangers or acquaintances', null, '2019-11-14 08:11:53.177108', null);
 
-INSERT INTO question_group (question_group_id, question_group_uuid, question_schema_uuid, group_uuid, display_order, mandatory, validation)
+INSERT INTO question_group (question_group_id, question_group_uuid, content_uuid, group_uuid, display_order, mandatory, validation)
 VALUES  (1, '33333333-3333-3333-3333-333333333331', '11111111-1111-1111-1111-111111111111',
          '22222222-2222-2222-2222-222222222222', '1.1', 'mandatory', null),
         (2, '33333333-3333-3333-3333-333333333332', '11111111-1111-1111-1111-111111111112', '22222222-2222-2222-2222-222222222222', '1.2', 'mandatory', null),
