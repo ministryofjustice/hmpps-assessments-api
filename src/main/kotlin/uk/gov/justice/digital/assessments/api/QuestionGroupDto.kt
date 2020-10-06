@@ -11,6 +11,9 @@ data class QuestionGroupDto (
     @Schema(description = "Group Identifier", example = "<uuid>")
     val groupId : UUID,
 
+    @Schema(description = "Group Code", example="group-code-name")
+    val groupCode: String,
+
     @Schema(description = "Group Title", example = "Some group!")
     val title: String? = null,
 
@@ -33,6 +36,7 @@ data class QuestionGroupDto (
             val group = questionGroup.group
             return QuestionGroupDto(
                     groupId = group.groupUuid,
+                    groupCode = group.groupCode,
                     title = group.heading,
                     subheading = group.subheading,
                     helpText = group.helpText,
