@@ -24,14 +24,14 @@ data class QuestionGroupDto (
     val helpText: String? = null,
 
     @Schema(description = "Questions and Groups")
-    val contents : List<GetQuestionsForGroupDto>,
+    val contents : List<GroupContentQuestionDto>,
 ) {
     companion object {
 
         fun from(questionGroupEntities: Collection<QuestionGroupEntity>): QuestionGroupDto {
             val questionGroup = questionGroupEntities.elementAt(0)
             val questionRefs = questionGroupEntities.map {
-                        GetQuestionsForGroupDto.from(it.questionSchema, questionGroup )}
+                GroupContentQuestionDto.from(it.questionSchema, questionGroup )}
 
             val group = questionGroup.group
             return QuestionGroupDto(

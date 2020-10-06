@@ -5,7 +5,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.QuestionGroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
 import java.util.*
 
-data class GetQuestionsForGroupDto(
+data class GroupContentQuestionDto(
         @Schema(description = "Reference Question Schema UUID", example = "0e5e0848-6ab0-4b1b-a354-f7894913d8e4")
         val questionId: UUID?,
 
@@ -35,8 +35,8 @@ data class GetQuestionsForGroupDto(
 ){
     companion object{
 
-        fun from(questionSchemaEntity: QuestionSchemaEntity, questionGroupEntity: QuestionGroupEntity): GetQuestionsForGroupDto{
-            return GetQuestionsForGroupDto(
+        fun from(questionSchemaEntity: QuestionSchemaEntity, questionGroupEntity: QuestionGroupEntity): GroupContentQuestionDto{
+            return GroupContentQuestionDto(
                     questionId = questionSchemaEntity.questionSchemaUuid,
                     questionCode = questionSchemaEntity.questionCode,
                     answerType = questionSchemaEntity.answerType,
