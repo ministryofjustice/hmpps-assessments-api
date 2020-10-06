@@ -19,6 +19,9 @@ class QuestionGroupEntity (
     @JoinColumn(name = "content_uuid", referencedColumnName = "question_schema_uuid")
     val questionSchema : QuestionSchemaEntity,
 
+    @Column(name = "content_type")
+    val contentType: String,
+
     @ManyToOne
     @JoinColumn(name = "group_uuid", referencedColumnName = "group_uuid")
     val group : GroupEntity,

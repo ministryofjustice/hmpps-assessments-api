@@ -38,6 +38,7 @@ class QuestionGroupDtoTest {
             1L,
             UUID.randomUUID(),
             question,
+            "question",
             simpleGroup,
             "1",
             "mandatory",
