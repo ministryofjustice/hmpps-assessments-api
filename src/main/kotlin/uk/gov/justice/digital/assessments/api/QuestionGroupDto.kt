@@ -19,9 +19,6 @@ data class QuestionGroupDto (
     @Schema(description = "Reference Group")
     val group : GroupDto,
 
-    @Schema(description = "Question Group Name", example = "Group Name")
-    val groupName : String? = null,
-
     @Schema(description = "Question Group Start Date", example = "2020-01-02T16:00:00")
     val groupStart : LocalDateTime? = null,
 
@@ -39,8 +36,7 @@ data class QuestionGroupDto (
                     questionGroupId = questionGroup.questionGroupId,
                     questionGroupUuid = questionGroup.uuid,
                     questionRefs = questionRefs,
-                    group = GroupDto.from(questionGroup.group),
-                    groupName = questionGroup.groupName
+                    group = GroupDto.from(questionGroup.group)
             )
         }
     }

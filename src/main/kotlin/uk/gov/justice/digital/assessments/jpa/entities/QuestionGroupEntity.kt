@@ -24,9 +24,6 @@ class QuestionGroupEntity (
     @JoinColumn(name = "group_uuid", referencedColumnName = "group_uuid")
     val group : GroupEntity,
 
-    @Column(name = "group_name")
-    val groupName : String? = null,
-
     @Column(name = "display_order")
     val displayOrder : String? = null,
 

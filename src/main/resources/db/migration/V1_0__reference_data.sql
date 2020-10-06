@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS grouping
 (
     group_id    SERIAL  PRIMARY KEY,
     group_uuid  UUID    NOT NULL unique,
+    group_name  TEXT    NOT NULL,
     heading     TEXT    NOT NULL,
     subheading  TEXT,
     help_text   TEXT
@@ -39,7 +40,6 @@ CREATE TABLE IF NOT EXISTS question_group
     question_group_uuid     UUID        NOT NULL unique,
     question_schema_uuid    UUID        NOT NULL,
     group_uuid              UUID        NOT NULL,
-    group_name              TEXT        NOT NULL,
     display_order           TEXT,
     mandatory               TEXT        NOT NULL,
     validation              TEXT,
