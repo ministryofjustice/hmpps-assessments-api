@@ -31,7 +31,9 @@ CREATE TABLE IF NOT EXISTS grouping
     group_name  TEXT    NOT NULL,
     heading     TEXT    NOT NULL,
     subheading  TEXT,
-    help_text   TEXT
+    help_text   TEXT,
+    group_start TIMESTAMP   NOT NULL,
+    group_end   TIMESTAMP
 );
 
 CREATE TABLE IF NOT EXISTS question_group
@@ -43,8 +45,6 @@ CREATE TABLE IF NOT EXISTS question_group
     display_order           TEXT,
     mandatory               TEXT        NOT NULL,
     validation              TEXT,
-    group_start             TIMESTAMP   NOT NULL,
-    group_end               TIMESTAMP,
     FOREIGN KEY (question_schema_uuid) REFERENCES question_schema(question_schema_uuid),
     FOREIGN KEY (group_uuid) REFERENCES grouping(group_uuid)
 );
