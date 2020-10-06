@@ -23,7 +23,20 @@ class QuestionGroupDtoTest {
             "Question help text",
             emptyList()
     )
-    val simpleGroup = GroupEntity(
+    val additionalQuestion = QuestionSchemaEntity(
+            1L,
+            UUID.randomUUID(),
+            "AssessmentId",
+            "RSR_40",
+            LocalDateTime.of(2019, 8, 1, 8, 0),
+            null,
+            "Freetext",
+            "Question text",
+            "Question help text",
+            emptyList()
+    )
+
+    val groupWithOneQuestion = GroupEntity(
             1L,
             UUID.randomUUID(),
             "simple-group",
@@ -34,10 +47,10 @@ class QuestionGroupDtoTest {
             null
     )
 
-    val simpleGroupQuestion = QuestionGroupEntity(
+    val groupWithOneQuestionQuestion = QuestionGroupEntity(
             1L,
             UUID.randomUUID(),
-            simpleGroup,
+            groupWithOneQuestion,
             question.questionSchemaUuid,
             "question",
             "1",
@@ -46,19 +59,53 @@ class QuestionGroupDtoTest {
             question
     )
 
+    val groupWithTwoQuestions = GroupEntity(
+            1L,
+            UUID.randomUUID(),
+            "two-question-group",
+            "Two Question Group",
+            "subheading",
+            "help!",
+            LocalDateTime.of(2019, 8, 1, 8, 0),
+            null
+    )
+
+    val groupWithTwoQuestionsFirstQuestion = QuestionGroupEntity(
+            1L,
+            UUID.randomUUID(),
+            groupWithTwoQuestions,
+            question.questionSchemaUuid,
+            "question",
+            "1",
+            "mandatory",
+            "none",
+            question
+    )
+    val groupWithTwoQuestionsSecondQuestion = QuestionGroupEntity(
+            1L,
+            UUID.randomUUID(),
+            groupWithTwoQuestions,
+            additionalQuestion.questionSchemaUuid,
+            "question",
+            "2",
+            "no",
+            "lots",
+            additionalQuestion
+    )
+
     @Test
-    fun `build Question Group DTO`() {
+    fun `dto for group with one question`() {
         val entities = listOf(
-                simpleGroupQuestion
+                groupWithOneQuestionQuestion
         )
 
         val dto = QuestionGroupDto.from(entities)
 
-        assertThat(dto.groupId).isEqualTo(simpleGroup.groupUuid)
-        assertThat(dto.groupCode).isEqualTo(simpleGroup.groupCode)
-        assertThat(dto.title).isEqualTo(simpleGroup.heading)
-        assertThat(dto.subheading).isEqualTo(simpleGroup.subheading)
-        assertThat(dto.helpText).isEqualTo(simpleGroup.helpText)
+        assertThat(dto.groupId).isEqualTo(groupWithOneQuestion.groupUuid)
+        assertThat(dto.groupCode).isEqualTo(groupWithOneQuestion.groupCode)
+        assertThat(dto.title).isEqualTo(groupWithOneQuestion.heading)
+        assertThat(dto.subheading).isEqualTo(groupWithOneQuestion.subheading)
+        assertThat(dto.helpText).isEqualTo(groupWithOneQuestion.helpText)
 
         assertThat(dto.contents.size).isEqualTo(1)
 
@@ -69,8 +116,48 @@ class QuestionGroupDtoTest {
         assertThat(contentQuestion.helpText).isEqualTo(question.questionHelpText)
         assertThat(contentQuestion.answerType).isEqualTo(question.answerType)
 
-        assertThat(contentQuestion.displayOrder).isEqualTo(simpleGroupQuestion.displayOrder)
-        assertThat(contentQuestion.mandatory).isEqualTo(simpleGroupQuestion.mandatory)
-        assertThat(contentQuestion.validation).isEqualTo(simpleGroupQuestion.validation)
+        assertThat(contentQuestion.displayOrder).isEqualTo(groupWithOneQuestionQuestion.displayOrder)
+        assertThat(contentQuestion.mandatory).isEqualTo(groupWithOneQuestionQuestion.mandatory)
+        assertThat(contentQuestion.validation).isEqualTo(groupWithOneQuestionQuestion.validation)
+    }
+
+    @Test
+    fun `dto for two question group`() {
+        val entities = listOf(
+                groupWithTwoQuestionsFirstQuestion,
+                groupWithTwoQuestionsSecondQuestion
+        )
+
+        val dto = QuestionGroupDto.from(entities)
+
+        assertThat(dto.groupId).isEqualTo(groupWithTwoQuestions.groupUuid)
+        assertThat(dto.groupCode).isEqualTo(groupWithTwoQuestions.groupCode)
+        assertThat(dto.title).isEqualTo(groupWithTwoQuestions.heading)
+        assertThat(dto.subheading).isEqualTo(groupWithTwoQuestions.subheading)
+        assertThat(dto.helpText).isEqualTo(groupWithTwoQuestions.helpText)
+
+        assertThat(dto.contents.size).isEqualTo(2)
+
+        val firstQuestion = dto.contents[0]
+        assertThat(firstQuestion.questionId).isEqualTo(question.questionSchemaUuid)
+        assertThat(firstQuestion.questionCode).isEqualTo(question.questionCode)
+        assertThat(firstQuestion.questionText).isEqualTo(question.questionText)
+        assertThat(firstQuestion.helpText).isEqualTo(question.questionHelpText)
+        assertThat(firstQuestion.answerType).isEqualTo(question.answerType)
+
+        assertThat(firstQuestion.displayOrder).isEqualTo(groupWithTwoQuestionsFirstQuestion.displayOrder)
+        assertThat(firstQuestion.mandatory).isEqualTo(groupWithTwoQuestionsFirstQuestion.mandatory)
+        assertThat(firstQuestion.validation).isEqualTo(groupWithTwoQuestionsFirstQuestion.validation)
+
+        val secondQuestion = dto.contents[1]
+        assertThat(secondQuestion.questionId).isEqualTo(additionalQuestion.questionSchemaUuid)
+        assertThat(secondQuestion.questionCode).isEqualTo(additionalQuestion.questionCode)
+        assertThat(secondQuestion.questionText).isEqualTo(additionalQuestion.questionText)
+        assertThat(secondQuestion.helpText).isEqualTo(additionalQuestion.questionHelpText)
+        assertThat(secondQuestion.answerType).isEqualTo(additionalQuestion.answerType)
+
+        assertThat(secondQuestion.displayOrder).isEqualTo(groupWithTwoQuestionsSecondQuestion.displayOrder)
+        assertThat(secondQuestion.mandatory).isEqualTo(groupWithTwoQuestionsSecondQuestion.mandatory)
+        assertThat(secondQuestion.validation).isEqualTo(groupWithTwoQuestionsSecondQuestion.validation)
     }
 }

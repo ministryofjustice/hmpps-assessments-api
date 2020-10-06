@@ -29,12 +29,11 @@ data class QuestionGroupDto (
     companion object {
 
         fun from(questionGroupEntities: Collection<QuestionGroupEntity>): QuestionGroupDto {
-            val questionGroup = questionGroupEntities.elementAt(0)
             val questionRefs =
                     questionGroupEntities.filterNot { it.question == null }
-                            .map { GroupContentQuestionDto.from(it.question!!, questionGroup )}
+                            .map { GroupContentQuestionDto.from(it.question!!, it )}
 
-            val group = questionGroup.group
+            val group = questionGroupEntities.first().group
             return QuestionGroupDto(
                     groupId = group.groupUuid,
                     groupCode = group.groupCode,
