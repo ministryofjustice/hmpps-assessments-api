@@ -34,18 +34,20 @@ class QuestionGroupDtoTest {
             null
     )
 
+    val simpleGroupQuestion = QuestionGroupEntity(
+            1L,
+            UUID.randomUUID(),
+            question,
+            simpleGroup,
+            "1",
+            "mandatory",
+            "none"
+    )
+
     @Test
     fun `build Question Group DTO`() {
         val entities = listOf(
-                QuestionGroupEntity(
-                        1L,
-                        UUID.randomUUID(),
-                        question,
-                        simpleGroup,
-                        "1",
-                        "mandatory",
-                        "none"
-                )
+                simpleGroupQuestion
         )
 
         val dto = QuestionGroupDto.from(entities)
@@ -57,5 +59,16 @@ class QuestionGroupDtoTest {
         assertThat(dto.helpText).isEqualTo(simpleGroup.helpText)
 
         assertThat(dto.contents.size).isEqualTo(1)
+
+        val contentQuestion = dto.contents[0]
+        assertThat(contentQuestion.questionId).isEqualTo(question.questionSchemaUuid)
+        assertThat(contentQuestion.questionCode).isEqualTo(question.questionCode)
+        assertThat(contentQuestion.questionText).isEqualTo(question.questionText)
+        assertThat(contentQuestion.helpText).isEqualTo(question.questionHelpText)
+        assertThat(contentQuestion.answerType).isEqualTo(question.answerType)
+
+        assertThat(contentQuestion.displayOrder).isEqualTo(simpleGroupQuestion.displayOrder)
+        assertThat(contentQuestion.mandatory).isEqualTo(simpleGroupQuestion.mandatory)
+        assertThat(contentQuestion.validation).isEqualTo(simpleGroupQuestion.validation)
     }
 }
