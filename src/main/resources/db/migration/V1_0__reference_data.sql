@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS grouping
 (
     group_id    SERIAL  PRIMARY KEY,
     group_uuid  UUID    NOT NULL unique,
-    group_name  TEXT    NOT NULL,
+    group_code  TEXT    NOT NULL,
     heading     TEXT    NOT NULL,
     subheading  TEXT,
     help_text   TEXT,

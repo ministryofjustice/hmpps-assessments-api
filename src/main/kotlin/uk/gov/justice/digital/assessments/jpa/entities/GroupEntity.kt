@@ -17,8 +17,8 @@ class GroupEntity(
     @Column(name = "group_uuid")
     val groupUuid : UUID = UUID.randomUUID(),
 
-    @Column(name = "group_name")
-    val groupName : String,
+    @Column(name = "group_code")
+    val groupCode : String,
 
     @Column (name = "heading")
     val heading: String? = null,

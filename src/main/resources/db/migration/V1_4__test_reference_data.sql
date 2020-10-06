@@ -23,7 +23,7 @@ VALUES  (1, '44444444-4444-4444-4444-444444444441', 'SR15.1.1.1','11111111-1111-
         (12, '44444444-4444-4444-4444-444444444412', 'SR18.1.3','11111111-1111-1111-1111-111111111116', '2019-11-14 08:11:53.177108', null, 'freetext', 'freetext');
 
 
-INSERT INTO grouping (group_id, group_uuid, group_name, heading, subheading, help_text, group_start, group_end)
+INSERT INTO grouping (group_id, group_uuid, group_code, heading, subheading, help_text, group_start, group_end)
 VALUES  (1, '22222222-2222-2222-2222-222222222221', 'SARA', 'SARA', null, null, '2019-11-14 08:11:53.177108', null),
         (2, '22222222-2222-2222-2222-222222222222', 'SR15', 'Criminal History', 'Past assault of family members', null, '2019-11-14 08:11:53.177108', null),
         (3, '22222222-2222-2222-2222-222222222223', 'SR18', 'Criminal History', 'Past assault of strangers or acquaintances', null, '2019-11-14 08:11:53.177108', null);

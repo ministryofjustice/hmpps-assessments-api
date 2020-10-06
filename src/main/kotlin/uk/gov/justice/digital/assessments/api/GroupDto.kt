@@ -12,8 +12,8 @@ class GroupDto (
         @Schema(description = "Group UUID", example = "0e5e0848-6ab0-4b1b-a354-f7894913d8e4")
         val groupUuid: UUID,
 
-        @Schema(description = "Group Name", example = "group")
-        val groupName: String,
+        @Schema(description = "Group Code", example = "group")
+        val groupCode: String,
 
         @Schema(description = "Group Heading", example = "Some group heading")
         val heading: String? = null,
@@ -29,7 +29,7 @@ class GroupDto (
         return GroupDto(
                 groupEntity.groupId,
                 groupEntity.groupUuid,
-                groupEntity.groupName,
+                groupEntity.groupCode,
                 groupEntity.heading,
                 groupEntity.subheading,
                 groupEntity.helpText )
