@@ -24,6 +24,13 @@ class QuestionService(private val questionSchemaRepository: QuestionSchemaReposi
                 ?: throw EntityNotFoundException("Group not found: $groupUuid")
 
         if (questionGroup.isEmpty()) throw EntityNotFoundException("Questions not found for Group: $groupUuid")
+
+        questionGroup.forEach {
+            when(it.contentType) {
+                "question" -> it.question = questionSchemaRepository.findByQuestionSchemaUuid(it.contentUuid)
+            }
+        }
+
         return QuestionGroupDto.from(questionGroup)
     }
 }

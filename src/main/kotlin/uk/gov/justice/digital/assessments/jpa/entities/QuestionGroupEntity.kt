@@ -20,12 +20,11 @@ class QuestionGroupEntity (
     @JoinColumn(name = "group_uuid", referencedColumnName = "group_uuid")
     val group : GroupEntity,
 
+    @Column(name = "content_uuid")
+    val contentUuid: UUID,
+
     @Column(name = "content_type")
     val contentType: String,
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "content_uuid", referencedColumnName = "question_schema_uuid")
-    val question : QuestionSchemaEntity,
 
     @Column(name = "display_order")
     val displayOrder : String? = null,
@@ -35,4 +34,7 @@ class QuestionGroupEntity (
 
     @Column(name = "validation")
     val validation : String? = null,
+
+    @Transient
+    var question: QuestionSchemaEntity?
 ) : Serializable

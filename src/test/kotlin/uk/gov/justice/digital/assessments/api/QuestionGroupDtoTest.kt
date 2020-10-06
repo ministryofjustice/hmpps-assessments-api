@@ -38,11 +38,12 @@ class QuestionGroupDtoTest {
             1L,
             UUID.randomUUID(),
             simpleGroup,
+            question.questionSchemaUuid,
             "question",
-            question,
             "1",
             "mandatory",
-            "none"
+            "none",
+            question
     )
 
     @Test

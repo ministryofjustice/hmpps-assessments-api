@@ -30,8 +30,9 @@ data class QuestionGroupDto (
 
         fun from(questionGroupEntities: Collection<QuestionGroupEntity>): QuestionGroupDto {
             val questionGroup = questionGroupEntities.elementAt(0)
-            val questionRefs = questionGroupEntities.map {
-                GroupContentQuestionDto.from(it.questionSchema, questionGroup )}
+            val questionRefs =
+                    questionGroupEntities.filterNot { it.question == null }
+                            .map { GroupContentQuestionDto.from(it.question!!, questionGroup )}
 
             val group = questionGroup.group
             return QuestionGroupDto(
