@@ -27,9 +27,6 @@ class QuestionGroupEntity (
     @Column(name = "group_name")
     val groupName : String? = null,
 
-    @Column(name = "parent_group_uuid")
-    val parentGroupId : UUID? = null,
-
     @Column(name = "display_order")
     val displayOrder : String? = null,
 

@@ -40,7 +40,6 @@ CREATE TABLE IF NOT EXISTS question_group
     question_schema_uuid    UUID        NOT NULL,
     group_uuid              UUID        NOT NULL,
     group_name              TEXT        NOT NULL,
-    parent_group_uuid       UUID,
     display_order           TEXT,
     mandatory               TEXT        NOT NULL,
     validation              TEXT,

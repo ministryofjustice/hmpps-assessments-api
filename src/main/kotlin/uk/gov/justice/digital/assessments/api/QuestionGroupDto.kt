@@ -22,9 +22,6 @@ data class QuestionGroupDto (
     @Schema(description = "Question Group Name", example = "Group Name")
     val groupName : String? = null,
 
-    @Schema(description = "Parent Question Group UUID", example = "0e5e0848-6ab0-4b1b-a354-f7894913d8e4")
-    val parentGroupUUID: UUID? = null,
-
     @Schema(description = "Question Group Start Date", example = "2020-01-02T16:00:00")
     val groupStart : LocalDateTime? = null,
 
@@ -43,8 +40,7 @@ data class QuestionGroupDto (
                     questionGroupUuid = questionGroup.uuid,
                     questionRefs = questionRefs,
                     group = GroupDto.from(questionGroup.group),
-                    groupName = questionGroup.groupName,
-                    parentGroupUUID = questionGroup.parentGroupId,
+                    groupName = questionGroup.groupName
             )
         }
     }
