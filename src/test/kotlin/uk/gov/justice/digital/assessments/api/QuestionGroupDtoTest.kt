@@ -37,9 +37,9 @@ class QuestionGroupDtoTest {
     val simpleGroupQuestion = QuestionGroupEntity(
             1L,
             UUID.randomUUID(),
-            question,
-            "question",
             simpleGroup,
+            "question",
+            question,
             "1",
             "mandatory",
             "none"
