@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.assessments.jpa.entities
 
+import java.io.Serializable
 import java.util.*
 import javax.persistence.*
 
@@ -17,7 +18,7 @@ class QuestionGroupEntity (
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "content_uuid", referencedColumnName = "question_schema_uuid")
-    val questionSchema : QuestionSchemaEntity,
+    val question : QuestionSchemaEntity,
 
     @Column(name = "content_type")
     val contentType: String,
@@ -34,4 +35,4 @@ class QuestionGroupEntity (
 
     @Column(name = "validation")
     val validation : String? = null,
-)
+) : Serializable

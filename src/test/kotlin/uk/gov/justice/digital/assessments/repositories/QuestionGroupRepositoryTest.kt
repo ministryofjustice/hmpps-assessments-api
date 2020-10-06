@@ -23,6 +23,6 @@ class QuestionGroupRepositoryTest(@Autowired val questionGroupRepository: Questi
         val questionGroupEntity = questionGroupRepository.findByGroupGroupUuid(groupUuid)
 
         assertThat(questionGroupEntity).hasSize(1)
-        assertThat(questionGroupEntity?.map{a -> a.questionSchema.questionSchemaUuid}).contains(questionSchemaUuid)
+        assertThat(questionGroupEntity?.map{a -> a.question.questionSchemaUuid}).contains(questionSchemaUuid)
     }
 }
