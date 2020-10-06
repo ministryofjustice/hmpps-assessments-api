@@ -53,7 +53,7 @@ class QuestionControllerTest : IntegrationTest() {
                 .returnResult()
                 .responseBody
 
-        assertThat(questionsGroup?.group?.groupUuid).isEqualTo(UUID.fromString(groupUuid))
+        assertThat(questionsGroup?.groupId).isEqualTo(UUID.fromString(groupUuid))
 
         val questionRefs = questionsGroup?.questionRefs
         assertThat(questionRefs?.get(0)?.questionSchemaUuid).isEqualTo(UUID.fromString(questionSchemaUuid))

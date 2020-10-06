@@ -11,17 +11,17 @@ data class QuestionGroupDto (
     @Schema(description = "Group Identifier", example = "<uuid>")
     val groupId : UUID,
 
+    @Schema(description = "Group Title", example = "Some group!")
+    val title: String? = null,
+
+    @Schema(description = "Group Subheading", example = "Some group subheading")
+    val subheading: String? = null,
+
+    @Schema(description = "Group Help-text", example = "Some group help text")
+    val helpText: String? = null,
+
     @Schema(description = "Reference Questions")
     val questionRefs : List<GetQuestionsForGroupDto>,
-
-    @Schema(description = "Reference Group")
-    val group : GroupDto,
-
-    @Schema(description = "Question Group Start Date", example = "2020-01-02T16:00:00")
-    val groupStart : LocalDateTime? = null,
-
-    @Schema(description = "Question Group End Date", example = "2020-01-02T16:00:00")
-    val groupEnd : LocalDateTime? = null
 ) {
     companion object {
 
@@ -29,10 +29,14 @@ data class QuestionGroupDto (
             val questionGroup = questionGroupEntities.elementAt(0)
             val questionRefs = questionGroupEntities.map {
                         GetQuestionsForGroupDto.from(it.questionSchema, questionGroup )}
+
+            val group = questionGroup.group
             return QuestionGroupDto(
-                    groupId = questionGroup.group.groupUuid,
-                    questionRefs = questionRefs,
-                    group = GroupDto.from(questionGroup.group)
+                    groupId = group.groupUuid,
+                    title = group.heading,
+                    subheading = group.subheading,
+                    helpText = group.helpText,
+                    questionRefs = questionRefs
             )
         }
     }

@@ -48,8 +48,11 @@ class QuestionGroupDtoTest {
                 )
         )
 
-        val questionGroup = QuestionGroupDto.from(entities)
+        val dto = QuestionGroupDto.from(entities)
 
-        assertThat(questionGroup.groupId).isEqualTo(simpleGroup.groupUuid)
+        assertThat(dto.groupId).isEqualTo(simpleGroup.groupUuid)
+        assertThat(dto.title).isEqualTo(simpleGroup.heading)
+        assertThat(dto.subheading).isEqualTo(simpleGroup.subheading)
+        assertThat(dto.helpText).isEqualTo(simpleGroup.helpText)
     }
 }
