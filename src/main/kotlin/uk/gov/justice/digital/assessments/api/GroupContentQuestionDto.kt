@@ -33,8 +33,6 @@ data class GroupContentQuestionDto(
         @Schema(description = "Reference Answer Schemas")
         val answerSchemas: List<AnswerSchemaDto>? = null,
 ): GroupContentDto {
-    val type = "question"
-
     companion object{
         fun from(questionSchemaEntity: QuestionSchemaEntity, questionGroupEntity: QuestionGroupEntity): GroupContentQuestionDto{
             return GroupContentQuestionDto(
