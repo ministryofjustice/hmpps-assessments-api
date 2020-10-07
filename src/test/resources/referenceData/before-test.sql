@@ -9,5 +9,5 @@ VALUES (0, '464e25da-f843-43b6-8223-4af415abda0c', 'RSR_01a','fd412ca8-d361-47ab
 INSERT INTO grouping (group_id, group_uuid, group_code, heading, subheading, help_text, group_start, group_end)
 VALUES (0, 'e353f3df-113d-401c-a3c0-14239fc17cf9', 'Group code', 'Heading 1', 'Subheading 1', 'Help text', '2019-11-14 08:11:53.177108', null);
 
-INSERT INTO question_group (question_group_id, question_group_uuid, question_schema_uuid, group_uuid, display_order, mandatory, validation)
-VALUES (0, '334f3e21-b249-4c7f-848e-05c0d2aad8f4', 'fd412ca8-d361-47ab-a189-7acb8ae0675b', 'e353f3df-113d-401c-a3c0-14239fc17cf9', '1', 'mandatory', null );
+INSERT INTO question_group (question_group_id, question_group_uuid, content_uuid, content_type, group_uuid, display_order, mandatory, validation)
+VALUES (0, '334f3e21-b249-4c7f-848e-05c0d2aad8f4', 'fd412ca8-d361-47ab-a189-7acb8ae0675b', 'question', 'e353f3df-113d-401c-a3c0-14239fc17cf9', '1', 'mandatory', null );

@@ -16,13 +16,15 @@ import java.util.*
 class QuestionGroupRepositoryTest(@Autowired val questionGroupRepository: QuestionGroupRepository) : IntegrationTest() {
 
     @Test
-    fun `return all Questions for Group`() {
+    fun `fetch group contents`() {
         val groupUuid = UUID.fromString("e353f3df-113d-401c-a3c0-14239fc17cf9")
         val questionSchemaUuid = UUID.fromString("fd412ca8-d361-47ab-a189-7acb8ae0675b")
 
-        val questionGroupEntity = questionGroupRepository.findByGroupGroupUuid(groupUuid)
+        val questionGroupEntities = questionGroupRepository.findByGroupGroupUuid(groupUuid)
+        assertThat(questionGroupEntities).hasSize(1)
 
-        assertThat(questionGroupEntity).hasSize(1)
-        assertThat(questionGroupEntity?.map{a -> a.questionSchema.questionSchemaUuid}).contains(questionSchemaUuid)
+        val questionGroupEntity = questionGroupEntities!!.first()
+        assertThat(questionGroupEntity.contentType).isEqualTo("question")
+        assertThat(questionGroupEntity.contentUuid).isEqualTo(questionSchemaUuid)
     }
 }

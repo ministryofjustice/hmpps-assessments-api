@@ -11,6 +11,7 @@ import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import uk.gov.justice.digital.assessments.api.QuestionSchemaDto
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
+import uk.gov.justice.digital.assessments.jpa.repositories.GroupRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.QuestionGroupRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.QuestionSchemaRepository
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
@@ -21,8 +22,8 @@ import java.util.*
 class QuestionServiceTest {
 
     private val questionSchemaRepository: QuestionSchemaRepository = mockk()
-    private val questionGroupRepository: QuestionGroupRepository = mockk()
-    private val questionService = QuestionService(questionSchemaRepository, questionGroupRepository)
+    private val groupRepository: GroupRepository = mockk()
+    private val questionService = QuestionService(questionSchemaRepository, groupRepository)
 
     private val questionId = 1L
     private val uuid = UUID.randomUUID()

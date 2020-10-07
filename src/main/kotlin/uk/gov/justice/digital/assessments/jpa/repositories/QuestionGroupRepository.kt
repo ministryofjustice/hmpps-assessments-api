@@ -10,5 +10,4 @@ interface QuestionGroupRepository: JpaRepository<QuestionGroupEntity, String> {
 
     fun findByGroupGroupUuid(groupId: UUID): Collection<QuestionGroupEntity>?
 
-
 }

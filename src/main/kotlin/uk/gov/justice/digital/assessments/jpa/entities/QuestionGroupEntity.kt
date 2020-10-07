@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.assessments.jpa.entities
 
+import java.io.Serializable
 import java.util.*
 import javax.persistence.*
 
@@ -15,13 +16,15 @@ class QuestionGroupEntity (
     @Column(name ="question_group_uuid")
     val uuid : UUID = UUID.randomUUID(),
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "question_schema_uuid", referencedColumnName = "question_schema_uuid")
-    val questionSchema : QuestionSchemaEntity,
-
     @ManyToOne
     @JoinColumn(name = "group_uuid", referencedColumnName = "group_uuid")
     val group : GroupEntity,
+
+    @Column(name = "content_uuid")
+    val contentUuid: UUID,
+
+    @Column(name = "content_type")
+    val contentType: String,
 
     @Column(name = "display_order")
     val displayOrder : String? = null,
@@ -31,4 +34,10 @@ class QuestionGroupEntity (
 
     @Column(name = "validation")
     val validation : String? = null,
-)
+
+    @Transient
+    var question: QuestionSchemaEntity?,
+
+    @Transient
+    var nestedGroup: GroupEntity?
+) : Serializable
