@@ -10,7 +10,7 @@ import java.time.LocalDateTime
 import java.util.*
 
 @DisplayName("Question Group DTO Tests")
-class QuestionGroupDtoTest {
+class GroupWithContentsDtoTest {
     val question = QuestionSchemaEntity(
             1L,
             UUID.randomUUID(),
@@ -144,17 +144,17 @@ class QuestionGroupDtoTest {
             null
     )
 
-    fun makeQuestionGroupDto(group: GroupEntity, vararg contents: QuestionGroupEntity): QuestionGroupDto {
+    fun makeQuestionGroupDto(group: GroupEntity, vararg contents: QuestionGroupEntity): GroupWithContentsDto {
         val contentsDto: List<GroupContentDto> = contents.map {
             when(it.contentType) {
-                "question" -> GroupContentQuestionDto.from(it.question!!, it)
-                "group" -> QuestionGroupDto.from(it.nestedGroup!!, emptyList(), it)
+                "question" -> GroupQuestionDto.from(it.question!!, it)
+                "group" -> GroupWithContentsDto.from(it.nestedGroup!!, emptyList(), it)
                 else -> throw Exception("oh no")
             }
         }
 
 
-        return QuestionGroupDto.from(group, contentsDto)
+        return GroupWithContentsDto.from(group, contentsDto)
     }
 
 
@@ -205,7 +205,7 @@ class QuestionGroupDtoTest {
     }
 
     companion object {
-        fun assertGroupDetails(dto: QuestionGroupDto, group: GroupEntity) {
+        fun assertGroupDetails(dto: GroupWithContentsDto, group: GroupEntity) {
             assertThat(dto.groupId).isEqualTo(group.groupUuid)
             assertThat(dto.groupCode).isEqualTo(group.groupCode)
             assertThat(dto.title).isEqualTo(group.heading)
@@ -214,7 +214,7 @@ class QuestionGroupDtoTest {
         }
 
         fun assertQuestionContentsDetails(content: GroupContentDto, entity: QuestionGroupEntity) {
-            val qc = content as GroupContentQuestionDto
+            val qc = content as GroupQuestionDto
 
             assertThat(qc.displayOrder).isEqualTo(entity.displayOrder)
             assertThat(qc.mandatory).isEqualTo(entity.mandatory)
@@ -231,7 +231,7 @@ class QuestionGroupDtoTest {
         }
 
         fun assertGroupContentsDetails(content: GroupContentDto, entity: QuestionGroupEntity) {
-            val gc = content as QuestionGroupDto
+            val gc = content as GroupWithContentsDto
 
             assertThat(gc.displayOrder).isEqualTo(entity.displayOrder)
             assertThat(gc.mandatory).isEqualTo(entity.mandatory)

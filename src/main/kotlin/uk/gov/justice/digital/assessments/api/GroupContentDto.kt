@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
         include = JsonTypeInfo.As.PROPERTY,
         property = "type")
 @JsonSubTypes(
-    Type(value = GroupContentQuestionDto::class, name = "question"),
-    Type(value = QuestionGroupDto::class, name = "group")
+    Type(value = GroupQuestionDto::class, name = "question"),
+    Type(value = GroupWithContentsDto::class, name = "group")
 )
 interface GroupContentDto

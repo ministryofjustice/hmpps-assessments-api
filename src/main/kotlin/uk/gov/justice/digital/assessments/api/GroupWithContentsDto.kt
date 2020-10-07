@@ -1,13 +1,11 @@
 package uk.gov.justice.digital.assessments.api
 
-import com.fasterxml.jackson.annotation.JsonUnwrapped
 import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.assessments.jpa.entities.GroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionGroupEntity
-import java.time.LocalDateTime
 import java.util.*
 
-data class QuestionGroupDto (
+data class GroupWithContentsDto (
 
     @Schema(description = "Group Identifier", example = "<uuid>")
     val groupId : UUID,
@@ -37,8 +35,8 @@ data class QuestionGroupDto (
     val contents : List<GroupContentDto>
 ): GroupContentDto {
     companion object {
-        fun from(group: GroupEntity, contents: List<GroupContentDto>, parentGroup: QuestionGroupEntity? = null): QuestionGroupDto {
-            return QuestionGroupDto(
+        fun from(group: GroupEntity, contents: List<GroupContentDto>, parentGroup: QuestionGroupEntity? = null): GroupWithContentsDto {
+            return GroupWithContentsDto(
                     groupId = group.groupUuid,
                     groupCode = group.groupCode,
                     title = group.heading,

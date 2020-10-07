@@ -7,8 +7,8 @@ import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.context.jdbc.SqlConfig
 import org.springframework.test.context.jdbc.SqlGroup
 import org.springframework.test.web.reactive.server.expectBody
-import uk.gov.justice.digital.assessments.api.GroupContentQuestionDto
-import uk.gov.justice.digital.assessments.api.QuestionGroupDto
+import uk.gov.justice.digital.assessments.api.GroupQuestionDto
+import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
 import uk.gov.justice.digital.assessments.api.QuestionSchemaDto
 import java.util.*
 
@@ -50,14 +50,14 @@ class QuestionControllerTest : IntegrationTest() {
                 .headers(setAuthorisation())
                 .exchange()
                 .expectStatus().isOk
-                .expectBody<QuestionGroupDto>()
+                .expectBody<GroupWithContentsDto>()
                 .returnResult()
                 .responseBody
 
         assertThat(questionsGroup?.groupId).isEqualTo(UUID.fromString(groupUuid))
 
         val questionRefs = questionsGroup?.contents
-        val questionRef = questionRefs?.get(0) as GroupContentQuestionDto
+        val questionRef = questionRefs?.get(0) as GroupQuestionDto
         assertThat(questionRef.questionId).isEqualTo(UUID.fromString(questionSchemaUuid))
 
         val answerRefs = questionRef.answerSchemas

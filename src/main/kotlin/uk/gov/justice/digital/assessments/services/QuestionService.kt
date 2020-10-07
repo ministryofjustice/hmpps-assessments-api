@@ -1,8 +1,8 @@
 package uk.gov.justice.digital.assessments.services
 
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.assessments.api.GroupContentQuestionDto
-import uk.gov.justice.digital.assessments.api.QuestionGroupDto
+import uk.gov.justice.digital.assessments.api.GroupQuestionDto
+import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
 import uk.gov.justice.digital.assessments.api.QuestionSchemaDto
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionGroupEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.GroupRepository
@@ -20,20 +20,20 @@ class QuestionService(private val questionSchemaRepository: QuestionSchemaReposi
         return QuestionSchemaDto.from(questionSchemaEntity)
     }
 
-    fun getQuestionGroup(groupUuid:UUID): QuestionGroupDto {
+    fun getQuestionGroup(groupUuid:UUID): GroupWithContentsDto {
         println(groupUuid.toString())
 
         return getQuestionGroup(groupUuid, null)
     }
 
-    private fun getQuestionGroup(groupUuid:UUID, parentGroup: QuestionGroupEntity?): QuestionGroupDto {
+    private fun getQuestionGroup(groupUuid:UUID, parentGroup: QuestionGroupEntity?): GroupWithContentsDto {
         val group = groupRepository.findByGroupUuid(groupUuid) ?: throw EntityNotFoundException("Group not found: $groupUuid")
         val groupContents = group.contents
         if (groupContents.isEmpty()) throw EntityNotFoundException("Questions not found for Group: $groupUuid")
 
         val contents = groupContents.map {
             when(it.contentType) {
-                "question" -> GroupContentQuestionDto.from(
+                "question" -> GroupQuestionDto.from(
                         questionSchemaRepository.findByQuestionSchemaUuid(it.contentUuid)!!,
                         it
                 )
@@ -42,6 +42,6 @@ class QuestionService(private val questionSchemaRepository: QuestionSchemaReposi
             }
         }
 
-        return QuestionGroupDto.from(group, contents, parentGroup)
+        return GroupWithContentsDto.from(group, contents, parentGroup)
     }
 }
