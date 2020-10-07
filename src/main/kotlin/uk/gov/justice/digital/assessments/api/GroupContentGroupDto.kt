@@ -31,6 +31,8 @@ data class GroupContentGroupDto(
         val validation : String? = null
 
 ): GroupContentDto {
+    val type = "group"
+
     companion object{
         fun from(groupEntity: GroupEntity, questionGroupEntity: QuestionGroupEntity): GroupContentGroupDto {
             return GroupContentGroupDto(
