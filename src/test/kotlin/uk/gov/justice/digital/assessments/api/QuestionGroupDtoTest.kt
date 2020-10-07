@@ -101,11 +101,7 @@ class QuestionGroupDtoTest {
 
         val dto = QuestionGroupDto.from(entities)
 
-        assertThat(dto.groupId).isEqualTo(groupWithOneQuestion.groupUuid)
-        assertThat(dto.groupCode).isEqualTo(groupWithOneQuestion.groupCode)
-        assertThat(dto.title).isEqualTo(groupWithOneQuestion.heading)
-        assertThat(dto.subheading).isEqualTo(groupWithOneQuestion.subheading)
-        assertThat(dto.helpText).isEqualTo(groupWithOneQuestion.helpText)
+        assertGroupDetails(dto, groupWithOneQuestion)
 
         assertThat(dto.contents.size).isEqualTo(1)
 
@@ -130,11 +126,7 @@ class QuestionGroupDtoTest {
 
         val dto = QuestionGroupDto.from(entities)
 
-        assertThat(dto.groupId).isEqualTo(groupWithTwoQuestions.groupUuid)
-        assertThat(dto.groupCode).isEqualTo(groupWithTwoQuestions.groupCode)
-        assertThat(dto.title).isEqualTo(groupWithTwoQuestions.heading)
-        assertThat(dto.subheading).isEqualTo(groupWithTwoQuestions.subheading)
-        assertThat(dto.helpText).isEqualTo(groupWithTwoQuestions.helpText)
+        assertGroupDetails(dto, groupWithTwoQuestions)
 
         assertThat(dto.contents.size).isEqualTo(2)
 
@@ -159,5 +151,15 @@ class QuestionGroupDtoTest {
         assertThat(secondQuestion.displayOrder).isEqualTo(groupWithTwoQuestionsSecondQuestion.displayOrder)
         assertThat(secondQuestion.mandatory).isEqualTo(groupWithTwoQuestionsSecondQuestion.mandatory)
         assertThat(secondQuestion.validation).isEqualTo(groupWithTwoQuestionsSecondQuestion.validation)
+    }
+
+    companion object {
+        fun assertGroupDetails(dto: QuestionGroupDto, group: GroupEntity) {
+            assertThat(dto.groupId).isEqualTo(group.groupUuid)
+            assertThat(dto.groupCode).isEqualTo(group.groupCode)
+            assertThat(dto.title).isEqualTo(group.heading)
+            assertThat(dto.subheading).isEqualTo(group.subheading)
+            assertThat(dto.helpText).isEqualTo(group.helpText)
+        }
     }
 }
