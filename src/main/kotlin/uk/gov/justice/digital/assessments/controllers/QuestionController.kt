@@ -30,6 +30,6 @@ class QuestionController(val questionService: QuestionService ) {
         ApiResponse(responseCode = "404", description = "Questions not found for Group"),
         ApiResponse(responseCode = "200", description = "OK")])
     fun getQuestionsForGroup(@PathVariable("groupUuid") groupId: UUID): QuestionGroupDto {
-        return questionService.getQuestionGroups(groupId)
+        return questionService.getQuestionGroup(groupId)
     }
 }

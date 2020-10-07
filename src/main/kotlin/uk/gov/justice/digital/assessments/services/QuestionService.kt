@@ -20,13 +20,13 @@ class QuestionService(private val questionSchemaRepository: QuestionSchemaReposi
         return QuestionSchemaDto.from(questionSchemaEntity)
     }
 
-    fun getQuestionGroups(groupUuid:UUID): QuestionGroupDto {
+    fun getQuestionGroup(groupUuid:UUID): QuestionGroupDto {
         println(groupUuid.toString())
 
-        return getQuestionGroups(groupUuid, null)
+        return getQuestionGroup(groupUuid, null)
     }
 
-    private fun getQuestionGroups(groupUuid:UUID, parentGroup: QuestionGroupEntity?): QuestionGroupDto {
+    private fun getQuestionGroup(groupUuid:UUID, parentGroup: QuestionGroupEntity?): QuestionGroupDto {
         val group = groupRepository.findByGroupUuid(groupUuid) ?: throw EntityNotFoundException("Group not found: $groupUuid")
         val groupContents = group.contents
         if (groupContents.isEmpty()) throw EntityNotFoundException("Questions not found for Group: $groupUuid")
@@ -37,7 +37,7 @@ class QuestionService(private val questionSchemaRepository: QuestionSchemaReposi
                         questionSchemaRepository.findByQuestionSchemaUuid(it.contentUuid)!!,
                         it
                 )
-                "group" -> getQuestionGroups(it.contentUuid, it)
+                "group" -> getQuestionGroup(it.contentUuid, it)
                 else -> throw EntityNotFoundException("Bad group content type")
             }
         }
