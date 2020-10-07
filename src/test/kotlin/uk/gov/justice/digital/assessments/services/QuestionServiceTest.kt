@@ -23,8 +23,7 @@ class QuestionServiceTest {
 
     private val questionSchemaRepository: QuestionSchemaRepository = mockk()
     private val groupRepository: GroupRepository = mockk()
-    private val questionGroupRepository: QuestionGroupRepository = mockk()
-    private val questionService = QuestionService(questionSchemaRepository, groupRepository, questionGroupRepository)
+    private val questionService = QuestionService(questionSchemaRepository, groupRepository)
 
     private val questionId = 1L
     private val uuid = UUID.randomUUID()

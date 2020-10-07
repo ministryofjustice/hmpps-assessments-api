@@ -124,7 +124,7 @@ class QuestionGroupDtoTest {
             UUID.randomUUID(),
             groupWithNestedGroup,
             groupWithTwoQuestions.groupUuid,
-            "nested group",
+            "group",
             "2",
             null,
             null,
@@ -144,13 +144,25 @@ class QuestionGroupDtoTest {
             null
     )
 
+    fun makeQuestionGroupDto(group: GroupEntity, vararg contents: QuestionGroupEntity): QuestionGroupDto {
+        val contentsDto: List<GroupContentDto> = contents.map {
+            when(it.contentType) {
+                "question" -> GroupContentQuestionDto.from(it.question!!, it)
+                "group" -> QuestionGroupDto.from(it.nestedGroup!!, emptyList(), it)
+                else -> throw Exception("oh no")
+            }
+        }
+
+
+        return QuestionGroupDto.from(group, contentsDto)
+    }
+
+
     @Test
     fun `dto for group with one question`() {
-        val dto = QuestionGroupDto.from(
+        val dto = makeQuestionGroupDto(
                 groupWithOneQuestion,
-                listOf(
-                    groupWithOneQuestionQuestion
-                )
+                groupWithOneQuestionQuestion,
         )
 
         assertGroupDetails(dto, groupWithOneQuestion)
@@ -160,12 +172,10 @@ class QuestionGroupDtoTest {
 
     @Test
     fun `dto for two question group`() {
-        val dto = QuestionGroupDto.from(
+        val dto = makeQuestionGroupDto(
                 groupWithTwoQuestions,
-                listOf(
-                        groupWithTwoQuestionsFirstQuestion,
-                        groupWithTwoQuestionsSecondQuestion
-                )
+                groupWithTwoQuestionsFirstQuestion,
+                groupWithTwoQuestionsSecondQuestion
         )
 
         assertGroupDetails(dto, groupWithTwoQuestions)
@@ -178,13 +188,11 @@ class QuestionGroupDtoTest {
 
     @Test
     fun `dto for nested group`() {
-        val dto = QuestionGroupDto.from(
+        val dto = makeQuestionGroupDto(
                 groupWithNestedGroup,
-                listOf(
-                        groupWithNestedGroupFirstQuestion,
-                        groupWithNestedGroupGroup,
-                        groupWithNestedGroupSecondQuestion
-                )
+                groupWithNestedGroupFirstQuestion,
+                groupWithNestedGroupGroup,
+                groupWithNestedGroupSecondQuestion
         )
 
         assertGroupDetails(dto, groupWithNestedGroup)

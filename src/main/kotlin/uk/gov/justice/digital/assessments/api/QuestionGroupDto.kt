@@ -37,37 +37,18 @@ data class QuestionGroupDto (
     val contents : List<GroupContentDto>
 ): GroupContentDto {
     companion object {
-        fun from(group: GroupEntity, questionGroupEntities: Collection<QuestionGroupEntity>): QuestionGroupDto {
-            val groupContents =
-                    questionGroupEntities.map {
-                        if (it.question != null)
-                            GroupContentQuestionDto.from(it.question!!, it )
-                        else
-                            QuestionGroupDto.from(it.nestedGroup!!, it)
-                    }
-
+        fun from(group: GroupEntity, contents: List<GroupContentDto>, parentGroup: QuestionGroupEntity? = null): QuestionGroupDto {
             return QuestionGroupDto(
                     groupId = group.groupUuid,
                     groupCode = group.groupCode,
                     title = group.heading,
                     subheading = group.subheading,
                     helpText = group.helpText,
-                    contents = groupContents
+                    displayOrder = parentGroup?.displayOrder,
+                    mandatory = parentGroup?.mandatory,
+                    validation = parentGroup?.validation,
+                    contents = contents
             )
-        }
-
-        fun from(groupEntity: GroupEntity, parent: QuestionGroupEntity): QuestionGroupDto {
-                return QuestionGroupDto(
-                        groupId = groupEntity.groupUuid,
-                        groupCode = groupEntity.groupCode,
-                        title = groupEntity.heading,
-                        subheading = groupEntity.subheading,
-                        helpText = groupEntity.helpText,
-                        displayOrder = parent.displayOrder,
-                        mandatory = parent.mandatory,
-                        validation = parent.validation,
-                        contents = emptyList()
-                )
         }
     }
 }
