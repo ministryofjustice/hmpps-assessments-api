@@ -22,18 +22,19 @@ class QuestionService(private val questionSchemaRepository: QuestionSchemaReposi
 
     fun getQuestionGroups(groupUuid:UUID): QuestionGroupDto {
         println(groupUuid.toString())
-        val questionGroup = questionGroupRepository.findByGroupGroupUuid(groupUuid)
+
+        val group = groupRepository.findByGroupUuid(groupUuid) ?: throw EntityNotFoundException("Group not found: $groupUuid")
+        val groupContents = questionGroupRepository.findByGroupGroupUuid(groupUuid)
                 ?: throw EntityNotFoundException("Group not found: $groupUuid")
-
-        if (questionGroup.isEmpty()) throw EntityNotFoundException("Questions not found for Group: $groupUuid")
-
-        questionGroup.forEach {
+        val gc = group.contents
+        if (gc.isEmpty()) throw EntityNotFoundException("Questions not found for Group: $groupUuid")
+        gc.forEach {
             when(it.contentType) {
                 "question" -> it.question = questionSchemaRepository.findByQuestionSchemaUuid(it.contentUuid)
                 "group" -> it.nestedGroup = groupRepository.findByGroupUuid(it.contentUuid)
             }
         }
 
-        return QuestionGroupDto.from(questionGroup)
+        return QuestionGroupDto.from(group, groupContents)
     }
 }

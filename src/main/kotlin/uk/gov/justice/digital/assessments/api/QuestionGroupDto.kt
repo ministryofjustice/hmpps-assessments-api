@@ -37,7 +37,7 @@ data class QuestionGroupDto (
     val contents : List<GroupContentDto>
 ): GroupContentDto {
     companion object {
-        fun from(questionGroupEntities: Collection<QuestionGroupEntity>): QuestionGroupDto {
+        fun from(group: GroupEntity, questionGroupEntities: Collection<QuestionGroupEntity>): QuestionGroupDto {
             val groupContents =
                     questionGroupEntities.map {
                         if (it.question != null)
@@ -46,7 +46,6 @@ data class QuestionGroupDto (
                             QuestionGroupDto.from(it.nestedGroup!!, it)
                     }
 
-            val group = questionGroupEntities.first().group
             return QuestionGroupDto(
                     groupId = group.groupUuid,
                     groupCode = group.groupCode,

@@ -146,11 +146,12 @@ class QuestionGroupDtoTest {
 
     @Test
     fun `dto for group with one question`() {
-        val entities = listOf(
-                groupWithOneQuestionQuestion
+        val dto = QuestionGroupDto.from(
+                groupWithOneQuestion,
+                listOf(
+                    groupWithOneQuestionQuestion
+                )
         )
-
-        val dto = QuestionGroupDto.from(entities)
 
         assertGroupDetails(dto, groupWithOneQuestion)
 
@@ -159,12 +160,13 @@ class QuestionGroupDtoTest {
 
     @Test
     fun `dto for two question group`() {
-        val entities = listOf(
-                groupWithTwoQuestionsFirstQuestion,
-                groupWithTwoQuestionsSecondQuestion
+        val dto = QuestionGroupDto.from(
+                groupWithTwoQuestions,
+                listOf(
+                        groupWithTwoQuestionsFirstQuestion,
+                        groupWithTwoQuestionsSecondQuestion
+                )
         )
-
-        val dto = QuestionGroupDto.from(entities)
 
         assertGroupDetails(dto, groupWithTwoQuestions)
 
@@ -176,13 +178,14 @@ class QuestionGroupDtoTest {
 
     @Test
     fun `dto for nested group`() {
-        val entities = listOf(
-                groupWithNestedGroupFirstQuestion,
-                groupWithNestedGroupGroup,
-                groupWithNestedGroupSecondQuestion
+        val dto = QuestionGroupDto.from(
+                groupWithNestedGroup,
+                listOf(
+                        groupWithNestedGroupFirstQuestion,
+                        groupWithNestedGroupGroup,
+                        groupWithNestedGroupSecondQuestion
+                )
         )
-
-        val dto = QuestionGroupDto.from(entities)
 
         assertGroupDetails(dto, groupWithNestedGroup)
 

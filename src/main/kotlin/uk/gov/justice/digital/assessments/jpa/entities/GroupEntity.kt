@@ -33,6 +33,8 @@ class GroupEntity(
     val groupStart : LocalDateTime? = null,
 
     @Column(name = "group_end")
-    val groupEnd : LocalDateTime? = null
+    val groupEnd : LocalDateTime? = null,
 
+    @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
+    val contents : Collection<QuestionGroupEntity> = emptyList()
 ) : Serializable
