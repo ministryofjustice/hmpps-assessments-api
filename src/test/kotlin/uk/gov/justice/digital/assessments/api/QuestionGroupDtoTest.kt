@@ -56,7 +56,8 @@ class QuestionGroupDtoTest {
             "1",
             "mandatory",
             "none",
-            question
+            question,
+            null
     )
 
     val groupWithTwoQuestions = GroupEntity(
@@ -79,7 +80,8 @@ class QuestionGroupDtoTest {
             "1",
             "mandatory",
             "none",
-            question
+            question,
+            null
     )
     val groupWithTwoQuestionsSecondQuestion = QuestionGroupEntity(
             1L,
@@ -90,7 +92,56 @@ class QuestionGroupDtoTest {
             "2",
             "no",
             "lots",
-            additionalQuestion
+            additionalQuestion,
+            null
+    )
+
+    val groupWithNestedGroup = GroupEntity(
+            1L,
+            UUID.randomUUID(),
+            "question-group-question",
+            "Complex Group",
+            "subheading",
+            "help!",
+            LocalDateTime.of(2019, 8, 1, 8, 0),
+            null
+    )
+
+    val groupWithNestedGroupFirstQuestion = QuestionGroupEntity(
+            1L,
+            UUID.randomUUID(),
+            groupWithNestedGroup,
+            question.questionSchemaUuid,
+            "question",
+            "1",
+            "mandatory",
+            "none",
+            question,
+            null
+    )
+    val groupWithNestedGroupGroup = QuestionGroupEntity(
+            2L,
+            UUID.randomUUID(),
+            groupWithNestedGroup,
+            groupWithTwoQuestions.groupUuid,
+            "nested group",
+            "2",
+            null,
+            null,
+            null,
+            groupWithTwoQuestions
+    )
+    val groupWithNestedGroupSecondQuestion = QuestionGroupEntity(
+            3L,
+            UUID.randomUUID(),
+            groupWithNestedGroup,
+            additionalQuestion.questionSchemaUuid,
+            "question",
+            "3",
+            "no",
+            "lots",
+            additionalQuestion,
+            null
     )
 
     @Test
@@ -103,7 +154,7 @@ class QuestionGroupDtoTest {
 
         assertGroupDetails(dto, groupWithOneQuestion)
 
-        assertContentsDetails(dto.contents[0], groupWithOneQuestionQuestion)
+        assertQuestionContentsDetails(dto.contents[0], groupWithOneQuestionQuestion)
     }
 
     @Test
@@ -119,8 +170,27 @@ class QuestionGroupDtoTest {
 
         assertThat(dto.contents.size).isEqualTo(2)
 
-        assertContentsDetails(dto.contents[0], groupWithTwoQuestionsFirstQuestion)
-        assertContentsDetails(dto.contents[1], groupWithTwoQuestionsSecondQuestion)
+        assertQuestionContentsDetails(dto.contents[0], groupWithTwoQuestionsFirstQuestion)
+        assertQuestionContentsDetails(dto.contents[1], groupWithTwoQuestionsSecondQuestion)
+    }
+
+    @Test
+    fun `dto for nested group`() {
+        val entities = listOf(
+                groupWithNestedGroupFirstQuestion,
+                groupWithNestedGroupGroup,
+                groupWithNestedGroupSecondQuestion
+        )
+
+        val dto = QuestionGroupDto.from(entities)
+
+        assertGroupDetails(dto, groupWithNestedGroup)
+
+        assertThat(dto.contents.size).isEqualTo(3)
+
+        assertQuestionContentsDetails(dto.contents[0], groupWithNestedGroupFirstQuestion)
+        assertGroupContentsDetails(dto.contents[1], groupWithNestedGroupGroup)
+        assertQuestionContentsDetails(dto.contents[2], groupWithNestedGroupSecondQuestion)
     }
 
     companion object {
@@ -132,19 +202,38 @@ class QuestionGroupDtoTest {
             assertThat(dto.helpText).isEqualTo(group.helpText)
         }
 
-        fun assertContentsDetails(content: GroupContentQuestionDto, entity: QuestionGroupEntity) {
-            assertThat(content.displayOrder).isEqualTo(entity.displayOrder)
-            assertThat(content.mandatory).isEqualTo(entity.mandatory)
-            assertThat(content.validation).isEqualTo(entity.validation)
+        fun assertQuestionContentsDetails(content: GroupContentDto, entity: QuestionGroupEntity) {
+            val qc = content as GroupContentQuestionDto
+
+            assertThat(qc.displayOrder).isEqualTo(entity.displayOrder)
+            assertThat(qc.mandatory).isEqualTo(entity.mandatory)
+            assertThat(qc.validation).isEqualTo(entity.validation)
 
             val question = entity.question
             assertThat(question).isNotNull()
 
-            assertThat(content.questionId).isEqualTo(question?.questionSchemaUuid)
-            assertThat(content.questionCode).isEqualTo(question?.questionCode)
-            assertThat(content.questionText).isEqualTo(question?.questionText)
-            assertThat(content.helpText).isEqualTo(question?.questionHelpText)
-            assertThat(content.answerType).isEqualTo(question?.answerType)
+            assertThat(qc.questionId).isEqualTo(question?.questionSchemaUuid)
+            assertThat(qc.questionCode).isEqualTo(question?.questionCode)
+            assertThat(qc.questionText).isEqualTo(question?.questionText)
+            assertThat(qc.helpText).isEqualTo(question?.questionHelpText)
+            assertThat(qc.answerType).isEqualTo(question?.answerType)
+        }
+
+        fun assertGroupContentsDetails(content: GroupContentDto, entity: QuestionGroupEntity) {
+            val gc = content as GroupContentGroupDto
+
+            assertThat(gc.displayOrder).isEqualTo(entity.displayOrder)
+            assertThat(gc.mandatory).isEqualTo(entity.mandatory)
+            assertThat(gc.validation).isEqualTo(entity.validation)
+
+            val group = entity.nestedGroup
+            assertThat(group).isNotNull()
+
+            assertThat(gc.groupId).isEqualTo(group?.groupUuid)
+            assertThat(gc.groupCode).isEqualTo(group?.groupCode)
+            assertThat(gc.title).isEqualTo(group?.heading)
+            assertThat(gc.subheading).isEqualTo(group?.subheading)
+            assertThat(gc.helpText).isEqualTo(group?.helpText)
         }
     }
 }

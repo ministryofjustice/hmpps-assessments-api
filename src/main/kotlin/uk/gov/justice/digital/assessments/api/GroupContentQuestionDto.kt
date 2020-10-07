@@ -32,9 +32,8 @@ data class GroupContentQuestionDto(
 
         @Schema(description = "Reference Answer Schemas")
         val answerSchemas: List<AnswerSchemaDto>? = null,
-){
+): GroupContentDto {
     companion object{
-
         fun from(questionSchemaEntity: QuestionSchemaEntity, questionGroupEntity: QuestionGroupEntity): GroupContentQuestionDto{
             return GroupContentQuestionDto(
                     questionId = questionSchemaEntity.questionSchemaUuid,

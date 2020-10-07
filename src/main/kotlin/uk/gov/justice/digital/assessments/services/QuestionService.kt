@@ -4,13 +4,15 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.assessments.api.QuestionGroupDto
 import uk.gov.justice.digital.assessments.api.QuestionSchemaDto
 import uk.gov.justice.digital.assessments.jpa.repositories.QuestionGroupRepository
+import uk.gov.justice.digital.assessments.jpa.repositories.GroupRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.QuestionSchemaRepository
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import java.util.*
 
 @Service
 class QuestionService(private val questionSchemaRepository: QuestionSchemaRepository,
-                        private val questionGroupRepository: QuestionGroupRepository) {
+                      private val groupRepository: GroupRepository,
+                      private val questionGroupRepository: QuestionGroupRepository, ) {
 
     fun getQuestionSchema(questionSchemaId: UUID): QuestionSchemaDto {
         val questionSchemaEntity = questionSchemaRepository.findByQuestionSchemaUuid(questionSchemaId)
@@ -28,6 +30,7 @@ class QuestionService(private val questionSchemaRepository: QuestionSchemaReposi
         questionGroup.forEach {
             when(it.contentType) {
                 "question" -> it.question = questionSchemaRepository.findByQuestionSchemaUuid(it.contentUuid)
+                "group" -> it.nestedGroup = groupRepository.findByGroupUuid(it.contentUuid)
             }
         }
 

@@ -7,6 +7,7 @@ import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.context.jdbc.SqlConfig
 import org.springframework.test.context.jdbc.SqlGroup
 import org.springframework.test.web.reactive.server.expectBody
+import uk.gov.justice.digital.assessments.api.GroupContentQuestionDto
 import uk.gov.justice.digital.assessments.api.QuestionGroupDto
 import uk.gov.justice.digital.assessments.api.QuestionSchemaDto
 import java.util.*
@@ -56,9 +57,10 @@ class QuestionControllerTest : IntegrationTest() {
         assertThat(questionsGroup?.groupId).isEqualTo(UUID.fromString(groupUuid))
 
         val questionRefs = questionsGroup?.contents
-        assertThat(questionRefs?.get(0)?.questionId).isEqualTo(UUID.fromString(questionSchemaUuid))
+        val questionRef = questionRefs?.get(0) as GroupContentQuestionDto
+        assertThat(questionRef?.questionId).isEqualTo(UUID.fromString(questionSchemaUuid))
 
-        val answerRefs = questionRefs?.get(0)?.answerSchemas
+        val answerRefs = questionRef?.answerSchemas
         assertThat(answerRefs?.get(0)?.answerSchemaUuid).isEqualTo(UUID.fromString(answerSchemaUuid))
     }
 

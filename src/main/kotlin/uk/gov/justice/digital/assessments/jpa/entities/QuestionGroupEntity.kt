@@ -36,5 +36,8 @@ class QuestionGroupEntity (
     val validation : String? = null,
 
     @Transient
-    var question: QuestionSchemaEntity?
+    var question: QuestionSchemaEntity?,
+
+    @Transient
+    var nestedGroup: GroupEntity?
 ) : Serializable

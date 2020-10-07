@@ -5,7 +5,6 @@ import uk.gov.justice.digital.assessments.jpa.entities.GroupEntity
 import java.util.*
 
 class GroupDto (
-
         @Schema(description = "Group primary key", example = "1234")
         val groupId: Long,
 

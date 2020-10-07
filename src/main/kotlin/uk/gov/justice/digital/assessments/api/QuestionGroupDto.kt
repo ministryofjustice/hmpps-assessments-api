@@ -24,14 +24,17 @@ data class QuestionGroupDto (
     val helpText: String? = null,
 
     @Schema(description = "Questions and Groups")
-    val contents : List<GroupContentQuestionDto>,
+    val contents : List<GroupContentDto>,
 ) {
     companion object {
-
         fun from(questionGroupEntities: Collection<QuestionGroupEntity>): QuestionGroupDto {
-            val questionRefs =
-                    questionGroupEntities.filterNot { it.question == null }
-                            .map { GroupContentQuestionDto.from(it.question!!, it )}
+            val groupContents =
+                    questionGroupEntities.map {
+                        if (it.question != null)
+                            GroupContentQuestionDto.from(it.question!!, it )
+                        else
+                            GroupContentGroupDto.from(it.nestedGroup!!, it)
+                    }
 
             val group = questionGroupEntities.first().group
             return QuestionGroupDto(
@@ -40,7 +43,7 @@ data class QuestionGroupDto (
                     title = group.heading,
                     subheading = group.subheading,
                     helpText = group.helpText,
-                    contents = questionRefs
+                    contents = groupContents
             )
         }
     }
