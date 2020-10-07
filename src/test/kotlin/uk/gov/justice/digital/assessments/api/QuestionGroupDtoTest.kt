@@ -103,18 +103,7 @@ class QuestionGroupDtoTest {
 
         assertGroupDetails(dto, groupWithOneQuestion)
 
-        assertThat(dto.contents.size).isEqualTo(1)
-
-        val contentQuestion = dto.contents[0]
-        assertThat(contentQuestion.questionId).isEqualTo(question.questionSchemaUuid)
-        assertThat(contentQuestion.questionCode).isEqualTo(question.questionCode)
-        assertThat(contentQuestion.questionText).isEqualTo(question.questionText)
-        assertThat(contentQuestion.helpText).isEqualTo(question.questionHelpText)
-        assertThat(contentQuestion.answerType).isEqualTo(question.answerType)
-
-        assertThat(contentQuestion.displayOrder).isEqualTo(groupWithOneQuestionQuestion.displayOrder)
-        assertThat(contentQuestion.mandatory).isEqualTo(groupWithOneQuestionQuestion.mandatory)
-        assertThat(contentQuestion.validation).isEqualTo(groupWithOneQuestionQuestion.validation)
+        assertContentsDetails(dto.contents[0], groupWithOneQuestionQuestion)
     }
 
     @Test
@@ -130,27 +119,8 @@ class QuestionGroupDtoTest {
 
         assertThat(dto.contents.size).isEqualTo(2)
 
-        val firstQuestion = dto.contents[0]
-        assertThat(firstQuestion.questionId).isEqualTo(question.questionSchemaUuid)
-        assertThat(firstQuestion.questionCode).isEqualTo(question.questionCode)
-        assertThat(firstQuestion.questionText).isEqualTo(question.questionText)
-        assertThat(firstQuestion.helpText).isEqualTo(question.questionHelpText)
-        assertThat(firstQuestion.answerType).isEqualTo(question.answerType)
-
-        assertThat(firstQuestion.displayOrder).isEqualTo(groupWithTwoQuestionsFirstQuestion.displayOrder)
-        assertThat(firstQuestion.mandatory).isEqualTo(groupWithTwoQuestionsFirstQuestion.mandatory)
-        assertThat(firstQuestion.validation).isEqualTo(groupWithTwoQuestionsFirstQuestion.validation)
-
-        val secondQuestion = dto.contents[1]
-        assertThat(secondQuestion.questionId).isEqualTo(additionalQuestion.questionSchemaUuid)
-        assertThat(secondQuestion.questionCode).isEqualTo(additionalQuestion.questionCode)
-        assertThat(secondQuestion.questionText).isEqualTo(additionalQuestion.questionText)
-        assertThat(secondQuestion.helpText).isEqualTo(additionalQuestion.questionHelpText)
-        assertThat(secondQuestion.answerType).isEqualTo(additionalQuestion.answerType)
-
-        assertThat(secondQuestion.displayOrder).isEqualTo(groupWithTwoQuestionsSecondQuestion.displayOrder)
-        assertThat(secondQuestion.mandatory).isEqualTo(groupWithTwoQuestionsSecondQuestion.mandatory)
-        assertThat(secondQuestion.validation).isEqualTo(groupWithTwoQuestionsSecondQuestion.validation)
+        assertContentsDetails(dto.contents[0], groupWithTwoQuestionsFirstQuestion)
+        assertContentsDetails(dto.contents[1], groupWithTwoQuestionsSecondQuestion)
     }
 
     companion object {
@@ -160,6 +130,21 @@ class QuestionGroupDtoTest {
             assertThat(dto.title).isEqualTo(group.heading)
             assertThat(dto.subheading).isEqualTo(group.subheading)
             assertThat(dto.helpText).isEqualTo(group.helpText)
+        }
+
+        fun assertContentsDetails(content: GroupContentQuestionDto, entity: QuestionGroupEntity) {
+            assertThat(content.displayOrder).isEqualTo(entity.displayOrder)
+            assertThat(content.mandatory).isEqualTo(entity.mandatory)
+            assertThat(content.validation).isEqualTo(entity.validation)
+
+            val question = entity.question
+            assertThat(question).isNotNull()
+
+            assertThat(content.questionId).isEqualTo(question?.questionSchemaUuid)
+            assertThat(content.questionCode).isEqualTo(question?.questionCode)
+            assertThat(content.questionText).isEqualTo(question?.questionText)
+            assertThat(content.helpText).isEqualTo(question?.questionHelpText)
+            assertThat(content.answerType).isEqualTo(question?.answerType)
         }
     }
 }
