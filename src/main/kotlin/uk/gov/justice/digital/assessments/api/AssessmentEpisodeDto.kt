@@ -26,8 +26,7 @@ class AssessmentEpisodeDto(
         val ended: LocalDateTime? = null,
 
         @Schema(description = "Answers associated with this episode")
-        val answers: Set<Any> = mutableSetOf()
-
+        val answers: Map<UUID, AnswerDto> = emptyMap()
 ) {
     companion object {
 
@@ -44,7 +43,7 @@ class AssessmentEpisodeDto(
                     episode.changeReason,
                     episode.createdDate,
                     episode.endDate,
-                    emptySet()
+                    AnswerDto.from(episode.answers) ?: emptyMap()
             )
         }
     }

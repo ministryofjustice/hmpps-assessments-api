@@ -27,7 +27,7 @@ class AssessmentEntity(
         val completedDate: LocalDateTime? = null,
 
         @OneToMany(mappedBy = "assessment", cascade = [CascadeType.ALL])
-        val episodes: MutableCollection<AssessmentEpisodeEntity> = mutableListOf()
+        val episodes: MutableList<AssessmentEpisodeEntity> = mutableListOf()
 
 ):Serializable {
 
