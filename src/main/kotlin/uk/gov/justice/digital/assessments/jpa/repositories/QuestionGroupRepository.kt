@@ -12,7 +12,9 @@ interface QuestionGroupRepository: JpaRepository<QuestionGroupEntity, String> {
 
     fun findByGroupGroupUuid(groupId: UUID): Collection<QuestionGroupEntity>?
 
-    @Query(value = "select (g.heading\\:\\:varchar) as heading " +
+    @Query(value = "select (g.heading\\:\\:varchar) as heading, " +
+                   "-1 as groupCount, " +
+                   "0 as questionCount " +
                    "from grouping g ",
            nativeQuery = true)
     fun listGroups(): Collection<GroupSummaryEntity>

@@ -31,12 +31,11 @@ class QuestionGroupRepositoryTest(@Autowired val questionGroupRepository: Questi
     @Test
     fun `list group summaries`() {
         val groupSummaries = questionGroupRepository.listGroups()
+        assertThat(groupSummaries).hasSize(1)
 
-        // assertThat(groupSummaries).hasSize(1)
-
-        val groupInfo = groupSummaries!!.first()
+        val groupInfo = groupSummaries.first()
         assertThat(groupInfo.heading).isEqualTo("Heading 1")
-        //assertThat(groupInfo.groupCount).isEqualTo(0)
-        //assertThat(groupInfo.questionCount).isEqualTo(1)
+        assertThat(groupInfo.groupCount).isEqualTo(0)
+        assertThat(groupInfo.questionCount).isEqualTo(1)
     }
 }
