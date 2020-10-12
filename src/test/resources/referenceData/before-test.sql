@@ -1,4 +1,11 @@
 -- noinspection SqlResolveForFile
+DELETE FROM answer_schema WHERE true;
+
+DELETE FROM question_group WHERE true;
+
+DELETE FROM QUESTION_SCHEMA WHERE true;
+DELETE FROM grouping WHERE true;
+
 
 INSERT INTO question_schema (question_schema_id, question_schema_uuid, question_code, oasys_question_code, question_start, question_end, answer_type, question_text, question_help_text)
 VALUES (0, 'fd412ca8-d361-47ab-a189-7acb8ae0675b', 'RSR_01', 'RSR_01', '2019-11-14 08:11:53.177108', null, 'radio', 'Question text', 'Help text');
