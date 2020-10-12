@@ -47,7 +47,6 @@ class QuestionServiceTest {
         verify(exactly = 1) { questionSchemaRepository.findByQuestionSchemaUuid(uuid) }
     }
 
-
 //    @Test
 //    fun `should return Questions for group`() {
 //        val groupId = UUID.randomUUID()
@@ -58,13 +57,5 @@ class QuestionServiceTest {
 //
 //        verify(exactly = 1) { questionSchemaRepository.findByQuestionSchemaId(questionSchemaId) }
 //        assertThat(questionSchemaDto).isEqualTo(QuestionSchemaDto(questionSchemaId))
-//    }
-
-//    @Test
-//    fun `should throw exception when Question Schema does not exist with ID`() {
-//        every { questionSchemaRepository.findByQuestionSchemaId(questionSchemaId) } returns null
-//
-//        assertThrows<EntityNotFoundException> { questionService.getQuestionSchema(questionSchemaId) }
-//        verify(exactly = 1) { questionSchemaRepository.findByQuestionSchemaId(questionSchemaId) }
 //    }
 }
