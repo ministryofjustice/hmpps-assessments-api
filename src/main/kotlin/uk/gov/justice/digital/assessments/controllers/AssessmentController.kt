@@ -5,10 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import org.springframework.web.bind.annotation.*
-import uk.gov.justice.digital.assessments.api.AssessmentDto
-import uk.gov.justice.digital.assessments.api.AssessmentEpisodeDto
-import uk.gov.justice.digital.assessments.api.CreateAssessmentDto
-import uk.gov.justice.digital.assessments.api.CreateAssessmentEpisodeDto
+import uk.gov.justice.digital.assessments.api.*
 import uk.gov.justice.digital.assessments.services.AssessmentService
 import java.util.*
 
@@ -54,5 +51,17 @@ class AssessmentController(val assessmentService : AssessmentService) {
     ])
     fun getCurrentEpisodeForAssessment( @Parameter(description = "Assessment ID", required = true, example = "1234") @PathVariable assessmentUuid: UUID): AssessmentEpisodeDto {
         return assessmentService.getCurrentAssessmentEpisode(assessmentUuid)
+    }
+
+    @RequestMapping(path = ["/assessments/{assessmentUuid}/episodes/{episodeUuid}"], method = [RequestMethod.POST])
+    @Operation(description = "updates the answers for an episode")
+    @ApiResponses(value = [
+        ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
+        ApiResponse(responseCode = "200", description = "OK")
+    ])
+    fun updateAssessmentEpisode(@Parameter(description = "Assessment UUID", required = true, example = "1234") @PathVariable assessmentUuid: UUID,
+                                @Parameter(description = "Episode UUID", required = true) @PathVariable episodeUuid : UUID,
+                                @Parameter(description = "Episode Answers", required = true) @RequestBody episodeAnswers : UpdateAssessmentEpisodeDto): AssessmentEpisodeDto? {
+        return assessmentService.updateEpisode(assessmentUuid, episodeUuid, episodeAnswers)
     }
 }

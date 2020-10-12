@@ -1,12 +1,21 @@
 package uk.gov.justice.digital.assessments.jpa.entities
 
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType
+import com.vladmihalcea.hibernate.type.json.JsonStringType
+import org.hibernate.annotations.Type
+import org.hibernate.annotations.TypeDef
+import org.hibernate.annotations.TypeDefs
 import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.*
 
 @Entity
 @Table(name = "ASSESSED_EPISODE")
-class AssessmentEpisodeEntity (
+@TypeDefs(
+        TypeDef(name = "json", typeClass = JsonStringType::class),
+        TypeDef(name = "jsonb", typeClass = JsonBinaryType::class)
+)
+class AssessmentEpisodeEntity(
 
         @Id
         @Column(name = "EPISODE_ID")
@@ -30,6 +39,15 @@ class AssessmentEpisodeEntity (
         val endDate: LocalDateTime? = null,
 
         @Column(name = "CHANGE_REASON")
-        val changeReason: String? = null
+        val changeReason: String? = null,
 
-)
+        @Type(type = "json")
+        @Column(columnDefinition = "jsonb", name = "ANSWERS")
+        var answers: MutableMap<UUID, AnswerEntity>? = mutableMapOf()
+
+) {
+        fun isClosed(): Boolean {
+                return endDate != null
+        }
+}
+

@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.assessments.controllers.advice
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageConversionException
@@ -7,11 +9,10 @@ import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
+import org.springframework.web.bind.annotation.ResponseStatus
 import uk.gov.justice.digital.assessments.api.ErrorResponse
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-import org.springframework.web.bind.annotation.ResponseStatus
+import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
 
 
 @ControllerAdvice
@@ -26,6 +27,13 @@ class ControllerAdvice {
     fun handle(e: EntityNotFoundException): ResponseEntity<ErrorResponse?> {
         log.info("EntityNotFoundException: {}", e.message)
         return ResponseEntity(ErrorResponse(status= 404, developerMessage = e.message), HttpStatus.NOT_FOUND)
+    }
+
+    @ExceptionHandler(UpdateClosedEpisodeException::class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    fun handle(e: UpdateClosedEpisodeException): ResponseEntity<ErrorResponse?> {
+        log.info("UpdateClosedEpisodeException: {}", e.message)
+        return ResponseEntity(ErrorResponse(status= 400, developerMessage = e.message), HttpStatus.BAD_REQUEST)
     }
 
     @ExceptionHandler(MethodArgumentNotValidException::class)

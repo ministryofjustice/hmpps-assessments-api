@@ -19,5 +19,19 @@ services:
       - POSTGRES_PASSWORD=dev
     ports:
       - "5432:5432"
+
+  postgres:
+    image: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    networks:
+      - hmpps
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: dev
+    tmpfs:
+      - /var/lib/postgresql
+
 networks:
   hmpps:

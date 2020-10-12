@@ -7,10 +7,7 @@ import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.context.jdbc.SqlConfig
 import org.springframework.test.context.jdbc.SqlGroup
 import org.springframework.test.web.reactive.server.expectBody
-import uk.gov.justice.digital.assessments.api.AssessmentDto
-import uk.gov.justice.digital.assessments.api.AssessmentEpisodeDto
-import uk.gov.justice.digital.assessments.api.CreateAssessmentDto
-import uk.gov.justice.digital.assessments.api.CreateAssessmentEpisodeDto
+import uk.gov.justice.digital.assessments.api.*
 import java.time.LocalDateTime
 import java.util.*
 
@@ -113,6 +110,42 @@ class AssessmentControllerTest : IntegrationTest() {
                 .headers(setAuthorisation())
                 .exchange()
                 .expectStatus().isNotFound
+    }
+
+    @Test
+    fun `updates episode answers`() {
+        val newQuestionUUID = UUID.randomUUID()
+        val newAnswerUUID = UUID.randomUUID()
+        val updateEpisodeDto = UpdateAssessmentEpisodeDto(mapOf(newQuestionUUID to AnswerDto(freeTextAnswer = "new free text", answers = mapOf(newAnswerUUID to "answer 2"))))
+        val episode = webTestClient.post().uri("/assessments/2e020e78-a81c-407f-bc78-e5f284e237e5/episodes/f3569440-efd5-4289-8fdd-4560360e5259")
+                .bodyValue(updateEpisodeDto)
+                .headers(setAuthorisation())
+                .exchange()
+                .expectStatus().isOk
+                .expectBody<AssessmentEpisodeDto>()
+                .returnResult()
+                .responseBody
+
+        assertThat(episode?.answers).containsKey(newQuestionUUID)
+
+        val answer = episode?.answers?.get(newQuestionUUID)
+        assertThat(answer?.answers).hasSize(1)
+        assertThat(answer?.answers).containsKey(newAnswerUUID)
+    }
+
+    @Test
+    fun `does not update episode answers if episode is closed`() {
+        val newQuestionUUID = UUID.randomUUID()
+        val newAnswerUUID = UUID.randomUUID()
+        val updateEpisodeDto = UpdateAssessmentEpisodeDto(mapOf(newQuestionUUID to AnswerDto(freeTextAnswer = "new free text", answers = mapOf(newAnswerUUID to "answer 2"))))
+        webTestClient.post().uri("/assessments/2e020e78-a81c-407f-bc78-e5f284e237e5/episodes/d7aafe55-0cff-4f20-a57a-b66d79eb9c91")
+                .bodyValue(updateEpisodeDto)
+                .headers(setAuthorisation())
+                .exchange()
+                .expectStatus().isBadRequest
+                .expectBody<ErrorResponse>()
+                .returnResult()
+                .responseBody
     }
 
     private fun createAssessment(supervisionId: String): AssessmentDto {
