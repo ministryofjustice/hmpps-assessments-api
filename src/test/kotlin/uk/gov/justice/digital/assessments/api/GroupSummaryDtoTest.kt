@@ -21,12 +21,10 @@ class GroupSummaryDtoTest {
 
         val dto = GroupSummaryDto.from(summary)
 
-        /*
-        assertThat(dto.groupUuid).isEqualTo(groupUuid)
-        assertThat(dto.heading).isEqualTo(summary.heading)
+        assertThat(dto.groupId).isEqualTo(groupUuid)
+        assertThat(dto.title).isEqualTo(summary.heading)
         assertThat(dto.contentCount).isEqualTo(summary.contentCount)
         assertThat(dto.groupCount).isEqualTo(summary.groupCount)
         assertThat(dto.questionCount).isEqualTo(summary.questionCount)
-        */
     }
 }
