@@ -24,7 +24,7 @@ class AssessmentEntity(
         val createdDate: LocalDateTime? = null,
 
         @Column(name = "COMPLETED_DATE")
-        val completedDate: LocalDateTime? = null,
+        var completedDate: LocalDateTime? = null,
 
         @OneToMany(mappedBy = "assessment", cascade = [CascadeType.ALL])
         val episodes: MutableList<AssessmentEpisodeEntity> = mutableListOf()
@@ -32,7 +32,7 @@ class AssessmentEntity(
 ):Serializable {
 
     fun getCurrentEpisode(): AssessmentEpisodeEntity? {
-        return episodes.firstOrNull { it.endDate == null }
+        return episodes.firstOrNull { !it.isClosed() }
     }
 
     fun newEpisode(changeReason: String, user: String? = "anonymous"): AssessmentEpisodeEntity {

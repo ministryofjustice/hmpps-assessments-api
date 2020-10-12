@@ -43,6 +43,11 @@ class AssessmentEpisodeEntity(
 
         @Type(type = "json")
         @Column(columnDefinition = "jsonb", name = "ANSWERS")
-        var answers: MutableMap<UUID, AnswerEntity> = mutableMapOf()
+        var answers: MutableMap<UUID, AnswerEntity>? = mutableMapOf()
 
-)
+) {
+        fun isClosed(): Boolean {
+                return endDate != null
+        }
+}
+
