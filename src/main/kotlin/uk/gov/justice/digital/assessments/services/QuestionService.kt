@@ -2,16 +2,19 @@ package uk.gov.justice.digital.assessments.services
 
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.assessments.api.GroupQuestionDto
+import uk.gov.justice.digital.assessments.api.GroupSummaryDto
 import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
 import uk.gov.justice.digital.assessments.api.QuestionSchemaDto
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionGroupEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.GroupRepository
+import uk.gov.justice.digital.assessments.jpa.repositories.QuestionGroupRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.QuestionSchemaRepository
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import java.util.*
 
 @Service
 class QuestionService(private val questionSchemaRepository: QuestionSchemaRepository,
+                      private val questionGroupRepository: QuestionGroupRepository,
                       private val groupRepository: GroupRepository) {
 
     fun getQuestionSchema(questionSchemaId: UUID): QuestionSchemaDto {
@@ -21,9 +24,11 @@ class QuestionService(private val questionSchemaRepository: QuestionSchemaReposi
     }
 
     fun getQuestionGroup(groupUuid:UUID): GroupWithContentsDto {
-        println(groupUuid.toString())
-
         return getQuestionGroup(groupUuid, null)
+    }
+
+    fun listGroups(): Collection<GroupSummaryDto> {
+        return questionGroupRepository.listGroups().map { GroupSummaryDto.from(it) }
     }
 
     private fun getQuestionGroup(groupUuid:UUID, parentGroup: QuestionGroupEntity?): GroupWithContentsDto {
