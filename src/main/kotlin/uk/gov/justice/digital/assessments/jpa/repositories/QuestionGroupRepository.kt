@@ -12,7 +12,8 @@ interface QuestionGroupRepository: JpaRepository<QuestionGroupEntity, String> {
 
     fun findByGroupGroupUuid(groupId: UUID): Collection<QuestionGroupEntity>?
 
-    @Query(value = "select (g.heading\\:\\:varchar) as heading, " +
+    @Query(value = "select g.group_uuid as groupUuid, " +
+                   "(g.heading\\:\\:varchar) as heading, " +
                    "count(qg.content_uuid) as contentCount, " +
                    "count(case when qg.content_type = 'grouping' then qg.content_uuid end) as groupCount, " +
                    "count(case when qg.content_type = 'question' then qg.content_uuid end) as questionCount, " +
