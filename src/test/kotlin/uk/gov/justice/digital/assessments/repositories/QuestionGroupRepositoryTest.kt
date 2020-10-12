@@ -34,7 +34,7 @@ class QuestionGroupRepositoryTest(@Autowired val questionGroupRepository: Questi
 
         val groupInfo = groupSummaries.first()
 
-        assertThat(groupInfo.groupUuid).isEqualTo(groupUuid)
+        assertThat(groupInfo.groupUuid).isEqualTo(groupUuid.toString())
         assertThat(groupInfo.heading).isEqualTo("Heading 1")
         assertThat(groupInfo.contentCount).isEqualTo(1)
         assertThat(groupInfo.groupCount).isEqualTo(0)
