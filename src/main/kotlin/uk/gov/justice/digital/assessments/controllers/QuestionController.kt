@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RestController
+import uk.gov.justice.digital.assessments.api.GroupSummaryDto
 import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
 import uk.gov.justice.digital.assessments.api.QuestionSchemaDto
 import uk.gov.justice.digital.assessments.services.QuestionService
@@ -22,6 +23,14 @@ class QuestionController(val questionService: QuestionService ) {
         ApiResponse(responseCode = "200", description = "OK")])
     fun getQuestionSchema(@PathVariable("questionSchemaId") questionSchemaUUId: UUID): QuestionSchemaDto {
         return questionService.getQuestionSchema(questionSchemaUUId)
+    }
+
+    @RequestMapping(path = ["/questions/list"], method = [RequestMethod.GET])
+    @Operation(description = "Lists available question groups")
+    @ApiResponses(value = [
+        ApiResponse(responseCode = "200", description = "OK")])
+    fun listQuestionGroups(): Collection<GroupSummaryDto> {
+        return questionService.listGroups()
     }
 
     @RequestMapping(path = ["/questions/{groupUuid}"], method = [RequestMethod.GET])

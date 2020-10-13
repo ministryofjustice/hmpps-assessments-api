@@ -86,13 +86,12 @@ class QuestionControllerTest : IntegrationTest() {
 
         assertThat(groupSummaries).hasSize(1)
 
-        val groupInfo = groupSummaries.first()
+        val groupInfo = groupSummaries?.first()
 
-        assertThat(groupInfo.groupId).isEqualTo(groupUuid.toString())
-        assertThat(groupInfo.title).isEqualTo("Heading 1")
-        assertThat(groupInfo.contentCount).isEqualTo(1)
-        assertThat(groupInfo.groupCount).isEqualTo(0)
-        assertThat(groupInfo.questionCount).isEqualTo(1)
-
+        assertThat(groupInfo?.groupId).isEqualTo(UUID.fromString(groupUuid))
+        assertThat(groupInfo?.title).isEqualTo("Heading 1")
+        assertThat(groupInfo?.contentCount).isEqualTo(1)
+        assertThat(groupInfo?.groupCount).isEqualTo(0)
+        assertThat(groupInfo?.questionCount).isEqualTo(1)
     }
 }
