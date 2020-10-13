@@ -8,6 +8,7 @@ import org.springframework.test.context.jdbc.SqlConfig
 import org.springframework.test.context.jdbc.SqlGroup
 import org.springframework.test.web.reactive.server.expectBody
 import uk.gov.justice.digital.assessments.api.GroupQuestionDto
+import uk.gov.justice.digital.assessments.api.GroupSummaryDto
 import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
 import uk.gov.justice.digital.assessments.api.QuestionSchemaDto
 import java.util.*
@@ -71,5 +72,26 @@ class QuestionControllerTest : IntegrationTest() {
                 .headers(setAuthorisation())
                 .exchange()
                 .expectStatus().isNotFound
+    }
+
+    @Test
+    fun `list groups`() {
+        val groupSummaries = webTestClient.get().uri("/questions/list")
+                .headers(setAuthorisation())
+                .exchange()
+                .expectStatus().isOk
+                .expectBody<List<GroupSummaryDto>>()
+                .returnResult()
+                .responseBody
+
+        assertThat(groupSummaries).hasSize(1)
+
+        val groupInfo = groupSummaries?.first()
+
+        assertThat(groupInfo?.groupId).isEqualTo(UUID.fromString(groupUuid))
+        assertThat(groupInfo?.title).isEqualTo("Heading 1")
+        assertThat(groupInfo?.contentCount).isEqualTo(1)
+        assertThat(groupInfo?.groupCount).isEqualTo(0)
+        assertThat(groupInfo?.questionCount).isEqualTo(1)
     }
 }

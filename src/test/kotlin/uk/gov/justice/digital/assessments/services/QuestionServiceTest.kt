@@ -5,11 +5,16 @@ import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
+import uk.gov.justice.digital.assessments.api.GroupQuestionDto
 import uk.gov.justice.digital.assessments.api.QuestionSchemaDto
+import uk.gov.justice.digital.assessments.jpa.entities.GroupEntity
+import uk.gov.justice.digital.assessments.jpa.entities.GroupSummaryEntity
+import uk.gov.justice.digital.assessments.jpa.entities.QuestionGroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.GroupRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.QuestionGroupRepository
@@ -22,49 +27,101 @@ import java.util.*
 class QuestionServiceTest {
 
     private val questionSchemaRepository: QuestionSchemaRepository = mockk()
+    private val questionGroupRepository: QuestionGroupRepository = mockk()
     private val groupRepository: GroupRepository = mockk()
-    private val questionService = QuestionService(questionSchemaRepository, groupRepository)
+    private val questionService = QuestionService(
+            questionSchemaRepository,
+            questionGroupRepository,
+            groupRepository
+    )
 
     private val questionId = 1L
-    private val uuid = UUID.randomUUID()
+    private val questionUuid = UUID.randomUUID()
 
-    @Test
-    fun `should return Question Schema by ID`() {
-        every { questionSchemaRepository.findByQuestionSchemaUuid(uuid) } returns QuestionSchemaEntity(
-                questionSchemaId = questionId, questionSchemaUuid = uuid, answerSchemaEntities = emptyList())
+    private val groupUuid = UUID.randomUUID()
+    private val contents = mutableListOf<QuestionGroupEntity>()
+    private val group = GroupEntity(
+            groupId = 1,
+            groupUuid = groupUuid,
+            groupCode = "Test Group",
+            contents = contents
+    )
+    private val question = QuestionSchemaEntity(
+            questionSchemaId = questionId,
+            questionSchemaUuid = questionUuid,
+            answerSchemaEntities = emptyList()
+    )
 
-        val questionSchemaDto = questionService.getQuestionSchema(uuid)
-
-        verify(exactly = 1) { questionSchemaRepository.findByQuestionSchemaUuid(uuid) }
-        assertThat(questionSchemaDto).isEqualTo(QuestionSchemaDto(questionSchemaId = questionId, questionSchemaUuid = uuid, answerSchemas = emptyList()))
+    @BeforeEach
+    fun `setup`() {
+        val questionGroup = QuestionGroupEntity(
+                questionGroupId = 99,
+                group = group,
+                contentUuid = questionUuid,
+                contentType = "question",
+                displayOrder = "1",
+                question = question,
+                nestedGroup = null
+        )
+        contents.add(questionGroup)
     }
 
     @Test
-    fun `should throw exception when Question Schema does not exist with ID`() {
-        every { questionSchemaRepository.findByQuestionSchemaUuid(uuid) } returns null
+    fun `get Question Schema by ID`() {
+        every { questionSchemaRepository.findByQuestionSchemaUuid(questionUuid) } returns QuestionSchemaEntity(
+                questionSchemaId = questionId, questionSchemaUuid = questionUuid, answerSchemaEntities = emptyList())
 
-        assertThrows<EntityNotFoundException> { questionService.getQuestionSchema(uuid) }
-        verify(exactly = 1) { questionSchemaRepository.findByQuestionSchemaUuid(uuid) }
+        val questionSchemaDto = questionService.getQuestionSchema(questionUuid)
+
+        verify(exactly = 1) { questionSchemaRepository.findByQuestionSchemaUuid(questionUuid) }
+        assertThat(questionSchemaDto).isEqualTo(QuestionSchemaDto(questionSchemaId = questionId, questionSchemaUuid = questionUuid, answerSchemas = emptyList()))
     }
 
+    @Test
+    fun `throw exception when Question Schema for ID`() {
+        every { questionSchemaRepository.findByQuestionSchemaUuid(questionUuid) } returns null
 
-//    @Test
-//    fun `should return Questions for group`() {
-//        val groupId = UUID.randomUUID()
-//        val validQuestionGroup = QuestionGroupEntity(questionGroupId = UUID.randomUUID(), questionSchema = QuestionSchemaEntity(UUID.randomUUID()), )
-//        every { questionGroupRepository.findByGroup_GroupId(groupId) } returns )
-//
-//        val questionSchemaDto = questionService.getQuestionSchema(questionSchemaId)
-//
-//        verify(exactly = 1) { questionSchemaRepository.findByQuestionSchemaId(questionSchemaId) }
-//        assertThat(questionSchemaDto).isEqualTo(QuestionSchemaDto(questionSchemaId))
-//    }
+        assertThrows<EntityNotFoundException> { questionService.getQuestionSchema(questionUuid) }
+        verify(exactly = 1) { questionSchemaRepository.findByQuestionSchemaUuid(questionUuid) }
+    }
 
-//    @Test
-//    fun `should throw exception when Question Schema does not exist with ID`() {
-//        every { questionSchemaRepository.findByQuestionSchemaId(questionSchemaId) } returns null
-//
-//        assertThrows<EntityNotFoundException> { questionService.getQuestionSchema(questionSchemaId) }
-//        verify(exactly = 1) { questionSchemaRepository.findByQuestionSchemaId(questionSchemaId) }
-//    }
+    @Test
+    fun `get group contents`() {
+        every { questionSchemaRepository.findByQuestionSchemaUuid(questionUuid) } returns question
+        every { groupRepository.findByGroupUuid(groupUuid) } returns group
+
+        val groupQuestions = questionService.getQuestionGroup(groupUuid)
+
+        assertThat(groupQuestions?.groupId).isEqualTo(groupUuid)
+
+        val groupContents = groupQuestions?.contents
+        assertThat(groupContents).hasSize(1)
+        val questionRef = groupContents?.get(0) as GroupQuestionDto
+        assertThat(questionRef.questionId).isEqualTo(questionUuid)
+    }
+
+    @Test
+    fun `get group summary`() {
+        val groupUuidStr = groupUuid.toString()
+        every { questionGroupRepository.listGroups() } returns listOf(
+                object: GroupSummaryEntity {
+                    override val groupUuid = groupUuidStr
+                    override val heading = "Heading"
+                    override val contentCount = 5L
+                    override val groupCount = 2L
+                    override val questionCount = 3L
+                }
+        )
+
+        val summaries = questionService.listGroups()
+
+        assertThat(summaries).hasSize(1)
+
+        val summary = summaries.first()
+        assertThat(summary.groupId).isEqualTo(groupUuid)
+        assertThat(summary.title).isEqualTo("Heading")
+        assertThat(summary.contentCount).isEqualTo(5L)
+        assertThat(summary.groupCount).isEqualTo(2L)
+        assertThat(summary.questionCount).isEqualTo(3L)
+    }
 }
