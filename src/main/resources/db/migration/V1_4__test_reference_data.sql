@@ -42,7 +42,7 @@ VALUES  (201, '11111111-1111-1111-1111-111111111201', 'surname', 'OL3 CI1', '201
 (208, '11111111-1111-1111-1111-111111111208', 'religion', 'OL3 CI8', '2019-11-14 08:11:53.177108', null, 'freetext', null, 'Religion', null),
 
 -- Layer 3 Accommodation
-(231, '11111111-1111-1111-1111-111111111231', 'no_fixed_abode', 'OL3 3.3', '2019-11-14 08:11:53.177108', null, 'freetext', '44444444-4444-4444-5555-444444444444', 'Currently of no fixed abode or in transient accomodation', null);
+(231, '11111111-1111-1111-1111-111111111231', 'no_fixed_abode', 'OL3 3.3', '2019-11-14 08:11:53.177108', null, 'radio', '44444444-4444-4444-5555-444444444444', 'Currently of no fixed abode or in transient accomodation', null);
 
 INSERT INTO grouping (group_id, group_uuid, group_code, heading, subheading, help_text, group_start, group_end)
 VALUES  (201, '22222222-2222-2222-2222-222222222201', 'oasys', 'Layer 3', null, null, '2019-11-14 08:11:53.177108', null),
