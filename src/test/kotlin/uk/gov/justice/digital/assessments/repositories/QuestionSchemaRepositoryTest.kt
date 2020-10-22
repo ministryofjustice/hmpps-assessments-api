@@ -20,7 +20,8 @@ class QuestionSchemaRepositoryTest(@Autowired val questionSchemaRepository: Ques
         val questionSchemaUuid = UUID.fromString("fd412ca8-d361-47ab-a189-7acb8ae0675b")
         val questionSchemaEntity = questionSchemaRepository.findByQuestionSchemaUuid(questionSchemaUuid)
         assertThat(questionSchemaEntity?.questionSchemaUuid).isEqualTo(questionSchemaUuid)
-        assertThat(questionSchemaEntity?.answerSchemaEntities?.size).isEqualTo(1)
+        assertThat(questionSchemaEntity?.answerSchemaGroup).isNotNull
+        assertThat(questionSchemaEntity?.answerSchemaEntities?.size).isEqualTo(2)
 
     }
 }

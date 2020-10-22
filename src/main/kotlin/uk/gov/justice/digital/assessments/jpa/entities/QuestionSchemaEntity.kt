@@ -38,10 +38,10 @@ class QuestionSchemaEntity(
         @Column(name = "question_help_text")
         val questionHelpText: String? = null,
 
-        //@ManyToOne
-        //@JoinColumn (name = "answer_schema_group_uuid", referencedColumnName = "answer_schema_group_uuid")
-        //val answerSchemaGroup: AnswerSchemaGroupEntity? = null
+        @ManyToOne
+        @JoinColumn (name = "answer_schema_group_uuid", referencedColumnName = "answer_schema_group_uuid")
+        val answerSchemaGroup: AnswerSchemaGroupEntity? = null
 ) : Serializable {
-        @Transient
-        val answerSchemaEntities: Collection<AnswerSchemaEntity> = emptyList()
+        val answerSchemaEntities: Collection<AnswerSchemaEntity>
+                get() = answerSchemaGroup?.answerSchemaEntities ?: emptyList()
 }
