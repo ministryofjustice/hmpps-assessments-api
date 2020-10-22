@@ -7,21 +7,20 @@ import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.context.jdbc.SqlConfig
 import org.springframework.test.context.jdbc.SqlGroup
 import uk.gov.justice.digital.assessments.controller.IntegrationTest
-import uk.gov.justice.digital.assessments.jpa.repositories.QuestionSchemaRepository
+import uk.gov.justice.digital.assessments.jpa.repositories.AnswerSchemaGroupRepository
 import java.util.*
 
 @SqlGroup(
         Sql(scripts = ["classpath:referenceData/before-test.sql"], config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED)),
         Sql(scripts = ["classpath:referenceData/after-test.sql"], config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED), executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD))
-class QuestionSchemaRepositoryTest(@Autowired val questionSchemaRepository: QuestionSchemaRepository) : IntegrationTest() {
+class AnswerSchemaGroupRepositoryTest(@Autowired val answerSchemaGroupRepository: AnswerSchemaGroupRepository) : IntegrationTest() {
 
     @Test
-    fun `return Question by UUID`() {
-        val questionSchemaUuid = UUID.fromString("fd412ca8-d361-47ab-a189-7acb8ae0675b")
-        val questionSchemaEntity = questionSchemaRepository.findByQuestionSchemaUuid(questionSchemaUuid)
-        assertThat(questionSchemaEntity?.questionSchemaUuid).isEqualTo(questionSchemaUuid)
-        assertThat(questionSchemaEntity?.answerSchemaGroup).isNotNull
-        assertThat(questionSchemaEntity?.answerSchemaEntities?.size).isEqualTo(2)
-
+    fun `return Answer Schema Group by UUID`() {
+        val answerSchemaGroupUuid = UUID.fromString("f756f79d-dfad-49f9-a1b9-964a41cf660d")
+        val answerSchemaGroup = answerSchemaGroupRepository.findByAnswerSchemaGroupUuid(answerSchemaGroupUuid)
+        assertThat(answerSchemaGroup?.answerSchemaGroupUuid).isEqualTo(answerSchemaGroupUuid)
+        assertThat(answerSchemaGroup?.answerSchemaGroupCode).isEqualTo("TEST")
+        assertThat(answerSchemaGroup?.answerSchemaEntities?.size).isEqualTo(2)
     }
 }
