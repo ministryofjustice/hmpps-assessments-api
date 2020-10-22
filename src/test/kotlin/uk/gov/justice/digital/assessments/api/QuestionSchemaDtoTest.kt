@@ -22,8 +22,7 @@ class QuestionSchemaDtoTest {
                 LocalDateTime.of(2020, 8, 1, 8, 0),
                 "Freetext",
                 "Question text",
-                "Question help text",
-                emptyList()
+                "Question help text"
         )
 
         val questionSchemaDto = QuestionSchemaDto.from(questionSchemaEntity)

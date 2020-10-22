@@ -38,8 +38,10 @@ class QuestionSchemaEntity(
         @Column(name = "question_help_text")
         val questionHelpText: String? = null,
 
-        //@OneToMany(mappedBy = "questionSchema", fetch = FetchType.EAGER)
+        //@ManyToOne
+        //@JoinColumn (name = "answer_schema_group_uuid", referencedColumnName = "answer_schema_group_uuid")
+        //val answerSchemaGroup: AnswerSchemaGroupEntity? = null
+) : Serializable {
         @Transient
-        val answerSchemaEntities: Collection<AnswerSchemaEntity>
-
-) : Serializable
+        val answerSchemaEntities: Collection<AnswerSchemaEntity> = emptyList()
+}

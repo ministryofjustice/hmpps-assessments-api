@@ -48,8 +48,7 @@ class QuestionServiceTest {
     )
     private val question = QuestionSchemaEntity(
             questionSchemaId = questionId,
-            questionSchemaUuid = questionUuid,
-            answerSchemaEntities = emptyList()
+            questionSchemaUuid = questionUuid
     )
 
     @BeforeEach
@@ -69,7 +68,7 @@ class QuestionServiceTest {
     @Test
     fun `get Question Schema by ID`() {
         every { questionSchemaRepository.findByQuestionSchemaUuid(questionUuid) } returns QuestionSchemaEntity(
-                questionSchemaId = questionId, questionSchemaUuid = questionUuid, answerSchemaEntities = emptyList())
+                questionSchemaId = questionId, questionSchemaUuid = questionUuid)
 
         val questionSchemaDto = questionService.getQuestionSchema(questionUuid)
 

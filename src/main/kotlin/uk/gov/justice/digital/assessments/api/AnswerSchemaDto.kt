@@ -44,7 +44,7 @@ data class AnswerSchemaDto (
                     answerSchemaEntity.answerSchemaId,
                     answerSchemaEntity.answerSchemaUuid,
                     answerSchemaEntity.answerSchemaCode,
-                    answerSchemaEntity.questionSchema?.questionSchemaUuid,
+                    answerSchemaEntity.answerSchemaGroup?.answerSchemaGroupUuid,
                     answerSchemaEntity.answerStart,
                     answerSchemaEntity.answerEnd,
                     answerSchemaEntity.value,

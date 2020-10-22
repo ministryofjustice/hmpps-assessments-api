@@ -7,7 +7,6 @@ import javax.persistence.*
 @Entity
 @Table(name = "ANSWER_SCHEMA")
 class AnswerSchemaEntity (
-
         @Id
         @Column (name = "answer_schema_id")
         val answerSchemaId: Long,
@@ -19,8 +18,8 @@ class AnswerSchemaEntity (
         val answerSchemaCode: String? = null,
 
         @ManyToOne
-        @JoinColumn (name = "question_schema_uuid", referencedColumnName = "question_schema_uuid")
-        val questionSchema: QuestionSchemaEntity? = null,
+        @JoinColumn (name = "answer_schema_group_uuid", referencedColumnName = "answer_schema_group_uuid")
+        val answerSchemaGroup: AnswerSchemaGroupEntity,
 
         @Column (name = "answer_start")
         val answerStart: LocalDateTime? = null,
