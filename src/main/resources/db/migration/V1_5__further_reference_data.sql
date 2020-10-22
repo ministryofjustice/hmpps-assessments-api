@@ -37,3 +37,7 @@ VALUES  (209, '33333333-3333-3333-3333-333333333209', '11111111-1111-1111-1111-1
 -- Layer 3
 INSERT INTO question_group (question_group_id, question_group_uuid, content_uuid, content_type, group_uuid, display_order, mandatory, validation)
 VALUES  (301, '33333333-3333-3333-3333-333333333301', '22222222-2222-2222-2222-222222222202', 'group', '22222222-2222-2222-2222-222222222201', '1', 'yes', null);
+
+-- BCST
+INSERT INTO question_group (question_group_id, question_group_uuid, content_uuid, content_type, group_uuid, display_order, mandatory, validation)
+VALUES  (302, '33333333-3333-3333-3333-333333333303', '22222222-2222-2222-2222-222222222204', 'group', '22222222-2222-2222-2222-222222222203', '1', 'yes', null);
