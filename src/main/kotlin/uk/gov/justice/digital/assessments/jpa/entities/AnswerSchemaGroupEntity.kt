@@ -17,9 +17,9 @@ class AnswerSchemaGroupEntity (
         @Column (name = "answer_schema_group_code")
         val answerSchemaGroupCode: String? = null,
 
-        @Column (name = "answer_start")
+        @Column (name = "group_start")
         val groupStart: LocalDateTime? = null,
 
-        @Column (name = "answer_end")
+        @Column (name = "group_end")
         val groupEnd: LocalDateTime? = null,
 )
