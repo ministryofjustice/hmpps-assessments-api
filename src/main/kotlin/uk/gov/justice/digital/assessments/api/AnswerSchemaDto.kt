@@ -6,24 +6,11 @@ import java.time.LocalDateTime
 import java.util.*
 
 data class AnswerSchemaDto (
-
-        @Schema(description = "Answer Schema primary key", example = "1234")
-        val answerSchemaId: Long,
-
         @Schema(description = "Answer Schema UUID", example = "0e5e0848-6ab0-4b1b-a354-f7894913d8e4")
         val answerSchemaUuid: UUID,
 
         @Schema(description = "Answer Schema Code", example = "RSR-01-a")
         val answerSchemaCode: String? = null,
-
-        @Schema(description = "Question Schema UUID")
-        val questionSchema: UUID? = null,
-
-        @Schema(description = "Answer Start Date", example = "2020-01-02T16:00:00")
-        val answerStart: LocalDateTime? = null,
-
-        @Schema(description = "Answer End Date", example = "2020-01-02T16:00:00")
-        val answerEnd: LocalDateTime? = null,
 
         @Schema(description = "Answer Value", example = "Some answer value")
         val value: String? = null,
@@ -41,12 +28,8 @@ data class AnswerSchemaDto (
 
         fun from(answerSchemaEntity: AnswerSchemaEntity): AnswerSchemaDto{
             return AnswerSchemaDto(
-                    answerSchemaEntity.answerSchemaId,
                     answerSchemaEntity.answerSchemaUuid,
                     answerSchemaEntity.answerSchemaCode,
-                    answerSchemaEntity.questionSchema?.questionSchemaUuid,
-                    answerSchemaEntity.answerStart,
-                    answerSchemaEntity.answerEnd,
                     answerSchemaEntity.value,
                     answerSchemaEntity.text
             )

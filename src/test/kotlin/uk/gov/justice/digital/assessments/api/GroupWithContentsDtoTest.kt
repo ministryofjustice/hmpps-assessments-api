@@ -20,8 +20,7 @@ class GroupWithContentsDtoTest {
             null,
             "Freetext",
             "Question text",
-            "Question help text",
-            emptyList()
+            "Question help text"
     )
     val additionalQuestion = QuestionSchemaEntity(
             1L,
@@ -32,8 +31,7 @@ class GroupWithContentsDtoTest {
             null,
             "Freetext",
             "Question text",
-            "Question help text",
-            emptyList()
+            "Question help text"
     )
 
     val groupWithOneQuestion = GroupEntity(
