@@ -21,6 +21,6 @@ class AnswerSchemaGroupRepositoryTest(@Autowired val answerSchemaGroupRepository
         val answerSchemaGroup = answerSchemaGroupRepository.findByAnswerSchemaGroupUuid(answerSchemaGroupUuid)
         assertThat(answerSchemaGroup?.answerSchemaGroupUuid).isEqualTo(answerSchemaGroupUuid)
         assertThat(answerSchemaGroup?.answerSchemaGroupCode).isEqualTo("TEST")
-        //assertThat(answerSchemaGroup?.answerSchemaEntities?.size).isEqualTo(2)
+        assertThat(answerSchemaGroup?.answerSchemaEntities?.size).isEqualTo(2)
     }
 }

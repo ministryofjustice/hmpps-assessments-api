@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.assessments.jpa.entities
 
+import java.io.Serializable
 import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.*
@@ -22,4 +23,7 @@ class AnswerSchemaGroupEntity (
 
         @Column (name = "group_end")
         val groupEnd: LocalDateTime? = null,
-)
+
+        @OneToMany(mappedBy = "answerSchemaGroup", fetch = FetchType.EAGER)
+        val answerSchemaEntities: Collection<AnswerSchemaEntity> = emptyList()
+) : Serializable
