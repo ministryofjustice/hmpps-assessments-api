@@ -33,10 +33,11 @@ class QuestionService(private val questionSchemaRepository: QuestionSchemaReposi
 
     private fun getQuestionGroup(groupUuid:UUID, parentGroup: QuestionGroupEntity?): GroupWithContentsDto {
         val group = groupRepository.findByGroupUuid(groupUuid) ?: throw EntityNotFoundException("Group not found: $groupUuid")
-        val groupContents = group.contents
+        val groupContents = group.contents.sortedBy { it.displayOrder }
         if (groupContents.isEmpty()) throw EntityNotFoundException("Questions not found for Group: $groupUuid")
 
-        val contents = groupContents.map {
+        val contents = groupContents
+                .map {
             when(it.contentType) {
                 "question" -> GroupQuestionDto.from(
                         questionSchemaRepository.findByQuestionSchemaUuid(it.contentUuid)!!,
