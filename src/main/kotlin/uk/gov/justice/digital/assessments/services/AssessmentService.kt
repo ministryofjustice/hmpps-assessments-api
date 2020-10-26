@@ -12,9 +12,10 @@ import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
+import uk.gov.justice.digital.assessments.api.AssessmentAnswersDto
 import java.time.LocalDateTime
 import java.util.*
-import javax.transaction.Transactional
+import org.slf4j.Loggerimport javax.transaction.Transactional
 
 @Service
 class AssessmentService(private val assessmentRepository: AssessmentRepository) {
@@ -54,6 +55,10 @@ class AssessmentService(private val assessmentRepository: AssessmentRepository) 
         val assessment = getAssessmentByUuid(assessmentUuid)
         return AssessmentEpisodeDto.from(assessment.getCurrentEpisode())
                 ?: throw EntityNotFoundException("No current Episode for $assessmentUuid")
+    }
+
+    fun getCurrentAssessmentAnswers(assessmentUuid: UUID) : AssessmentAnswersDto {
+        return AssessmentAnswersDto(UUID.randomUUID(), emptyMap())
     }
 
     @Transactional

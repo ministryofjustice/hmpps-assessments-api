@@ -4,10 +4,10 @@ class CriminogenicNeedDto(
 
         val need: CriminogenicNeed,
         val description: String,
-        val overThreshold: Boolean,
-        val riskOfHarm: Boolean,
-        val riskOfReoffending: Boolean,
-        val lowScoringNeed: Boolean,
+        val overThreshold: Boolean? = null,
+        val riskOfHarm: Boolean? = null,
+        val riskOfReoffending: Boolean? = null,
+        val lowScoringNeed: Boolean? = null,
         val needStatus: NeedStatus
 
 
