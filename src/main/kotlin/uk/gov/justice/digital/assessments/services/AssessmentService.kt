@@ -15,7 +15,7 @@ import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisod
 import uk.gov.justice.digital.assessments.api.AssessmentAnswersDto
 import java.time.LocalDateTime
 import java.util.*
-import org.slf4j.Loggerimport javax.transaction.Transactional
+import javax.transaction.Transactional
 
 @Service
 class AssessmentService(private val assessmentRepository: AssessmentRepository) {

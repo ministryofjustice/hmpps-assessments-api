@@ -38,23 +38,95 @@ class CriminogenicNeedsServiceTest {
 
     }
 
-//    @Test
-//    fun `does not return need if risk of harm is negative`(){
-//        val assessmentUUID = UUID.randomUUID()
-//        val assessmentAnswerDto = AssessmentAnswersDto(
-//                assessmentUuid = assessmentUUID,
-//                answers = mapOf("3.98" to setOf("YES")))
-//
-//        every { assessmentService.getCurrentAssessmentAnswers(assessmentUUID) } returns (assessmentAnswerDto)
-//        val result = criminogenicNeedsService.calculateNeeds(assessmentAnswerDto)
-//        val need = result.criminogenicNeeds.toList().first { it.need == CriminogenicNeed.ACCOMMODATION }
-//        assertThat(need.riskOfHarm).isFalse()
-//        assertThat(need.lowScoringNeed).isNull()
-//        assertThat(need.overThreshold).isNull()
-//        assertThat(need.riskOfReoffending).isNull()
-//        assertThat(need.needStatus).isEqualTo(NeedStatus.INSUFFICENT_DATA)
-//
-//    }
+    @Test
+    fun `returns insufficient data when threshold question data is incomplete`(){
+        val assessmentUUID = UUID.randomUUID()
+        val assessmentAnswerDto = AssessmentAnswersDto(
+                assessmentUuid = assessmentUUID,
+                answers = mapOf("3.90" to setOf("2"), "3.98" to setOf("NO"),"3.99" to setOf("NO")))
+
+        every { assessmentService.getCurrentAssessmentAnswers(assessmentUUID) } returns (assessmentAnswerDto)
+        val result = criminogenicNeedsService.calculateNeeds(assessmentAnswerDto)
+        val need = result.criminogenicNeeds.toList().first { it.need == CriminogenicNeed.ACCOMMODATION }
+        assertThat(need.riskOfHarm).isFalse()
+        assertThat(need.lowScoringNeed).isNull()
+        assertThat(need.overThreshold).isNull()
+        assertThat(need.riskOfReoffending).isFalse()
+        assertThat(need.needStatus).isEqualTo(NeedStatus.INSUFFICIENT_DATA)
+
+    }
+
+    @Test
+    fun `returns insufficient data when no harm question provided`(){
+        val assessmentUUID = UUID.randomUUID()
+        val assessmentAnswerDto = AssessmentAnswersDto(
+                assessmentUuid = assessmentUUID,
+                           answers = mapOf("3.90" to setOf("0"), "3.91" to setOf("0"), "3.99" to setOf("NO")))
+
+        every { assessmentService.getCurrentAssessmentAnswers(assessmentUUID) } returns (assessmentAnswerDto)
+        val result = criminogenicNeedsService.calculateNeeds(assessmentAnswerDto)
+        val need = result.criminogenicNeeds.toList().first { it.need == CriminogenicNeed.ACCOMMODATION }
+        assertThat(need.riskOfHarm).isNull()
+        assertThat(need.lowScoringNeed).isNull()
+        assertThat(need.overThreshold).isFalse()
+        assertThat(need.riskOfReoffending).isFalse()
+        assertThat(need.needStatus).isEqualTo(NeedStatus.INSUFFICIENT_DATA)
+
+    }
+
+    @Test
+    fun `returns insufficient data when no reoffending question provided`(){
+        val assessmentUUID = UUID.randomUUID()
+        val assessmentAnswerDto = AssessmentAnswersDto(
+                assessmentUuid = assessmentUUID,
+                answers = mapOf("3.90" to setOf("0"), "3.91" to setOf("0"), "3.98" to setOf("NO")))
+
+        every { assessmentService.getCurrentAssessmentAnswers(assessmentUUID) } returns (assessmentAnswerDto)
+        val result = criminogenicNeedsService.calculateNeeds(assessmentAnswerDto)
+        val need = result.criminogenicNeeds.toList().first { it.need == CriminogenicNeed.ACCOMMODATION }
+        assertThat(need.riskOfHarm).isFalse()
+        assertThat(need.lowScoringNeed).isNull()
+        assertThat(need.overThreshold).isFalse()
+        assertThat(need.riskOfReoffending).isNull()
+        assertThat(need.needStatus).isEqualTo(NeedStatus.INSUFFICIENT_DATA)
+
+    }
+
+    @Test
+    fun `returns need not identified when harm, reoffending and threshold are false but low scoring need is unset`(){
+        val assessmentUUID = UUID.randomUUID()
+        val assessmentAnswerDto = AssessmentAnswersDto(
+                assessmentUuid = assessmentUUID,
+                answers = mapOf("3.90" to setOf("0"), "3.91" to setOf("0"), "3.98" to setOf("NO"), "3.99" to setOf("NO")))
+
+        every { assessmentService.getCurrentAssessmentAnswers(assessmentUUID) } returns (assessmentAnswerDto)
+        val result = criminogenicNeedsService.calculateNeeds(assessmentAnswerDto)
+        val need = result.criminogenicNeeds.toList().first { it.need == CriminogenicNeed.ACCOMMODATION }
+        assertThat(need.riskOfHarm).isFalse()
+        assertThat(need.lowScoringNeed).isNull()
+        assertThat(need.overThreshold).isFalse()
+        assertThat(need.riskOfReoffending).isFalse()
+        assertThat(need.needStatus).isEqualTo(NeedStatus.NO_NEED_IDENTIFIED)
+
+    }
+
+    @Test
+    fun `returns need not identified when all questions are negative and under threshold`(){
+        val assessmentUUID = UUID.randomUUID()
+        val assessmentAnswerDto = AssessmentAnswersDto(
+                assessmentUuid = assessmentUUID,
+                answers = mapOf("3.90" to setOf("0"), "3.91" to setOf("0"), "3.98" to setOf("NO"), "3.99" to setOf("NO"), "3.97" to setOf("NO")))
+
+        every { assessmentService.getCurrentAssessmentAnswers(assessmentUUID) } returns (assessmentAnswerDto)
+        val result = criminogenicNeedsService.calculateNeeds(assessmentAnswerDto)
+        val need = result.criminogenicNeeds.toList().first { it.need == CriminogenicNeed.ACCOMMODATION }
+        assertThat(need.riskOfHarm).isFalse()
+        assertThat(need.lowScoringNeed).isFalse()
+        assertThat(need.overThreshold).isFalse()
+        assertThat(need.riskOfReoffending).isFalse()
+        assertThat(need.needStatus).isEqualTo(NeedStatus.NO_NEED_IDENTIFIED)
+
+    }
 
     @Test
     fun `returns needs when risk of reoffending is positive`(){
@@ -73,10 +145,6 @@ class CriminogenicNeedsServiceTest {
         assertThat(need.needStatus).isEqualTo(NeedStatus.NEED_IDENTIFIED)
 
     }
-
-    // Returns needs when Risk of Reoffending question is YES
-    // Response is NEED IDENTIFIED
-
 
     @Test
     fun `returns needs when low scoring need is positive`(){
@@ -111,27 +179,63 @@ class CriminogenicNeedsServiceTest {
         assertThat(need.overThreshold).isTrue()
         assertThat(need.riskOfReoffending).isNull()
         assertThat(need.needStatus).isEqualTo(NeedStatus.NEED_IDENTIFIED)
-
     }
 
-    // Returns needs when over threshold (when total or threshold questions is over the threshold in the need config)
-    // Boundary conditions
-    // Response is NEED IDENTIFIED
+    @Test
+    fun `returns need when over threshold with incomplete threshold questions`(){
+        val assessmentUUID = UUID.randomUUID()
+        val assessmentAnswerDto = AssessmentAnswersDto(
+                assessmentUuid = assessmentUUID,
+                answers = mapOf("3.90" to setOf("6")))
 
-    // Returns need when low scoring need question is YES
-    // Response is NEED IDENTIFIED
+        every { assessmentService.getCurrentAssessmentAnswers(assessmentUUID) } returns (assessmentAnswerDto)
+        val result = criminogenicNeedsService.calculateNeeds(assessmentAnswerDto)
+        val need = result.criminogenicNeeds.toList().first { it.need == CriminogenicNeed.ACCOMMODATION }
+        assertThat(need.riskOfHarm).isNull()
+        assertThat(need.lowScoringNeed).isNull()
+        assertThat(need.overThreshold).isTrue()
+        assertThat(need.riskOfReoffending).isNull()
+        assertThat(need.needStatus).isEqualTo(NeedStatus.NEED_IDENTIFIED)
+    }
 
+    @Test
+    fun `returns over threshold false when 1 under threshold`(){
+        val assessmentUUID = UUID.randomUUID()
+        val assessmentAnswerDto = AssessmentAnswersDto(
+                assessmentUuid = assessmentUUID,
+                answers = mapOf("3.90" to setOf("2"), "3.91" to setOf("2")))
 
-    // Returns Insufficient Data for needs where a need cannot be identified using the above rules and not all
-    // questions related to the need (Threshold, harm, reoffending but not the low score need) are set
+        every { assessmentService.getCurrentAssessmentAnswers(assessmentUUID) } returns (assessmentAnswerDto)
+        val result = criminogenicNeedsService.calculateNeeds(assessmentAnswerDto)
+        val need = result.criminogenicNeeds.toList().first { it.need == CriminogenicNeed.ACCOMMODATION }
+        assertThat(need.overThreshold).isFalse()
+    }
 
+    @Test
+    fun `returns over threshold true when 1 over threshold`(){
+        val assessmentUUID = UUID.randomUUID()
+        val assessmentAnswerDto = AssessmentAnswersDto(
+                assessmentUuid = assessmentUUID,
+                answers = mapOf("3.90" to setOf("3"), "3.91" to setOf("3")))
 
+        every { assessmentService.getCurrentAssessmentAnswers(assessmentUUID) } returns (assessmentAnswerDto)
+        val result = criminogenicNeedsService.calculateNeeds(assessmentAnswerDto)
+        val need = result.criminogenicNeeds.toList().first { it.need == CriminogenicNeed.ACCOMMODATION }
+        assertThat(need.overThreshold).isTrue()
+    }
 
-    // Negative of all the business rules (ie harm question NO, Reoffending question NO, Low Scoring Need is NO and Under Threshold)
-    // Response is NO NEED IDENTIFIED
+    @Test
+    fun `returns over threshold true at the threshold`() {
+        val assessmentUUID = UUID.randomUUID()
+        val assessmentAnswerDto = AssessmentAnswersDto(
+                assessmentUuid = assessmentUUID,
+                answers = mapOf("3.90" to setOf("2"), "3.91" to setOf("3")))
+                        every { assessmentService.getCurrentAssessmentAnswers(assessmentUUID) } returns (assessmentAnswerDto)
+                val result = criminogenicNeedsService.calculateNeeds(assessmentAnswerDto)
+        val need = result.criminogenicNeeds.toList().first { it.need == CriminogenicNeed.ACCOMMODATION }
+        assertThat(need.overThreshold).isTrue()
 
-
-    // Check works for multiple Needs
+        }
 
 
 

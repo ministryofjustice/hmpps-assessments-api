@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*
 import uk.gov.justice.digital.assessments.api.AssessmentAnswersDto
 import uk.gov.justice.digital.needs.api.CalculateNeedsDto
 import uk.gov.justice.digital.needs.api.CriminogenicNeedsDto
-import io.swagger.v3.oas.annotations.Operationimport uk.gov.justice.digital.needs.services.CriminogenicNeedsService
+import uk.gov.justice.digital.needs.services.CriminogenicNeedsService
 
 @RestController
 class CriminogenicNeedsController(val criminogenicNeedsService: CriminogenicNeedsService) {
