@@ -2,17 +2,22 @@ package uk.gov.justice.digital.needs.services
 
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.assessments.api.AssessmentAnswersDto
+import uk.gov.justice.digital.assessments.services.AssessmentService
 import uk.gov.justice.digital.needs.api.CriminogenicNeedsDto
 import uk.gov.justice.digital.needs.api.CriminogenicNeedDto
 import uk.gov.justice.digital.needs.api.NeedStatus
 import java.time.LocalDateTime
+import java.util.UUID
 
 @Service
-class CriminogenicNeedsService {
+class CriminogenicNeedsService (val assessmentService :  AssessmentService) {
 
     private val POSITIVE_ANSWER = "YES"
 
-    fun calculateNeeds(assessmentAnswersDto: AssessmentAnswersDto): CriminogenicNeedsDto {
+
+    fun calculateNeeds(assessmentUuid: UUID): CriminogenicNeedsDto {
+
+        val assessmentAnswersDto = assessmentService.getCurrentAssessmentAnswers(assessmentUuid)
 
         val needs: MutableList<CriminogenicNeedDto> = mutableListOf()
         for ((criminogenicNeed, needQuestions) in  CriminogenicNeedMapping.needs()) {

@@ -10,15 +10,18 @@ import uk.gov.justice.digital.assessments.api.AssessmentAnswersDto
 import uk.gov.justice.digital.assessments.services.AssessmentService
 import uk.gov.justice.digital.needs.api.CriminogenicNeed
 import uk.gov.justice.digital.needs.api.NeedStatus
+import uk.gov.justice.digital.needs.services.CriminogenicNeedMapping
 import uk.gov.justice.digital.needs.services.CriminogenicNeedsService
+
 import java.util.*
 
 
 @ExtendWith(MockKExtension::class)
-class CriminogenicNeedsServiceTest {
-
-    private val criminogenicNeedsService: CriminogenicNeedsService = CriminogenicNeedsService()
+class CriminogenicNeedsServiceTest
+{
     private val assessmentService: AssessmentService = mockk()
+
+    private val criminogenicNeedsService: CriminogenicNeedsService = CriminogenicNeedsService(assessmentService)
 
     @Test
     fun `returns needs when risk of harm is positive`(){
@@ -28,7 +31,7 @@ class CriminogenicNeedsServiceTest {
                 answers = mapOf("3.98" to setOf("YES")))
 
         every { assessmentService.getCurrentAssessmentAnswers(assessmentUUID) } returns (assessmentAnswerDto)
-        val result = criminogenicNeedsService.calculateNeeds(assessmentAnswerDto)
+        val result = criminogenicNeedsService.calculateNeeds(assessmentUUID)
         val need = result.criminogenicNeeds.toList().first { it.need == CriminogenicNeed.ACCOMMODATION }
         assertThat(need.riskOfHarm).isTrue()
         assertThat(need.lowScoringNeed).isNull()
@@ -46,7 +49,7 @@ class CriminogenicNeedsServiceTest {
                 answers = mapOf("3.90" to setOf("2"), "3.98" to setOf("NO"),"3.99" to setOf("NO")))
 
         every { assessmentService.getCurrentAssessmentAnswers(assessmentUUID) } returns (assessmentAnswerDto)
-        val result = criminogenicNeedsService.calculateNeeds(assessmentAnswerDto)
+        val result = criminogenicNeedsService.calculateNeeds(assessmentUUID)
         val need = result.criminogenicNeeds.toList().first { it.need == CriminogenicNeed.ACCOMMODATION }
         assertThat(need.riskOfHarm).isFalse()
         assertThat(need.lowScoringNeed).isNull()
@@ -64,7 +67,7 @@ class CriminogenicNeedsServiceTest {
                            answers = mapOf("3.90" to setOf("0"), "3.91" to setOf("0"), "3.99" to setOf("NO")))
 
         every { assessmentService.getCurrentAssessmentAnswers(assessmentUUID) } returns (assessmentAnswerDto)
-        val result = criminogenicNeedsService.calculateNeeds(assessmentAnswerDto)
+        val result = criminogenicNeedsService.calculateNeeds(assessmentUUID)
         val need = result.criminogenicNeeds.toList().first { it.need == CriminogenicNeed.ACCOMMODATION }
         assertThat(need.riskOfHarm).isNull()
         assertThat(need.lowScoringNeed).isNull()
@@ -82,7 +85,7 @@ class CriminogenicNeedsServiceTest {
                 answers = mapOf("3.90" to setOf("0"), "3.91" to setOf("0"), "3.98" to setOf("NO")))
 
         every { assessmentService.getCurrentAssessmentAnswers(assessmentUUID) } returns (assessmentAnswerDto)
-        val result = criminogenicNeedsService.calculateNeeds(assessmentAnswerDto)
+        val result = criminogenicNeedsService.calculateNeeds(assessmentUUID)
         val need = result.criminogenicNeeds.toList().first { it.need == CriminogenicNeed.ACCOMMODATION }
         assertThat(need.riskOfHarm).isFalse()
         assertThat(need.lowScoringNeed).isNull()
@@ -100,7 +103,7 @@ class CriminogenicNeedsServiceTest {
                 answers = mapOf("3.90" to setOf("0"), "3.91" to setOf("0"), "3.98" to setOf("NO"), "3.99" to setOf("NO")))
 
         every { assessmentService.getCurrentAssessmentAnswers(assessmentUUID) } returns (assessmentAnswerDto)
-        val result = criminogenicNeedsService.calculateNeeds(assessmentAnswerDto)
+        val result = criminogenicNeedsService.calculateNeeds(assessmentUUID)
         val need = result.criminogenicNeeds.toList().first { it.need == CriminogenicNeed.ACCOMMODATION }
         assertThat(need.riskOfHarm).isFalse()
         assertThat(need.lowScoringNeed).isNull()
@@ -118,7 +121,7 @@ class CriminogenicNeedsServiceTest {
                 answers = mapOf("3.90" to setOf("0"), "3.91" to setOf("0"), "3.98" to setOf("NO"), "3.99" to setOf("NO"), "3.97" to setOf("NO")))
 
         every { assessmentService.getCurrentAssessmentAnswers(assessmentUUID) } returns (assessmentAnswerDto)
-        val result = criminogenicNeedsService.calculateNeeds(assessmentAnswerDto)
+        val result = criminogenicNeedsService.calculateNeeds(assessmentUUID)
         val need = result.criminogenicNeeds.toList().first { it.need == CriminogenicNeed.ACCOMMODATION }
         assertThat(need.riskOfHarm).isFalse()
         assertThat(need.lowScoringNeed).isFalse()
@@ -136,7 +139,7 @@ class CriminogenicNeedsServiceTest {
                 answers = mapOf("3.99" to setOf("YES")))
 
         every { assessmentService.getCurrentAssessmentAnswers(assessmentUUID) } returns (assessmentAnswerDto)
-        val result = criminogenicNeedsService.calculateNeeds(assessmentAnswerDto)
+        val result = criminogenicNeedsService.calculateNeeds(assessmentUUID)
         val need = result.criminogenicNeeds.toList().first { it.need == CriminogenicNeed.ACCOMMODATION }
         assertThat(need.riskOfHarm).isNull()
         assertThat(need.lowScoringNeed).isNull()
@@ -154,7 +157,7 @@ class CriminogenicNeedsServiceTest {
                 answers = mapOf("3.97" to setOf("YES")))
 
         every { assessmentService.getCurrentAssessmentAnswers(assessmentUUID) } returns (assessmentAnswerDto)
-        val result = criminogenicNeedsService.calculateNeeds(assessmentAnswerDto)
+        val result = criminogenicNeedsService.calculateNeeds(assessmentUUID)
         val need = result.criminogenicNeeds.toList().first { it.need == CriminogenicNeed.ACCOMMODATION }
         assertThat(need.riskOfHarm).isNull()
         assertThat(need.lowScoringNeed).isTrue()
@@ -172,7 +175,7 @@ class CriminogenicNeedsServiceTest {
                 answers = mapOf("3.90" to setOf("3"), "3.91" to setOf("2")))
 
         every { assessmentService.getCurrentAssessmentAnswers(assessmentUUID) } returns (assessmentAnswerDto)
-        val result = criminogenicNeedsService.calculateNeeds(assessmentAnswerDto)
+        val result = criminogenicNeedsService.calculateNeeds(assessmentUUID)
         val need = result.criminogenicNeeds.toList().first { it.need == CriminogenicNeed.ACCOMMODATION }
         assertThat(need.riskOfHarm).isNull()
         assertThat(need.lowScoringNeed).isNull()
@@ -189,7 +192,7 @@ class CriminogenicNeedsServiceTest {
                 answers = mapOf("3.90" to setOf("6")))
 
         every { assessmentService.getCurrentAssessmentAnswers(assessmentUUID) } returns (assessmentAnswerDto)
-        val result = criminogenicNeedsService.calculateNeeds(assessmentAnswerDto)
+        val result = criminogenicNeedsService.calculateNeeds(assessmentUUID)
         val need = result.criminogenicNeeds.toList().first { it.need == CriminogenicNeed.ACCOMMODATION }
         assertThat(need.riskOfHarm).isNull()
         assertThat(need.lowScoringNeed).isNull()
@@ -206,7 +209,7 @@ class CriminogenicNeedsServiceTest {
                 answers = mapOf("3.90" to setOf("2"), "3.91" to setOf("2")))
 
         every { assessmentService.getCurrentAssessmentAnswers(assessmentUUID) } returns (assessmentAnswerDto)
-        val result = criminogenicNeedsService.calculateNeeds(assessmentAnswerDto)
+        val result = criminogenicNeedsService.calculateNeeds(assessmentUUID)
         val need = result.criminogenicNeeds.toList().first { it.need == CriminogenicNeed.ACCOMMODATION }
         assertThat(need.overThreshold).isFalse()
     }
@@ -219,7 +222,7 @@ class CriminogenicNeedsServiceTest {
                 answers = mapOf("3.90" to setOf("3"), "3.91" to setOf("3")))
 
         every { assessmentService.getCurrentAssessmentAnswers(assessmentUUID) } returns (assessmentAnswerDto)
-        val result = criminogenicNeedsService.calculateNeeds(assessmentAnswerDto)
+        val result = criminogenicNeedsService.calculateNeeds(assessmentUUID)
         val need = result.criminogenicNeeds.toList().first { it.need == CriminogenicNeed.ACCOMMODATION }
         assertThat(need.overThreshold).isTrue()
     }
@@ -231,12 +234,23 @@ class CriminogenicNeedsServiceTest {
                 assessmentUuid = assessmentUUID,
                 answers = mapOf("3.90" to setOf("2"), "3.91" to setOf("3")))
                         every { assessmentService.getCurrentAssessmentAnswers(assessmentUUID) } returns (assessmentAnswerDto)
-                val result = criminogenicNeedsService.calculateNeeds(assessmentAnswerDto)
+                val result = criminogenicNeedsService.calculateNeeds(assessmentUUID)
         val need = result.criminogenicNeeds.toList().first { it.need == CriminogenicNeed.ACCOMMODATION }
         assertThat(need.overThreshold).isTrue()
 
         }
 
+    @Test
+    fun `returns all needs`(){
+        val assessmentUUID = UUID.randomUUID()
+        val assessmentAnswerDto = AssessmentAnswersDto(
+                assessmentUuid = assessmentUUID,
+                answers = mapOf("3.98" to setOf("YES")))
 
+        every { assessmentService.getCurrentAssessmentAnswers(assessmentUUID) } returns (assessmentAnswerDto)
+        val result = criminogenicNeedsService.calculateNeeds(assessmentUUID)
+        val allNeeds = result.criminogenicNeeds.toList()
+        assertThat(allNeeds).hasSize( CriminogenicNeedMapping.needs().size )
+    }
 
 }
