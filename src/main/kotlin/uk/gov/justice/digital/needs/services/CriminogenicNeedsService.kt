@@ -17,7 +17,7 @@ class CriminogenicNeedsService (val assessmentService :  AssessmentService) {
 
     fun calculateNeeds(assessmentUuid: UUID): CriminogenicNeedsDto {
 
-        val assessmentAnswersDto = assessmentService.getCurrentAssessmentAnswers(assessmentUuid)
+        val assessmentAnswersDto = assessmentService.getCurrentAssessmentCodedAnswers(assessmentUuid)
 
         val needs: MutableList<CriminogenicNeedDto> = mutableListOf()
         for ((criminogenicNeed, needQuestions) in  CriminogenicNeedMapping.needs()) {

@@ -14,7 +14,7 @@ import uk.gov.justice.digital.assessments.api.AssessmentAnswersDto
 import uk.gov.justice.digital.needs.api.CriminogenicNeed
 import uk.gov.justice.digital.needs.api.NeedStatus
 import org.assertj.core.api.Assertions.assertThat
-
+import org.junit.jupiter.api.DisplayName
 
 
 @AutoConfigureWebTestClient
@@ -30,7 +30,7 @@ class CriminogenicNeedsControllerTest: IntegrationTest() {
         val assessmentAnswerDto = AssessmentAnswersDto(
                 assessmentUuid = assessmentUuid,
                 answers = mapOf("3.98" to setOf("YES")))
-        every { assessmentService.getCurrentAssessmentAnswers(assessmentUuid) } returns (assessmentAnswerDto)
+        every { assessmentService.getCurrentAssessmentCodedAnswers(assessmentUuid) } returns (assessmentAnswerDto)
 
         val result = webTestClient.get().uri("/assessments/$assessmentUuid/needs")
                 .headers(setAuthorisation())

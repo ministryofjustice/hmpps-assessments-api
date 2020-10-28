@@ -18,7 +18,7 @@ import java.util.*
 import javax.transaction.Transactional
 
 @Service
-class AssessmentService(private val assessmentRepository: AssessmentRepository) {
+class AssessmentService(private val assessmentRepository: AssessmentRepository, private val questionService: QuestionService) {
 
     companion object {
         val log: Logger = LoggerFactory.getLogger(this::class.java)
@@ -57,8 +57,27 @@ class AssessmentService(private val assessmentRepository: AssessmentRepository) 
                 ?: throw EntityNotFoundException("No current Episode for $assessmentUuid")
     }
 
-    fun getCurrentAssessmentAnswers(assessmentUuid: UUID) : AssessmentAnswersDto {
-        return AssessmentAnswersDto(UUID.randomUUID(), emptyMap())
+    fun getCurrentAssessmentCodedAnswers(assessmentUuid: UUID) : AssessmentAnswersDto {
+        val questionCodes: Map<UUID, String?> =  questionService.getAllQuestions().map { it.questionSchemaUuid to it.questionCode }.toMap()
+        val answerCodes: Map<UUID, String?> =  questionService.getAllAnswers().map { it.answerSchemaUuid to it.answerSchemaCode }.toMap()
+        val assessment = getAssessmentByUuid(assessmentUuid)
+        val answers: MutableMap<String, Set<String>> = mutableMapOf()
+
+        assessment.episodes.sortedWith(compareBy( nullsLast()) {it.endDate }).forEach { episode ->
+            if (episode.answers !=null) {
+                episode.answers!!.forEach { answer ->
+                    val questionCode = questionCodes[answer.key] ?:
+                        throw IllegalStateException("Question Code not found for UUID ${answer.key}")
+                    val answerCode = answer.value.answers.map { answerCodes[it.key] ?:
+                        throw IllegalStateException("Answer Code not found for UUID ${it.key}") }.toSet()
+
+                    if( answerCode.isNotEmpty()) {
+                        answers[questionCode] = answerCode
+                    }
+                }
+            }
+        }
+        return AssessmentAnswersDto(assessmentUuid, answers)
     }
 
     @Transactional

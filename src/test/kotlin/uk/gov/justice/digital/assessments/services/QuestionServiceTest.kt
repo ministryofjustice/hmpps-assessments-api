@@ -16,6 +16,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.GroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.GroupSummaryEntity
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionGroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
+import uk.gov.justice.digital.assessments.jpa.repositories.AnswerSchemaRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.GroupRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.QuestionGroupRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.QuestionSchemaRepository
@@ -27,12 +28,14 @@ import java.util.*
 class QuestionServiceTest {
 
     private val questionSchemaRepository: QuestionSchemaRepository = mockk()
+    private val answerSchemaRepository: AnswerSchemaRepository = mockk()
     private val questionGroupRepository: QuestionGroupRepository = mockk()
     private val groupRepository: GroupRepository = mockk()
     private val questionService = QuestionService(
             questionSchemaRepository,
             questionGroupRepository,
-            groupRepository
+            groupRepository,
+            answerSchemaRepository
     )
 
     private val questionId = 1L
