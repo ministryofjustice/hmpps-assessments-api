@@ -9,12 +9,4 @@ class CriminogenicNeedDto(
         val riskOfReoffending: Boolean? = null,
         val lowScoringNeed: Boolean? = null,
         val needStatus: NeedStatus
-
-
-
-) {
-
-
-
-
-}
+)

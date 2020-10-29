@@ -31,7 +31,7 @@ data class GroupQuestionDto(
         val validation : String? = null,
 
         @Schema(description = "Reference Answer Schemas")
-        val answerSchemas: List<AnswerSchemaDto>? = null,
+        val answerSchemas: Set<AnswerSchemaDto>? = null,
 ): GroupContentDto {
     companion object{
         fun from(questionSchemaEntity: QuestionSchemaEntity, questionGroupEntity: QuestionGroupEntity): GroupQuestionDto{

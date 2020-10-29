@@ -9,7 +9,7 @@ data class AnswerDto (
         @Schema(description = "Free text answer", example = "Some random text")
         val freeTextAnswer: String?,
 
-        @Schema(description = "answer ID", example = "0e5e0848-6ab0-4b1b-a354-f7894913d8e4")
+        //this could be a set of Answer Schema DTO
         val answers: Map<UUID, String> = emptyMap()
 )
 {

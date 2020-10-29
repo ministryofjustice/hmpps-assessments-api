@@ -5,5 +5,5 @@ class NeedConfiguration (
             val reoffendingQuestion: String,
             val lowScoreNeedQuestion: String,
             val threshold: Int,
-            val thresholdQuestions: Set<String> // assuming that the threshold questions are ints; values from a likert scale
+            val thresholdQuestions: Set<String> // threshold questions are ints, values from a likert scale
 )

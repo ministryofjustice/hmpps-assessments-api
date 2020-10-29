@@ -14,13 +14,12 @@ class CriminogenicNeedsService (val assessmentService :  AssessmentService) {
 
     private val POSITIVE_ANSWER = "YES"
 
-
     fun calculateNeeds(assessmentUuid: UUID): CriminogenicNeedsDto {
 
         val assessmentAnswersDto = assessmentService.getCurrentAssessmentCodedAnswers(assessmentUuid)
 
         val needs: MutableList<CriminogenicNeedDto> = mutableListOf()
-        for ((criminogenicNeed, needQuestions) in  CriminogenicNeedMapping.needs()) {
+        for ((criminogenicNeed, needQuestions) in CriminogenicNeedMapping.needs()) {
 
             val isHarm = isHarmRisk(assessmentAnswersDto, needQuestions)
             val isReoffending = isOffendingRisk(assessmentAnswersDto, needQuestions)
@@ -34,7 +33,7 @@ class CriminogenicNeedsService (val assessmentService :  AssessmentService) {
 
             val needsStatus = calculateNeedStatus(isHarm, isReoffending, isLowScore, isValidOverThreshold, sufficientData)
 
-             needs.add(CriminogenicNeedDto(
+            needs.add(CriminogenicNeedDto(
                     riskOfHarm = isHarm,
                     riskOfReoffending = isReoffending,
                     lowScoringNeed = isLowScore,
@@ -49,22 +48,22 @@ class CriminogenicNeedsService (val assessmentService :  AssessmentService) {
 
     private fun isHarmRisk(assessmentAnswersDto: AssessmentAnswersDto, needQuestions: NeedConfiguration): Boolean? {
         val harmQuestion = assessmentAnswersDto.answers[needQuestions.harmQuestion]?.first()
-        return harmQuestion?.equals(POSITIVE_ANSWER)
-}
+        return harmQuestion?.answerSchemaCode.equals(POSITIVE_ANSWER)
+    }
 
     private fun isOffendingRisk(assessmentAnswersDto: AssessmentAnswersDto, needQuestions: NeedConfiguration): Boolean? {
         val offendingQuestion = assessmentAnswersDto.answers[needQuestions.reoffendingQuestion]?.first()
-        return offendingQuestion?.equals(POSITIVE_ANSWER)
+        return offendingQuestion?.answerSchemaCode.equals(POSITIVE_ANSWER)
     }
 
     private fun isLowScoringRisk(assessmentAnswersDto: AssessmentAnswersDto, needQuestions: NeedConfiguration): Boolean? {
         val lowScoringQuestion = assessmentAnswersDto.answers[needQuestions.lowScoreNeedQuestion]?.first()
-        return lowScoringQuestion?.equals(POSITIVE_ANSWER)
+        return lowScoringQuestion?.answerSchemaCode.equals(POSITIVE_ANSWER)
     }
 
     private fun areValuesOverThreshold(assessmentAnswersDto: AssessmentAnswersDto, needQuestions: NeedConfiguration): Boolean {
         val thresholdQuestions = assessmentAnswersDto.answers.filterKeys { needQuestions.thresholdQuestions.contains(it) }
-        return thresholdQuestions.values.map { it.first().toInt() }.sum() >= needQuestions.threshold
+        return thresholdQuestions.values.mapNotNull { it.first().value?.toInt() }.sum() >= needQuestions.threshold
     }
 
     private fun calculateSufficientThresholdQuestions(assessmentAnswersDto: AssessmentAnswersDto, needQuestions: NeedConfiguration): Boolean {
@@ -72,27 +71,22 @@ class CriminogenicNeedsService (val assessmentService :  AssessmentService) {
     }
 
     private fun isOverThresholdAndSufficient(overThreshold: Boolean, sufficientThresholdQuestions: Boolean): Boolean? {
-        return if(overThreshold) {
-             true
-        }
-        else return if (!overThreshold && sufficientThresholdQuestions) {
-             false
-        }
-        else null
+        return if (overThreshold) {
+            true
+        } else return if (!overThreshold && sufficientThresholdQuestions) {
+            false
+        } else null
     }
 
     private fun calculateSufficientData(sufficientThresholdQuestions: Boolean, overThreshold: Boolean, isHarm: Boolean?, isReoffending: Boolean?): Boolean {
         return (sufficientThresholdQuestions || overThreshold) && isHarm != null && isReoffending != null
     }
-    
-    private fun calculateNeedStatus(isHarm: Boolean?, isReoffending: Boolean?, isLowScore: Boolean?, isOverThreshold: Boolean?, sufficientData: Boolean): NeedStatus {
-        return if(listOf(isHarm, isReoffending, isLowScore, isOverThreshold).contains(true)) {
-            NeedStatus.NEED_IDENTIFIED
-        }
-        else return if(!sufficientData) {
-            NeedStatus.INSUFFICIENT_DATA
-        }
-        else NeedStatus.NO_NEED_IDENTIFIED
-    }
 
+    private fun calculateNeedStatus(isHarm: Boolean?, isReoffending: Boolean?, isLowScore: Boolean?, isOverThreshold: Boolean?, sufficientData: Boolean): NeedStatus {
+        return if (listOf(isHarm, isReoffending, isLowScore, isOverThreshold).contains(true)) {
+            NeedStatus.NEED_IDENTIFIED
+        } else return if (!sufficientData) {
+            NeedStatus.INSUFFICIENT_DATA
+        } else NeedStatus.NO_NEED_IDENTIFIED
+    }
 }

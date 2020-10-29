@@ -45,11 +45,11 @@ class AssessmentServiceTest {
     private val existingAnswerUuid = UUID.randomUUID()
     private val existingQuestionUuid = UUID.randomUUID()
 
-    val question1Uuid = UUID.randomUUID()
-    val question2Uuid = UUID.randomUUID()
-    val answer1Uuid = UUID.randomUUID()
-    val answer2Uuid = UUID.randomUUID()
-    val answer3Uuid = UUID.randomUUID()
+    private val question1Uuid = UUID.randomUUID()
+    private val question2Uuid = UUID.randomUUID()
+    private val answer1Uuid = UUID.randomUUID()
+    private val answer2Uuid = UUID.randomUUID()
+    private val answer3Uuid = UUID.randomUUID()
 
     @Test
     fun `should save new assessment`() {
@@ -275,7 +275,7 @@ class AssessmentServiceTest {
     fun `should return answers for all episodes`() {
 
         setupQuestionCodes()
-        SetupAnswerCodes()
+        setupAnswerCodes()
 
         val assessment = AssessmentEntity(assessmentId = assessmentId,
                 episodes = mutableListOf(
@@ -292,15 +292,15 @@ class AssessmentServiceTest {
         val result = assessmentsService.getCurrentAssessmentCodedAnswers(assessmentUuid)
 
         assertThat(result.assessmentUuid).isEqualTo(assessmentUuid)
-        assertThat(result.answers["Q1"]).containsOnly("A1")
-        assertThat(result.answers["Q2"]).containsOnly("A2")
+        assertThat(result.answers["Q1"]?.first()?.answerSchemaCode).isEqualTo("A1")
+        assertThat(result.answers["Q2"]?.first()?.answerSchemaCode).isEqualTo("A2")
     }
 
 
     @Test
     fun `should overwrite older episode answers with newer episode answers`() {
         setupQuestionCodes()
-        SetupAnswerCodes()
+        setupAnswerCodes()
 
         val assessment = AssessmentEntity(assessmentId = assessmentId,
                 episodes = mutableListOf(
@@ -321,14 +321,13 @@ class AssessmentServiceTest {
 
         every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
         val result = assessmentsService.getCurrentAssessmentCodedAnswers(assessmentUuid)
-        assertThat(result.answers["Q1"]).containsOnly("A3")
-
+        assertThat(result.answers["Q1"]?.first()?.answerSchemaCode).isEqualTo("A3")
     }
 
     @Test
     fun `should overwrite older episode answers latest episode answers`() {
         setupQuestionCodes()
-        SetupAnswerCodes()
+        setupAnswerCodes()
 
         val assessment = AssessmentEntity(assessmentId = assessmentId,
                 episodes = mutableListOf(
@@ -346,11 +345,10 @@ class AssessmentServiceTest {
                                         answers = mutableMapOf(answer2Uuid to "")))),
                 ))
 
-
         every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
 
         val result = assessmentsService.getCurrentAssessmentCodedAnswers(assessmentUuid)
-        assertThat(result.answers["Q1"]).containsOnly("A3")
+              assertThat(result.answers["Q1"]?.first()?.answerSchemaCode).isEqualTo("A3")
 
     }
 
@@ -358,7 +356,7 @@ class AssessmentServiceTest {
     fun `should not return free text answers`() {
 
         setupQuestionCodes()
-        SetupAnswerCodes()
+        setupAnswerCodes()
 
         val assessment = AssessmentEntity(assessmentId = assessmentId,
                 episodes = mutableListOf(
@@ -372,7 +370,7 @@ class AssessmentServiceTest {
         val result = assessmentsService.getCurrentAssessmentCodedAnswers(assessmentUuid)
 
         assertThat(result.assessmentUuid).isEqualTo(assessmentUuid)
-        assertThat(result.answers["Q1"]).containsOnly("A1")
+        assertThat(result.answers["Q1"]?.first()?.answerSchemaCode).isEqualTo("A1")
         assertThat(result.answers).doesNotContainKey("Q2")
     }
 
@@ -419,7 +417,8 @@ class AssessmentServiceTest {
 
     }
 
-    private fun SetupAnswerCodes() {
+    private fun setupAnswerCodes() {
+        println("answer1Uuid: $answer1Uuid, answer2Uuid: $answer2Uuid, answer3Uuid: $answer3Uuid,")
         every { questionService.getAllAnswers() } returns listOf(
                 AnswerSchemaEntity(answerSchemaId = 1, answerSchemaUuid = answer1Uuid, answerSchemaCode = "A1", answerSchemaGroup = AnswerSchemaGroupEntity(answerSchemaId = 1, answerSchemaGroupUuid = UUID.randomUUID())),
                 AnswerSchemaEntity(answerSchemaId = 2, answerSchemaUuid = answer2Uuid, answerSchemaCode = "A2", answerSchemaGroup = AnswerSchemaGroupEntity(answerSchemaId = 2, answerSchemaGroupUuid = UUID.randomUUID())),

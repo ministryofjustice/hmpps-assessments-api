@@ -14,7 +14,7 @@ import uk.gov.justice.digital.assessments.api.AssessmentAnswersDto
 import uk.gov.justice.digital.needs.api.CriminogenicNeed
 import uk.gov.justice.digital.needs.api.NeedStatus
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.DisplayName
+import uk.gov.justice.digital.assessments.api.AnswerSchemaDto
 
 
 @AutoConfigureWebTestClient
@@ -29,7 +29,9 @@ class CriminogenicNeedsControllerTest: IntegrationTest() {
         val assessmentUuid = UUID.randomUUID()
         val assessmentAnswerDto = AssessmentAnswersDto(
                 assessmentUuid = assessmentUuid,
-                answers = mapOf("3.98" to setOf("YES")))
+                answers = mapOf("3.98" to setOf(AnswerSchemaDto(
+                        answerSchemaUuid = UUID.randomUUID(),
+                        answerSchemaCode =  "YES"))))
         every { assessmentService.getCurrentAssessmentCodedAnswers(assessmentUuid) } returns (assessmentAnswerDto)
 
         val result = webTestClient.get().uri("/assessments/$assessmentUuid/needs")
@@ -40,7 +42,7 @@ class CriminogenicNeedsControllerTest: IntegrationTest() {
                 .returnResult()
                 .responseBody
 
-        val need = result.criminogenicNeeds.toList().first { it.need == CriminogenicNeed.ACCOMMODATION }
+        val need = result!!.criminogenicNeeds.toList().first { it.need == CriminogenicNeed.ACCOMMODATION }
         assertThat(need.riskOfHarm).isTrue()
         assertThat(need.lowScoringNeed).isNull()
         assertThat(need.overThreshold).isNull()

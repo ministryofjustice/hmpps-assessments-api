@@ -7,6 +7,5 @@ data class AnswerDto (
         @Schema(description = "Answer ID and value", example = "<RSR01, yes>")
         val answers: Map<String, String> = emptyMap()
 
-
-//add date that answer was last updated and episode id for answer?
+        //todo add date that answer was last updated and episode id for answer?
 )

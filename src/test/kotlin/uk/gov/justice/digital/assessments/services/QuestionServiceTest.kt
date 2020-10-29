@@ -76,7 +76,7 @@ class QuestionServiceTest {
         val questionSchemaDto = questionService.getQuestionSchema(questionUuid)
 
         verify(exactly = 1) { questionSchemaRepository.findByQuestionSchemaUuid(questionUuid) }
-        assertThat(questionSchemaDto).isEqualTo(QuestionSchemaDto(questionSchemaId = questionId, questionSchemaUuid = questionUuid, answerSchemas = emptyList()))
+        assertThat(questionSchemaDto).isEqualTo(QuestionSchemaDto(questionSchemaId = questionId, questionSchemaUuid = questionUuid, answerSchemas = emptySet()))
     }
 
     @Test
@@ -94,11 +94,11 @@ class QuestionServiceTest {
 
         val groupQuestions = questionService.getQuestionGroup(groupUuid)
 
-        assertThat(groupQuestions?.groupId).isEqualTo(groupUuid)
+        assertThat(groupQuestions.groupId).isEqualTo(groupUuid)
 
-        val groupContents = groupQuestions?.contents
+        val groupContents = groupQuestions.contents
         assertThat(groupContents).hasSize(1)
-        val questionRef = groupContents?.get(0) as GroupQuestionDto
+        val questionRef = groupContents.get(0) as GroupQuestionDto
         assertThat(questionRef.questionId).isEqualTo(questionUuid)
     }
 
