@@ -30,7 +30,7 @@ class CriminogenicNeedsServiceTest
         val assessmentUUID = UUID.randomUUID()
         val assessmentAnswerDto = AssessmentAnswersDto(
                 assessmentUuid = assessmentUUID,
-                answers = mapOf("3.98" to setOf(AnswerSchemaDto(answerSchemaUuid = UUID.randomUUID(), answerSchemaCode = "YES"))))
+                answers = mapOf("accom_rosha" to setOf(AnswerSchemaDto(answerSchemaUuid = UUID.randomUUID(), answerSchemaCode = "YES"))))
 
         every { assessmentService.getCurrentAssessmentCodedAnswers(assessmentUUID) } returns (assessmentAnswerDto)
         val result = criminogenicNeedsService.calculateNeeds(assessmentUUID)
@@ -49,9 +49,9 @@ class CriminogenicNeedsServiceTest
         val assessmentAnswerDto = AssessmentAnswersDto(
                 assessmentUuid = assessmentUUID,
                 answers = mapOf(
-                        "3.90" to setOf(AnswerSchemaDto(answerSchemaUuid = UUID.randomUUID(), value = "2")),
-                        "3.98" to setOf(AnswerSchemaDto(answerSchemaUuid = UUID.randomUUID(), answerSchemaCode = "NO")),
-                        "3.99" to setOf(AnswerSchemaDto(answerSchemaUuid = UUID.randomUUID(), answerSchemaCode = "YES"))))
+                        "no_fixed_abode" to setOf(AnswerSchemaDto(answerSchemaUuid = UUID.randomUUID(), value = "0")),
+                        "accom_rosha" to setOf(AnswerSchemaDto(answerSchemaUuid = UUID.randomUUID(), answerSchemaCode = "NO")),
+                        "accom_offending" to setOf(AnswerSchemaDto(answerSchemaUuid = UUID.randomUUID(), answerSchemaCode = "NO"))))
 
         every { assessmentService.getCurrentAssessmentCodedAnswers(assessmentUUID) } returns (assessmentAnswerDto)
         val result = criminogenicNeedsService.calculateNeeds(assessmentUUID)
@@ -70,9 +70,19 @@ class CriminogenicNeedsServiceTest
         val assessmentAnswerDto = AssessmentAnswersDto(
                 assessmentUuid = assessmentUUID,
                            answers = mapOf(
-                                   "3.90" to setOf(AnswerSchemaDto(answerSchemaUuid = UUID.randomUUID(), value = "0")),
-                                   "3.91" to setOf(AnswerSchemaDto(answerSchemaUuid = UUID.randomUUID(), value = "2")),
-                                   "3.99" to setOf(AnswerSchemaDto(answerSchemaUuid = UUID.randomUUID(), answerSchemaCode = "NO"))))
+                                   "no_fixed_abode" to setOf(AnswerSchemaDto(
+                                           answerSchemaUuid = UUID.randomUUID(),
+                                           value = "0")),
+                                   "accom_suitability" to setOf(AnswerSchemaDto(
+                                           answerSchemaUuid = UUID.randomUUID(),
+                                           value = "0")),
+                                   "accom_permanence" to setOf(AnswerSchemaDto(
+                                           answerSchemaUuid = UUID.randomUUID(),
+                                           value = "0")),
+                                   "accom_location" to setOf(AnswerSchemaDto(
+                                           answerSchemaUuid = UUID.randomUUID(),
+                                           value = "0")),
+                                   "accom_offending" to setOf(AnswerSchemaDto(answerSchemaUuid = UUID.randomUUID(), answerSchemaCode = "NO"))))
 
         every { assessmentService.getCurrentAssessmentCodedAnswers(assessmentUUID) } returns (assessmentAnswerDto)
         val result = criminogenicNeedsService.calculateNeeds(assessmentUUID)
@@ -91,9 +101,19 @@ class CriminogenicNeedsServiceTest
         val assessmentAnswerDto = AssessmentAnswersDto(
                 assessmentUuid = assessmentUUID,
                 answers = mapOf(
-                        "3.90" to setOf(AnswerSchemaDto(answerSchemaUuid = UUID.randomUUID(), value = "0")),
-                        "3.91" to setOf(AnswerSchemaDto(answerSchemaUuid = UUID.randomUUID(), value = "0")),
-                        "3.98" to setOf(AnswerSchemaDto(answerSchemaUuid = UUID.randomUUID(), answerSchemaCode = "NO"))))
+                        "no_fixed_abode" to setOf(AnswerSchemaDto(
+                                answerSchemaUuid = UUID.randomUUID(),
+                                value = "0")),
+                        "accom_suitability" to setOf(AnswerSchemaDto(
+                                answerSchemaUuid = UUID.randomUUID(),
+                                value = "0")),
+                        "accom_permanence" to setOf(AnswerSchemaDto(
+                                answerSchemaUuid = UUID.randomUUID(),
+                                value = "0")),
+                        "accom_location" to setOf(AnswerSchemaDto(
+                                answerSchemaUuid = UUID.randomUUID(),
+                                value = "0")),
+                        "accom_rosha" to setOf(AnswerSchemaDto(answerSchemaUuid = UUID.randomUUID(), answerSchemaCode = "NO"))))
 
         every { assessmentService.getCurrentAssessmentCodedAnswers(assessmentUUID) } returns (assessmentAnswerDto)
         val result = criminogenicNeedsService.calculateNeeds(assessmentUUID)
@@ -112,10 +132,20 @@ class CriminogenicNeedsServiceTest
         val assessmentAnswerDto = AssessmentAnswersDto(
                 assessmentUuid = assessmentUUID,
                 answers = mapOf(
-                        "3.90" to setOf(AnswerSchemaDto(answerSchemaUuid = UUID.randomUUID(), value = "0")),
-                        "3.91" to setOf(AnswerSchemaDto(answerSchemaUuid = UUID.randomUUID(), value = "0")),
-                        "3.98" to setOf(AnswerSchemaDto(answerSchemaUuid = UUID.randomUUID(), answerSchemaCode = "NO")),
-                        "3.99" to setOf(AnswerSchemaDto(answerSchemaUuid = UUID.randomUUID(), answerSchemaCode = "NO"))))
+                        "no_fixed_abode" to setOf(AnswerSchemaDto(
+                                answerSchemaUuid = UUID.randomUUID(),
+                                value = "0")),
+                        "accom_suitability" to setOf(AnswerSchemaDto(
+                                answerSchemaUuid = UUID.randomUUID(),
+                                value = "0")),
+                        "accom_permanence" to setOf(AnswerSchemaDto(
+                                answerSchemaUuid = UUID.randomUUID(),
+                                value = "0")),
+                        "accom_location" to setOf(AnswerSchemaDto(
+                                answerSchemaUuid = UUID.randomUUID(),
+                                value = "0")),
+                        "accom_rosha" to setOf(AnswerSchemaDto(answerSchemaUuid = UUID.randomUUID(), answerSchemaCode = "NO")),
+                        "accom_offending" to setOf(AnswerSchemaDto(answerSchemaUuid = UUID.randomUUID(), answerSchemaCode = "NO"))))
 
         every { assessmentService.getCurrentAssessmentCodedAnswers(assessmentUUID) } returns (assessmentAnswerDto)
         val result = criminogenicNeedsService.calculateNeeds(assessmentUUID)
@@ -134,19 +164,25 @@ class CriminogenicNeedsServiceTest
         val assessmentAnswerDto = AssessmentAnswersDto(
                 assessmentUuid = assessmentUUID,
                 answers = mapOf(
-                        "3.90" to setOf(AnswerSchemaDto(
+                        "no_fixed_abode" to setOf(AnswerSchemaDto(
                                 answerSchemaUuid = UUID.randomUUID(),
                                 value = "0")),
-                        "3.91" to setOf(AnswerSchemaDto(
+                        "accom_suitability" to setOf(AnswerSchemaDto(
                                 answerSchemaUuid = UUID.randomUUID(),
                                 value = "0")),
-                        "3.98" to setOf(AnswerSchemaDto(
+                        "accom_permanence" to setOf(AnswerSchemaDto(
+                                answerSchemaUuid = UUID.randomUUID(),
+                                value = "0")),
+                        "accom_location" to setOf(AnswerSchemaDto(
+                                answerSchemaUuid = UUID.randomUUID(),
+                                value = "0")),
+                        "accom_rosha" to setOf(AnswerSchemaDto(
                                 answerSchemaUuid = UUID.randomUUID(),
                                 answerSchemaCode = "NO")),
-                        "3.99" to setOf(AnswerSchemaDto(
+                        "accom_offending" to setOf(AnswerSchemaDto(
                                 answerSchemaUuid = UUID.randomUUID(),
                                 answerSchemaCode = "NO")),
-                        "3.97" to setOf(AnswerSchemaDto(
+                        "accom_lowscore" to setOf(AnswerSchemaDto(
                                 answerSchemaUuid = UUID.randomUUID(),
                                 answerSchemaCode = "NO"))))
 
@@ -167,7 +203,7 @@ class CriminogenicNeedsServiceTest
         val assessmentAnswerDto = AssessmentAnswersDto(
                 assessmentUuid = assessmentUUID,
                 answers = mapOf(
-                        "3.99" to setOf(AnswerSchemaDto(
+                        "accom_offending" to setOf(AnswerSchemaDto(
                         answerSchemaUuid = UUID.randomUUID(),
                         answerSchemaCode = "YES"))))
 
@@ -188,7 +224,7 @@ class CriminogenicNeedsServiceTest
         val assessmentAnswerDto = AssessmentAnswersDto(
                 assessmentUuid = assessmentUUID,
                 answers = mapOf(
-                        "3.97" to setOf(AnswerSchemaDto(
+                        "accom_lowscore" to setOf(AnswerSchemaDto(
                             answerSchemaUuid = UUID.randomUUID(),
                             answerSchemaCode = "YES"))))
 
@@ -209,10 +245,10 @@ class CriminogenicNeedsServiceTest
         val assessmentAnswerDto = AssessmentAnswersDto(
                 assessmentUuid = assessmentUUID,
                 answers = mapOf(
-                        "3.90" to setOf(AnswerSchemaDto(
+                        "no_fixed_abode" to setOf(AnswerSchemaDto(
                                 answerSchemaUuid = UUID.randomUUID(),
                                 value = "3")),
-                        "3.91" to setOf(AnswerSchemaDto(
+                        "accom_suitability" to setOf(AnswerSchemaDto(
                                 answerSchemaUuid = UUID.randomUUID(),
                                 value = "2"))))
 
@@ -232,7 +268,7 @@ class CriminogenicNeedsServiceTest
         val assessmentAnswerDto = AssessmentAnswersDto(
                 assessmentUuid = assessmentUUID,
                 answers = mapOf(
-                        "3.90" to setOf(AnswerSchemaDto(
+                        "accom_suitability" to setOf(AnswerSchemaDto(
                             answerSchemaUuid = UUID.randomUUID(),
                             value = "6"))))
 
@@ -247,17 +283,23 @@ class CriminogenicNeedsServiceTest
     }
 
     @Test
-    fun `returns over threshold false when 1 under threshold`(){
+    fun `returns threshold false when 1 under threshold`(){
         val assessmentUUID = UUID.randomUUID()
         val assessmentAnswerDto = AssessmentAnswersDto(
                 assessmentUuid = assessmentUUID,
                 answers = mapOf(
-                        "3.90" to setOf(AnswerSchemaDto(
+                        "no_fixed_abode" to setOf(AnswerSchemaDto(
                                 answerSchemaUuid = UUID.randomUUID(),
-                                value = "2")),
-                        "3.91" to setOf(AnswerSchemaDto(
+                                value = "1")),
+                        "accom_suitability" to setOf(AnswerSchemaDto(
                                 answerSchemaUuid = UUID.randomUUID(),
-                                value = "2"))))
+                                value = "0")),
+                        "accom_permanence" to setOf(AnswerSchemaDto(
+                                answerSchemaUuid = UUID.randomUUID(),
+                                value = "0")),
+                        "accom_location" to setOf(AnswerSchemaDto(
+                                answerSchemaUuid = UUID.randomUUID(),
+                                value = "0"))))
 
         every { assessmentService.getCurrentAssessmentCodedAnswers(assessmentUUID) } returns (assessmentAnswerDto)
         val result = criminogenicNeedsService.calculateNeeds(assessmentUUID)
@@ -271,10 +313,10 @@ class CriminogenicNeedsServiceTest
         val assessmentAnswerDto = AssessmentAnswersDto(
                 assessmentUuid = assessmentUUID,
                 answers = mapOf(
-                        "3.90" to setOf(AnswerSchemaDto(
+                        "no_fixed_abode" to setOf(AnswerSchemaDto(
                                 answerSchemaUuid = UUID.randomUUID(),
                                 value = "3")),
-                        "3.91" to setOf(AnswerSchemaDto(
+                        "accom_suitability" to setOf(AnswerSchemaDto(
                                 answerSchemaUuid = UUID.randomUUID(),
                                 value = "3"))))
 
@@ -290,10 +332,10 @@ class CriminogenicNeedsServiceTest
         val assessmentAnswerDto = AssessmentAnswersDto(
                 assessmentUuid = assessmentUUID,
                 answers = mapOf(
-                        "3.90" to setOf(AnswerSchemaDto(
+                        "no_fixed_abode" to setOf(AnswerSchemaDto(
                             answerSchemaUuid = UUID.randomUUID(),
                             value = "2")),
-                        "3.91" to setOf(AnswerSchemaDto(
+                        "accom_suitability" to setOf(AnswerSchemaDto(
                             answerSchemaUuid = UUID.randomUUID(), value = "3"))))
                         every { assessmentService.getCurrentAssessmentCodedAnswers(assessmentUUID) } returns (assessmentAnswerDto)
                 val result = criminogenicNeedsService.calculateNeeds(assessmentUUID)
@@ -308,7 +350,7 @@ class CriminogenicNeedsServiceTest
         val assessmentAnswerDto = AssessmentAnswersDto(
                 assessmentUuid = assessmentUUID,
                 answers = mapOf(
-                        "3.98" to setOf(AnswerSchemaDto(
+                        "accom_rosha" to setOf(AnswerSchemaDto(
                             answerSchemaUuid = UUID.randomUUID(),
                             answerSchemaCode = "YES"))))
 

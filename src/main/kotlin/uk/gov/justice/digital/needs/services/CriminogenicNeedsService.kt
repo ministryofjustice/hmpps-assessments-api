@@ -48,17 +48,17 @@ class CriminogenicNeedsService (val assessmentService :  AssessmentService) {
 
     private fun isHarmRisk(assessmentAnswersDto: AssessmentAnswersDto, needQuestions: NeedConfiguration): Boolean? {
         val harmQuestion = assessmentAnswersDto.answers[needQuestions.harmQuestion]?.first()
-        return harmQuestion?.answerSchemaCode.equals(POSITIVE_ANSWER)
+        return harmQuestion?.answerSchemaCode?.equals(POSITIVE_ANSWER)
     }
 
     private fun isOffendingRisk(assessmentAnswersDto: AssessmentAnswersDto, needQuestions: NeedConfiguration): Boolean? {
         val offendingQuestion = assessmentAnswersDto.answers[needQuestions.reoffendingQuestion]?.first()
-        return offendingQuestion?.answerSchemaCode.equals(POSITIVE_ANSWER)
+        return offendingQuestion?.answerSchemaCode?.equals(POSITIVE_ANSWER)
     }
 
     private fun isLowScoringRisk(assessmentAnswersDto: AssessmentAnswersDto, needQuestions: NeedConfiguration): Boolean? {
         val lowScoringQuestion = assessmentAnswersDto.answers[needQuestions.lowScoreNeedQuestion]?.first()
-        return lowScoringQuestion?.answerSchemaCode.equals(POSITIVE_ANSWER)
+        return lowScoringQuestion?.answerSchemaCode?.equals(POSITIVE_ANSWER)
     }
 
     private fun areValuesOverThreshold(assessmentAnswersDto: AssessmentAnswersDto, needQuestions: NeedConfiguration): Boolean {

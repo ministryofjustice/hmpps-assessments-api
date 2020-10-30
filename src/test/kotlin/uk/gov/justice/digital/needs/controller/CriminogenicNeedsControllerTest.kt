@@ -29,7 +29,7 @@ class CriminogenicNeedsControllerTest: IntegrationTest() {
         val assessmentUuid = UUID.randomUUID()
         val assessmentAnswerDto = AssessmentAnswersDto(
                 assessmentUuid = assessmentUuid,
-                answers = mapOf("3.98" to setOf(AnswerSchemaDto(
+                answers = mapOf("accom_rosha" to setOf(AnswerSchemaDto(
                         answerSchemaUuid = UUID.randomUUID(),
                         answerSchemaCode =  "YES"))))
         every { assessmentService.getCurrentAssessmentCodedAnswers(assessmentUuid) } returns (assessmentAnswerDto)
