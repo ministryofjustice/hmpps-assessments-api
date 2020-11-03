@@ -1,6 +1,6 @@
 
 plugins {
-    id("uk.gov.justice.hmpps.gradle-spring-boot") version "1.0.5"
+    id("uk.gov.justice.hmpps.gradle-spring-boot") version "1.0.7"
     kotlin("plugin.spring") version "1.3.72"
     kotlin("plugin.jpa") version "1.3.72"
     kotlin("plugin.allopen") version "1.3.61"
