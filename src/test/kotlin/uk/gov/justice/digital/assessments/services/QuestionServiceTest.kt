@@ -55,7 +55,7 @@ class QuestionServiceTest {
     )
 
     @BeforeEach
-    fun `setup`() {
+    fun setup() {
         val questionGroup = QuestionGroupEntity(
                 questionGroupId = 99,
                 group = group,
@@ -98,7 +98,7 @@ class QuestionServiceTest {
 
         val groupContents = groupQuestions.contents
         assertThat(groupContents).hasSize(1)
-        val questionRef = groupContents.get(0) as GroupQuestionDto
+        val questionRef = groupContents[0] as GroupQuestionDto
         assertThat(questionRef.questionId).isEqualTo(questionUuid)
     }
 

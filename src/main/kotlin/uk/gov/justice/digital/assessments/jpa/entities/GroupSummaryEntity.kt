@@ -1,6 +1,4 @@
-package uk.gov.justice.digital.assessments.jpa.entities;
-
-import java.util.*
+package uk.gov.justice.digital.assessments.jpa.entities
 
 interface GroupSummaryEntity {
     val groupUuid: String

@@ -83,8 +83,8 @@ class AssessmentService(private val assessmentRepository: AssessmentRepository, 
 
     private fun matchAnswers(episodeAnswer: Map.Entry<UUID, AnswerEntity>, answerSchemas: List<AnswerSchemaEntity>): Set<AnswerSchemaEntity> {
         return episodeAnswer.value.answers.map {
-            answerSchemas.firstOrNull {
-                it.answerSchemaUuid == episodeAnswer.value.answers.keys.first()
+            answerSchemas.firstOrNull { answerSchema ->
+                answerSchema.answerSchemaUuid == episodeAnswer.value.answers.keys.first()
             } ?: throw IllegalStateException("Answer Code not found for UUID ${it.key}")
         }.toSet()
     }

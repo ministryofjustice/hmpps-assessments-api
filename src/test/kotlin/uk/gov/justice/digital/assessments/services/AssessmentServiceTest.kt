@@ -27,12 +27,6 @@ class AssessmentServiceTest {
     private val questionService: QuestionService = mockk()
     private val assessmentsService = AssessmentService(assessmentRepository, questionService)
 
-    private val uuid: UUID?
-        get() {
-            val questionUuid = UUID.randomUUID()
-            return questionUuid
-        }
-
     private val assessmentUuid = UUID.randomUUID()
     private val assessmentId = 1L
 

@@ -14,8 +14,8 @@ import java.util.*
         Sql(scripts = ["classpath:referenceData/before-test.sql"], config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED)),
         Sql(scripts = ["classpath:referenceData/after-test.sql"], config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED), executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD))
 class QuestionGroupRepositoryTest(@Autowired val questionGroupRepository: QuestionGroupRepository) : IntegrationTest() {
-    val groupUuid = UUID.fromString("e353f3df-113d-401c-a3c0-14239fc17cf9")
-    val questionSchemaUuid = UUID.fromString("fd412ca8-d361-47ab-a189-7acb8ae0675b")
+    val groupUuid: UUID = UUID.fromString("e353f3df-113d-401c-a3c0-14239fc17cf9")
+    val questionSchemaUuid: UUID = UUID.fromString("fd412ca8-d361-47ab-a189-7acb8ae0675b")
 
     @Test
     fun `fetch group contents`() {

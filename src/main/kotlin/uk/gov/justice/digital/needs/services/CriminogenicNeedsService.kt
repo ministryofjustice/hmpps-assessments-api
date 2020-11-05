@@ -3,6 +3,7 @@ package uk.gov.justice.digital.needs.services
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.assessments.api.AssessmentAnswersDto
 import uk.gov.justice.digital.assessments.services.AssessmentService
+import uk.gov.justice.digital.needs.api.CriminogenicNeed
 import uk.gov.justice.digital.needs.api.CriminogenicNeedsDto
 import uk.gov.justice.digital.needs.api.CriminogenicNeedDto
 import uk.gov.justice.digital.needs.api.NeedStatus
@@ -17,33 +18,34 @@ class CriminogenicNeedsService (val assessmentService :  AssessmentService) {
     fun calculateNeeds(assessmentUuid: UUID): CriminogenicNeedsDto {
 
         val assessmentAnswersDto = assessmentService.getCurrentAssessmentCodedAnswers(assessmentUuid)
-
         val needs: MutableList<CriminogenicNeedDto> = mutableListOf()
         for ((criminogenicNeed, needQuestions) in CriminogenicNeedMapping.needs()) {
-
-            val isHarm = isHarmRisk(assessmentAnswersDto, needQuestions)
-            val isReoffending = isOffendingRisk(assessmentAnswersDto, needQuestions)
-            val isLowScore = isLowScoringRisk(assessmentAnswersDto, needQuestions)
-
-            val overThreshold = areValuesOverThreshold(assessmentAnswersDto, needQuestions)
-            val sufficientThresholdQuestions = calculateSufficientThresholdQuestions(assessmentAnswersDto, needQuestions)
-
-            val isValidOverThreshold = isOverThresholdAndSufficient(overThreshold, sufficientThresholdQuestions)
-            val sufficientData = calculateSufficientData(sufficientThresholdQuestions, overThreshold, isHarm, isReoffending)
-
-            val needsStatus = calculateNeedStatus(isHarm, isReoffending, isLowScore, isValidOverThreshold, sufficientData)
-
-            needs.add(CriminogenicNeedDto(
-                    riskOfHarm = isHarm,
-                    riskOfReoffending = isReoffending,
-                    lowScoringNeed = isLowScore,
-                    overThreshold = isValidOverThreshold,
-                    description = criminogenicNeed.description,
-                    need = criminogenicNeed,
-                    needStatus = needsStatus))
+            val needDto = calculateNeedValues(assessmentAnswersDto, needQuestions, criminogenicNeed)
+            needs.add(needDto)
         }
-
         return CriminogenicNeedsDto(needs, LocalDateTime.now())
+    }
+
+    private fun calculateNeedValues(assessmentAnswersDto: AssessmentAnswersDto, needQuestions: NeedConfiguration, criminogenicNeed: CriminogenicNeed): CriminogenicNeedDto {
+        val isHarm = isHarmRisk(assessmentAnswersDto, needQuestions)
+        val isReoffending = isOffendingRisk(assessmentAnswersDto, needQuestions)
+        val isLowScore = isLowScoringRisk(assessmentAnswersDto, needQuestions)
+
+        val overThreshold = areValuesOverThreshold(assessmentAnswersDto, needQuestions)
+        val sufficientThresholdQuestions = calculateSufficientThresholdQuestions(assessmentAnswersDto, needQuestions)
+        val isValidOverThreshold = isOverThresholdAndSufficient(overThreshold, sufficientThresholdQuestions)
+        val sufficientData = calculateSufficientData(sufficientThresholdQuestions, overThreshold, isHarm, isReoffending)
+
+        val needsStatus = calculateNeedStatus(isHarm, isReoffending, isLowScore, isValidOverThreshold, sufficientData)
+
+        return  CriminogenicNeedDto(
+                riskOfHarm = isHarm,
+                riskOfReoffending = isReoffending,
+                lowScoringNeed = isLowScore,
+                overThreshold = isValidOverThreshold,
+                description = criminogenicNeed.description,
+                need = criminogenicNeed,
+                needStatus = needsStatus)
     }
 
     private fun isHarmRisk(assessmentAnswersDto: AssessmentAnswersDto, needQuestions: NeedConfiguration): Boolean? {
