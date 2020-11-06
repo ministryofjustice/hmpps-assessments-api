@@ -10,12 +10,13 @@ import org.springframework.security.authentication.TestingAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
+import uk.gov.justice.digital.assessments.HmppsAssessmentApiApplication
 import uk.gov.justice.digital.assessments.JwtAuthHelper
 import java.time.Duration
 
 
 @Suppress("SpringJavaInjectionPointsAutowiringInspection")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest( classes = [HmppsAssessmentApiApplication::class], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles(profiles = ["test"])
 abstract class IntegrationTest {
 

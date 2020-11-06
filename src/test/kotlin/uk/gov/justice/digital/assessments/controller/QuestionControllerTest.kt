@@ -62,7 +62,7 @@ class QuestionControllerTest : IntegrationTest() {
         assertThat(questionRef.questionId).isEqualTo(UUID.fromString(questionSchemaUuid))
 
         val answerRefs = questionRef.answerSchemas
-        assertThat(answerRefs?.get(0)?.answerSchemaUuid).isEqualTo(UUID.fromString(answerSchemaUuid))
+        assertThat(answerRefs?.first()?.answerSchemaUuid).isEqualTo(UUID.fromString(answerSchemaUuid))
     }
 
     @Test

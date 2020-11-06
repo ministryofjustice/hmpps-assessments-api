@@ -11,7 +11,7 @@ import java.util.*
 
 @DisplayName("Question Group DTO Tests")
 class GroupWithContentsDtoTest {
-    val question = QuestionSchemaEntity(
+    private val question = QuestionSchemaEntity(
             1L,
             UUID.randomUUID(),
             "SupervisionId",
@@ -22,7 +22,7 @@ class GroupWithContentsDtoTest {
             "Question text",
             "Question help text"
     )
-    val additionalQuestion = QuestionSchemaEntity(
+    private val additionalQuestion = QuestionSchemaEntity(
             1L,
             UUID.randomUUID(),
             "AssessmentId",
@@ -34,7 +34,7 @@ class GroupWithContentsDtoTest {
             "Question help text"
     )
 
-    val groupWithOneQuestion = GroupEntity(
+    private val groupWithOneQuestion = GroupEntity(
             1L,
             UUID.randomUUID(),
             "simple-group",
@@ -45,7 +45,7 @@ class GroupWithContentsDtoTest {
             null
     )
 
-    val groupWithOneQuestionQuestion = QuestionGroupEntity(
+    private val groupWithOneQuestionQuestion = QuestionGroupEntity(
             1L,
             UUID.randomUUID(),
             groupWithOneQuestion,
@@ -58,7 +58,7 @@ class GroupWithContentsDtoTest {
             null
     )
 
-    val groupWithTwoQuestions = GroupEntity(
+    private val groupWithTwoQuestions = GroupEntity(
             1L,
             UUID.randomUUID(),
             "two-question-group",
@@ -69,7 +69,7 @@ class GroupWithContentsDtoTest {
             null
     )
 
-    val groupWithTwoQuestionsFirstQuestion = QuestionGroupEntity(
+    private val groupWithTwoQuestionsFirstQuestion = QuestionGroupEntity(
             1L,
             UUID.randomUUID(),
             groupWithTwoQuestions,
@@ -81,7 +81,7 @@ class GroupWithContentsDtoTest {
             question,
             null
     )
-    val groupWithTwoQuestionsSecondQuestion = QuestionGroupEntity(
+    private val groupWithTwoQuestionsSecondQuestion = QuestionGroupEntity(
             1L,
             UUID.randomUUID(),
             groupWithTwoQuestions,
@@ -94,7 +94,7 @@ class GroupWithContentsDtoTest {
             null
     )
 
-    val groupWithNestedGroup = GroupEntity(
+    private val groupWithNestedGroup = GroupEntity(
             1L,
             UUID.randomUUID(),
             "question-group-question",
@@ -105,7 +105,7 @@ class GroupWithContentsDtoTest {
             null
     )
 
-    val groupWithNestedGroupFirstQuestion = QuestionGroupEntity(
+    private val groupWithNestedGroupFirstQuestion = QuestionGroupEntity(
             1L,
             UUID.randomUUID(),
             groupWithNestedGroup,
@@ -117,7 +117,7 @@ class GroupWithContentsDtoTest {
             question,
             null
     )
-    val groupWithNestedGroupGroup = QuestionGroupEntity(
+    private val groupWithNestedGroupGroup = QuestionGroupEntity(
             2L,
             UUID.randomUUID(),
             groupWithNestedGroup,
@@ -129,7 +129,7 @@ class GroupWithContentsDtoTest {
             null,
             groupWithTwoQuestions
     )
-    val groupWithNestedGroupSecondQuestion = QuestionGroupEntity(
+    private val groupWithNestedGroupSecondQuestion = QuestionGroupEntity(
             3L,
             UUID.randomUUID(),
             groupWithNestedGroup,
@@ -142,7 +142,7 @@ class GroupWithContentsDtoTest {
             null
     )
 
-    fun makeQuestionGroupDto(group: GroupEntity, vararg contents: QuestionGroupEntity): GroupWithContentsDto {
+    private fun makeQuestionGroupDto(group: GroupEntity, vararg contents: QuestionGroupEntity): GroupWithContentsDto {
         val contentsDto: List<GroupContentDto> = contents.map {
             when(it.contentType) {
                 "question" -> GroupQuestionDto.from(it.question!!, it)

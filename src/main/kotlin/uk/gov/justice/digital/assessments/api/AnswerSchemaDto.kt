@@ -2,7 +2,6 @@ package uk.gov.justice.digital.assessments.api
 
 import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.assessments.jpa.entities.AnswerSchemaEntity
-import java.time.LocalDateTime
 import java.util.*
 
 data class AnswerSchemaDto (
@@ -21,9 +20,9 @@ data class AnswerSchemaDto (
 ) {
     companion object{
 
-        fun from(answerSchemaEntities: Collection<AnswerSchemaEntity>?): List<AnswerSchemaDto>{
-            if (answerSchemaEntities.isNullOrEmpty()) return emptyList()
-            return answerSchemaEntities.map { from(it) }.toList()
+        fun from(answerSchemaEntities: Collection<AnswerSchemaEntity>?): Set<AnswerSchemaDto>{
+            if (answerSchemaEntities.isNullOrEmpty()) return emptySet()
+            return answerSchemaEntities.map { from(it) }.toSet()
         }
 
         fun from(answerSchemaEntity: AnswerSchemaEntity): AnswerSchemaDto{

@@ -12,9 +12,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import uk.gov.justice.digital.assessments.api.AnswerDto
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
-import uk.gov.justice.digital.assessments.jpa.entities.AnswerEntity
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEntity
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
+import uk.gov.justice.digital.assessments.jpa.entities.*
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
@@ -26,18 +24,26 @@ import java.util.*
 class AssessmentServiceTest {
 
     private val assessmentRepository: AssessmentRepository = mockk()
-    private val assessmentsService = AssessmentService(assessmentRepository)
+    private val questionService: QuestionService = mockk()
+    private val assessmentsService = AssessmentService(assessmentRepository, questionService)
 
     private val assessmentUuid = UUID.randomUUID()
     private val assessmentId = 1L
 
     private val episodeId1 = 1L
     private val episodeId2 = 2L
+    private val episodeId3 = 3L
 
     private val episodeUuid = UUID.randomUUID()
 
     private val existingAnswerUuid = UUID.randomUUID()
     private val existingQuestionUuid = UUID.randomUUID()
+
+    private val question1Uuid = UUID.randomUUID()
+    private val question2Uuid = UUID.randomUUID()
+    private val answer1Uuid = UUID.randomUUID()
+    private val answer2Uuid = UUID.randomUUID()
+    private val answer3Uuid = UUID.randomUUID()
 
     @Test
     fun `should save new assessment`() {
@@ -59,10 +65,10 @@ class AssessmentServiceTest {
 
     @Test
     fun `should create new episode`() {
-        val assessment : AssessmentEntity = mockk()
+        val assessment: AssessmentEntity = mockk()
         every { assessment.assessmentUuid } returns assessmentUuid
         every { assessment.assessmentId } returns 0
-        every { assessment.newEpisode("Change of Circs") } returns AssessmentEpisodeEntity(episodeId =  episodeId1, assessment = assessment)
+        every { assessment.newEpisode("Change of Circs") } returns AssessmentEpisodeEntity(episodeId = episodeId1, assessment = assessment)
         every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
 
         val episodeDto = assessmentsService.createNewEpisode(assessmentUuid, "Change of Circs")
@@ -73,7 +79,7 @@ class AssessmentServiceTest {
 
     @Test
     fun `should return all episodes for an assessment`() {
-        val assessment = AssessmentEntity( assessmentId = assessmentId,
+        val assessment = AssessmentEntity(assessmentId = assessmentId,
                 episodes = mutableListOf(
                         AssessmentEpisodeEntity(episodeId = episodeId1, changeReason = "Change of Circs 1"),
                         AssessmentEpisodeEntity(episodeId = episodeId2, changeReason = "Change of Circs 2"))
@@ -97,7 +103,7 @@ class AssessmentServiceTest {
 
     @Test
     fun `should return latest episode for an assessment`() {
-        val assessment = AssessmentEntity( assessmentId = assessmentId,
+        val assessment = AssessmentEntity(assessmentId = assessmentId,
                 episodes = mutableListOf(
                         AssessmentEpisodeEntity(episodeId = episodeId1, changeReason = "Change of Circs 1", endDate = LocalDateTime.now().minusDays(1)),
                         AssessmentEpisodeEntity(episodeId = episodeId2, changeReason = "Change of Circs 2"))
@@ -132,7 +138,7 @@ class AssessmentServiceTest {
     @Test
     fun `update episode should throw exception if episode does not exist`() {
 
-        val assessment = AssessmentEntity( assessmentId = assessmentId,
+        val assessment = AssessmentEntity(assessmentId = assessmentId,
                 episodes = mutableListOf(
                         AssessmentEpisodeEntity(episodeUuid = UUID.randomUUID(), episodeId = episodeId2, changeReason = "Change of Circs 2"))
         )
@@ -253,10 +259,172 @@ class AssessmentServiceTest {
 
         every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
 
-          assertThatThrownBy { assessmentsService.updateEpisode(assessmentUuid, episodeUuid, UpdateAssessmentEpisodeDto(answers = emptyMap())) }
+        assertThatThrownBy { assessmentsService.updateEpisode(assessmentUuid, episodeUuid, UpdateAssessmentEpisodeDto(answers = emptyMap())) }
                 .isInstanceOf(UpdateClosedEpisodeException::class.java)
                 .hasMessage("Cannot update closed Episode $episodeUuid")
 
+    }
+
+    @Test
+    fun `should return answers for all episodes`() {
+
+        setupQuestionCodes()
+        setupAnswerCodes()
+
+        val assessment = AssessmentEntity(assessmentId = assessmentId,
+                episodes = mutableListOf(
+                        AssessmentEpisodeEntity(episodeId = episodeId1,
+                                answers = mutableMapOf(question1Uuid to AnswerEntity(
+                                        answers = mutableMapOf(answer1Uuid to "")))),
+                        AssessmentEpisodeEntity(episodeId = episodeId2,
+                                answers = mutableMapOf(question2Uuid to AnswerEntity(
+                                        answers = mutableMapOf(answer2Uuid to ""))))))
+
+
+        every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
+
+        val result = assessmentsService.getCurrentAssessmentCodedAnswers(assessmentUuid)
+
+        assertThat(result.assessmentUuid).isEqualTo(assessmentUuid)
+        assertThat(result.answers["Q1"]?.first()?.answerSchemaCode).isEqualTo("A1")
+        assertThat(result.answers["Q2"]?.first()?.answerSchemaCode).isEqualTo("A2")
+    }
+
+
+    @Test
+    fun `should overwrite older episode answers with newer episode answers`() {
+        setupQuestionCodes()
+        setupAnswerCodes()
+
+        val assessment = AssessmentEntity(assessmentId = assessmentId,
+                episodes = mutableListOf(
+                        AssessmentEpisodeEntity(episodeId = episodeId1,
+                                endDate = LocalDateTime.of(2020, 10, 1, 9, 0, 0),
+                                answers = mutableMapOf(question1Uuid to AnswerEntity(
+                                        answers = mutableMapOf(answer1Uuid to "")))),
+                        AssessmentEpisodeEntity(episodeId = episodeId3,
+                                endDate = LocalDateTime.of(2020, 10, 2, 10, 0, 0),
+                                answers = mutableMapOf(question1Uuid to AnswerEntity(
+                                        answers = mutableMapOf(answer3Uuid to "")))),
+                        AssessmentEpisodeEntity(episodeId = episodeId2,
+                                endDate = LocalDateTime.of(2020, 10, 2, 9, 0, 0),
+                                answers = mutableMapOf(question1Uuid to AnswerEntity(
+                                        answers = mutableMapOf(answer2Uuid to "")))),
+                ))
+
+
+        every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
+        val result = assessmentsService.getCurrentAssessmentCodedAnswers(assessmentUuid)
+        assertThat(result.answers["Q1"]?.first()?.answerSchemaCode).isEqualTo("A3")
+    }
+
+    @Test
+    fun `should overwrite older episode answers latest episode answers`() {
+        setupQuestionCodes()
+        setupAnswerCodes()
+
+        val assessment = AssessmentEntity(assessmentId = assessmentId,
+                episodes = mutableListOf(
+                        AssessmentEpisodeEntity(episodeId = episodeId1,
+                                endDate = LocalDateTime.of(2020, 10, 1, 9, 0, 0),
+                                answers = mutableMapOf(question1Uuid to AnswerEntity(
+                                        answers = mutableMapOf(answer1Uuid to "")))),
+                        AssessmentEpisodeEntity(episodeId = episodeId3,
+                                endDate = null,
+                                answers = mutableMapOf(question1Uuid to AnswerEntity(
+                                        answers = mutableMapOf(answer3Uuid to "")))),
+                        AssessmentEpisodeEntity(episodeId = episodeId2,
+                                endDate = LocalDateTime.of(2020, 10, 2, 9, 0, 0),
+                                answers = mutableMapOf(question1Uuid to AnswerEntity(
+                                        answers = mutableMapOf(answer2Uuid to "")))),
+                ))
+
+        every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
+
+        val result = assessmentsService.getCurrentAssessmentCodedAnswers(assessmentUuid)
+              assertThat(result.answers["Q1"]?.first()?.answerSchemaCode).isEqualTo("A3")
+
+    }
+
+    @Test
+    fun `should not return free text answers`() {
+
+        setupQuestionCodes()
+        setupAnswerCodes()
+
+        val assessment = AssessmentEntity(assessmentId = assessmentId,
+                episodes = mutableListOf(
+                        AssessmentEpisodeEntity(episodeId = episodeId1,
+                                answers = mutableMapOf(
+                                        question1Uuid to AnswerEntity(answers = mutableMapOf(answer1Uuid to "")),
+                                        question2Uuid to AnswerEntity(freeTextAnswer = "free text")))))
+
+
+        every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
+        val result = assessmentsService.getCurrentAssessmentCodedAnswers(assessmentUuid)
+
+        assertThat(result.assessmentUuid).isEqualTo(assessmentUuid)
+        assertThat(result.answers["Q1"]?.first()?.answerSchemaCode).isEqualTo("A1")
+        assertThat(result.answers).doesNotContainKey("Q2")
+    }
+
+
+    @Test
+    fun `should throw exception when question code lookup fails`() {
+        every { questionService.getAllQuestions() } returns listOf(
+                QuestionSchemaEntity(questionSchemaId = 2, questionSchemaUuid = question2Uuid, questionCode = "Q2")
+        )
+
+        every { questionService.getAllAnswers() } returns listOf()
+
+        val assessment = AssessmentEntity(assessmentId = assessmentId,
+                episodes = mutableListOf(
+                        AssessmentEpisodeEntity(episodeId = episodeId1,
+                                answers = mutableMapOf(
+                                        question1Uuid to AnswerEntity(answers = mutableMapOf(answer1Uuid to ""))))))
+
+        every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
+        assertThatThrownBy { assessmentsService.getCurrentAssessmentCodedAnswers(assessmentUuid) }
+                .isInstanceOf(IllegalStateException::class.java)
+                .hasMessage("Question Code not found for UUID $question1Uuid")
+
+    }
+
+    @Test
+    fun `should throw exception when answer code lookup fails`() {
+        every { questionService.getAllQuestions() } returns listOf(
+                QuestionSchemaEntity(questionSchemaId = 1, questionSchemaUuid = question1Uuid, questionCode = "Q1")
+        )
+
+        every { questionService.getAllAnswers() } returns listOf()
+
+        val assessment = AssessmentEntity(assessmentId = assessmentId,
+                episodes = mutableListOf(
+                        AssessmentEpisodeEntity(episodeId = episodeId1,
+                                answers = mutableMapOf(
+                                        question1Uuid to AnswerEntity(answers = mutableMapOf(answer1Uuid to ""))))))
+
+        every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
+        assertThatThrownBy { assessmentsService.getCurrentAssessmentCodedAnswers(assessmentUuid) }
+                .isInstanceOf(IllegalStateException::class.java)
+                .hasMessage("Answer Code not found for UUID $answer1Uuid")
+
+    }
+
+    private fun setupAnswerCodes() {
+        println("answer1Uuid: $answer1Uuid, answer2Uuid: $answer2Uuid, answer3Uuid: $answer3Uuid,")
+        every { questionService.getAllAnswers() } returns listOf(
+                AnswerSchemaEntity(answerSchemaId = 1, answerSchemaUuid = answer1Uuid, answerSchemaCode = "A1", answerSchemaGroup = AnswerSchemaGroupEntity(answerSchemaId = 1, answerSchemaGroupUuid = UUID.randomUUID())),
+                AnswerSchemaEntity(answerSchemaId = 2, answerSchemaUuid = answer2Uuid, answerSchemaCode = "A2", answerSchemaGroup = AnswerSchemaGroupEntity(answerSchemaId = 2, answerSchemaGroupUuid = UUID.randomUUID())),
+                AnswerSchemaEntity(answerSchemaId = 3, answerSchemaUuid = answer3Uuid, answerSchemaCode = "A3", answerSchemaGroup = AnswerSchemaGroupEntity(answerSchemaId = 2, answerSchemaGroupUuid = UUID.randomUUID())),
+        )
+    }
+
+    private fun setupQuestionCodes() {
+        every { questionService.getAllQuestions() } returns listOf(
+                QuestionSchemaEntity(questionSchemaId = 1, questionSchemaUuid = question1Uuid, questionCode = "Q1"),
+                QuestionSchemaEntity(questionSchemaId = 2, questionSchemaUuid = question2Uuid, questionCode = "Q2")
+        )
     }
 
     private fun assessmentEntity(answers: MutableMap<UUID, AnswerEntity>): AssessmentEntity {

@@ -16,6 +16,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.GroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.GroupSummaryEntity
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionGroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
+import uk.gov.justice.digital.assessments.jpa.repositories.AnswerSchemaRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.GroupRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.QuestionGroupRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.QuestionSchemaRepository
@@ -27,12 +28,14 @@ import java.util.*
 class QuestionServiceTest {
 
     private val questionSchemaRepository: QuestionSchemaRepository = mockk()
+    private val answerSchemaRepository: AnswerSchemaRepository = mockk()
     private val questionGroupRepository: QuestionGroupRepository = mockk()
     private val groupRepository: GroupRepository = mockk()
     private val questionService = QuestionService(
             questionSchemaRepository,
             questionGroupRepository,
-            groupRepository
+            groupRepository,
+            answerSchemaRepository
     )
 
     private val questionId = 1L
@@ -52,7 +55,7 @@ class QuestionServiceTest {
     )
 
     @BeforeEach
-    fun `setup`() {
+    fun setup() {
         val questionGroup = QuestionGroupEntity(
                 questionGroupId = 99,
                 group = group,
@@ -73,7 +76,7 @@ class QuestionServiceTest {
         val questionSchemaDto = questionService.getQuestionSchema(questionUuid)
 
         verify(exactly = 1) { questionSchemaRepository.findByQuestionSchemaUuid(questionUuid) }
-        assertThat(questionSchemaDto).isEqualTo(QuestionSchemaDto(questionSchemaId = questionId, questionSchemaUuid = questionUuid, answerSchemas = emptyList()))
+        assertThat(questionSchemaDto).isEqualTo(QuestionSchemaDto(questionSchemaId = questionId, questionSchemaUuid = questionUuid, answerSchemas = emptySet()))
     }
 
     @Test
@@ -91,11 +94,11 @@ class QuestionServiceTest {
 
         val groupQuestions = questionService.getQuestionGroup(groupUuid)
 
-        assertThat(groupQuestions?.groupId).isEqualTo(groupUuid)
+        assertThat(groupQuestions.groupId).isEqualTo(groupUuid)
 
-        val groupContents = groupQuestions?.contents
+        val groupContents = groupQuestions.contents
         assertThat(groupContents).hasSize(1)
-        val questionRef = groupContents?.get(0) as GroupQuestionDto
+        val questionRef = groupContents[0] as GroupQuestionDto
         assertThat(questionRef.questionId).isEqualTo(questionUuid)
     }
 

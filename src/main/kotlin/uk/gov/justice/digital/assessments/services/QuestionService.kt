@@ -5,7 +5,10 @@ import uk.gov.justice.digital.assessments.api.GroupQuestionDto
 import uk.gov.justice.digital.assessments.api.GroupSummaryDto
 import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
 import uk.gov.justice.digital.assessments.api.QuestionSchemaDto
+import uk.gov.justice.digital.assessments.jpa.entities.AnswerSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionGroupEntity
+import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
+import uk.gov.justice.digital.assessments.jpa.repositories.AnswerSchemaRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.GroupRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.QuestionGroupRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.QuestionSchemaRepository
@@ -15,7 +18,8 @@ import java.util.*
 @Service
 class QuestionService(private val questionSchemaRepository: QuestionSchemaRepository,
                       private val questionGroupRepository: QuestionGroupRepository,
-                      private val groupRepository: GroupRepository) {
+                      private val groupRepository: GroupRepository,
+                      private val answerSchemaRepository: AnswerSchemaRepository) {
 
     fun getQuestionSchema(questionSchemaId: UUID): QuestionSchemaDto {
         val questionSchemaEntity = questionSchemaRepository.findByQuestionSchemaUuid(questionSchemaId)
@@ -49,5 +53,13 @@ class QuestionService(private val questionSchemaRepository: QuestionSchemaReposi
         }
 
         return GroupWithContentsDto.from(group, contents, parentGroup)
+    }
+
+    fun getAllQuestions(): List<QuestionSchemaEntity> {
+        return questionSchemaRepository.findAll()
+    }
+
+    fun getAllAnswers(): List<AnswerSchemaEntity> {
+        return answerSchemaRepository.findAll()
     }
 }
