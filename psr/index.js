@@ -45,7 +45,7 @@ function addGrouping(record) {
 }
 
 function insertSql(table, fields) {
-  return `INSERT INTO ${table} (${fields.join(', ')})\nVALUES\n`
+  return `INSERT INTO ${table} (${fields.join(', ')})\nVALUES `
 }
 
 function valueSql(fields, obj) {
@@ -60,6 +60,6 @@ function valueSql(fields, obj) {
 function groupingSql() {
   const fields = ['group_id', 'group_uuid', 'group_code', 'heading', 'subheading', 'help_text', 'group_start', 'group_end']
   const insert = insertSql('grouping', fields)
-  const values = groups.map(group => valueSql(fields, group)).join('\n  ')
-  return insert + values
+  const values = groups.map(group => valueSql(fields, group)).join(',\n    ')
+  return `${insert}${values};\n\n`
 }
