@@ -16,15 +16,25 @@ const records = all_records.filter(record => record.join('')) // remove lines wi
 const groups = []
 const questions = []
 const psr = addGrouping(['Pre-Sentence Report'])
-console.log(psr)
+
+let currentGroup = null
 
 for (let index = 1; index !== records.length; ++index) {
   const record = records[index];
-  if (isGroup(record))
-    addGrouping(record)
+
+  if (isGroup(record)) {
+    currentGroup = addGrouping(record)
+    continue
+  }
+
+  if (!currentGroup)
+    continue
+
+  addQuestion(record)
 }
 
 console.log(groupingSql())
+console.log(questionsSql())
 
 function isGroup(record) {
   const cleaned = record.filter(f => f)
@@ -44,6 +54,24 @@ function addGrouping(record) {
   return group
 }
 
+function addQuestion(record) {
+  const title = record[0]
+  const question_text = record[9]
+  const answer_type = 'freetext' // record[11]
+  const oasys_question_code = record[17] || null
+  const question = {
+    question_schema_id: questions.length + 100,
+    question_schema_uuid: uuid(),
+    question_code: snakeCase(title),
+    oasys_question_code: oasys_question_code,
+    answer_type: answer_type,
+    question_text: question_text,
+    question_start: '2020-11-30 14:50:00'
+  }
+  questions.push(question)
+  return question
+}
+
 function insertSql(table, fields) {
   return `INSERT INTO ${table} (${fields.join(', ')})\nVALUES `
 }
@@ -57,9 +85,24 @@ function valueSql(fields, obj) {
   return `(${values})`
 }
 
-function groupingSql() {
-  const fields = ['group_id', 'group_uuid', 'group_code', 'heading', 'subheading', 'help_text', 'group_start', 'group_end']
-  const insert = insertSql('grouping', fields)
-  const values = groups.map(group => valueSql(fields, group)).join(',\n    ')
+function tableSql(table, fields, data) {
+  const insert = insertSql(table, fields)
+  const values = data.map(row => valueSql(fields, row)).join(',\n    ')
   return `${insert}${values};\n\n`
+}
+
+function groupingSql() {
+  return tableSql(
+    'grouping',
+    ['group_id', 'group_uuid', 'group_code', 'heading', 'subheading', 'help_text', 'group_start', 'group_end'],
+    groups
+  )
+}
+
+function questionsSql() {
+  return tableSql(
+    'question_schema',
+    ['question_schema_id', 'question_schema_uuid', 'question_code', 'oasys_question_code', 'question_start', 'question_end', 'answer_type', 'answer_schema_group_uuid', 'question_text', 'question_help_text'],
+    questions
+  )
 }
