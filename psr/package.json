@@ -1,0 +1,16 @@
+{
+  "name": "assessment-questions-generations",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "csv-parse": "^4.14.1",
+    "lodash.snakecase": "^4.1.1",
+    "uuid": "^8.3.1"
+  }
+}
