@@ -23,7 +23,7 @@ data class GroupWithContentsDto (
     val helpText: String? = null,
 
     @Schema(description = "Display Order for Group", example = "1")
-    val displayOrder : String? = null,
+    val displayOrder : Int? = 0,
 
     @Schema(description = "Group is Required", example = "true")
     val mandatory : Boolean? = null,

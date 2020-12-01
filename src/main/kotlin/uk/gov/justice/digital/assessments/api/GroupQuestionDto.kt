@@ -22,7 +22,7 @@ data class GroupQuestionDto(
         val helpText: String? = null,
 
         @Schema(description = "Question Order for Group", example = "1")
-        val displayOrder : String? = null,
+        val displayOrder : Int? = 0,
 
         @Schema(description = "Question Mandatory status for Group", example = "true")
         val mandatory : Boolean? = null,

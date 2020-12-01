@@ -27,7 +27,7 @@ class QuestionGroupEntity (
     val contentType: String,
 
     @Column(name = "display_order")
-    val displayOrder : String? = null,
+    val displayOrder : Int = 0,
 
     @Column(name = "mandatory")
     val mandatory : Boolean = false,
