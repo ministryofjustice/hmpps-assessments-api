@@ -54,8 +54,8 @@ CREATE TABLE IF NOT EXISTS question_group
     group_uuid              UUID        NOT NULL,
     content_uuid            UUID        NOT NULL,
     content_type            TEXT        NOT NULL,
-    display_order           TEXT,
-    mandatory               TEXT        NOT NULL,
+    display_order           INTEGER     NOT NULL,
+    mandatory               BOOLEAN     NOT NULL,
     validation              TEXT,
     CONSTRAINT check_content_type CHECK (content_type = 'question' OR content_type = 'group'),
     FOREIGN KEY (group_uuid) REFERENCES grouping(group_uuid)

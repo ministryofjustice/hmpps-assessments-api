@@ -27,10 +27,10 @@ class QuestionGroupEntity (
     val contentType: String,
 
     @Column(name = "display_order")
-    val displayOrder : String? = null,
+    val displayOrder : Int = 0,
 
     @Column(name = "mandatory")
-    val mandatory : String? = null,
+    val mandatory : Boolean = false,
 
     @Column(name = "validation")
     val validation : String? = null,
