@@ -20,6 +20,8 @@ const questions = []
 const questionGroups = []
 const psr = addGrouping(['Pre-Sentence Report'])
 
+const yes_no = ['radio', answerSchemaGroup(['drop-down', 'Yes|Y', 'No|N'])]
+
 let currentGroup = null
 
 for (let index = 1; index !== records.length; ++index) {
@@ -97,6 +99,9 @@ function addQuestionGroup(content_uuid, content_type, group_uuid) {
 
 function answerType(answerField) {
   const lines = answerField.split('\n')
+  if (lines.length === 1 && lines[0] === 'Y/N')
+    return yes_no
+
   if (lines.length === 1 || !lines[0].match(/drop-?down/))
     return ['freetext', null]
 
@@ -104,9 +109,9 @@ function answerType(answerField) {
 }
 
 function answerSchemaGroup(lines) {
-  lines = lines.slice(1)
+  lines = lines.slice(1).map(line => line.split('|')).map(([a, v]) => v ? [a, v] : [a, a.toLowerCase()])
 
-  const name = lines.join('_').replace(/ /g, '-').toLowerCase()
+  const name = lines.map(([a, v]) => a).join('_').replace(/ /g, '-').toLowerCase()
   const existing = answerSchemaGroups.find(a => a.answer_schema_group_code === name)
   if (existing) return existing.answer_schema_group_uuid
 
@@ -120,16 +125,16 @@ function answerSchemaGroup(lines) {
 
   answerSchemaGroups.push(answerGroup)
 
-  for (const answer of lines) {
+  for (const [text, value] of lines) {
     const answerSchema = {
       answer_schema_id: answerSchemas.length + 100,
       answer_schema_uuid: uuid(),
-      answer_schema_code: answer.replace(/ /g, '-').toLowerCase(),
+      answer_schema_code: text.replace(/ /g, '-').toLowerCase(),
       answer_schema_group_uuid: answerGroup.answer_schema_group_uuid,
       answer_start: '2020-11-30 14:50:00',
       answer_end: null,
-      value: answer.toLowerCase(),
-      text: answer
+      value: value,
+      text: text
     }
     answerSchemas.push(answerSchema)
   }
