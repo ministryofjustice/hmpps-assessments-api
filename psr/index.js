@@ -84,7 +84,7 @@ function addQuestionGroup(content_uuid, content_type, group_uuid) {
     content_type: content_type,
     group_uuid: group_uuid,
     display_order: questionGroups.filter(qg => qg.group_uuid === group_uuid).length + 1,
-    mandatory: 'yes',
+    mandatory: true,
     validation: null
   }
   questionGroups.push(questionGroup)
