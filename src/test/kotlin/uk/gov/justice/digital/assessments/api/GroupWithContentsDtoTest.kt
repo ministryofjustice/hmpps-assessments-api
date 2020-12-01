@@ -52,7 +52,7 @@ class GroupWithContentsDtoTest {
             question.questionSchemaUuid,
             "question",
             "1",
-            "mandatory",
+            true,
             "none",
             question,
             null
@@ -76,7 +76,7 @@ class GroupWithContentsDtoTest {
             question.questionSchemaUuid,
             "question",
             "1",
-            "mandatory",
+            true,
             "none",
             question,
             null
@@ -88,7 +88,7 @@ class GroupWithContentsDtoTest {
             additionalQuestion.questionSchemaUuid,
             "question",
             "2",
-            "no",
+            false,
             "lots",
             additionalQuestion,
             null
@@ -112,7 +112,7 @@ class GroupWithContentsDtoTest {
             question.questionSchemaUuid,
             "question",
             "1",
-            "mandatory",
+            true,
             "none",
             question,
             null
@@ -124,7 +124,7 @@ class GroupWithContentsDtoTest {
             groupWithTwoQuestions.groupUuid,
             "group",
             "2",
-            null,
+            false,
             null,
             null,
             groupWithTwoQuestions
@@ -136,7 +136,7 @@ class GroupWithContentsDtoTest {
             additionalQuestion.questionSchemaUuid,
             "question",
             "3",
-            "no",
+            false,
             "lots",
             additionalQuestion,
             null

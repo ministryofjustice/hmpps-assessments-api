@@ -24,8 +24,8 @@ data class GroupQuestionDto(
         @Schema(description = "Question Order for Group", example = "1")
         val displayOrder : String? = null,
 
-        @Schema(description = "Question Mandatory status for Group", example = "mandatory")
-        val mandatory : String? = null,
+        @Schema(description = "Question Mandatory status for Group", example = "true")
+        val mandatory : Boolean? = null,
 
         @Schema(description = "Question Validation for Group", example = "to-do")
         val validation : String? = null,

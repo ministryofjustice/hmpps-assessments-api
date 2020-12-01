@@ -30,7 +30,7 @@ class QuestionGroupEntity (
     val displayOrder : String? = null,
 
     @Column(name = "mandatory")
-    val mandatory : String? = null,
+    val mandatory : Boolean = false,
 
     @Column(name = "validation")
     val validation : String? = null,
