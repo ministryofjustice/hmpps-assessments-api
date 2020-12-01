@@ -61,7 +61,7 @@ class QuestionServiceTest {
                 group = group,
                 contentUuid = questionUuid,
                 contentType = "question",
-                displayOrder = "1",
+                displayOrder = 1,
                 question = question,
                 nestedGroup = null
         )
