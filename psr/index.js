@@ -13,6 +13,8 @@ const all_records = parse(input, {
 
 const records = all_records.filter(record => record.join('')) // remove lines with no content
 
+const answerSchemaGroups = []
+const answerSchemas = []
 const groups = []
 const questions = []
 const questionGroups = []
@@ -36,6 +38,8 @@ for (let index = 1; index !== records.length; ++index) {
   addQuestionGroup(question.question_schema_uuid, 'question', currentGroup.group_uuid)
 }
 
+console.log(answerSchemaGroupSql())
+console.log(answerSchemaSql())
 console.log(groupingSql())
 console.log(questionsSql())
 console.log(questionGroupSql())
@@ -61,7 +65,7 @@ function addGrouping(record) {
 function addQuestion(record) {
   const title = record[0]
   const question_text = record[9].replace(/'/g, "''")
-  const answer_type = 'freetext' // record[11]
+  const [answer_type, answer_schema_group_uuid] = answerType(record[11])
   const oasys_question_code = record[17] || null
   const question = {
     question_schema_id: questions.length + 100,
@@ -69,6 +73,7 @@ function addQuestion(record) {
     question_code: snakeCase(title),
     oasys_question_code: oasys_question_code,
     answer_type: answer_type,
+    answer_schema_group_uuid: answer_schema_group_uuid,
     question_text: question_text,
     question_start: '2020-11-30 14:50:00'
   }
@@ -90,6 +95,48 @@ function addQuestionGroup(content_uuid, content_type, group_uuid) {
   questionGroups.push(questionGroup)
 }
 
+function answerType(answerField) {
+  const lines = answerField.split('\n')
+  if (lines.length === 1 || !lines[0].match(/drop-?down/))
+    return ['freetext', null]
+
+  return ['dropdown', answerSchemaGroup(lines)]
+}
+
+function answerSchemaGroup(lines) {
+  lines = lines.slice(1)
+
+  const name = lines.join('_').replace(/ /g, '-').toLowerCase()
+  const existing = answerSchemaGroups.find(a => a.answer_schema_group_code === name)
+  if (existing) return existing.answer_schema_group_uuid
+
+  const answerGroup = {
+    answer_schema_group_id: answerSchemaGroups.length + 1000,
+    answer_schema_group_uuid: uuid(),
+    answer_schema_group_code: name,
+    group_start: '2020-11-30 14:50:00',
+    group_end: null
+  }
+
+  answerSchemaGroups.push(answerGroup)
+
+  for (const answer of lines) {
+    const answerSchema = {
+      answer_schema_id: answerSchemas.length + 100,
+      answer_schema_uuid: uuid(),
+      answer_schema_code: answer.replace(/ /g, '-').toLowerCase(),
+      answer_schema_group_uuid: answerGroup.answer_schema_group_uuid,
+      answer_start: '2020-11-30 14:50:00',
+      answer_end: null,
+      value: answer.toLowerCase(),
+      text: answer
+    }
+    answerSchemas.push(answerSchema)
+  }
+  return answerGroup.answer_schema_group_uuid
+}
+
+///////////////////////////
 function insertSql(table, fields) {
   return `INSERT INTO ${table} (${fields.join(', ')})\nVALUES `
 }
@@ -107,6 +154,22 @@ function tableSql(table, fields, data) {
   const insert = insertSql(table, fields)
   const values = data.map(row => valueSql(fields, row)).join(',\n    ')
   return `${insert}${values};\n\n`
+}
+
+function answerSchemaGroupSql() {
+  return tableSql(
+    'answer_schema_group',
+    ['answer_schema_group_id', 'answer_schema_group_uuid', 'answer_schema_group_code', 'group_start', 'group_end' ],
+    answerSchemaGroups
+  )
+}
+
+function answerSchemaSql() {
+  return tableSql(
+    'answer_schema',
+    ['answer_schema_id', 'answer_schema_uuid', 'answer_schema_code', 'answer_schema_group_uuid', 'answer_start', 'answer_end', 'value', 'text'],
+    answerSchemas
+  )
 }
 
 function groupingSql() {
