@@ -6,12 +6,19 @@ const snakeCase = require('lodash.snakecase')
 const input = fs.readFileSync('short-form-psr.csv')
 
 const all_records = parse(input, {
-  columns: false,
-  relax_column_count: true,
-  skip_empty_lines: true
-})
+    columns: false,
+    relax_column_count: true,
+    skip_empty_lines: true
+  })
+  .filter(record => record.join('')) // remove lines with no content
 
-const records = all_records.filter(record => record.join('')) // remove lines with no content
+const headers = all_records[1]
+const TITLE = headers.findIndex(field => field.match(/^question/i))
+const QUESTION = headers.findIndex(field => field.match(/proposed.*wording/i))
+const ANSWER_TYPE = headers.findIndex(field => field.match(/input type/i))
+const OASYS_REF = headers.findIndex(field => field.match(/oasys ref/i))
+
+const records = all_records.slice(2)
 
 const answerSchemaGroups = []
 const answerSchemas = []
@@ -24,9 +31,7 @@ const yes_no = ['radio', answerSchemaGroup(['drop-down', 'Yes|Y', 'No|N'])]
 
 let currentGroup = null
 
-for (let index = 1; index !== records.length; ++index) {
-  const record = records[index];
-
+for (const record of records) {
   if (isGroup(record)) {
     currentGroup = addGrouping(record)
     addQuestionGroup(currentGroup.group_uuid, 'group', psr.group_uuid)
@@ -48,11 +53,11 @@ console.log(questionGroupSql())
 
 function isGroup(record) {
   const cleaned = record.filter(f => f)
-  return (record[0] && cleaned.length == 1)
+  return (record[TITLE] && cleaned.length == 1)
 }
 
 function addGrouping(record) {
-  const heading = record[0]
+  const heading = record[TITLE]
   const group = {
     group_id: groups.length + 100,
     group_uuid: uuid(),
@@ -65,10 +70,10 @@ function addGrouping(record) {
 }
 
 function addQuestion(record) {
-  const title = record[0]
-  const question_text = record[9].replace(/'/g, "''")
-  const [answer_type, answer_schema_group_uuid] = answerType(record[11])
-  const oasys_question_code = record[17] || null
+  const title = record[TITLE]
+  const question_text = record[QUESTION].replace(/'/g, "''")
+  const [answer_type, answer_schema_group_uuid] = answerType(record[ANSWER_TYPE])
+  const oasys_question_code = record[OASYS_REF] || null
   const question = {
     question_schema_id: questions.length + 100,
     question_schema_uuid: uuid(),
@@ -102,10 +107,15 @@ function answerType(answerField) {
   if (lines.length === 1 && lines[0] === 'Y/N')
     return yes_no
 
-  if (lines.length === 1 || !lines[0].match(/drop-?down/))
-    return ['freetext', null]
+  if (lines.length !== 1) {
+    const type = lines[0].toLowerCase()
+    if (type.match(/drop-?down/))
+      return ['dropdown', answerSchemaGroup(lines)]
+    if (type.match(/radio/))
+      return ['radio', answerSchemaGroup(lines)]
+  }
 
-  return ['dropdown', answerSchemaGroup(lines)]
+  return ['freetext', null]
 }
 
 function answerSchemaGroup(lines) {
