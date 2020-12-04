@@ -3,7 +3,12 @@ const fs = require('fs')
 const { v4: uuid } = require('uuid')
 const snakeCase = require('lodash.snakecase')
 
-const input = fs.readFileSync('short-form-psr.csv')
+if (process.argv.length !== 3) {
+  return console.error("Usage: node assessment-generator <csv-file>")
+}
+
+const csvfile = process.argv[2]
+const input = fs.readFileSync(csvfile)
 
 const all_records = parse(input, {
     columns: false,
@@ -17,6 +22,10 @@ const TITLE = headers.findIndex(field => field.match(/^question/i))
 const QUESTION = headers.findIndex(field => field.match(/proposed.*wording/i))
 const ANSWER_TYPE = headers.findIndex(field => field.match(/input type/i))
 const OASYS_REF = headers.findIndex(field => field.match(/oasys ref/i))
+
+if ([TITLE, QUESTION, ANSWER_TYPE, OASYS_REF].includes(-1)) {
+  return console.error(`${csvfile} does not look like I expect!`)
+}
 
 const records = all_records.slice(2)
 
