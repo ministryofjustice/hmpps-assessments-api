@@ -59,7 +59,6 @@ function isGroup(record) {
 function addGrouping(record) {
   const heading = record[TITLE]
   const group = {
-    group_id: groups.length + 100,
     group_uuid: uuid(),
     group_code: snakeCase(heading),
     heading: heading,
@@ -75,7 +74,6 @@ function addQuestion(record) {
   const [answer_type, answer_schema_group_uuid] = answerType(record[ANSWER_TYPE])
   const oasys_question_code = record[OASYS_REF] || null
   const question = {
-    question_schema_id: questions.length + 100,
     question_schema_uuid: uuid(),
     question_code: snakeCase(title),
     oasys_question_code: oasys_question_code,
@@ -90,7 +88,6 @@ function addQuestion(record) {
 
 function addQuestionGroup(content_uuid, content_type, group_uuid) {
   const questionGroup = {
-    question_group_id: questionGroups.length + 101,
     question_group_uuid: uuid(),
     content_uuid: content_uuid,
     content_type: content_type,
@@ -126,7 +123,6 @@ function answerSchemaGroup(lines) {
   if (existing) return existing.answer_schema_group_uuid
 
   const answerGroup = {
-    answer_schema_group_id: answerSchemaGroups.length + 1000,
     answer_schema_group_uuid: uuid(),
     answer_schema_group_code: name,
     group_start: '2020-11-30 14:50:00',
@@ -137,7 +133,6 @@ function answerSchemaGroup(lines) {
 
   for (const [text, value] of lines) {
     const answerSchema = {
-      answer_schema_id: answerSchemas.length + 100,
       answer_schema_uuid: uuid(),
       answer_schema_code: text.replace(/ /g, '-').toLowerCase(),
       answer_schema_group_uuid: answerGroup.answer_schema_group_uuid,
@@ -174,7 +169,7 @@ function tableSql(table, fields, data) {
 function answerSchemaGroupSql() {
   return tableSql(
     'answer_schema_group',
-    ['answer_schema_group_id', 'answer_schema_group_uuid', 'answer_schema_group_code', 'group_start', 'group_end' ],
+    ['answer_schema_group_uuid', 'answer_schema_group_code', 'group_start', 'group_end' ],
     answerSchemaGroups
   )
 }
@@ -182,7 +177,7 @@ function answerSchemaGroupSql() {
 function answerSchemaSql() {
   return tableSql(
     'answer_schema',
-    ['answer_schema_id', 'answer_schema_uuid', 'answer_schema_code', 'answer_schema_group_uuid', 'answer_start', 'answer_end', 'value', 'text'],
+    ['answer_schema_uuid', 'answer_schema_code', 'answer_schema_group_uuid', 'answer_start', 'answer_end', 'value', 'text'],
     answerSchemas
   )
 }
@@ -190,7 +185,7 @@ function answerSchemaSql() {
 function groupingSql() {
   return tableSql(
     'grouping',
-    ['group_id', 'group_uuid', 'group_code', 'heading', 'subheading', 'help_text', 'group_start', 'group_end'],
+    ['group_uuid', 'group_code', 'heading', 'subheading', 'help_text', 'group_start', 'group_end'],
     groups
   )
 }
@@ -198,7 +193,7 @@ function groupingSql() {
 function questionsSql() {
   return tableSql(
     'question_schema',
-    ['question_schema_id', 'question_schema_uuid', 'question_code', 'oasys_question_code', 'question_start', 'question_end', 'answer_type', 'answer_schema_group_uuid', 'question_text', 'question_help_text'],
+    ['question_schema_uuid', 'question_code', 'oasys_question_code', 'question_start', 'question_end', 'answer_type', 'answer_schema_group_uuid', 'question_text', 'question_help_text'],
     questions
   )
 }
@@ -206,7 +201,7 @@ function questionsSql() {
 function questionGroupSql() {
   return tableSql(
     'question_group',
-    ['question_group_id', 'question_group_uuid', 'content_uuid', 'content_type', 'group_uuid', 'display_order', 'mandatory', 'validation'],
+    ['question_group_uuid', 'content_uuid', 'content_type', 'group_uuid', 'display_order', 'mandatory', 'validation'],
     questionGroups
   )
 }
