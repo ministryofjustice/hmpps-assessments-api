@@ -34,7 +34,7 @@ const answerSchemas = []
 const groups = []
 const questions = []
 const questionGroups = []
-const psr = addGrouping(['Pre-Sentence Report'])
+const assessment = addGrouping(all_records[0])
 
 const yes_no = ['radio', answerSchemaGroup(['drop-down', 'Yes|Y', 'No|N'])]
 
@@ -43,7 +43,7 @@ let currentGroup = null
 for (const record of records) {
   if (isGroup(record)) {
     currentGroup = addGrouping(record)
-    addQuestionGroup(currentGroup.group_uuid, 'group', psr.group_uuid)
+    addQuestionGroup(currentGroup.group_uuid, 'group', assessment.group_uuid)
     continue
   }
 
