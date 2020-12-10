@@ -121,6 +121,8 @@ function answerType(answerField) {
       return ['radio', answerSchemaGroup(lines)]
   }
 
+  if (answerField.match(/date/i))
+    return ['date', null]
   return ['freetext', null]
 }
 
@@ -141,6 +143,7 @@ function answerSchemaGroup(lines) {
   answerSchemaGroups.push(answerGroup)
 
   for (const [text, value] of lines) {
+    if (!text) continue
     const answerSchema = {
       answer_schema_uuid: uuid(),
       answer_schema_code: text.replace(/ /g, '-').toLowerCase(),
