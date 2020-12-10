@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.assessments.jpa.entities.SubjectEntity
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.Period
 import java.util.*
 
 class AssessmentSubjectDto (
@@ -25,6 +26,8 @@ class AssessmentSubjectDto (
     @Schema(description = "Subject Record created Date", example = "2020-01-02T16:00:00")
     val createdDate: LocalDateTime? = null,
 ) {
+    val age: Int? get() = dob?.let { Period.between(dob, LocalDate.now()).years }
+
     companion object {
         fun from(subject: SubjectEntity?): AssessmentSubjectDto? {
             if (subject == null) return null
