@@ -65,6 +65,23 @@ class AssessmentControllerTest : IntegrationTest() {
     }
 
     @Test
+    fun `get the subject details for an assessment`() {
+        val subject = webTestClient.get().uri("/assessments/2e020e78-a81c-407f-bc78-e5f284e237e5/subject")
+                .headers(setAuthorisation())
+                .exchange()
+                .expectStatus().isOk
+                .expectBody<AssessmentSubjectDto>()
+                .returnResult()
+                .responseBody
+
+        assertThat(subject?.assessmentUuid).isEqualTo(UUID.fromString("2e020e78-a81c-407f-bc78-e5f284e237e5"))
+        assertThat(subject?.name).isEqualTo("John Smith")
+        assertThat(subject?.dob).isEqualTo("20200228")
+        assertThat(subject?.crn).isEqualTo("dummy-crn")
+        assertThat(subject?.pnc).isEqualTo("dummy-pnc")
+    }
+
+    @Test
     fun `retrieves episodes for an assessment`() {
         val episodes = webTestClient.get().uri("/assessments/2e020e78-a81c-407f-bc78-e5f284e237e5/episodes")
                 .headers(setAuthorisation())

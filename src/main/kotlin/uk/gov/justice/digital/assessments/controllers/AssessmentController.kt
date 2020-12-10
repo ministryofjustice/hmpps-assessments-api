@@ -22,8 +22,18 @@ class AssessmentController(val assessmentService : AssessmentService) {
         return assessmentService.createNewAssessment(createAssessmentDto.supervisionId)
     }
 
+    @RequestMapping(path = ["/assessments/{assessmentUuid}/subject"], method = [RequestMethod.GET])
+    @Operation(description = "Details of the person who is the subject of the assessment")
+    @ApiResponses(value = [
+        ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
+        ApiResponse(responseCode = "200", description = "OK")
+    ])
+    fun getAssessmentSubject(@Parameter(description = "Assessment UUID", required = true) @PathVariable assessmentUuid: UUID): AssessmentSubjectDto {
+        return AssessmentSubjectDto()
+    }
+
     @RequestMapping(path = ["/assessments/{assessmentUuid}/episodes"], method = [RequestMethod.POST])
-    @Operation(description = "Creates a new episode for an episode")
+    @Operation(description = "Creates a new episode for a supervision")
     @ApiResponses(value = [
         ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
         ApiResponse(responseCode = "200", description = "OK")
