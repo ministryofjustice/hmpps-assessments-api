@@ -27,9 +27,12 @@ class AssessmentEntity(
         var completedDate: LocalDateTime? = null,
 
         @OneToMany(mappedBy = "assessment", cascade = [CascadeType.ALL])
-        val episodes: MutableList<AssessmentEpisodeEntity> = mutableListOf()
+        val episodes: MutableList<AssessmentEpisodeEntity> = mutableListOf(),
 
+        @OneToMany(mappedBy = "assessment", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
+        private val subject_: MutableList<SubjectEntity> = mutableListOf()
 ):Serializable {
+    val subject get() = this.subject_.firstOrNull()
 
     fun getCurrentEpisode(): AssessmentEpisodeEntity? {
         return episodes.firstOrNull { !it.isClosed() }
