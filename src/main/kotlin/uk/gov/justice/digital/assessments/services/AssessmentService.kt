@@ -44,7 +44,9 @@ class AssessmentService(private val assessmentRepository: AssessmentRepository, 
     }
 
     fun getAssessmentSubject(assessmentUuid: UUID): AssessmentSubjectDto {
-        return AssessmentSubjectDto()
+        val assessment = getAssessmentByUuid(assessmentUuid)
+        return AssessmentSubjectDto.from(assessment.subject)
+                ?: throw EntityNotFoundException("No subject found for $assessmentUuid")
     }
 
     fun getAssessmentEpisodes(assessmentUuid: UUID): Collection<AssessmentEpisodeDto>? {

@@ -76,7 +76,7 @@ class AssessmentControllerTest : IntegrationTest() {
 
         assertThat(subject?.assessmentUuid).isEqualTo(UUID.fromString("2e020e78-a81c-407f-bc78-e5f284e237e5"))
         assertThat(subject?.name).isEqualTo("John Smith")
-        assertThat(subject?.dob).isEqualTo("20200228")
+        assertThat(subject?.dob).isEqualTo("1928-08-01")
         assertThat(subject?.crn).isEqualTo("dummy-crn")
         assertThat(subject?.pnc).isEqualTo("dummy-pnc")
     }

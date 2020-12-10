@@ -1,7 +1,8 @@
 package uk.gov.justice.digital.assessments.api
 
 import io.swagger.v3.oas.annotations.media.Schema
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEntity
+import uk.gov.justice.digital.assessments.jpa.entities.SubjectEntity
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.*
 
@@ -19,11 +20,23 @@ class AssessmentSubjectDto (
     val crn: String? = null,
 
     @Schema(description = "Date of birth", example = "1929-08-08")
-    val dob: String? = null,
+    val dob: LocalDate? = null,
 
     @Schema(description = "Subject Record created Date", example = "2020-01-02T16:00:00")
     val createdDate: LocalDateTime? = null,
 ) {
+    companion object {
+        fun from(subject: SubjectEntity?): AssessmentSubjectDto? {
+            if (subject == null) return null
+            return AssessmentSubjectDto(
+                    subject.assessment?.assessmentUuid,
+                    subject.name,
+                    subject.pnc,
+                    subject.crn,
+                    subject.dateOfBirth
+            )
+        }
+    }
 }
 
 
