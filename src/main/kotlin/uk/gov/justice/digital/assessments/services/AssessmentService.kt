@@ -43,6 +43,10 @@ class AssessmentService(private val assessmentRepository: AssessmentRepository, 
         return AssessmentEpisodeDto.from(episode)
     }
 
+    fun getAssessmentSubject(assessmentUuid: UUID): AssessmentSubjectDto {
+        return AssessmentSubjectDto()
+    }
+
     fun getAssessmentEpisodes(assessmentUuid: UUID): Collection<AssessmentEpisodeDto>? {
         val assessment = getAssessmentByUuid(assessmentUuid)
         log.info("Found ${assessment.episodes.size} for assessment $assessmentUuid")

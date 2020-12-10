@@ -29,7 +29,7 @@ class AssessmentController(val assessmentService : AssessmentService) {
         ApiResponse(responseCode = "200", description = "OK")
     ])
     fun getAssessmentSubject(@Parameter(description = "Assessment UUID", required = true) @PathVariable assessmentUuid: UUID): AssessmentSubjectDto {
-        return AssessmentSubjectDto()
+        return assessmentService.getAssessmentSubject(assessmentUuid);
     }
 
     @RequestMapping(path = ["/assessments/{assessmentUuid}/episodes"], method = [RequestMethod.POST])
