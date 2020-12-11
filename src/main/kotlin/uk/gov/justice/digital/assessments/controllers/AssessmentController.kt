@@ -19,7 +19,7 @@ class AssessmentController(val assessmentService : AssessmentService) {
         ApiResponse(responseCode = "200", description = "OK")
     ])
     fun createNewAssessment(@Parameter(description = "Supervision Id", required = true) @RequestBody createAssessmentDto : CreateAssessmentDto): AssessmentDto {
-        return assessmentService.createNewAssessment(createAssessmentDto.supervisionId)
+        return assessmentService.createNewAssessment(createAssessmentDto)
     }
 
     @RequestMapping(path = ["/assessments/{assessmentUuid}/subject"], method = [RequestMethod.GET])

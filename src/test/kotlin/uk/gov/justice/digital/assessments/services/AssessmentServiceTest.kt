@@ -11,6 +11,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import uk.gov.justice.digital.assessments.api.AnswerDto
+import uk.gov.justice.digital.assessments.api.CreateAssessmentDto
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.jpa.entities.*
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
@@ -50,7 +51,7 @@ class AssessmentServiceTest {
         every { assessmentRepository.findBySupervisionId(any()) } returns null
         every { assessmentRepository.save(any()) } returns AssessmentEntity(assessmentId = assessmentId)
 
-        assessmentsService.createNewAssessment("SupervisionId")
+        assessmentsService.createNewAssessment(CreateAssessmentDto("SupervisionId"))
         verify(exactly = 1) { assessmentRepository.save(any()) }
     }
 
@@ -58,7 +59,7 @@ class AssessmentServiceTest {
     fun `should return existing assessment if one exists`() {
         every { assessmentRepository.findBySupervisionId(any()) } returns AssessmentEntity(assessmentId = assessmentId, assessmentUuid = assessmentUuid)
 
-        val assessmentDto = assessmentsService.createNewAssessment("SupervisionId")
+        val assessmentDto = assessmentsService.createNewAssessment(CreateAssessmentDto("SupervisionId"))
         assertThat(assessmentDto.assessmentUuid).isEqualTo(assessmentUuid)
         verify(exactly = 0) { assessmentRepository.save(any()) }
     }

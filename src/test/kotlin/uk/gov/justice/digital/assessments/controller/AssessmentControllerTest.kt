@@ -32,6 +32,8 @@ class AssessmentControllerTest : IntegrationTest() {
         val assessment = createAssessment("SupervisionId")
 
         assertThat(assessment.supervisionId).isEqualTo("SupervisionId")
+        assertThat(assessment.assessmentId).isNotNull()
+        assertThat(assessment.assessmentUuid).isNotNull()
         assertThat(assessment.createdDate).isEqualToIgnoringMinutes(LocalDateTime.now())
     }
 
@@ -48,7 +50,6 @@ class AssessmentControllerTest : IntegrationTest() {
 
     @Test
     fun `creates new episode on existing assessment`() {
-
         val episode = webTestClient.post().uri("/assessments/f9a07b3f-91b7-45a7-a5ca-2d98cf1147d8/episodes")
                 .bodyValue(CreateAssessmentEpisodeDto("Change of Circs"))
                 .headers(setAuthorisation())
@@ -80,6 +81,16 @@ class AssessmentControllerTest : IntegrationTest() {
         assertThat(subject?.age).isGreaterThanOrEqualTo(92)
         assertThat(subject?.crn).isEqualTo("dummy-crn")
         assertThat(subject?.pnc).isEqualTo("dummy-pnc")
+    }
+
+    @Test
+    fun `creates a new assessment from court details, returns assessment`() {
+        val assessment = createAssessment("SHF06", "668911253");
+
+        assertThat(assessment.supervisionId).isNull()
+        assertThat(assessment.assessmentId).isNotNull()
+        assertThat(assessment.assessmentUuid).isNotNull()
+        assertThat(assessment.createdDate).isEqualToIgnoringMinutes(LocalDateTime.now())
     }
 
     @Test
@@ -167,8 +178,17 @@ class AssessmentControllerTest : IntegrationTest() {
     }
 
     private fun createAssessment(supervisionId: String): AssessmentDto {
+        return createAssessment(CreateAssessmentDto(supervisionId))
+    }
+
+    private fun createAssessment(courtCode: String, caseNumber: String): AssessmentDto {
+        return createAssessment(CreateAssessmentDto(courtCode = courtCode, caseNumber = caseNumber))
+    }
+
+
+    private fun createAssessment(cad: CreateAssessmentDto): AssessmentDto {
         val assessment = webTestClient.post().uri("/assessments/supervision")
-                .bodyValue(CreateAssessmentDto(supervisionId))
+                .bodyValue(cad)
                 .headers(setAuthorisation())
                 .exchange()
                 .expectStatus().isOk

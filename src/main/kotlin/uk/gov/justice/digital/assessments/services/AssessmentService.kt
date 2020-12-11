@@ -22,7 +22,18 @@ class AssessmentService(private val assessmentRepository: AssessmentRepository, 
         val log: Logger = LoggerFactory.getLogger(this::class.java)
     }
 
-    fun createNewAssessment(supervisionId: String?): AssessmentDto {
+    fun createNewAssessment(newAssessment: CreateAssessmentDto): AssessmentDto {
+        if (newAssessment.isSupervision()) {
+            return createNewAssessment(newAssessment.supervisionId)
+        }
+        if (newAssessment.isCourtCase()) {
+
+        }
+
+        throw IllegalStateException("Empty create assessment request")
+    }
+
+    private fun createNewAssessment(supervisionId: String?): AssessmentDto {
         val existingAssessment = assessmentRepository.findBySupervisionId(supervisionId)
 
         if (existingAssessment != null) {
