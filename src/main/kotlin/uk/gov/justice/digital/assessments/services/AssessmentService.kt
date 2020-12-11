@@ -9,6 +9,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.AnswerSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
+import uk.gov.justice.digital.assessments.jpa.repositories.SubjectRepository
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
 import java.time.LocalDateTime
@@ -16,24 +17,27 @@ import java.util.*
 import javax.transaction.Transactional
 
 @Service
-class AssessmentService(private val assessmentRepository: AssessmentRepository, private val questionService: QuestionService) {
-
+class AssessmentService(
+        private val assessmentRepository: AssessmentRepository,
+        private val subjectRepository: SubjectRepository,
+        private val questionService: QuestionService
+) {
     companion object {
         val log: Logger = LoggerFactory.getLogger(this::class.java)
     }
 
     fun createNewAssessment(newAssessment: CreateAssessmentDto): AssessmentDto {
         if (newAssessment.isSupervision()) {
-            return createNewAssessment(newAssessment.supervisionId)
+            return createFromSupervision(newAssessment.supervisionId!!)
         }
         if (newAssessment.isCourtCase()) {
-
+            return createFromCourtCase(newAssessment.courtCode!!, newAssessment.caseNumber!!)
         }
 
         throw IllegalStateException("Empty create assessment request")
     }
 
-    private fun createNewAssessment(supervisionId: String?): AssessmentDto {
+    private fun createFromSupervision(supervisionId: String): AssessmentDto {
         val existingAssessment = assessmentRepository.findBySupervisionId(supervisionId)
 
         if (existingAssessment != null) {
@@ -44,6 +48,26 @@ class AssessmentService(private val assessmentRepository: AssessmentRepository, 
         val newAssessment = assessmentRepository.save(AssessmentEntity(supervisionId = supervisionId, createdDate = LocalDateTime.now()))
         log.info("New assessment created for supervision $supervisionId")
         return AssessmentDto.from(newAssessment)
+    }
+
+    private fun createFromCourtCase(courtCode: String, caseNumber: String): AssessmentDto {
+        // do we have a subject associated with this case?
+        val existingSubject = subjectRepository.findBySourceAndSourceId("COURT", "$courtCode|$caseNumber")
+
+        // yes, so return the assessment
+        if (existingSubject != null) {
+            log.info("Existing assessment found for court $courtCode, case ${caseNumber}")
+            return AssessmentDto.from(existingSubject.assessment!!)
+        }
+
+        // no, so fetch subject details from court case service
+
+        // create assessment
+
+        // create subject
+
+        // return assessment
+        return AssessmentDto()
     }
 
     @Transactional

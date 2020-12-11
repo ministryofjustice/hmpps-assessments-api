@@ -67,7 +67,7 @@ class AssessmentControllerTest : IntegrationTest() {
 
     @Test
     fun `get the subject details for an assessment`() {
-        val subject = webTestClient.get().uri("/assessments/2e020e78-a81c-407f-bc78-e5f284e237e5/subject")
+        val subject = webTestClient.get().uri("/assessments/19c8d211-68dc-4692-a6e2-d58468127056/subject")
                 .headers(setAuthorisation())
                 .exchange()
                 .expectStatus().isOk
@@ -75,7 +75,7 @@ class AssessmentControllerTest : IntegrationTest() {
                 .returnResult()
                 .responseBody
 
-        assertThat(subject?.assessmentUuid).isEqualTo(UUID.fromString("2e020e78-a81c-407f-bc78-e5f284e237e5"))
+        assertThat(subject?.assessmentUuid).isEqualTo(UUID.fromString("19c8d211-68dc-4692-a6e2-d58468127056"))
         assertThat(subject?.name).isEqualTo("John Smith")
         assertThat(subject?.dob).isEqualTo("1928-08-01")
         assertThat(subject?.age).isGreaterThanOrEqualTo(92)
@@ -92,6 +92,16 @@ class AssessmentControllerTest : IntegrationTest() {
         assertThat(assessment.assessmentUuid).isNotNull()
         assertThat(assessment.createdDate).isEqualToIgnoringMinutes(LocalDateTime.now())
     }
+
+    @Test
+    fun `try to create new assessment from court details, returns existing assessment`() {
+        val assessment = createAssessment("courtCode", "caseNumber");
+
+        assertThat(assessment.supervisionId).isNull()
+        assertThat(assessment.assessmentId).isEqualTo(2)
+        assertThat(assessment.assessmentUuid).isEqualTo(UUID.fromString("19c8d211-68dc-4692-a6e2-d58468127056"))
+    }
+
 
     @Test
     fun `retrieves episodes for an assessment`() {
