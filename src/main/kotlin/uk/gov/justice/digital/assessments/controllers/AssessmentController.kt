@@ -13,7 +13,7 @@ import java.util.*
 class AssessmentController(val assessmentService : AssessmentService) {
 
     @RequestMapping(path = ["/assessments/supervision"], method = [RequestMethod.POST])
-    @Operation(description = "Creates a new assessment for a supervision")
+    @Operation(description = "Creates a new assessment for a supervision, or a court code and case number")
     @ApiResponses(value = [
         ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
         ApiResponse(responseCode = "200", description = "OK")
