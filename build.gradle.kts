@@ -30,6 +30,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.springframework.boot:spring-boot-starter-cache")
+    implementation("org.springframework.security:spring-security-oauth2-client")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("javax.annotation:javax.annotation-api:1.3.2")
@@ -47,7 +48,7 @@ dependencies {
     implementation("com.zaxxer:HikariCP:3.4.5")
     implementation("com.vladmihalcea:hibernate-types-52:2.10.0")
 
-    implementation( "com.google.code.gson:gson:2.8.6")
+    implementation("com.google.code.gson:gson:2.8.6")
     implementation("com.google.guava:guava:29.0-jre")
     implementation("org.apache.commons:commons-lang3:3.11")
     implementation("org.postgresql:postgresql")

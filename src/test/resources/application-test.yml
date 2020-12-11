@@ -12,6 +12,18 @@ spring:
     show_sql: true
   security:
     oauth2:
+      client:
+        registration:
+          court-case-client:
+            client-name: court-case-api-client
+            client-id: ${court-case-api-id:court-case-api}
+            client-secret: ${court-case-api-client-secret:clientsecret}
+            client-authentication-method: basic
+            authorization-grant-type: client_credentials
+            provider: oauth-service
+        provider:
+          oauth-service:
+            token-uri: http://localhost:9010/auth/oauth/token
       resourceserver:
         jwt:
           issuer-uri: http://localhost:9010/auth/issuer
@@ -21,3 +33,6 @@ spring:
 graceful:
   shutdown:
     enabled: false
+
+court-case-api:
+  base-url: http://localhost:9002
