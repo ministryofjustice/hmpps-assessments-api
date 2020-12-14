@@ -8,6 +8,9 @@ class GroupSummaryDto(
     @Schema(description = "Group Identifier", example = "<uuid>")
     val groupId : UUID,
 
+    @Schema(description = "Group Code", example = "psr-short-form")
+    val groupCode: String,
+
     @Schema(description = "Group Title", example = "Some group!")
     val title: String,
 
@@ -24,6 +27,7 @@ class GroupSummaryDto(
         fun from(entity: GroupSummaryEntity): GroupSummaryDto {
             return GroupSummaryDto(
                     UUID.fromString(entity.groupUuid),
+                    entity.groupCode,
                     entity.heading,
                     entity.contentCount,
                     entity.groupCount,
