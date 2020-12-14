@@ -8,6 +8,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.*
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.SubjectRepository
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
+import uk.gov.justice.digital.assessments.restclient.courtcaseapi.CourtCase
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
 import java.time.LocalDateTime
@@ -23,6 +24,7 @@ class AssessmentService(
 ) {
     companion object {
         val log: Logger = LoggerFactory.getLogger(this::class.java)
+        val courtSource = "COURT"
     }
 
     fun createNewAssessment(newAssessment: CreateAssessmentDto): AssessmentDto {
@@ -51,30 +53,22 @@ class AssessmentService(
 
     private fun createFromCourtCase(courtCode: String, caseNumber: String): AssessmentDto {
         // do we have a subject associated with this case?
-        val sourceId = "$courtCode|$caseNumber"
-        val existingSubject = subjectRepository.findBySourceAndSourceId("COURT", sourceId)
+        val sourceId = courtSourceId(courtCode, caseNumber)
+        val existingSubject = subjectRepository.findBySourceAndSourceId(courtSource, sourceId)
 
         // yes, so return the assessment
         if (existingSubject != null) {
-            log.info("Existing assessment found for court $courtCode, case ${caseNumber}")
+            log.info("Existing assessment found for court $courtCode, case $caseNumber")
             return AssessmentDto.from(existingSubject.assessment!!)
         }
 
         // no, so fetch subject details from court case service
         val courtCase = courtCaseClient.getCourtCase(courtCode, caseNumber)
+                ?: throw EntityNotFoundException("No court case found for $courtCode, $caseNumber")
 
         // create assessment
         val newAssessment = AssessmentEntity(createdDate = LocalDateTime.now())
-        val subject = SubjectEntity(
-                source = "COURT",
-                sourceId = sourceId,
-                name = courtCase?.defendantName,
-                pnc = courtCase?.pnc,
-                crn = courtCase?.crn,
-                dateOfBirth = courtCase?.defendantDob,
-                createdDate = newAssessment.createdDate,
-                assessment = newAssessment
-        )
+        val subject = subjectFromCourtCase(courtCase, newAssessment)
         newAssessment.addSubject(subject)
         return AssessmentDto.from(assessmentRepository.save(newAssessment))
     }
@@ -167,5 +161,25 @@ class AssessmentService(
     private fun getAssessmentByUuid(assessmentUuid: UUID): AssessmentEntity {
         return assessmentRepository.findByAssessmentUuid(assessmentUuid)
                 ?: throw EntityNotFoundException("Assessment $assessmentUuid not found")
+    }
+
+    private fun subjectFromCourtCase(courtCase: CourtCase, assessment: AssessmentEntity): SubjectEntity {
+        return SubjectEntity(
+                source = courtSource,
+                sourceId = courtSourceId(courtCase),
+                name = courtCase.defendantName,
+                pnc = courtCase.pnc,
+                crn = courtCase.crn,
+                dateOfBirth = courtCase.defendantDob,
+                createdDate = assessment.createdDate,
+                assessment = assessment
+        )
+    }
+
+    private fun courtSourceId(courtCase: CourtCase): String {
+        return courtSourceId(courtCase.courtCode!!, courtCase.caseNo!!)
+    }
+    private fun courtSourceId(courtCode: String, caseNumber: String): String {
+        return "$courtCode|$caseNumber"
     }
 }
