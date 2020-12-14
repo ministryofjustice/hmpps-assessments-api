@@ -19,7 +19,7 @@ spring:
         provider:
           oauth-service:
             token-uri: ${oauth.endpoint.url}:http://localhost:9090/auth}/oauth/token
-    resourceserver:
+      resourceserver:
         jwt:
           issuer-uri: ${oauth.endpoint.url:http://localhost:9090/auth}/issuer
   datasource:
@@ -90,4 +90,5 @@ web:
     byte-buffer-size: 20971520
 
 court-case-api:
+  base-url: http://localhost:9080
   case-path-template: /court/%s/case/%s
