@@ -1,0 +1,60 @@
+{
+  "id": "5a9048c8-86aa-4152-84ec-284f4f47670d",
+  "request": {
+    "method": "GET",
+    "urlPathPattern": "/court/([A-Z0-9]{5})/case/(?!2086970929|8678951874|5184555075|2980462628|4172564047|2608860141|7483843110|668911253|5222601242|6627839278|3597035492|351196424)([0-9]*)"
+  },
+  "response": {
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "status": 200,
+    "jsonBody": {
+      "caseId": "538737",
+      "caseNo": "7986902512",
+      "courtCode": "SHF",
+      "courtRoom": "06",
+      "sessionStartTime": "{{now format='yyyy-MM-dd'}}T09:30:00",
+      "listNo": "1st",
+      "pnc": "A/1234560BA",
+      "probationStatus": "Previously known",
+      "session": "MORNING",
+      "previouslyKnownTerminationDate": "2010-01-01",
+      "suspendedSentenceOrder": false,
+      "breach": true,
+      "offences": [
+        {
+          "offenceTitle": "Attempt theft from the person of another",
+          "offenceSummary": "On 05/09/2016 at Aberdeen attempted to steal GAMES CONSOLES to the value of 750.00, belonging to Gay Berg.",
+          "act": "Contrary to section 1(1) of the Criminal Attempts Act 1981."
+        },
+        {
+          "offenceTitle": "Assault by beating",
+          "offenceSummary": "On 01/01/2016 at London assaulted Clemons Mcintyre by beating him.",
+          "act": "Contrary to section 39 of the Criminal Justice Act 1988."
+        },
+        {
+          "offenceTitle": "Attempt theft from the person of another",
+          "offenceSummary": "On 05/09/2016 at Liverpool attempted to steal FLAT SCREEN TV to the value of 750.00, belonging to Riley Best.",
+          "act": "Contrary to section 1(1) of the Criminal Attempts Act 1981."
+        },
+        {
+          "offenceTitle": "Assault by beating",
+          "offenceSummary": "On 01/01/2016 at Aberdeen assaulted Merrill Miles by beating him.",
+          "act": "Contrary to section 39 of the Criminal Justice Act 1988."
+        }
+      ],
+      "defendantSex": "M",
+      "defendantName": "Webb Mitchell",
+      "defendantAddress": {
+        "line1": "44",
+        "line2": "Apollo Street",
+        "postcode": "ad21 5dr",
+        "line3": "Glasgow",
+        "line4": null,
+        "line5": null
+      },
+      "defendantDob": "06-04-1970"
+    }
+  }
+}
