@@ -1,10 +1,9 @@
-package uk.gov.justice.digital.assessments.restclient
+package uk.gov.justice.digital.assessments.testutils
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.http.HttpHeader
 import com.github.tomakehurst.wiremock.http.HttpHeaders
-import com.microsoft.applicationinsights.core.dependencies.google.gson.GsonBuilder
 
 class CourtCaseMockServer : WireMockServer(9002) {
     fun stubCourtCase() {

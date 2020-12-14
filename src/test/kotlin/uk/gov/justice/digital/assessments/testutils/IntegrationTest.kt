@@ -12,9 +12,7 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
 import uk.gov.justice.digital.assessments.HmppsAssessmentApiApplication
 import uk.gov.justice.digital.assessments.JwtAuthHelper
-import uk.gov.justice.digital.assessments.controller.OAuthMockServer
 import java.time.Duration
-
 
 @Suppress("SpringJavaInjectionPointsAutowiringInspection")
 @SpringBootTest( classes = [HmppsAssessmentApiApplication::class], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -29,16 +27,19 @@ abstract class IntegrationTest {
 
     companion object {
         internal val oauthMockServer = OAuthMockServer()
+        internal val courtCaseMockServer = CourtCaseMockServer()
 
         @BeforeAll
         @JvmStatic
         fun startMocks() {
             oauthMockServer.start()
+            courtCaseMockServer.start()
         }
 
         @AfterAll
         @JvmStatic
         fun stopMocks() {
+            courtCaseMockServer.stop()
             oauthMockServer.stop()
         }
     }
@@ -53,6 +54,8 @@ abstract class IntegrationTest {
     fun resetStubs() {
         oauthMockServer.resetAll()
         oauthMockServer.stubGrantToken()
+        courtCaseMockServer.resetAll()
+        courtCaseMockServer.stubCourtCase()
     }
 
     internal fun setAuthorisation(user: String = "offender-assessment-api", roles: List<String> = listOf()): (HttpHeaders) -> Unit {

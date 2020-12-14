@@ -3,6 +3,7 @@ package uk.gov.justice.digital.assessments.restclient
 import org.junit.jupiter.api.Test
 import org.assertj.core.api.Assertions.assertThat
 import org.springframework.beans.factory.annotation.Autowired
+import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 
 class CourtCaseClientTest: IntegrationTest() {
     @Autowired
