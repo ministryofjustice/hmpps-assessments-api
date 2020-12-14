@@ -10,12 +10,14 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.springframework.beans.factory.annotation.Autowired
 import uk.gov.justice.digital.assessments.api.AnswerDto
 import uk.gov.justice.digital.assessments.api.CreateAssessmentDto
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.jpa.entities.*
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.SubjectRepository
+import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
 import java.time.LocalDateTime
@@ -24,11 +26,16 @@ import java.util.*
 @ExtendWith(MockKExtension::class)
 @DisplayName("Assessment Service Tests")
 class AssessmentServiceTest {
-
     private val assessmentRepository: AssessmentRepository = mockk()
     private val subjectRepository: SubjectRepository = mockk()
     private val questionService: QuestionService = mockk()
-    private val assessmentsService = AssessmentService(assessmentRepository, subjectRepository, questionService)
+    private val courtCaseRestClient: CourtCaseRestClient = mockk()
+
+    private val assessmentsService = AssessmentService(
+            assessmentRepository,
+            subjectRepository,
+            questionService,
+            courtCaseRestClient)
 
     private val assessmentUuid = UUID.randomUUID()
     private val assessmentId = 1L

@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.assessments.jpa.entities
 
 import java.io.Serializable
+import java.lang.IllegalStateException
 import java.time.LocalDateTime
 import java.util.*
 import javax.persistence.*
@@ -46,5 +47,12 @@ class AssessmentEntity(
         val newEpisode = AssessmentEpisodeEntity(assessment = this, createdDate = LocalDateTime.now(), changeReason = changeReason, userId = user)
         episodes.add(newEpisode)
         return newEpisode
+    }
+
+    fun addSubject(newSubject: SubjectEntity): SubjectEntity {
+        if (newSubject != null)
+            throw IllegalStateException("Can not add another subject to assessment $assessmentUuid")
+        subject_.add(newSubject)
+        return newSubject
     }
 }

@@ -4,12 +4,10 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.assessments.api.*
-import uk.gov.justice.digital.assessments.jpa.entities.AnswerEntity
-import uk.gov.justice.digital.assessments.jpa.entities.AnswerSchemaEntity
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEntity
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
+import uk.gov.justice.digital.assessments.jpa.entities.*
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.SubjectRepository
+import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
 import java.time.LocalDateTime
@@ -20,7 +18,8 @@ import javax.transaction.Transactional
 class AssessmentService(
         private val assessmentRepository: AssessmentRepository,
         private val subjectRepository: SubjectRepository,
-        private val questionService: QuestionService
+        private val questionService: QuestionService,
+        private val courtCaseClient: CourtCaseRestClient
 ) {
     companion object {
         val log: Logger = LoggerFactory.getLogger(this::class.java)
@@ -52,7 +51,8 @@ class AssessmentService(
 
     private fun createFromCourtCase(courtCode: String, caseNumber: String): AssessmentDto {
         // do we have a subject associated with this case?
-        val existingSubject = subjectRepository.findBySourceAndSourceId("COURT", "$courtCode|$caseNumber")
+        val sourceId = "$courtCode|$caseNumber"
+        val existingSubject = subjectRepository.findBySourceAndSourceId("COURT", sourceId)
 
         // yes, so return the assessment
         if (existingSubject != null) {
@@ -61,13 +61,25 @@ class AssessmentService(
         }
 
         // no, so fetch subject details from court case service
+        val courtCase = courtCaseClient.getCourtCase(courtCode, caseNumber)
 
         // create assessment
+        val newAssessment = assessmentRepository.save(AssessmentEntity(createdDate = LocalDateTime.now()))
 
         // create subject
+        val subject = SubjectEntity(
+                source = "COURT",
+                sourceId = sourceId,
+                name = courtCase?.defendantName,
+                pnc = courtCase?.pnc,
+                crn = courtCase?.crn,
+                dateOfBirth = courtCase?.defendantDob,
+                createdDate = newAssessment.createdDate,
+                assessment = newAssessment
+        )
+        subjectRepository.save(subject)
 
-        // return assessment
-        return AssessmentDto()
+        return AssessmentDto.from(newAssessment)
     }
 
     @Transactional
