@@ -50,7 +50,7 @@ class AssessmentEntity(
     }
 
     fun addSubject(newSubject: SubjectEntity): SubjectEntity {
-        if (newSubject != null)
+        if (subject != null)
             throw IllegalStateException("Can not add another subject to assessment $assessmentUuid")
         subject_.add(newSubject)
         return newSubject

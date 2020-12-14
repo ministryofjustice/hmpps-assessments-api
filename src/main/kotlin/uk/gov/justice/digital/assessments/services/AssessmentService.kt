@@ -64,9 +64,7 @@ class AssessmentService(
         val courtCase = courtCaseClient.getCourtCase(courtCode, caseNumber)
 
         // create assessment
-        val newAssessment = assessmentRepository.save(AssessmentEntity(createdDate = LocalDateTime.now()))
-
-        // create subject
+        val newAssessment = AssessmentEntity(createdDate = LocalDateTime.now())
         val subject = SubjectEntity(
                 source = "COURT",
                 sourceId = sourceId,
@@ -77,9 +75,8 @@ class AssessmentService(
                 createdDate = newAssessment.createdDate,
                 assessment = newAssessment
         )
-        subjectRepository.save(subject)
-
-        return AssessmentDto.from(newAssessment)
+        newAssessment.addSubject(subject)
+        return AssessmentDto.from(assessmentRepository.save(newAssessment))
     }
 
     @Transactional

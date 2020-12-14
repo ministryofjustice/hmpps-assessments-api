@@ -85,13 +85,28 @@ class AssessmentControllerTest : IntegrationTest() {
     }
 
     @Test
-    fun `creates a new assessment from court details, returns assessment`() {
+    fun `creates a new assessment and subject from court details, returns assessment`() {
         val assessment = createAssessment("SHF06", "668911253");
 
         assertThat(assessment.supervisionId).isNull()
         assertThat(assessment.assessmentId).isNotNull()
         assertThat(assessment.assessmentUuid).isNotNull()
         assertThat(assessment.createdDate).isEqualToIgnoringMinutes(LocalDateTime.now())
+
+        val subject = webTestClient.get().uri("/assessments/${assessment.assessmentUuid}/subject")
+                .headers(setAuthorisation())
+                .exchange()
+                .expectStatus().isOk
+                .expectBody<AssessmentSubjectDto>()
+                .returnResult()
+                .responseBody
+
+        assertThat(subject?.assessmentUuid).isEqualTo(assessment.assessmentUuid)
+        assertThat(subject?.name).isEqualTo("John Smith")
+        assertThat(subject?.dob).isEqualTo("1979-08-18")
+        assertThat(subject?.crn).isEqualTo("DX12340A")
+        assertThat(subject?.pnc).isEqualTo("A/1234560BA")
+        assertThat(subject?.createdDate).isEqualToIgnoringMinutes(LocalDateTime.now())
     }
 
     @Test
