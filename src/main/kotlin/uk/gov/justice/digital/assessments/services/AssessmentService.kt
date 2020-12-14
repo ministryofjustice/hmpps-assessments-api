@@ -67,10 +67,12 @@ class AssessmentService(
                 ?: throw EntityNotFoundException("No court case found for $courtCode, $caseNumber")
 
         // create assessment
-        val newAssessment = AssessmentEntity(createdDate = LocalDateTime.now())
-        val subject = subjectFromCourtCase(courtCase, newAssessment)
-        newAssessment.addSubject(subject)
-        return AssessmentDto.from(assessmentRepository.save(newAssessment))
+        val assessment = AssessmentEntity(createdDate = LocalDateTime.now())
+        val subject = subjectFromCourtCase(courtCase, assessment)
+        assessment.addSubject(subject)
+        val newAssessment = AssessmentDto.from(assessmentRepository.save(assessment))
+        log.info("New assessment created for court $courtCode, case $caseNumber")
+        return newAssessment
     }
 
     @Transactional
