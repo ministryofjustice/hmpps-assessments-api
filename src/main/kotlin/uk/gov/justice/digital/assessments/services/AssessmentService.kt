@@ -70,6 +70,7 @@ class AssessmentService(
         val assessment = AssessmentEntity(createdDate = LocalDateTime.now())
         val subject = subjectFromCourtCase(sourceId, courtCase, assessment)
         assessment.addSubject(subject)
+        assessment.newEpisode("Court Request")
         val newAssessment = AssessmentDto.from(assessmentRepository.save(assessment))
         log.info("New assessment created for court $courtCode, case $caseNumber")
         return newAssessment

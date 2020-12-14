@@ -78,7 +78,7 @@ class AssessmentControllerTest : IntegrationTest() {
     }
 
     @Test
-    fun `creates a new assessment and subject from court details, returns assessment`() {
+    fun `creates a new assessment, subject and episode from court details, returns assessment`() {
         val assessment = createAssessment("SHF06", "668911253");
 
         assertThat(assessment.supervisionId).isNull()
@@ -93,6 +93,9 @@ class AssessmentControllerTest : IntegrationTest() {
         assertThat(subject.crn).isEqualTo("DX12340A")
         assertThat(subject.pnc).isEqualTo("A/1234560BA")
         assertThat(subject.createdDate).isEqualToIgnoringMinutes(LocalDateTime.now())
+
+        val episodes = fetchEpisodes(assessment.assessmentUuid!!.toString())
+        assertThat(episodes).hasSize(1)
     }
 
     @Test
