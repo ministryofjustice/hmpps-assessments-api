@@ -2,7 +2,7 @@
 
 CREATE TABLE IF NOT EXISTS subject
 (
-    subject_id      VARCHAR(50)     PRIMARY KEY,
+    subject_id      SERIAL          PRIMARY KEY,
     subject_uuid    uuid            UNIQUE,
     source          TEXT            NOT NULL,
     source_id       TEXT            NOT NULL,
