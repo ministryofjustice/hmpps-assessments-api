@@ -68,7 +68,7 @@ class AssessmentService(
 
         // create assessment
         val assessment = AssessmentEntity(createdDate = LocalDateTime.now())
-        val subject = subjectFromCourtCase(courtCase, assessment)
+        val subject = subjectFromCourtCase(sourceId, courtCase, assessment)
         assessment.addSubject(subject)
         val newAssessment = AssessmentDto.from(assessmentRepository.save(assessment))
         log.info("New assessment created for court $courtCode, case $caseNumber")
@@ -165,10 +165,10 @@ class AssessmentService(
                 ?: throw EntityNotFoundException("Assessment $assessmentUuid not found")
     }
 
-    private fun subjectFromCourtCase(courtCase: CourtCase, assessment: AssessmentEntity): SubjectEntity {
+    private fun subjectFromCourtCase(sourceId: String, courtCase: CourtCase, assessment: AssessmentEntity): SubjectEntity {
         return SubjectEntity(
                 source = courtSource,
-                sourceId = courtSourceId(courtCase),
+                sourceId = sourceId,
                 name = courtCase.defendantName,
                 pnc = courtCase.pnc,
                 crn = courtCase.crn,
@@ -178,9 +178,6 @@ class AssessmentService(
         )
     }
 
-    private fun courtSourceId(courtCase: CourtCase): String {
-        return courtSourceId(courtCase.courtCode!!, courtCase.caseNo!!)
-    }
     private fun courtSourceId(courtCode: String, caseNumber: String): String {
         return "$courtCode|$caseNumber"
     }
