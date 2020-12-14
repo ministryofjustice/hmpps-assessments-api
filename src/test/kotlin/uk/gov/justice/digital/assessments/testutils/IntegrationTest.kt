@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.assessments.controller
+package uk.gov.justice.digital.assessments.testutils
 
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
@@ -12,6 +12,7 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
 import uk.gov.justice.digital.assessments.HmppsAssessmentApiApplication
 import uk.gov.justice.digital.assessments.JwtAuthHelper
+import uk.gov.justice.digital.assessments.controller.OAuthMockServer
 import java.time.Duration
 
 

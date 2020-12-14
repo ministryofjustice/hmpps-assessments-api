@@ -8,6 +8,7 @@ import org.springframework.test.context.jdbc.SqlConfig
 import org.springframework.test.context.jdbc.SqlGroup
 import org.springframework.test.web.reactive.server.expectBody
 import uk.gov.justice.digital.assessments.api.*
+import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import java.time.LocalDateTime
 import java.util.*
 
