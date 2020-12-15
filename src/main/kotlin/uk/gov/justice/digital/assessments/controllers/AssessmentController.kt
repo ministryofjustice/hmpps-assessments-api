@@ -13,17 +13,27 @@ import java.util.*
 class AssessmentController(val assessmentService : AssessmentService) {
 
     @RequestMapping(path = ["/assessments/supervision"], method = [RequestMethod.POST])
-    @Operation(description = "Creates a new assessment for a supervision")
+    @Operation(description = "Creates a new assessment for a supervision, or a court code and case number")
     @ApiResponses(value = [
         ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
         ApiResponse(responseCode = "200", description = "OK")
     ])
     fun createNewAssessment(@Parameter(description = "Supervision Id", required = true) @RequestBody createAssessmentDto : CreateAssessmentDto): AssessmentDto {
-        return assessmentService.createNewAssessment(createAssessmentDto.supervisionId)
+        return assessmentService.createNewAssessment(createAssessmentDto)
+    }
+
+    @RequestMapping(path = ["/assessments/{assessmentUuid}/subject"], method = [RequestMethod.GET])
+    @Operation(description = "Details of the person who is the subject of the assessment")
+    @ApiResponses(value = [
+        ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
+        ApiResponse(responseCode = "200", description = "OK")
+    ])
+    fun getAssessmentSubject(@Parameter(description = "Assessment UUID", required = true) @PathVariable assessmentUuid: UUID): AssessmentSubjectDto {
+        return assessmentService.getAssessmentSubject(assessmentUuid);
     }
 
     @RequestMapping(path = ["/assessments/{assessmentUuid}/episodes"], method = [RequestMethod.POST])
-    @Operation(description = "Creates a new episode for an episode")
+    @Operation(description = "Creates a new episode for a supervision")
     @ApiResponses(value = [
         ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
         ApiResponse(responseCode = "200", description = "OK")

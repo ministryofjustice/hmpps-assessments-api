@@ -7,6 +7,18 @@ spring:
       spec: expireAfterWrite=2m
   security:
     oauth2:
+      client:
+        registration:
+          court-case-client:
+            client-name: court-case-api-client
+            client-id: ${court-case-api-id:court-case-api}
+            client-secret: ${court-case-api-client-secret:clientsecret}
+            client-authentication-method: basic
+            authorization-grant-type: client_credentials
+            provider: oauth-service
+        provider:
+          oauth-service:
+            token-uri: ${oauth.endpoint.url}:http://localhost:9090/auth}/oauth/token
       resourceserver:
         jwt:
           issuer-uri: ${oauth.endpoint.url:http://localhost:9090/auth}/issuer
@@ -69,3 +81,14 @@ logging:
   uris:
     exclude:
       regex: /health|/info|/ping|/swagger.*|/webjars/.*|/v2/api-docs
+
+web:
+  client:
+    connect-timeout-ms: 20000
+    read-timeout-ms: 5000
+    write-timeout-ms: 5000
+    byte-buffer-size: 20971520
+
+court-case-api:
+  base-url: http://localhost:9080
+  case-path-template: /court/%s/case/%s

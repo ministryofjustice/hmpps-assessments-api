@@ -11,6 +11,7 @@ import uk.gov.justice.digital.assessments.api.GroupQuestionDto
 import uk.gov.justice.digital.assessments.api.GroupSummaryDto
 import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
 import uk.gov.justice.digital.assessments.api.QuestionSchemaDto
+import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import java.util.*
 
 @SqlGroup(
@@ -46,8 +47,28 @@ class QuestionControllerTest : IntegrationTest() {
 
 
     @Test
-    fun `get all reference questions and answers for group`() {
+    fun `get all reference questions and answers for group by uuid`() {
         val questionsGroup = webTestClient.get().uri("/questions/$groupUuid")
+                .headers(setAuthorisation())
+                .exchange()
+                .expectStatus().isOk
+                .expectBody<GroupWithContentsDto>()
+                .returnResult()
+                .responseBody
+
+        assertThat(questionsGroup?.groupId).isEqualTo(UUID.fromString(groupUuid))
+
+        val questionRefs = questionsGroup?.contents
+        val questionRef = questionRefs?.get(0) as GroupQuestionDto
+        assertThat(questionRef.questionId).isEqualTo(UUID.fromString(questionSchemaUuid))
+
+        val answerRefs = questionRef.answerSchemas
+        assertThat(answerRefs?.first()?.answerSchemaUuid).isEqualTo(UUID.fromString(answerSchemaUuid))
+    }
+
+    @Test
+    fun `get all reference questions and answers for group by code`() {
+        val questionsGroup = webTestClient.get().uri("/questions/Group code")
                 .headers(setAuthorisation())
                 .exchange()
                 .expectStatus().isOk

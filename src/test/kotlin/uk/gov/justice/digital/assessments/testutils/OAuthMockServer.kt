@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.assessments.controller
+package uk.gov.justice.digital.assessments.testutils
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock

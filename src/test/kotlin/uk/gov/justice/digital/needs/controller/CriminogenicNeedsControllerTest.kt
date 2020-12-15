@@ -5,7 +5,7 @@ import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWeb
 
 import org.springframework.test.web.reactive.server.expectBody
 import uk.gov.justice.digital.needs.api.CriminogenicNeedsDto
-import uk.gov.justice.digital.assessments.controller.IntegrationTest
+import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import java.util.UUID
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every

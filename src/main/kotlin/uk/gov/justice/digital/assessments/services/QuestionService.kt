@@ -6,6 +6,7 @@ import uk.gov.justice.digital.assessments.api.GroupSummaryDto
 import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
 import uk.gov.justice.digital.assessments.api.QuestionSchemaDto
 import uk.gov.justice.digital.assessments.jpa.entities.AnswerSchemaEntity
+import uk.gov.justice.digital.assessments.jpa.entities.GroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionGroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.AnswerSchemaRepository
@@ -27,18 +28,21 @@ class QuestionService(private val questionSchemaRepository: QuestionSchemaReposi
         return QuestionSchemaDto.from(questionSchemaEntity)
     }
 
-    fun getQuestionGroup(groupUuid:UUID): GroupWithContentsDto {
-        return getQuestionGroup(groupUuid, null)
-    }
-
     fun listGroups(): Collection<GroupSummaryDto> {
         return questionGroupRepository.listGroups().map { GroupSummaryDto.from(it) }
     }
 
-    private fun getQuestionGroup(groupUuid:UUID, parentGroup: QuestionGroupEntity?): GroupWithContentsDto {
-        val group = groupRepository.findByGroupUuid(groupUuid) ?: throw EntityNotFoundException("Group not found: $groupUuid")
+    fun getQuestionGroup(groupCode: String): GroupWithContentsDto {
+        return getQuestionGroupContents(findByGroupCode(groupCode), null)
+    }
+
+    fun getQuestionGroup(groupUuid: UUID): GroupWithContentsDto {
+        return getQuestionGroupContents(findByGroupUuid(groupUuid), null)
+    }
+
+    private fun getQuestionGroupContents(group: GroupEntity, parentGroup: QuestionGroupEntity?): GroupWithContentsDto {
         val groupContents = group.contents.sortedBy { it.displayOrder }
-        if (groupContents.isEmpty()) throw EntityNotFoundException("Questions not found for Group: $groupUuid")
+        if (groupContents.isEmpty()) throw EntityNotFoundException("Questions not found for Group: ${group.groupUuid}")
 
         val contents = groupContents
                 .map {
@@ -47,7 +51,7 @@ class QuestionService(private val questionSchemaRepository: QuestionSchemaReposi
                         questionSchemaRepository.findByQuestionSchemaUuid(it.contentUuid)!!,
                         it
                 )
-                "group" -> getQuestionGroup(it.contentUuid, it)
+                "group" -> getQuestionGroupContents(findByGroupUuid(it.contentUuid), it)
                 else -> throw EntityNotFoundException("Bad group content type")
             }
         }
@@ -61,5 +65,24 @@ class QuestionService(private val questionSchemaRepository: QuestionSchemaReposi
 
     fun getAllAnswers(): List<AnswerSchemaEntity> {
         return answerSchemaRepository.findAll()
+    }
+
+    private fun findByGroupCode(groupCode: String): GroupEntity {
+        return groupRepository.findByGroupCode(groupCode)
+                ?: findByGroupUuid(groupCode)
+    }
+    private fun findByGroupUuid(uuidStr: String): GroupEntity {
+        val groupUuid = codeToUuid(uuidStr)
+        return findByGroupUuid(groupUuid)
+    }
+    private fun findByGroupUuid(uuid: UUID): GroupEntity {
+        return groupRepository.findByGroupUuid(uuid)
+                ?: throw EntityNotFoundException("Group not found: $uuid")
+    }
+    private fun codeToUuid(code: String): UUID {
+        try { return UUID.fromString(code) }
+        catch(e: IllegalArgumentException) {
+            throw EntityNotFoundException("Group not found: $code")
+        }
     }
 }
