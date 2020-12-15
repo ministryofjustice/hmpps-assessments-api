@@ -8,5 +8,6 @@ import java.util.*
 @Repository
 interface GroupRepository: JpaRepository<GroupEntity, String> {
     fun findByGroupUuid(groupId: UUID): GroupEntity?
+    fun findByGroupCode(groupCode: String): GroupEntity?
 }
 

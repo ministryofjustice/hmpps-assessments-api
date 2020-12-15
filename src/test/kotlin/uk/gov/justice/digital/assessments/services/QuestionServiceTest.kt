@@ -108,6 +108,7 @@ class QuestionServiceTest {
         every { questionGroupRepository.listGroups() } returns listOf(
                 object: GroupSummaryEntity {
                     override val groupUuid = groupUuidStr
+                    override val groupCode = "Code"
                     override val heading = "Heading"
                     override val contentCount = 5L
                     override val groupCount = 2L

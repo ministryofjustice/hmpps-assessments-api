@@ -33,12 +33,12 @@ class QuestionController(val questionService: QuestionService ) {
         return questionService.listGroups()
     }
 
-    @RequestMapping(path = ["/questions/{groupUuid}"], method = [RequestMethod.GET])
+    @RequestMapping(path = ["/questions/{groupCode}"], method = [RequestMethod.GET])
     @Operation(description = "Gets Questions for a Group")
     @ApiResponses(value = [
         ApiResponse(responseCode = "404", description = "Questions not found for Group"),
         ApiResponse(responseCode = "200", description = "OK")])
-    fun getQuestionsForGroup(@PathVariable("groupUuid") groupId: UUID): GroupWithContentsDto {
-        return questionService.getQuestionGroup(groupId)
+    fun getQuestionsForGroup(@PathVariable("groupCode") groupCode: String): GroupWithContentsDto {
+        return questionService.getQuestionGroup(groupCode)
     }
 }

@@ -36,7 +36,8 @@ class AssessmentSubjectDto (
                     subject.name,
                     subject.pnc,
                     subject.crn,
-                    subject.dateOfBirth
+                    subject.dateOfBirth,
+                    subject.createdDate
             )
         }
     }

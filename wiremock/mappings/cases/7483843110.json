@@ -1,0 +1,60 @@
+{
+  "id": "3a6ffd3a-331b-43f8-8cb5-5115f06541de",
+  "request": {
+    "method": "GET",
+    "urlPathPattern": "/court/([A-Z0-9]{5})/case/7483843110"
+  },
+  "response": {
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "status": 200,
+    "jsonBody": {
+      "caseId": "71467",
+      "caseNo": "7483843110",
+      "courtCode": "SHF",
+      "courtRoom": "02",
+      "sessionStartTime": "{{now format='yyyy-MM-dd'}}T09:30:00",
+      "listNo": "3rd",
+      "pnc": "A/1234560BA",
+      "probationStatus": "No record",
+      "session": "AFTERNOON",
+      "previouslyKnownTerminationDate": null,
+      "suspendedSentenceOrder": false,
+      "breach": false,
+      "offences": [
+        {
+          "offenceTitle": "Assault by beating",
+          "offenceSummary": "On 01/01/2016 at Edinburgh assaulted Howe Williams by beating him.",
+          "act": "Contrary to section 39 of the Criminal Justice Act 1988."
+        },
+        {
+          "offenceTitle": "Theft from a shop",
+          "offenceSummary": "On 01/01/2015 at Zolarity, Leeds, stole LAPTOP to the value of £987.00, belonging to Powers Gould.",
+          "act": "Contrary to section 1(1) and 7 of the Theft Act 1968."
+        },
+        {
+          "offenceTitle": "Theft from a shop",
+          "offenceSummary": "On 01/01/2015 at Xixan, Sheffield, stole COMPUTER to the value of £987.00, belonging to Cote Ochoa.",
+          "act": "Contrary to section 1(1) and 7 of the Theft Act 1968."
+        },
+        {
+          "offenceTitle": "Assault by beating",
+          "offenceSummary": "On 01/01/2016 at Bangor assaulted Watkins Cummings by beating him.",
+          "act": "Contrary to section 39 of the Criminal Justice Act 1988."
+        }
+      ],
+      "defendantSex": "F",
+      "defendantName": "Mann Carroll",
+      "defendantAddress": {
+        "line1": "91",
+        "line2": "Barbey street",
+        "postcode": "ad21 5dr",
+        "line3": "Sheffield",
+        "line4": null,
+        "line5": null
+      },
+      "defendantDob": "1955-04-08"
+    }
+  }
+}

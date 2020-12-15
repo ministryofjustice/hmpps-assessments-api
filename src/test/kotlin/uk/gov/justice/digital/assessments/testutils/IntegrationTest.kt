@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.assessments.controller
+package uk.gov.justice.digital.assessments.testutils
 
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
@@ -14,7 +14,6 @@ import uk.gov.justice.digital.assessments.HmppsAssessmentApiApplication
 import uk.gov.justice.digital.assessments.JwtAuthHelper
 import java.time.Duration
 
-
 @Suppress("SpringJavaInjectionPointsAutowiringInspection")
 @SpringBootTest( classes = [HmppsAssessmentApiApplication::class], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles(profiles = ["test"])
@@ -28,16 +27,19 @@ abstract class IntegrationTest {
 
     companion object {
         internal val oauthMockServer = OAuthMockServer()
+        internal val courtCaseMockServer = CourtCaseMockServer()
 
         @BeforeAll
         @JvmStatic
         fun startMocks() {
             oauthMockServer.start()
+            courtCaseMockServer.start()
         }
 
         @AfterAll
         @JvmStatic
         fun stopMocks() {
+            courtCaseMockServer.stop()
             oauthMockServer.stop()
         }
     }
@@ -52,6 +54,8 @@ abstract class IntegrationTest {
     fun resetStubs() {
         oauthMockServer.resetAll()
         oauthMockServer.stubGrantToken()
+        courtCaseMockServer.resetAll()
+        courtCaseMockServer.stubCourtCase()
     }
 
     internal fun setAuthorisation(user: String = "offender-assessment-api", roles: List<String> = listOf()): (HttpHeaders) -> Unit {

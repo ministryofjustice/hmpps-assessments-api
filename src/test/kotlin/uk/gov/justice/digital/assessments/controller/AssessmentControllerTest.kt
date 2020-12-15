@@ -8,6 +8,7 @@ import org.springframework.test.context.jdbc.SqlConfig
 import org.springframework.test.context.jdbc.SqlGroup
 import org.springframework.test.web.reactive.server.expectBody
 import uk.gov.justice.digital.assessments.api.*
+import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import java.time.LocalDateTime
 import java.util.*
 
@@ -32,6 +33,8 @@ class AssessmentControllerTest : IntegrationTest() {
         val assessment = createAssessment("SupervisionId")
 
         assertThat(assessment.supervisionId).isEqualTo("SupervisionId")
+        assertThat(assessment.assessmentId).isNotNull()
+        assertThat(assessment.assessmentUuid).isNotNull()
         assertThat(assessment.createdDate).isEqualToIgnoringMinutes(LocalDateTime.now())
     }
 
@@ -48,7 +51,6 @@ class AssessmentControllerTest : IntegrationTest() {
 
     @Test
     fun `creates new episode on existing assessment`() {
-
         val episode = webTestClient.post().uri("/assessments/f9a07b3f-91b7-45a7-a5ca-2d98cf1147d8/episodes")
                 .bodyValue(CreateAssessmentEpisodeDto("Change of Circs"))
                 .headers(setAuthorisation())
@@ -58,7 +60,6 @@ class AssessmentControllerTest : IntegrationTest() {
                 .returnResult()
                 .responseBody
 
-
         assertThat(episode?.assessmentUuid).isEqualTo(UUID.fromString("f9a07b3f-91b7-45a7-a5ca-2d98cf1147d8"))
         assertThat(episode?.created).isEqualToIgnoringMinutes(LocalDateTime.now())
         assertThat(episode?.answers).isEmpty()
@@ -66,32 +67,50 @@ class AssessmentControllerTest : IntegrationTest() {
 
     @Test
     fun `get the subject details for an assessment`() {
-        val subject = webTestClient.get().uri("/assessments/2e020e78-a81c-407f-bc78-e5f284e237e5/subject")
-                .headers(setAuthorisation())
-                .exchange()
-                .expectStatus().isOk
-                .expectBody<AssessmentSubjectDto>()
-                .returnResult()
-                .responseBody
+        val subject = fetchAssessmentSubject("19c8d211-68dc-4692-a6e2-d58468127056")
 
-        assertThat(subject?.assessmentUuid).isEqualTo(UUID.fromString("2e020e78-a81c-407f-bc78-e5f284e237e5"))
-        assertThat(subject?.name).isEqualTo("John Smith")
-        assertThat(subject?.dob).isEqualTo("1928-08-01")
-        assertThat(subject?.age).isGreaterThanOrEqualTo(92)
-        assertThat(subject?.crn).isEqualTo("dummy-crn")
-        assertThat(subject?.pnc).isEqualTo("dummy-pnc")
+        assertThat(subject.assessmentUuid).isEqualTo(UUID.fromString("19c8d211-68dc-4692-a6e2-d58468127056"))
+        assertThat(subject.name).isEqualTo("John Smith")
+        assertThat(subject.dob).isEqualTo("1928-08-01")
+        assertThat(subject.age).isGreaterThanOrEqualTo(92)
+        assertThat(subject.crn).isEqualTo("dummy-crn")
+        assertThat(subject.pnc).isEqualTo("dummy-pnc")
     }
 
     @Test
-    fun `retrieves episodes for an assessment`() {
-        val episodes = webTestClient.get().uri("/assessments/2e020e78-a81c-407f-bc78-e5f284e237e5/episodes")
-                .headers(setAuthorisation())
-                .exchange()
-                .expectStatus().isOk
-                .expectBody<List<AssessmentEpisodeDto>>()
-                .returnResult()
-                .responseBody
+    fun `creates a new assessment, subject and episode from court details, returns assessment`() {
+        val assessment = createAssessment("SHF06", "668911253");
 
+        assertThat(assessment.supervisionId).isNull()
+        assertThat(assessment.assessmentId).isNotNull()
+        assertThat(assessment.assessmentUuid).isNotNull()
+        assertThat(assessment.createdDate).isEqualToIgnoringMinutes(LocalDateTime.now())
+
+        val subject = fetchAssessmentSubject(assessment.assessmentUuid!!)
+        assertThat(subject.assessmentUuid).isEqualTo(assessment.assessmentUuid)
+        assertThat(subject.name).isEqualTo("John Smith")
+        assertThat(subject.dob).isEqualTo("1979-08-18")
+        assertThat(subject.crn).isEqualTo("DX12340A")
+        assertThat(subject.pnc).isEqualTo("A/1234560BA")
+        assertThat(subject.createdDate).isEqualToIgnoringMinutes(LocalDateTime.now())
+
+        val episodes = fetchEpisodes(assessment.assessmentUuid!!.toString())
+        assertThat(episodes).hasSize(1)
+    }
+
+    @Test
+    fun `try to create new assessment from court details, returns existing assessment`() {
+        val assessment = createAssessment("courtCode", "caseNumber");
+
+        assertThat(assessment.supervisionId).isNull()
+        assertThat(assessment.assessmentId).isEqualTo(2)
+        assertThat(assessment.assessmentUuid).isEqualTo(UUID.fromString("19c8d211-68dc-4692-a6e2-d58468127056"))
+    }
+
+
+    @Test
+    fun `retrieves episodes for an assessment`() {
+        val episodes = fetchEpisodes("2e020e78-a81c-407f-bc78-e5f284e237e5")
         assertThat(episodes).hasSize(2)
     }
 
@@ -106,19 +125,12 @@ class AssessmentControllerTest : IntegrationTest() {
 
     @Test
     fun `retrieves current episode for an assessment`() {
+        val episode = fetchCurrentEpisode("2e020e78-a81c-407f-bc78-e5f284e237e5")
 
-        val episode = webTestClient.get().uri("/assessments/2e020e78-a81c-407f-bc78-e5f284e237e5/episodes/current")
-                .headers(setAuthorisation())
-                .exchange()
-                .expectStatus().isOk
-                .expectBody<AssessmentEpisodeDto>()
-                .returnResult()
-                .responseBody
-
-        assertThat(episode?.assessmentUuid).isEqualTo(UUID.fromString("2e020e78-a81c-407f-bc78-e5f284e237e5"))
-        assertThat(episode?.created).isEqualToIgnoringSeconds(LocalDateTime.of(2019,11,14,9,0))
-        assertThat(episode?.ended).isNull()
-        assertThat(episode?.answers).isEmpty()
+        assertThat(episode.assessmentUuid).isEqualTo(UUID.fromString("2e020e78-a81c-407f-bc78-e5f284e237e5"))
+        assertThat(episode.created).isEqualToIgnoringSeconds(LocalDateTime.of(2019,11,14,9,0))
+        assertThat(episode.ended).isNull()
+        assertThat(episode.answers).isEmpty()
     }
 
     @Test
@@ -167,8 +179,16 @@ class AssessmentControllerTest : IntegrationTest() {
     }
 
     private fun createAssessment(supervisionId: String): AssessmentDto {
+        return createAssessment(CreateAssessmentDto(supervisionId))
+    }
+
+    private fun createAssessment(courtCode: String, caseNumber: String): AssessmentDto {
+        return createAssessment(CreateAssessmentDto(courtCode = courtCode, caseNumber = caseNumber))
+    }
+
+    private fun createAssessment(cad: CreateAssessmentDto): AssessmentDto {
         val assessment = webTestClient.post().uri("/assessments/supervision")
-                .bodyValue(CreateAssessmentDto(supervisionId))
+                .bodyValue(cad)
                 .headers(setAuthorisation())
                 .exchange()
                 .expectStatus().isOk
@@ -176,5 +196,44 @@ class AssessmentControllerTest : IntegrationTest() {
                 .returnResult()
                 .responseBody
         return assessment!!
+    }
+
+    private fun fetchAssessmentSubject(assessmentGuid: UUID): AssessmentSubjectDto {
+        return fetchAssessmentSubject(assessmentGuid.toString())
+    }
+
+    private fun fetchAssessmentSubject(assessmentGuid: String): AssessmentSubjectDto {
+        val subject = webTestClient.get().uri("/assessments/${assessmentGuid}/subject")
+                .headers(setAuthorisation())
+                .exchange()
+                .expectStatus().isOk
+                .expectBody<AssessmentSubjectDto>()
+                .returnResult()
+                .responseBody
+        return subject!!
+    }
+
+    private fun fetchEpisodes(assessmentGuid: String): List<AssessmentEpisodeDto> {
+        return webTestClient.get().uri("/assessments/$assessmentGuid/episodes")
+                .headers(setAuthorisation())
+                .exchange()
+                .expectStatus().isOk
+                .expectBody<List<AssessmentEpisodeDto>>()
+                .returnResult()
+                .responseBody!!
+    }
+
+    private fun fetchCurrentEpisode(assessmentGuid: String): AssessmentEpisodeDto {
+        return fetchEpisode(assessmentGuid, "current")
+    }
+
+    private fun fetchEpisode(assessmentGuid: String, episodeGuid: String): AssessmentEpisodeDto {
+        return webTestClient.get().uri("/assessments/$assessmentGuid/episodes/$episodeGuid")
+                .headers(setAuthorisation())
+                .exchange()
+                .expectStatus().isOk
+                .expectBody<AssessmentEpisodeDto>()
+                .returnResult()
+                .responseBody!!
     }
 }

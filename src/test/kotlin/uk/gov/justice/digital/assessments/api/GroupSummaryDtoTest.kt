@@ -13,6 +13,7 @@ class GroupSummaryDtoTest {
         val groupUuid = UUID.randomUUID()
         val summary = object: GroupSummaryEntity {
             override val groupUuid = groupUuid.toString()
+            override val groupCode = "Code"
             override val heading = "Heading"
             override val contentCount = 5L
             override val groupCount = 2L
@@ -22,6 +23,7 @@ class GroupSummaryDtoTest {
         val dto = GroupSummaryDto.from(summary)
 
         assertThat(dto.groupId).isEqualTo(groupUuid)
+        assertThat(dto.groupCode).isEqualTo(summary.groupCode)
         assertThat(dto.title).isEqualTo(summary.heading)
         assertThat(dto.contentCount).isEqualTo(summary.contentCount)
         assertThat(dto.groupCount).isEqualTo(summary.groupCount)

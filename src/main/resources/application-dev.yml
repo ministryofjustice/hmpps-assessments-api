@@ -10,3 +10,4 @@ spring:
 graceful:
   shutdown:
     enabled: false
+
