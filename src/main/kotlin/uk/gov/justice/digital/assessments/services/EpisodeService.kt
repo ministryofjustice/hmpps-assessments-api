@@ -16,9 +16,6 @@ class EpisodeService(
         private val courtCaseRestClient: CourtCaseRestClient
 ) {
     fun prepopulate(episode: AssessmentEpisodeEntity): AssessmentEpisodeEntity {
-        // val assessment = episode.assessment
-        //val subject = assessment?.subject
-
         val questionsToPopulate = questionService.getAllQuestions().filter { it.externalSource != null }
         if (questionsToPopulate.isEmpty())
             return episode
@@ -36,11 +33,11 @@ class EpisodeService(
     } // prepopulateFromSource
 
     private fun prepopulateQuestion(episode: AssessmentEpisodeEntity, source: JsonObject, question: QuestionSchemaEntity) {
-        val lookupPath = question.externalSource!!.split(':')[1]
-        val answer = source.lookup<String?>(lookupPath).firstOrNull()
+        val (_, lookupPath, format) = "${question.externalSource}:".split(':')
+        val rawAnswer = source.lookup<String?>(lookupPath).firstOrNull()?: return
 
-        if (answer != null)
-            episode.answers!![question.questionSchemaUuid] = AnswerEntity(answer, emptyMap())
+        val answer = answerFormat(rawAnswer, format)
+        episode.answers!![question.questionSchemaUuid] = AnswerEntity(answer, emptyMap())
     }
 
     private fun loadSource(episode: AssessmentEpisodeEntity, sourceName: String): JsonObject? {
@@ -61,5 +58,15 @@ class EpisodeService(
 
         val (courtCode, caseNumber) = subject?.sourceId!!.split('|')
         return courtCaseRestClient.getCourtCaseJson(courtCode, caseNumber)
+    }
+
+    private fun answerFormat(rawAnswer: String, format: String?): String {
+        when (format) {
+            "date" -> return rawAnswer.split('T')[0]
+            "time" -> return rawAnswer.split('T')[1]
+            "forename" -> return rawAnswer.split(' ')[0]
+            "surname" -> return rawAnswer.split(' ')[1]
+            else -> return rawAnswer
+        }
     }
 }
