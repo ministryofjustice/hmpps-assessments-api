@@ -14,7 +14,7 @@
       "caseNo": "7986902512",
       "courtCode": "SHF",
       "courtRoom": "06",
-      "sessionStartTime": "{{now format='yyyy-MM-dd'}}T09:30:00",
+      "sessionStartTime": "2020-12-14T09:30:00",
       "listNo": "1st",
       "pnc": "A/1234560BA",
       "probationStatus": "Previously known",

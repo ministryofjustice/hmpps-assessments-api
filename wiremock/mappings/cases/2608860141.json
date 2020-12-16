@@ -14,7 +14,7 @@
       "caseNo": "2608860141",
       "courtCode": "SHF",
       "courtRoom": "10",
-      "sessionStartTime": "{{now format='yyyy-MM-dd'}}T09:30:00",
+      "sessionStartTime": "2020-12-14T09:30:00",
       "listNo": "3rd",
       "crn": "D541487",
       "pnc": "A/1234560BA",
