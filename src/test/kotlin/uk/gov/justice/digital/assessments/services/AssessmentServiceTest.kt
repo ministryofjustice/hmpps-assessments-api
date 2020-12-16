@@ -32,12 +32,14 @@ class AssessmentServiceTest {
     private val subjectRepository: SubjectRepository = mockk()
     private val questionService: QuestionService = mockk()
     private val courtCaseRestClient: CourtCaseRestClient = mockk()
+    private val episodeService: EpisodeService = mockk()
     private val assessmentupdateRestClient: AssessmentUpdateRestClient = mockk()
 
     private val assessmentsService = AssessmentService(
             assessmentRepository,
             subjectRepository,
             questionService,
+            episodeService,
             courtCaseRestClient,
             assessmentupdateRestClient)
 
