@@ -30,7 +30,7 @@ class EpisodeService(
     }
 
     private fun prepopulateFromSource(episode: AssessmentEpisodeEntity, sourceName: String, questions: List<QuestionSchemaEntity>) {
-        val source = loadSource(episode, sourceName)
+        val source = loadSource(episode, sourceName)?: return
 
         questions.forEach{ prepopulateQuestion(episode, source, it) }
     } // prepopulateFromSource
@@ -43,8 +43,23 @@ class EpisodeService(
             episode.answers!![question.questionSchemaUuid] = AnswerEntity(answer, emptyMap())
     }
 
-    private fun loadSource(episode: AssessmentEpisodeEntity, sourceName: String): JsonObject {
-        val rawJson = courtCaseRestClient.getCourtCaseJson("SHF06", "668911253")
-        return Parser.default().parse(StringBuilder(rawJson)) as JsonObject
+    private fun loadSource(episode: AssessmentEpisodeEntity, sourceName: String): JsonObject? {
+        try {
+            val rawJson = when (sourceName) {
+                "COURT" -> loadFromCourtCase(episode)
+                else -> return null
+            }
+            return Parser.default().parse(StringBuilder(rawJson)) as JsonObject
+        } catch (e: Exception) {
+            return null
+        }
+    }
+
+    private fun loadFromCourtCase(episode: AssessmentEpisodeEntity): String? {
+        val subject = episode.assessment?.subject
+        if (subject?.source != "COURT") return null
+
+        val (courtCode, caseNumber) = subject?.sourceId!!.split('|')
+        return courtCaseRestClient.getCourtCaseJson(courtCode, caseNumber)
     }
 }
