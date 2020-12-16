@@ -264,14 +264,15 @@ class AssessmentServiceTest {
                                 endDate = LocalDateTime.now().minusDays(1),
                                 changeReason = "Change of Circs 2",
                                 answers = mutableMapOf(existingQuestionUuid to AnswerEntity(
-                                        freeTextAnswer = "free text"))))
+                                        freeTextAnswer = "free text")),
+                                assessment = AssessmentEntity(assessmentUuid = assessmentUuid)))
         )
 
         every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
 
         assertThatThrownBy { assessmentsService.updateEpisode(assessmentUuid, episodeUuid, UpdateAssessmentEpisodeDto(answers = emptyMap())) }
                 .isInstanceOf(UpdateClosedEpisodeException::class.java)
-                .hasMessage("Cannot update closed Episode $episodeUuid")
+                .hasMessage("Cannot update closed Episode $episodeUuid for assessment $assessmentUuid")
 
     }
 

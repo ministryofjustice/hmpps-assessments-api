@@ -97,9 +97,7 @@ class AssessmentService(
     }
 
     fun getCurrentAssessmentEpisode(assessmentUuid: UUID): AssessmentEpisodeDto {
-        val assessment = getAssessmentByUuid(assessmentUuid)
-        return AssessmentEpisodeDto.from(assessment.getCurrentEpisode())
-                ?: throw EntityNotFoundException("No current Episode for $assessmentUuid")
+        return AssessmentEpisodeDto.from(getCurrentEpsiode(assessmentUuid))
     }
 
     fun getCurrentAssessmentCodedAnswers(assessmentUuid: UUID) : AssessmentAnswersDto {
@@ -137,10 +135,19 @@ class AssessmentService(
     }
 
     @Transactional
-    fun updateEpisode(assessmentUuid: UUID, episodeUuid: UUID, updatedEpisodeAnswers: UpdateAssessmentEpisodeDto): AssessmentEpisodeDto? {
+    fun updateEpisode(assessmentUuid: UUID, episodeUuid: UUID, updatedEpisodeAnswers: UpdateAssessmentEpisodeDto): AssessmentEpisodeDto {
         val episode = getEpisode(episodeUuid, assessmentUuid)
+        return updateEpisode(episode, updatedEpisodeAnswers)
+    }
 
-        if (episode.isClosed()) throw UpdateClosedEpisodeException("Cannot update closed Episode $episodeUuid")
+    @Transactional
+    fun updateCurrentEpisode(assessmentUuid: UUID, updatedEpisodeAnswers: UpdateAssessmentEpisodeDto): AssessmentEpisodeDto {
+        val episode = getCurrentEpsiode(assessmentUuid)
+        return updateEpisode(episode, updatedEpisodeAnswers)
+    }
+
+    private fun updateEpisode(episode: AssessmentEpisodeEntity, updatedEpisodeAnswers: UpdateAssessmentEpisodeDto): AssessmentEpisodeDto {
+        if (episode.isClosed()) throw UpdateClosedEpisodeException("Cannot update closed Episode ${episode.episodeUuid} for assessment ${episode.assessment?.assessmentUuid}")
 
         for (updatedAnswer in updatedEpisodeAnswers.answers) {
             val currentQuestionAnswer = episode.answers?.get(updatedAnswer.key)
@@ -152,13 +159,19 @@ class AssessmentService(
                 currentQuestionAnswer.answers = updatedAnswer.value.answers
             }
         }
-        log.info("Updated episode $episodeUuid with ${updatedEpisodeAnswers.answers.size} answer(s) for assessment $assessmentUuid")
+        log.info("Updated episode ${episode.episodeUuid} with ${updatedEpisodeAnswers.answers.size} answer(s) for assessment ${episode.assessment?.assessmentUuid}")
         return AssessmentEpisodeDto.from(episode)
     }
 
     private fun getEpisode(episodeUuid: UUID, assessmentUuid: UUID): AssessmentEpisodeEntity {
         return getAssessmentByUuid(assessmentUuid).episodes.firstOrNull { it.episodeUuid == episodeUuid }
                 ?: throw EntityNotFoundException("No Episode $episodeUuid for $assessmentUuid")
+    }
+
+    private fun getCurrentEpsiode(assessmentUuid: UUID): AssessmentEpisodeEntity {
+        val assessment = getAssessmentByUuid(assessmentUuid)
+        return assessment.getCurrentEpisode()
+                ?: throw EntityNotFoundException("No current Episode for $assessmentUuid")
     }
 
     private fun getAssessmentByUuid(assessmentUuid: UUID): AssessmentEntity {
@@ -182,4 +195,5 @@ class AssessmentService(
     private fun courtSourceId(courtCode: String, caseNumber: String): String {
         return "$courtCode|$caseNumber"
     }
+
 }
