@@ -66,6 +66,7 @@ class EpisodeService(
             "time" -> return rawAnswer.split('T')[1]
             "forename" -> return rawAnswer.split(' ')[0]
             "surname" -> return rawAnswer.split(' ')[1]
+            "toUpper" -> return rawAnswer.toUpperCase()
             else -> return rawAnswer
         }
     }
