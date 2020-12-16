@@ -17,23 +17,21 @@ class CourtCaseRestClient {
     @Value("\${court-case-api.case-path-template}")
     internal lateinit var casePathTemplate: String
 
-    fun getCourtCase(courtCode: String?, caseNumber: String?): CourtCase? {
-        val path = String.format(casePathTemplate, courtCode, caseNumber)
-        return webClient.get()
-                .uri(path)
-                .accept(MediaType.APPLICATION_JSON)
-                .retrieve()
-                .bodyToMono(CourtCase::class.java)
-                .block()
+    fun getCourtCase(courtCode: String, caseNumber: String): CourtCase? {
+        return fetchCourtCase(courtCode, caseNumber, CourtCase::class.java)
     }
 
     fun getCourtCaseJson(courtCode: String, caseNumber: String): String? {
+        return fetchCourtCase(courtCode, caseNumber, String::class.java)
+    }
+
+    private fun <T> fetchCourtCase(courtCode: String, caseNumber: String, elementClass: Class<T>): T? {
         val path = String.format(casePathTemplate, courtCode, caseNumber)
         return webClient.get()
                 .uri(path)
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
-                .bodyToMono(String::class.java)
+                .bodyToMono(elementClass)
                 .block()
     }
 }

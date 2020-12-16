@@ -35,7 +35,7 @@ class AssessmentService(
             return createFromSupervision(newAssessment.supervisionId)
         }
         if (newAssessment.isCourtCase()) {
-            return createFromCourtCase(newAssessment.courtCode, newAssessment.caseNumber)
+            return createFromCourtCase(newAssessment.courtCode!!, newAssessment.caseNumber!!)
         }
 
         throw IllegalStateException("Empty create assessment request")
@@ -54,7 +54,7 @@ class AssessmentService(
         return AssessmentDto.from(newAssessment)
     }
 
-    private fun createFromCourtCase(courtCode: String?, caseNumber: String?): AssessmentDto {
+    private fun createFromCourtCase(courtCode: String, caseNumber: String): AssessmentDto {
         // do we have a subject associated with this case?
         val sourceId = courtSourceId(courtCode, caseNumber)
         val existingSubject = subjectRepository.findBySourceAndSourceId(courtSource, sourceId)
