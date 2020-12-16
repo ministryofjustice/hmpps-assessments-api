@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.reactive.function.client.bodyToMono
 import uk.gov.justice.digital.assessments.restclient.courtcaseapi.CourtCase
 
 @Component
@@ -23,6 +24,16 @@ class CourtCaseRestClient {
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(CourtCase::class.java)
+                .block()
+    }
+
+    fun getCourtCaseJson(courtCode: String, caseNumber: String): String? {
+        val path = String.format(casePathTemplate, courtCode, caseNumber)
+        return webClient.get()
+                .uri(path)
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .bodyToMono(String::class.java)
                 .block()
     }
 }
