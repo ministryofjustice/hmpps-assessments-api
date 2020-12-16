@@ -34,8 +34,7 @@ class AssessmentEpisodeDto(
             return episodes.mapNotNull { from(it) }.toSet()
         }
 
-        fun from(episode: AssessmentEpisodeEntity?): AssessmentEpisodeDto? {
-            if (episode == null) return null
+        fun from(episode: AssessmentEpisodeEntity): AssessmentEpisodeDto {
             return AssessmentEpisodeDto(
                     episode.episodeId,
                     episode.episodeUuid,

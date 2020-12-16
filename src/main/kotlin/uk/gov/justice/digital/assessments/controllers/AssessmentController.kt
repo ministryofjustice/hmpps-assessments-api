@@ -74,4 +74,15 @@ class AssessmentController(val assessmentService : AssessmentService) {
                                 @Parameter(description = "Episode Answers", required = true) @RequestBody episodeAnswers : UpdateAssessmentEpisodeDto): AssessmentEpisodeDto? {
         return assessmentService.updateEpisode(assessmentUuid, episodeUuid, episodeAnswers)
     }
+
+    @RequestMapping(path = ["/assessments/{assessmentUuid}/episodes/current"], method = [RequestMethod.POST])
+    @Operation(description = "updates the answers for the current episode")
+    @ApiResponses(value = [
+        ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
+        ApiResponse(responseCode = "200", description = "OK")
+    ])
+    fun updateAssessmentEpisode(@Parameter(description = "Assessment UUID", required = true, example = "1234") @PathVariable assessmentUuid: UUID,
+                                @Parameter(description = "Episode Answers", required = true) @RequestBody episodeAnswers : UpdateAssessmentEpisodeDto): AssessmentEpisodeDto? {
+        return assessmentService.updateCurrentEpisode(assessmentUuid, episodeAnswers)
+    }
 }
