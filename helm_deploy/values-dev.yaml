@@ -11,3 +11,4 @@ image:
 env:
   JAVA_OPTS: "-Xmx512m -Duser.timezone=UTC"
   OAUTH_ENDPOINT_URL: https://sign-in-dev.hmpps.service.justice.gov.uk/auth
+  COURT_CASE_API_BASE_URL: https://court-case-service-dev.apps.live-1.cloud-platform.service.justice.gov.uk

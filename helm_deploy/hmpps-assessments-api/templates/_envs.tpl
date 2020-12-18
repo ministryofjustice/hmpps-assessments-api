@@ -16,6 +16,21 @@ env:
   - name: OAUTH_ENDPOINT_URL
     value: "{{ .Values.env.OAUTH_ENDPOINT_URL }}"
 
+  - name: COURT_CASE_API_PATH_TEMPLATE
+    value: "{{ .Values.env.COURT_CASE_API_PATH_TEMPLATE }}"
+
+  - name: COURT_CASE_API_ID
+    valueFrom:
+      secretKeyRef:
+        name: {{ template "app.name" . }}
+        key: API_CLIENT_ID
+
+  - name: COURT_CASE_API_CLIENT_SECRET
+    valueFrom:
+      secretKeyRef:
+        name: {{ template "app.name" . }}
+        key: API_CLIENT_SECRET
+
   - name: DATABASE_USERNAME
     valueFrom:
       secretKeyRef:
