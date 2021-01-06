@@ -31,6 +31,21 @@ env:
         name: {{ template "app.name" . }}
         key: API_CLIENT_SECRET
 
+  - name: ASSESSMENT_UPDATE_API_PATH_TEMPLATE
+    value: "{{ .Values.env.ASSESSMENT_UPDATE_PATH_TEMPLATE }}"
+
+  - name: ASSESSMENT_UPDATE_API_ID
+    valueFrom:
+      secretKeyRef:
+        name: {{ template "app.name" . }}
+        key: API_CLIENT_ID
+
+  - name: ASSESSMENT_UPDATE_API_CLIENT_SECRET
+    valueFrom:
+      secretKeyRef:
+        name: {{ template "app.name" . }}
+        key: API_CLIENT_SECRET
+
   - name: DATABASE_USERNAME
     valueFrom:
       secretKeyRef:

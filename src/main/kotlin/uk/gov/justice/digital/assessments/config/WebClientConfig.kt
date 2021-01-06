@@ -21,6 +21,9 @@ class WebClientConfig {
     @Value("\${court-case-api.base-url}")
     private lateinit var courtCaseBaseUrl: String
 
+    @Value("\${assessment-update-api.base-url}")
+    private lateinit var assessmentUpdateBaseUrl: String
+
     @Value("\${web.client.connect-timeout-ms}")
     private val connectTimeoutMs: Int? = null
 
@@ -36,6 +39,11 @@ class WebClientConfig {
     @Bean
     fun courtCaseWebClient(authorizedClientManager: OAuth2AuthorizedClientManager): WebClient {
         return webClientFactory(courtCaseBaseUrl, authorizedClientManager, bufferByteSize)
+    }
+
+    @Bean
+    fun assessmentUpdateWebClient(authorizedClientManager: OAuth2AuthorizedClientManager): WebClient {
+      return webClientFactory(assessmentUpdateBaseUrl, authorizedClientManager, bufferByteSize)
     }
 
     private fun webClientFactory(

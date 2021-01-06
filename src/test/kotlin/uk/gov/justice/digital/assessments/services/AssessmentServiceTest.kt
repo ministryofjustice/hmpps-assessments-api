@@ -10,14 +10,16 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.springframework.beans.factory.annotation.Autowired
 import uk.gov.justice.digital.assessments.api.AnswerDto
 import uk.gov.justice.digital.assessments.api.CreateAssessmentDto
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.jpa.entities.*
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.SubjectRepository
+import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
+import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.CreateOffenderResponseDto
+import uk.gov.justice.digital.assessments.restclient.courtcaseapi.CourtCase
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
 import java.time.LocalDateTime
@@ -30,15 +32,20 @@ class AssessmentServiceTest {
     private val subjectRepository: SubjectRepository = mockk()
     private val questionService: QuestionService = mockk()
     private val courtCaseRestClient: CourtCaseRestClient = mockk()
+    private val assessmentupdateRestClient: AssessmentUpdateRestClient = mockk()
 
     private val assessmentsService = AssessmentService(
             assessmentRepository,
             subjectRepository,
             questionService,
-            courtCaseRestClient)
+            courtCaseRestClient,
+            assessmentupdateRestClient)
 
     private val assessmentUuid = UUID.randomUUID()
     private val assessmentId = 1L
+
+    private val oasysOffenderPk = 1L
+    private val crn = "X12345"
 
     private val episodeId1 = 1L
     private val episodeId2 = 2L
@@ -55,6 +62,9 @@ class AssessmentServiceTest {
     private val answer2Uuid = UUID.randomUUID()
     private val answer3Uuid = UUID.randomUUID()
 
+    private val courtCode = "SHF06"
+    private val caseNumber = "668911253"
+
     @Test
     fun `should save new assessment`() {
         every { assessmentRepository.findBySupervisionId(any()) } returns null
@@ -64,6 +74,19 @@ class AssessmentServiceTest {
         verify(exactly = 1) { assessmentRepository.save(any()) }
     }
 
+  @Test
+  fun `should save new assessment from court`() {
+    every { subjectRepository.findBySourceAndSourceId(AssessmentService.courtSource, "$courtCode|$caseNumber" ) } returns null
+    every { assessmentRepository.save(any()) } returns AssessmentEntity(assessmentId = assessmentId)
+    every { courtCaseRestClient.getCourtCase(courtCode, caseNumber) } returns CourtCase(crn=crn)
+    every { assessmentupdateRestClient.createOasysOffender(crn) } returns oasysOffenderPk
+
+    assessmentsService.createNewAssessment(CreateAssessmentDto(courtCode = courtCode, caseNumber = caseNumber))
+
+    verify(exactly = 1) { assessmentRepository.save(any()) }
+    verify(exactly = 1) { courtCaseRestClient.getCourtCase(courtCode, caseNumber) }
+  }
+
     @Test
     fun `should return existing assessment if one exists`() {
         every { assessmentRepository.findBySupervisionId(any()) } returns AssessmentEntity(assessmentId = assessmentId, assessmentUuid = assessmentUuid)
@@ -72,6 +95,17 @@ class AssessmentServiceTest {
         assertThat(assessmentDto.assessmentUuid).isEqualTo(assessmentUuid)
         verify(exactly = 0) { assessmentRepository.save(any()) }
     }
+
+  @Test
+  fun `should return existing assessment if one exists from court`() {
+    every { subjectRepository.findBySourceAndSourceId(AssessmentService.courtSource, "$courtCode|$caseNumber" ) } returns SubjectEntity(assessment = AssessmentEntity(assessmentId=1))
+
+    assessmentsService.createNewAssessment(CreateAssessmentDto(courtCode = courtCode, caseNumber = caseNumber))
+
+    verify(exactly = 0) { assessmentRepository.save(any()) }
+    verify(exactly = 0) { courtCaseRestClient.getCourtCase(courtCode, caseNumber) }
+    verify(exactly = 0) { assessmentRepository.save(any()) }
+  }
 
     @Test
     fun `should create new episode`() {

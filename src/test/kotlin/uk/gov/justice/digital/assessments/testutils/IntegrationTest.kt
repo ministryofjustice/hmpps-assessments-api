@@ -28,12 +28,14 @@ abstract class IntegrationTest {
     companion object {
         internal val oauthMockServer = OAuthMockServer()
         internal val courtCaseMockServer = CourtCaseMockServer()
+        internal val assessmentUpdateMockServer = AssessmentUpdateMockServer()
 
         @BeforeAll
         @JvmStatic
         fun startMocks() {
             oauthMockServer.start()
             courtCaseMockServer.start()
+            assessmentUpdateMockServer.start()
         }
 
         @AfterAll
@@ -41,6 +43,7 @@ abstract class IntegrationTest {
         fun stopMocks() {
             courtCaseMockServer.stop()
             oauthMockServer.stop()
+            assessmentUpdateMockServer.stop()
         }
     }
 
@@ -56,6 +59,7 @@ abstract class IntegrationTest {
         oauthMockServer.stubGrantToken()
         courtCaseMockServer.resetAll()
         courtCaseMockServer.stubCourtCase()
+        assessmentUpdateMockServer.stubCreateOffender()
     }
 
     internal fun setAuthorisation(user: String = "offender-assessment-api", roles: List<String> = listOf()): (HttpHeaders) -> Unit {

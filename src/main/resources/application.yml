@@ -16,6 +16,13 @@ spring:
             client-authentication-method: basic
             authorization-grant-type: client_credentials
             provider: oauth-service
+          assessment-update-client:
+            client-name: assessment-update-api-client
+            client-id: ${assessment-update-api-id:court-case-api}
+            client-secret: ${assessment-update-api-client-secret:clientsecret}
+            client-authentication-method: basic
+            authorization-grant-type: client_credentials
+            provider: oauth-service
         provider:
           oauth-service:
             token-uri: ${oauth.endpoint.url}:http://localhost:9090/auth}/oauth/token
@@ -92,3 +99,6 @@ web:
 court-case-api:
   base-url: http://localhost:9080
   case-path-template: /court/%s/case/%s
+
+assessment-update-api:
+  base-url: http://localhost:9080

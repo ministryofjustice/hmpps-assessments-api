@@ -16,7 +16,7 @@ class CourtCaseRestClient {
     @Value("\${court-case-api.case-path-template}")
     internal lateinit var casePathTemplate: String
 
-    fun getCourtCase(courtCode: String, caseNumber: String): CourtCase? {
+    fun getCourtCase(courtCode: String?, caseNumber: String?): CourtCase? {
         val path = String.format(casePathTemplate, courtCode, caseNumber)
         return webClient.get()
                 .uri(path)
