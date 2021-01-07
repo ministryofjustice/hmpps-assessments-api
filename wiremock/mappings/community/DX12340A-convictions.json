@@ -1,0 +1,520 @@
+{
+  "id": "8909bfec-3dab-43e8-bdd2-70150d2d06c1",
+  "request": {
+    "method": "GET",
+    "urlPathPattern": "/offender/DX12340A/probation-record"
+  },
+  "response": {
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "status": 200,
+    "jsonBody": {
+      "crn": "DX12340A",
+      "offenderManagers": [
+        {
+          "staff": {
+          "forenames": "Angel",
+          "surname": "Extravaganza"
+        },
+          "allocatedDate": "2017-08-12",
+          "team": {
+            "description": "OMU A",
+            "telephone": "0114 22278787",
+            "district": "N04 Division"
+          },
+          "provider": "NPS Midlands"
+        }
+      ],
+      "convictions": [
+        {
+          "convictionId": "636401162",
+          "active": false,
+          "inBreach": true,
+          "convictionDate": "2017-03-08",
+          "offences": [
+            {
+              "description": "Burglary (dwelling) with intent to commit, or the commission of an offence triable only on indictment - 02801"
+            },
+            {
+              "description": "Burglary (dwelling) with intent to commit, or the commission of an offence triable only on indictment - 02801"
+            }
+          ],
+          "sentence": {
+            "sentenceId": "123123121",
+            "description": "CJA - Std Determinate Custody",
+            "length": 18,
+            "lengthInDays": 547,
+            "lengthUnits": "Months",
+            "terminationDate": "2018-01-23",
+            "terminationReason": "ICMS Miscellaneous Event",
+            "startDate": "2017-03-08",
+            "endDate": "2018-09-08"
+          },
+          "documents": []
+        },
+        {
+          "convictionId": "7925250000",
+          "active": false,
+          "inBreach": false,
+          "convictionDate": "2019-02-14",
+          "offences": [
+            {
+              "description": "Arson endangering life - 05601"
+            }
+          ],
+          "sentence": {
+            "sentenceId": "123123122",
+            "description": "Adult Custody < 12m",
+            "length": 18,
+            "lengthInDays": 547,
+            "lengthUnits": "Months",
+            "terminationDate": "2019-08-27",
+            "terminationReason": "ICMS Miscellaneous Event",
+            "startDate": "2019-02-14",
+            "endDate": "2019-08-27"
+          },
+          "documents": []
+        },
+        {
+          "convictionId": "1475462502",
+          "active": false,
+          "inBreach": true,
+          "convictionDate": "2017-02-21",
+          "offences": [
+            {
+              "description": "Common and other types of assault - 10500"
+            },
+            {
+              "description": "Acknowledging bail in false name - 08303"
+            },
+            {
+              "description": "Adulteration of food, drugs etc (Summary) - 10100"
+            }
+          ],
+          "sentence": {
+            "sentenceId": "123123123",
+            "description": "CJA - Indeterminate Public Prot.",
+            "length": 18,
+            "lengthInDays": 547,
+            "lengthUnits": "Months",
+            "terminationDate": "2017-08-09",
+            "terminationReason": "ICMS Miscellaneous Event",
+            "startDate": "2017-02-21",
+            "endDate": "2017-08-09"
+          },
+          "documents": []
+        },
+        {
+          "convictionId": "1906091609",
+          "active": false,
+          "inBreach": true,
+          "convictionDate": "2019-02-13",
+          "offences": [
+            {
+              "description": "(Assault PC (Indictable/Either way) - 00807)"
+            }
+          ],
+          "sentence": {
+            "sentenceId": "123123124",
+            "description": "ORA Community Order",
+            "length": 18,
+            "lengthInDays": 547,
+            "lengthUnits": "Months",
+            "terminationDate": "2019-09-04",
+            "terminationReason": "ICMS Miscellaneous Event",
+            "startDate": "2019-02-13",
+            "endDate": "2019-09-04"
+          },
+          "documents": []
+        },
+        {
+          "convictionId": "1490163794",
+          "active": true,
+          "inBreach": true,
+          "convictionDate": null,
+          "offences": [
+            {
+              "description": "Arson endangering life - 05601"
+            },
+            {
+              "description": "High treason - 06200"
+            },
+            {
+              "description": "(Buggery and attempted buggery - 01600)"
+            },
+            {
+              "description": "Aiding suicide - 07600"
+            }
+          ],
+          "sentence": null,
+          "documents": []
+        },
+        {
+          "convictionId": "943466740",
+          "active": false,
+          "inBreach": true,
+          "convictionDate": "2017-02-12",
+          "offences": [
+            {
+              "description": "High treason - 06200"
+            },
+            {
+              "description": "Detaining and threatening to kill or injure a hostage (Taking of Hostages Act 1982) - 03604"
+            },
+            {
+              "description": "(Assault PC (Indictable/Either way) - 00807)"
+            },
+            {
+              "description": "Common assault and battery - 10501"
+            }
+          ],
+          "sentence": {
+            "sentenceId": "123123125",
+            "description": "Life imprisonment (Adult)",
+            "length": 18,
+            "lengthInDays": 547,
+            "lengthUnits": "Months",
+            "terminationDate": "2018-01-23",
+            "terminationReason": "ICMS Miscellaneous Event",
+            "startDate": "2017-02-12",
+            "endDate": "2017-12-14"
+          },
+          "documents": []
+        },
+        {
+          "convictionId": "1081636758",
+          "active": false,
+          "inBreach": true,
+          "convictionDate": "2019-05-19",
+          "offences": [
+            {
+              "description": "Aiding suicide - 07600"
+            }
+          ],
+          "sentence": {
+            "sentenceId": "123123126",
+            "description": "ORA Suspended Sentence Order",
+            "length": 18,
+            "lengthInDays": 547,
+            "lengthUnits": "Months",
+            "terminationDate": "2019-09-04",
+            "terminationReason": "ICMS Miscellaneous Event",
+            "startDate": "2019-05-19",
+            "endDate": "2017-12-19"
+          },
+          "documents": []
+        },
+        {
+          "convictionId": "1403337513",
+          "active": true,
+          "inBreach": false,
+          "convictionDate": "2019-05-19",
+          "offences": [
+            {
+              "description": "Stealing mail bags or postal packets or unlawfully taking away or opening mail bag - 04200"
+            },
+            {
+              "description": "Common and other types of assault - 10500"
+            },
+            {
+              "description": "(Adulteration etc of milk products - 08902)"
+            },
+            {
+              "description": "Burglary (dwelling) with intent to commit, or the commission of an offence triable only on indictment - 02801"
+            }
+          ],
+          "sentence": {
+            "sentenceId": "123123127",
+            "description": "ORA Community Order",
+            "length": 18,
+            "lengthInDays": 547,
+            "lengthUnits": "Months",
+            "terminationDate": "2018-01-23",
+            "terminationReason": "ICMS Miscellaneous Event",
+            "startDate": "2019-05-20",
+            "endDate": "2020-05-25"
+          },
+          "documents": [
+            {
+              "documentId": "66b66bd6-b1fd-4883-a23d-609c16284abc",
+              "documentName": "shortFormatPreSentenceReport_X320741_121424_OMIC_A_04092019.pdf",
+              "author": "John Jones",
+              "type": "COURT_REPORT_DOCUMENT",
+              "extendedDescription": "Pre-Sentence Report - Fast requested by Sheffield Crown Court on 01/01/2018",
+              "createdAt": "2019-09-04T00:00:00",
+              "subType": {
+                "code": "CJF",
+                "description": "Pre-Sentence Report - Fast"
+              },
+              "reportDocumentDates": {
+                "requestedDate": "2018-01-01",
+                "requiredDate": "2018-01-02",
+                "completedDate": "2018-01-02T00:00:00"
+              }
+            }
+          ]
+        },
+        {
+          "convictionId": "1309234876",
+          "active": true,
+          "inBreach": false,
+          "convictionDate": "{{now offset='-6 months' format='yyyy-MM-dd'}}",
+          "offences": [
+            {
+              "description": "Dangerous driving/Aid, abet cause or permit reckless driving - 80200"
+            },
+            {
+              "description": "Town and Country Planning Act 1990/Planning (Listed Buildings and Conservation Areas) Act 1990/Planning (Hazardous Substances Act) - 09400"
+            },
+            {
+              "description": "Aiding suicide - 07600"
+            },
+            {
+              "description": "Aggravated burglary in a building other than a dwelling (including attempts) - 03100"
+            }
+          ],
+          "sentence": {
+            "sentenceId": "123123128",
+            "description": "ORA Adult Custody (inc PSS)",
+            "length": 12,
+            "lengthInDays": 365,
+            "lengthUnits": "Months",
+            "terminationDate": "2018-01-23",
+            "terminationReason": "ICMS Miscellaneous Event",
+            "currentOrderHeaderDetail" : {
+              "custodialTypeCode" : "B",
+              "custodialTypeDescription": "ORA Adult Custody (inc PSS)",
+              "mainOffenceDescription": "Dangerous driving/Aid, abet cause or permit reckless driving - 80200",
+              "status": "Released - On Licence",
+              "disposalDate": "{{now offset='-6 months' format='yyyy-MM-dd'}}",
+              "actualReleaseDate": "{{now offset='-6 months' format='yyyy-MM-dd'}}",
+              "licenceExpiryDate": "{{now offset='6 months' format='yyyy-MM-dd'}}",
+              "pssEndDate": "{{now offset='12 months' format='yyyy-MM-dd'}}",
+              "length": 12,
+              "lengthUnit": "Months"
+            },
+            "startDate": "{{now offset='-6 months' format='yyyy-MM-dd'}}",
+            "endDate": "{{now offset='6 months' format='yyyy-MM-dd'}}"
+          },
+          "documents": [
+            {
+              "documentId": "1d842fce-ec2d-45dc-ac9a-748d3076ca6b",
+              "documentName": "shortFormatPreSentenceReport_04092019_121424_OMIC_A_X320741.pdf",
+              "author": "John Smith",
+              "type": "COURT_REPORT_DOCUMENT",
+              "extendedDescription": "Pre-Sentence Report - Fast requested by Sheffield Crown Court on 27/02/2018",
+              "createdAt": "2018-02-28T00:00:00",
+              "subType": {
+                "code": "CJF",
+                "description": "Pre-Sentence Report - Fast"
+              },
+              "reportDocumentDates": {
+                "requestedDate": "2018-02-27",
+                "requiredDate": "2018-02-28",
+                "completedDate": "2018-02-28T00:00:00"
+              }
+            }
+          ]
+        },
+        {
+          "convictionId": "636401231",
+          "active": false,
+          "inBreach": false,
+          "convictionDate": "2017-02-21",
+          "offences": [
+            {
+              "description": "Aiding suicide - 07600"
+            },
+            {
+              "description": "Town and Country Planning Act 1990/Planning (Listed Buildings and Conservation Areas) Act 1990/Planning (Hazardous Substances Act) - 09400"
+            },
+            {
+              "description": "Aggravated burglary in a building other than a dwelling (including attempts) - 03100"
+            }
+          ],
+          "sentence": {
+            "sentenceId": "123123129",
+            "description": "ORA Adult Custody (Not PSS)",
+            "length": 18,
+            "lengthInDays": 547,
+            "lengthUnits": "Months",
+            "terminationDate": "2017-12-25",
+            "terminationReason": "ICMS Miscellaneous Event",
+            "startDate": "2017-02-21",
+            "endDate": "2017-12-25"
+          },
+          "documents": []
+        },
+        {
+          "convictionId": "1355637968",
+          "active": true,
+          "inBreach": true,
+          "convictionDate": "2019-03-03",
+          "endDate": "2020-07-01",
+          "offences": [
+            {
+              "description": "Arson endangering life - 05601"
+            }
+          ],
+          "documents": []
+        },
+        {
+          "convictionId": "2360414697",
+          "active": true,
+          "inBreach": false,
+          "convictionDate": "{{now offset='-6 months' format='yyyy-MM-dd'}}",
+          "offences": [
+            {
+              "description": "Aggravated burglary in a building other than a dwelling (including attempts) - 03100"
+            },
+            {
+              "description": "Abstracting electricity - 04300"
+            },
+            {
+              "description": "(Adulteration etc of milk products - 08902)"
+            },
+            {
+              "description": "Common assault and battery - 10501"
+            }
+          ],
+          "sentence": {
+            "sentenceId": "123123130",
+            "description": "ORA Adult Custody (inc PSS)",
+            "length": 18,
+            "lengthInDays": 547,
+            "lengthUnits": "Months",
+            "terminationDate": "{{now offset='5 months' format='yyyy-MM-dd'}}",
+            "terminationReason": "ICMS Miscellaneous Event",
+            "currentOrderHeaderDetail" : {
+              "custodialTypeCode" : "P",
+              "custodialTypeDescription": "ORA Adult Custody (inc PSS)",
+              "mainOffenceDescription": "Aggravated burglary in a building other than a dwelling (including attempts) - 03100",
+              "status": "Post Sentence Supervision",
+              "disposalDate": "{{now offset='-6 months' format='yyyy-MM-dd'}}",
+              "actualReleaseDate": "{{now format='yyyy-MM-dd'}}",
+              "licenceExpiryDate": "{{now format='yyyy-MM-dd'}}",
+              "pssEndDate": "{{now offset='5 months' format='yyyy-MM-dd'}}",
+              "length": 11,
+              "lengthUnit": "Months"
+            },
+            "startDate": "{{now offset='-6 months' format='yyyy-MM-dd'}}",
+            "endDate": "2020-07-01"
+          },
+          "documents": []
+        },
+        {
+          "convictionId": "1999409258",
+          "active": false,
+          "inBreach": false,
+          "convictionDate": "2018-02-25",
+          "offences": [
+            {
+              "description": "Burglary (dwelling) with intent to commit, or the commission of an offence triable only on indictment - 02801"
+            },
+            {
+              "description": "(Buggery and attempted buggery - 01600)"
+            },
+            {
+              "description": "Abstracting electricity - 04300"
+            }
+          ],
+          "sentence": {
+            "sentenceId": "123123131",
+            "description": "ORA Adult Custody (Not PSS)",
+            "length": 18,
+            "lengthInDays": 547,
+            "lengthUnits": "Months",
+            "terminationDate": "2018-08-04",
+            "terminationReason": "ICMS Miscellaneous Event",
+            "startDate": "2018-02-25",
+            "endDate": "2018-08-04"
+          },
+          "documents": []
+        },
+        {
+          "convictionId": "2319221210",
+          "active": false,
+          "inBreach": false,
+          "convictionDate": "2017-02-22",
+          "offences": [
+            {
+              "description": "Arson endangering life - 05601"
+            }
+          ],
+          "sentence": {
+            "sentenceId": "123123132",
+            "description": "Fine",
+            "length": 18,
+            "lengthInDays": 547,
+            "lengthUnits": "Months",
+            "terminationDate": "2018-01-23",
+            "terminationReason": "ICMS Miscellaneous Event",
+            "startDate": "2017-02-22",
+            "endDate": "2017-11-18"
+          },
+          "documents": []
+        },
+        {
+          "convictionId": "754151578",
+          "active": false,
+          "inBreach": true,
+          "convictionDate": "2018-03-01",
+          "offences": [
+            {
+              "description": "Acknowledging bail in false name - 08303"
+            },
+            {
+              "description": "Common assault and battery - 10501"
+            },
+            {
+              "description": "Burglary (dwelling) with intent to commit, or the commission of an offence triable only on indictment - 02801"
+            },
+            {
+              "description": "Burglary (dwelling) with intent to commit, or the commission of an offence triable only on indictment - 02801"
+            }
+          ],
+          "sentence": {
+            "sentenceId": "123123133",
+            "description": "ORA Adult Custody (Not PSS)",
+            "length": 18,
+            "lengthInDays": 547,
+            "lengthUnits": "Months",
+            "terminationDate": "2018-09-21",
+            "terminationReason": "ICMS Miscellaneous Event",
+            "startDate": "2018-03-01",
+            "endDate": "2018-09-21"
+          },
+          "documents": []
+        },
+        {
+          "convictionId": "901046255",
+          "active": false,
+          "inBreach": false,
+          "convictionDate": "2018-02-27",
+          "offences": [
+            {
+              "description": "Common and other types of assault - 10500"
+            },
+            {
+              "description": "Abstracting electricity - 04300"
+            }
+          ],
+          "sentence": {
+            "sentenceId": "123123134",
+            "description": "Fine",
+            "terminationDate": "2018-09-23",
+            "terminationReason": "ICMS Miscellaneous Event",
+            "startDate": "2018-02-27",
+            "endDate": "2018-09-23"
+          },
+          "documents": []
+        }
+      ],
+      "assessment": {
+        "type": "LAYER_3",
+        "completed": "2018-06-20T23:00:09"
+      }
+    }
+  }
+}
