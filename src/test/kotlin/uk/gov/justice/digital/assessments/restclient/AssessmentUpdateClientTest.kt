@@ -9,12 +9,12 @@ class AssessmentUpdateClientTest: IntegrationTest() {
     @Autowired
     internal lateinit var assessmentUpdateRestClient: AssessmentUpdateRestClient
 
-    val crn = "X123456"
+    val crn = "DX12340A"
 
     @Test
     fun `create OASys Offender`() {
         val offenderPk = assessmentUpdateRestClient.createOasysOffender(crn);
-        assertThat(offenderPk).isEqualTo("1")
+        assertThat(offenderPk).isEqualTo(1)
     }
 
 }

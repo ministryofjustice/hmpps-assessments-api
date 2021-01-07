@@ -10,7 +10,7 @@ class AssessmentUpdateMockServer : WireMockServer(9003) {
     fun stubCreateOffender() {
         stubFor(
             WireMock.post(WireMock.urlEqualTo("/offenders"))
-                .withRequestBody(equalToJson("{ \"crn\": \"X123456\" }", true, true))
+                .withRequestBody(equalToJson("{ \"crn\": \"DX12340A\" }", true, true))
                 .willReturn(WireMock.aResponse()
                     .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
                     .withBody(assessmentUpdateJson))
@@ -18,6 +18,6 @@ class AssessmentUpdateMockServer : WireMockServer(9003) {
     }
 
     companion object {
-        val assessmentUpdateJson = """{ "oasysOffenderId": 1 }""".trimIndent()
+        val assessmentUpdateJson = """{ "oasysOffenderId": "1" }""".trimIndent()
     }
 }
