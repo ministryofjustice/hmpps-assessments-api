@@ -26,13 +26,13 @@ class AssessmentDto (
 
     companion object {
 
-        fun from(assessment: AssessmentEntity): AssessmentDto {
+        fun from(assessment: AssessmentEntity?): AssessmentDto {
             return AssessmentDto(
-                    assessment.assessmentId,
-                    assessment.assessmentUuid,
-                    assessment.supervisionId,
-                    assessment.createdDate,
-                    assessment.completedDate
+                    assessment?.assessmentId,
+                    assessment?.assessmentUuid,
+                    assessment?.supervisionId,
+                    assessment?.createdDate,
+                    assessment?.completedDate
             )
         }
     }

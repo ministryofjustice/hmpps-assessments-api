@@ -12,12 +12,26 @@ services:
     environment:
       - SERVER_PORT=9090
       - SPRING_PROFILES_ACTIVE=dev
+
   wiremock:
     image: rodolpheche/wiremock
     ports:
       - "9080:8080"
     volumes:
       - ./wiremock:/home/wiremock
+
+  postgres:
+    image: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    networks:
+      - hmpps
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: dev
+    tmpfs:
+      - /var/lib/postgresql
 
 networks:
   hmpps:

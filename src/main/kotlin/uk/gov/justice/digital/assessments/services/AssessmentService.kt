@@ -7,6 +7,7 @@ import uk.gov.justice.digital.assessments.api.*
 import uk.gov.justice.digital.assessments.jpa.entities.*
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.SubjectRepository
+import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import uk.gov.justice.digital.assessments.restclient.courtcaseapi.CourtCase
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
@@ -20,25 +21,26 @@ class AssessmentService(
         private val assessmentRepository: AssessmentRepository,
         private val subjectRepository: SubjectRepository,
         private val questionService: QuestionService,
-        private val courtCaseClient: CourtCaseRestClient
+        private val courtCaseClient: CourtCaseRestClient,
+        private val assessmentUpdateRestClient: AssessmentUpdateRestClient
 ) {
     companion object {
         val log: Logger = LoggerFactory.getLogger(this::class.java)
-        val courtSource = "COURT"
+        const val courtSource = "COURT"
     }
 
     fun createNewAssessment(newAssessment: CreateAssessmentDto): AssessmentDto {
         if (newAssessment.isSupervision()) {
-            return createFromSupervision(newAssessment.supervisionId!!)
+            return createFromSupervision(newAssessment.supervisionId)
         }
         if (newAssessment.isCourtCase()) {
-            return createFromCourtCase(newAssessment.courtCode!!, newAssessment.caseNumber!!)
+            return createFromCourtCase(newAssessment.courtCode, newAssessment.caseNumber)
         }
 
         throw IllegalStateException("Empty create assessment request")
     }
 
-    private fun createFromSupervision(supervisionId: String): AssessmentDto {
+    private fun createFromSupervision(supervisionId: String?): AssessmentDto {
         val existingAssessment = assessmentRepository.findBySupervisionId(supervisionId)
 
         if (existingAssessment != null) {
@@ -51,7 +53,7 @@ class AssessmentService(
         return AssessmentDto.from(newAssessment)
     }
 
-    private fun createFromCourtCase(courtCode: String, caseNumber: String): AssessmentDto {
+    private fun createFromCourtCase(courtCode: String?, caseNumber: String?): AssessmentDto {
         // do we have a subject associated with this case?
         val sourceId = courtSourceId(courtCode, caseNumber)
         val existingSubject = subjectRepository.findBySourceAndSourceId(courtSource, sourceId)
@@ -59,16 +61,19 @@ class AssessmentService(
         // yes, so return the assessment
         if (existingSubject != null) {
             log.info("Existing assessment found for court $courtCode, case $caseNumber")
-            return AssessmentDto.from(existingSubject.assessment!!)
+            return AssessmentDto.from(existingSubject.assessment)
         }
 
         // no, so fetch subject details from court case service
         val courtCase = courtCaseClient.getCourtCase(courtCode, caseNumber)
                 ?: throw EntityNotFoundException("No court case found for $courtCode, $caseNumber")
 
+        //create offender in oasys
+        val oasysOffenderPk = courtCase.crn?.let { assessmentUpdateRestClient.createOasysOffender(it) }
+
         // create assessment
         val assessment = AssessmentEntity(createdDate = LocalDateTime.now())
-        val subject = subjectFromCourtCase(sourceId, courtCase, assessment)
+        val subject = subjectFromCourtCase(sourceId, courtCase, assessment, oasysOffenderPk)
         assessment.addSubject(subject)
         assessment.newEpisode("Court Request")
         val newAssessment = AssessmentDto.from(assessmentRepository.save(assessment))
@@ -179,11 +184,12 @@ class AssessmentService(
                 ?: throw EntityNotFoundException("Assessment $assessmentUuid not found")
     }
 
-    private fun subjectFromCourtCase(sourceId: String, courtCase: CourtCase, assessment: AssessmentEntity): SubjectEntity {
+    private fun subjectFromCourtCase(sourceId: String, courtCase: CourtCase, assessment: AssessmentEntity, oasysOffenderPk: Long?): SubjectEntity {
         return SubjectEntity(
                 source = courtSource,
                 sourceId = sourceId,
                 name = courtCase.defendantName,
+                oasysOffenderPk = oasysOffenderPk,
                 pnc = courtCase.pnc,
                 crn = courtCase.crn,
                 dateOfBirth = courtCase.defendantDob,
@@ -192,7 +198,7 @@ class AssessmentService(
         )
     }
 
-    private fun courtSourceId(courtCode: String, caseNumber: String): String {
+    private fun courtSourceId(courtCode: String?, caseNumber: String?): String {
         return "$courtCode|$caseNumber"
     }
 
