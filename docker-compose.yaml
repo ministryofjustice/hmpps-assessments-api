@@ -13,13 +13,6 @@ services:
       - SERVER_PORT=9090
       - SPRING_PROFILES_ACTIVE=dev
 
-  wiremock:
-    image: rodolpheche/wiremock
-    ports:
-      - "9080:8080"
-    volumes:
-      - ./wiremock:/home/wiremock
-
   postgres:
     image: postgres
     restart: always
@@ -32,6 +25,13 @@ services:
       POSTGRES_PASSWORD: dev
     tmpfs:
       - /var/lib/postgresql
+
+  wiremock:
+    image: rodolpheche/wiremock
+    ports:
+      - "9080:8080"
+    volumes:
+      - ./wiremock:/home/wiremock
 
 networks:
   hmpps:
