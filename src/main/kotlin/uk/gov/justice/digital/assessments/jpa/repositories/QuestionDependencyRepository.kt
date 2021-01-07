@@ -1,6 +1,9 @@
 package uk.gov.justice.digital.assessments.jpa.repositories
 
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.stereotype.Repository
+import uk.gov.justice.digital.assessments.jpa.entities.QuestionDependencyEntity
 
-class QuestionDependencyRepository {
-    fun findDependencies(): Collection<String> = emptyList()
+@Repository
+interface QuestionDependencyRepository: JpaRepository<QuestionDependencyEntity, String> {
 }
