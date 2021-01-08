@@ -82,8 +82,10 @@ class AssessmentServiceTest {
     every { assessmentRepository.save(any()) } returns AssessmentEntity(assessmentId = assessmentId)
     every { courtCaseRestClient.getCourtCase(courtCode, caseNumber) } returns CourtCase(crn=crn)
     every { assessmentupdateRestClient.createOasysOffender(crn) } returns oasysOffenderPk
+    every { episodeService.prepopulate(any()) } returnsArgument 0
 
     assessmentsService.createNewAssessment(CreateAssessmentDto(courtCode = courtCode, caseNumber = caseNumber))
+
 
     verify(exactly = 1) { assessmentRepository.save(any()) }
     verify(exactly = 1) { courtCaseRestClient.getCourtCase(courtCode, caseNumber) }
