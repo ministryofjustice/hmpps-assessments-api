@@ -18,8 +18,3 @@ insert into assessed_episode  (episode_id, episode_uuid, user_id, created_date, 
 /* Empty assessment */
 insert into assessment  (assessment_id, assessment_uuid, supervision_id, created_date) values
 (3, 'f9a07b3f-91b7-45a7-a5ca-2d98cf1147d8', 'CRN2', '2020-1-14 09:00');
-
-/* Question Dependency */
-insert into question_dependency (subject_question_uuid, trigger_question_uuid, trigger_answer_value, dependency_start) values
-('11111111-1111-1111-1111-111111111113', '11111111-1111-1111-1111-111111111112', 'Y', '2020-1-14 09:00'),
-('11111111-1111-1111-1111-111111111116', '11111111-1111-1111-1111-111111111115', 'Y', '2020-1-14 09:00');

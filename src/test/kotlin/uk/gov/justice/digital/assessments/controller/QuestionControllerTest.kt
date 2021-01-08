@@ -62,8 +62,8 @@ class QuestionControllerTest : IntegrationTest() {
         val questionRef = questionRefs?.get(0) as GroupQuestionDto
         assertThat(questionRef.questionId).isEqualTo(UUID.fromString(questionSchemaUuid))
 
-        val answerRefs = questionRef.answerSchemas
-        assertThat(answerRefs?.first()?.answerSchemaUuid).isEqualTo(UUID.fromString(answerSchemaUuid))
+        val answerSchemaUuids = questionRef.answerSchemas?.map { it.answerSchemaUuid }
+        assertThat(answerSchemaUuids).contains(UUID.fromString(answerSchemaUuid))
     }
 
     @Test
@@ -82,8 +82,8 @@ class QuestionControllerTest : IntegrationTest() {
         val questionRef = questionRefs?.get(0) as GroupQuestionDto
         assertThat(questionRef.questionId).isEqualTo(UUID.fromString(questionSchemaUuid))
 
-        val answerRefs = questionRef.answerSchemas
-        assertThat(answerRefs?.first()?.answerSchemaUuid).isEqualTo(UUID.fromString(answerSchemaUuid))
+        val answerSchemaUuids = questionRef.answerSchemas?.map { it.answerSchemaUuid }
+        assertThat(answerSchemaUuids).contains(UUID.fromString(answerSchemaUuid))
     }
 
     @Test
