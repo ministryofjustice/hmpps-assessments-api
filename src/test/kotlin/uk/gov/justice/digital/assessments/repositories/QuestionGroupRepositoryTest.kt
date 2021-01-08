@@ -20,7 +20,7 @@ class QuestionGroupRepositoryTest(@Autowired val questionGroupRepository: Questi
     @Test
     fun `fetch group contents`() {
         val questionGroupEntities = questionGroupRepository.findByGroupGroupUuid(groupUuid)
-        assertThat(questionGroupEntities).hasSize(1)
+        assertThat(questionGroupEntities).hasSize(2)
 
         val questionGroupEntity = questionGroupEntities!!.first()
         assertThat(questionGroupEntity.contentType).isEqualTo("question")
@@ -36,8 +36,8 @@ class QuestionGroupRepositoryTest(@Autowired val questionGroupRepository: Questi
 
         assertThat(groupInfo.groupUuid).isEqualTo(groupUuid.toString())
         assertThat(groupInfo.heading).isEqualTo("Heading 1")
-        assertThat(groupInfo.contentCount).isEqualTo(1)
+        assertThat(groupInfo.contentCount).isEqualTo(2)
         assertThat(groupInfo.groupCount).isEqualTo(0)
-        assertThat(groupInfo.questionCount).isEqualTo(1)
+        assertThat(groupInfo.questionCount).isEqualTo(2)
     }
 }

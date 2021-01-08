@@ -6,6 +6,7 @@ import org.junit.Test
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionGroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.GroupEntity
+import uk.gov.justice.digital.assessments.services.QuestionDependencies
 import java.time.LocalDateTime
 import java.util.*
 
@@ -145,12 +146,11 @@ class GroupWithContentsDtoTest {
     private fun makeQuestionGroupDto(group: GroupEntity, vararg contents: QuestionGroupEntity): GroupWithContentsDto {
         val contentsDto: List<GroupContentDto> = contents.map {
             when(it.contentType) {
-                "question" -> GroupQuestionDto.from(it.question!!, it)
+                "question" -> GroupQuestionDto.from(it.question!!, it, QuestionDependencies(emptyList()))
                 "group" -> GroupWithContentsDto.from(it.nestedGroup!!, emptyList(), it)
                 else -> throw Exception("oh no")
             }
         }
-
 
         return GroupWithContentsDto.from(group, contentsDto)
     }

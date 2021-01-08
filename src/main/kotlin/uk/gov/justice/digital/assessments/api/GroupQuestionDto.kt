@@ -3,6 +3,7 @@ package uk.gov.justice.digital.assessments.api
 import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionGroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
+import uk.gov.justice.digital.assessments.services.QuestionDependencies
 import java.util.*
 
 data class GroupQuestionDto(
@@ -30,11 +31,18 @@ data class GroupQuestionDto(
         @Schema(description = "Question Validation for Group", example = "to-do")
         val validation : String? = null,
 
+        @Schema(description = "Is the question display conditional on some other question", example = "false")
+        val conditional : Boolean? = null,
+
         @Schema(description = "Reference Answer Schemas")
         val answerSchemas: Set<AnswerSchemaDto>? = null,
 ): GroupContentDto {
     companion object{
-        fun from(questionSchemaEntity: QuestionSchemaEntity, questionGroupEntity: QuestionGroupEntity): GroupQuestionDto{
+        fun from(
+                questionSchemaEntity: QuestionSchemaEntity,
+                questionGroupEntity: QuestionGroupEntity,
+                questionDependencies: QuestionDependencies
+        ): GroupQuestionDto{
             return GroupQuestionDto(
                     questionId = questionSchemaEntity.questionSchemaUuid,
                     questionCode = questionSchemaEntity.questionCode,
@@ -44,7 +52,11 @@ data class GroupQuestionDto(
                     displayOrder = questionGroupEntity.displayOrder,
                     mandatory = questionGroupEntity.mandatory,
                     validation = questionGroupEntity.validation,
-                    answerSchemas = AnswerSchemaDto.from(questionSchemaEntity.answerSchemaEntities)
+                    conditional = questionDependencies.hasDependency(questionSchemaEntity.questionSchemaUuid),
+                    answerSchemas = AnswerSchemaDto.from(
+                            questionSchemaEntity.answerSchemaEntities,
+                            questionDependencies.answerTriggers(questionSchemaEntity.questionSchemaUuid)
+                    )
             ) }
     }
 }

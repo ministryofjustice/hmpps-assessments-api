@@ -22,6 +22,7 @@ class QuestionControllerTest : IntegrationTest() {
 
     private val groupUuid = "e353f3df-113d-401c-a3c0-14239fc17cf9"
     private val questionSchemaUuid = "fd412ca8-d361-47ab-a189-7acb8ae0675b"
+    private val subjectQuestionUuid = "1948af63-07f2-4a8c-9e4c-0ec347bd6ba8"
     private val answerSchemaUuid = "464e25da-f843-43b6-8223-4af415abda0c"
 
     @Test
@@ -62,8 +63,8 @@ class QuestionControllerTest : IntegrationTest() {
         val questionRef = questionRefs?.get(0) as GroupQuestionDto
         assertThat(questionRef.questionId).isEqualTo(UUID.fromString(questionSchemaUuid))
 
-        val answerRefs = questionRef.answerSchemas
-        assertThat(answerRefs?.first()?.answerSchemaUuid).isEqualTo(UUID.fromString(answerSchemaUuid))
+        val answerSchemaUuids = questionRef.answerSchemas?.map { it.answerSchemaUuid }
+        assertThat(answerSchemaUuids).contains(UUID.fromString(answerSchemaUuid))
     }
 
     @Test
@@ -82,8 +83,30 @@ class QuestionControllerTest : IntegrationTest() {
         val questionRef = questionRefs?.get(0) as GroupQuestionDto
         assertThat(questionRef.questionId).isEqualTo(UUID.fromString(questionSchemaUuid))
 
-        val answerRefs = questionRef.answerSchemas
-        assertThat(answerRefs?.first()?.answerSchemaUuid).isEqualTo(UUID.fromString(answerSchemaUuid))
+        val answerSchemaUuids = questionRef.answerSchemas?.map { it.answerSchemaUuid }
+        assertThat(answerSchemaUuids).contains(UUID.fromString(answerSchemaUuid))
+    }
+
+    @Test
+    fun `verify dependency conditionals`() {
+        val questions = webTestClient.get().uri("/questions/Group code")
+                .headers(setAuthorisation())
+                .exchange()
+                .expectStatus().isOk
+                .expectBody<GroupWithContentsDto>()
+                .returnResult()
+                .responseBody
+                ?.contents
+
+        val subjectQuestion = questions?.find { (it as GroupQuestionDto).questionId.toString() == subjectQuestionUuid } as GroupQuestionDto
+        assertThat(subjectQuestion.conditional).isTrue()
+
+        val triggerQuestion = questions?.find { (it as GroupQuestionDto).questionId.toString() == questionSchemaUuid } as GroupQuestionDto
+        assertThat(triggerQuestion.conditional).isFalse()
+        val yesAnswer = triggerQuestion.answerSchemas?.find { it.value == "true"}
+        assertThat(yesAnswer?.conditional.toString()).isEqualTo(subjectQuestionUuid)
+        val noAnswer = triggerQuestion.answerSchemas?.find { it.value == "false"}
+        assertThat(noAnswer?.conditional).isNull()
     }
 
     @Test
@@ -111,8 +134,8 @@ class QuestionControllerTest : IntegrationTest() {
 
         assertThat(groupInfo?.groupId).isEqualTo(UUID.fromString(groupUuid))
         assertThat(groupInfo?.title).isEqualTo("Heading 1")
-        assertThat(groupInfo?.contentCount).isEqualTo(1)
+        assertThat(groupInfo?.contentCount).isEqualTo(2)
         assertThat(groupInfo?.groupCount).isEqualTo(0)
-        assertThat(groupInfo?.questionCount).isEqualTo(1)
+        assertThat(groupInfo?.questionCount).isEqualTo(2)
     }
 }
