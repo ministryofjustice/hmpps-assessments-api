@@ -35,15 +35,17 @@ const groups = []
 const questions = []
 const questionGroups = []
 const assessment = addGrouping(all_records[0])
+const dependencies = []
 
 const yes_no = ['radio', answerSchemaGroup(['drop-down', 'Yes|Y', 'No|N'])]
 
 let currentGroup = null
+let previousQuestion = null
 
 for (const record of records) {
   if (isGroup(record)) {
     currentGroup = addGrouping(record)
-    addQuestionGroup(currentGroup.group_uuid, 'group', assessment.group_uuid)
+    addGroupQuestion(currentGroup.group_uuid, 'group', assessment.group_uuid)
     continue
   }
 
@@ -51,7 +53,8 @@ for (const record of records) {
     continue
 
   const question = addQuestion(record)
-  addQuestionGroup(question.question_schema_uuid, 'question', currentGroup.group_uuid)
+  addGroupQuestion(question.question_schema_uuid, 'question', currentGroup.group_uuid)
+  previousQuestion = question
 }
 
 console.log(answerSchemaGroupSql())
@@ -59,6 +62,7 @@ console.log(answerSchemaSql())
 console.log(groupingSql())
 console.log(questionsSql())
 console.log(questionGroupSql())
+console.log(dependenciesSql())
 
 function isGroup(record) {
   const cleaned = record.filter(f => f)
@@ -92,10 +96,20 @@ function addQuestion(record) {
     question_start: '2020-11-30 14:50:00'
   }
   questions.push(question)
+
+  if (question_text === 'Give details') { // HOLD YOUR NOSE, THIS IS STINKY
+    dependencies.push({
+      subject_question_uuid: question.question_schema_uuid,
+      trigger_question_uuid: previousQuestion.question_schema_uuid,
+      trigger_answer_value: 'Y',
+      dependency_start: '2020-11-30 14:50:00'
+    })
+  }
+
   return question
 }
 
-function addQuestionGroup(content_uuid, content_type, group_uuid) {
+function addGroupQuestion(content_uuid, content_type, group_uuid) {
   const questionGroup = {
     question_group_uuid: uuid(),
     content_uuid: content_uuid,
@@ -195,10 +209,14 @@ function answerSchemaSql() {
 }
 
 function groupingSql() {
+  const nonEmptyGroups = groups.filter(g =>
+    (questionGroups.filter(qg => qg.group_uuid === g.group_uuid).length !== 0)
+  )
+
   return tableSql(
     'grouping',
     ['group_uuid', 'group_code', 'heading', 'subheading', 'help_text', 'group_start', 'group_end'],
-    groups
+    nonEmptyGroups
   )
 }
 
@@ -211,9 +229,23 @@ function questionsSql() {
 }
 
 function questionGroupSql() {
+  const emptyGroups = groups
+    .map(g => g.group_uuid)
+    .filter(group_uuid => (questionGroups.filter(qg => qg.group_uuid === group_uuid).length === 0))
+
+  const nonEmptyQuestionGroups = questionGroups.filter(qg => !emptyGroups.includes(qg.content_uuid))
+
   return tableSql(
     'question_group',
     ['question_group_uuid', 'content_uuid', 'content_type', 'group_uuid', 'display_order', 'mandatory', 'validation'],
-    questionGroups
+    nonEmptyQuestionGroups
+  )
+}
+
+function dependenciesSql() {
+  return tableSql(
+    'question_dependency',
+    ['subject_question_uuid', 'trigger_question_uuid', 'trigger_answer_value', 'dependency_start'],
+    dependencies
   )
 }
