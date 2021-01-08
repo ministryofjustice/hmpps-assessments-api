@@ -141,7 +141,7 @@ function answerType(answerField) {
 }
 
 function answerSchemaGroup(lines) {
-  lines = lines.slice(1).map(line => line.split('|')).map(([a, v]) => v ? [a, v] : [a, a.toLowerCase()])
+  lines = lines.slice(1).map(line => line.replace(/(\r|\n)/, '').split('|')).map(([a, v]) => v ? [a, v] : [a, a.toLowerCase()])
 
   const name = lines.map(([a, v]) => a).join('_').replace(/ /g, '-').toLowerCase()
   const existing = answerSchemaGroups.find(a => a.answer_schema_group_code === name)
