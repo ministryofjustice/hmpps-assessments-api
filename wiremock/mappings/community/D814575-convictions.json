@@ -1,0 +1,90 @@
+{
+  "id": "f41276e9-5df7-4aa4-9119-5bb61e69fc91",
+  "request": {
+    "method": "GET",
+    "urlPathPattern": "/offender/D814575/probation-record"
+  },
+  "response": {
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "status": 200,
+    "jsonBody": {
+      "crn": "D814575",
+      "offenderManagers": [
+        {
+          "forenames": "Temperance",
+          "surname": "Brennan",
+          "allocatedDate": "2019-09-30"
+        }
+      ],
+      "convictions": [
+        {
+          "convictionId": "241412130",
+          "active": false,
+          "inBreach": true,
+          "convictionDate": "2018-07-06",
+          "offences": [
+            {
+              "description": "Stealing mail bags or postal packets or unlawfully taking away or opening mail bag - 04200"
+            },
+            {
+              "description": "High treason - 06200"
+            },
+            {
+              "description": "Common assault and battery - 10501"
+            }
+          ],
+          "sentence": {
+            "sentenceId": "123123141",
+            "description": "CJA - Indeterminate Public Prot.",
+            "length": 18,
+            "lengthUnits": "Months",
+            "lengthInDays": 547,
+            "terminationDate": "2020-01-06",
+            "terminationReason": "Auto Terminated",
+            "startDate": "2018-07-06",
+            "endDate": "2020-01-06"
+          },
+          "documents": []
+        },
+        {
+          "convictionId": "864007527",
+          "active": false,
+          "inBreach": true,
+          "convictionDate": "2018-01-24",
+          "offences": [
+            {
+              "description": "Weights and Measures Acts - 18900"
+            },
+            {
+              "description": "Stealing mail bags or postal packets or unlawfully taking away or opening mail bag - 04200"
+            },
+            {
+              "description": "High treason - 06200"
+            },
+            {
+              "description": "Adulteration of food, drugs etc (Summary) - 10100"
+            }
+          ],
+          "sentence": {
+            "sentenceId": "123123142",
+            "description": "ORA Suspended Sentence Order",
+            "length": 18,
+            "lengthUnits": "Months",
+            "lengthInDays": 547,
+            "terminationDate": "2019-07-24",
+            "terminationReason": "Auto Terminated",
+            "startDate": "2018-01-24",
+            "endDate": "2019-07-24"
+          },
+          "documents": []
+        }
+      ],
+      "assessment": {
+        "type": "LAYER_3",
+        "completed": "2017-11-20T23:00:09"
+      }
+    }
+  }
+}

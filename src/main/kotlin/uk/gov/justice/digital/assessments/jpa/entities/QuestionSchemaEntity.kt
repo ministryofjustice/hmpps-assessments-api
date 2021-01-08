@@ -23,6 +23,9 @@ class QuestionSchemaEntity(
         @Column(name = "OASYS_question_code")
         val oasysQuestionCode: String? = null,
 
+        @Column(name = "external_source")
+        val externalSource: String? = null,
+
         @Column(name = "question_start")
         val questionStartDate: LocalDateTime? = null,
 

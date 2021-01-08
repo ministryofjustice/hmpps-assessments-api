@@ -1,0 +1,183 @@
+{
+  "id": "1542a190-46aa-4f94-b1b7-feba42436783",
+  "request": {
+    "method": "GET",
+    "urlPathPattern": "/offender/D541487/probation-record"
+  },
+  "response": {
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "status": 200,
+    "jsonBody": {
+      "crn": "D541487",
+      "offenderManagers": [
+        {
+          "forenames": "Temperance",
+          "surname": "Brennan",
+          "allocatedDate": "2019-09-30"
+        }
+      ],
+      "convictions": [
+        {
+          "convictionId": "1531139839",
+          "active": false,
+          "inBreach": true,
+          "convictionDate": "2018-01-06",
+          "offences": [
+            {
+              "description": "Noise offences - 82200"
+            },
+            {
+              "description": "Acknowledging bail in false name - 08303"
+            },
+            {
+              "description": "Burglary (dwelling) with intent to commit, or the commission of an offence triable only on indictment - 02801"
+            },
+            {
+              "description": "Highways Acts - Other offences, other than those caused by vehicles - 12400"
+            }
+          ],
+          "sentence": {
+            "sentenceId": "123123140",
+            "description": "CJA - Indeterminate Public Prot.",
+            "length": 18,
+            "lengthInDays": 547,
+            "lengthUnits": "Months",
+            "terminationDate": "2019-07-12",
+            "terminationReason": "Auto Terminated",
+            "startDate": "2018-01-06",
+            "endDate": "2019-07-12"
+          },
+          "documents": []
+        },
+        {
+          "convictionId": "2194354691",
+          "active": false,
+          "inBreach": false,
+          "convictionDate": "2018-09-23",
+          "offences": [
+            {
+              "description": "(Adulteration etc of milk products - 08902)"
+            },
+            {
+              "description": "(Adulteration etc of milk products - 08902)"
+            }
+          ],
+          "sentence": {
+            "sentenceId": "123123141",
+            "description": "Adult Custody < 12m",
+            "length": 18,
+            "lengthInDays": 547,
+            "lengthUnits": "Months",
+            "terminationDate": "2019-01-13",
+            "terminationReason": "Auto Terminated",
+            "startDate": "2018-09-23",
+            "endDate": "2019-01-13"
+          },
+          "documents": [
+            {
+              "documentId": "1d842fce-ec2d-45dc-ac9a-748d3076ca6b",
+              "documentName": "shortFormatPreSentenceReport_04092019_121424_OMIC_A_X320741.pdf",
+              "author": "Andy Marke",
+              "type": "COURT_REPORT_DOCUMENT",
+              "extendedDescription": "Pre-Sentence Report - Fast requested by Sheffield Crown Court on 04/09/2018",
+              "createdAt": "2019-09-04T00:00:00",
+              "subType": {
+                "code": "CJF",
+                "description": "Pre-Sentence Report - Fast"
+              },
+              "reportDocumentDates": {
+                "requestedDate": "2018-09-04",
+                "requiredDate": "2019-09-04",
+                "completedDate": "{{now offset='-1 months' format='yyyy-MM-dd'}}T00:00:00"
+              }
+            }
+          ]
+        },
+        {
+          "convictionId": "1235666200",
+          "active": false,
+          "inBreach": true,
+          "convictionDate": "2018-12-24",
+          "offences": [
+            {
+              "description": "Stealing mail bags or postal packets or unlawfully taking away or opening mail bag - 04200"
+            },
+            {
+              "description": "Highways Acts - Other offences, other than those caused by vehicles - 12400"
+            }
+          ],
+          "sentence": {
+            "sentenceId": "123123142",
+            "description": "CJA - Indeterminate Public Prot.",
+            "length": 18,
+            "lengthInDays": 547,
+            "lengthUnits": "Months",
+            "terminationDate": "2018-12-03",
+            "terminationReason": "Auto Terminated",
+            "startDate": "2018-12-24",
+            "endDate": "2018-12-03"
+          },
+          "documents": []
+        },
+        {
+          "convictionId": "2191294734",
+          "active": false,
+          "inBreach": true,
+          "convictionDate": "2018-08-13",
+          "offences": [
+            {
+              "description": "(Buggery and attempted buggery - 01600)"
+            },
+            {
+              "description": "(Adulteration etc of milk products - 08902)"
+            },
+            {
+              "description": "Common assault and battery - 10501"
+            }
+          ],
+          "sentence": {
+            "sentenceId": "123123143",
+            "description": "ORA Community Order",
+            "length": 18,
+            "lengthInDays": 547,
+            "lengthUnits": "Months",
+            "terminationDate": "2018-12-03",
+            "terminationReason": "Auto Terminated",
+            "startDate": "2018-08-13",
+            "endDate": "2018-12-03"
+          },
+          "documents": []
+        },
+        {
+          "convictionId": "754729727",
+          "active": false,
+          "inBreach": true,
+          "convictionDate": "2018-11-14",
+          "offences": [
+            {
+                "description": "Town and Country Planning Act 1990/Planning (Listed Buildings and Conservation Areas) Act 1990/Planning (Hazardous Substances Act) - 09400"
+              }
+          ],
+          "sentence": {
+            "sentenceId": "123123144",
+            "description": "ORA Suspended Sentence Order",
+            "length": 18,
+            "lengthInDays": 547,
+            "lengthUnits": "Months",
+            "terminationDate": "2018-12-03",
+            "terminationReason": "Auto Terminated",
+            "startDate": "2018-11-14",
+            "endDate": "2018-12-03"
+          },
+          "documents": []
+        }
+      ],
+      "assessment": {
+        "type": "LAYER_3",
+        "completed": "2019-04-04T23:00:09"
+      }
+    }
+  }
+}

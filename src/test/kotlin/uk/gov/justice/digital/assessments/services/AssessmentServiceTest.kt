@@ -32,12 +32,14 @@ class AssessmentServiceTest {
     private val subjectRepository: SubjectRepository = mockk()
     private val questionService: QuestionService = mockk()
     private val courtCaseRestClient: CourtCaseRestClient = mockk()
+    private val episodeService: EpisodeService = mockk()
     private val assessmentupdateRestClient: AssessmentUpdateRestClient = mockk()
 
     private val assessmentsService = AssessmentService(
             assessmentRepository,
             subjectRepository,
             questionService,
+            episodeService,
             courtCaseRestClient,
             assessmentupdateRestClient)
 
@@ -80,8 +82,10 @@ class AssessmentServiceTest {
     every { assessmentRepository.save(any()) } returns AssessmentEntity(assessmentId = assessmentId)
     every { courtCaseRestClient.getCourtCase(courtCode, caseNumber) } returns CourtCase(crn=crn)
     every { assessmentupdateRestClient.createOasysOffender(crn) } returns oasysOffenderPk
+    every { episodeService.prepopulate(any()) } returnsArgument 0
 
     assessmentsService.createNewAssessment(CreateAssessmentDto(courtCode = courtCode, caseNumber = caseNumber))
+
 
     verify(exactly = 1) { assessmentRepository.save(any()) }
     verify(exactly = 1) { courtCaseRestClient.getCourtCase(courtCode, caseNumber) }
@@ -117,8 +121,8 @@ class AssessmentServiceTest {
 
         val episodeDto = assessmentsService.createNewEpisode(assessmentUuid, "Change of Circs")
 
-        assertThat(episodeDto?.assessmentUuid).isEqualTo(assessmentUuid)
-        assertThat(episodeDto?.episodeId).isEqualTo(episodeId1)
+        assertThat(episodeDto.assessmentUuid).isEqualTo(assessmentUuid)
+        assertThat(episodeDto.episodeId).isEqualTo(episodeId1)
     }
 
     @Test
@@ -211,8 +215,8 @@ class AssessmentServiceTest {
 
         val episodeDto = assessmentsService.updateEpisode(assessmentUuid, episodeUuid, updatedAnswers)
 
-        assertThat(episodeDto?.answers).hasSize(1)
-        val answer = episodeDto?.answers?.get(existingQuestionUuid)
+        assertThat(episodeDto.answers).hasSize(1)
+        val answer = episodeDto.answers[existingQuestionUuid]
         assertThat(answer?.answers).hasSize(2)
         assertThat(answer?.answers).containsKey(existingAnswerUuid)
         assertThat(answer?.answers).containsKey(newAnswerUUID)
@@ -231,8 +235,8 @@ class AssessmentServiceTest {
 
         val episodeDto = assessmentsService.updateEpisode(assessmentUuid, episodeUuid, updatedAnswers)
 
-        assertThat(episodeDto?.answers).hasSize(1)
-        val answer = episodeDto?.answers?.get(existingQuestionUuid)
+        assertThat(episodeDto.answers).hasSize(1)
+        val answer = episodeDto.answers.get(existingQuestionUuid)
         assertThat(answer?.answers).hasSize(1)
         assertThat(answer?.freeTextAnswer).isEqualTo("new free text")
         assertThat(answer?.answers).containsKey(existingAnswerUuid)
@@ -256,8 +260,8 @@ class AssessmentServiceTest {
 
         val episodeDto = assessmentsService.updateEpisode(assessmentUuid, episodeUuid, updatedAnswers)
 
-        assertThat(episodeDto?.answers).hasSize(1)
-        val answer = episodeDto?.answers?.get(existingQuestionUuid)
+        assertThat(episodeDto.answers).hasSize(1)
+        val answer = episodeDto.answers[existingQuestionUuid]
         assertThat(answer?.answers).hasSize(1)
         assertThat(answer?.answers).doesNotContainKey(existingAnswerUuid)
         assertThat(answer?.answers).containsKey(newAnswerUUID)
@@ -278,11 +282,11 @@ class AssessmentServiceTest {
 
         val episodeDto = assessmentsService.updateEpisode(assessmentUuid, episodeUuid, updatedAnswers)
 
-        assertThat(episodeDto?.answers).hasSize(2)
-        val existingAnswer = episodeDto?.answers?.get(existingQuestionUuid)
+        assertThat(episodeDto.answers).hasSize(2)
+        val existingAnswer = episodeDto.answers[existingQuestionUuid]
         assertThat(existingAnswer?.freeTextAnswer).isEqualTo("free text")
 
-        val newAnswer = episodeDto?.answers?.get(newQuestionUUID)
+        val newAnswer = episodeDto.answers[newQuestionUUID]
         assertThat(newAnswer?.freeTextAnswer).isEqualTo("new free text")
         assertThat(newAnswer?.answers).containsKey(newAnswerUUID)
     }

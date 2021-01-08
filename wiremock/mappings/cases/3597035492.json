@@ -14,7 +14,7 @@
       "caseNo": "3597035492",
       "courtCode": "SHF",
       "courtRoom": "7",
-      "sessionStartTime": "{{now format='yyyy-MM-dd'}}T09:30:00",
+      "sessionStartTime": "2020-12-17T09:30:00",
       "listNo": "3rd",
       "pnc": "",
       "probationStatus": "Possible nDelius record",

@@ -21,6 +21,7 @@ class AssessmentService(
         private val assessmentRepository: AssessmentRepository,
         private val subjectRepository: SubjectRepository,
         private val questionService: QuestionService,
+        private val episodeService: EpisodeService,
         private val courtCaseClient: CourtCaseRestClient,
         private val assessmentUpdateRestClient: AssessmentUpdateRestClient
 ) {
@@ -34,7 +35,7 @@ class AssessmentService(
             return createFromSupervision(newAssessment.supervisionId)
         }
         if (newAssessment.isCourtCase()) {
-            return createFromCourtCase(newAssessment.courtCode, newAssessment.caseNumber)
+            return createFromCourtCase(newAssessment.courtCode!!, newAssessment.caseNumber!!)
         }
 
         throw IllegalStateException("Empty create assessment request")
@@ -53,7 +54,7 @@ class AssessmentService(
         return AssessmentDto.from(newAssessment)
     }
 
-    private fun createFromCourtCase(courtCode: String?, caseNumber: String?): AssessmentDto {
+    private fun createFromCourtCase(courtCode: String, caseNumber: String): AssessmentDto {
         // do we have a subject associated with this case?
         val sourceId = courtSourceId(courtCode, caseNumber)
         val existingSubject = subjectRepository.findBySourceAndSourceId(courtSource, sourceId)
@@ -75,14 +76,15 @@ class AssessmentService(
         val assessment = AssessmentEntity(createdDate = LocalDateTime.now())
         val subject = subjectFromCourtCase(sourceId, courtCase, assessment, oasysOffenderPk)
         assessment.addSubject(subject)
-        assessment.newEpisode("Court Request")
+        val episode = assessment.newEpisode("Court Request")
+        episodeService.prepopulate(episode)
         val newAssessment = AssessmentDto.from(assessmentRepository.save(assessment))
         log.info("New assessment created for court $courtCode, case $caseNumber")
         return newAssessment
     }
 
     @Transactional
-    fun createNewEpisode(assessmentUuid: UUID, reason: String): AssessmentEpisodeDto? {
+    fun createNewEpisode(assessmentUuid: UUID, reason: String): AssessmentEpisodeDto {
         val assessment = getAssessmentByUuid(assessmentUuid)
         val episode = assessment.newEpisode(reason)
         log.info("New episode created for assessment $assessmentUuid")
