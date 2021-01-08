@@ -17,11 +17,13 @@ import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundExce
 import java.util.*
 
 @Service
-class QuestionService(private val questionSchemaRepository: QuestionSchemaRepository,
-                      private val questionGroupRepository: QuestionGroupRepository,
-                      private val groupRepository: GroupRepository,
-                      private val answerSchemaRepository: AnswerSchemaRepository) {
-
+class QuestionService(
+        private val questionSchemaRepository: QuestionSchemaRepository,
+        private val questionGroupRepository: QuestionGroupRepository,
+        private val groupRepository: GroupRepository,
+        private val answerSchemaRepository: AnswerSchemaRepository,
+        private val questionDependencyService: QuestionDependencyService
+) {
     fun getQuestionSchema(questionSchemaId: UUID): QuestionSchemaDto {
         val questionSchemaEntity = questionSchemaRepository.findByQuestionSchemaUuid(questionSchemaId)
                 ?: throw EntityNotFoundException("Question Schema not found for id: $questionSchemaId")
@@ -33,14 +35,25 @@ class QuestionService(private val questionSchemaRepository: QuestionSchemaReposi
     }
 
     fun getQuestionGroup(groupCode: String): GroupWithContentsDto {
-        return getQuestionGroupContents(findByGroupCode(groupCode), null)
+        return getQuestionGroupContents(findByGroupCode(groupCode))
     }
 
     fun getQuestionGroup(groupUuid: UUID): GroupWithContentsDto {
-        return getQuestionGroupContents(findByGroupUuid(groupUuid), null)
+        return getQuestionGroupContents(findByGroupUuid(groupUuid))
     }
 
-    private fun getQuestionGroupContents(group: GroupEntity, parentGroup: QuestionGroupEntity?): GroupWithContentsDto {
+    private fun getQuestionGroupContents(group: GroupEntity) =
+            getQuestionGroupContents(
+                    group,
+                    null,
+                    questionDependencyService.dependencies()
+            )
+
+    private fun getQuestionGroupContents(
+            group: GroupEntity,
+            parentGroup: QuestionGroupEntity?,
+            dependencies: QuestionDependencies
+    ): GroupWithContentsDto {
         val groupContents = group.contents.sortedBy { it.displayOrder }
         if (groupContents.isEmpty()) throw EntityNotFoundException("Questions not found for Group: ${group.groupUuid}")
 
@@ -49,9 +62,10 @@ class QuestionService(private val questionSchemaRepository: QuestionSchemaReposi
             when(it.contentType) {
                 "question" -> GroupQuestionDto.from(
                         questionSchemaRepository.findByQuestionSchemaUuid(it.contentUuid)!!,
-                        it
+                        it,
+                        dependencies
                 )
-                "group" -> getQuestionGroupContents(findByGroupUuid(it.contentUuid), it)
+                "group" -> getQuestionGroupContents(findByGroupUuid(it.contentUuid), it, dependencies)
                 else -> throw EntityNotFoundException("Bad group content type")
             }
         }

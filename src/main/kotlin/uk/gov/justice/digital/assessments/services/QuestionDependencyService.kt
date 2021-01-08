@@ -16,6 +16,8 @@ class QuestionDependencyService(
     }
 }
 
+typealias AnswerDependencies = (String?) -> UUID?
+
 class QuestionDependencies(questionDeps: Collection<QuestionDependencyEntity>) {
     private val subjects = questionDeps.map { it.subjectQuestionUuid }
     private val triggers = questionDeps.associateBy(
@@ -24,6 +26,9 @@ class QuestionDependencies(questionDeps: Collection<QuestionDependencyEntity>) {
     )
 
     fun hasDependency(subjectUuid: UUID): Boolean = subjects.contains(subjectUuid)
-    fun triggersDependency(triggerUuid: UUID, answerValue: String): UUID? =
+    fun triggersDependency(triggerUuid: UUID, answerValue: String?): UUID? =
             triggers.get(Pair(triggerUuid, answerValue))
+    fun answerTriggers(triggerUuid: UUID): AnswerDependencies {
+        return {  answerValue: String? -> triggersDependency(triggerUuid, answerValue) }
+    }
 }

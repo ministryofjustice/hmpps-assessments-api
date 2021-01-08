@@ -31,11 +31,13 @@ class QuestionServiceTest {
     private val answerSchemaRepository: AnswerSchemaRepository = mockk()
     private val questionGroupRepository: QuestionGroupRepository = mockk()
     private val groupRepository: GroupRepository = mockk()
+    private val dependencyService: QuestionDependencyService = mockk()
     private val questionService = QuestionService(
             questionSchemaRepository,
             questionGroupRepository,
             groupRepository,
-            answerSchemaRepository
+            answerSchemaRepository,
+            dependencyService
     )
 
     private val questionId = 1L
@@ -91,6 +93,7 @@ class QuestionServiceTest {
     fun `get group contents`() {
         every { questionSchemaRepository.findByQuestionSchemaUuid(questionUuid) } returns question
         every { groupRepository.findByGroupUuid(groupUuid) } returns group
+        every { dependencyService.dependencies() } returns QuestionDependencies(emptyList())
 
         val groupQuestions = questionService.getQuestionGroup(groupUuid)
 
