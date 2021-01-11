@@ -17,7 +17,7 @@ env:
     value: "{{ .Values.env.OAUTH_ENDPOINT_URL }}"
 
   - name: COURT_CASE_API_BASE_URL
-    valie: "{{ .Values.env.COURT_CASE_API_BASE_URL }}"
+    value: "{{ .Values.env.COURT_CASE_API_BASE_URL }}"
 
   - name: COURT_CASE_API_PATH_TEMPLATE
     value: "{{ .Values.env.COURT_CASE_API_PATH_TEMPLATE }}"
