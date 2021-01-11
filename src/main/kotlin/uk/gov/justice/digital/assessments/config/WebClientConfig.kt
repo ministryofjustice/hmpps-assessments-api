@@ -14,6 +14,7 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.netty.http.client.HttpClient
+import uk.gov.justice.digital.assessments.restclient.AuthenticatingRestClient
 import java.util.concurrent.TimeUnit
 
 @Configuration
@@ -23,6 +24,9 @@ class WebClientConfig {
 
     @Value("\${assessment-update-api.base-url}")
     private lateinit var assessmentUpdateBaseUrl: String
+
+    @Value("\${feature.flags.disable-auth:false}")
+    private val disableAuthentication = false
 
     @Value("\${web.client.connect-timeout-ms}")
     private val connectTimeoutMs: Int? = null
@@ -37,13 +41,21 @@ class WebClientConfig {
     val bufferByteSize: Int = Int.MAX_VALUE
 
     @Bean
-    fun courtCaseWebClient(authorizedClientManager: OAuth2AuthorizedClientManager): WebClient {
-        return webClientFactory(courtCaseBaseUrl, authorizedClientManager, bufferByteSize)
+    fun courtCaseWebClient(authorizedClientManager: OAuth2AuthorizedClientManager): AuthenticatingRestClient {
+        return AuthenticatingRestClient(
+                webClientFactory(courtCaseBaseUrl, authorizedClientManager, bufferByteSize),
+                "court-case-client",
+                disableAuthentication
+        )
     }
 
     @Bean
-    fun assessmentUpdateWebClient(authorizedClientManager: OAuth2AuthorizedClientManager): WebClient {
-      return webClientFactory(assessmentUpdateBaseUrl, authorizedClientManager, bufferByteSize)
+    fun assessmentUpdateWebClient(authorizedClientManager: OAuth2AuthorizedClientManager): AuthenticatingRestClient {
+        return AuthenticatingRestClient(
+              webClientFactory(assessmentUpdateBaseUrl, authorizedClientManager, bufferByteSize),
+              "assessment-update-client",
+              disableAuthentication
+        )
     }
 
     private fun webClientFactory(

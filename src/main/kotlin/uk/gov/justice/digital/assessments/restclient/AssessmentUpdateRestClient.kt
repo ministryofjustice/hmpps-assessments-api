@@ -12,16 +12,14 @@ import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.CreateO
 class AssessmentUpdateRestClient {
     @Autowired
     @Qualifier("assessmentUpdateWebClient")
-    internal lateinit var webClient: WebClient
+    internal lateinit var webClient: AuthenticatingRestClient
 
     fun createOasysOffender(crn: String): Long? {
 
-        return webClient.post()
-            .uri("/offenders")
-            .bodyValue(CreateOffenderDto(crn = crn) )
-            .accept(MediaType.APPLICATION_JSON)
+        return webClient
+            .post("/offenders", CreateOffenderDto(crn = crn))
             .retrieve()
             .bodyToMono(CreateOffenderResponseDto::class.java)
-            .block().oasysOffenderId
+            .block()?.oasysOffenderId
     }
 }
