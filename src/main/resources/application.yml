@@ -97,7 +97,7 @@ web:
     byte-buffer-size: 20971520
 
 court-case-api:
-  base-url: http://localhost:9080
+  base-url: ${court-case-api-base-url:http://localhost:9080}
   case-path-template: /court/%s/case/%s
 
 assessment-update-api:
