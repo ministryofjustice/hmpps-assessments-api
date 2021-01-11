@@ -5,15 +5,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
-import org.springframework.web.reactive.function.client.WebClient
-import org.springframework.web.reactive.function.client.bodyToMono
 import uk.gov.justice.digital.assessments.restclient.courtcaseapi.CourtCase
 
 @Component
 class CourtCaseRestClient {
     @Autowired
     @Qualifier("courtCaseWebClient")
-    internal lateinit var webClient: WebClient
+    internal lateinit var webClient: AuthenticatingRestClient
     @Value("\${court-case-api.case-path-template}")
     internal lateinit var casePathTemplate: String
 
@@ -27,9 +25,8 @@ class CourtCaseRestClient {
 
     private fun <T> fetchCourtCase(courtCode: String, caseNumber: String, elementClass: Class<T>): T? {
         val path = String.format(casePathTemplate, courtCode, caseNumber)
-        return webClient.get()
-                .uri(path)
-                .accept(MediaType.APPLICATION_JSON)
+        return webClient
+                .get(path)
                 .retrieve()
                 .bodyToMono(elementClass)
                 .block()

@@ -1,3 +1,7 @@
+feature:
+  flags:
+    disable-auth: true
+
 server:
   tomcat:
     remoteip:

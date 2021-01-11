@@ -5,6 +5,7 @@ DELETE FROM answer_schema_group WHERE true;
 
 DELETE FROM question_group WHERE true;
 DELETE FROM grouping WHERE true;
+DELETE FROM question_dependency WHERE true;
 
 INSERT INTO answer_schema_group (answer_schema_group_id, answer_schema_group_uuid, answer_schema_group_code, group_start, group_end)
 VALUES (0, 'f756f79d-dfad-49f9-a1b9-964a41cf660d', 'TEST', '2019-11-14 08:11:53.177108', null);
