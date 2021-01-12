@@ -19,9 +19,6 @@ env:
   - name: COURT_CASE_API_BASE_URL
     value: "{{ .Values.env.COURT_CASE_API_BASE_URL }}"
 
-  - name: COURT_CASE_API_PATH_TEMPLATE
-    value: "{{ .Values.env.COURT_CASE_API_PATH_TEMPLATE }}"
-
   - name: COURT_CASE_API_ID
     valueFrom:
       secretKeyRef:
@@ -34,8 +31,8 @@ env:
         name: {{ template "app.name" . }}
         key: API_CLIENT_SECRET
 
-  - name: ASSESSMENT_UPDATE_API_PATH_TEMPLATE
-    value: "{{ .Values.env.ASSESSMENT_UPDATE_PATH_TEMPLATE }}"
+  - name: ASSESSMENT_UPDATE_API_BASE_URL
+    value: "{{ .Values.env.ASSESSMENT_UPDATE_API_BASE_URL }}"
 
   - name: ASSESSMENT_UPDATE_API_ID
     valueFrom:
