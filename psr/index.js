@@ -225,7 +225,7 @@ function groupingSql() {
 function questionsSql() {
   return tableSql(
     'question_schema',
-    ['question_schema_uuid', 'question_code', 'oasys_question_code', 'question_start', 'question_end', 'answer_type', 'answer_schema_group_uuid', 'question_text', 'question_help_text'],
+    ['question_schema_uuid', 'question_code', 'oasys_question_code', 'question_start', 'question_end', 'answer_type', 'answer_schema_group_uuid', 'question_text', 'question_help_text', 'external_source'],
     questions
   )
 }
