@@ -1,0 +1,13 @@
+first_name,COURT:defendantName:forename
+family_name,COURT:defendantName:surname
+date_of_birth,COURT:defendantDob:date
+crn,COURT:crn
+pnc,COURT:pnc
+address_line_1,COURT:defendantAddress.line1
+address_line_2,COURT:defendantAddress.line2
+address_line_3,COURT:defendantAddress.line3
+address_line_4,COURT:defendantAddress.line4
+address_line_5,COURT:defendantAddress.line5
+post_code,COURT:defendantAddress.postcode:toUpper
+court,COURT:courtCode
+date_of_hearing,COURT:sessionStartTime

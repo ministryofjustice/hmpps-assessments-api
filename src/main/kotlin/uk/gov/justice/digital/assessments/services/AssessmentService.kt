@@ -61,7 +61,7 @@ class AssessmentService(
 
         // yes, so return the assessment
         if (existingSubject != null) {
-            log.info("Existing assessment found for court $courtCode, case $caseNumber")
+            log.info("Existing assessment ${existingSubject.assessment?.assessmentUuid} found for court $courtCode, case $caseNumber")
             return AssessmentDto.from(existingSubject.assessment)
         }
 
@@ -79,7 +79,7 @@ class AssessmentService(
         val episode = assessment.newEpisode("Court Request")
         episodeService.prepopulate(episode)
         val newAssessment = AssessmentDto.from(assessmentRepository.save(assessment))
-        log.info("New assessment created for court $courtCode, case $caseNumber")
+        log.info("New assessment ${assessment.assessmentUuid} created for court $courtCode, case $caseNumber")
         return newAssessment
     }
 
