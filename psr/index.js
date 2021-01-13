@@ -17,7 +17,7 @@ const answerSchemas = []
 const groups = []
 const questions = []
 const questionGroups = []
-const assessment = addGrouping('Short-form Pre-Sentence Assessment')
+const assessment = addGrouping(['Pre-Sentence Assessment'])
 const dependencies = []
 
 const yes_no = ['radio', answerSchemaGroup(['drop-down', 'Yes|Y', 'No|N'])]
