@@ -8,8 +8,9 @@ if (process.argv.length !== 3) {
 }
 
 
-const csvfile = process.argv[2]
-const { headers, records } = loadSpreadsheet(csvfile)
+const { headers, records } = loadSpreadsheet(process.argv[2])
+
+const external_sources = loadExternals('external_sources.csv')
 
 const answerSchemaGroups = []
 const answerSchemas = []
@@ -34,7 +35,7 @@ for (const record of records) {
   if (!currentGroup)
     continue
 
-  const question = addQuestion(record)
+  const question = addQuestion(record, external_sources)
   addGroupQuestion(question.question_schema_uuid, 'question', currentGroup.group_uuid)
   previousQuestion = question
 }
@@ -63,19 +64,21 @@ function addGrouping(record) {
   return group
 }
 
-function addQuestion(record) {
+function addQuestion(record, sources) {
   const title = record[headers.TITLE]
+  const question_code = snakeCase(title)
   const question_text = record[headers.QUESTION].replace(/'/g, "''")
   const [answer_type, answer_schema_group_uuid] = answerType(record[headers.ANSWER_TYPE])
   const oasys_question_code = record[headers.OASYS_REF] || null
   const question = {
     question_schema_uuid: uuid(),
-    question_code: snakeCase(title),
+    question_code: question_code,
     oasys_question_code: oasys_question_code,
     answer_type: answer_type,
     answer_schema_group_uuid: answer_schema_group_uuid,
     question_text: question_text,
-    question_start: '2020-11-30 14:50:00'
+    question_start: '2020-11-30 14:50:00',
+    external_source: sources[question_code]
   }
   questions.push(question)
 
@@ -234,7 +237,7 @@ function dependenciesSql() {
 
 ///////////////////////////////////////////
 function loadSpreadsheet(filename) {
-  const input = fs.readFileSync(csvfile)
+  const input = fs.readFileSync(filename)
   const all_records = parse(input, {
     columns: false,
     relax_column_count: true,
@@ -247,6 +250,14 @@ function loadSpreadsheet(filename) {
   patchInAddress(records, headers)
 
   return { headers, records }
+}
+
+function loadExternals(filename) {
+  const input = fs.readFileSync(filename)
+  const external_lines = parse(input, {
+    columns: false
+  })
+  return Object.fromEntries(external_lines)
 }
 
 function findHeaders(headers) {
