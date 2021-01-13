@@ -7,36 +7,16 @@ if (process.argv.length !== 3) {
   return console.error("Usage: node assessment-generator <csv-file>")
 }
 
+
 const csvfile = process.argv[2]
-const input = fs.readFileSync(csvfile)
-
-const all_records = parse(input, {
-    columns: false,
-    relax_column_count: true,
-    skip_empty_lines: true
-  })
-  .filter(record => record.join('')) // remove lines with no content
-
-const headers = all_records[1]
-const TITLE = headers.findIndex(field => field.match(/^question/i))
-const QUESTION = headers.findIndex(field => field.match(/proposed.*wording/i))
-const ANSWER_TYPE = headers.findIndex(field => field.match(/input type/i))
-const OASYS_REF = headers.findIndex(field => field.match(/oasys ref/i))
-
-if ([TITLE, QUESTION, ANSWER_TYPE, OASYS_REF].includes(-1)) {
-  return console.error(`${csvfile} does not look like I expect!`)
-}
-
-const records = all_records.slice(2)
-
-patchInAddress(records)
+const { headers, records } = loadSpreadsheet(csvfile)
 
 const answerSchemaGroups = []
 const answerSchemas = []
 const groups = []
 const questions = []
 const questionGroups = []
-const assessment = addGrouping(all_records[0])
+const assessment = addGrouping('Short-form Pre-Sentence Assessment')
 const dependencies = []
 
 const yes_no = ['radio', answerSchemaGroup(['drop-down', 'Yes|Y', 'No|N'])]
@@ -68,11 +48,11 @@ console.log(dependenciesSql())
 
 function isGroup(record) {
   const cleaned = record.filter(f => f)
-  return (record[TITLE] && cleaned.length == 1)
+  return (record[headers.TITLE] && cleaned.length == 1)
 }
 
 function addGrouping(record) {
-  const heading = record[TITLE]
+  const heading = record[headers.TITLE]
   const group = {
     group_uuid: uuid(),
     group_code: snakeCase(heading),
@@ -84,10 +64,10 @@ function addGrouping(record) {
 }
 
 function addQuestion(record) {
-  const title = record[TITLE]
-  const question_text = record[QUESTION].replace(/'/g, "''")
-  const [answer_type, answer_schema_group_uuid] = answerType(record[ANSWER_TYPE])
-  const oasys_question_code = record[OASYS_REF] || null
+  const title = record[headers.TITLE]
+  const question_text = record[headers.QUESTION].replace(/'/g, "''")
+  const [answer_type, answer_schema_group_uuid] = answerType(record[headers.ANSWER_TYPE])
+  const oasys_question_code = record[headers.OASYS_REF] || null
   const question = {
     question_schema_uuid: uuid(),
     question_code: snakeCase(title),
@@ -252,20 +232,50 @@ function dependenciesSql() {
   )
 }
 
-function patchInAddress(records) {
-  const addressIndex = records.findIndex(r => r[TITLE] === 'Address')
+///////////////////////////////////////////
+function loadSpreadsheet(filename) {
+  const input = fs.readFileSync(csvfile)
+  const all_records = parse(input, {
+    columns: false,
+    relax_column_count: true,
+    skip_empty_lines: true
+  })
+  .filter(record => record.join('')) // remove lines with no content
+
+  const headers = findHeaders(all_records[1])
+  const records = all_records.slice(2)
+  patchInAddress(records, headers)
+
+  return { headers, records }
+}
+
+function findHeaders(headers) {
+  const TITLE = headers.findIndex(field => field.match(/^question/i))
+  const QUESTION = headers.findIndex(field => field.match(/proposed.*wording/i))
+  const ANSWER_TYPE = headers.findIndex(field => field.match(/input type/i))
+  const OASYS_REF = headers.findIndex(field => field.match(/oasys ref/i))
+
+  if ([TITLE, QUESTION, ANSWER_TYPE, OASYS_REF].includes(-1)) {
+    console.error(`${csvfile} does not look like I expect!`)
+    process.exit(-1)
+  }
+  return { TITLE, QUESTION, ANSWER_TYPE, OASYS_REF }
+}
+
+function patchInAddress(records, headers) {
+  const addressIndex = records.findIndex(r => r[headers.TITLE] === 'Address')
   if (addressIndex === -1)
     return
 
   // convert single line of address into five lines + postcode
   const addressLine = records[addressIndex]
-  addressLine[TITLE] = 'address_line_1'
+  addressLine[headers.TITLE] = 'address_line_1'
   const addressLines = [addressLine]
   for (let i = 1; i !== 6; ++i) {
     const notlast = i !== 5;
     addressLines.push(addressLine.map(f => f))
-    addressLines[i][TITLE] = notlast ? `address_line_${i+1}` : 'post_code'
-    addressLines[i][QUESTION] = notlast ? '' : 'Post Code'
+    addressLines[i][headers.TITLE] = notlast ? `address_line_${i+1}` : 'post_code'
+    addressLines[i][headers.QUESTION] = notlast ? '' : 'Post Code'
     records.splice(addressIndex+i, 0, addressLines[i])
   }
 }
