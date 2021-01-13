@@ -29,6 +29,8 @@ if ([TITLE, QUESTION, ANSWER_TYPE, OASYS_REF].includes(-1)) {
 
 const records = all_records.slice(2)
 
+patchInAddress(records)
+
 const answerSchemaGroups = []
 const answerSchemas = []
 const groups = []
@@ -248,4 +250,22 @@ function dependenciesSql() {
     ['subject_question_uuid', 'trigger_question_uuid', 'trigger_answer_value', 'dependency_start'],
     dependencies
   )
+}
+
+function patchInAddress(records) {
+  const addressIndex = records.findIndex(r => r[TITLE] === 'Address')
+  if (addressIndex === -1)
+    return
+
+  // convert single line of address into five lines + postcode
+  const addressLine = records[addressIndex]
+  addressLine[TITLE] = 'address_line_1'
+  const addressLines = [addressLine]
+  for (let i = 1; i !== 6; ++i) {
+    const notlast = i !== 5;
+    addressLines.push(addressLine.map(f => f))
+    addressLines[i][TITLE] = notlast ? `address_line_${i+1}` : 'post_code'
+    addressLines[i][QUESTION] = notlast ? '' : 'Post Code'
+    records.splice(addressIndex+i, 0, addressLines[i])
+  }
 }
