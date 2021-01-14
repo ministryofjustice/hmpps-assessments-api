@@ -253,7 +253,6 @@ function loadSpreadsheet(filename) {
   const records = all_records.slice(2)
 
   patchInAddress(records, headers)
-  console.log(headers)
   return { headers, records }
 }
 
