@@ -70,7 +70,7 @@ class AssessmentService(
                 ?: throw EntityNotFoundException("No court case found for $courtCode, $caseNumber")
 
         //create offender in oasys
-        val oasysOffenderPk = courtCase.crn?.let { assessmentUpdateRestClient.createOasysOffender(it) }
+        val oasysOffenderPk = courtCase.crn?.let { assessmentUpdateRestClient.createOasysOffender(crn = it) }
 
         // create assessment
         val assessment = AssessmentEntity(createdDate = LocalDateTime.now())
