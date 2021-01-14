@@ -18,7 +18,7 @@ class AssessmentUpdateRestClient {
         val log: Logger = LoggerFactory.getLogger(this::class.java)
     }
 
-    fun createOasysOffender(crn: String, user: String ="STUARTWTHILAM", area: String = "WWS", deliusEvent: Int=123456): Long? {
+    fun createOasysOffender(crn: String, user: String ="STUARTWHITLAM", area: String = "WWS", deliusEvent: Int=123456): Long? {
         log.info("Creating offender in OASys for crn: $crn, area: $area, user: $user, delius event: $deliusEvent")
         return webClient
             .post("/offenders", CreateOffenderDto(crn, area, user,deliusEvent))
