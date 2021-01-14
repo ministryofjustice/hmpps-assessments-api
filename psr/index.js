@@ -36,7 +36,7 @@ for (const record of records) {
     continue
 
   const question = addQuestion(record, external_sources)
-  addGroupQuestion(question.question_schema_uuid, 'question', currentGroup.group_uuid)
+  addGroupQuestion(question.question_schema_uuid, 'question', currentGroup.group_uuid, compileValidation(record))
   previousQuestion = question
 }
 
@@ -47,6 +47,9 @@ console.log(questionsSql())
 console.log(questionGroupSql())
 console.log(dependenciesSql())
 
+function compileValidation(record){
+  return { mandatory: { errorMessage: record[headers.ERROR_MESSAGE], errorSummary: record[headers.ERROR_SUMMARY].replace(/(^There is a problem\n\n)/mg, '')}}
+}
 function isGroup(record) {
   const cleaned = record.filter(f => f)
   return (record[headers.TITLE] && cleaned.length == 1)
@@ -94,7 +97,8 @@ function addQuestion(record, sources) {
   return question
 }
 
-function addGroupQuestion(content_uuid, content_type, group_uuid) {
+function addGroupQuestion(content_uuid, content_type, group_uuid, validation) {
+
   const questionGroup = {
     question_group_uuid: uuid(),
     content_uuid: content_uuid,
@@ -102,7 +106,7 @@ function addGroupQuestion(content_uuid, content_type, group_uuid) {
     group_uuid: group_uuid,
     display_order: questionGroups.filter(qg => qg.group_uuid === group_uuid).length + 1,
     mandatory: true,
-    validation: null
+    validation: JSON.stringify(validation)
   }
   questionGroups.push(questionGroup)
 }
@@ -247,8 +251,9 @@ function loadSpreadsheet(filename) {
 
   const headers = findHeaders(all_records[1])
   const records = all_records.slice(2)
-  patchInAddress(records, headers)
 
+  patchInAddress(records, headers)
+  console.log(headers)
   return { headers, records }
 }
 
@@ -265,12 +270,14 @@ function findHeaders(headers) {
   const QUESTION = headers.findIndex(field => field.match(/proposed.*wording/i))
   const ANSWER_TYPE = headers.findIndex(field => field.match(/input type/i))
   const OASYS_REF = headers.findIndex(field => field.match(/oasys ref/i))
+  const ERROR_SUMMARY = headers.findIndex(field => field.match(/error summary/i))
+  const ERROR_MESSAGE = headers.findIndex(field => field.match(/error message/i))
 
   if ([TITLE, QUESTION, ANSWER_TYPE, OASYS_REF].includes(-1)) {
     console.error(`${csvfile} does not look like I expect!`)
     process.exit(-1)
   }
-  return { TITLE, QUESTION, ANSWER_TYPE, OASYS_REF }
+  return { TITLE, QUESTION, ANSWER_TYPE, OASYS_REF, ERROR_MESSAGE, ERROR_SUMMARY }
 }
 
 function patchInAddress(records, headers) {
