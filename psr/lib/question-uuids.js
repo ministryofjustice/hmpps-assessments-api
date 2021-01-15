@@ -1,23 +1,8 @@
-const { v4: uuid } = require('uuid')
-const { DataFile } = require('./data-files')
+const ElementUuids = require('./element-uuids')
 
 const uuidCsv = 'question-uuids.csv'
+const questionUuids = ElementUuids(uuidCsv)
 
-function loadUuids() {
-  return DataFile.load(uuidCsv)
-}
-
-function appendUuid(title, ref, uuid) {
-  DataFile.append(uuidCsv, title, ref, uuid)
-}
-
-const externals = loadUuids()
-
-module.exports = (ref, title) => {
-  if (!externals[ref]) {
-    externals[ref] = uuid()
-    appendUuid(title, ref, externals[ref])
-  }
-  return externals[ref]
-}
+module.exports = (ref, title) =>
+  questionUuids.lookup(ref, title)
 

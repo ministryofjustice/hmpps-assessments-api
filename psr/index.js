@@ -1,17 +1,16 @@
 const parse = require('csv-parse/lib/sync')
 const fs = require('fs')
 const { v4: uuid } = require('uuid')
-const snakeCase = require('lodash.snakecase')
 
 if (process.argv.length !== 3) {
   return console.error("Usage: node assessment-generator <csv-file>")
 }
 
-
 const { headers, records } = loadSpreadsheet(process.argv[2])
 
 const externalSources = require('./lib/external-sources')
 const questionUuids = require('./lib/question-uuids')
+const groupUuids = require('./lib/group-uuids')
 
 const answerSchemaGroups = []
 const answerSchemas = []
@@ -58,9 +57,10 @@ function isGroup(record) {
 
 function addGrouping(record) {
   const heading = record[headers.TITLE]
+  const groupCode = heading.replace(/[ ',\\.\\(\\)\\?\\/]+/g, '_').toLowerCase()
   const group = {
-    group_uuid: uuid(),
-    group_code: snakeCase(heading),
+    group_uuid: groupUuids(groupCode, groupCode),
+    group_code: groupCode,
     heading: heading,
     group_start: '2020-11-30 14:50:00'
   }
