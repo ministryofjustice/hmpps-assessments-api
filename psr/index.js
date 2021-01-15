@@ -12,6 +12,7 @@ const externalSources = require('./lib/external-sources')
 const questionUuids = require('./lib/question-uuids')
 const groupUuids = require('./lib/group-uuids')
 const questionGroupUuids = require('./lib/question-group-uuids')
+const answerSchemaUuids = require('./lib/answer-schema-uuids')
 
 const answerSchemaGroups = []
 const answerSchemas = []
@@ -149,9 +150,10 @@ function answerSchemaGroup(lines) {
 
   for (const [text, value] of lines) {
     if (!text) continue
+    const code = text.replace(/[ ',\\.\\(\\)\\?\\/]+/g, '_').toLowerCase()
     const answerSchema = {
-      answer_schema_uuid: uuid(),
-      answer_schema_code: text.replace(/ /g, '-').toLowerCase(),
+      answer_schema_uuid: answerSchemaUuids(code),
+      answer_schema_code: code,
       answer_schema_group_uuid: answerGroup.answer_schema_group_uuid,
       answer_start: '2020-11-30 14:50:00',
       answer_end: null,
