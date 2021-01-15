@@ -10,7 +10,7 @@ if (process.argv.length !== 3) {
 
 const { headers, records } = loadSpreadsheet(process.argv[2])
 
-const external_sources = loadExternals('data/external_sources.csv')
+const externalSources = require('./lib/external-sources')
 
 const answerSchemaGroups = []
 const answerSchemas = []
@@ -35,7 +35,7 @@ for (const record of records) {
   if (!currentGroup)
     continue
 
-  const question = addQuestion(record, external_sources)
+  const question = addQuestion(record, externalSources)
   addGroupQuestion(question.question_schema_uuid, 'question', currentGroup.group_uuid, compileValidation(record))
   previousQuestion = question
 }
@@ -67,8 +67,7 @@ function addGrouping(record) {
   return group
 }
 
-function addQuestion(record, sources) {
-  const title = record[headers.TITLE]
+function addQuestion(record, externalSources) {
   const question_code = record[headers.REF]
   const question_text = record[headers.QUESTION].replace(/'/g, "''")
   const [answer_type, answer_schema_group_uuid] = answerType(record[headers.ANSWER_TYPE])
@@ -81,7 +80,7 @@ function addQuestion(record, sources) {
     answer_schema_group_uuid: answer_schema_group_uuid,
     question_text: question_text,
     question_start: '2020-11-30 14:50:00',
-    external_source: sources[question_code]
+    external_source: externalSources(question_code)
   }
   questions.push(question)
 
