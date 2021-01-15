@@ -2,7 +2,7 @@ const path = require('path')
 const fs = require('fs')
 const parse = require('csv-parse/lib/sync')
 
-const externalsCsv = path.resolve(__dirname, '..', 'data', 'external_sources.csv')
+const externalsCsv = path.resolve(__dirname, '..', 'data', 'external-sources.csv')
 
 function loadExternals() {
   const input = fs.readFileSync(externalsCsv)
@@ -15,3 +15,4 @@ function loadExternals() {
 const externals = loadExternals()
 
 module.exports = ref => externals[ref]
+

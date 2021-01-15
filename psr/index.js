@@ -11,6 +11,7 @@ if (process.argv.length !== 3) {
 const { headers, records } = loadSpreadsheet(process.argv[2])
 
 const externalSources = require('./lib/external-sources')
+const questionUuids = require('./lib/question-uuids')
 
 const answerSchemaGroups = []
 const answerSchemas = []
@@ -68,12 +69,13 @@ function addGrouping(record) {
 }
 
 function addQuestion(record, externalSources) {
+  const question_title = record[headers.TITLE].replace(/[ ',\\.\\(\\)\\?\\/]+/g, '_').toLowerCase()
   const question_code = record[headers.REF]
   const question_text = record[headers.QUESTION].replace(/'/g, "''")
   const [answer_type, answer_schema_group_uuid] = answerType(record[headers.ANSWER_TYPE])
   const oasys_question_code = record[headers.OASYS_REF] || null
   const question = {
-    question_schema_uuid: uuid(),
+    question_schema_uuid: questionUuids(question_code, question_title),
     question_code: question_code,
     oasys_question_code: oasys_question_code,
     answer_type: answer_type,
