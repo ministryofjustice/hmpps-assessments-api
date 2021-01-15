@@ -10,7 +10,7 @@ if (process.argv.length !== 3) {
 
 const { headers, records } = loadSpreadsheet(process.argv[2])
 
-const external_sources = loadExternals('external_sources.csv')
+const external_sources = loadExternals('data/external_sources.csv')
 
 const answerSchemaGroups = []
 const answerSchemas = []
@@ -69,7 +69,7 @@ function addGrouping(record) {
 
 function addQuestion(record, sources) {
   const title = record[headers.TITLE]
-  const question_code = snakeCase(title)
+  const question_code = record[headers.REF]
   const question_text = record[headers.QUESTION].replace(/'/g, "''")
   const [answer_type, answer_schema_group_uuid] = answerType(record[headers.ANSWER_TYPE])
   const oasys_question_code = record[headers.OASYS_REF] || null
@@ -260,23 +260,24 @@ function loadExternals(filename) {
   const input = fs.readFileSync(filename)
   const external_lines = parse(input, {
     columns: false
-  })
+  }).map(fields => fields.slice(1)) // title is just for human information
   return Object.fromEntries(external_lines)
 }
 
 function findHeaders(headers) {
   const TITLE = headers.findIndex(field => field.match(/^question/i))
+  const REF = headers.findIndex(field => field.match(/content.*ref/i))
   const QUESTION = headers.findIndex(field => field.match(/proposed.*wording/i))
   const ANSWER_TYPE = headers.findIndex(field => field.match(/input type/i))
   const OASYS_REF = headers.findIndex(field => field.match(/oasys ref/i))
   const ERROR_SUMMARY = headers.findIndex(field => field.match(/error summary/i))
   const ERROR_MESSAGE = headers.findIndex(field => field.match(/error message/i))
 
-  if ([TITLE, QUESTION, ANSWER_TYPE, OASYS_REF].includes(-1)) {
+  if ([TITLE, REF, QUESTION, ANSWER_TYPE, OASYS_REF].includes(-1)) {
     console.error(`${csvfile} does not look like I expect!`)
     process.exit(-1)
   }
-  return { TITLE, QUESTION, ANSWER_TYPE, OASYS_REF, ERROR_MESSAGE, ERROR_SUMMARY }
+  return { TITLE, REF, QUESTION, ANSWER_TYPE, OASYS_REF, ERROR_MESSAGE, ERROR_SUMMARY }
 }
 
 function patchInAddress(records, headers) {
@@ -292,6 +293,7 @@ function patchInAddress(records, headers) {
     const notlast = i !== 5;
     addressLines.push(addressLine.map(f => f))
     addressLines[i][headers.TITLE] = notlast ? `address_line_${i+1}` : 'post_code'
+    addressLines[i][headers.REF] = `8.${i+1}`
     addressLines[i][headers.QUESTION] = notlast ? '' : 'Post Code'
     records.splice(addressIndex+i, 0, addressLines[i])
   }
