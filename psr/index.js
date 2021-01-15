@@ -13,6 +13,7 @@ const questionUuids = require('./lib/question-uuids')
 const groupUuids = require('./lib/group-uuids')
 const questionGroupUuids = require('./lib/question-group-uuids')
 const answerSchemaUuids = require('./lib/answer-schema-uuids')
+const answerSchemaGroupUuids = require('./lib/answer-schema-group-uuids')
 
 const answerSchemaGroups = []
 const answerSchemas = []
@@ -135,12 +136,17 @@ function answerType(answerField) {
 function answerSchemaGroup(lines) {
   lines = lines.slice(1).map(line => line.replace(/(\r|\n)/, '').split('|')).map(([a, v]) => v ? [a, v] : [a, a.toLowerCase()])
 
-  const name = lines.map(([a, v]) => a).join('_').replace(/ /g, '-').toLowerCase()
-  const existing = answerSchemaGroups.find(a => a.answer_schema_group_code === name)
+  const name = lines
+    .map(([a, v]) => a)
+    .join('-')
+    .replace(/[ ',\\.\\(\\)\\?\\/]+/g, '')
+    .toLowerCase()
+  const existing = answerSchemaGroups
+    .find(a => a.answer_schema_group_code === name)
   if (existing) return existing.answer_schema_group_uuid
 
   const answerGroup = {
-    answer_schema_group_uuid: uuid(),
+    answer_schema_group_uuid: answerSchemaGroupUuids(name),
     answer_schema_group_code: name,
     group_start: '2020-11-30 14:50:00',
     group_end: null
