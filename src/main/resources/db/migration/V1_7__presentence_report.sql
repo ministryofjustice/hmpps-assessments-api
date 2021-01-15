@@ -92,10 +92,9 @@ VALUES ('9cef48b7-ac56-41c7-9a3b-348b725c3413', 'pre_sentence_assessment', 'Pre-
 
 
 INSERT INTO question_schema (question_schema_uuid, question_code, oasys_question_code, question_start, question_end, answer_type, answer_schema_group_uuid, question_text, question_help_text, external_source)
-VALUES ('6d8377f2-305f-430a-82ca-c9e9c57db23d', 'title', null, '2020-11-30 14:50:00', null, 'freetext', null, 'Title', null, null),
-    ('29c866f9-8415-41ef-b2d8-2324f2a1f080', 'first_name', null, '2020-11-30 14:50:00', null, 'freetext', null, 'First name or names
-', null, 'COURT:defendantName:forename'),
-    ('33eaa9f2-a742-497f-9d01-b72f7b9ab8ed', 'family_name', null, '2020-11-30 14:50:00', null, 'freetext', null, 'Family name or names', null, 'COURT:defendantName:surname'),
+VALUES ('6d8377f2-305f-430a-82ca-c9e9c57db23d', 'title', null, '2020-11-30 14:50:00', null, 'freetext', null, 'Title', null, 'COURT:name.title'),
+    ('29c866f9-8415-41ef-b2d8-2324f2a1f080', 'first_name', null, '2020-11-30 14:50:00', null, 'freetext', null, 'First name or names', null, 'COURT:name.forename1'),
+    ('33eaa9f2-a742-497f-9d01-b72f7b9ab8ed', 'family_name', null, '2020-11-30 14:50:00', null, 'freetext', null, 'Family name or names', null, 'COURT:name.surname'),
     ('8a8af1cc-bd9c-4a57-8941-f31984e6d2f9', 'date_of_birth', null, '2020-11-30 14:50:00', null, 'date', null, 'Date of birth', null, 'COURT:defendantDob:date'),
     ('2c76d421-ddfc-4688-a22b-7a3169c48f7c', 'age', null, '2020-11-30 14:50:00', null, 'freetext', null, 'Age', null, null),
     ('9dc17bad-c60b-4718-9aaf-726a1b715eab', 'gender', null, '2020-11-30 14:50:00', null, 'dropdown', '4f0468b2-6c9a-45e4-90fb-528c8e0fe8d1', 'Gender', null, null),
