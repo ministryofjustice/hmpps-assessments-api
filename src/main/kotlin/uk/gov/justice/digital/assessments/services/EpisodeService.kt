@@ -20,27 +20,27 @@ class EpisodeService(
         if (questionsToPopulate.isEmpty())
             return episode
 
-        val sources = questionsToPopulate.groupBy { it.externalSource!!.split(':').first() }
+        val sources = questionsToPopulate.groupBy { it.externalSource?.split(':')?.first() }
         sources.forEach { prepopulateFromSource(episode, it.key, it.value) }
 
         return episode
     }
 
-    private fun prepopulateFromSource(episode: AssessmentEpisodeEntity, sourceName: String, questions: List<QuestionSchemaEntity>) {
+    private fun prepopulateFromSource(episode: AssessmentEpisodeEntity, sourceName: String?, questions: List<QuestionSchemaEntity>) {
         val source = loadSource(episode, sourceName)?: return
 
         questions.forEach{ prepopulateQuestion(episode, source, it) }
-    } // prepopulateFromSource
+    }
 
     private fun prepopulateQuestion(episode: AssessmentEpisodeEntity, source: JsonObject, question: QuestionSchemaEntity) {
         val (_, lookupPath, format) = "${question.externalSource}:".split(':')
         val rawAnswer = source.lookup<String?>(lookupPath).firstOrNull()?: return
 
         val answer = answerFormat(rawAnswer, format)
-        episode.answers!![question.questionSchemaUuid] = AnswerEntity(answer, emptyMap())
+        episode.answers?.set(question.questionSchemaUuid, AnswerEntity(answer, emptyMap()))
     }
 
-    private fun loadSource(episode: AssessmentEpisodeEntity, sourceName: String): JsonObject? {
+    private fun loadSource(episode: AssessmentEpisodeEntity, sourceName: String?): JsonObject? {
         try {
             val rawJson = when (sourceName) {
                 "COURT" -> loadFromCourtCase(episode)
@@ -56,18 +56,16 @@ class EpisodeService(
         val subject = episode.assessment?.subject
         if (subject?.source != "COURT") return null
 
-        val (courtCode, caseNumber) = subject?.sourceId!!.split('|')
+        val (courtCode, caseNumber) = subject.sourceId!!.split('|')
         return courtCaseRestClient.getCourtCaseJson(courtCode, caseNumber)
     }
 
     private fun answerFormat(rawAnswer: String, format: String?): String {
-        when (format) {
-            "date" -> return rawAnswer.split('T')[0]
-            "time" -> return rawAnswer.split('T')[1]
-            "forename" -> return rawAnswer.split(' ')[0]
-            "surname" -> return rawAnswer.split(' ')[1]
-            "toUpper" -> return rawAnswer.toUpperCase()
-            else -> return rawAnswer
+        return when (format) {
+            "date" -> rawAnswer.split('T')[0]
+            "time" -> rawAnswer.split('T')[1]
+            "toUpper" -> rawAnswer.toUpperCase()
+            else -> rawAnswer
         }
     }
 }
