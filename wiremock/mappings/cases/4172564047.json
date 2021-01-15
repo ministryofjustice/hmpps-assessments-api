@@ -52,6 +52,10 @@
       ],
       "defendantSex": "F",
       "defendantName": "Felicia Villarreal",
+      "name": {
+        "forename1": "Felicia",
+        "surname": "Villarreal"
+      },
       "defendantAddress": {
         "line1": "37",
         "line2": "Maple Avenue",

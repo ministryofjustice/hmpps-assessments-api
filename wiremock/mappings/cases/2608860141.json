@@ -38,6 +38,10 @@
       ],
       "defendantSex": "F",
       "defendantName": "Charlene Hammond",
+      "name": {
+        "forename1": "Charlene",
+        "surname": "Hammond"
+      },
       "defendantAddress": {
         "line1": "70",
         "line2": "Guider Avenue",

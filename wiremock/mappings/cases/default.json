@@ -46,6 +46,10 @@
       ],
       "defendantSex": "M",
       "defendantName": "Webb Mitchell",
+      "name": {
+        "forename1": "Webb",
+        "surname": "Mitchell"
+      },
       "defendantAddress": {
         "line1": "44",
         "line2": "Apollo Street",
