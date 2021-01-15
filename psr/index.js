@@ -11,6 +11,7 @@ const { headers, records } = loadSpreadsheet(process.argv[2])
 const externalSources = require('./lib/external-sources')
 const questionUuids = require('./lib/question-uuids')
 const groupUuids = require('./lib/group-uuids')
+const questionGroupUuids = require('./lib/question-group-uuids')
 
 const answerSchemaGroups = []
 const answerSchemas = []
@@ -101,7 +102,7 @@ function addQuestion(record, externalSources) {
 function addGroupQuestion(content_uuid, content_type, group_uuid, validation) {
 
   const questionGroup = {
-    question_group_uuid: uuid(),
+    question_group_uuid: questionGroupUuids(content_uuid),
     content_uuid: content_uuid,
     content_type: content_type,
     group_uuid: group_uuid,
