@@ -1,12 +1,10 @@
-const parse = require('csv-parse/lib/sync')
-const fs = require('fs')
-const { v4: uuid } = require('uuid')
+const loadAssessmentCsv = require('./lib/load-assessment-csv')
 
 if (process.argv.length !== 3) {
   return console.error("Usage: node assessment-generator <csv-file>")
 }
 
-const { headers, records } = loadSpreadsheet(process.argv[2])
+const { headers, records } = loadAssessmentCsv(process.argv[2])
 
 const externalSources = require('./lib/external-sources')
 const questionUuids = require('./lib/question-uuids')
@@ -247,64 +245,4 @@ function dependenciesSql() {
     ['subject_question_uuid', 'trigger_question_uuid', 'trigger_answer_value', 'dependency_start'],
     dependencies
   )
-}
-
-///////////////////////////////////////////
-function loadSpreadsheet(filename) {
-  const input = fs.readFileSync(filename)
-  const all_records = parse(input, {
-    columns: false,
-    relax_column_count: true,
-    skip_empty_lines: true
-  })
-  .filter(record => record.join('')) // remove lines with no content
-
-  const headers = findHeaders(all_records[1])
-  const records = all_records.slice(2)
-
-  patchInAddress(records, headers)
-  return { headers, records }
-}
-
-function loadExternals(filename) {
-  const input = fs.readFileSync(filename)
-  const external_lines = parse(input, {
-    columns: false
-  }).map(fields => fields.slice(1)) // title is just for human information
-  return Object.fromEntries(external_lines)
-}
-
-function findHeaders(headers) {
-  const TITLE = headers.findIndex(field => field.match(/^question/i))
-  const REF = headers.findIndex(field => field.match(/content.*ref/i))
-  const QUESTION = headers.findIndex(field => field.match(/proposed.*wording/i))
-  const ANSWER_TYPE = headers.findIndex(field => field.match(/input type/i))
-  const OASYS_REF = headers.findIndex(field => field.match(/oasys ref/i))
-  const ERROR_SUMMARY = headers.findIndex(field => field.match(/error summary/i))
-  const ERROR_MESSAGE = headers.findIndex(field => field.match(/error message/i))
-
-  if ([TITLE, REF, QUESTION, ANSWER_TYPE, OASYS_REF].includes(-1)) {
-    console.error(`${csvfile} does not look like I expect!`)
-    process.exit(-1)
-  }
-  return { TITLE, REF, QUESTION, ANSWER_TYPE, OASYS_REF, ERROR_MESSAGE, ERROR_SUMMARY }
-}
-
-function patchInAddress(records, headers) {
-  const addressIndex = records.findIndex(r => r[headers.TITLE] === 'Address')
-  if (addressIndex === -1)
-    return
-
-  // convert single line of address into five lines + postcode
-  const addressLine = records[addressIndex]
-  addressLine[headers.TITLE] = 'address_line_1'
-  const addressLines = [addressLine]
-  for (let i = 1; i !== 6; ++i) {
-    const notlast = i !== 5;
-    addressLines.push(addressLine.map(f => f))
-    addressLines[i][headers.TITLE] = notlast ? `address_line_${i+1}` : 'post_code'
-    addressLines[i][headers.REF] = `8.${i+1}`
-    addressLines[i][headers.QUESTION] = notlast ? '' : 'Post Code'
-    records.splice(addressIndex+i, 0, addressLines[i])
-  }
 }
