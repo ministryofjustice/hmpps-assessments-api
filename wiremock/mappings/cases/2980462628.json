@@ -47,6 +47,10 @@
       ],
       "defendantSex": "F",
       "defendantName": "Sara Ortega",
+      "name": {
+        "forename1": "Sara",
+        "surname": "Ortega"
+      },
       "defendantAddress": {
         "line1": "25",
         "line2": "Harman Street",

@@ -47,6 +47,10 @@
       ],
       "defendantSex": "M",
       "defendantName": "English Madden",
+      "name": {
+        "forename1": "English",
+        "surname": "Madden"
+      },
       "defendantAddress": {
         "line1": "38",
         "line2": "Clarendon Road",

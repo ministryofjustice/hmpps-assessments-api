@@ -32,6 +32,10 @@
       ],
       "defendantSex": "F",
       "defendantName": "Ruth Martin",
+      "name": {
+        "forename1": "Ruth",
+        "surname": "Martin"
+      },
       "defendantAddress": {
         "line1": "72",
         "line2": "Kathleen Court",

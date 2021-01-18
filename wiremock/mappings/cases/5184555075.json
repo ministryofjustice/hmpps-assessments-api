@@ -46,6 +46,10 @@
       ],
       "defendantSex": "M",
       "defendantName": "Gutierrez Booth",
+      "name": {
+        "forename1": "Gutierrez",
+        "surname": "Booth"
+      },
       "defendantAddress": {
         "line1": "94",
         "line2": "Thatford Avenue",

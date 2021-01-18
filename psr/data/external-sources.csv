@@ -1,0 +1,14 @@
+title,1.1,COURT:name.title
+first_name,2.1,COURT:name.forename1
+family_name,2.2,COURT:name.surname
+date_of_birth,3.1,COURT:defendantDob:date
+crn,6.1,COURT:crn
+pnc,7.1,COURT:pnc
+address_line_1,8.1,COURT:defendantAddress.line1
+address_line_2,8.2,COURT:defendantAddress.line2
+address_line_3,8.3,COURT:defendantAddress.line3
+address_line_4,8.4,COURT:defendantAddress.line4
+address_line_5,8.5,COURT:defendantAddress.line5
+post_code,8.6,COURT:defendantAddress.postcode:toUpper
+court,10.1,COURT:courtCode
+date_of_hearing,13.1,COURT:sessionStartTime

@@ -46,6 +46,10 @@
       ],
       "defendantSex": "F",
       "defendantName": "Mann Carroll",
+      "name": {
+        "forename1": "Mann",
+        "surname": "Carroll"
+      },
       "defendantAddress": {
         "line1": "91",
         "line2": "Barbey street",

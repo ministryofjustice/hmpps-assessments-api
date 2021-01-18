@@ -32,6 +32,10 @@
       ],
       "defendantSex": "M",
       "defendantName": "Olsen Alexander",
+      "name": {
+        "forename1": "Olsen",
+        "surname": "Alexander"
+      },
       "defendantAddress": {
         "line1": "99",
         "line2": "Ralph Avenue",

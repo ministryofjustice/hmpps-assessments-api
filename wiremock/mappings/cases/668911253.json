@@ -47,6 +47,10 @@
       ],
       "defendantSex": "F",
       "defendantName": "Lenore Marquez",
+      "name": {
+        "forename1": "Lenore",
+        "surname": "Marquez"
+      },
       "defendantAddress": {
         "line1": "38",
         "line2": "Clarendon Road",
