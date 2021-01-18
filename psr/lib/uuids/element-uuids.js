@@ -1,5 +1,5 @@
 const { v4: uuid } = require('uuid')
-const { DataFile } = require('./data-files')
+const { DataFile } = require('../data-files')
 
 class ElementUuids {
   constructor(csvFile) {

@@ -1,4 +1,4 @@
-const { DataFile } = require('./data-files')
+const { DataFile } = require('../data-files')
 
 const externalsCsv = 'external-sources.csv'
 
