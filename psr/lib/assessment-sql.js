@@ -57,7 +57,7 @@ class AssessmentSql {
       group_uuid: group_uuid,
       display_order: this.questionGroups.filter(qg => qg.group_uuid === group_uuid).length + 1,
       mandatory: true,
-      validation: JSON.stringify(validation)
+      validation: validation
     }
     this.questionGroups.push(questionGroup)
   }
@@ -158,11 +158,19 @@ class AssessmentSql {
       this.answerSchemas.push(answerSchema)
     }
     return answerGroup.answer_schema_group_uuid
-    return answerGroup.answer_schema_group_uuid
   }
 
   compileValidation(record) {
-    return { mandatory: { errorMessage: record[this.headers.ERROR_MESSAGE], errorSummary: record[this.headers.ERROR_SUMMARY].replace(/(^There is a problem\n\n)/mg, '')}}
+    const errorMessage = record[this.headers.ERROR_MESSAGE]
+    if (errorMessage.startsWith('N/A'))
+      return null
+
+    return JSON.stringify({
+      mandatory: {
+        errorMessage: errorMessage,
+        errorSummary: record[this.headers.ERROR_SUMMARY].replace(/(^There is a problem\n\n)/mg, '')
+      }
+    })
   }
 
   toSql() {
