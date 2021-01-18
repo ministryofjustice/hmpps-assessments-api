@@ -38,7 +38,7 @@ class AssessmentSql {
 
   _createGrouping(record) {
     const heading = record[this.headers.TITLE]
-    const groupCode = heading.replace(/[ ',\\.\\(\\)\\?\\/]+/g, '_').toLowerCase()
+    const groupCode = heading.replace(/[ '\-,\\.\\(\\)\\?\\/]+/g, '_').toLowerCase()
     const group = {
       group_uuid: groupUuids(groupCode, groupCode),
       group_code: groupCode,
