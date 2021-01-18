@@ -77,11 +77,11 @@ class AssessmentSql {
   _createQuestion(record) {
     const question_title = record[this.headers.TITLE].replace(/[ ',\\.\\(\\)\\?\\/]+/g, '_').toLowerCase()
     const question_code = record[this.headers.REF]
-    const question_text = record[this.headers.QUESTION].replace(/'/g, "''")
+    const question_text = record[this.headers.QUESTION].replace(/'/g, "''").replace(/\r\n/g, ' ')
     const [answer_type, answer_schema_group_uuid] = this.answerType(record[this.headers.ANSWER_TYPE])
     const oasys_question_code = record[this.headers.OASYS_REF] || null
     const question = {
-      question_schema_uuid: questionUuids(question_code, question_title),
+      question_schema_uuid: questionUuids(question_code, answer_type, question_title),
       question_code: question_code,
       oasys_question_code: oasys_question_code,
       answer_type: answer_type,
@@ -147,7 +147,7 @@ class AssessmentSql {
       if (!text) continue
       const code = text.replace(/[ ',\\.\\(\\)\\?\\/]+/g, '_').toLowerCase()
       const answerSchema = {
-        answer_schema_uuid: answerSchemaUuids(code),
+        answer_schema_uuid: answerSchemaUuids(code, answerGroup.answer_schema_group_code),
         answer_schema_code: code,
         answer_schema_group_uuid: answerGroup.answer_schema_group_uuid,
         answer_start: '2020-11-30 14:50:00',
@@ -170,7 +170,7 @@ class AssessmentSql {
         errorMessage: errorMessage,
         errorSummary: record[this.headers.ERROR_SUMMARY].replace(/(^There is a problem\n\n)/mg, '')
       }
-    })
+    }).replace(/'/g, "''")
   }
 
   toSql() {
