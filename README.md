@@ -42,7 +42,7 @@ java -jar build/libs/hmpps-assessments-api-<yyyy-mm-dd>.jar
 ### Start the application with Postgres database
 This configuration can be changed to use a Postgres database using the spring boot profile `postgres`.  
 
-The service makes use of Postgres JSONB fields so it is advisable to run with postgres when making database changes to avoid issues with invlaid 
+The service makes use of Postgres JSONB fields so it is advisable to run with postgres when making database changes to avoid issues with invlaid UUIDs breaking the build
 
 On the command line run:
 ```  
