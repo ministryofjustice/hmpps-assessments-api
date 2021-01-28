@@ -8,8 +8,13 @@ function loadAssessmentCsv(csvFile) {
   })
     .filter(record => record.join('')) // remove lines with no content
 
-  const headers = findHeaders(all_records[1])
-  const records = all_records.slice(2)
+  // find line that contains headers
+  const headerLine = all_records.findIndex(r => {
+    return JSON.stringify(r).indexOf('question wording') !== -1
+  })
+
+  const headers = findHeaders(all_records[headerLine])
+  const records = all_records.slice(headerLine + 1)
 
   patchInAddress(records, headers)
   return { headers, records }
