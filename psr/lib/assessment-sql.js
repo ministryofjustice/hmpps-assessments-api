@@ -19,14 +19,14 @@ class AssessmentSql {
     this.currentGroup = this.topLevelGroup
     this.dependencies = []
 
-    this.yes_no = ['radio', this.answerSchemaGroup(['drop-down', 'Yes|Y', 'No|N'])]
+    this.yes_no = ['radio', this.answerSchemaGroup(['radios:', 'Yes|Y', 'No|N'])]
 
     this.previousQuestion = null
   }
 
   isGroup(record) {
     const cleaned = record.filter(f => f)
-    return (record[this.headers.TITLE] && cleaned.length === 1)
+    return (record[this.headers.TITLE] && cleaned.length <= 2)
   }
 
   addGrouping(record) {
@@ -123,9 +123,14 @@ class AssessmentSql {
   }
 
   answerSchemaGroup(lines) {
-    lines = lines.slice(1).map(line => line.replace(/(\r|\n)/, '').split('|')).map(([a, v]) => v ? [a, v] : [a, a.toLowerCase()])
 
-    const name = lines
+    const newlines = lines.slice(1).map(line => line.replace(/(\r|\n)/, '').split('|')).map(([a, v]) => v ? [a, v] : [a, a.toLowerCase()])
+
+    if (lines[0].indexOf('drop-down') !== -1 || lines[0].indexOf('dropdown') !== -1) {
+      newlines.unshift(['Select an answer', null]);
+    }
+
+    const name = newlines
       .map(([a, v]) => a)
       .join('-')
       .replace(/[ ',\\.\\(\\)\\?\\/]+/g, '')
@@ -136,14 +141,14 @@ class AssessmentSql {
 
     const answerGroup = {
       answer_schema_group_uuid: answerSchemaGroupUuids(name),
-      answer_schema_group_code: name,
+      answer_schema_group_code: name ||  answerSchemaGroupUuids(name),
       group_start: '2020-11-30 14:50:00',
       group_end: null
     }
 
     this.answerSchemaGroups.push(answerGroup)
 
-    for (const [text, value] of lines) {
+    for (const [text, value] of newlines) {
       if (!text) continue
       const code = text.replace(/[ ',\\.\\(\\)\\?\\/]+/g, '_').toLowerCase()
       const answerSchema = {
@@ -152,8 +157,8 @@ class AssessmentSql {
         answer_schema_group_uuid: answerGroup.answer_schema_group_uuid,
         answer_start: '2020-11-30 14:50:00',
         answer_end: null,
-        value: value,
-        text: text
+        value: value ? value.replace(/'+/g, '\'\'') : null,
+        text: text ? text.replace(/'+/g, '\'\'') : null,
       }
       this.answerSchemas.push(answerSchema)
     }

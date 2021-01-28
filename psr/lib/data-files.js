@@ -23,7 +23,7 @@ function loadDataFile(filename) {
 function appendDataFile(filename, title, ref, value) {
   fs.appendFileSync(
     dataPath(filename),
-    `${title},${ref},${value}\n`
+    `${title.replace(/\r?\n|\r/g, '')},${ref},${value}\n`
   )
 }
 
