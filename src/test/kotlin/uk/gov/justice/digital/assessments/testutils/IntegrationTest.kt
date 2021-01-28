@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.assessments.testutils
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
@@ -26,9 +27,11 @@ abstract class IntegrationTest {
     internal lateinit var jwtHelper: JwtAuthHelper
 
     companion object {
+
         internal val oauthMockServer = OAuthMockServer()
         internal val courtCaseMockServer = CourtCaseMockServer()
         internal val assessmentUpdateMockServer = AssessmentUpdateMockServer()
+        internal val communityApiMockServer = CommunityApiMockServer()
 
         @BeforeAll
         @JvmStatic
@@ -36,6 +39,7 @@ abstract class IntegrationTest {
             oauthMockServer.start()
             courtCaseMockServer.start()
             assessmentUpdateMockServer.start()
+            communityApiMockServer.start()
         }
 
         @AfterAll
@@ -44,6 +48,7 @@ abstract class IntegrationTest {
             courtCaseMockServer.stop()
             oauthMockServer.stop()
             assessmentUpdateMockServer.stop()
+            communityApiMockServer.stop()
         }
     }
 
@@ -60,6 +65,7 @@ abstract class IntegrationTest {
         courtCaseMockServer.resetAll()
         courtCaseMockServer.stubCourtCase()
         assessmentUpdateMockServer.stubCreateOffender()
+        communityApiMockServer.stubGetOffender()
     }
 
     internal fun setAuthorisation(user: String = "offender-assessment-api", roles: List<String> = listOf()): (HttpHeaders) -> Unit {
