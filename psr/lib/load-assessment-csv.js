@@ -12,9 +12,12 @@ function loadAssessmentCsv(csvFile) {
   const headerLine = all_records.findIndex(r => {
     return JSON.stringify(r).indexOf('question wording') !== -1
   })
+  const footerLine = all_records.findIndex(r => {
+    return JSON.stringify(r).indexOf('change notes:') !== -1
+  })
 
   const headers = findHeaders(all_records[headerLine])
-  const records = all_records.slice(headerLine + 1)
+  const records = all_records.slice(headerLine + 1, footerLine || all_records.length)
 
   patchInAddress(records, headers)
   return { headers, records }
@@ -28,12 +31,13 @@ function findHeaders(headers) {
   const OASYS_REF = headers.findIndex(field => field.match(/oasys ref/i))
   const ERROR_SUMMARY = headers.findIndex(field => field.match(/error summary/i))
   const ERROR_MESSAGE = headers.findIndex(field => field.match(/error message/i))
+  const LOGIC = headers.findIndex(field => field.match(/business logic/i))
 
-  if ([TITLE, REF, QUESTION, ANSWER_TYPE, OASYS_REF].includes(-1)) {
+  if ([TITLE, REF, QUESTION, ANSWER_TYPE, OASYS_REF, LOGIC].includes(-1)) {
     console.error(`${csvfile} does not look like I expect!`)
     process.exit(-1)
   }
-  return { TITLE, REF, QUESTION, ANSWER_TYPE, OASYS_REF, ERROR_MESSAGE, ERROR_SUMMARY }
+  return { TITLE, REF, QUESTION, ANSWER_TYPE, OASYS_REF, ERROR_MESSAGE, ERROR_SUMMARY, LOGIC }
 }
 
 function patchInAddress(records, headers) {
