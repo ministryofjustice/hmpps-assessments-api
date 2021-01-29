@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.assessments.config
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import io.netty.channel.ChannelOption
 import io.netty.handler.timeout.ReadTimeoutHandler
 import io.netty.handler.timeout.WriteTimeoutHandler
@@ -24,6 +23,9 @@ class WebClientConfig {
 
     @Value("\${assessment-update-api.base-url}")
     private lateinit var assessmentUpdateBaseUrl: String
+
+    @Value("\${community-api.base-url}")
+    private lateinit var communityApiBaseUrl: String
 
     @Value("\${feature.flags.disable-auth:false}")
     private val disableAuthentication = false
@@ -52,9 +54,18 @@ class WebClientConfig {
     @Bean
     fun assessmentUpdateWebClient(authorizedClientManager: OAuth2AuthorizedClientManager): AuthenticatingRestClient {
         return AuthenticatingRestClient(
-              webClientFactory(assessmentUpdateBaseUrl, authorizedClientManager, bufferByteSize),
-              "assessment-update-client",
-              disableAuthentication
+            webClientFactory(assessmentUpdateBaseUrl, authorizedClientManager, bufferByteSize),
+            "assessment-update-client",
+            disableAuthentication
+        )
+    }
+
+    @Bean
+    fun communityApiWebClient(authorizedClientManager: OAuth2AuthorizedClientManager): AuthenticatingRestClient {
+        return AuthenticatingRestClient(
+            webClientFactory(communityApiBaseUrl, authorizedClientManager, bufferByteSize),
+            "community-api-client",
+            disableAuthentication
         )
     }
 
