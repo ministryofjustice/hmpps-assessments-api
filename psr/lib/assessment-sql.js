@@ -121,7 +121,7 @@ class AssessmentSql {
           this.dependencies.push({
             subject_question_code: dependency.target.trim(),
             trigger_question_uuid: question.question_schema_uuid,
-            trigger_answer_value: dependency.value.trim(),
+            trigger_answer_value: dependency.value.trim().toLowerCase(),
             dependency_start: '2020-11-30 14:50:00'
           })
         }
