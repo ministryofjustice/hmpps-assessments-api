@@ -24,6 +24,17 @@ class AssessmentSql {
     this.previousQuestion = null
   }
 
+  addDependencyUuids() {
+    this.dependencies.map(dependency => {
+      if (dependency.subject_question_code) {
+        const question = this.questions.filter(question => question.question_code === dependency.subject_question_code)
+        dependency.subject_question_uuid = question[0].question_schema_uuid
+      }
+      delete dependency.subject_question_code
+      return dependency
+    })
+  }
+
   isGroup(record) {
     const cleaned = record.filter(f => f)
     return (record[this.headers.TITLE] && cleaned.length <= 2)
@@ -80,6 +91,7 @@ class AssessmentSql {
     const question_text = record[this.headers.QUESTION].replace(/'/g, "''").replace(/\r\n/g, ' ')
     const [answer_type, answer_schema_group_uuid] = this.answerType(record[this.headers.ANSWER_TYPE])
     const oasys_question_code = record[this.headers.OASYS_REF] || null
+    const business_logic = record[this.headers.LOGIC]
     const question = {
       question_schema_uuid: questionUuids(question_code, answer_type, question_title),
       question_code: question_code,
@@ -92,12 +104,27 @@ class AssessmentSql {
     }
     this.questions.push(question)
 
-    if (question_text === 'Give details') { // HOLD YOUR NOSE, THIS IS STINKY
-      this.dependencies.push({
-        subject_question_uuid: question.question_schema_uuid,
-        trigger_question_uuid: this.previousQuestion.question_schema_uuid,
-        trigger_answer_value: 'Y',
-        dependency_start: '2020-11-30 14:50:00'
+    if (business_logic && business_logic.toLowerCase() !== 'none' && business_logic.toLowerCase() !== 'TBC') {
+      // for each line in the business logic, get the answer value and target
+      // this assumes the logic in the spreadsheet is in the format:
+      // Some problems > 76.1
+      // Significant problems > 76.2
+      const logicLines = business_logic.split('\n').map(line => {
+        const logic = line.split(' > ')
+        return {value: logic[0], target: logic[1]}
+      })
+
+      // write an entry to our list of dependencies. This needs to have UUIDs added for each question code
+      // once all questions have been processed.
+      logicLines.forEach(dependency => {
+        if (dependency.target) {
+          this.dependencies.push({
+            subject_question_code: dependency.target.trim(),
+            trigger_question_uuid: question.question_schema_uuid,
+            trigger_answer_value: dependency.value.trim().toLowerCase(),
+            dependency_start: '2020-11-30 14:50:00'
+          })
+        }
       })
     }
 

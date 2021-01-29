@@ -22,5 +22,6 @@ for (const record of records) {
   assessment.addQuestion(record)
 }
 
+assessment.addDependencyUuids()
 assessment.toSql()
 
