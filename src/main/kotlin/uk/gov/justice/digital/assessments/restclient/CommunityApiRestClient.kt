@@ -14,7 +14,7 @@ class CommunityApiRestClient {
   internal lateinit var webClient: AuthenticatingRestClient
 
   fun getOffender(crn: String): GetOffenderDto? {
-    log.info("Retrieving offender details for crn: $crn")
+    log.info("Client retrieving offender details for crn: $crn")
     return webClient
       .get("secure/offenders/crn/$crn")
       .retrieve()

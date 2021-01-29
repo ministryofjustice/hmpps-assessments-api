@@ -26,6 +26,15 @@ class CommunityApiMockServer: WireMockServer(9096) {
                     .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
                     .withBody(offenderJson))
         )
+
+        stubFor(
+            WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/invalid"))
+                .willReturn(WireMock.aResponse()
+                    .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+                    .withStatus(404)
+                    .withBody("{\"status\":\"Error\",\"message\":\"Offender not found\"}")
+                )
+        )
     }
 
     internal fun mapToJson(offenderDto: GetOffenderDto): String {
