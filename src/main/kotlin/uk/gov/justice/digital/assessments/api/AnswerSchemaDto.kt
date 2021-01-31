@@ -20,7 +20,10 @@ data class AnswerSchemaDto (
         val text: String? = null,
 
         @Schema(description = "Does setting the question to this value trigger the display of another question?", example = "<UUID>")
-        val conditional: UUID? = null
+        val conditional: UUID? = null,
+
+        @Schema(description = "Should the question triggered by this answer be displayed inline?", example = "<Boolean>")
+        val displayInline: Boolean? = true
 
 ) {
     companion object{

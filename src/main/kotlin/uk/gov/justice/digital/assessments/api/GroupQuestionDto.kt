@@ -55,7 +55,8 @@ data class GroupQuestionDto(
                     conditional = questionDependencies.hasDependency(questionSchemaEntity.questionSchemaUuid),
                     answerSchemas = AnswerSchemaDto.from(
                             questionSchemaEntity.answerSchemaEntities,
-                            questionDependencies.answerTriggers(questionSchemaEntity.questionSchemaUuid)
+                            questionDependencies.answerTriggers(questionSchemaEntity.questionSchemaUuid),
+                            questionDependencies.triggerDisplayStyle(questionSchemaEntity.questionSchemaUuid),
                     )
             ) }
     }

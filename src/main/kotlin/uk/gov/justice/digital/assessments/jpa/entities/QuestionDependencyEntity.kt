@@ -25,5 +25,8 @@ class QuestionDependencyEntity (
     val startDate: LocalDateTime? = null,
 
     @Column(name = "dependency_end")
-    val endDate: LocalDateTime? = null
+    val endDate: LocalDateTime? = null,
+
+    @Column(name = "display_inline")
+    val displayInline : Boolean,
 )
