@@ -11,18 +11,18 @@ import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundExce
 @Service
 class OffenderService(private val communityApiRestClient: CommunityApiRestClient) {
 
-    fun getOffender(crn: String): GetOffenderDto? {
-        try {
-            log.info("Requesting offender details for crn: $crn")
-            return communityApiRestClient.getOffender(crn)
-                ?: throw EntityNotFoundException("No offender found for crn: $crn")
-        } catch (e: WebClientException) {
-            println(e.message)
-            throw EntityNotFoundException("No offender found for crn: $crn")
-        }
+  fun getOffender(crn: String): GetOffenderDto? {
+    try {
+      log.info("Requesting offender details for crn: $crn")
+      return communityApiRestClient.getOffender(crn)
+        ?: throw EntityNotFoundException("No offender found for crn: $crn")
+    } catch (e: WebClientException) {
+      println(e.message)
+      throw EntityNotFoundException("No offender found for crn: $crn")
     }
+  }
 
-    companion object {
-        val log: Logger = LoggerFactory.getLogger(this::class.java)
-    }
+  companion object {
+    val log: Logger = LoggerFactory.getLogger(this::class.java)
+  }
 }

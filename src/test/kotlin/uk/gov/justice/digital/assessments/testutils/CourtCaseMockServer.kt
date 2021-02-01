@@ -6,17 +6,20 @@ import com.github.tomakehurst.wiremock.http.HttpHeader
 import com.github.tomakehurst.wiremock.http.HttpHeaders
 
 class CourtCaseMockServer : WireMockServer(9002) {
-    fun stubCourtCase() {
-        stubFor(
-            WireMock.get(WireMock.urlEqualTo("/court/SHF06/case/668911253"))
-                .willReturn(WireMock.aResponse()
-                    .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
-                    .withBody(courtCaseJson))
+  fun stubCourtCase() {
+    stubFor(
+      WireMock.get(WireMock.urlEqualTo("/court/SHF06/case/668911253"))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withBody(courtCaseJson)
         )
-    }
+    )
+  }
 
-    companion object {
-        val courtCaseJson = """{
+  companion object {
+    val courtCaseJson =
+      """{
   "caseId": "951609",
   "caseNo": "668911253",
   "courtCode": "SHF",
@@ -64,6 +67,7 @@ class CourtCaseMockServer : WireMockServer(9002) {
   },
   "defendantDob": "1979-08-18",
   "nationality1": "British"
-}""".trimIndent()
-    }
+}
+      """.trimIndent()
+  }
 }

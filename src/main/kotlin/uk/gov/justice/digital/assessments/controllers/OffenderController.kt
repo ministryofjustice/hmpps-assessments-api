@@ -14,13 +14,15 @@ import uk.gov.justice.digital.assessments.services.OffenderService
 @RestController
 class OffenderController(val offenderService: OffenderService) {
 
-    @RequestMapping(path = ["/offender/crn/{crn}"], method = [RequestMethod.GET])
-    @Operation(description = "Gets offender information")
-    @ApiResponses(value = [
-        ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
-        ApiResponse(responseCode = "200", description = "OK")
-    ])
-    fun getAssessmentSubject(@Parameter(description = "Assessment UUID", required = true) @PathVariable crn: String): GetOffenderDto? {
-        return offenderService.getOffender(crn)
-    }
+  @RequestMapping(path = ["/offender/crn/{crn}"], method = [RequestMethod.GET])
+  @Operation(description = "Gets offender information")
+  @ApiResponses(
+    value = [
+      ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
+      ApiResponse(responseCode = "200", description = "OK")
+    ]
+  )
+  fun getAssessmentSubject(@Parameter(description = "Assessment UUID", required = true) @PathVariable crn: String): GetOffenderDto? {
+    return offenderService.getOffender(crn)
+  }
 }
