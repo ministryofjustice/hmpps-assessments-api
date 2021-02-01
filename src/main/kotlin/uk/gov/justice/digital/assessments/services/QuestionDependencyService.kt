@@ -38,10 +38,9 @@ class QuestionDependencies(questionDeps: Collection<QuestionDependencyEntity>) {
 
   fun answerTriggers(triggerUuid: UUID): AnswerDependencies {
     return { answerValue: String? -> triggersDependency(triggerUuid, answerValue) }
-
   }
 
-  fun getDisplayType(triggerUuid: UUID): (String?) -> Boolean? {
+  fun displayInline(triggerUuid: UUID): (String?) -> Boolean? {
     return { answerValue: String? -> getDisplayType(triggerUuid, answerValue) }
   }
 }

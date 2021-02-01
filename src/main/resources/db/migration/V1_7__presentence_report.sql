@@ -16,8 +16,8 @@ VALUES ('0e8d012a-b300-4d9c-9812-eb1ef366bf91', 'yes-no', '2020-11-30 14:50:00',
 
 
 INSERT INTO answer_schema (answer_schema_uuid, answer_schema_code, answer_schema_group_uuid, answer_start, answer_end, value, text)
-VALUES ('98dcf9ac-4112-4d05-8159-409fa3545139', 'yes', '0e8d012a-b300-4d9c-9812-eb1ef366bf91', '2020-11-30 14:50:00', null, 'Y', 'Yes'),
-       ('80d453da-1755-4740-9c72-dee00a3b5abc', 'no', '0e8d012a-b300-4d9c-9812-eb1ef366bf91', '2020-11-30 14:50:00', null, 'N', 'No'),
+VALUES ('98dcf9ac-4112-4d05-8159-409fa3545139', 'yes', '0e8d012a-b300-4d9c-9812-eb1ef366bf91', '2020-11-30 14:50:00', null, 'y', 'Yes'),
+       ('80d453da-1755-4740-9c72-dee00a3b5abc', 'no', '0e8d012a-b300-4d9c-9812-eb1ef366bf91', '2020-11-30 14:50:00', null, 'n', 'No'),
        ('d989bb0a-24d4-4173-a2c5-999d05148cc2', 'select_an_answer', '66b6b754-4b58-47a3-bd85-6f5eeb9be3d4', '2020-11-30 14:50:00', null, null, 'Select an answer'),
        ('b5cc2a67-f319-4388-bcb5-86abeec6618e', 'tbc', '66b6b754-4b58-47a3-bd85-6f5eeb9be3d4', '2020-11-30 14:50:00', null, 'tbc', 'TBC'),
        ('43493765-0ff6-4379-8d96-a50b451d67fb', 'select_an_answer', '1f931d67-2fa4-404c-a82f-b38a052a608c', '2020-11-30 14:50:00', null, null, 'Select an answer'),

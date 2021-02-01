@@ -19,7 +19,7 @@ class AssessmentSql {
     this.currentGroup = this.topLevelGroup
     this.dependencies = []
 
-    this.yes_no = ['radio', this.answerSchemaGroup(['radios:', 'Yes|Y', 'No|N'])]
+    this.yes_no = ['radio', this.answerSchemaGroup(['radios:', 'Yes|y', 'No|n'])]
 
     this.previousQuestion = null
   }

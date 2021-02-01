@@ -56,7 +56,7 @@ data class GroupQuestionDto(
         answerSchemas = AnswerSchemaDto.from(
           questionSchemaEntity.answerSchemaEntities,
           questionDependencies.answerTriggers(questionSchemaEntity.questionSchemaUuid),
-          questionDependencies.getDisplayType(questionSchemaEntity.questionSchemaUuid)
+          questionDependencies.displayInline(questionSchemaEntity.questionSchemaUuid)
         )
       )
     }
