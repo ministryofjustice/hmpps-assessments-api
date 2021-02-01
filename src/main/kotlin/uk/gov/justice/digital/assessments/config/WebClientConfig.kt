@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.assessments.config
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import io.netty.channel.ChannelOption
 import io.netty.handler.timeout.ReadTimeoutHandler
 import io.netty.handler.timeout.WriteTimeoutHandler
@@ -19,68 +18,80 @@ import java.util.concurrent.TimeUnit
 
 @Configuration
 class WebClientConfig {
-    @Value("\${court-case-api.base-url}")
-    private lateinit var courtCaseBaseUrl: String
+  @Value("\${court-case-api.base-url}")
+  private lateinit var courtCaseBaseUrl: String
 
-    @Value("\${assessment-update-api.base-url}")
-    private lateinit var assessmentUpdateBaseUrl: String
+  @Value("\${assessment-update-api.base-url}")
+  private lateinit var assessmentUpdateBaseUrl: String
 
-    @Value("\${feature.flags.disable-auth:false}")
-    private val disableAuthentication = false
+  @Value("\${community-api.base-url}")
+  private lateinit var communityApiBaseUrl: String
 
-    @Value("\${web.client.connect-timeout-ms}")
-    private val connectTimeoutMs: Int? = null
+  @Value("\${feature.flags.disable-auth:false}")
+  private val disableAuthentication = false
 
-    @Value("\${web.client.read-timeout-ms}")
-    private val readTimeoutMs: Long = 0
+  @Value("\${web.client.connect-timeout-ms}")
+  private val connectTimeoutMs: Int? = null
 
-    @Value("\${web.client.write-timeout-ms}")
-    private val writeTimeoutMs: Long = 0
+  @Value("\${web.client.read-timeout-ms}")
+  private val readTimeoutMs: Long = 0
 
-    @Value("\${web.client.byte-buffer-size}")
-    val bufferByteSize: Int = Int.MAX_VALUE
+  @Value("\${web.client.write-timeout-ms}")
+  private val writeTimeoutMs: Long = 0
 
-    @Bean
-    fun courtCaseWebClient(authorizedClientManager: OAuth2AuthorizedClientManager): AuthenticatingRestClient {
-        return AuthenticatingRestClient(
-                webClientFactory(courtCaseBaseUrl, authorizedClientManager, bufferByteSize),
-                "court-case-client",
-                disableAuthentication
-        )
-    }
+  @Value("\${web.client.byte-buffer-size}")
+  val bufferByteSize: Int = Int.MAX_VALUE
 
-    @Bean
-    fun assessmentUpdateWebClient(authorizedClientManager: OAuth2AuthorizedClientManager): AuthenticatingRestClient {
-        return AuthenticatingRestClient(
-              webClientFactory(assessmentUpdateBaseUrl, authorizedClientManager, bufferByteSize),
-              "assessment-update-client",
-              disableAuthentication
-        )
-    }
+  @Bean
+  fun courtCaseWebClient(authorizedClientManager: OAuth2AuthorizedClientManager): AuthenticatingRestClient {
+    return AuthenticatingRestClient(
+      webClientFactory(courtCaseBaseUrl, authorizedClientManager, bufferByteSize),
+      "court-case-client",
+      disableAuthentication
+    )
+  }
 
-    private fun webClientFactory(
-            baseUrl: String,
-            authorizedClientManager: OAuth2AuthorizedClientManager,
-            bufferByteCount: Int
-    ): WebClient {
-        val oauth2Client = ServletOAuth2AuthorizedClientExchangeFilterFunction(authorizedClientManager)
+  @Bean
+  fun assessmentUpdateWebClient(authorizedClientManager: OAuth2AuthorizedClientManager): AuthenticatingRestClient {
+    return AuthenticatingRestClient(
+      webClientFactory(assessmentUpdateBaseUrl, authorizedClientManager, bufferByteSize),
+      "assessment-update-client",
+      disableAuthentication
+    )
+  }
 
-        val httpClient = HttpClient.create()
-            .tcpConfiguration {
-                it.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, connectTimeoutMs)
-                    .doOnConnected {
-                        it.addHandlerLast(ReadTimeoutHandler(readTimeoutMs, TimeUnit.MILLISECONDS))
-                          .addHandlerLast(WriteTimeoutHandler(writeTimeoutMs, TimeUnit.MILLISECONDS))
-                    }
-                }
+  @Bean
+  fun communityApiWebClient(authorizedClientManager: OAuth2AuthorizedClientManager): AuthenticatingRestClient {
+    return AuthenticatingRestClient(
+      webClientFactory(communityApiBaseUrl, authorizedClientManager, bufferByteSize),
+      "community-api-client",
+      disableAuthentication
+    )
+  }
 
-        return WebClient
-                .builder()
-                .clientConnector(ReactorClientHttpConnector(httpClient))
-                .codecs { it.defaultCodecs().maxInMemorySize(bufferByteCount) }
-                .baseUrl(baseUrl)
-                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .apply(oauth2Client.oauth2Configuration())
-                .build()
-    }
+  private fun webClientFactory(
+    baseUrl: String,
+    authorizedClientManager: OAuth2AuthorizedClientManager,
+    bufferByteCount: Int
+  ): WebClient {
+    val oauth2Client = ServletOAuth2AuthorizedClientExchangeFilterFunction(authorizedClientManager)
+
+    val httpClient = HttpClient.create()
+      .tcpConfiguration {
+        it.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, connectTimeoutMs)
+          .doOnConnected {
+            it.addHandlerLast(ReadTimeoutHandler(readTimeoutMs, TimeUnit.MILLISECONDS))
+              .addHandlerLast(WriteTimeoutHandler(writeTimeoutMs, TimeUnit.MILLISECONDS))
+          }
+      }
+
+    return WebClient
+      .builder()
+      .clientConnector(ReactorClientHttpConnector(httpClient))
+      .codecs { it.defaultCodecs().maxInMemorySize(bufferByteCount) }
+      .baseUrl(baseUrl)
+      .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+      .apply(oauth2Client.oauth2Configuration())
+      .build()
+  }
 }

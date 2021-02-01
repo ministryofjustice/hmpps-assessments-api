@@ -6,5 +6,5 @@ import uk.gov.justice.digital.assessments.jpa.entities.SubjectEntity
 
 @Repository
 interface SubjectRepository : JpaRepository<SubjectEntity, Long> {
-    fun findBySourceAndSourceId(source: String, sourceId: String) : SubjectEntity?
+  fun findBySourceAndSourceId(source: String, sourceId: String): SubjectEntity?
 }

@@ -30,3 +30,6 @@ court-case-api:
 
 assessment-update-api:
   base-url: http://localhost:9003
+
+community-api:
+  base-url: http://localhost:9096

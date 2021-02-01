@@ -5,7 +5,7 @@ import java.util.UUID
 
 class UpdateAssessmentEpisodeDto(
 
-        @Schema(description = "Answers associated with this episode")
-        val answers: Map<UUID, AnswerDto>
+  @Schema(description = "Answers associated with this episode")
+  val answers: Map<UUID, AnswerDto>
 
 )

@@ -15,58 +15,65 @@ import uk.gov.justice.digital.assessments.JwtAuthHelper
 import java.time.Duration
 
 @Suppress("SpringJavaInjectionPointsAutowiringInspection")
-@SpringBootTest( classes = [HmppsAssessmentApiApplication::class], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = [HmppsAssessmentApiApplication::class], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles(profiles = ["test"])
 abstract class IntegrationTest {
 
-    @Autowired
-    internal lateinit var webTestClient: WebTestClient
+  @Autowired
+  internal lateinit var webTestClient: WebTestClient
 
-    @Autowired
-    internal lateinit var jwtHelper: JwtAuthHelper
+  @Autowired
+  internal lateinit var jwtHelper: JwtAuthHelper
 
-    companion object {
-        internal val oauthMockServer = OAuthMockServer()
-        internal val courtCaseMockServer = CourtCaseMockServer()
-        internal val assessmentUpdateMockServer = AssessmentUpdateMockServer()
+  companion object {
 
-        @BeforeAll
-        @JvmStatic
-        fun startMocks() {
-            oauthMockServer.start()
-            courtCaseMockServer.start()
-            assessmentUpdateMockServer.start()
-        }
+    internal val oauthMockServer = OAuthMockServer()
+    internal val courtCaseMockServer = CourtCaseMockServer()
+    internal val assessmentUpdateMockServer = AssessmentUpdateMockServer()
+    internal val communityApiMockServer = CommunityApiMockServer()
 
-        @AfterAll
-        @JvmStatic
-        fun stopMocks() {
-            courtCaseMockServer.stop()
-            oauthMockServer.stop()
-            assessmentUpdateMockServer.stop()
-        }
+    @BeforeAll
+    @JvmStatic
+    fun startMocks() {
+      oauthMockServer.start()
+      courtCaseMockServer.start()
+      assessmentUpdateMockServer.start()
+      communityApiMockServer.start()
     }
 
-    init {
-        SecurityContextHolder.getContext().authentication = TestingAuthenticationToken("user", "pw")
-        // Resolves an issue where Wiremock keeps previous sockets open from other tests causing connection resets
-        System.setProperty("http.keepAlive", "false")
+    @AfterAll
+    @JvmStatic
+    fun stopMocks() {
+      courtCaseMockServer.stop()
+      oauthMockServer.stop()
+      assessmentUpdateMockServer.stop()
+      communityApiMockServer.stop()
     }
+  }
 
-    @BeforeEach
-    fun resetStubs() {
-        oauthMockServer.resetAll()
-        oauthMockServer.stubGrantToken()
-        courtCaseMockServer.resetAll()
-        courtCaseMockServer.stubCourtCase()
-        assessmentUpdateMockServer.stubCreateOffender()
-    }
+  init {
+    SecurityContextHolder.getContext().authentication = TestingAuthenticationToken("user", "pw")
+    // Resolves an issue where Wiremock keeps previous sockets open from other tests causing connection resets
+    System.setProperty("http.keepAlive", "false")
+  }
 
-    internal fun setAuthorisation(user: String = "offender-assessment-api", roles: List<String> = listOf()): (HttpHeaders) -> Unit {
-        val token = jwtHelper.createJwt(subject = user,
-                scope = listOf("read"),
-                expiryTime = Duration.ofHours(1L),
-                roles = roles)
-        return { it.set(HttpHeaders.AUTHORIZATION, "Bearer $token") }
-    }
+  @BeforeEach
+  fun resetStubs() {
+    oauthMockServer.resetAll()
+    oauthMockServer.stubGrantToken()
+    courtCaseMockServer.resetAll()
+    courtCaseMockServer.stubCourtCase()
+    assessmentUpdateMockServer.stubCreateOffender()
+    communityApiMockServer.stubGetOffender()
+  }
+
+  internal fun setAuthorisation(user: String = "offender-assessment-api", roles: List<String> = listOf()): (HttpHeaders) -> Unit {
+    val token = jwtHelper.createJwt(
+      subject = user,
+      scope = listOf("read"),
+      expiryTime = Duration.ofHours(1L),
+      roles = roles
+    )
+    return { it.set(HttpHeaders.AUTHORIZATION, "Bearer $token") }
+  }
 }

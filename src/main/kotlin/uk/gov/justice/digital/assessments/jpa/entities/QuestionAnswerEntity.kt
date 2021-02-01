@@ -1,11 +1,10 @@
 package uk.gov.justice.digital.assessments.jpa.entities
 
 import java.io.Serializable
-import java.util.*
+import java.util.UUID
 
-data class QuestionAnswerEntity  (
+data class QuestionAnswerEntity(
 
-        var answers: Map<UUID, List<AnswerEntity>>
+  var answers: Map<UUID, List<AnswerEntity>>
 
-
-) :Serializable
+) : Serializable
