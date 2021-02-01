@@ -26,7 +26,7 @@ VALUES (0, '334f3e21-b249-4c7f-848e-05c0d2aad8f4', 'fd412ca8-d361-47ab-a189-7acb
        (1, 'fcec5c32-ea96-424c-80a5-8186dc414619', '1948af63-07f2-4a8c-9e4c-0ec347bd6ba8', 'question', 'e353f3df-113d-401c-a3c0-14239fc17cf9', '2', false, null );
 
 /* Question Dependency */
-insert into question_dependency (subject_question_uuid, trigger_question_uuid, trigger_answer_value, dependency_start) values
-('11111111-1111-1111-1111-111111111113', '11111111-1111-1111-1111-111111111112', 'Y', '2020-1-14 09:00'),
-('11111111-1111-1111-1111-111111111116', '11111111-1111-1111-1111-111111111115', 'Y', '2020-1-14 09:00'),
-('1948af63-07f2-4a8c-9e4c-0ec347bd6ba8', 'fd412ca8-d361-47ab-a189-7acb8ae0675b', 'true', '2020-1-14 09:00');
+insert into question_dependency (subject_question_uuid, trigger_question_uuid, trigger_answer_value, dependency_start, display_inline) values
+('11111111-1111-1111-1111-111111111113', '11111111-1111-1111-1111-111111111112', 'y', '2020-1-14 09:00', true),
+('11111111-1111-1111-1111-111111111116', '11111111-1111-1111-1111-111111111115', 'y', '2020-1-14 09:00', true),
+('1948af63-07f2-4a8c-9e4c-0ec347bd6ba8', 'fd412ca8-d361-47ab-a189-7acb8ae0675b', 'true', '2020-1-14 09:00', true);
