@@ -29,23 +29,28 @@ data class AnswerSchemaDto (
     companion object{
 
         fun from(
-                answerSchemaEntities: Collection<AnswerSchemaEntity>?,
-                answerDependencies: AnswerDependencies = { null }
+            answerSchemaEntities: Collection<AnswerSchemaEntity>?,
+            answerDependencies: AnswerDependencies = { null },
+            triggersInlineDisplay: (String?) -> Boolean? = { true }
         ): Set<AnswerSchemaDto>{
             if (answerSchemaEntities.isNullOrEmpty()) return emptySet()
-            return answerSchemaEntities.map { from(it, answerDependencies) }.toSet()
+            return answerSchemaEntities.map {
+                from(it, answerDependencies, triggersInlineDisplay)
+            }.toSet()
         }
 
         fun from(
-                answerSchemaEntity: AnswerSchemaEntity,
-                answerDependencies: AnswerDependencies
+            answerSchemaEntity: AnswerSchemaEntity,
+            answerDependencies: AnswerDependencies,
+            triggersInlineDisplay: (String?) -> Boolean?
         ): AnswerSchemaDto{
             return AnswerSchemaDto(
-                    answerSchemaEntity.answerSchemaUuid,
-                    answerSchemaEntity.answerSchemaCode,
-                    answerSchemaEntity.value,
-                    answerSchemaEntity.text,
-                    answerDependencies(answerSchemaEntity.value)
+                answerSchemaEntity.answerSchemaUuid,
+                answerSchemaEntity.answerSchemaCode,
+                answerSchemaEntity.value,
+                answerSchemaEntity.text,
+                answerDependencies(answerSchemaEntity.value),
+                triggersInlineDisplay(answerSchemaEntity.value)
             )
         }
     }
