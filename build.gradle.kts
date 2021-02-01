@@ -1,72 +1,66 @@
 
 plugins {
-    id("uk.gov.justice.hmpps.gradle-spring-boot") version "1.0.7"
-    kotlin("plugin.spring") version "1.3.72"
-    kotlin("plugin.jpa") version "1.3.72"
-    kotlin("plugin.allopen") version "1.3.61"
-    kotlin("kapt") version "1.3.72"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "2.1.1"
+  kotlin("plugin.spring") version "1.4.21"
+  kotlin("plugin.jpa") version "1.4.21"
 }
 
 allOpen {
-    annotation("javax.persistence.Entity")
-    annotation("javax.persistence.Embeddable")
-    annotation("javax.persistence.MappedSuperclass")
+  annotation("javax.persistence.Entity")
+  annotation("javax.persistence.Embeddable")
+  annotation("javax.persistence.MappedSuperclass")
 }
 
 configurations {
-    implementation { exclude(mapOf("module" to "tomcat-jdbc")) }
+  implementation { exclude(mapOf("module" to "tomcat-jdbc")) }
 }
 
 dependencyCheck {
-    suppressionFiles.add("hmpps-assessments-api-suppressions.xml")
+  suppressionFiles.add("hmpps-assessments-api-suppressions.xml")
 }
 
 dependencies {
 
-    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+  annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.springframework.boot:spring-boot-starter-security")
-    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
-    implementation("org.springframework.boot:spring-boot-starter-webflux")
-    implementation("org.springframework.boot:spring-boot-starter-cache")
-    implementation("org.springframework.security:spring-security-oauth2-client")
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("javax.annotation:javax.annotation-api:1.3.2")
-    implementation("javax.xml.bind:jaxb-api:2.4.0-b180830.0359")
-    implementation("javax.activation:activation:1.1.1")
-    implementation("com.sun.xml.bind:jaxb-impl:3.0.0-M4")
-    implementation("com.sun.xml.bind:jaxb-core:2.3.0.1")
-    implementation("javax.inject:javax.inject:1")
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.11.2")
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.2")
-    implementation("org.springdoc:springdoc-openapi-ui:1.4.7")
-    implementation("org.springdoc:springdoc-openapi-data-rest:1.4.7")
-    implementation("org.springdoc:springdoc-openapi-kotlin:1.4.7")
-    implementation("commons-io:commons-io:2.8.0")
-    implementation("com.zaxxer:HikariCP:3.4.5")
-    implementation("com.vladmihalcea:hibernate-types-52:2.10.0")
+  implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+  implementation("org.springframework.boot:spring-boot-starter-security")
+  implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
+  implementation("org.springframework.boot:spring-boot-starter-webflux")
+  implementation("org.springframework.boot:spring-boot-starter-cache")
+  implementation("org.springframework.security:spring-security-oauth2-client")
+  implementation("org.jetbrains.kotlin:kotlin-reflect")
+  implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+  implementation("javax.xml.bind:jaxb-api:2.4.0-b180830.0359")
+  implementation("javax.activation:activation:1.1.1")
+  implementation("com.sun.xml.bind:jaxb-impl:3.0.0")
+  implementation("com.sun.xml.bind:jaxb-core:3.0.0")
+  implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.0")
+  implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.12.0")
+  implementation("org.springdoc:springdoc-openapi-ui:1.4.7")
+  implementation("org.springdoc:springdoc-openapi-data-rest:1.4.7")
+  implementation("org.springdoc:springdoc-openapi-kotlin:1.4.7")
+  implementation("commons-io:commons-io:2.8.0")
+  implementation("com.zaxxer:HikariCP:3.4.5")
+  implementation("com.vladmihalcea:hibernate-types-52:2.10.0")
 
-    implementation("com.beust:klaxon:5.4")
-    implementation("com.google.code.gson:gson:2.8.6")
-    implementation("com.google.guava:guava:29.0-jre")
-    implementation("org.apache.commons:commons-lang3:3.11")
-    implementation("org.postgresql:postgresql")
-    runtimeOnly("com.h2database:h2:1.4.200")
-    runtimeOnly("org.flywaydb:flyway-core:6.5.6")
+  implementation("com.beust:klaxon:5.4")
+  implementation("com.google.code.gson:gson:2.8.6")
+  implementation("com.google.guava:guava:30.0-jre")
+  implementation("org.apache.commons:commons-lang3:3.11")
+  implementation("org.postgresql:postgresql")
+  runtimeOnly("com.h2database:h2:1.4.200")
+  runtimeOnly("org.flywaydb:flyway-core:7.3.1")
 
-    testRuntimeOnly("com.h2database:h2:1.4.200")
-    testAnnotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+  testRuntimeOnly("com.h2database:h2:1.4.200")
+  testAnnotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
-    testImplementation("org.springframework.boot:spring-boot-starter-test") {
-        exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
-        exclude(module = "mockito-core")
-    }
-    testImplementation("com.ninja-squad:springmockk:2.0.3")
-    testImplementation("io.jsonwebtoken:jjwt:0.9.1")
-    implementation("com.nimbusds:nimbus-jose-jwt:8.17")
-    testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
+  testImplementation("org.springframework.boot:spring-boot-starter-test") {
+    exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
+    exclude(module = "mockito-core")
+  }
+  testImplementation("com.ninja-squad:springmockk:2.0.3")
+  testImplementation("io.jsonwebtoken:jjwt:0.9.1")
+  implementation("com.nimbusds:nimbus-jose-jwt:9.1.5")
+  testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
 }
-
-

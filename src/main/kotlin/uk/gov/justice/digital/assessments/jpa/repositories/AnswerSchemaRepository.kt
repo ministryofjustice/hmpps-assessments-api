@@ -5,4 +5,4 @@ import org.springframework.stereotype.Repository
 import uk.gov.justice.digital.assessments.jpa.entities.AnswerSchemaEntity
 
 @Repository
-interface AnswerSchemaRepository:JpaRepository<AnswerSchemaEntity, String>
+interface AnswerSchemaRepository : JpaRepository<AnswerSchemaEntity, String>

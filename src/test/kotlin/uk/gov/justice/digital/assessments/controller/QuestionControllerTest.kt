@@ -12,130 +12,130 @@ import uk.gov.justice.digital.assessments.api.GroupSummaryDto
 import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
 import uk.gov.justice.digital.assessments.api.QuestionSchemaDto
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
-import java.util.*
+import java.util.UUID
 
 @SqlGroup(
-        Sql(scripts = ["classpath:referenceData/before-test.sql"], config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED)),
-        Sql(scripts = ["classpath:referenceData/after-test.sql"], config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED), executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD))
+  Sql(scripts = ["classpath:referenceData/before-test.sql"], config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED)),
+  Sql(scripts = ["classpath:referenceData/after-test.sql"], config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED), executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+)
 @AutoConfigureWebTestClient
 class QuestionControllerTest : IntegrationTest() {
 
-    private val groupUuid = "e353f3df-113d-401c-a3c0-14239fc17cf9"
-    private val questionSchemaUuid = "fd412ca8-d361-47ab-a189-7acb8ae0675b"
-    private val subjectQuestionUuid = "1948af63-07f2-4a8c-9e4c-0ec347bd6ba8"
-    private val answerSchemaUuid = "464e25da-f843-43b6-8223-4af415abda0c"
+  private val groupUuid = "e353f3df-113d-401c-a3c0-14239fc17cf9"
+  private val questionSchemaUuid = "fd412ca8-d361-47ab-a189-7acb8ae0675b"
+  private val subjectQuestionUuid = "1948af63-07f2-4a8c-9e4c-0ec347bd6ba8"
+  private val answerSchemaUuid = "464e25da-f843-43b6-8223-4af415abda0c"
 
-    @Test
-    fun `access forbidden when no authority`() {
-        webTestClient.get().uri("/questions/id/$questionSchemaUuid")
-                .header("Content-Type", "application/json")
-                .exchange()
-                .expectStatus().isUnauthorized
-    }
+  @Test
+  fun `access forbidden when no authority`() {
+    webTestClient.get().uri("/questions/id/$questionSchemaUuid")
+      .header("Content-Type", "application/json")
+      .exchange()
+      .expectStatus().isUnauthorized
+  }
 
-    @Test
-    fun `get reference question and answers`() {
-        val questionSchema = webTestClient.get().uri("/questions/id/$questionSchemaUuid")
-                .headers(setAuthorisation())
-                .exchange()
-                .expectStatus().isOk
-                .expectBody<QuestionSchemaDto>()
-                .returnResult()
-                .responseBody
+  @Test
+  fun `get reference question and answers`() {
+    val questionSchema = webTestClient.get().uri("/questions/id/$questionSchemaUuid")
+      .headers(setAuthorisation())
+      .exchange()
+      .expectStatus().isOk
+      .expectBody<QuestionSchemaDto>()
+      .returnResult()
+      .responseBody
 
-        assertThat(questionSchema?.questionSchemaUuid).isEqualTo(UUID.fromString(questionSchemaUuid))
-    }
+    assertThat(questionSchema?.questionSchemaUuid).isEqualTo(UUID.fromString(questionSchemaUuid))
+  }
 
+  @Test
+  fun `get all reference questions and answers for group by uuid`() {
+    val questionsGroup = webTestClient.get().uri("/questions/$groupUuid")
+      .headers(setAuthorisation())
+      .exchange()
+      .expectStatus().isOk
+      .expectBody<GroupWithContentsDto>()
+      .returnResult()
+      .responseBody
 
-    @Test
-    fun `get all reference questions and answers for group by uuid`() {
-        val questionsGroup = webTestClient.get().uri("/questions/$groupUuid")
-                .headers(setAuthorisation())
-                .exchange()
-                .expectStatus().isOk
-                .expectBody<GroupWithContentsDto>()
-                .returnResult()
-                .responseBody
+    assertThat(questionsGroup?.groupId).isEqualTo(UUID.fromString(groupUuid))
 
-        assertThat(questionsGroup?.groupId).isEqualTo(UUID.fromString(groupUuid))
+    val questionRefs = questionsGroup?.contents
+    val questionRef = questionRefs?.get(0) as GroupQuestionDto
+    assertThat(questionRef.questionId).isEqualTo(UUID.fromString(questionSchemaUuid))
 
-        val questionRefs = questionsGroup?.contents
-        val questionRef = questionRefs?.get(0) as GroupQuestionDto
-        assertThat(questionRef.questionId).isEqualTo(UUID.fromString(questionSchemaUuid))
+    val answerSchemaUuids = questionRef.answerSchemas?.map { it.answerSchemaUuid }
+    assertThat(answerSchemaUuids).contains(UUID.fromString(answerSchemaUuid))
+  }
 
-        val answerSchemaUuids = questionRef.answerSchemas?.map { it.answerSchemaUuid }
-        assertThat(answerSchemaUuids).contains(UUID.fromString(answerSchemaUuid))
-    }
+  @Test
+  fun `get all reference questions and answers for group by code`() {
+    val questionsGroup = webTestClient.get().uri("/questions/Group code")
+      .headers(setAuthorisation())
+      .exchange()
+      .expectStatus().isOk
+      .expectBody<GroupWithContentsDto>()
+      .returnResult()
+      .responseBody
 
-    @Test
-    fun `get all reference questions and answers for group by code`() {
-        val questionsGroup = webTestClient.get().uri("/questions/Group code")
-                .headers(setAuthorisation())
-                .exchange()
-                .expectStatus().isOk
-                .expectBody<GroupWithContentsDto>()
-                .returnResult()
-                .responseBody
+    assertThat(questionsGroup?.groupId).isEqualTo(UUID.fromString(groupUuid))
 
-        assertThat(questionsGroup?.groupId).isEqualTo(UUID.fromString(groupUuid))
+    val questionRefs = questionsGroup?.contents
+    val questionRef = questionRefs?.get(0) as GroupQuestionDto
+    assertThat(questionRef.questionId).isEqualTo(UUID.fromString(questionSchemaUuid))
 
-        val questionRefs = questionsGroup?.contents
-        val questionRef = questionRefs?.get(0) as GroupQuestionDto
-        assertThat(questionRef.questionId).isEqualTo(UUID.fromString(questionSchemaUuid))
+    val answerSchemaUuids = questionRef.answerSchemas?.map { it.answerSchemaUuid }
+    assertThat(answerSchemaUuids).contains(UUID.fromString(answerSchemaUuid))
+  }
 
-        val answerSchemaUuids = questionRef.answerSchemas?.map { it.answerSchemaUuid }
-        assertThat(answerSchemaUuids).contains(UUID.fromString(answerSchemaUuid))
-    }
+  @Test
+  fun `verify dependency conditionals`() {
+    val questions = webTestClient.get().uri("/questions/Group code")
+      .headers(setAuthorisation())
+      .exchange()
+      .expectStatus().isOk
+      .expectBody<GroupWithContentsDto>()
+      .returnResult()
+      .responseBody
+      ?.contents
 
-    @Test
-    fun `verify dependency conditionals`() {
-        val questions = webTestClient.get().uri("/questions/Group code")
-                .headers(setAuthorisation())
-                .exchange()
-                .expectStatus().isOk
-                .expectBody<GroupWithContentsDto>()
-                .returnResult()
-                .responseBody
-                ?.contents
+    val subjectQuestion = questions?.find { (it as GroupQuestionDto).questionId.toString() == subjectQuestionUuid } as GroupQuestionDto
+    assertThat(subjectQuestion.conditional).isTrue()
 
-        val subjectQuestion = questions?.find { (it as GroupQuestionDto).questionId.toString() == subjectQuestionUuid } as GroupQuestionDto
-        assertThat(subjectQuestion.conditional).isTrue()
+    val triggerQuestion = questions.find { (it as GroupQuestionDto).questionId.toString() == questionSchemaUuid } as GroupQuestionDto
+    assertThat(triggerQuestion.conditional).isFalse()
+    val yesAnswer = triggerQuestion.answerSchemas?.find { it.value == "true" }
+    assertThat(yesAnswer?.conditional.toString()).isEqualTo(subjectQuestionUuid)
+    val noAnswer = triggerQuestion.answerSchemas?.find { it.value == "false" }
+    assertThat(noAnswer?.conditional).isNull()
+  }
 
-        val triggerQuestion = questions?.find { (it as GroupQuestionDto).questionId.toString() == questionSchemaUuid } as GroupQuestionDto
-        assertThat(triggerQuestion.conditional).isFalse()
-        val yesAnswer = triggerQuestion.answerSchemas?.find { it.value == "true"}
-        assertThat(yesAnswer?.conditional.toString()).isEqualTo(subjectQuestionUuid)
-        val noAnswer = triggerQuestion.answerSchemas?.find { it.value == "false"}
-        assertThat(noAnswer?.conditional).isNull()
-    }
+  @Test
+  fun `get questions returns not found when group does not exist`() {
+    val invalidGroupUuid = UUID.randomUUID()
+    webTestClient.get().uri("/questions/$invalidGroupUuid")
+      .headers(setAuthorisation())
+      .exchange()
+      .expectStatus().isNotFound
+  }
 
-    @Test
-    fun `get questions returns not found when group does not exist`() {
-        val invalidGroupUuid = UUID.randomUUID()
-        webTestClient.get().uri("/questions/$invalidGroupUuid")
-                .headers(setAuthorisation())
-                .exchange()
-                .expectStatus().isNotFound
-    }
+  @Test
+  fun `list groups`() {
+    val groupSummaries = webTestClient.get().uri("/questions/list")
+      .headers(setAuthorisation())
+      .exchange()
+      .expectStatus().isOk
+      .expectBody<List<GroupSummaryDto>>()
+      .returnResult()
+      .responseBody
 
-    @Test
-    fun `list groups`() {
-        val groupSummaries = webTestClient.get().uri("/questions/list")
-                .headers(setAuthorisation())
-                .exchange()
-                .expectStatus().isOk
-                .expectBody<List<GroupSummaryDto>>()
-                .returnResult()
-                .responseBody
+    assertThat(groupSummaries).hasSize(1)
 
-        assertThat(groupSummaries).hasSize(1)
+    val groupInfo = groupSummaries?.first()
 
-        val groupInfo = groupSummaries?.first()
-
-        assertThat(groupInfo?.groupId).isEqualTo(UUID.fromString(groupUuid))
-        assertThat(groupInfo?.title).isEqualTo("Heading 1")
-        assertThat(groupInfo?.contentCount).isEqualTo(2)
-        assertThat(groupInfo?.groupCount).isEqualTo(0)
-        assertThat(groupInfo?.questionCount).isEqualTo(2)
-    }
+    assertThat(groupInfo?.groupId).isEqualTo(UUID.fromString(groupUuid))
+    assertThat(groupInfo?.title).isEqualTo("Heading 1")
+    assertThat(groupInfo?.contentCount).isEqualTo(2)
+    assertThat(groupInfo?.groupCount).isEqualTo(0)
+    assertThat(groupInfo?.questionCount).isEqualTo(2)
+  }
 }

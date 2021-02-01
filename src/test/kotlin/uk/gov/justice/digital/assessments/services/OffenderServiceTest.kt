@@ -17,34 +17,34 @@ import java.time.LocalDate
 @DisplayName("Assessment Service Tests")
 class OffenderServiceTest {
 
-    private val communityApiRestClient: CommunityApiRestClient = mockk()
-    private val offenderService: OffenderService = OffenderService(communityApiRestClient)
+  private val communityApiRestClient: CommunityApiRestClient = mockk()
+  private val offenderService: OffenderService = OffenderService(communityApiRestClient)
 
-    private val oasysOffenderPk = 101L
-    private val crn = "DX12340A"
+  private val oasysOffenderPk = 101L
+  private val crn = "DX12340A"
 
-    @Test
-    fun `should return existing assessment if one exists`() {
-        every { communityApiRestClient.getOffender(crn) } returns validGetOffenderDto()
+  @Test
+  fun `should return existing assessment if one exists`() {
+    every { communityApiRestClient.getOffender(crn) } returns validGetOffenderDto()
 
-        val offenderDto = offenderService.getOffender(crn)
-        assertThat(offenderDto?.offenderId).isEqualTo(oasysOffenderPk)
-        verify(exactly = 1) { communityApiRestClient.getOffender(any()) }
-    }
+    val offenderDto = offenderService.getOffender(crn)
+    assertThat(offenderDto?.offenderId).isEqualTo(oasysOffenderPk)
+    verify(exactly = 1) { communityApiRestClient.getOffender(any()) }
+  }
 
-    private fun validGetOffenderDto(): GetOffenderDto {
-        return GetOffenderDto(
-            offenderId = 101L,
-            firstName = "John",
-            middleNames = null,
-            surname = "Smith",
-            previousSurname = null,
-            dateOfBirth = LocalDate.of(1979, 8, 18),
-            gender = "F",
-            otherIds = IDs(
-                crn = "DX12340A",
-                pncNumber = "A/1234560BA"
-            )
-        )
-    }
+  private fun validGetOffenderDto(): GetOffenderDto {
+    return GetOffenderDto(
+      offenderId = 101L,
+      firstName = "John",
+      middleNames = null,
+      surname = "Smith",
+      previousSurname = null,
+      dateOfBirth = LocalDate.of(1979, 8, 18),
+      gender = "F",
+      otherIds = IDs(
+        crn = "DX12340A",
+        pncNumber = "A/1234560BA"
+      )
+    )
+  }
 }

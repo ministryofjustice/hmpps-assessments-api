@@ -10,16 +10,17 @@ import uk.gov.justice.digital.assessments.jpa.repositories.QuestionDependencyRep
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 
 @SqlGroup(
-        Sql(scripts = ["classpath:referenceData/before-test.sql"], config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED)),
-        Sql(scripts = ["classpath:referenceData/after-test.sql"], config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED), executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD))
+  Sql(scripts = ["classpath:referenceData/before-test.sql"], config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED)),
+  Sql(scripts = ["classpath:referenceData/after-test.sql"], config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED), executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+)
 class QuestionDependencyRepositoryTest(
-        @Autowired
-        val questionDependencyRepository: QuestionDependencyRepository
+  @Autowired
+  val questionDependencyRepository: QuestionDependencyRepository
 ) : IntegrationTest() {
-    @Test
-    fun `fetch all dependencies`() {
-        val dependencies = questionDependencyRepository.findAll()
+  @Test
+  fun `fetch all dependencies`() {
+    val dependencies = questionDependencyRepository.findAll()
 
-        assertThat(dependencies.size).isEqualTo(3)
-    }
+    assertThat(dependencies.size).isEqualTo(3)
+  }
 }

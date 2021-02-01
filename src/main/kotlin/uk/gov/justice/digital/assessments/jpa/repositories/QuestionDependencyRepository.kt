@@ -5,5 +5,4 @@ import org.springframework.stereotype.Repository
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionDependencyEntity
 
 @Repository
-interface QuestionDependencyRepository: JpaRepository<QuestionDependencyEntity, String> {
-}
+interface QuestionDependencyRepository : JpaRepository<QuestionDependencyEntity, String>
