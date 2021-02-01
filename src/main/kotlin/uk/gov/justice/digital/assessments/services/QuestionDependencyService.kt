@@ -24,11 +24,23 @@ class QuestionDependencies(questionDeps: Collection<QuestionDependencyEntity>) {
     { Pair(it.triggerQuestionUuid, it.triggerAnswerValue) },
     { it.subjectQuestionUuid }
   )
+  private val displayTypes = questionDeps.associateBy(
+    { Pair(it.triggerQuestionUuid, it.triggerAnswerValue) },
+    { it.displayInline }
+  )
 
   fun hasDependency(subjectUuid: UUID): Boolean = subjects.contains(subjectUuid)
   fun triggersDependency(triggerUuid: UUID, answerValue: String?): UUID? =
-    triggers.get(Pair(triggerUuid, answerValue))
+    triggers[Pair(triggerUuid, answerValue)]
+
+  private fun getDisplayType(triggerUuid: UUID, answerValue: String?): Boolean? =
+    displayTypes[Pair(triggerUuid, answerValue)]
+
   fun answerTriggers(triggerUuid: UUID): AnswerDependencies {
     return { answerValue: String? -> triggersDependency(triggerUuid, answerValue) }
+  }
+
+  fun displayInline(triggerUuid: UUID): (String?) -> Boolean? {
+    return { answerValue: String? -> getDisplayType(triggerUuid, answerValue) }
   }
 }

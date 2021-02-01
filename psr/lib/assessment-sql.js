@@ -19,7 +19,7 @@ class AssessmentSql {
     this.currentGroup = this.topLevelGroup
     this.dependencies = []
 
-    this.yes_no = ['radio', this.answerSchemaGroup(['radios:', 'Yes|Y', 'No|N'])]
+    this.yes_no = ['radio', this.answerSchemaGroup(['radios:', 'Yes|y', 'No|n'])]
 
     this.previousQuestion = null
   }
@@ -108,10 +108,22 @@ class AssessmentSql {
       // for each line in the business logic, get the answer value and target
       // this assumes the logic in the spreadsheet is in the format:
       // Some problems > 76.1
-      // Significant problems > 76.2
+      // Significant problems > 76.2 out-of-line
       const logicLines = business_logic.split('\n').map(line => {
         const logic = line.split(' > ')
-        return {value: logic[0], target: logic[1]}
+        let target = logic[1]
+        if (logic[1]) {
+          const checkForInline = logic[1].split(' ')
+          let display_inline = true
+          if (checkForInline[1] && checkForInline[1].indexOf('out-of-line' !== -1)) {
+            target = checkForInline[0]
+            display_inline = false
+          }
+
+          return { value: logic[0], target, display_inline }
+        } else {
+          return []
+        }
       })
 
       // write an entry to our list of dependencies. This needs to have UUIDs added for each question code
@@ -122,7 +134,8 @@ class AssessmentSql {
             subject_question_code: dependency.target.trim(),
             trigger_question_uuid: question.question_schema_uuid,
             trigger_answer_value: dependency.value.trim().toLowerCase(),
-            dependency_start: '2020-11-30 14:50:00'
+            dependency_start: '2020-11-30 14:50:00',
+            display_inline: dependency.display_inline
           })
         }
       })
@@ -221,7 +234,7 @@ class AssessmentSql {
 
   static valueSql(fields, obj) {
     const values = fields
-      .map(field => obj[field] ? obj[field] : null)
+      .map(field => obj[field] || obj[field] === false ? obj[field] : null)
       .map(value => (typeof value === 'string') ? `'${value}'` : value)
       .map(value => (value !== null) ? value : 'null')
       .join(', ')
@@ -287,7 +300,7 @@ class AssessmentSql {
   dependenciesSql() {
     return AssessmentSql.tableSql(
       'question_dependency',
-      ['subject_question_uuid', 'trigger_question_uuid', 'trigger_answer_value', 'dependency_start'],
+      ['subject_question_uuid', 'trigger_question_uuid', 'trigger_answer_value', 'dependency_start', 'display_inline'],
       this.dependencies
     )
   }
