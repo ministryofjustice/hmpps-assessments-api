@@ -26,6 +26,7 @@ spring:
           community-api-client:
             client-name: community-api-client
             client-id: ${community-api-client-id:community-api-client}
+
             client-secret: ${community-api-client-secret:clientsecret}
             client-authentication-method: basic
             authorization-grant-type: client_credentials
