@@ -46,6 +46,21 @@ env:
         name: {{ template "app.name" . }}
         key: API_CLIENT_SECRET
 
+  - name: COMMUNITY_API_BASE_URL
+    value: "{{ .Values.env.COMMUNITY_API_BASE_URL }}"
+
+  - name: COMMUNITY_API_CLIENT_ID
+    valueFrom:
+      secretKeyRef:
+        name: {{ template "app.name" . }}
+        key: API_CLIENT_ID
+
+  - name: COMMUNITY_API_CLIENT_SECRET
+    valueFrom:
+      secretKeyRef:
+        name: {{ template "app.name" . }}
+        key: API_CLIENT_SECRET
+
   - name: DATABASE_USERNAME
     valueFrom:
       secretKeyRef:
