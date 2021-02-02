@@ -49,7 +49,7 @@ env:
   - name: COMMUNITY_API_BASE_URL
     value: "{{ .Values.env.COMMUNITY_API_BASE_URL }}"
 
-  - name: COMMUNITY_API_ID
+  - name: COMMUNITY_API_CLIENT_ID
     valueFrom:
       secretKeyRef:
         name: {{ template "app.name" . }}
