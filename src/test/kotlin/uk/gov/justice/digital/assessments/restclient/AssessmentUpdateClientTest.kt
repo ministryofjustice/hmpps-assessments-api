@@ -17,6 +17,8 @@ class AssessmentUpdateClientTest : IntegrationTest() {
   val assessmentType = "SHORT_FORM_PSR"
   val forbiddenCrn = "DX12340B"
   val duplicateCrn = "DX12340C"
+  val forbiddenOffenderPk = 2L
+  val duplicateOffenderPk = 3L
 
   @Test
   fun `create OASys Offender`() {
@@ -42,5 +44,19 @@ class AssessmentUpdateClientTest : IntegrationTest() {
   fun `create OASys Asessment`() {
     val returnAssessmentPk = assessmentUpdateRestClient.createAssessment(offenderPk, assessmentType)
     assertThat(returnAssessmentPk).isEqualTo(1)
+  }
+
+  @Test
+  fun `create OASys Assessment throws exception when forbidden response received`() {
+    assertThrows<UserNotAuthorisedException> {
+      assessmentUpdateRestClient.createOasysOffender(forbiddenCrn)
+    }
+  }
+
+  @Test
+  fun `create OASys Assessment throws exception when duplicate error response received`() {
+    assertThrows<DuplicateOffenderRecordException> {
+      assessmentUpdateRestClient.createOasysOffender(duplicateCrn)
+    }
   }
 }
