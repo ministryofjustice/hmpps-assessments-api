@@ -62,4 +62,3 @@ data class GroupQuestionDto(
     }
   }
 }
-

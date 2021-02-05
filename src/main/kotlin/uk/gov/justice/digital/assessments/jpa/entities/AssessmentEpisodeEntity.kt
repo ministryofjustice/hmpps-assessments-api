@@ -36,6 +36,9 @@ class AssessmentEpisodeEntity(
   @JoinColumn(name = "ASSESSMENT_UUID", referencedColumnName = "ASSESSMENT_UUID")
   val assessment: AssessmentEntity? = null,
 
+  @Column(name = "ASSESSMENT_TYPE")
+  val assessmentType: AssessmentType? = null,
+
   @Column(name = "USER_ID")
   val userId: String? = null,
 

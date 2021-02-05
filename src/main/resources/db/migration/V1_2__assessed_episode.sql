@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS assessed_episode
     episode_id          SERIAL          PRIMARY KEY,
     episode_uuid        UUID            UNIQUE,
     user_id             TEXT            NOT NULL,
+    assessment_type     VARCHAR(50)     NULL,
     created_date        TIMESTAMP       NOT NULL,
     end_date            TIMESTAMP,
     change_reason       TEXT            NOT NULL,
