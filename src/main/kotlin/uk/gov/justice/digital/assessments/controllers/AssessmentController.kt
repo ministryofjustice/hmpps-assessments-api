@@ -57,7 +57,7 @@ class AssessmentController(val assessmentService: AssessmentService) {
     @Parameter(description = "Assessment UUID", required = true, example = "1234") @PathVariable assessmentUuid: UUID,
     @Parameter(description = "Reason for the new Episode of Change", required = true) @RequestBody createAssessmentEpisodeDto: CreateAssessmentEpisodeDto
   ): AssessmentEpisodeDto? {
-    return assessmentService.createNewEpisode(assessmentUuid, createAssessmentEpisodeDto.changeReason)
+    return assessmentService.createNewEpisode(assessmentUuid, createAssessmentEpisodeDto.changeReason, createAssessmentEpisodeDto.assessmentType)
   }
 
   @RequestMapping(path = ["/assessments/{assessmentUuid}/episodes"], method = [RequestMethod.GET])

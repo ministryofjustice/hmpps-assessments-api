@@ -17,6 +17,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.AnswerSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AnswerSchemaGroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
@@ -50,9 +51,11 @@ class AssessmentServiceTest {
 
   private val assessmentUuid = UUID.randomUUID()
   private val assessmentId = 1L
+  private val assessmentType = AssessmentType.SHORT_FORMAT_PSR
 
   private val oasysOffenderPk = 1L
   private val crn = "X12345"
+  private val oasysSetPk = 1L
 
   private val episodeId1 = 1L
   private val episodeId2 = 2L
@@ -77,7 +80,7 @@ class AssessmentServiceTest {
     every { assessmentRepository.findBySupervisionId(any()) } returns null
     every { assessmentRepository.save(any()) } returns AssessmentEntity(assessmentId = assessmentId)
 
-    assessmentsService.createNewAssessment(CreateAssessmentDto("SupervisionId"))
+    assessmentsService.createNewAssessment(CreateAssessmentDto("SupervisionId", assessmentType = assessmentType))
     verify(exactly = 1) { assessmentRepository.save(any()) }
   }
 
@@ -87,9 +90,10 @@ class AssessmentServiceTest {
     every { assessmentRepository.save(any()) } returns AssessmentEntity(assessmentId = assessmentId)
     every { courtCaseRestClient.getCourtCase(courtCode, caseNumber) } returns CourtCase(crn = crn)
     every { assessmentupdateRestClient.createOasysOffender(crn) } returns oasysOffenderPk
+    every { assessmentupdateRestClient.createAssessment(oasysOffenderPk, assessmentType) } returns oasysSetPk
     every { episodeService.prepopulate(any()) } returnsArgument 0
 
-    assessmentsService.createNewAssessment(CreateAssessmentDto(courtCode = courtCode, caseNumber = caseNumber))
+    assessmentsService.createNewAssessment(CreateAssessmentDto(courtCode = courtCode, caseNumber = caseNumber, assessmentType = assessmentType))
 
     verify(exactly = 1) { assessmentRepository.save(any()) }
     verify(exactly = 1) { courtCaseRestClient.getCourtCase(courtCode, caseNumber) }
@@ -99,7 +103,7 @@ class AssessmentServiceTest {
   fun `should return existing assessment if one exists`() {
     every { assessmentRepository.findBySupervisionId(any()) } returns AssessmentEntity(assessmentId = assessmentId, assessmentUuid = assessmentUuid)
 
-    val assessmentDto = assessmentsService.createNewAssessment(CreateAssessmentDto("SupervisionId"))
+    val assessmentDto = assessmentsService.createNewAssessment(CreateAssessmentDto("SupervisionId", assessmentType = assessmentType))
     assertThat(assessmentDto.assessmentUuid).isEqualTo(assessmentUuid)
     verify(exactly = 0) { assessmentRepository.save(any()) }
   }
@@ -108,7 +112,7 @@ class AssessmentServiceTest {
   fun `should return existing assessment if one exists from court`() {
     every { subjectRepository.findBySourceAndSourceId(AssessmentService.courtSource, "$courtCode|$caseNumber") } returns SubjectEntity(assessment = AssessmentEntity(assessmentId = 1))
 
-    assessmentsService.createNewAssessment(CreateAssessmentDto(courtCode = courtCode, caseNumber = caseNumber))
+    assessmentsService.createNewAssessment(CreateAssessmentDto(courtCode = courtCode, caseNumber = caseNumber, assessmentType = AssessmentType.SHORT_FORMAT_PSR))
 
     verify(exactly = 0) { assessmentRepository.save(any()) }
     verify(exactly = 0) { courtCaseRestClient.getCourtCase(courtCode, caseNumber) }
@@ -120,10 +124,11 @@ class AssessmentServiceTest {
     val assessment: AssessmentEntity = mockk()
     every { assessment.assessmentUuid } returns assessmentUuid
     every { assessment.assessmentId } returns 0
-    every { assessment.newEpisode("Change of Circs") } returns AssessmentEpisodeEntity(episodeId = episodeId1, assessment = assessment)
+    every { assessment.newEpisode("Change of Circs", assessmentType = assessmentType) } returns AssessmentEpisodeEntity(episodeId = episodeId1, assessment = assessment)
     every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
+    every { episodeService.prepopulate(any()) } returnsArgument 0
 
-    val episodeDto = assessmentsService.createNewEpisode(assessmentUuid, "Change of Circs")
+    val episodeDto = assessmentsService.createNewEpisode(assessmentUuid, "Change of Circs", assessmentType)
 
     assertThat(episodeDto.assessmentUuid).isEqualTo(assessmentUuid)
     assertThat(episodeDto.episodeId).isEqualTo(episodeId1)

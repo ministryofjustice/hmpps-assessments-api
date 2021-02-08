@@ -39,6 +39,9 @@ class AssessmentEpisodeEntity(
   @Column(name = "ASSESSMENT_TYPE")
   val assessmentType: AssessmentType? = null,
 
+  @Column(name = "OASYS_SET_PK")
+  val oasysSetPk: Long? = null,
+
   @Column(name = "USER_ID")
   val userId: String? = null,
 

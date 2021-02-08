@@ -47,12 +47,24 @@ class AssessmentEntity(
     return episodes.firstOrNull { !it.isClosed() }
   }
 
-  fun newEpisode(changeReason: String, user: String? = "anonymous"): AssessmentEpisodeEntity {
+  fun newEpisode(
+    changeReason: String,
+    user: String? = "anonymous",
+    oasysSetPk: Long? = null,
+    assessmentType: AssessmentType
+  ): AssessmentEpisodeEntity {
     val currentEpisode = getCurrentEpisode()
     if (currentEpisode != null) {
       return currentEpisode
     }
-    val newEpisode = AssessmentEpisodeEntity(assessment = this, createdDate = LocalDateTime.now(), changeReason = changeReason, userId = user)
+    val newEpisode = AssessmentEpisodeEntity(
+      assessment = this,
+      createdDate = LocalDateTime.now(),
+      changeReason = changeReason,
+      userId = user,
+      oasysSetPk = oasysSetPk,
+      assessmentType = assessmentType
+    )
     episodes.add(newEpisode)
     return newEpisode
   }

@@ -11,22 +11,21 @@ spring:
         registration:
           court-case-client:
             client-name: court-case-api-client
-            client-id: ${court-case-api-id:court-case-api}
+            client-id: ${court-case-api-id:sentence-plan-api-client}
             client-secret: ${court-case-api-client-secret:clientsecret}
             client-authentication-method: basic
             authorization-grant-type: client_credentials
             provider: oauth-service
           assessment-update-client:
             client-name: assessment-update-api-client
-            client-id: ${assessment-update-api-id:court-case-api}
+            client-id: ${assessment-update-api-id:sentence-plan-api-client}
             client-secret: ${assessment-update-api-client-secret:clientsecret}
             client-authentication-method: basic
             authorization-grant-type: client_credentials
             provider: oauth-service
           community-api-client:
             client-name: community-api-client
-            client-id: ${community-api-client-id:community-api-client}
-
+            client-id: ${community-api-client-id:sentence-plan-api-client}
             client-secret: ${community-api-client-secret:clientsecret}
             client-authentication-method: basic
             authorization-grant-type: client_credentials
