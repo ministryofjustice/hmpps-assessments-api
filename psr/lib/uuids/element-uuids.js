@@ -8,11 +8,13 @@ class ElementUuids {
   }
 
   lookup(ref, title) {
+    let existing = true
     if (!this.uuids[ref]) {
+      existing = false
       this.uuids[ref] = uuid()
       UuidFile.append(this.csvFile, title, ref, this.uuids[ref])
     }
-    return this.uuids[ref]
+    return [this.uuids[ref], existing]
   }
 }
 

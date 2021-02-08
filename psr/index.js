@@ -1,13 +1,25 @@
 const loadAssessmentCsv = require('./lib/load-assessment-csv')
 const AssessmentSql = require('./lib/assessment-sql')
+const program = require('commander')
 
-if (process.argv.length !== 3) {
-  return console.error("Usage: node assessment-generator <csv-file>")
+program
+  .option('-i, --incremental', 'Generate SQL only for new groups, questions, and answers')
+  .option('-t, --title <name>', 'The title of the top-level group')
+  .usage('[options] <csv-file>')
+
+const command = program.parse(process.argv)
+const fileArgs = command.args
+const options = command.opts()
+
+if (fileArgs.length != 1) {
+  return console.error(program.help())
 }
 
-const { headers, records } = loadAssessmentCsv(process.argv[2])
+const title = program.opts().title ?? 'Pre-Sentence Assessment'
+const incremental = options.incremental
+const { headers, records } = loadAssessmentCsv(fileArgs[0])
 
-const assessment = AssessmentSql('Pre-Sentence Assessment', headers)
+const assessment = AssessmentSql(title, headers, incremental)
 let currentGroup = null
 
 for (const record of records) {
@@ -25,4 +37,3 @@ for (const record of records) {
 assessment.addDependencyUuids()
 assessment.addFilteredReferenceDataTargets()
 assessment.toSql()
-
