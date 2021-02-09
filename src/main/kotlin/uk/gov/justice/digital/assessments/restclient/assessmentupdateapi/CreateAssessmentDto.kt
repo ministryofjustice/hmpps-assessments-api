@@ -4,9 +4,9 @@ import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 
 class CreateAssessmentDto(
   val offenderPk: Long,
-  val area: String,
-  val user: String,
+  val areaCode: String,
+  val oasysUserCode: String,
   val assessmentType: AssessmentType,
-  val team: String? = null,
-  val assessor: String? = null
+  val teamCode: String? = null,
+  val assessorCode: String? = null
 )
