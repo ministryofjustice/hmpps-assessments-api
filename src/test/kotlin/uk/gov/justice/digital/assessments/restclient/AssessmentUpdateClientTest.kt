@@ -16,7 +16,7 @@ class AssessmentUpdateClientTest : IntegrationTest() {
 
   val crn = "DX12340A"
   val offenderPk = 1L
-  val assessmentType = AssessmentType.SHORT_FORMAT_PSR
+  val assessmentType = AssessmentType.SHORT_FORM_PSR
   val forbiddenCrn = "DX12340B"
   val duplicateCrn = "DX12340C"
   val serverErrorCrn = "DX12340D"

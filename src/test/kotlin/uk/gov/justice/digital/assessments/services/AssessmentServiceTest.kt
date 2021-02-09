@@ -51,7 +51,7 @@ class AssessmentServiceTest {
 
   private val assessmentUuid = UUID.randomUUID()
   private val assessmentId = 1L
-  private val assessmentType = AssessmentType.SHORT_FORMAT_PSR
+  private val assessmentType = AssessmentType.SHORT_FORM_PSR
 
   private val oasysOffenderPk = 1L
   private val crn = "X12345"
@@ -112,7 +112,7 @@ class AssessmentServiceTest {
   fun `should return existing assessment if one exists from court`() {
     every { subjectRepository.findBySourceAndSourceId(AssessmentService.courtSource, "$courtCode|$caseNumber") } returns SubjectEntity(assessment = AssessmentEntity(assessmentId = 1))
 
-    assessmentsService.createNewAssessment(CreateAssessmentDto(courtCode = courtCode, caseNumber = caseNumber, assessmentType = AssessmentType.SHORT_FORMAT_PSR))
+    assessmentsService.createNewAssessment(CreateAssessmentDto(courtCode = courtCode, caseNumber = caseNumber, assessmentType = AssessmentType.SHORT_FORM_PSR))
 
     verify(exactly = 0) { assessmentRepository.save(any()) }
     verify(exactly = 0) { courtCaseRestClient.getCourtCase(courtCode, caseNumber) }

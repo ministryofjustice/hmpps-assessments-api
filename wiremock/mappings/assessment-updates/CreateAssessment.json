@@ -4,7 +4,7 @@
     "method": "POST",
     "urlPathPattern": "/assessments",
     "bodyPatterns" : [ {
-      "equalToJson" : "{ \"offenderPk\": 1, \"assessmentType\": \"SHORT_FORMAT_PSR\" }",
+      "equalToJson" : "{ \"offenderPk\": 1, \"assessmentType\": \"SHORT_FORM_PSR\" }",
       "ignoreExtraElements" : true
     } ]
   },

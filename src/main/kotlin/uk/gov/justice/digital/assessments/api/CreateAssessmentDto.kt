@@ -13,7 +13,7 @@ data class CreateAssessmentDto(
   @Schema(description = "Case Number", example = "1234567890")
   val caseNumber: String? = null,
 
-  @Schema(description = "Assessment Type", example = "SHORT_FORMAT_PSR")
+  @Schema(description = "Assessment Type", example = "SHORT_FORM_PSR")
   val assessmentType: AssessmentType
 
 ) {

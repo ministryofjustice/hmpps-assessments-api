@@ -28,7 +28,7 @@ class AssessmentEpisodeDtoTest {
       assessmentId,
       UUID.randomUUID(),
       assessmentEntity,
-      AssessmentType.SHORT_FORMAT_PSR,
+      AssessmentType.SHORT_FORM_PSR,
       1L,
       "USER",
       LocalDateTime.of(2019, 8, 1, 8, 0),

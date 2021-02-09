@@ -7,6 +7,6 @@ data class CreateAssessmentEpisodeDto(
   @Schema(description = "The reason triggering the creation of a new episode", required = true)
   val changeReason: String,
 
-  @Schema(description = "Assessment Type", example = "SHORT_FORMAT_PSR")
+  @Schema(description = "Assessment Type", example = "SHORT_FORM_PSR")
   val assessmentType: AssessmentType
 )

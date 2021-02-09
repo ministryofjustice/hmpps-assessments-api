@@ -13,7 +13,7 @@ class AssessmentEntityTest {
 
   private val assessmentID: Long = 1L
   private val episodeId: Long = 1L
-  private val assessmentType = AssessmentType.SHORT_FORMAT_PSR
+  private val assessmentType = AssessmentType.SHORT_FORM_PSR
   @Test
   fun `should create new episode if none exist`() {
     val assessment = AssessmentEntity(assessmentId = assessmentID)

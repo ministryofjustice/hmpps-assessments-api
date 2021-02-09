@@ -73,7 +73,7 @@ class AssessmentUpdateMockServer : WireMockServer(9003) {
 
     stubFor(
       WireMock.post(WireMock.urlEqualTo("/assessments"))
-        .withRequestBody(equalToJson("{ \"offenderPk\": 1, \"assessmentType\": \"SHORT_FORMAT_PSR\" }", true, true))
+        .withRequestBody(equalToJson("{ \"offenderPk\": 1, \"assessmentType\": \"SHORT_FORM_PSR\" }", true, true))
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
@@ -83,7 +83,7 @@ class AssessmentUpdateMockServer : WireMockServer(9003) {
 
     stubFor(
       WireMock.post(WireMock.urlEqualTo("/assessments"))
-        .withRequestBody(equalToJson("{ \"offenderPk\": 2, \"assessmentType\": \"SHORT_FORMAT_PSR\" }", true, true))
+        .withRequestBody(equalToJson("{ \"offenderPk\": 2, \"assessmentType\": \"SHORT_FORM_PSR\" }", true, true))
         .willReturn(
           WireMock.aResponse()
             .withStatus(403)
@@ -94,7 +94,7 @@ class AssessmentUpdateMockServer : WireMockServer(9003) {
 
     stubFor(
       WireMock.post(WireMock.urlEqualTo("/assessments"))
-        .withRequestBody(equalToJson("{ \"offenderPk\": 3, \"assessmentType\": \"SHORT_FORMAT_PSR\" }", true, true))
+        .withRequestBody(equalToJson("{ \"offenderPk\": 3, \"assessmentType\": \"SHORT_FORM_PSR\" }", true, true))
         .willReturn(
           WireMock.aResponse()
             .withStatus(409)
@@ -105,7 +105,7 @@ class AssessmentUpdateMockServer : WireMockServer(9003) {
 
     stubFor(
       WireMock.post(WireMock.urlEqualTo("/assessments"))
-        .withRequestBody(equalToJson("{ \"offenderPk\": 4, \"assessmentType\": \"SHORT_FORMAT_PSR\" }", true, true))
+        .withRequestBody(equalToJson("{ \"offenderPk\": 4, \"assessmentType\": \"SHORT_FORM_PSR\" }", true, true))
         .willReturn(
           WireMock.aResponse()
             .withStatus(500)
