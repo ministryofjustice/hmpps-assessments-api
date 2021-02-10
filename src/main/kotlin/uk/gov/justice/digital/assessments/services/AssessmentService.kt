@@ -14,6 +14,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.AnswerEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AnswerSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.SubjectRepository
@@ -45,58 +46,15 @@ class AssessmentService(
       return createFromSupervision(newAssessment.supervisionId)
     }
     if (newAssessment.isCourtCase()) {
-      return createFromCourtCase(newAssessment.courtCode!!, newAssessment.caseNumber!!)
+      return createFromCourtCase(newAssessment.courtCode!!, newAssessment.caseNumber!!, newAssessment.assessmentType)
     }
-
     throw IllegalStateException("Empty create assessment request")
   }
 
-  private fun createFromSupervision(supervisionId: String?): AssessmentDto {
-    val existingAssessment = assessmentRepository.findBySupervisionId(supervisionId)
-
-    if (existingAssessment != null) {
-      log.info("Existing assessment found for supervision $supervisionId")
-      return AssessmentDto.from(existingAssessment)
-    }
-
-    val newAssessment = assessmentRepository.save(AssessmentEntity(supervisionId = supervisionId, createdDate = LocalDateTime.now()))
-    log.info("New assessment created for supervision $supervisionId")
-    return AssessmentDto.from(newAssessment)
-  }
-
-  private fun createFromCourtCase(courtCode: String, caseNumber: String): AssessmentDto {
-    // do we have a subject associated with this case?
-    val sourceId = courtSourceId(courtCode, caseNumber)
-    val existingSubject = subjectRepository.findBySourceAndSourceId(courtSource, sourceId)
-
-    // yes, so return the assessment
-    if (existingSubject != null) {
-      log.info("Existing assessment ${existingSubject.assessment?.assessmentUuid} found for court $courtCode, case $caseNumber")
-      return AssessmentDto.from(existingSubject.assessment)
-    }
-
-    // no, so fetch subject details from court case service
-    val courtCase = courtCaseClient.getCourtCase(courtCode, caseNumber)
-      ?: throw EntityNotFoundException("No court case found for $courtCode, $caseNumber")
-
-    // create offender in oasys
-    val oasysOffenderPk = courtCase.crn?.let { assessmentUpdateRestClient.createOasysOffender(crn = it) }
-
-    // create assessment
-    val assessment = AssessmentEntity(createdDate = LocalDateTime.now())
-    val subject = subjectFromCourtCase(sourceId, courtCase, assessment, oasysOffenderPk)
-    assessment.addSubject(subject)
-    val episode = assessment.newEpisode("Court Request")
-    episodeService.prepopulate(episode)
-    val newAssessment = AssessmentDto.from(assessmentRepository.save(assessment))
-    log.info("New assessment ${assessment.assessmentUuid} created for court $courtCode, case $caseNumber")
-    return newAssessment
-  }
-
   @Transactional
-  fun createNewEpisode(assessmentUuid: UUID, reason: String): AssessmentEpisodeDto {
+  fun createNewEpisode(assessmentUuid: UUID, reason: String, assessmentType: AssessmentType): AssessmentEpisodeDto {
     val assessment = getAssessmentByUuid(assessmentUuid)
-    val episode = assessment.newEpisode(reason)
+    val episode = createPrepopulatedEpisode(assessment, reason, assessmentType = assessmentType)
     log.info("New episode created for assessment $assessmentUuid")
     return AssessmentEpisodeDto.from(episode)
   }
@@ -118,14 +76,20 @@ class AssessmentService(
   }
 
   fun getCurrentAssessmentCodedAnswers(assessmentUuid: UUID): AssessmentAnswersDto {
-    val questionCodes: Map<UUID, String?> = questionService.getAllQuestions().map { it.questionSchemaUuid to it.questionCode }.toMap()
+    val questionCodes: Map<UUID, String?> =
+      questionService.getAllQuestions().map { it.questionSchemaUuid to it.questionCode }.toMap()
     val answerSchemas = questionService.getAllAnswers()
     val assessment = getAssessmentByUuid(assessmentUuid)
-    val answers: MutableMap<String, Set<AnswerSchemaDto>> = mapAssessmentQuestionAndAnswerCodes(assessment, questionCodes, answerSchemas)
+    val answers: MutableMap<String, Set<AnswerSchemaDto>> =
+      mapAssessmentQuestionAndAnswerCodes(assessment, questionCodes, answerSchemas)
     return AssessmentAnswersDto(assessmentUuid, answers)
   }
 
-  private fun mapAssessmentQuestionAndAnswerCodes(assessment: AssessmentEntity, questionCodes: Map<UUID, String?>, answerSchemas: List<AnswerSchemaEntity>): MutableMap<String, Set<AnswerSchemaDto>> {
+  private fun mapAssessmentQuestionAndAnswerCodes(
+    assessment: AssessmentEntity,
+    questionCodes: Map<UUID, String?>,
+    answerSchemas: List<AnswerSchemaEntity>
+  ): MutableMap<String, Set<AnswerSchemaDto>> {
     val answers: MutableMap<String, Set<AnswerSchemaDto>> = mutableMapOf()
 
     assessment.episodes.sortedWith(compareBy(nullsLast()) { it.endDate }).forEach { episode ->
@@ -143,7 +107,52 @@ class AssessmentService(
     return answers
   }
 
-  private fun matchAnswers(episodeAnswer: Map.Entry<UUID, AnswerEntity>, answerSchemas: List<AnswerSchemaEntity>): Set<AnswerSchemaEntity> {
+  private fun createFromSupervision(supervisionId: String?): AssessmentDto {
+    val existingAssessment = assessmentRepository.findBySupervisionId(supervisionId)
+
+    if (existingAssessment != null) {
+      log.info("Existing assessment found for supervision $supervisionId")
+      return AssessmentDto.from(existingAssessment)
+    }
+
+    val newAssessment =
+      assessmentRepository.save(AssessmentEntity(supervisionId = supervisionId, createdDate = LocalDateTime.now()))
+    log.info("New assessment created for supervision $supervisionId")
+    return AssessmentDto.from(newAssessment)
+  }
+
+  private fun createFromCourtCase(
+    courtCode: String,
+    caseNumber: String,
+    assessmentType: AssessmentType
+  ): AssessmentDto {
+
+    val sourceId = courtSourceId(courtCode, caseNumber)
+    val existingSubject = subjectRepository.findBySourceAndSourceId(courtSource, sourceId)
+    if (existingSubject != null) {
+      log.info("Existing assessment ${existingSubject.assessment?.assessmentUuid} found for court $courtCode, case $caseNumber")
+      return AssessmentDto.from(existingSubject.assessment)
+    }
+    val courtCase = courtCaseClient.getCourtCase(courtCode, caseNumber)
+      ?: throw EntityNotFoundException("No court case found for $courtCode, $caseNumber")
+
+    val oasysOffenderPk = courtCase.crn?.let { assessmentUpdateRestClient.createOasysOffender(crn = it) }
+    val oasysSetPK = oasysOffenderPk?.let { assessmentUpdateRestClient.createAssessment(it, assessmentType) }
+    return createCourtAssessmentWithPrepopulatedEpisode(
+      sourceId,
+      courtCase,
+      oasysOffenderPk,
+      oasysSetPK,
+      courtCode,
+      caseNumber,
+      assessmentType
+    )
+  }
+
+  private fun matchAnswers(
+    episodeAnswer: Map.Entry<UUID, AnswerEntity>,
+    answerSchemas: List<AnswerSchemaEntity>
+  ): Set<AnswerSchemaEntity> {
     return episodeAnswer.value.answers.map {
       answerSchemas.firstOrNull { answerSchema ->
         answerSchema.answerSchemaUuid == episodeAnswer.value.answers.keys.first()
@@ -152,25 +161,38 @@ class AssessmentService(
   }
 
   @Transactional
-  fun updateEpisode(assessmentUuid: UUID, episodeUuid: UUID, updatedEpisodeAnswers: UpdateAssessmentEpisodeDto): AssessmentEpisodeDto {
+  fun updateEpisode(
+    assessmentUuid: UUID,
+    episodeUuid: UUID,
+    updatedEpisodeAnswers: UpdateAssessmentEpisodeDto
+  ): AssessmentEpisodeDto {
     val episode = getEpisode(episodeUuid, assessmentUuid)
     return updateEpisode(episode, updatedEpisodeAnswers)
   }
 
   @Transactional
-  fun updateCurrentEpisode(assessmentUuid: UUID, updatedEpisodeAnswers: UpdateAssessmentEpisodeDto): AssessmentEpisodeDto {
+  fun updateCurrentEpisode(
+    assessmentUuid: UUID,
+    updatedEpisodeAnswers: UpdateAssessmentEpisodeDto
+  ): AssessmentEpisodeDto {
     val episode = getCurrentEpsiode(assessmentUuid)
     return updateEpisode(episode, updatedEpisodeAnswers)
   }
 
-  private fun updateEpisode(episode: AssessmentEpisodeEntity, updatedEpisodeAnswers: UpdateAssessmentEpisodeDto): AssessmentEpisodeDto {
+  private fun updateEpisode(
+    episode: AssessmentEpisodeEntity,
+    updatedEpisodeAnswers: UpdateAssessmentEpisodeDto
+  ): AssessmentEpisodeDto {
     if (episode.isClosed()) throw UpdateClosedEpisodeException("Cannot update closed Episode ${episode.episodeUuid} for assessment ${episode.assessment?.assessmentUuid}")
 
     for (updatedAnswer in updatedEpisodeAnswers.answers) {
       val currentQuestionAnswer = episode.answers?.get(updatedAnswer.key)
 
       if (currentQuestionAnswer == null) {
-        episode.answers?.put(updatedAnswer.key, AnswerEntity(updatedAnswer.value.freeTextAnswer, updatedAnswer.value.answers))
+        episode.answers?.put(
+          updatedAnswer.key,
+          AnswerEntity(updatedAnswer.value.freeTextAnswer, updatedAnswer.value.answers)
+        )
       } else {
         currentQuestionAnswer.freeTextAnswer = updatedAnswer.value.freeTextAnswer
         currentQuestionAnswer.answers = updatedAnswer.value.answers
@@ -196,7 +218,12 @@ class AssessmentService(
       ?: throw EntityNotFoundException("Assessment $assessmentUuid not found")
   }
 
-  private fun subjectFromCourtCase(sourceId: String, courtCase: CourtCase, assessment: AssessmentEntity, oasysOffenderPk: Long?): SubjectEntity {
+  private fun subjectFromCourtCase(
+    sourceId: String,
+    courtCase: CourtCase,
+    assessment: AssessmentEntity,
+    oasysOffenderPk: Long?
+  ): SubjectEntity {
     return SubjectEntity(
       source = courtSource,
       sourceId = sourceId,
@@ -208,6 +235,36 @@ class AssessmentService(
       createdDate = assessment.createdDate,
       assessment = assessment
     )
+  }
+
+  private fun createCourtAssessmentWithPrepopulatedEpisode(
+    sourceId: String,
+    courtCase: CourtCase,
+    oasysOffenderPk: Long?,
+    oasysSetPK: Long?,
+    courtCode: String,
+    caseNumber: String,
+    assessmentType: AssessmentType
+  ): AssessmentDto {
+    val assessment = AssessmentEntity(createdDate = LocalDateTime.now())
+    val subject = subjectFromCourtCase(sourceId, courtCase, assessment, oasysOffenderPk)
+    assessment.addSubject(subject)
+    createPrepopulatedEpisode(assessment, "Court Request", oasysSetPK, assessmentType)
+    val newAssessment = AssessmentDto.from(assessmentRepository.save(assessment))
+    log.info("New assessment ${assessment.assessmentUuid} created for court $courtCode, case $caseNumber")
+    return newAssessment
+  }
+
+  private fun createPrepopulatedEpisode(
+    assessment: AssessmentEntity,
+    reason: String,
+    oasysSetPK: Long? = null,
+    assessmentType: AssessmentType
+  ): AssessmentEpisodeEntity {
+    val episode = assessment.newEpisode(reason, oasysSetPk = oasysSetPK, assessmentType = assessmentType)
+    episodeService.prepopulate(episode)
+    log.info("New episode created for assessment ${assessment.assessmentUuid}")
+    return episode
   }
 
   private fun courtSourceId(courtCode: String?, caseNumber: String?): String {

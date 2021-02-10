@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -27,6 +28,8 @@ class AssessmentEpisodeDtoTest {
       assessmentId,
       UUID.randomUUID(),
       assessmentEntity,
+      AssessmentType.SHORT_FORM_PSR,
+      1L,
       "USER",
       LocalDateTime.of(2019, 8, 1, 8, 0),
       null,
@@ -41,5 +44,6 @@ class AssessmentEpisodeDtoTest {
     assertThat(episodeDto.ended).isEqualTo(episodeEntity.endDate)
     assertThat(episodeDto.reasonForChange).isEqualTo(episodeEntity.changeReason)
     assertThat(episodeDto.episodeUuid).isEqualTo(episodeEntity.episodeUuid)
+    assertThat(episodeDto.oasysAssessmentId).isEqualTo(episodeEntity.oasysSetPk)
   }
 }

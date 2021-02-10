@@ -34,7 +34,7 @@ data class AnswerSchemaDto(
       answerSchemaEntities: Collection<AnswerSchemaEntity>?,
       answerDependencies: AnswerDependencies = { null },
       getDisplayType: (String?) -> Boolean? = { true }
-    ): Set<AnswerSchemaDto>{
+    ): Set<AnswerSchemaDto> {
       if (answerSchemaEntities.isNullOrEmpty()) return emptySet()
       return answerSchemaEntities.map {
         from(it, answerDependencies, getDisplayType)
@@ -44,7 +44,7 @@ data class AnswerSchemaDto(
       answerSchemaEntity: AnswerSchemaEntity,
       answerDependencies: AnswerDependencies,
       getDisplayType: (String?) -> Boolean?
-    ): AnswerSchemaDto{
+    ): AnswerSchemaDto {
       return AnswerSchemaDto(
         answerSchemaEntity.answerSchemaUuid,
         answerSchemaEntity.answerSchemaCode,

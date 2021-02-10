@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
 import uk.gov.justice.digital.assessments.api.ErrorResponse
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
+import uk.gov.justice.digital.assessments.services.exceptions.OASysClientException
 import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
 
 @ControllerAdvice
@@ -61,6 +62,13 @@ class ControllerAdvice {
   fun handle(e: IllegalArgumentException): ResponseEntity<ErrorResponse?> {
     log.error("IllegalArgumentException: {}", e.message)
     return ResponseEntity(ErrorResponse(status = 400, developerMessage = e.message), HttpStatus.BAD_REQUEST)
+  }
+
+  @ExceptionHandler(OASysClientException::class)
+  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+  fun handle(e: OASysClientException): ResponseEntity<ErrorResponse?> {
+    log.error("OASysClientException: {}", e.message)
+    return ResponseEntity(ErrorResponse(status = 500, developerMessage = e.message), HttpStatus.INTERNAL_SERVER_ERROR)
   }
 
   @ExceptionHandler(Exception::class)

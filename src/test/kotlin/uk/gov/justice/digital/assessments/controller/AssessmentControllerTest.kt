@@ -15,6 +15,7 @@ import uk.gov.justice.digital.assessments.api.CreateAssessmentDto
 import uk.gov.justice.digital.assessments.api.CreateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.api.ErrorResponse
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import java.time.LocalDateTime
 import java.util.UUID
@@ -59,7 +60,7 @@ class AssessmentControllerTest : IntegrationTest() {
   @Test
   fun `creates new episode on existing assessment`() {
     val episode = webTestClient.post().uri("/assessments/f9a07b3f-91b7-45a7-a5ca-2d98cf1147d8/episodes")
-      .bodyValue(CreateAssessmentEpisodeDto("Change of Circs"))
+      .bodyValue(CreateAssessmentEpisodeDto("Change of Circs", AssessmentType.SHORT_FORM_PSR))
       .headers(setAuthorisation())
       .exchange()
       .expectStatus().isOk
@@ -103,6 +104,7 @@ class AssessmentControllerTest : IntegrationTest() {
 
     val episodes = fetchEpisodes(assessment.assessmentUuid!!.toString())
     assertThat(episodes).hasSize(1)
+    assertThat(episodes[0].oasysAssessmentId).isEqualTo(1)
   }
 
   @Test
@@ -185,11 +187,11 @@ class AssessmentControllerTest : IntegrationTest() {
   }
 
   private fun createAssessment(supervisionId: String): AssessmentDto {
-    return createAssessment(CreateAssessmentDto(supervisionId))
+    return createAssessment(CreateAssessmentDto(supervisionId, assessmentType = AssessmentType.SHORT_FORM_PSR))
   }
 
   private fun createAssessment(courtCode: String, caseNumber: String): AssessmentDto {
-    return createAssessment(CreateAssessmentDto(courtCode = courtCode, caseNumber = caseNumber))
+    return createAssessment(CreateAssessmentDto(courtCode = courtCode, caseNumber = caseNumber, assessmentType = AssessmentType.SHORT_FORM_PSR))
   }
 
   private fun createAssessment(cad: CreateAssessmentDto): AssessmentDto {

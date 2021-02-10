@@ -16,6 +16,9 @@ class AssessmentEpisodeDto(
   @Schema(description = "Assessment UUID foreign key", example = "1234")
   val assessmentUuid: UUID? = null,
 
+  @Schema(description = "Associated OASys assessment ID (OASysSetPK)", example = "1234")
+  val oasysAssessmentId: Long? = null,
+
   @Schema(description = "Reason for Change", example = "CHANGE_OF_ADDRESS")
   val reasonForChange: String? = null,
 
@@ -39,6 +42,7 @@ class AssessmentEpisodeDto(
         episode.episodeId,
         episode.episodeUuid,
         episode.assessment?.assessmentUuid,
+        episode.oasysSetPk,
         episode.changeReason,
         episode.createdDate,
         episode.endDate,
