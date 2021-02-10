@@ -14,7 +14,7 @@ data class CreateAssessmentDto(
   val caseNumber: String? = null,
 
   @Schema(description = "Assessment Type", example = "SHORT_FORM_PSR")
-  val assessmentType: AssessmentType
+  val assessmentType: AssessmentType = AssessmentType.SHORT_FORM_PSR
 
 ) {
   fun isSupervision() = supervisionId != null
