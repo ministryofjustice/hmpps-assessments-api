@@ -17,6 +17,7 @@ import uk.gov.justice.digital.assessments.services.exceptions.OASysClientExcepti
 import uk.gov.justice.digital.assessments.services.exceptions.UserNotAuthorisedException
 import uk.gov.justice.digital.hmpps.offenderassessmentsupdates.api.CreateAssessmentDto
 import uk.gov.justice.digital.hmpps.offenderassessmentsupdates.api.CreateAssessmentResponse
+import java.time.Duration
 
 @Component
 class AssessmentUpdateRestClient {
@@ -57,6 +58,7 @@ class AssessmentUpdateRestClient {
       .onStatus(HttpStatus::is4xxClientError) { handleAssessmentError(offenderPK, user, assessmentType, it) }
       .onStatus(HttpStatus::is5xxServerError) { throw OASysClientException("Failed to create assessment for offender $offenderPK in OASYs") }
       .bodyToMono(CreateAssessmentResponse::class.java)
+      .timeout(Duration.ofSeconds(30))
       .block()?.oasysSetPk
   }
 
