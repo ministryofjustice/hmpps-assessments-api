@@ -98,8 +98,8 @@ logging:
 
 web:
   client:
-    connect-timeout-ms: 20000
-    read-timeout-ms: 5000
+    connect-timeout-ms: 40000
+    read-timeout-ms: 10000
     write-timeout-ms: 5000
     byte-buffer-size: 20971520
 
