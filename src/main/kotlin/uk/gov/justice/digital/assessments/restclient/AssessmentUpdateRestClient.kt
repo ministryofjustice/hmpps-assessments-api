@@ -8,10 +8,10 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.ClientResponse
 import reactor.core.publisher.Mono
-import uk.gov.justice.digital.assessments.api.ErrorResponse
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.CreateOffenderDto
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.CreateOffenderResponseDto
+import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OASysErrorResponse
 import uk.gov.justice.digital.assessments.services.exceptions.DuplicateOffenderRecordException
 import uk.gov.justice.digital.assessments.services.exceptions.OASysClientException
 import uk.gov.justice.digital.assessments.services.exceptions.UserNotAuthorisedException
@@ -66,12 +66,12 @@ class AssessmentUpdateRestClient {
     return when {
       HttpStatus.CONFLICT == clientResponse.statusCode() -> {
         log.error("Unable to create OASys offender. Duplicate OASys offender found for crn: $crn")
-        clientResponse.bodyToMono(ErrorResponse::class.java)
+        clientResponse.bodyToMono(OASysErrorResponse::class.java)
           .map { error -> DuplicateOffenderRecordException(error.developerMessage) }
       }
       HttpStatus.FORBIDDEN == clientResponse.statusCode() -> {
         log.error("Unable to create OASys offender. User $user does not have permission to create offender with crn $crn")
-        clientResponse.bodyToMono(ErrorResponse::class.java)
+        clientResponse.bodyToMono(OASysErrorResponse::class.java)
           .map { error -> UserNotAuthorisedException(error.developerMessage) }
       }
       else -> handleError(clientResponse)
@@ -87,12 +87,12 @@ class AssessmentUpdateRestClient {
     return when {
       HttpStatus.CONFLICT == clientResponse.statusCode() -> {
         log.error("Unable to create OASys assessment. Existing assessment found for offender $offenderPK")
-        clientResponse.bodyToMono(ErrorResponse::class.java)
+        clientResponse.bodyToMono(OASysErrorResponse::class.java)
           .map { error -> DuplicateOffenderRecordException(error.developerMessage) }
       }
       HttpStatus.FORBIDDEN == clientResponse.statusCode() -> {
         log.error("Unable to create OASys assessment. User $user does not have permission to create assessment type: $assessmentType for offender with pk $offenderPK")
-        clientResponse.bodyToMono(ErrorResponse::class.java)
+        clientResponse.bodyToMono(OASysErrorResponse::class.java)
           .map { error -> UserNotAuthorisedException(error.developerMessage) }
       }
       else -> handleError(clientResponse)
