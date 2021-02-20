@@ -45,6 +45,15 @@ class OasysQuestions {
   constructor(questions) {
     this.questions = questions
   }
+
+  lookup(questionCode) {
+    const candidates = this.questions.filter(question => question.REF_QUESTION_CODE === questionCode)
+    if (candidates.length === 0)
+      return console.warn(`Could not find OASys question ${questionCode}`)
+    if (candidates.length > 1)
+      return console.warn(`Multiple OASys questions match ${questionCode} - ${candidates.map(q => `${q.REF_SECTION_CODE} ${q.REF_QUESTION_CODE}`)}`)
+    return candidates[0]
+  }
 }
 
 module.exports = loadOasysCsv

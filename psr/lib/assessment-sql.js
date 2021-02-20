@@ -91,11 +91,14 @@ class AssessmentSql {
   }
 
   _createQuestion(record) {
+    const oasys_question_code = record[this.headers.OASYS_REF] || null
+    const oasys_question = this.oasysQuestions.lookup(oasys_question_code)
+
     const question_title = record[this.headers.TITLE].replace(/[ ',\\.\\(\\)\\?\\/]+/g, '_').toLowerCase()
     const question_code = record[this.headers.REF]
     const question_text = record[this.headers.QUESTION].replace(/'/g, "''").replace(/\r\n/g, ' ')
     const [answer_type, answer_schema_group_uuid] = this.answerType(record[this.headers.ANSWER_TYPE])
-    const oasys_question_code = record[this.headers.OASYS_REF] || null
+
     const business_logic = record[this.headers.LOGIC]
     const question = {
       question_schema_uuid: questionUuids(question_code, answer_type, question_title),
@@ -168,7 +171,6 @@ class AssessmentSql {
   }
 
   answerSchemaGroup(lines) {
-
     const newlines = lines.slice(1).map(line => line.replace(/(\r|\n)/, '').split('|')).map(([a, v]) => v ? [a, v] : [a, a.toLowerCase()])
 
     if (lines[0].indexOf('drop-down') !== -1 || lines[0].indexOf('dropdown') !== -1) {
