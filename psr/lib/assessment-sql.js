@@ -28,11 +28,15 @@ class AssessmentSql {
     this.dependencies.map(dependency => {
       if (dependency.subject_question_code) {
         const question = this.questions.filter(question => question.question_code === dependency.subject_question_code)
+        if (question.length === 0)
+          return console.warn(`Could not find dependent question ${dependency.subject_question_code}`)
+
         dependency.subject_question_uuid = question[0].question_schema_uuid
       }
       delete dependency.subject_question_code
       return dependency
     })
+    this.dependencies = this.dependencies.filter(dependency => dependency.subject_question_uuid)
   }
 
   isGroup(record) {
