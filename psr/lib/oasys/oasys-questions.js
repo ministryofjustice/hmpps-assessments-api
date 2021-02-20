@@ -32,7 +32,7 @@ function unfutzAnswer(answerString, inputType) {
 
 function mapInputType(answers, inputType) {
   if (inputType === 'SELECT')
-    return answers.length > 4 ? 'drop-down' : 'radios'
+    return answers.length > 4 ? 'drop-down' : 'radio'
   return inputType.toLowerCase()
 }
 
