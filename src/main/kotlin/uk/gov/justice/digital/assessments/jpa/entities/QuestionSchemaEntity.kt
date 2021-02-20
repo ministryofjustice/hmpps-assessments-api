@@ -3,14 +3,7 @@ package uk.gov.justice.digital.assessments.jpa.entities
 import java.io.Serializable
 import java.time.LocalDateTime
 import java.util.UUID
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.GenerationType
-import javax.persistence.Id
-import javax.persistence.JoinColumn
-import javax.persistence.ManyToOne
-import javax.persistence.Table
+import javax.persistence.*
 
 @Entity(name = "question")
 @Table(name = "QUESTION_SCHEMA")
@@ -50,7 +43,10 @@ class QuestionSchemaEntity(
 
   @ManyToOne
   @JoinColumn(name = "answer_schema_group_uuid", referencedColumnName = "answer_schema_group_uuid")
-  val answerSchemaGroup: AnswerSchemaGroupEntity? = null
+  val answerSchemaGroup: AnswerSchemaGroupEntity? = null,
+
+  @OneToMany(mappedBy = "questionSchema", fetch = FetchType.LAZY)
+  val oasysMappings: Collection<OASysMappingEntity> = emptyList()
 ) : Serializable {
   val answerSchemaEntities: Collection<AnswerSchemaEntity>
     get() = answerSchemaGroup?.answerSchemaEntities ?: emptyList()
