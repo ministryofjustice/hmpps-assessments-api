@@ -66,9 +66,15 @@ class OasysQuestions {
   }
 
   lookup(questionCode) {
+    if (!questionCode) return
     const candidates = this.questions.filter(question => question.ref_question_code === questionCode)
-    if (candidates.length === 0)
-      return console.warn(`Could not find OASys question ${questionCode}`)
+    if (candidates.length === 0) {
+      console.warn(`Could not find OASys question ${questionCode}`)
+      return {
+        ref_section_code: 'arn',
+        ref_question_code: questionCode.replace(/[ ,\\'\\"]/g, '_')
+      }
+    }
     if (candidates.length > 1)
       return console.warn(`Multiple OASys questions match ${questionCode} - ${candidates.map(q => `${q.ref_section_code} ${q.ref_question_code}`)}`)
     return candidates[0]
