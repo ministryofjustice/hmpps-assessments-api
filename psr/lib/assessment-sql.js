@@ -23,8 +23,6 @@ class AssessmentSql {
 
     this.oasysQuestions = oasysQuestions()
     this.yes_no = ['radio', this.answerSchemaGroup(['radios:', 'Yes|y', 'No|n'])]
-
-    this.previousQuestion = null
   }
 
   addDependencyUuids() {
@@ -88,7 +86,6 @@ class AssessmentSql {
       this.currentGroup.group_uuid,
       this.compileValidation(record)
     )
-    this.previousQuestion = question
     return question
   }
 
