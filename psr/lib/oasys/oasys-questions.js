@@ -18,26 +18,26 @@ function loadOasysCsv() {
 }
 
 function findColumns(headers) {
-  const REF_SECTION_CODE = headers.findIndex(field => field.match(/REF_SECTION_CODE/))
-  const REF_QUESTION_CODE = headers.findIndex(field => field.match(/REF_QUESTION_CODE/))
-  const MANDATORY_IND = headers.findIndex(field => field.match(/MANDATORY_IND/))
-  const ANSWER = headers.findIndex(field => field.match(/ANSWER/))
-  const INPUT_TYPE = headers.findIndex(field => field.match(/INPUT_TYPE/))
-  const LOGICAL_PAGE = headers.findIndex(field => field.match(/LOGICALPAGE/))
-  const REF_SECTION_QUESTION = headers.findIndex(field => field.match(/REF_SECTION_QUESTION/))
+  const ref_section_code = headers.findIndex(field => field.match(/REF_SECTION_CODE/))
+  const ref_question_code = headers.findIndex(field => field.match(/REF_QUESTION_CODE/))
+  const mandatory_ind = headers.findIndex(field => field.match(/MANDATORY_IND/))
+  const answer = headers.findIndex(field => field.match(/ANSWER/))
+  const input_type = headers.findIndex(field => field.match(/INPUT_TYPE/))
+  const logical_page = headers.findIndex(field => field.match(/LOGICALPAGE/))
+  const ref_section_question = headers.findIndex(field => field.match(/REF_SECTION_QUESTION/))
 
-  if ([REF_SECTION_CODE, REF_QUESTION_CODE, MANDATORY_IND, ANSWER, LOGICAL_PAGE].includes(-1)) {
+  if ([ref_section_code, ref_question_code, mandatory_ind, answer, logical_page].includes(-1)) {
     console.error(`${csvfile} does not look like I expect!`)
     process.exit(-1)
   }
   return {
-    REF_SECTION_CODE,
-    LOGICAL_PAGE,
-    REF_QUESTION_CODE,
-    MANDATORY_IND,
-    ANSWER,
-    INPUT_TYPE,
-    REF_SECTION_QUESTION
+    ref_section_code,
+    logical_page,
+    ref_question_code,
+    mandatory_ind,
+    answer,
+    input_type,
+    ref_section_question
   }
 }
 
@@ -47,11 +47,11 @@ class OasysQuestions {
   }
 
   lookup(questionCode) {
-    const candidates = this.questions.filter(question => question.REF_QUESTION_CODE === questionCode)
+    const candidates = this.questions.filter(question => question.ref_question_code === questionCode)
     if (candidates.length === 0)
       return console.warn(`Could not find OASys question ${questionCode}`)
     if (candidates.length > 1)
-      return console.warn(`Multiple OASys questions match ${questionCode} - ${candidates.map(q => `${q.REF_SECTION_CODE} ${q.REF_QUESTION_CODE}`)}`)
+      return console.warn(`Multiple OASys questions match ${questionCode} - ${candidates.map(q => `${q.ref_section_code} ${q.ref_question_code}`)}`)
     return candidates[0]
   }
 }

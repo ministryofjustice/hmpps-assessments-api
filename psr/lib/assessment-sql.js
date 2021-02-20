@@ -4,6 +4,7 @@ const groupUuids = require('./uuids/group-uuids')
 const questionGroupUuids = require('./uuids/question-group-uuids')
 const answerSchemaUuids = require('./uuids/answer-schema-uuids')
 const answerSchemaGroupUuids = require('./uuids/answer-schema-group-uuids')
+const oasysMappingUuids = require('./uuids/oasys-mapping-uuids')
 const oasysQuestions = require('./oasys/oasys-questions')
 
 class AssessmentSql {
@@ -14,6 +15,7 @@ class AssessmentSql {
     this.answerSchemas = []
     this.groups = []
     this.questions = []
+    this.oasysMapping = []
     this.questionGroups = []
     this.topLevelGroup = this._createGrouping([assessmentName])
     this.currentGroup = this.topLevelGroup
@@ -111,6 +113,17 @@ class AssessmentSql {
       external_source: externalSources(question_code)
     }
     this.questions.push(question)
+
+    if (oasys_question) {
+      const mapping = {
+        mapping_uuid: oasysMappingUuids(question.question_schema_uuid, oasys_question),
+        question_schema_uuid: question.question_schema_uuid,
+        ref_section_code: oasys_question.ref_section_code,
+        logical_page: oasys_question.logicalpage,
+        ref_question_code: oasys_question.ref_question_code
+      }
+      this.oasysMapping.push(mapping)
+    }
 
     if (business_logic && business_logic.toLowerCase() !== 'none' && business_logic.toLowerCase() !== 'TBC') {
       // for each line in the business logic, get the answer value and target
@@ -232,6 +245,7 @@ class AssessmentSql {
     console.log(this.questionsSql())
     console.log(this.questionGroupSql())
     console.log(this.dependenciesSql())
+    console.log(this.mappingSql())
   }
 
   ///////////////////////////
@@ -309,6 +323,14 @@ class AssessmentSql {
       'question_dependency',
       ['subject_question_uuid', 'trigger_question_uuid', 'trigger_answer_value', 'dependency_start', 'display_inline'],
       this.dependencies
+    )
+  }
+
+  mappingSql() {
+    return AssessmentSql.tableSql(
+      'oasys_question_mapping',
+      ['mapping_uuid', 'question_schema_uuid', 'ref_section_code', 'logical_page', 'ref_question_code'],
+      this.oasysMapping
     )
   }
 }
