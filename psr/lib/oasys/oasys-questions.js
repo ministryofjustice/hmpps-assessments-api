@@ -11,22 +11,41 @@ function loadOasysCsv() {
     const question = { }
     for (const [field, column] of Object.entries(columns))
       question[field] = record[column]
+
+    question.answers = unfutzAnswer(question.answers, question.input_type)
     return question
   })
 
   return new OasysQuestions(questions)
 }
 
+function unfutzAnswer(answerString, inputType) {
+  if (!answerString) return
+  // unpack from string, into the kind of format the rest of the system wants
+  const answers = answerString.split('|').map(answer => answer.split('/').join('|'))
+
+  const arnInputType = mapInputType(answers, inputType)
+  answers.unshift(arnInputType)
+
+  return answers
+}
+
+function mapInputType(answers, inputType) {
+  if (inputType === 'SELECT')
+    return answers.length > 4 ? 'drop-down' : 'radios'
+  return inputType.toLowerCase()
+}
+
 function findColumns(headers) {
   const ref_section_code = headers.findIndex(field => field.match(/REF_SECTION_CODE/))
   const ref_question_code = headers.findIndex(field => field.match(/REF_QUESTION_CODE/))
   const mandatory_ind = headers.findIndex(field => field.match(/MANDATORY_IND/))
-  const answer = headers.findIndex(field => field.match(/ANSWER/))
+  const answers = headers.findIndex(field => field.match(/ANSWERS/))
   const input_type = headers.findIndex(field => field.match(/INPUT_TYPE/))
   const logical_page = headers.findIndex(field => field.match(/LOGICALPAGE/))
   const ref_section_question = headers.findIndex(field => field.match(/REF_SECTION_QUESTION/))
 
-  if ([ref_section_code, ref_question_code, mandatory_ind, answer, logical_page].includes(-1)) {
+  if ([ref_section_code, ref_question_code, mandatory_ind, answers, logical_page].includes(-1)) {
     console.error(`${csvfile} does not look like I expect!`)
     process.exit(-1)
   }
@@ -35,7 +54,7 @@ function findColumns(headers) {
     logical_page,
     ref_question_code,
     mandatory_ind,
-    answer,
+    answers,
     input_type,
     ref_section_question
   }

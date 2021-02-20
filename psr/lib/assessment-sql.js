@@ -22,7 +22,7 @@ class AssessmentSql {
     this.dependencies = []
 
     this.oasysQuestions = oasysQuestions()
-    this.yes_no = ['radio', this.answerSchemaGroup(['radios:', 'Yes|y', 'No|n'])]
+    this.yes_no = ['radio', this.answerSchemaGroup(['radios:', 'Yes|YES', 'No|NO'])]
   }
 
   addDependencyUuids() {
@@ -96,7 +96,7 @@ class AssessmentSql {
     const question_title = record[this.headers.TITLE].replace(/[ ',\\.\\(\\)\\?\\/]+/g, '_').toLowerCase()
     const question_code = record[this.headers.REF]
     const question_text = record[this.headers.QUESTION].replace(/'/g, "''").replace(/\r\n/g, ' ')
-    const [answer_type, answer_schema_group_uuid] = this.answerType(record[this.headers.ANSWER_TYPE])
+    const [answer_type, answer_schema_group_uuid] = this.answerType(record[this.headers.ANSWER_TYPE], oasys_question)
 
     const business_logic = record[this.headers.LOGIC]
     const question = {
@@ -162,10 +162,13 @@ class AssessmentSql {
     return question
   }
 
-  answerType(answerField) {
-    const lines = answerField.split('\n')
+  answerType(answerField, oasysQuestion) {
+    let lines = answerField.split('\n')
     if (lines.length === 1 && lines[0] === 'Y/N')
       return this.yes_no
+
+    if (oasysQuestion?.answers)
+      lines = [lines[0], ...oasysQuestion.answers.slice(1)]
 
     if (lines.length !== 1) {
       const type = lines[0].toLowerCase()
@@ -173,6 +176,9 @@ class AssessmentSql {
         return ['dropdown', this.answerSchemaGroup(lines)]
       if (type.match(/radio/))
         return ['radio', this.answerSchemaGroup(lines)]
+      if (oasysQuestion?.answers) {
+        return [oasysQuestion.answers[0], this.answerSchemaGroup(oasysQuestion.answers)]
+      }
     }
 
     if (answerField.match(/date/i))
