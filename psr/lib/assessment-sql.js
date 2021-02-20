@@ -4,7 +4,7 @@ const groupUuids = require('./uuids/group-uuids')
 const questionGroupUuids = require('./uuids/question-group-uuids')
 const answerSchemaUuids = require('./uuids/answer-schema-uuids')
 const answerSchemaGroupUuids = require('./uuids/answer-schema-group-uuids')
-
+const oasysQuestions = require('./oasys/oasys-questions')
 
 class AssessmentSql {
   constructor(assessmentName, headers) {
@@ -19,6 +19,7 @@ class AssessmentSql {
     this.currentGroup = this.topLevelGroup
     this.dependencies = []
 
+    this.oasysQuestions = oasysQuestions()
     this.yes_no = ['radio', this.answerSchemaGroup(['radios:', 'Yes|y', 'No|n'])]
 
     this.previousQuestion = null

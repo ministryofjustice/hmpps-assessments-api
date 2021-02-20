@@ -17,21 +17,21 @@ function uuidPath(filename) {
   return path.resolve(__dirname, '..', 'data', 'uuids', filename)
 }
 
-function load(filepath) {
+function loadTable(filepath) {
   const contents = loadFile(filepath)
     .map(fields => fields.slice(1)) // title is just for information
   return Object.fromEntries(contents)
 }
 
-function loadDataFile(filename) {
-  return load(dataPath(filename))
+function loadDataTable(filename) {
+  return loadTable(dataPath(filename))
 }
 
-function loadUuidFile(filename) {
-  return load(uuidPath(filename))
+function loadUuidTable(filename) {
+  return loadTable(uuidPath(filename))
 }
 
-function appendUuidFile(filename, title, ref, value) {
+function appendUuidTable(filename, title, ref, value) {
   fs.appendFileSync(
     uuidPath(filename),
     `${title.replace(/\r?\n|\r/g, '')},${ref},${value}\n`
@@ -41,10 +41,11 @@ function appendUuidFile(filename, title, ref, value) {
 module.exports = {
   loadFile: loadFile,
   UuidFile: {
-    load: loadUuidFile,
-    append: appendUuidFile
+    load: loadUuidTable,
+    append: appendUuidTable
   },
   DataFile: {
-    load: loadDataFile
+    load: loadDataTable,
+    csv : filename => loadFile(dataPath(filename))
   }
 }
