@@ -35,7 +35,7 @@ data class GroupQuestionDto(
   val conditional: Boolean? = null,
 
   @Schema(description = "Reference Answer Schemas")
-  val answerSchemas: Set<AnswerSchemaDto>? = null,
+  val answerSchemas: Collection<AnswerSchemaDto>? = null,
 ) : GroupContentDto {
   companion object {
     fun from(
@@ -55,8 +55,7 @@ data class GroupQuestionDto(
         conditional = questionDependencies.hasDependency(questionSchemaEntity.questionSchemaUuid),
         answerSchemas = AnswerSchemaDto.from(
           questionSchemaEntity.answerSchemaEntities,
-          questionDependencies.answerTriggers(questionSchemaEntity.questionSchemaUuid),
-          questionDependencies.displayInline(questionSchemaEntity.questionSchemaUuid)
+          questionDependencies.answerTriggers(questionSchemaEntity.questionSchemaUuid)
         )
       )
     }

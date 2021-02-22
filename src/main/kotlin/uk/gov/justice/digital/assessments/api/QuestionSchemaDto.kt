@@ -56,7 +56,9 @@ data class QuestionSchemaDto(
         questionSchema?.answerType,
         questionSchema?.questionText,
         questionSchema?.questionHelpText,
-        AnswerSchemaDto.from(questionSchema?.answerSchemaEntities)
+        AnswerSchemaDto.from(
+          questionSchema?.answerSchemaEntities
+        )
       )
     }
   }

@@ -18,40 +18,31 @@ data class AnswerSchemaDto(
   @Schema(description = "Answer Text", example = "Some answer text")
   val text: String? = null,
 
-  @Schema(
-    description = "Does setting the question to this value trigger the display of another question?",
-    example = "<UUID>"
-  )
-  val conditional: UUID? = null,
-
-  @Schema(description = "Should the question triggered by this answer be displayed inline?", example = "<Boolean>")
-  val displayInline: Boolean? = true
+  @Schema(description = "List of questions to display when this answer is selected, and whether to display inline")
+  val conditionals: Collection<ConditionalsSchemaDto>? = null,
 
 ) {
   companion object {
-
     fun from(
       answerSchemaEntities: Collection<AnswerSchemaEntity>?,
-      answerDependencies: AnswerDependencies = { null },
-      getDisplayType: (String?) -> Boolean? = { true }
-    ): Set<AnswerSchemaDto> {
+      answerDependencies: AnswerDependencies = { null }
+    ): Collection<AnswerSchemaDto> {
       if (answerSchemaEntities.isNullOrEmpty()) return emptySet()
       return answerSchemaEntities.map {
-        from(it, answerDependencies, getDisplayType)
+        from(it, answerDependencies)
       }.toSet()
     }
+
     fun from(
       answerSchemaEntity: AnswerSchemaEntity,
-      answerDependencies: AnswerDependencies,
-      getDisplayType: (String?) -> Boolean?
+      answerDependencies: AnswerDependencies
     ): AnswerSchemaDto {
       return AnswerSchemaDto(
         answerSchemaEntity.answerSchemaUuid,
         answerSchemaEntity.answerSchemaCode,
         answerSchemaEntity.value,
         answerSchemaEntity.text,
-        answerDependencies(answerSchemaEntity.value),
-        getDisplayType(answerSchemaEntity.value)
+        answerDependencies(answerSchemaEntity.value)
       )
     }
   }

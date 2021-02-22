@@ -21,6 +21,6 @@ class QuestionDependencyRepositoryTest(
   fun `fetch all dependencies`() {
     val dependencies = questionDependencyRepository.findAll()
 
-    assertThat(dependencies.size).isEqualTo(3)
+    assertThat(dependencies.size).isEqualTo(6)
   }
 }

@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.assessments.services
 
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.assessments.api.ConditionalsSchemaDto
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionDependencyEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.QuestionDependencyRepository
 import java.util.UUID
@@ -16,31 +17,32 @@ class QuestionDependencyService(
   }
 }
 
-typealias AnswerDependencies = (String?) -> UUID?
+typealias AnswerDependencies = (String?) -> Collection<ConditionalsSchemaDto>?
 
 class QuestionDependencies(questionDeps: Collection<QuestionDependencyEntity>) {
   private val subjects = questionDeps.map { it.subjectQuestionUuid }
-  private val triggers = questionDeps.associateBy(
-    { Pair(it.triggerQuestionUuid, it.triggerAnswerValue) },
-    { it.subjectQuestionUuid }
-  )
-  private val displayTypes = questionDeps.associateBy(
-    { Pair(it.triggerQuestionUuid, it.triggerAnswerValue) },
-    { it.displayInline }
-  )
+  private val triggers = makeTriggers(questionDeps)
+
+  private fun makeTriggers(questionDeps: Collection<QuestionDependencyEntity>): Map<Pair<UUID, String>, Set<ConditionalsSchemaDto>>
+  {
+    val triggers = mutableMapOf<Pair<UUID,String>, MutableSet<ConditionalsSchemaDto>>()
+    for (dep in questionDeps)
+    {
+      val trigger = Pair(dep.triggerQuestionUuid, dep.triggerAnswerValue)
+      if (triggers.containsKey(trigger))
+        triggers[trigger]?.add(ConditionalsSchemaDto(dep.subjectQuestionUuid, dep.displayInline))
+      else
+        triggers[trigger] = mutableSetOf(ConditionalsSchemaDto(dep.subjectQuestionUuid, dep.displayInline))
+    }
+    return triggers
+  }
 
   fun hasDependency(subjectUuid: UUID): Boolean = subjects.contains(subjectUuid)
-  fun triggersDependency(triggerUuid: UUID, answerValue: String?): UUID? =
-    triggers[Pair(triggerUuid, answerValue)]
 
-  private fun getDisplayType(triggerUuid: UUID, answerValue: String?): Boolean? =
-    displayTypes[Pair(triggerUuid, answerValue)]
+  fun triggersDependency(triggerUuid: UUID, answerValue: String?): Set<ConditionalsSchemaDto>? =
+    triggers[Pair(triggerUuid, answerValue)]
 
   fun answerTriggers(triggerUuid: UUID): AnswerDependencies {
     return { answerValue: String? -> triggersDependency(triggerUuid, answerValue) }
-  }
-
-  fun displayInline(triggerUuid: UUID): (String?) -> Boolean? {
-    return { answerValue: String? -> getDisplayType(triggerUuid, answerValue) }
   }
 }

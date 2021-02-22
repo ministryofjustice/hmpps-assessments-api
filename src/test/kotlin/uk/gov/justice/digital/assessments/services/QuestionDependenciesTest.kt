@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.context.jdbc.SqlConfig
 import org.springframework.test.context.jdbc.SqlGroup
+import uk.gov.justice.digital.assessments.api.ConditionalsSchemaDto
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import java.util.UUID
 
@@ -39,7 +40,16 @@ class QuestionDependenciesTest(
 
   @Test
   fun `question triggers a dependency`() {
-    assertThat(dependencies.triggersDependency(triggerUuid, "Y")).isEqualTo(subjectUuid)
+    assertThat(dependencies.triggersDependency(triggerUuid, "Y")).first().isEqualTo(ConditionalsSchemaDto(subjectUuid, true))
+  }
+
+  @Test
+  fun `question triggers multiple dependencies`() {
+    val multipleDependencies = mutableSetOf<ConditionalsSchemaDto>()
+    multipleDependencies.add(ConditionalsSchemaDto(UUID.fromString("11111111-1111-1111-1111-111111111117"), true))
+    multipleDependencies.add(ConditionalsSchemaDto(UUID.fromString("11111111-1111-1111-1111-111111111119"), false))
+
+    assertThat(dependencies.triggersDependency(UUID.fromString("11111111-1111-1111-1111-111111111116"), "Y")).isEqualTo(multipleDependencies)
   }
 
   @Test
