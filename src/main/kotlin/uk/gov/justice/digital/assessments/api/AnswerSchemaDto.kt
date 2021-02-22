@@ -18,6 +18,9 @@ data class AnswerSchemaDto(
   @Schema(description = "Answer Text", example = "Some answer text")
   val text: String? = null,
 
+  @Schema(description = "List of questions to display when this answer is selected, and whether to display inline")
+  val conditionals: Set<ConditionalsSchemaDto>? = null,
+
   @Schema(
     description = "Does setting the question to this value trigger the display of another question?",
     example = "<UUID>"
@@ -32,26 +35,24 @@ data class AnswerSchemaDto(
 
     fun from(
       answerSchemaEntities: Collection<AnswerSchemaEntity>?,
-      answerDependencies: AnswerDependencies = { null },
-      getDisplayType: (String?) -> Boolean? = { true }
+      answerDependencies: Set<ConditionalsSchemaDto>?
     ): Set<AnswerSchemaDto> {
       if (answerSchemaEntities.isNullOrEmpty()) return emptySet()
       return answerSchemaEntities.map {
-        from(it, answerDependencies, getDisplayType)
+        from(it, answerDependencies)
       }.toSet()
     }
+
     fun from(
       answerSchemaEntity: AnswerSchemaEntity,
-      answerDependencies: AnswerDependencies,
-      getDisplayType: (String?) -> Boolean?
+      answerDependencies: Set<ConditionalsSchemaDto>?
     ): AnswerSchemaDto {
       return AnswerSchemaDto(
         answerSchemaEntity.answerSchemaUuid,
         answerSchemaEntity.answerSchemaCode,
         answerSchemaEntity.value,
         answerSchemaEntity.text,
-        answerDependencies(answerSchemaEntity.value),
-        getDisplayType(answerSchemaEntity.value)
+        answerDependencies
       )
     }
   }
