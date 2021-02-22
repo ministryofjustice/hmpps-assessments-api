@@ -19,7 +19,7 @@ data class AnswerSchemaDto(
   val text: String? = null,
 
   @Schema(description = "List of questions to display when this answer is selected, and whether to display inline")
-  val conditionals: Set<ConditionalsSchemaDto>? = null,
+  val conditionals: Collection<ConditionalsSchemaDto>? = null,
 
   @Schema(
     description = "Does setting the question to this value trigger the display of another question?",
@@ -32,11 +32,10 @@ data class AnswerSchemaDto(
 
 ) {
   companion object {
-
     fun from(
       answerSchemaEntities: Collection<AnswerSchemaEntity>?,
-      answerDependencies: Set<ConditionalsSchemaDto>?
-    ): Set<AnswerSchemaDto> {
+      answerDependencies: AnswerDependencies = { null }
+    ): Collection<AnswerSchemaDto> {
       if (answerSchemaEntities.isNullOrEmpty()) return emptySet()
       return answerSchemaEntities.map {
         from(it, answerDependencies)
@@ -45,14 +44,14 @@ data class AnswerSchemaDto(
 
     fun from(
       answerSchemaEntity: AnswerSchemaEntity,
-      answerDependencies: Set<ConditionalsSchemaDto>?
+      answerDependencies: AnswerDependencies
     ): AnswerSchemaDto {
       return AnswerSchemaDto(
         answerSchemaEntity.answerSchemaUuid,
         answerSchemaEntity.answerSchemaCode,
         answerSchemaEntity.value,
         answerSchemaEntity.text,
-        answerDependencies
+        answerDependencies(answerSchemaEntity.value)
       )
     }
   }

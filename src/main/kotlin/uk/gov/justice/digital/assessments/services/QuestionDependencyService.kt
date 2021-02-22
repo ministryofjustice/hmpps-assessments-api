@@ -17,7 +17,7 @@ class QuestionDependencyService(
   }
 }
 
-typealias AnswerDependencies = (String?) -> UUID?
+typealias AnswerDependencies = (String?) -> Collection<ConditionalsSchemaDto>?
 
 class QuestionDependencies(questionDeps: Collection<QuestionDependencyEntity>) {
   private val subjects = questionDeps.map { it.subjectQuestionUuid }
@@ -73,7 +73,7 @@ class QuestionDependencies(questionDeps: Collection<QuestionDependencyEntity>) {
   fun triggersDependency(triggerUuid: UUID, answerValue: String?): Set<ConditionalsSchemaDto>? =
     triggers[Pair(triggerUuid, answerValue)]
 
-  fun answerTriggers(triggerUuid: UUID): (String?) -> Set<ConditionalsSchemaDto>? {
+  fun answerTriggers(triggerUuid: UUID): AnswerDependencies {
     return { answerValue: String? -> triggersDependency(triggerUuid, answerValue) }
   }
 }

@@ -80,7 +80,7 @@ class AssessmentService(
       questionService.getAllQuestions().map { it.questionSchemaUuid to it.questionCode }.toMap()
     val answerSchemas = questionService.getAllAnswers()
     val assessment = getAssessmentByUuid(assessmentUuid)
-    val answers: MutableMap<String, Set<AnswerSchemaDto>> =
+    val answers: MutableMap<String, Collection<AnswerSchemaDto>> =
       mapAssessmentQuestionAndAnswerCodes(assessment, questionCodes, answerSchemas)
     return AssessmentAnswersDto(assessmentUuid, answers)
   }
@@ -89,8 +89,8 @@ class AssessmentService(
     assessment: AssessmentEntity,
     questionCodes: Map<UUID, String?>,
     answerSchemas: List<AnswerSchemaEntity>
-  ): MutableMap<String, Set<AnswerSchemaDto>> {
-    val answers: MutableMap<String, Set<AnswerSchemaDto>> = mutableMapOf()
+  ): MutableMap<String, Collection<AnswerSchemaDto>> {
+    val answers: MutableMap<String, Collection<AnswerSchemaDto>> = mutableMapOf()
 
     assessment.episodes.sortedWith(compareBy(nullsLast()) { it.endDate }).forEach { episode ->
       if (episode.answers != null) {

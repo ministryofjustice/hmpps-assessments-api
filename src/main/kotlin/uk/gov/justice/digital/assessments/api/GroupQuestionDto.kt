@@ -35,7 +35,7 @@ data class GroupQuestionDto(
   val conditional: Boolean? = null,
 
   @Schema(description = "Reference Answer Schemas")
-  val answerSchemas: Set<AnswerSchemaDto>? = null,
+  val answerSchemas: Collection<AnswerSchemaDto>? = null,
 ) : GroupContentDto {
   companion object {
     fun from(
