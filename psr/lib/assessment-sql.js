@@ -4,7 +4,8 @@ const groupUuids = require('./uuids/group-uuids')
 const questionGroupUuids = require('./uuids/question-group-uuids')
 const answerSchemaUuids = require('./uuids/answer-schema-uuids')
 const answerSchemaGroupUuids = require('./uuids/answer-schema-group-uuids')
-
+const oasysMappingUuids = require('./uuids/oasys-mapping-uuids')
+const oasysQuestions = require('./oasys/oasys-questions')
 
 class AssessmentSql {
   constructor(assessmentName, headers) {
@@ -14,25 +15,29 @@ class AssessmentSql {
     this.answerSchemas = []
     this.groups = []
     this.questions = []
+    this.oasysMapping = []
     this.questionGroups = []
     this.topLevelGroup = this._createGrouping([assessmentName])
     this.currentGroup = this.topLevelGroup
     this.dependencies = []
 
-    this.yes_no = ['radio', this.answerSchemaGroup(['radios:', 'Yes|y', 'No|n'])]
-
-    this.previousQuestion = null
+    this.oasysQuestions = oasysQuestions()
+    this.yes_no = ['radio', this.answerSchemaGroup(['radios:', 'Yes|YES', 'No|NO'])]
   }
 
   addDependencyUuids() {
     this.dependencies.map(dependency => {
       if (dependency.subject_question_code) {
         const question = this.questions.filter(question => question.question_code === dependency.subject_question_code)
+        if (question.length === 0)
+          return console.warn(`Could not find dependent question ${dependency.subject_question_code}`)
+
         dependency.subject_question_uuid = question[0].question_schema_uuid
       }
       delete dependency.subject_question_code
       return dependency
     })
+    this.dependencies = this.dependencies.filter(dependency => dependency.subject_question_uuid)
   }
 
   isGroup(record) {
@@ -81,16 +86,18 @@ class AssessmentSql {
       this.currentGroup.group_uuid,
       this.compileValidation(record)
     )
-    this.previousQuestion = question
     return question
   }
 
   _createQuestion(record) {
+    const oasys_question_code = record[this.headers.OASYS_REF] || null
+    const oasys_question = this.oasysQuestions.lookup(oasys_question_code)
+
     const question_title = record[this.headers.TITLE].replace(/[ ',\\.\\(\\)\\?\\/]+/g, '_').toLowerCase()
     const question_code = record[this.headers.REF]
     const question_text = record[this.headers.QUESTION].replace(/'/g, "''").replace(/\r\n/g, ' ')
-    const [answer_type, answer_schema_group_uuid] = this.answerType(record[this.headers.ANSWER_TYPE])
-    const oasys_question_code = record[this.headers.OASYS_REF] || null
+    const [answer_type, answer_schema_group_uuid] = this.answerType(record[this.headers.ANSWER_TYPE], oasys_question)
+
     const business_logic = record[this.headers.LOGIC]
     const question = {
       question_schema_uuid: questionUuids(question_code, answer_type, question_title),
@@ -103,6 +110,17 @@ class AssessmentSql {
       external_source: externalSources(question_code)
     }
     this.questions.push(question)
+
+    if (oasys_question) {
+      const mapping = {
+        mapping_uuid: oasysMappingUuids(question.question_schema_uuid, oasys_question),
+        question_schema_uuid: question.question_schema_uuid,
+        ref_section_code: oasys_question.ref_section_code,
+        logical_page: oasys_question.logicalpage,
+        ref_question_code: oasys_question.ref_question_code
+      }
+      this.oasysMapping.push(mapping)
+    }
 
     if (business_logic && business_logic.toLowerCase() !== 'none' && business_logic.toLowerCase() !== 'TBC') {
       // for each line in the business logic, get the answer value and target
@@ -144,10 +162,13 @@ class AssessmentSql {
     return question
   }
 
-  answerType(answerField) {
-    const lines = answerField.split('\n')
+  answerType(answerField, oasysQuestion) {
+    let lines = answerField.split('\n')
     if (lines.length === 1 && lines[0] === 'Y/N')
       return this.yes_no
+
+    if (oasysQuestion?.answers)
+      lines = [lines[0], ...oasysQuestion.answers.slice(1)]
 
     if (lines.length !== 1) {
       const type = lines[0].toLowerCase()
@@ -155,6 +176,9 @@ class AssessmentSql {
         return ['dropdown', this.answerSchemaGroup(lines)]
       if (type.match(/radio/))
         return ['radio', this.answerSchemaGroup(lines)]
+      if (oasysQuestion?.answers) {
+        return [oasysQuestion.answers[0], this.answerSchemaGroup(oasysQuestion.answers)]
+      }
     }
 
     if (answerField.match(/date/i))
@@ -163,7 +187,6 @@ class AssessmentSql {
   }
 
   answerSchemaGroup(lines) {
-
     const newlines = lines.slice(1).map(line => line.replace(/(\r|\n)/, '').split('|')).map(([a, v]) => v ? [a, v] : [a, a.toLowerCase()])
 
     if (lines[0].indexOf('drop-down') !== -1 || lines[0].indexOf('dropdown') !== -1) {
@@ -225,6 +248,7 @@ class AssessmentSql {
     console.log(this.questionsSql())
     console.log(this.questionGroupSql())
     console.log(this.dependenciesSql())
+    console.log(this.mappingSql())
   }
 
   ///////////////////////////
@@ -302,6 +326,14 @@ class AssessmentSql {
       'question_dependency',
       ['subject_question_uuid', 'trigger_question_uuid', 'trigger_answer_value', 'dependency_start', 'display_inline'],
       this.dependencies
+    )
+  }
+
+  mappingSql() {
+    return AssessmentSql.tableSql(
+      'oasys_question_mapping',
+      ['mapping_uuid', 'question_schema_uuid', 'ref_section_code', 'logical_page', 'ref_question_code'],
+      this.oasysMapping
     )
   }
 }

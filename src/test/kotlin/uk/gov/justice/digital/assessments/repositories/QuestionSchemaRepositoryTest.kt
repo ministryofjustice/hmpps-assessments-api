@@ -9,6 +9,7 @@ import org.springframework.test.context.jdbc.SqlGroup
 import uk.gov.justice.digital.assessments.jpa.repositories.QuestionSchemaRepository
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import java.util.UUID
+import javax.transaction.Transactional
 
 @SqlGroup(
   Sql(scripts = ["classpath:referenceData/before-test.sql"], config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED)),
@@ -24,4 +25,27 @@ class QuestionSchemaRepositoryTest(@Autowired val questionSchemaRepository: Ques
     assertThat(questionSchemaEntity?.answerSchemaGroup).isNotNull
     assertThat(questionSchemaEntity?.answerSchemaEntities?.size).isEqualTo(2)
   }
+
+  @Transactional
+  @Test
+  fun `question with OASys mapping`() {
+    val questionSchemaUuid = UUID.fromString("a5830801-533c-4b9e-bab1-03272718d6dc")
+    val questionSchemaEntity = questionSchemaRepository.findByQuestionSchemaUuid(questionSchemaUuid)
+    assertThat(questionSchemaEntity?.questionSchemaUuid).isEqualTo(questionSchemaUuid)
+    assertThat(questionSchemaEntity?.oasysMappings?.size).isEqualTo(1)
+    val oasysMapping = questionSchemaEntity?.oasysMappings?.first()
+    assertThat(oasysMapping?.sectionCode).isEqualTo("RSR")
+    assertThat(oasysMapping?.logicalPage).isEqualTo("1")
+    assertThat(oasysMapping?.questionCode).isEqualTo("RSR_02")
+  }
+
+  @Transactional
+  @Test
+  fun `question without OASys mapping`() {
+    val questionSchemaUuid = UUID.fromString("1948af63-07f2-4a8c-9e4c-0ec347bd6ba8")
+    val questionSchemaEntity = questionSchemaRepository.findByQuestionSchemaUuid(questionSchemaUuid)
+    assertThat(questionSchemaEntity?.questionSchemaUuid).isEqualTo(questionSchemaUuid)
+    assertThat(questionSchemaEntity?.oasysMappings?.size).isEqualTo(0)
+  }
+
 }

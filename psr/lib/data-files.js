@@ -13,24 +13,39 @@ function loadFile(
 function dataPath(filename) {
   return path.resolve(__dirname, '..', 'data', filename)
 }
+function uuidPath(filename) {
+  return path.resolve(__dirname, '..', 'data', 'uuids', filename)
+}
 
-function loadDataFile(filename) {
-  const contents = loadFile(dataPath(filename))
+function loadTable(filepath) {
+  const contents = loadFile(filepath)
     .map(fields => fields.slice(1)) // title is just for information
   return Object.fromEntries(contents)
 }
 
-function appendDataFile(filename, title, ref, value) {
+function loadDataTable(filename) {
+  return loadTable(dataPath(filename))
+}
+
+function loadUuidTable(filename) {
+  return loadTable(uuidPath(filename))
+}
+
+function appendUuidTable(filename, title, ref, value) {
   fs.appendFileSync(
-    dataPath(filename),
+    uuidPath(filename),
     `${title.replace(/\r?\n|\r/g, '')},${ref},${value}\n`
   )
 }
 
 module.exports = {
   loadFile: loadFile,
+  UuidFile: {
+    load: loadUuidTable,
+    append: appendUuidTable
+  },
   DataFile: {
-    load: loadDataFile,
-    append: appendDataFile
+    load: loadDataTable,
+    csv : filename => loadFile(dataPath(filename))
   }
 }

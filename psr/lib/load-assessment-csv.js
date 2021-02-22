@@ -48,12 +48,15 @@ function patchInAddress(records, headers) {
   // convert single line of address into five lines + postcode
   const addressLine = records[addressIndex]
   addressLine[headers.TITLE] = 'address_line_1'
+  addressLine[headers.OASYS_REF] = 'address_line_1'
+  const ref = addressLine[headers.REF]
   const addressLines = [addressLine]
   for (let i = 1; i !== 6; ++i) {
     const notlast = i !== 5;
     addressLines.push(addressLine.map(f => f))
     addressLines[i][headers.TITLE] = notlast ? `address_line_${i+1}` : 'post_code'
-    addressLines[i][headers.REF] = `8.${i+1}`
+    addressLines[i][headers.OASYS_REF] = notlast ? `address_line_${i+1}` : 'post_code'
+    addressLines[i][headers.REF] = `${ref}.${i+1}`
     addressLines[i][headers.QUESTION] = notlast ? '' : 'Post Code'
     records.splice(addressIndex+i, 0, addressLines[i])
   }
