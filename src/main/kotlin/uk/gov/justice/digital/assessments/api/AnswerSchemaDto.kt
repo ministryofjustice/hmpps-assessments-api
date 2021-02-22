@@ -21,15 +21,6 @@ data class AnswerSchemaDto(
   @Schema(description = "List of questions to display when this answer is selected, and whether to display inline")
   val conditionals: Collection<ConditionalsSchemaDto>? = null,
 
-  @Schema(
-    description = "Does setting the question to this value trigger the display of another question?",
-    example = "<UUID>"
-  )
-  val conditional: UUID? = null,
-
-  @Schema(description = "Should the question triggered by this answer be displayed inline?", example = "<Boolean>")
-  val displayInline: Boolean? = true
-
 ) {
   companion object {
     fun from(

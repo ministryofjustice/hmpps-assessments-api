@@ -104,9 +104,9 @@ class QuestionControllerTest : IntegrationTest() {
     val triggerQuestion = questions.find { (it as GroupQuestionDto).questionId.toString() == questionSchemaUuid } as GroupQuestionDto
     assertThat(triggerQuestion.conditional).isFalse()
     val yesAnswer = triggerQuestion.answerSchemas?.find { it.value == "true" }
-    assertThat(yesAnswer?.conditional.toString()).isEqualTo(subjectQuestionUuid)
+    assertThat(yesAnswer?.conditionals?.first()?.conditional.toString()).isEqualTo(subjectQuestionUuid)
     val noAnswer = triggerQuestion.answerSchemas?.find { it.value == "false" }
-    assertThat(noAnswer?.conditional).isNull()
+    assertThat(noAnswer?.conditionals?.first()?.conditional).isNull()
   }
 
   @Test
