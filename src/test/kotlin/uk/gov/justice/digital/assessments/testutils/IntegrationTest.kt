@@ -64,7 +64,9 @@ abstract class IntegrationTest {
     courtCaseMockServer.resetAll()
     courtCaseMockServer.stubCourtCase()
     assessmentUpdateMockServer.stubCreateOffender()
+    communityApiMockServer.resetAll()
     communityApiMockServer.stubGetOffender()
+    communityApiMockServer.stubGetConvictions()
   }
 
   internal fun setAuthorisation(user: String = "offender-assessment-api", roles: List<String> = listOf()): (HttpHeaders) -> Unit {
