@@ -349,3 +349,6 @@ are_there_any_previous_concerns_about_escape_and_abscond,236.1-radio,bec9ddc7-f0
 are_there_any_previous_concerns_about_control_and_disruptive_behaviour,240.1-radio,e84fc24d-798b-4e5b-9142-46b9bebc6bdb
 are_there_any_previous_concerns_about_breach_of_trust,244.1-radio,c5f95ef6-70f9-460a-86cb-93d404489c0a
 is_the_offender_required_to_register_under_the_sex_offender_act_1997_,274.1-radio,cc389fab-e16e-4717-a043-c0db16982e01
+nomis_id,-freetext,e741debf-755e-4d21-b676-c835693e6c12
+source,298.1-freetext,7485b64c-2011-43a0-9245-24248a919d3d
+give_details,110.1-freetext,f50dded4-4095-45cd-87cb-5d6df42f0045
