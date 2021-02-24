@@ -22,7 +22,7 @@ Date of birth,6.1,X,X,X,X,X,,"Date of birth
 DOB",Date of birth,N/A ,N/A,Avoid initialisms and acronyms,Date ,None,,,,OASYS_SET.DATE_OF_BIRTH,,,Y,I,Biometric,Banner Data
 Age,7.1,X,X,X,X,X,,Age,Age,N/A ,N/A,Consistency,Numeric,None,,,,,,,Y,I,Biometric,Banner Data
 Gender,8.1,,X,,,,X,"Gender
-",Gender,N/A ,N/A,Consistency,"Text, drop-down 
+",Gender,N/A ,N/A,Consistency,"Text, drop-down
 TBC",None,,ID.7,oasys_set.gender_elm,OASYS_SET.GENDER converted from code to text description (upper case),X,,Y,I,Biometric,x
 PNC,11.1,X,X,X,X,X,X,"PNC ID
 PNC",PNC,N/A ,N/A,Simplicity,Alphanumeric,None,,ID.9,oasys_set.pnc,,X,,Y,I,Identifiers,x
@@ -88,13 +88,13 @@ Both fields displaying (numeric?) code values
 (Free text?) fields to right of each '+' sign
 button",None,,ID.44,1.1,"This is the offence code and subcode concatenated together taken from the CURRENT EVENT eg. 17505
 
-NOTE: the RSR code will then need to work out if the offence is violent or not.  The RSR code package will need to work this out reading the CT_OFFENCE record and using the value in RSR_OFFENCE_CATEGORY accordingly. 
+NOTE: the RSR code will then need to work out if the offence is violent or not.  The RSR code package will need to work this out reading the CT_OFFENCE record and using the value in RSR_OFFENCE_CATEGORY accordingly.
 
 This requires update to CT_OFFENCE table – JIRA NOD-294 which is part of 6.21 release
 ",,,Y,I,Offence details,x
 Total number of sanctions?,43.1,,,,,,X,Total number of sanctions?,Total number of sanctions?,,,,Numeric,None,,,,,,,N,Q,Court appearances and convictions,New question to be added
 "Age at first conviction, conditional or absolute discharge (record in years)",45.1,,,,,,X,"Age at first conviction, conditional or absolute discharge (record in years)","Age at first conviction, conditional or absolute discharge (record in years)",Enter age,Enter age,Shorter. 'record in years' instruction can be shown in grey text,Numeric,None,,S1.38,1.7,"ARN Content ref. 45.1 Age at first conviction, conditional or absolute discharge (record in years)
-Pass blank if the question has NOT been answered 
+Pass blank if the question has NOT been answered
 otherwise pass the number",,,N,Q,Court appearances and convictions,x
 Date of current conviction,48.1,,X,,,,X,Date of current conviction,Date of current conviction,Add date of current conviction,Add date of current conviction,Consistency,Date,None,,OGRS3,1.29,"ARN Content ref. 48.1 Date of current conviction
 Pass blank or date",,,N,Q,Court apperances & convictions,x
@@ -138,7 +138,7 @@ If the assessment is a RoSHA and ARN Content ref. 67.1 (OASys ref1.39) Have you 
 Otherwise (ARN Content ref. 67.1 (OASys ref1.39) is set to ‘No’ or assessor has blanked it out)
  Pass ‘Y’
 End
- 
+
 ",X,,N,Q,Risk screening,x
 Did the offence involve carrying/use of a weapon?,69.1,,,,,,X,Did the offence involve carrying/use of a weapon?,Did the offence involve carrying or use of a weapon?,Select yes or no (carrying or using weapon),Select yes or no,Clarity (avoid slashes),Y/N,Y > 70.1,,S2.2,2.2,"ARN Content ref. 69.1 From a Layer 3 or RoSHA this is question 2.2 ‘Carrying or using a weapon’ – if checkbox has been checked pass 1
 otherwise pass 0",,,N,Q,Offence details,x
@@ -147,7 +147,7 @@ Needs,S9,,,,,,,,,,,,,,,,,,,,,,,
 Is the offender living in suitable accommodation?,75.1,,,,,,X,Is the offender living in suitable accommodation?,Is the individual living in suitable accommodation?,Select the degree to which this is an issue (suitability of accommodation),Select the degree to which this is an issue,Avoid use of 'offender' which introduces cognitive bias,"Radios:
 No problems
 Some problems
-Significant problems","Some problems > 76.1 
+Significant problems","Some problems > 76.1
 Significant problems > 76.1","0,1,2 equates to none, some significant (problem) in OASys. This does not match the question wording very well. ",RSR,3.4,"ARN Content ref. 77.2 Suitability of accommodation
 If blank or M pass NULL otherwise pass the score (0, 1, 2)",,,N,Q,Accommodation,x
 Is the person unemployed or will be unemployed upon release?,80.2,,,,,,X,Is the person unemployed or will be unemployed upon release?,Is the person unemployed or will be unemployed upon release?,Enter yes or no (unemployed now or on release),,Consistency,Y/N,None,,,4.2,"ARN Content ref. 80.2 Is the person unemployed, or will be unemployed on release
@@ -159,15 +159,15 @@ Otherwise
  Otherwise (entered 0 – No {ref_answer_code = ‘NO’} or   0- not available for work
 {ref_answer_code = ‘NA’})
      Pass 0
-  End 
+  End
 End
- 
+
 ",,,N,Q,"Education, training and employability",x
 Relationships,86.1,X,,,X,,X,"What is the person's current relationship with his/her partner?
 Relationships
 Relevant factor: relationships",What is the person's current relationship with their partner?,Select the degree to which this is an issue (current relationship with partner),Select the degree to which this is an issue,Consistency,"Radios:
-No problems 
-Some problems 
+No problems
+Some problems
 Significant problems",None,"0,1,2 equates to none, some significant (problem) in OASys. This does not match the question wording very well.",RSR,6.4,"ARN Content ref. 86.1 Current relationship with partner
 
 If blank or M pass NULL otherwise pass the score (0, 1, 2)",,,N,Q,Relationships,x
@@ -238,7 +238,7 @@ Previous offence",None,,SC.2,R1.2.6.2,"ARN Content ref. 135.1 Aggravated burglar
 If this checkbox is checked (R1.2.6.2 in database) pass 1 otherwise 0",,,N,Q,Offence analysis,x
 Arson,136.1,,,,,,,Arson,Arson,N/A,N/A,Consistency,"Text, checkboxes
 Current offence
-Previous offence",None,,SC.2,R1.2.7.2,"ARN Content ref. 136.1  Arson 
+Previous offence",None,,SC.2,R1.2.7.2,"ARN Content ref. 136.1  Arson
 If this checkbox is checked (R1.2.7.2 in database) pass 1 otherwise 0",,,N,Q,Offence analysis,x
 Criminal damage with intent to endanger life,137.1,,,,,,,Criminal damage with intent to endanger life,Criminal damage with intent to endanger life,N/A,N/A,Consistency,"Text, checkboxes
 Current offence
@@ -327,7 +327,7 @@ No
 Don't know",If Y then sections S15 and S16 must be completed ,,SC.4,R2.1,,X,,N,Q,Risk to children,x
 Are there any concerns in relation to children,166.1,,,,,,,Are there any concerns in relation to children,Are there any concerns in relation to children?,"Select yes, no or don't know (concerns in relation to children)","Select yes, no or don't know",Consistency,"Yes
 No
-Don't know","If Y then section S13 and S14 must be completed unless answer to question 180.1 is 'Yes'. 
+Don't know","If Y then section S13 and S14 must be completed unless answer to question 180.1 is 'Yes'.
 If Y then sections S15 and S16 must also be completed if the identity of the children is known unless the answer to question 180.1 is 'Yes'. ",If Y this would benefit from us adding a conditional question 'Are the identities of any of the children known?' to determine whether sections S15 and S16 are shown.,SC.5,R2.2,,X,,N,Q,Risk to children,x
 Should contact be made with social services?,167.1,,,,,,,Should contact be made with social services?,Should contact be made with social services?,"Select yes, no or don't know (contacting social services)","Select yes, no or don't know",Consistency,"Yes
 No
@@ -395,7 +395,7 @@ If Y then a full ROSH analysis is done.
 As long as 180.1 has not been completed then if ‘Yes’ has been answered to question 178.1 then, regardless of what else has been answered on the RoSH Screening, ALL questions on the RoSH Full Analysis are to appear.",,SC.14,R5.1,,X,,N,Q,Other risks,x
 Give details,179.1,,,,,,,Give details,Give details,Enter details,Enter details,Consistency,Free text,None,,SC.14,R5.1.t,,,,N,Q,Other risks,x
 "In your professional opinion, do you consider it appropriate to not undertake a full risk of harm analysis?",180.1,,,,,,,"In your professional opinion, do you consider it appropriate to not undertake a full risk of harm analysis?","In your professional opinion, is it appropriate to not do a full risk of harm analysis?",Select yes or no (full risk of harm analysis),Select yes or no,Simplicity,Y/N,"If Y then display
- 
+
 AND
 user should not complete section S13",,SC.16,"R5.2 , R5.2a",,,,N,Q,Risk analysis and summaries,x
 Give details,110.1,,,,,,,,,,,,Free text,None,,,,,,,,,,New
@@ -545,11 +545,11 @@ Consider the timescale and indicate whether risk is immediate or not. Consider t
 "What circumstances are likely to increase risk?
 Describe factors, actions, events which might increase level of risk, now and in the future",250.1,,,,,,,"What circumstances are likely to increase risk?
 Describe factors, actions, events which might increase level of risk, now and in the future","What circumstances are likely to increase risk?
-",Say what circumstances are likely to increase risk,Say what circumstances are likely to increase risk,Simpler. Additional information can be shown with grey text or detail component,Free text,None,Use details component for extra information,SUM.4,SUM4,,,,N,Q,Risk of serious harm: full analysis,
+",Say what circumstances are likely to increase risk,Say what circumstances are likely to increase risk,Simpler. Additional information can be shown with grey text or detail component,Free text,None,Use details component for extra information,SUM.4,ROSHSUM/SUM4,,,,N,Q,Risk of serious harm: full analysis,
 "What factors are likely to reduce the risk?
 Describe factors, actions, and events which may reduce or contain the level of risk.  What has previously stopped him / her",251.1,,,,,,,"What factors are likely to reduce the risk?
 Describe factors, actions, and events which may reduce or contain the level of risk.  What has previously stopped him / her","What factors are likely to reduce the risk?
-",Say what factors are likely to reduce the risk,Say what factors are likely to reduce the risk,Simpler. Additional information can be shown with grey text or detail component,Free text,None,Use details component for extra information,SUM.5,SUM5,,,,N,Q,Risk of serious harm: full analysis,
+",Say what factors are likely to reduce the risk,Say what factors are likely to reduce the risk,Simpler. Additional information can be shown with grey text or detail component,Free text,None,Use details component for extra information,SUM.5,ROSHSUM/SUM5,,,,N,Q,Risk of serious harm: full analysis,
 Risk of Serious Harm score,S25,,,,,,,,,,,,,,,,,,,,,,,
 Risk in the community to:,252.1,,,,,,,Risk in the community to:,,,,,,None,,,HEADING,,,,Y,I,Risk of serious harm: full analysis,
 Children,253.1,,,,,,,Children,Children,Select a level of risk in the community to children,Select a level of risk in the community to children,Consistency,"Radios:
