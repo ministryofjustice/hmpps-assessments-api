@@ -133,7 +133,8 @@ class AssessmentSql {
         question_schema_uuid: question.question_schema_uuid,
         ref_section_code: oasys_question.ref_section_code,
         logical_page: oasys_question.logicalpage,
-        ref_question_code: oasys_question.ref_question_code
+        ref_question_code: oasys_question.ref_question_code,
+        fixed_field: oasys_question.fixed_field === true
       }
       this.oasysMapping.push(mapping)
     }
@@ -348,7 +349,7 @@ class AssessmentSql {
   mappingSql() {
     return AssessmentSql.tableSql(
       'oasys_question_mapping',
-      ['mapping_uuid', 'question_schema_uuid', 'ref_section_code', 'logical_page', 'ref_question_code'],
+      ['mapping_uuid', 'question_schema_uuid', 'ref_section_code', 'logical_page', 'ref_question_code', 'fixed_field'],
       this.oasysMapping
     )
   }

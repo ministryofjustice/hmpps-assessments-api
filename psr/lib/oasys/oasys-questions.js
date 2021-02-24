@@ -94,7 +94,8 @@ function fixedRef(fixedCode) {
   const [sectionCode, questionCode] = fixedCode.split('/')
   return {
     ref_section_code: sectionCode,
-    ref_question_code: questionCode
+    ref_question_code: questionCode,
+    fixed_field: true
   }
 }
 
