@@ -65,7 +65,13 @@ class OasysQuestions {
     this.questions = questions
   }
 
-  lookup(questionCode) {
+  lookup(questionCode, fixedCode) {
+    if (fixedCode)
+      return {
+        ref_section_code: 'fixed',
+        ref_question_code: fixedCode
+      }
+
     if (!questionCode) return
 
     const codes = questionCode.split('/')

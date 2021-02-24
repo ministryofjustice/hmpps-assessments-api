@@ -101,7 +101,8 @@ class AssessmentSql {
 
   _createQuestion(record) {
     const oasys_question_code = record[this.headers.OASYS_REF] || null
-    const oasys_question = this.oasysQuestions.lookup(oasys_question_code)
+    const oasys_fixed_field = record[this.headers.OASYS_FIXED] || null
+    const oasys_question = this.oasysQuestions.lookup(oasys_question_code, oasys_fixed_field)
 
     const question_title = record[this.headers.TITLE].replace(/[ ',\\.\\(\\)\\?\\/]+/g, '_').toLowerCase()
     const question_code = record[this.headers.REF]
