@@ -44,6 +44,7 @@ CREATE TABLE IF NOT EXISTS oasys_question_mapping
     ref_section_code      TEXT        NOT NULL,
     logical_page          TEXT,
     ref_question_code     TEXT        NOT NULL,
+    fixed_field           BOOLEAN,
     FOREIGN KEY (question_schema_uuid) REFERENCES question_schema (question_schema_uuid)
 );
 
