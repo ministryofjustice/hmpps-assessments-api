@@ -256,9 +256,9 @@ VALUES ('33923c1e-e3ba-4c02-ba42-3b8d828f9e18', '3.1', 'oasys_set.family_name', 
     ('944b9da0-9e44-42c2-96e2-75906945729e', '249.1', 'SUM3', '2020-11-30 14:50:00', null, 'freetext', null, 'When is the risk likely to be greatest?
 
 ', null, null),
-    ('82b58db0-7a55-4f0c-b335-f5803052c584', '250.1', 'SUM4', '2020-11-30 14:50:00', null, 'freetext', null, 'What circumstances are likely to increase risk?
+    ('82b58db0-7a55-4f0c-b335-f5803052c584', '250.1', 'ROSHSUM/SUM4', '2020-11-30 14:50:00', null, 'freetext', null, 'What circumstances are likely to increase risk?
 ', null, null),
-    ('3798896c-2308-4b98-b1dc-8c0b45dc2a95', '251.1', 'SUM5', '2020-11-30 14:50:00', null, 'freetext', null, 'What factors are likely to reduce the risk?
+    ('3798896c-2308-4b98-b1dc-8c0b45dc2a95', '251.1', 'ROSHSUM/SUM5', '2020-11-30 14:50:00', null, 'freetext', null, 'What factors are likely to reduce the risk?
 ', null, null),
     ('0a397207-c6ec-4177-ae2f-abf611de762b', '252.1', 'HEADING', '2020-11-30 14:50:00', null, 'freetext', null, null, null, null),
     ('9775e1a6-b83f-4d26-bdef-bcf9d97fe079', '253.1', 'SUM6.1.1', '2020-11-30 14:50:00', null, 'radio', 'f8a83fb6-b49f-48c8-9044-2d234bcedb62', 'Children', null, null),
@@ -720,6 +720,8 @@ VALUES ('9905a862-94a0-434a-b5ae-ff7b9a77c7c4', '33923c1e-e3ba-4c02-ba42-3b8d828
     ('5c68e99e-9408-41bb-bc71-c9cd615f974e', 'a1be8ea7-817c-4eff-9534-3a503be9ecbd', 'ROSHSUM', null, 'SUM2'),
     ('0cb2d2ec-198d-4d55-b85d-159915cdd3b7', '4f2b86b8-0b1c-4e76-93c3-9df2e61dc568', 'arn', null, 'oasys_set.rsr_total_score'),
     ('d879d628-65a3-434b-b4ce-58682a0db43f', '944b9da0-9e44-42c2-96e2-75906945729e', 'ROSHSUM', null, 'SUM3'),
+    ('bee6f687-e8d6-4ce2-b9cc-65c292ad984b', '82b58db0-7a55-4f0c-b335-f5803052c584', 'ROSHSUM', null, 'SUM4'),
+    ('5bcfc88c-2510-4236-957e-9d6d32fca980', '3798896c-2308-4b98-b1dc-8c0b45dc2a95', 'ROSHSUM', null, 'SUM5'),
     ('7a97ea70-1333-4e38-bb93-747f13038f26', '0a397207-c6ec-4177-ae2f-abf611de762b', 'arn', null, 'HEADING'),
     ('66918315-91ee-480a-8649-ff07c6063eeb', '9775e1a6-b83f-4d26-bdef-bcf9d97fe079', 'ROSHSUM', null, 'SUM6.1.1'),
     ('54c29f60-02be-46ff-b03a-c4c59164eb64', '4521c123-debd-41e0-a25f-01b616d47c8d', 'ROSHSUM', null, 'SUM6.2.1'),

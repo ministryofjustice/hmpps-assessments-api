@@ -67,7 +67,13 @@ class OasysQuestions {
 
   lookup(questionCode) {
     if (!questionCode) return
-    const candidates = this.questions.filter(question => question.ref_question_code === questionCode)
+
+    const codes = questionCode.split('/')
+    const questionFilter = (codes.length === 1)
+      ? question => question.ref_question_code === codes[0]
+      : question => question.ref_section_code === codes[0] && question.ref_question_code === codes[1]
+
+    const candidates = this.questions.filter(questionFilter)
     if (candidates.length === 0) {
       console.warn(`Could not find OASys question ${questionCode}`)
       return {
