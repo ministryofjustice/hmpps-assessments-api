@@ -61,6 +61,13 @@ class AssessmentSql {
       heading: heading,
       group_start: '2020-11-30 14:50:00'
     }
+    // duplicate section names :(
+    const existing = this.groups.filter(g => g.group_uuid === group.group_uuid)
+    if (existing.length) {
+      record[this.headers.TITLE] = `${heading}~`
+      return this._createGrouping(record)
+    }
+
     this.groups.push(group)
     return group
   }
@@ -80,6 +87,9 @@ class AssessmentSql {
 
   addQuestion(record) {
     const question = this._createQuestion(record)
+    if (!question)
+      return
+
     this._addGroupQuestion(
       question.question_schema_uuid,
       'question',
@@ -95,6 +105,11 @@ class AssessmentSql {
 
     const question_title = record[this.headers.TITLE].replace(/[ ',\\.\\(\\)\\?\\/]+/g, '_').toLowerCase()
     const question_code = record[this.headers.REF]
+
+    if (!question_code)
+      return
+
+
     const question_text = record[this.headers.QUESTION].replace(/'/g, "''").replace(/\r\n/g, ' ')
     const [answer_type, answer_schema_group_uuid] = this.answerType(record[this.headers.ANSWER_TYPE], oasys_question)
 
