@@ -61,6 +61,13 @@ class AssessmentSql {
       heading: heading,
       group_start: '2020-11-30 14:50:00'
     }
+    // duplicate section names :(
+    const existing = this.groups.filter(g => g.group_uuid === group.group_uuid)
+    if (existing.length) {
+      record[this.headers.TITLE] = `${heading}~`
+      return this._createGrouping(record)
+    }
+
     this.groups.push(group)
     return group
   }
