@@ -2,7 +2,7 @@ package uk.gov.justice.digital.assessments.restclient.communityapi
 
 import java.time.LocalDate
 
-data class GetOffenderDto(
+data class CommunityOffenderDto(
   var offenderId: Long? = null,
   val firstName: String? = null,
   val middleNames: List<String>? = null,

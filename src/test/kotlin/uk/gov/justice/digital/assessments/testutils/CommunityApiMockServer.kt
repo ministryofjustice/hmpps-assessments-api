@@ -8,8 +8,11 @@ import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.http.HttpHeader
 import com.github.tomakehurst.wiremock.http.HttpHeaders
 import org.springframework.stereotype.Component
-import uk.gov.justice.digital.assessments.restclient.communityapi.GetOffenderDto
+import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityConvictionDto
+import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.IDs
+import uk.gov.justice.digital.assessments.restclient.communityapi.Offence
+import uk.gov.justice.digital.assessments.restclient.communityapi.OffenceDetail
 import java.time.LocalDate
 
 @Component
@@ -19,9 +22,9 @@ class CommunityApiMockServer : WireMockServer(9096) {
 
   fun stubGetOffender() {
     val crn = "DX12340A"
-    val offenderJson = mapToJson(getOffenderDto())
+    val offenderJson = mapToJson(offenderDto())
     stubFor(
-      WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/$crn"))
+      WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/$crn/all"))
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
@@ -30,7 +33,7 @@ class CommunityApiMockServer : WireMockServer(9096) {
     )
 
     stubFor(
-      WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/invalid"))
+      WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/invalid/all"))
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
@@ -40,12 +43,26 @@ class CommunityApiMockServer : WireMockServer(9096) {
     )
   }
 
-  internal fun mapToJson(offenderDto: GetOffenderDto): String {
-    return objectMapper.writeValueAsString(getOffenderDto())
+  fun stubGetConvictions() {
+    val crn = "DX12340A"
+    val convictionId = "636401162"
+    val convictionJson = mapToJson(convictionDto())
+    stubFor(
+      WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/$crn/conviction/$convictionId"))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withBody(convictionJson)
+        )
+    )
   }
 
-  private fun getOffenderDto(): GetOffenderDto {
-    return GetOffenderDto(
+  internal fun mapToJson(dto: Any): String {
+    return objectMapper.writeValueAsString(dto)
+  }
+
+  private fun offenderDto(): CommunityOffenderDto {
+    return CommunityOffenderDto(
       offenderId = 101L,
       firstName = "John",
       middleNames = null,
@@ -57,6 +74,31 @@ class CommunityApiMockServer : WireMockServer(9096) {
         crn = "DX12340A",
         pncNumber = "A/1234560BA"
       )
+    )
+  }
+
+  private fun convictionDto(): CommunityConvictionDto {
+    return CommunityConvictionDto(
+      convictionId = 636401162L,
+      offences = listOf(
+        Offence(
+          offenceId = "offence1",
+          mainOffence = true,
+          detail = OffenceDetail(
+            code = "code1",
+            description = "Offence description"
+          )
+        ),
+        Offence(
+          offenceId = "offence2",
+          mainOffence = false,
+          detail = OffenceDetail(
+            code = "code2",
+            description = "Offence description"
+          )
+        )
+      ),
+      convictionDate = LocalDate.of(2020, 2, 1)
     )
   }
 }
