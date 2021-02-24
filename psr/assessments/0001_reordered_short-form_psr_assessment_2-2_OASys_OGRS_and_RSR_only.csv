@@ -11,39 +11,39 @@ Question or information,Content ref.,Short-format PSR (Delius),Offender Group Re
 (note that items marked out-of-line will show elsewhere on the page)",Notes,Spec ref.,OASys ref.,Value passed from OASys to RSR calculation,Mandatory for minimum OASys,Potentially exposed to changes to answer reference data?,Pre-populated?,Type (assumes new case),Taxonomy classification,Validated OASys Field,OASys Fixed Field Name 
 Offending Information (The individual),S1,,,,,,,,,,,,,,,,,,,,,,,,
 Family name,3.1,X,X,X,X,X,X,"Family name
-Surname",Family name or names,N/A ,N/A,Covers cases where a person may have more than one family name (not aliases),Free text,None,,ID.1,oasys_set.family_name,,X,,Y,I,Name,x,family_name
+Surname",Family name or names,N/A ,N/A,Covers cases where a person may have more than one family name (not aliases),Free text,None,,ID.1,oasys_set.family_name,,X,,Y,I,Name,x,OFFIN/family_name
 Surname (aliases),5.1,,,,,,X,Surname (aliases),Family name (aliases),N/A ,N/A,Culturally neutral,Free text,None,,ID.3,offender_alias_in_set.alias_family_name,,,,Y,I,Name,x,
 First name,2.1,X,X,X,X,X,X,"Full name
 Name
 First name","First name or names
-",N/A ,N/A,Covers cases where a person may have more than one first name (not aliases),Free text,None,,ID.2,oasys_set.forename_1,,X,,Y,I,Name,x,forename
+",N/A ,N/A,Covers cases where a person may have more than one first name (not aliases),Free text,None,,ID.2,oasys_set.forename_1,,X,,Y,I,Name,x,OFFIN/forename
 Forename (aliases),4.1,,,,,,X,Forename (aliases),First name (aliases),N/A ,N/A,Culturally neutral,Free text,None,,ID.4,offender_alias_in_set.alias_forename_1,,,,Y,I,Name,x,
 Date of birth,6.1,X,X,X,X,X,,"Date of birth
-DOB",Date of birth,N/A ,N/A,Avoid initialisms and acronyms,Date ,None,,,,OASYS_SET.DATE_OF_BIRTH,,,Y,I,Biometric,Banner Data,date_of_birth
+DOB",Date of birth,N/A ,N/A,Avoid initialisms and acronyms,Date ,None,,,,OASYS_SET.DATE_OF_BIRTH,,,Y,I,Biometric,Banner Data,OFFIN/date_of_birth
 Age,7.1,X,X,X,X,X,,Age,Age,N/A ,N/A,Consistency,Numeric,None,,,,,,,Y,I,Biometric,Banner Data,
 Gender,8.1,,X,,,,X,"Gender
 ",Gender,N/A ,N/A,Consistency,"Text, drop-down 
-TBC",None,,ID.7,oasys_set.gender_elm,OASYS_SET.GENDER converted from code to text description (upper case),X,,Y,I,Biometric,x,gender
+TBC",None,,ID.7,oasys_set.gender_elm,OASYS_SET.GENDER converted from code to text description (upper case),X,,Y,I,Biometric,x,OFFIN/gender
 PNC,11.1,X,X,X,X,X,X,"PNC ID
-PNC",PNC,N/A ,N/A,Simplicity,Alphanumeric,None,,ID.9,oasys_set.pnc,,X,,Y,I,Identifiers,x,pnc
-Criminal Records Office (CRO) Number,12.1,,,,,,X,Criminal Records Office (CRO) Number,Criminal Records Office (CRO) Number,N/A ,N/A,Consistency,Alphanumeric?,None,,ID.10,oasys_set.cro_number,,,,Y,I,Identifiers,x,cro_number
-Probation Case Reference Number/CRN,13.1,,,,,,X,Probation Case Reference Number,Probation Case Reference Number,N/A ,N/A,Consistency,Alphanumeric?,None,,ID.11,oasys_set.cms_prob_number,,X,,Y,I,Identifiers,x,crn
+PNC",PNC,N/A ,N/A,Simplicity,Alphanumeric,None,,ID.9,oasys_set.pnc,,X,,Y,I,Identifiers,x,OFFIN/pnc
+Criminal Records Office (CRO) Number,12.1,,,,,,X,Criminal Records Office (CRO) Number,Criminal Records Office (CRO) Number,N/A ,N/A,Consistency,Alphanumeric?,None,,ID.10,oasys_set.cro_number,,,,Y,I,Identifiers,x,OFFIN/cro_number
+Probation Case Reference Number/CRN,13.1,,,,,,X,Probation Case Reference Number,Probation Case Reference Number,N/A ,N/A,Consistency,Alphanumeric?,None,,ID.11,oasys_set.cms_prob_number,,X,,Y,I,Identifiers,x,OFFIN/crn
 Nomis ID,,,,,,,,,,N/A ,N/A,,,,Only populated when offender has come from Prison,,,,,,,,,x,
 CRN,10.1,X,X,X,X,X,,"Delius CRN
 CRN",CRN,N/A ,N/A,Simplicity,Alphanumeric,None,,,,,,,Y,I,Identifiers,Banner Data,
 Address,14.1,X,X,X,X,X,X,"Address
 Address + postcode",Address,N/A if pre-populated,N/A if pre-populated,Consistency,Alphanumeric,None,6 lines inc. postcode,ID.15,"oasys_set.current_addess_line1 - line6, current_post_code",,,,Y,I,Address,x,
 Assessment Details (PSR metadata),S3,,,,,,,,,,,,,,,,,,,,,,,,
-Purpose of assessment,20.1,,,,,,X,Purpose of assessment,Purpose of assessment,N/A if pre-populated,N/A if pre-populated,Consistency,Free text?,,,N/A,oasys_set.purpose_assessment_elm,,X,,,,Report details,x,assessment_purpose
+Purpose of assessment,20.1,,,,,,X,Purpose of assessment,Purpose of assessment,N/A if pre-populated,N/A if pre-populated,Consistency,Free text?,,,N/A,oasys_set.purpose_assessment_elm,,X,,,,Report details,x,OFFIN/assessment_purpose
 PSR writer's name,26.1,,,X,X,X,X,"Name
 Report author
 Assessor name",Report author,N/A if pre-populated,N/A if pre-populated,Clarity,Free text,None,,,NOT HELD,,X,,Y,I,Assessor details,x,
-Assessor position,27.1,,,,,,X,Assessor position,Probation practitioner's position,N/A if pre-populated,N/A if pre-populated,Clarity,Free text?,None,,ID.32,oasys_set.assessor_position,,,,N,Q,Assessor details,x,assessor_position
-Telephone number,28.1,,,,,,X,Telephone number,Telephone number,Enter a telephone number,Enter a telephone number,Consistency,Numeric,None,,ID.34,oasys_set.assessor_phone_number,,,,N,Q,Assessor details,x,assessor_telno
-Probation provider/prison,29.1,,,,,,X,Probation provider/prison,Probation provider/prison,N/A if pre-populated,N/A if pre-populated,Consistency,Free text?,None,,ID.31,oasys_set.assessor_area_est_code,,X,,N,Q,Assessor details,x,provider
-LDU,30.1,,,,,,X,LDU,LDU,Select a LDU,select a LDU,Consistency,Dropdown TBD,None,"Use dummy data for prototype prior to live system build, but will require up-to-date reference data for live",ID.33,oasys_set.originating_division_code,,X,,N,Q,Assessor details,x,assessor_office
-Team,31.1,,,,,,X,Team,Team,Select a team,Select a team,Consistency,Dropdown TBD,None,"Use dummy data for prototype prior to live system build, but will require up-to-date reference data for live",ID.35,oasys_set.originating_team_code,,X,,N,Q,Assessor details,x,assessor_team
-NPS countersigner/HMPS supervisor,32.1,,,,,,X,NPS countersigner/HMPS supervisor,NPS countersigner or HMPS supervisor,N/A if pre-populated,N/A if pre-populated,Avoid use of slashes,Free text?,None,,ID.36,oasys_set.countersigner_nam,,,,Y,I,Assessor details,x,supervisor
+Assessor position,27.1,,,,,,X,Assessor position,Probation practitioner's position,N/A if pre-populated,N/A if pre-populated,Clarity,Free text?,None,,ID.32,oasys_set.assessor_position,,,,N,Q,Assessor details,x,OFFIN/assessor_position
+Telephone number,28.1,,,,,,X,Telephone number,Telephone number,Enter a telephone number,Enter a telephone number,Consistency,Numeric,None,,ID.34,oasys_set.assessor_phone_number,,,,N,Q,Assessor details,x,OFFIN/assessor_telno
+Probation provider/prison,29.1,,,,,,X,Probation provider/prison,Probation provider/prison,N/A if pre-populated,N/A if pre-populated,Consistency,Free text?,None,,ID.31,oasys_set.assessor_area_est_code,,X,,N,Q,Assessor details,x,OFFIN/provider
+LDU,30.1,,,,,,X,LDU,LDU,Select a LDU,select a LDU,Consistency,Dropdown TBD,None,"Use dummy data for prototype prior to live system build, but will require up-to-date reference data for live",ID.33,oasys_set.originating_division_code,,X,,N,Q,Assessor details,x,OFFIN/assessor_office
+Team,31.1,,,,,,X,Team,Team,Select a team,Select a team,Consistency,Dropdown TBD,None,"Use dummy data for prototype prior to live system build, but will require up-to-date reference data for live",ID.35,oasys_set.originating_team_code,,X,,N,Q,Assessor details,x,OFFIN/assessor_team
+NPS countersigner/HMPS supervisor,32.1,,,,,,X,NPS countersigner/HMPS supervisor,NPS countersigner or HMPS supervisor,N/A if pre-populated,N/A if pre-populated,Avoid use of slashes,Free text?,None,,ID.36,oasys_set.countersigner_nam,,,,Y,I,Assessor details,x,OFFIN/supervisor
 Signing history,33.1,,,,,,X,Signing history,Signing history,N/A if pre-populated,N/A if pre-populated,Consistency,TBD,None,,ID.129,oasys_signing table,,X,,Y,I,Assessor details,x,
 Date report completed and signed,24.1,,,X,X,X,X,"Completion date
 Date report completed and signed
@@ -70,8 +70,8 @@ Psychiatric
 Psychology
 Request for information
 Victim statement
-Other",None,,ID.45,"Each individual source held, sources_information_pivot.sources_information_ELM",,,,N,Q,Information sources,x,sources_info
-Give details,299.1,,,,,,X,N/A,Give details,Enter details,Enter details,Consistency,Free text,None,Static free text box with 4000 character limit,ID.46,sources_info_other_ftxt,,,,N,Q,Information sources,x,sources_other_text
+Other",None,,ID.45,"Each individual source held, sources_information_pivot.sources_information_ELM",,,,N,Q,Information sources,x,PROPIN/sources_info
+Give details,299.1,,,,,,X,N/A,Give details,Enter details,Enter details,Consistency,Free text,None,Static free text box with 4000 character limit,ID.46,sources_info_other_ftxt,,,,N,Q,Information sources,x,PROPIN/sources_other_text
 Risk of Serious Recidivism (RSR),S4,,,,,,,,,,,,,,,,,,,,,,,,
 The offences,S5,,,,,,,,,,,,,,,,,,,,,,,,
 PSR/Court considered offence (Primary/most serious offence as judged by assessor),35.1,,X,,,,X,PSR/Court considered offence (Primary/most serious offence as judged by assessor),PSR or Court considered offence (Primary or most serious offence as judged by assessor),N/A if pre-populated,N/A if pre-populated,"Avoid use of slashes
