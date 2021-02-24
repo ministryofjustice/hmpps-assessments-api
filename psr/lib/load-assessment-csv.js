@@ -50,7 +50,7 @@ function patchInAddress(records, headers) {
   const addressLine = records[addressIndex]
   addressLine[headers.TITLE] = 'address_line_1'
   addressLine[headers.OASYS_REF] = 'current_address_line_1'
-  addressLine[headers.OASYS_FIXED] = 'current_address_line_1'
+  addressLine[headers.OASYS_FIXED] = 'OFFIN/current_address_line_1'
   const ref = addressLine[headers.REF]
   const addressLines = [addressLine]
   for (let i = 1; i !== 6; ++i) {
@@ -58,7 +58,7 @@ function patchInAddress(records, headers) {
     addressLines.push(addressLine.map(f => f))
     addressLines[i][headers.TITLE] = notlast ? `address_line_${i+1}` : 'post_code'
     addressLines[i][headers.OASYS_REF] = notlast ? `current_address_line_${i+1}` : 'current_post_code'
-    addressLines[i][headers.OASYS_FIXED] = notlast ? `current_address_line_${i+1}` : 'current_post_code'
+    addressLines[i][headers.OASYS_FIXED] = notlast ? `OFFIN/current_address_line_${i+1}` : 'OFFIN/current_post_code'
     addressLines[i][headers.REF] = `${ref}.${i+1}`
     addressLines[i][headers.QUESTION] = notlast ? '' : 'Post Code'
     records.splice(addressIndex+i, 0, addressLines[i])
