@@ -29,6 +29,7 @@ function findHeaders(headers) {
   const QUESTION = headers.findIndex(field => field.match(/proposed.*wording/i))
   const ANSWER_TYPE = headers.findIndex(field => field.match(/input type/i))
   const OASYS_REF = headers.findIndex(field => field.match(/oasys ref/i))
+  const OASYS_FIXED = headers.findIndex(field => field.match(/oasys fixed field/i))
   const ERROR_SUMMARY = headers.findIndex(field => field.match(/error summary/i))
   const ERROR_MESSAGE = headers.findIndex(field => field.match(/error message/i))
   const LOGIC = headers.findIndex(field => field.match(/business logic/i))
@@ -37,7 +38,7 @@ function findHeaders(headers) {
     console.error(`${csvfile} does not look like I expect!`)
     process.exit(-1)
   }
-  return { TITLE, REF, QUESTION, ANSWER_TYPE, OASYS_REF, ERROR_MESSAGE, ERROR_SUMMARY, LOGIC }
+  return { TITLE, REF, QUESTION, ANSWER_TYPE, OASYS_REF, OASYS_FIXED, ERROR_MESSAGE, ERROR_SUMMARY, LOGIC }
 }
 
 function patchInAddress(records, headers) {
@@ -48,14 +49,16 @@ function patchInAddress(records, headers) {
   // convert single line of address into five lines + postcode
   const addressLine = records[addressIndex]
   addressLine[headers.TITLE] = 'address_line_1'
-  addressLine[headers.OASYS_REF] = 'address_line_1'
+  addressLine[headers.OASYS_REF] = 'current_address_line_1'
+  addressLine[headers.OASYS_FIXED] = 'OFFIN/current_address_line_1'
   const ref = addressLine[headers.REF]
   const addressLines = [addressLine]
   for (let i = 1; i !== 6; ++i) {
     const notlast = i !== 5;
     addressLines.push(addressLine.map(f => f))
     addressLines[i][headers.TITLE] = notlast ? `address_line_${i+1}` : 'post_code'
-    addressLines[i][headers.OASYS_REF] = notlast ? `address_line_${i+1}` : 'post_code'
+    addressLines[i][headers.OASYS_REF] = notlast ? `current_address_line_${i+1}` : 'current_post_code'
+    addressLines[i][headers.OASYS_FIXED] = notlast ? `OFFIN/current_address_line_${i+1}` : 'OFFIN/current_post_code'
     addressLines[i][headers.REF] = `${ref}.${i+1}`
     addressLines[i][headers.QUESTION] = notlast ? '' : 'Post Code'
     records.splice(addressIndex+i, 0, addressLines[i])

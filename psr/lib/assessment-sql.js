@@ -101,7 +101,8 @@ class AssessmentSql {
 
   _createQuestion(record) {
     const oasys_question_code = record[this.headers.OASYS_REF] || null
-    const oasys_question = this.oasysQuestions.lookup(oasys_question_code)
+    const oasys_fixed_field = record[this.headers.OASYS_FIXED] || null
+    const oasys_question = this.oasysQuestions.lookup(oasys_question_code, oasys_fixed_field)
 
     const question_title = record[this.headers.TITLE].replace(/[ ',\\.\\(\\)\\?\\/]+/g, '_').toLowerCase()
     const question_code = record[this.headers.REF]
@@ -132,7 +133,8 @@ class AssessmentSql {
         question_schema_uuid: question.question_schema_uuid,
         ref_section_code: oasys_question.ref_section_code,
         logical_page: oasys_question.logicalpage,
-        ref_question_code: oasys_question.ref_question_code
+        ref_question_code: oasys_question.ref_question_code,
+        fixed_field: oasys_question.fixed_field === true
       }
       this.oasysMapping.push(mapping)
     }
@@ -347,7 +349,7 @@ class AssessmentSql {
   mappingSql() {
     return AssessmentSql.tableSql(
       'oasys_question_mapping',
-      ['mapping_uuid', 'question_schema_uuid', 'ref_section_code', 'logical_page', 'ref_question_code'],
+      ['mapping_uuid', 'question_schema_uuid', 'ref_section_code', 'logical_page', 'ref_question_code', 'fixed_field'],
       this.oasysMapping
     )
   }

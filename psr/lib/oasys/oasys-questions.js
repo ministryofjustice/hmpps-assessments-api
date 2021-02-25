@@ -65,7 +65,10 @@ class OasysQuestions {
     this.questions = questions
   }
 
-  lookup(questionCode) {
+  lookup(questionCode, fixedCode) {
+    if (fixedCode)
+      return fixedRef(fixedCode)
+
     if (!questionCode) return
 
     const codes = questionCode.split('/')
@@ -84,6 +87,15 @@ class OasysQuestions {
     if (candidates.length > 1)
       return console.warn(`Multiple OASys questions match ${questionCode} - ${candidates.map(q => `${q.ref_section_code} ${q.ref_question_code}`)}`)
     return candidates[0]
+  }
+}
+
+function fixedRef(fixedCode) {
+  const [sectionCode, questionCode] = fixedCode.split('/')
+  return {
+    ref_section_code: sectionCode,
+    ref_question_code: questionCode,
+    fixed_field: true
   }
 }
 

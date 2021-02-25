@@ -23,7 +23,12 @@ class OASysMappingEntity(
   @Column(name = "ref_question_code")
   val questionCode: String? = null,
 
+  @Column(name = "fixed_field")
+  private val fixed_field: Boolean? = false,
+
   @ManyToOne
   @JoinColumn(name = "question_schema_uuid", referencedColumnName = "question_schema_uuid")
   val questionSchema: QuestionSchemaEntity
-) : Serializable
+) : Serializable {
+  val isFixed: Boolean get()= (fixed_field == true)
+}

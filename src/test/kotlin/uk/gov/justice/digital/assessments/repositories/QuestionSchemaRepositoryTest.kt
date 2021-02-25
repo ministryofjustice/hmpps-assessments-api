@@ -37,6 +37,21 @@ class QuestionSchemaRepositoryTest(@Autowired val questionSchemaRepository: Ques
     assertThat(oasysMapping?.sectionCode).isEqualTo("RSR")
     assertThat(oasysMapping?.logicalPage).isEqualTo("1")
     assertThat(oasysMapping?.questionCode).isEqualTo("RSR_02")
+    assertThat(oasysMapping?.isFixed).isFalse()
+  }
+
+  @Transactional
+  @Test
+  fun `question with OASys fixed field mapping`() {
+    val questionSchemaUuid = UUID.fromString("a8e303f5-5f88-4343-94d1-a369ca1f86cb")
+    val questionSchemaEntity = questionSchemaRepository.findByQuestionSchemaUuid(questionSchemaUuid)
+    assertThat(questionSchemaEntity?.questionSchemaUuid).isEqualTo(questionSchemaUuid)
+    assertThat(questionSchemaEntity?.oasysMappings?.size).isEqualTo(1)
+    val oasysMapping = questionSchemaEntity?.oasysMappings?.first()
+    assertThat(oasysMapping?.sectionCode).isEqualTo("OFFIN")
+    assertThat(oasysMapping?.logicalPage).isEqualTo(null)
+    assertThat(oasysMapping?.questionCode).isEqualTo("test_field")
+    assertThat(oasysMapping?.isFixed).isTrue()
   }
 
   @Transactional
