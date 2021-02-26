@@ -19,7 +19,8 @@ INSERT INTO question_schema (question_schema_id, question_schema_uuid, question_
 VALUES (0, 'fd412ca8-d361-47ab-a189-7acb8ae0675b', 'RSR_01', 'RSR_01', '2019-11-14 08:11:53.177108', null, 'radio', 'f756f79d-dfad-49f9-a1b9-964a41cf660d', 'Question text', 'Help text'),
        (1, '1948af63-07f2-4a8c-9e4c-0ec347bd6ba8', 'RSR_01_conditional', 'RSR_01_conditional', '2019-11-14 08:11:53.177108', null, 'freetext', null, 'Question text', 'Help text'),
        (2, 'a5830801-533c-4b9e-bab1-03272718d6dc', 'OASys_mapped', 'ignored', '2019-11-14 08:11:53.177108', null, 'freetext', null, 'Question text', 'Help text'),
-       (3, 'a8e303f5-5f88-4343-94d1-a369ca1f86cb', 'OASys_mapped_to_fixed', 'ignored', '2019-11-14 08:11:53.177108', null, 'freetext', null, 'Question text', 'Help text');
+       (3, 'a8e303f5-5f88-4343-94d1-a369ca1f86cb', 'OASys_mapped_to_fixed', 'ignored', '2019-11-14 08:11:53.177108', null, 'freetext', null, 'Question text', 'Help text'),
+       (4, 'b9dd3680-c4d6-403e-8f27-8d65481cbf44', 'RSR_02', 'RSR_02', '2019-11-14 08:11:53.177108', null, 'freetext', null, 'Question text', 'Help text');
 
 INSERT INTO oasys_question_mapping(mapping_id, mapping_uuid, question_schema_uuid, ref_section_code, logical_page, ref_question_code)
 VALUES (99, '204b461b-90af-4e11-b57f-7ccb07b67059', 'a5830801-533c-4b9e-bab1-03272718d6dc', 'RSR', '1', 'RSR_02');
@@ -29,11 +30,17 @@ VALUES (97, '5bfbc30d-811f-443e-8f82-8d86eaadbbe4', 'a8e303f5-5f88-4343-94d1-a36
 
 
 INSERT INTO grouping (group_id, group_uuid, group_code, heading, subheading, help_text, group_start, group_end)
-VALUES (0, 'e353f3df-113d-401c-a3c0-14239fc17cf9', 'Group code', 'Heading 1', 'Subheading 1', 'Help text', '2019-11-14 08:11:53.177108', null);
+VALUES (0, 'e964d699-cf96-4abd-af0e-ddf1f6687a46', 'assessment', 'Assessement', 'Subheading 1', 'Help text', '2019-11-14 08:11:53.177108', null),
+       (1, 'e353f3df-113d-401c-a3c0-14239fc17cf9', 'Group code', 'Heading 1', 'Subheading 1', 'Help text', '2019-11-14 08:11:53.177108', null),
+       (2, '6afbe596-9956-4620-824b-c6c9000ace7c', 'Subgroup code', 'Second level heading', '', '', '2019-11-14 08:11:53.177108', null);
+
 
 INSERT INTO question_group (question_group_id, question_group_uuid, content_uuid, content_type, group_uuid, display_order, mandatory, validation)
 VALUES (0, '334f3e21-b249-4c7f-848e-05c0d2aad8f4', 'fd412ca8-d361-47ab-a189-7acb8ae0675b', 'question', 'e353f3df-113d-401c-a3c0-14239fc17cf9', '1', true, null ),
-       (1, 'fcec5c32-ea96-424c-80a5-8186dc414619', '1948af63-07f2-4a8c-9e4c-0ec347bd6ba8', 'question', 'e353f3df-113d-401c-a3c0-14239fc17cf9', '2', false, null );
+       (1, 'fcec5c32-ea96-424c-80a5-8186dc414619', '1948af63-07f2-4a8c-9e4c-0ec347bd6ba8', 'question', 'e353f3df-113d-401c-a3c0-14239fc17cf9', '2', false, null ),
+       (2, 'c1d9281d-2363-43a7-9e02-bd19c13d685f', 'e353f3df-113d-401c-a3c0-14239fc17cf9', 'group', 'e964d699-cf96-4abd-af0e-ddf1f6687a46', '1', false, null ),
+       (3, '67b942c8-86f6-4493-af53-9f814b41f344', '6afbe596-9956-4620-824b-c6c9000ace7c', 'group', 'e353f3df-113d-401c-a3c0-14239fc17cf9', '3', false, null ),
+       (4, '6c0c874f-cd71-4422-b153-2cb270183b5c', 'b9dd3680-c4d6-403e-8f27-8d65481cbf44', 'question', '6afbe596-9956-4620-824b-c6c9000ace7c', '3', false, null );
 
 /* Question Dependency */
 insert into question_dependency (subject_question_uuid, trigger_question_uuid, trigger_answer_value, dependency_start, display_inline)
