@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RestController
+import uk.gov.justice.digital.assessments.api.GroupSectionsDto
 import uk.gov.justice.digital.assessments.api.GroupSummaryDto
 import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
 import uk.gov.justice.digital.assessments.api.QuestionSchemaDto
@@ -59,7 +60,7 @@ class QuestionController(val questionService: QuestionService) {
       ApiResponse(responseCode = "200", description = "OK")
     ]
   )
-  fun getSectionsForGroup(@PathVariable("groupCode") groupCode: String): GroupWithContentsDto {
+  fun getSectionsForGroup(@PathVariable("groupCode") groupCode: String): GroupSectionsDto {
     return questionService.getGroupSections(groupCode)
   }
 }
