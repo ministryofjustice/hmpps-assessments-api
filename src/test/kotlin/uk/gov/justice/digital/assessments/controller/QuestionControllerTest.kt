@@ -21,7 +21,7 @@ import java.util.UUID
 @AutoConfigureWebTestClient
 class QuestionControllerTest : IntegrationTest() {
 
-  private val assessmentUuid = "e964d699-cf96-4abd-af0e-ddf1f6687a46"
+  private val assessmentGroupUuid = "e964d699-cf96-4abd-af0e-ddf1f6687a46"
   private val groupUuid = "e353f3df-113d-401c-a3c0-14239fc17cf9"
   private val subgroupUuid = "6afbe596-9956-4620-824b-c6c9000ace7c"
   private val questionSchemaUuid = "fd412ca8-d361-47ab-a189-7acb8ae0675b"
@@ -127,4 +127,16 @@ class QuestionControllerTest : IntegrationTest() {
     assertThat(groupInfo?.groupCount).isEqualTo(0)
     assertThat(groupInfo?.questionCount).isEqualTo(2)
   }
+
+  @Test
+  fun `section for top-level group by uuid`() {
+    val assessmentGroup = webTestClient.get().uri("/sections/$assessmentGroupUuid")
+      .headers(setAuthorisation())
+      .exchange()
+      .expectStatus().isOk
+      .expectBody<GroupWithContentsDto>()
+      .returnResult()
+      .responseBody
+  }
+
 }
