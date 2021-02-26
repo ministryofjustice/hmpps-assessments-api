@@ -137,6 +137,21 @@ class QuestionControllerTest : IntegrationTest() {
       .expectBody<GroupWithContentsDto>()
       .returnResult()
       .responseBody
+
+    assertThat(assessmentGroup.groupId).isEqualTo(UUID.fromString(assessmentGroupUuid))
+
+    val sections = assessmentGroup.contents
+    assertThat(sections.size).isEqualTo(1)
+
+    val section = sections.first() as GroupWithContentsDto
+    assertThat(section.groupId).isEqualTo(UUID.fromString(groupUuid))
+
+    val subsections = section.contents
+    assertThat(subsections.size).isEqualTo(1)
+
+    val subsection = subsections.first() as GroupWithContentsDto
+    assertThat(subsection.groupId).isEqualTo(UUID.fromString(subgroupUuid))
+    assertThat(subsection.contents.size).isEqualTo(0)
   }
 
 }
