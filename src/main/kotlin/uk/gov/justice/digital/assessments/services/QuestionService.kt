@@ -34,11 +34,11 @@ class QuestionService(
     return questionGroupRepository.listGroups().map { GroupSummaryDto.from(it) }
   }
 
-  fun getQuestionGroup(groupCode: String): GroupWithContentsDto {
+  fun getGroupContents(groupCode: String): GroupWithContentsDto {
     return getQuestionGroupContents(findByGroupCode(groupCode))
   }
 
-  fun getQuestionGroup(groupUuid: UUID): GroupWithContentsDto {
+  fun getGroupContents(groupUuid: UUID): GroupWithContentsDto {
     return getQuestionGroupContents(findByGroupUuid(groupUuid))
   }
 

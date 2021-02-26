@@ -48,7 +48,7 @@ class QuestionController(val questionService: QuestionService) {
     ]
   )
   fun getQuestionsForGroup(@PathVariable("groupCode") groupCode: String): GroupWithContentsDto {
-    return questionService.getQuestionGroup(groupCode)
+    return questionService.getGroupContents(groupCode)
   }
 
   @RequestMapping(path = ["/sections/{groupCode}"], method = [RequestMethod.GET])
@@ -60,6 +60,6 @@ class QuestionController(val questionService: QuestionService) {
     ]
   )
   fun getSectionsForGroup(@PathVariable("groupCode") groupCode: String): GroupWithContentsDto {
-    return questionService.getQuestionGroup(groupCode)
+    return questionService.getGroupContents(groupCode)
   }
 }
