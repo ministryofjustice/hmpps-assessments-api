@@ -7,10 +7,7 @@ import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.context.jdbc.SqlConfig
 import org.springframework.test.context.jdbc.SqlGroup
 import org.springframework.test.web.reactive.server.expectBody
-import uk.gov.justice.digital.assessments.api.GroupQuestionDto
-import uk.gov.justice.digital.assessments.api.GroupSummaryDto
-import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
-import uk.gov.justice.digital.assessments.api.QuestionSchemaDto
+import uk.gov.justice.digital.assessments.api.*
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import java.util.UUID
 
@@ -134,24 +131,23 @@ class QuestionControllerTest : IntegrationTest() {
       .headers(setAuthorisation())
       .exchange()
       .expectStatus().isOk
-      .expectBody<GroupWithContentsDto>()
+      .expectBody<GroupSectionsDto>()
       .returnResult()
       .responseBody
 
     assertThat(assessmentGroup.groupId).isEqualTo(UUID.fromString(assessmentGroupUuid))
 
-    val sections = assessmentGroup.contents
+    val sections = assessmentGroup.contents!!
     assertThat(sections.size).isEqualTo(1)
 
-    val section = sections.first() as GroupWithContentsDto
+    val section = sections.first()
     assertThat(section.groupId).isEqualTo(UUID.fromString(groupUuid))
 
-    val subsections = section.contents
+    val subsections = section.contents!!
     assertThat(subsections.size).isEqualTo(1)
 
-    val subsection = subsections.first() as GroupWithContentsDto
+    val subsection = subsections.first()
     assertThat(subsection.groupId).isEqualTo(UUID.fromString(subgroupUuid))
-    assertThat(subsection.contents.size).isEqualTo(0)
+    assertThat(subsection.contents).isNull()
   }
-
 }
