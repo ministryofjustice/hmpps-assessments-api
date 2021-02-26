@@ -62,5 +62,4 @@ class QuestionSchemaRepositoryTest(@Autowired val questionSchemaRepository: Ques
     assertThat(questionSchemaEntity?.questionSchemaUuid).isEqualTo(questionSchemaUuid)
     assertThat(questionSchemaEntity?.oasysMappings?.size).isEqualTo(0)
   }
-
 }
