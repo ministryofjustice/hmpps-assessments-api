@@ -50,4 +50,16 @@ class QuestionController(val questionService: QuestionService) {
   fun getQuestionsForGroup(@PathVariable("groupCode") groupCode: String): GroupWithContentsDto {
     return questionService.getQuestionGroup(groupCode)
   }
+
+  @RequestMapping(path = ["/sections/{groupCode}"], method = [RequestMethod.GET])
+  @Operation(description = "Gets Questions for a Group")
+  @ApiResponses(
+    value = [
+      ApiResponse(responseCode = "404", description = "Questions not found for Group"),
+      ApiResponse(responseCode = "200", description = "OK")
+    ]
+  )
+  fun getSectionsForGroup(@PathVariable("groupCode") groupCode: String): GroupWithContentsDto {
+    return questionService.getQuestionGroup(groupCode)
+  }
 }
