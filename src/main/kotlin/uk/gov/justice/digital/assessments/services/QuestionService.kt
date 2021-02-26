@@ -42,6 +42,10 @@ class QuestionService(
     return getQuestionGroupContents(findByGroupUuid(groupUuid))
   }
 
+  fun getGroupSections(groupCode: String): GroupWithContentsDto {
+    return fetchGroupSections(findByGroupCode(groupCode))
+  }
+
   private fun getQuestionGroupContents(group: GroupEntity) =
     getQuestionGroupContents(
       group,
@@ -69,6 +73,21 @@ class QuestionService(
           else -> throw EntityNotFoundException("Bad group content type")
         }
       }
+
+    return GroupWithContentsDto.from(group, contents, parentGroup)
+  }
+
+  private fun fetchGroupSections(
+    group: GroupEntity,
+    parentGroup: QuestionGroupEntity? = null,
+    depth: Int = 0
+  ): GroupWithContentsDto {
+    val groupContents = group.contents.sortedBy { it.displayOrder }
+    if (groupContents.isEmpty()) throw EntityNotFoundException("Questions not found for Group: ${group.groupUuid}")
+
+    val contents = groupContents
+      .filter { it.contentType == "group" }
+      .map { fetchGroupSections(findByGroupUuid(it.contentUuid), it, depth + 1) }
 
     return GroupWithContentsDto.from(group, contents, parentGroup)
   }

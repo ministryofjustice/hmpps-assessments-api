@@ -60,6 +60,6 @@ class QuestionController(val questionService: QuestionService) {
     ]
   )
   fun getSectionsForGroup(@PathVariable("groupCode") groupCode: String): GroupWithContentsDto {
-    return questionService.getGroupContents(groupCode)
+    return questionService.getGroupSections(groupCode)
   }
 }
