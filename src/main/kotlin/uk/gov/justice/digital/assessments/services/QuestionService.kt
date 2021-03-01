@@ -1,10 +1,7 @@
 package uk.gov.justice.digital.assessments.services
 
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.assessments.api.GroupQuestionDto
-import uk.gov.justice.digital.assessments.api.GroupSummaryDto
-import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
-import uk.gov.justice.digital.assessments.api.QuestionSchemaDto
+import uk.gov.justice.digital.assessments.api.*
 import uk.gov.justice.digital.assessments.jpa.entities.AnswerSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.GroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionGroupEntity
@@ -34,12 +31,16 @@ class QuestionService(
     return questionGroupRepository.listGroups().map { GroupSummaryDto.from(it) }
   }
 
-  fun getQuestionGroup(groupCode: String): GroupWithContentsDto {
+  fun getGroupContents(groupCode: String): GroupWithContentsDto {
     return getQuestionGroupContents(findByGroupCode(groupCode))
   }
 
-  fun getQuestionGroup(groupUuid: UUID): GroupWithContentsDto {
+  fun getGroupContents(groupUuid: UUID): GroupWithContentsDto {
     return getQuestionGroupContents(findByGroupUuid(groupUuid))
+  }
+
+  fun getGroupSections(groupCode: String): GroupSectionsDto {
+    return fetchGroupSections(findByGroupCode(groupCode))
   }
 
   private fun getQuestionGroupContents(group: GroupEntity) =
@@ -71,6 +72,19 @@ class QuestionService(
       }
 
     return GroupWithContentsDto.from(group, contents, parentGroup)
+  }
+
+  private fun fetchGroupSections(
+    group: GroupEntity,
+    depth: Int = 0
+  ): GroupSectionsDto {
+    val groupContents = if (depth != 2) group.contents.sortedBy { it.displayOrder } else null
+
+    val contents = groupContents
+      ?.filter { it.contentType == "group" }
+      ?.map { fetchGroupSections(findByGroupUuid(it.contentUuid), depth + 1) }
+
+    return GroupSectionsDto.from(group, contents)
   }
 
   fun getAllQuestions(): List<QuestionSchemaEntity> {

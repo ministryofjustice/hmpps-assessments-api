@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RestController
+import uk.gov.justice.digital.assessments.api.GroupSectionsDto
 import uk.gov.justice.digital.assessments.api.GroupSummaryDto
 import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
 import uk.gov.justice.digital.assessments.api.QuestionSchemaDto
@@ -48,6 +49,18 @@ class QuestionController(val questionService: QuestionService) {
     ]
   )
   fun getQuestionsForGroup(@PathVariable("groupCode") groupCode: String): GroupWithContentsDto {
-    return questionService.getQuestionGroup(groupCode)
+    return questionService.getGroupContents(groupCode)
+  }
+
+  @RequestMapping(path = ["/questions/{groupCode}/summary"], method = [RequestMethod.GET])
+  @Operation(description = "Gets Summary information for a group")
+  @ApiResponses(
+    value = [
+      ApiResponse(responseCode = "404", description = "Questions not found for Group"),
+      ApiResponse(responseCode = "200", description = "OK")
+    ]
+  )
+  fun getSectionsForGroup(@PathVariable("groupCode") groupCode: String): GroupSectionsDto {
+    return questionService.getGroupSections(groupCode)
   }
 }
