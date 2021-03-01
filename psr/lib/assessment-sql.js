@@ -17,8 +17,8 @@ class AssessmentSql {
     this.questions = []
     this.oasysMapping = []
     this.questionGroups = []
-    this.topLevelGroup = this._createGrouping([assessmentName])
-    this.currentGroup = this.topLevelGroup
+    this.assessmentGroup = this._createGrouping([assessmentName])
+    this.currentGroup = this.assessmentGroup
     this.dependencies = []
 
     this.oasysQuestions = oasysQuestions()
@@ -40,15 +40,26 @@ class AssessmentSql {
     this.dependencies = this.dependencies.filter(dependency => dependency.subject_question_uuid)
   }
 
-  isGroup(record) {
+  isTopLevelGroup(record) {
     const cleaned = record.filter(f => f)
     return (record[this.headers.TITLE] && cleaned.length <= 2)
   }
 
+  isGroup(record) {
+    const isTopLevel = this.isTopLevelGroup(record)
+    const isSecondLevel = record[this.headers.OASYS_REF].toLowerCase() === 'heading'
+
+    return isTopLevel || isSecondLevel
+  }
+
   addGrouping(record) {
     const group = this._createGrouping(record)
-    this._addGroupQuestion(group.group_uuid, 'group', this.topLevelGroup.group_uuid)
+    const isTopLevel = this.isTopLevelGroup(record)
+    const parent = isTopLevel ? this.assessmentGroup : this.topLevelGroup
+
+    this._addGroupQuestion(group.group_uuid, 'group', parent.group_uuid)
     this.currentGroup = group
+    if (isTopLevel) this.topLevelGroup = group
     return group
   }
 
