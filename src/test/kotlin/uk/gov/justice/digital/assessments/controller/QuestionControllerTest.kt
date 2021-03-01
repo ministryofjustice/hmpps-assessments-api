@@ -127,7 +127,7 @@ class QuestionControllerTest : IntegrationTest() {
 
   @Test
   fun `section for top-level group by uuid`() {
-    val assessmentGroup = webTestClient.get().uri("/sections/$assessmentGroupUuid")
+    val assessmentGroup = webTestClient.get().uri("/questions/$assessmentGroupUuid/summary")
       .headers(setAuthorisation())
       .exchange()
       .expectStatus().isOk
