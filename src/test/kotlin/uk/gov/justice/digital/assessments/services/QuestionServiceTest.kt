@@ -97,7 +97,7 @@ class QuestionServiceTest {
     every { groupRepository.findByGroupUuid(groupUuid) } returns group
     every { dependencyService.dependencies() } returns QuestionDependencies(emptyList())
 
-    val groupQuestions = questionService.getQuestionGroup(groupUuid)
+    val groupQuestions = questionService.getGroupContents(groupUuid)
 
     assertThat(groupQuestions.groupId).isEqualTo(groupUuid)
 
