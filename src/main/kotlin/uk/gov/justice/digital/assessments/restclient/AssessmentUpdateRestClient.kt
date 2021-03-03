@@ -12,12 +12,14 @@ import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.CreateOffenderDto
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.CreateOffenderResponseDto
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OASysErrorResponse
+import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OasysAnswer
+import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.UpdateAssessmentAnswersDto
+import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.UpdateAssessmentAnswersResponseDto
 import uk.gov.justice.digital.assessments.services.exceptions.DuplicateOffenderRecordException
 import uk.gov.justice.digital.assessments.services.exceptions.OASysClientException
 import uk.gov.justice.digital.assessments.services.exceptions.UserNotAuthorisedException
 import uk.gov.justice.digital.hmpps.offenderassessmentsupdates.api.CreateAssessmentDto
 import uk.gov.justice.digital.hmpps.offenderassessmentsupdates.api.CreateAssessmentResponse
-import java.time.Duration
 
 @Component
 class AssessmentUpdateRestClient {
@@ -58,8 +60,25 @@ class AssessmentUpdateRestClient {
       .onStatus(HttpStatus::is4xxClientError) { handleAssessmentError(offenderPK, user, assessmentType, it) }
       .onStatus(HttpStatus::is5xxServerError) { throw OASysClientException("Failed to create assessment for offender $offenderPK in OASYs") }
       .bodyToMono(CreateAssessmentResponse::class.java)
-      .timeout(Duration.ofSeconds(30))
       .block()?.oasysSetPk
+  }
+
+  fun updateAssessment(
+    offenderPK: Long,
+    oasysSetPk: Long,
+    assessmentType: AssessmentType,
+    answers: Set<OasysAnswer>,
+    user: String = "STUARTWHITLAM",
+    area: String = "WWS",
+  ): UpdateAssessmentAnswersResponseDto? {
+    log.info("Updating answers for Assessment $oasysSetPk in OASys for offender: $offenderPK, area: $area, user: $user")
+    return webClient
+      .put("/assessments", UpdateAssessmentAnswersDto(oasysSetPk, offenderPK, area, user, answers, assessmentType))
+      .retrieve()
+      .onStatus(HttpStatus::is4xxClientError) { handleAssessmentError(offenderPK, user, assessmentType, it) }
+      .onStatus(HttpStatus::is5xxServerError) { throw OASysClientException("Failed to update assessment for offender $offenderPK in OASYs") }
+      .bodyToMono(UpdateAssessmentAnswersResponseDto::class.java)
+      .block()
   }
 
   fun handleOffenderError(crn: String?, user: String?, clientResponse: ClientResponse): Mono<out Throwable?>? {

@@ -31,4 +31,16 @@ class AuthenticatingRestClient(
       request.attributes(clientRegistrationId(oauthClient))
     return authed.bodyValue(body)
   }
+
+  fun put(path: String, body: Any): WebClient.RequestHeadersSpec<*> {
+    val request = webClient
+      .put()
+      .uri(path)
+      .accept(MediaType.APPLICATION_JSON)
+    val authed = if (disableAuth)
+      request
+    else
+      request.attributes(clientRegistrationId(oauthClient))
+    return authed.bodyValue(body)
+  }
 }
