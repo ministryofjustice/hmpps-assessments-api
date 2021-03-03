@@ -4,11 +4,11 @@ import io.mockk.every
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import io.mockk.verify
+import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import uk.gov.justice.digital.assessments.api.GroupQuestionDto
 import uk.gov.justice.digital.assessments.api.QuestionSchemaDto
@@ -86,8 +86,8 @@ class QuestionServiceTest {
   @Test
   fun `throw exception when Question Schema for ID`() {
     every { questionSchemaRepository.findByQuestionSchemaUuid(questionUuid) } returns null
-
-    assertThrows<EntityNotFoundException> { questionService.getQuestionSchema(questionUuid) }
+    Assertions.assertThatThrownBy { questionService.getQuestionSchema(questionUuid) }
+      .isInstanceOf(EntityNotFoundException::class.java)
     verify(exactly = 1) { questionSchemaRepository.findByQuestionSchemaUuid(questionUuid) }
   }
 

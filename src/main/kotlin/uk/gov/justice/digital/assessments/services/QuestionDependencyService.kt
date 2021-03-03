@@ -23,11 +23,9 @@ class QuestionDependencies(questionDeps: Collection<QuestionDependencyEntity>) {
   private val subjects = questionDeps.map { it.subjectQuestionUuid }
   private val triggers = makeTriggers(questionDeps)
 
-  private fun makeTriggers(questionDeps: Collection<QuestionDependencyEntity>): Map<Pair<UUID, String>, Set<ConditionalsSchemaDto>>
-  {
-    val triggers = mutableMapOf<Pair<UUID,String>, MutableSet<ConditionalsSchemaDto>>()
-    for (dep in questionDeps)
-    {
+  private fun makeTriggers(questionDeps: Collection<QuestionDependencyEntity>): Map<Pair<UUID, String>, Set<ConditionalsSchemaDto>> {
+    val triggers = mutableMapOf<Pair<UUID, String>, MutableSet<ConditionalsSchemaDto>>()
+    for (dep in questionDeps) {
       val trigger = Pair(dep.triggerQuestionUuid, dep.triggerAnswerValue)
       if (triggers.containsKey(trigger))
         triggers[trigger]?.add(ConditionalsSchemaDto(dep.subjectQuestionUuid, dep.displayInline))

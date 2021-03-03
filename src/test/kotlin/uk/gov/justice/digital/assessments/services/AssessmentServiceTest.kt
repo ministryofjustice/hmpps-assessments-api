@@ -18,12 +18,14 @@ import uk.gov.justice.digital.assessments.jpa.entities.AnswerSchemaGroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
+import uk.gov.justice.digital.assessments.jpa.entities.OASysMappingEntity
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.SubjectRepository
 import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
+import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.UpdateAssessmentAnswersResponseDto
 import uk.gov.justice.digital.assessments.restclient.courtcaseapi.CourtCase
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
@@ -540,11 +542,70 @@ class AssessmentServiceTest {
         )
       )
     )
-
     every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
     assertThatThrownBy { assessmentsService.getCurrentAssessmentCodedAnswers(assessmentUuid) }
       .isInstanceOf(IllegalStateException::class.java)
       .hasMessage("Answer Code not found for UUID $answer1Uuid")
+  }
+
+  @Test
+  fun `should update OASys if OASysSet stored against episode`() {
+
+    setupQuestionCodes()
+    setupAnswerCodes()
+    val episode = AssessmentEpisodeEntity(
+      episodeId = episodeId1,
+      assessmentType = AssessmentType.SHORT_FORM_PSR,
+      oasysSetPk = oasysSetPk
+    )
+
+    every { assessmentupdateRestClient.updateAssessment(oasysOffenderPk, oasysSetPk, assessmentType, any()) } returns UpdateAssessmentAnswersResponseDto()
+    assessmentsService.updateOASysAssessment(oasysOffenderPk, episode)
+    verify(exactly = 1) { assessmentupdateRestClient.updateAssessment(oasysOffenderPk, oasysSetPk, assessmentType, any()) }
+  }
+
+  @Test
+  fun `should not update OASys if no OASysSet stored against episode`() {
+
+    setupQuestionCodes()
+    setupAnswerCodes()
+    val episode = AssessmentEpisodeEntity(
+      oasysSetPk = oasysSetPk
+    )
+
+    every { assessmentupdateRestClient.updateAssessment(oasysOffenderPk, oasysSetPk, assessmentType, any()) } returns UpdateAssessmentAnswersResponseDto()
+    assessmentsService.updateOASysAssessment(oasysOffenderPk, episode)
+    verify(exactly = 0) { assessmentupdateRestClient.updateAssessment(oasysOffenderPk, oasysSetPk, assessmentType, any()) }
+  }
+
+  @Test
+  fun `should create Oasys Answer from Answer schema`() {
+
+    val answerSchema = AnswerSchemaEntity(value = "YES", answerSchemaId = 1, answerSchemaUuid = answer1Uuid, answerSchemaCode = "A1", answerSchemaGroup = AnswerSchemaGroupEntity(answerSchemaId = 1, answerSchemaGroupUuid = UUID.randomUUID()))
+    val mapping = OASysMappingEntity(sectionCode = "1", questionCode = "R1.3", logicalPage = 1, fixed_field = false, mappingId = 1, questionSchema = QuestionSchemaEntity(questionSchemaId = 1))
+
+    val result = assessmentsService.mapOasysAnswer(mapping, null, setOf(answerSchema))[0]
+
+    assertThat(result.answer).isEqualTo("YES")
+    assertThat(result.logicalPage).isEqualTo(1)
+    assertThat(result.isStatic).isFalse()
+    assertThat(result.questionCode).isEqualTo("R1.3")
+    assertThat(result.sectionCode).isEqualTo("1")
+  }
+
+  @Test
+  fun `should create Oasys Answer from free text answer`() {
+
+    val answerSchema = AnswerSchemaEntity(value = "YES", answerSchemaId = 1, answerSchemaUuid = answer1Uuid, answerSchemaCode = "A1", answerSchemaGroup = AnswerSchemaGroupEntity(answerSchemaId = 1, answerSchemaGroupUuid = UUID.randomUUID()))
+    val mapping = OASysMappingEntity(sectionCode = "1", questionCode = "R1.3", logicalPage = 1, fixed_field = false, mappingId = 1, questionSchema = QuestionSchemaEntity(questionSchemaId = 1))
+
+    val result = assessmentsService.mapOasysAnswer(mapping, "Free Text", setOf(answerSchema))[0]
+
+    assertThat(result.answer).isEqualTo("Free Text")
+    assertThat(result.logicalPage).isEqualTo(1)
+    assertThat(result.isStatic).isFalse()
+    assertThat(result.questionCode).isEqualTo("R1.3")
+    assertThat(result.sectionCode).isEqualTo("1")
   }
 
   private fun setupAnswerCodes() {

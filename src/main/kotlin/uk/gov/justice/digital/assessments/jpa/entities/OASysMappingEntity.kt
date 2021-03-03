@@ -1,8 +1,13 @@
 package uk.gov.justice.digital.assessments.jpa.entities
 
 import java.io.Serializable
-import java.util.*
-import javax.persistence.*
+import java.util.UUID
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.Id
+import javax.persistence.JoinColumn
+import javax.persistence.ManyToOne
+import javax.persistence.Table
 
 @Entity
 @Table(name = "oasys_question_mapping")
@@ -15,13 +20,13 @@ class OASysMappingEntity(
   val mappingUuid: UUID = UUID.randomUUID(),
 
   @Column(name = "ref_section_code")
-  val sectionCode: String? = null,
+  val sectionCode: String,
 
   @Column(name = "logical_page")
-  val logicalPage: String? = null,
+  val logicalPage: Long? = null,
 
   @Column(name = "ref_question_code")
-  val questionCode: String? = null,
+  val questionCode: String,
 
   @Column(name = "fixed_field")
   private val fixed_field: Boolean? = false,
@@ -30,5 +35,5 @@ class OASysMappingEntity(
   @JoinColumn(name = "question_schema_uuid", referencedColumnName = "question_schema_uuid")
   val questionSchema: QuestionSchemaEntity
 ) : Serializable {
-  val isFixed: Boolean get()= (fixed_field == true)
+  val isFixed: Boolean get() = (fixed_field == true)
 }
