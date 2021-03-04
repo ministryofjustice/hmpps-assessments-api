@@ -10,7 +10,13 @@ data class CommunityOffenderDto(
   val previousSurname: String? = null,
   val dateOfBirth: LocalDate? = null,
   val gender: String? = null,
-  val otherIds: IDs? = null
+  val otherIds: IDs? = null,
+  val offenderAliases: List<OffenderAlias>
+)
+
+data class OffenderAlias(
+  val firstName: String? = null,
+  val surname: String? = null,
 )
 
 data class IDs(

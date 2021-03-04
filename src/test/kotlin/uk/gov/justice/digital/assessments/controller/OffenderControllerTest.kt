@@ -65,4 +65,19 @@ class OffenderControllerTest : IntegrationTest() {
       .exchange()
       .expectStatus().isNotFound
   }
+
+  @Test
+  fun `get offender returns offender with aliases for crn and conviction ID`() {
+    val offenderDto = webTestClient.get().uri("/offender/crn/$crn/conviction/$convictionId")
+      .headers(setAuthorisation())
+      .exchange()
+      .expectStatus().isOk
+      .expectBody<OffenderDto>()
+      .returnResult()
+      .responseBody
+
+    assertThat(offenderDto?.offenderId).isEqualTo(oasysUserId)
+    assertThat(offenderDto?.firstNameAliases).containsOnly("John", "Jonny")
+    assertThat(offenderDto?.surnameAliases).containsOnly("Smithy")
+  }
 }

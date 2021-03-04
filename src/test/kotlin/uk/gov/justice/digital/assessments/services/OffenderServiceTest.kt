@@ -18,6 +18,7 @@ import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffen
 import uk.gov.justice.digital.assessments.restclient.communityapi.IDs
 import uk.gov.justice.digital.assessments.restclient.communityapi.Offence
 import uk.gov.justice.digital.assessments.restclient.communityapi.OffenceDetail
+import uk.gov.justice.digital.assessments.restclient.communityapi.OffenderAlias
 import uk.gov.justice.digital.assessments.restclient.courtcaseapi.CourtCase
 import uk.gov.justice.digital.assessments.restclient.courtcaseapi.DefendantAddress
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
@@ -38,7 +39,7 @@ class OffenderServiceTest {
 
   @Test
   fun `should return offender if one exists`() {
-    every { communityApiRestClient.getOffender(crn) } returns validOffenderDto()
+    every { communityApiRestClient.getOffender(crn) } returns validCommunityOffenderDto()
 
     val offenderDto = offenderService.getOffender(crn)
     assertThat(offenderDto.offenderId).isEqualTo(oasysOffenderPk)
@@ -47,7 +48,7 @@ class OffenderServiceTest {
 
   @Test
   fun `should return offence if one exists`() {
-    every { communityApiRestClient.getConviction(crn, convictionId) } returns validOffenceDto()
+    every { communityApiRestClient.getConviction(crn, convictionId) } returns validCommunityConvictionDto()
 
     val offenceDto = offenderService.getOffence(crn, convictionId)
     assertThat(offenceDto.convictionId).isEqualTo(convictionId)
@@ -59,8 +60,8 @@ class OffenderServiceTest {
 
   @Test
   fun `should return offender and offence if they exist`() {
-    every { communityApiRestClient.getOffender(crn) } returns validOffenderDto()
-    every { communityApiRestClient.getConviction(crn, convictionId) } returns validOffenceDto()
+    every { communityApiRestClient.getOffender(crn) } returns validCommunityOffenderDto()
+    every { communityApiRestClient.getConviction(crn, convictionId) } returns validCommunityConvictionDto()
     every { subjectRepository.findAllByCrnAndSourceOrderByCreatedDateDesc(crn, "COURT") } returns validCourtSubject()
     every { courtCaseRestClient.getCourtCase("courtCode", "caseNumber") } returns validCourtCase()
 
@@ -76,8 +77,8 @@ class OffenderServiceTest {
 
   @Test
   fun `should return offender with address if it exists`() {
-    every { communityApiRestClient.getOffender(crn) } returns validOffenderDto()
-    every { communityApiRestClient.getConviction(crn, convictionId) } returns validOffenceDto()
+    every { communityApiRestClient.getOffender(crn) } returns validCommunityOffenderDto()
+    every { communityApiRestClient.getConviction(crn, convictionId) } returns validCommunityConvictionDto()
     every { subjectRepository.findAllByCrnAndSourceOrderByCreatedDateDesc(crn, "COURT") } returns validCourtSubject()
     every { courtCaseRestClient.getCourtCase("courtCode", "caseNumber") } returns validCourtCase()
 
@@ -128,7 +129,6 @@ class OffenderServiceTest {
 
     assertThat(address?.address1).isEqualTo("line1")
     assertThat(address?.postcode).isEqualTo("postcode")
-    assertThat(address?.address6).isNull()
     verify(exactly = 1) { subjectRepository.findAllByCrnAndSourceOrderByCreatedDateDesc(any(), "COURT") }
     verify(exactly = 1) { courtCaseRestClient.getCourtCase(any(), any()) }
   }
@@ -141,6 +141,38 @@ class OffenderServiceTest {
 
     assertThat(address).isNull()
 
+    verify(exactly = 1) { subjectRepository.findAllByCrnAndSourceOrderByCreatedDateDesc(any(), "COURT") }
+    verify(exactly = 1) { courtCaseRestClient.getCourtCase(any(), any()) }
+  }
+
+  @Test
+  fun `should return offender with alias if it exists`() {
+    every { communityApiRestClient.getOffender(crn) } returns validCommunityOffenderDto()
+    every { communityApiRestClient.getConviction(crn, convictionId) } returns validCommunityConvictionDto()
+    every { subjectRepository.findAllByCrnAndSourceOrderByCreatedDateDesc(crn, "COURT") } returns validCourtSubject()
+    every { courtCaseRestClient.getCourtCase("courtCode", "caseNumber") } returns validCourtCase()
+
+    val offenderDto = offenderService.getOffenderAndOffence(crn, convictionId)
+
+    assertThat(offenderDto.offenderId).isEqualTo(oasysOffenderPk)
+    assertThat(offenderDto.firstNameAliases?.get(0)).isEqualTo("firstName")
+    assertThat(offenderDto.surnameAliases?.get(0)).isEqualTo("surname")
+
+    verify(exactly = 1) { communityApiRestClient.getOffender(any()) }
+    verify(exactly = 1) { communityApiRestClient.getConviction(any(), any()) }
+  }
+
+  @Test
+  fun `should return empty offender aliases list when none exist`() {
+    every { communityApiRestClient.getOffender(crn) } returns validCommunityOffenderDto().copy(offenderAliases = emptyList())
+    every { communityApiRestClient.getConviction(crn, convictionId) } returns validCommunityConvictionDto()
+    every { subjectRepository.findAllByCrnAndSourceOrderByCreatedDateDesc(crn, "COURT") } returns validCourtSubject()
+    every { courtCaseRestClient.getCourtCase("courtCode", "caseNumber") } returns validCourtCase()
+
+    val offenderDto = offenderService.getOffenderAndOffence(crn, convictionId)
+
+    assertThat(offenderDto.firstNameAliases).isEmpty()
+    assertThat(offenderDto.surnameAliases).isEmpty()
     verify(exactly = 1) { subjectRepository.findAllByCrnAndSourceOrderByCreatedDateDesc(any(), "COURT") }
     verify(exactly = 1) { courtCaseRestClient.getCourtCase(any(), any()) }
   }
@@ -162,7 +194,7 @@ class OffenderServiceTest {
     )
   }
 
-  private fun validOffenceDto(): CommunityConvictionDto {
+  private fun validCommunityConvictionDto(): CommunityConvictionDto {
     return CommunityConvictionDto(
       convictionId = 636401162L,
       offences = listOf(
@@ -187,7 +219,7 @@ class OffenderServiceTest {
     )
   }
 
-  private fun validOffenderDto(): CommunityOffenderDto {
+  private fun validCommunityOffenderDto(): CommunityOffenderDto {
     return CommunityOffenderDto(
       offenderId = 101L,
       firstName = "John",
@@ -199,6 +231,12 @@ class OffenderServiceTest {
       otherIds = IDs(
         crn = "DX12340A",
         pncNumber = "A/1234560BA"
+      ),
+      offenderAliases = listOf(
+        OffenderAlias(
+          firstName = "firstName",
+          surname = "surname"
+        )
       )
     )
   }

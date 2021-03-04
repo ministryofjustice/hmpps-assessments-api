@@ -42,29 +42,34 @@ class OffenderService(
     try {
       log.info("Requesting main offence details for crn: $crn, conviction id: $convictionId")
       val conviction = communityApiRestClient.getConviction(crn, convictionId)
-        ?: throw EntityNotFoundException("No offence found for crn: $crn, conviction id: $convictionId")
+        ?: throw EntityNotFoundException("No conviction found for crn: $crn, conviction id: $convictionId")
       return OffenceDto.from(conviction)
     } catch (e: WebClientException) {
       println(e.message)
-      throw EntityNotFoundException("No offence found for crn: $crn, conviction id: $convictionId")
+      throw EntityNotFoundException("No conviction found for crn: $crn, conviction id: $convictionId")
     }
   }
 
   fun getOffenderAddress(crn: String): Address? {
+    log.info("Getting most recent court for crn: $crn")
     val courtSubject = getCourtSubjectByCrn(crn)
-    return if (courtSubject == null)
+    return if (courtSubject == null) {
+      log.info("No address found for crn: $crn")
       null
+    }
     else {
       val (courtCode, caseNumber) = courtSubject
       val courtCase = courtCaseClient.getCourtCase(courtCode, caseNumber)
-      return Address.from(courtCase?.defendantAddress)
+      Address.from(courtCase?.defendantAddress)
     }
   }
 
   fun getCourtSubjectByCrn(crn: String): Pair<String, String>? {
     val court = subjectRepository.findAllByCrnAndSourceOrderByCreatedDateDesc(crn, "COURT").firstOrNull()
-    return if (court == null)
+    return if (court == null) {
+      log.info("No court data found for crn: $crn")
       null
+    }
     else {
       val (courtCode, caseNumber) = court.sourceId!!.split('|')
       Pair(courtCode, caseNumber)
