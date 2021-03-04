@@ -33,7 +33,7 @@ import java.util.UUID
 import javax.transaction.Transactional
 
 @Service
-open class AssessmentService(
+class AssessmentService(
   private val assessmentRepository: AssessmentRepository,
   private val subjectRepository: SubjectRepository,
   private val questionService: QuestionService,
@@ -58,7 +58,7 @@ open class AssessmentService(
   }
 
   @Transactional
-  open fun createNewEpisode(assessmentUuid: UUID, reason: String, assessmentType: AssessmentType): AssessmentEpisodeDto {
+  fun createNewEpisode(assessmentUuid: UUID, reason: String, assessmentType: AssessmentType): AssessmentEpisodeDto {
     val assessment = getAssessmentByUuid(assessmentUuid)
     val episode = createPrepopulatedEpisode(assessment, reason, assessmentType = assessmentType)
     log.info("New episode created for assessment $assessmentUuid")
@@ -167,7 +167,7 @@ open class AssessmentService(
   }
 
   @Transactional
-  open fun updateEpisode(
+  fun updateEpisode(
     assessmentUuid: UUID,
     episodeUuid: UUID,
     updatedEpisodeAnswers: UpdateAssessmentEpisodeDto
@@ -177,7 +177,7 @@ open class AssessmentService(
   }
 
   @Transactional
-  open fun updateCurrentEpisode(
+  fun updateCurrentEpisode(
     assessmentUuid: UUID,
     updatedEpisodeAnswers: UpdateAssessmentEpisodeDto
   ): AssessmentEpisodeDto {
@@ -253,6 +253,7 @@ open class AssessmentService(
       }
       return listOf(
         (
+
           OasysAnswer(
             oasysMapping.sectionCode,
             oasysMapping.logicalPage,
