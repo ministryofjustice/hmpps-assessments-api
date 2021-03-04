@@ -57,6 +57,7 @@ class GroupWithContentsDtoTest {
     1,
     true,
     "none",
+    false,
     question,
     null
   )
@@ -81,6 +82,7 @@ class GroupWithContentsDtoTest {
     1,
     true,
     "none",
+    false,
     question,
     null
   )
@@ -93,6 +95,7 @@ class GroupWithContentsDtoTest {
     2,
     false,
     "lots",
+    false,
     additionalQuestion,
     null
   )
@@ -117,6 +120,7 @@ class GroupWithContentsDtoTest {
     1,
     true,
     "none",
+    false,
     question,
     null
   )
@@ -129,6 +133,7 @@ class GroupWithContentsDtoTest {
     2,
     false,
     null,
+    false,
     null,
     groupWithTwoQuestions
   )
@@ -141,6 +146,7 @@ class GroupWithContentsDtoTest {
     3,
     false,
     "lots",
+    false,
     additionalQuestion,
     null
   )
@@ -218,6 +224,7 @@ class GroupWithContentsDtoTest {
       assertThat(qc.displayOrder).isEqualTo(entity.displayOrder)
       assertThat(qc.mandatory).isEqualTo(entity.mandatory)
       assertThat(qc.validation).isEqualTo(entity.validation)
+      assertThat(qc.readOnly).isEqualTo(entity.readOnly)
 
       val question = entity.question
       assertThat(question).isNotNull()

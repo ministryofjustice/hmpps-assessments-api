@@ -42,6 +42,9 @@ class QuestionGroupEntity(
   @Column(name = "validation")
   val validation: String? = null,
 
+  @Column(name = "read_only")
+  val readOnly: Boolean = false,
+
   @Transient
   var question: QuestionSchemaEntity?,
 
