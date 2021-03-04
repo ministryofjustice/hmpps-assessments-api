@@ -30,8 +30,8 @@ data class OffenderDto(
         crn = communityOffenderDto.otherIds?.crn,
         pncNumber = communityOffenderDto.otherIds?.pncNumber,
         croNumber = communityOffenderDto.otherIds?.croNumber,
-        firstNameAliases = communityOffenderDto.offenderAliases.mapNotNull { it.firstName },
-        surnameAliases = communityOffenderDto.offenderAliases.mapNotNull { it.surname }
+        firstNameAliases = communityOffenderDto.offenderAliases?.mapNotNull { it.firstName },
+        surnameAliases = communityOffenderDto.offenderAliases?.mapNotNull { it.surname }
       )
     }
   }

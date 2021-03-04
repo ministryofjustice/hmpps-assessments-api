@@ -243,7 +243,6 @@ open class AssessmentService(
     log.info("Updated OASys assessment oasysSet: ${episode.oasysSetPk}")
   }
 
-
   fun mapOasysAnswer(oasysMapping: OASysMappingEntity?, freeTextAnswer: String?, answerSchemas: Set<AnswerSchemaEntity>, answerType: String?): List<OasysAnswer> {
     if (oasysMapping == null) return emptyList()
 
