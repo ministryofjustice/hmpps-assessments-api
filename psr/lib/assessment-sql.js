@@ -83,7 +83,7 @@ class AssessmentSql {
     return group
   }
 
-  _addGroupQuestion(content_uuid, content_type, group_uuid, validation) {
+  _addGroupQuestion(content_uuid, content_type, group_uuid, validation = null, read_only = false) {
     const questionGroup = {
       question_group_uuid: questionGroupUuids(content_uuid),
       content_uuid: content_uuid,
@@ -91,7 +91,8 @@ class AssessmentSql {
       group_uuid: group_uuid,
       display_order: this.questionGroups.filter(qg => qg.group_uuid === group_uuid).length + 1,
       mandatory: true,
-      validation: validation
+      validation: validation,
+      read_only: read_only
     }
     this.questionGroups.push(questionGroup)
   }
@@ -105,7 +106,8 @@ class AssessmentSql {
       question.question_schema_uuid,
       'question',
       this.currentGroup.group_uuid,
-      this.compileValidation(record)
+      this.compileValidation(record),
+      question.read_only
     )
     return question
   }
@@ -121,9 +123,8 @@ class AssessmentSql {
     if (!question_code)
       return
 
-
     const question_text = record[this.headers.QUESTION].replace(/'/g, "''").replace(/\r\n/g, ' ')
-    const [answer_type, answer_schema_group_uuid] = this.answerType(record[this.headers.ANSWER_TYPE], oasys_question)
+    const [answer_type, answer_schema_group_uuid, read_only] = this.answerType(record[this.headers.ANSWER_TYPE], oasys_question)
 
     const business_logic = record[this.headers.LOGIC]
     const question = {
@@ -134,7 +135,8 @@ class AssessmentSql {
       answer_schema_group_uuid: answer_schema_group_uuid,
       question_text: question_text,
       question_start: '2020-11-30 14:50:00',
-      external_source: externalSources(question_code)
+      external_source: externalSources(question_code),
+      read_only: read_only
     }
     this.questions.push(question)
 
@@ -191,7 +193,14 @@ class AssessmentSql {
   }
 
   answerType(answerField, oasysQuestion) {
+    const input = this.inputType(answerField, oasysQuestion)
+    const read_only = answerField.match(/read[ -]?only/i) !== null
+    return [...input, read_only]
+  }
+
+  inputType(answerField, oasysQuestion) {
     let lines = answerField.split('\n')
+
     if (lines.length === 1 && lines[0] === 'Y/N')
       return this.yes_no
 
@@ -344,7 +353,7 @@ class AssessmentSql {
 
     return AssessmentSql.tableSql(
       'question_group',
-      ['question_group_uuid', 'content_uuid', 'content_type', 'group_uuid', 'display_order', 'mandatory', 'validation'],
+      ['question_group_uuid', 'content_uuid', 'content_type', 'group_uuid', 'display_order', 'mandatory', 'validation', 'read_only'],
       nonEmptyQuestionGroups
     )
   }

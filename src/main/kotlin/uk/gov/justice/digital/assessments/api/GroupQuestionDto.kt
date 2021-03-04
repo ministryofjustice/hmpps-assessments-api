@@ -31,6 +31,9 @@ data class GroupQuestionDto(
   @Schema(description = "Question Validation for Group", example = "to-do")
   val validation: String? = null,
 
+  @Schema(description = "Group or Question should be displayed read only", example = "false")
+  val readOnly: Boolean? = null,
+
   @Schema(description = "Is the question display conditional on some other question", example = "false")
   val conditional: Boolean? = null,
 
@@ -52,6 +55,7 @@ data class GroupQuestionDto(
         displayOrder = questionGroupEntity.displayOrder,
         mandatory = questionGroupEntity.mandatory,
         validation = questionGroupEntity.validation,
+        readOnly = questionGroupEntity.readOnly,
         conditional = questionDependencies.hasDependency(questionSchemaEntity.questionSchemaUuid),
         answerSchemas = AnswerSchemaDto.from(
           questionSchemaEntity.answerSchemaEntities,

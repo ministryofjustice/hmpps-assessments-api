@@ -70,6 +70,7 @@ CREATE TABLE IF NOT EXISTS question_group
     display_order           INTEGER     NOT NULL,
     mandatory               BOOLEAN     NOT NULL,
     validation              TEXT,
+    read_only               BOOLEAN     NOT NULL,
     CONSTRAINT check_content_type CHECK (content_type = 'question' OR content_type = 'group'),
     FOREIGN KEY (group_uuid) REFERENCES grouping(group_uuid)
 );

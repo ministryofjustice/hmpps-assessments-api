@@ -65,7 +65,8 @@ class QuestionServiceTest {
       contentType = "question",
       displayOrder = 1,
       question = question,
-      nestedGroup = null
+      nestedGroup = null,
+      readOnly = false
     )
     contents.add(questionGroup)
   }
