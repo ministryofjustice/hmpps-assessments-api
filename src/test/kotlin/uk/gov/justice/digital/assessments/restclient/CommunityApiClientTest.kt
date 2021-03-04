@@ -23,7 +23,7 @@ class CommunityApiClientTest : IntegrationTest() {
   fun `get Delius Offender returns offender DTO with aliases`() {
     val offenderDto = communityApiRestClient.getOffender(crn)
     assertThat(offenderDto?.offenderAliases?.get(0)?.firstName).isEqualTo("John")
-    assertThat(offenderDto?.offenderAliases?.get(0)?.surname).isEqualTo("Smith")
+    assertThat(offenderDto?.offenderAliases?.get(0)?.surname).isEqualTo("Smithy")
   }
 
   @Test
