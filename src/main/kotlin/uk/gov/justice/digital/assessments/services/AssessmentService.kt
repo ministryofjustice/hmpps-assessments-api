@@ -15,20 +15,25 @@ import uk.gov.justice.digital.assessments.jpa.entities.AnswerSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
+import uk.gov.justice.digital.assessments.jpa.entities.OASysMappingEntity
+import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.SubjectRepository
 import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
+import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OasysAnswer
 import uk.gov.justice.digital.assessments.restclient.courtcaseapi.CourtCase
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.UUID
 import javax.transaction.Transactional
 
 @Service
-class AssessmentService(
+open class AssessmentService(
   private val assessmentRepository: AssessmentRepository,
   private val subjectRepository: SubjectRepository,
   private val questionService: QuestionService,
@@ -39,6 +44,7 @@ class AssessmentService(
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
     const val courtSource = "COURT"
+    val oasysDateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
   }
 
   fun createNewAssessment(newAssessment: CreateAssessmentDto): AssessmentDto {
@@ -52,7 +58,7 @@ class AssessmentService(
   }
 
   @Transactional
-  fun createNewEpisode(assessmentUuid: UUID, reason: String, assessmentType: AssessmentType): AssessmentEpisodeDto {
+  open fun createNewEpisode(assessmentUuid: UUID, reason: String, assessmentType: AssessmentType): AssessmentEpisodeDto {
     val assessment = getAssessmentByUuid(assessmentUuid)
     val episode = createPrepopulatedEpisode(assessment, reason, assessmentType = assessmentType)
     log.info("New episode created for assessment $assessmentUuid")
@@ -161,7 +167,7 @@ class AssessmentService(
   }
 
   @Transactional
-  fun updateEpisode(
+  open fun updateEpisode(
     assessmentUuid: UUID,
     episodeUuid: UUID,
     updatedEpisodeAnswers: UpdateAssessmentEpisodeDto
@@ -171,7 +177,7 @@ class AssessmentService(
   }
 
   @Transactional
-  fun updateCurrentEpisode(
+  open fun updateCurrentEpisode(
     assessmentUuid: UUID,
     updatedEpisodeAnswers: UpdateAssessmentEpisodeDto
   ): AssessmentEpisodeDto {
@@ -199,7 +205,75 @@ class AssessmentService(
       }
     }
     log.info("Updated episode ${episode.episodeUuid} with ${updatedEpisodeAnswers.answers.size} answer(s) for assessment ${episode.assessment?.assessmentUuid}")
+
+    updateOASysAssessment(episode.assessment?.subject?.oasysOffenderPk, episode)
+
     return AssessmentEpisodeDto.from(episode)
+  }
+
+  fun updateOASysAssessment(
+    offenderPk: Long?,
+    episode: AssessmentEpisodeEntity
+  ) {
+
+    if (episode.assessmentType == null || episode.oasysSetPk == null || offenderPk == null) {
+      log.info("Unable to update OASys Assessment with keys type: ${episode.assessmentType} oasysSet: ${episode.oasysSetPk} offenderPk: $offenderPk")
+      return
+    }
+
+    val questions: Map<UUID, QuestionSchemaEntity?> =
+      questionService.getAllQuestions().map { it.questionSchemaUuid to it }.toMap()
+    val answerSchemas = questionService.getAllAnswers()
+
+    val answers: MutableList<OasysAnswer> = mutableListOf()
+
+    episode.answers?.forEach { episodeAnswer ->
+      val question = questions[episodeAnswer.key]
+      val answerSchema = episodeAnswer.value.answers.map {
+        answerSchemas.firstOrNull { answerSchema ->
+          answerSchema.answerSchemaUuid == it.key
+        } ?: throw IllegalStateException("Answer Code not found for UUID ${it.key}")
+      }.toSet()
+
+      // TODO: If we want to handle multiple mappings per question we will need to add assessment type to the mapping
+      val oasysMapping = question?.oasysMappings?.toList()?.getOrNull(0)
+      answers.addAll(mapOasysAnswer(oasysMapping, episodeAnswer.value.freeTextAnswer, answerSchema, question?.answerType))
+    }
+    assessmentUpdateRestClient.updateAssessment(offenderPk, episode.oasysSetPk!!, episode.assessmentType!!, answers.toSet())
+    log.info("Updated OASys assessment oasysSet: ${episode.oasysSetPk}")
+  }
+
+
+  fun mapOasysAnswer(oasysMapping: OASysMappingEntity?, freeTextAnswer: String?, answerSchemas: Set<AnswerSchemaEntity>, answerType: String?): List<OasysAnswer> {
+    if (oasysMapping == null) return emptyList()
+
+    if (freeTextAnswer?.isNotEmpty() == true) {
+      val answer = when (answerType) {
+        "date" -> LocalDate.parse(freeTextAnswer, DateTimeFormatter.ISO_DATE_TIME).format(oasysDateFormatter)
+        else -> freeTextAnswer
+      }
+      return listOf(
+        (
+          OasysAnswer(
+            oasysMapping.sectionCode,
+            oasysMapping.logicalPage,
+            oasysMapping.questionCode,
+            answer,
+            oasysMapping.isFixed
+          )
+          )
+      )
+    } else {
+      return answerSchemas.map { answer ->
+        OasysAnswer(
+          oasysMapping.sectionCode,
+          oasysMapping.logicalPage,
+          oasysMapping.questionCode,
+          answer.value,
+          oasysMapping.isFixed
+        )
+      }.toList()
+    }
   }
 
   private fun getEpisode(episodeUuid: UUID, assessmentUuid: UUID): AssessmentEpisodeEntity {

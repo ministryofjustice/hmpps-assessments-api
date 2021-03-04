@@ -20,13 +20,13 @@ class OASysMappingEntity(
   val mappingUuid: UUID = UUID.randomUUID(),
 
   @Column(name = "ref_section_code")
-  val sectionCode: String? = null,
+  val sectionCode: String,
 
   @Column(name = "logical_page")
-  val logicalPage: String? = null,
+  val logicalPage: Long? = null,
 
   @Column(name = "ref_question_code")
-  val questionCode: String? = null,
+  val questionCode: String,
 
   @Column(name = "fixed_field")
   private val fixed_field: Boolean? = false,

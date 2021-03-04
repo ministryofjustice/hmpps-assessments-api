@@ -8,6 +8,8 @@ import com.github.tomakehurst.wiremock.http.HttpHeaders
 
 class AssessmentUpdateMockServer : WireMockServer(9003) {
   fun stubCreateOffender() {
+
+    // offender stubs
     stubFor(
       WireMock.post(WireMock.urlEqualTo("/offenders"))
         .withRequestBody(equalToJson("{ \"crn\": \"DX12340A\" }", true, true))
@@ -71,6 +73,7 @@ class AssessmentUpdateMockServer : WireMockServer(9003) {
         )
     )
 
+    // create assessment stubs
     stubFor(
       WireMock.post(WireMock.urlEqualTo("/assessments"))
         .withRequestBody(equalToJson("{ \"offenderPk\": 1, \"assessmentType\": \"SHORT_FORM_PSR\" }", true, true))
@@ -112,6 +115,58 @@ class AssessmentUpdateMockServer : WireMockServer(9003) {
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
         )
     )
+
+    // update assessment stubs
+    stubFor(
+      WireMock.put(WireMock.urlEqualTo("/assessments"))
+        .withRequestBody(
+          equalToJson(
+            "{\n" +
+              "    \"offenderPk\": 1,\n" +
+              "    \"areaCode\": \"WWS\",\n" +
+              "    \"oasysUserCode\": \"STUARTWHITLAM\",\n" +
+              "    \"assessmentType\": \"SHORT_FORM_PSR\",\n" +
+              "    \"oasysSetPk\": 1,\n" +
+              "    \"answers\": [\n" +
+              "        {\n" +
+              "            \"sectionCode\": \"ROSH\",\n" +
+              "            \"logicalPage\": 1,\n" +
+              "            \"questionCode\": \"R1.3\",\n" +
+              "            \"answer\": \"YES\",\n" +
+              "            \"isStatic\": false\n" +
+              "        }]\n" +
+              "}",
+            true,
+            true
+          )
+        )
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withBody(updateAssessmentJson)
+        )
+    )
+
+    // stubFor(
+    //   WireMock.put(WireMock.urlEqualTo("/assessments"))
+    //     .withRequestBody(equalToJson("{ \"offenderPk\": 2, \"assessmentType\": \"SHORT_FORM_PSR\" }", true, true))
+    //     .willReturn(
+    //       WireMock.aResponse()
+    //         .withStatus(403)
+    //         .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+    //         .withBody(createAssessmentForbiddenJson)
+    //     )
+    // )
+    //
+    // stubFor(
+    //   WireMock.put(WireMock.urlEqualTo("/assessments"))
+    //     .withRequestBody(equalToJson("{ \"offenderPk\": 4, \"assessmentType\": \"SHORT_FORM_PSR\" }", true, true))
+    //     .willReturn(
+    //       WireMock.aResponse()
+    //         .withStatus(500)
+    //         .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+    //     )
+    // )
   }
 
   companion object {
@@ -131,6 +186,9 @@ class AssessmentUpdateMockServer : WireMockServer(9003) {
       """{ "developerMessage": "Existing assessment found" }""".trimIndent()
 
     val createAssessmentJson =
+      """{ "oasysSetPk": "1" }""".trimIndent()
+
+    val updateAssessmentJson =
       """{ "oasysSetPk": "1" }""".trimIndent()
   }
 }

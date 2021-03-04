@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS oasys_question_mapping
     mapping_uuid          UUID        NOT NULL unique,
     question_schema_uuid  UUID        NOT NULL unique,
     ref_section_code      TEXT        NOT NULL,
-    logical_page          TEXT,
+    logical_page          INTEGER,
     ref_question_code     TEXT        NOT NULL,
     fixed_field           BOOLEAN,
     FOREIGN KEY (question_schema_uuid) REFERENCES question_schema (question_schema_uuid)
