@@ -49,7 +49,7 @@ class CommunityApiMockServer : WireMockServer(9096) {
     val convictionId = "636401162"
     val convictionJson = mapToJson(convictionDto())
     stubFor(
-      WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/$crn/conviction/$convictionId"))
+      WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/$crn/convictions/$convictionId"))
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))

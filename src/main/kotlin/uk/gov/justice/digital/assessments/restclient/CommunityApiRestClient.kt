@@ -26,7 +26,7 @@ class CommunityApiRestClient {
   fun getConviction(crn: String, convictionId: Long): CommunityConvictionDto? {
     log.info("Client retrieving conviction details for crn: $crn, conviction id: $convictionId")
     return webClient
-      .get("secure/offenders/crn/$crn/conviction/$convictionId")
+      .get("secure/offenders/crn/$crn/convictions/$convictionId")
       .retrieve()
       .bodyToMono(CommunityConvictionDto::class.java)
       .block()
