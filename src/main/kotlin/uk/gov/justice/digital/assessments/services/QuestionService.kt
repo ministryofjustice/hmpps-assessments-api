@@ -1,7 +1,11 @@
 package uk.gov.justice.digital.assessments.services
 
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.assessments.api.*
+import uk.gov.justice.digital.assessments.api.GroupQuestionDto
+import uk.gov.justice.digital.assessments.api.GroupSectionsDto
+import uk.gov.justice.digital.assessments.api.GroupSummaryDto
+import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
+import uk.gov.justice.digital.assessments.api.QuestionSchemaDto
 import uk.gov.justice.digital.assessments.jpa.entities.AnswerSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.GroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionGroupEntity

@@ -81,7 +81,8 @@ class CommunityApiMockServer : WireMockServer(9096) {
           surname = "Smithy"
         ),
         OffenderAlias(
-          firstName = "Jonny")
+          firstName = "Jonny"
+        )
       )
     )
   }

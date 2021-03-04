@@ -56,8 +56,7 @@ class OffenderService(
     return if (courtSubject == null) {
       log.info("No address found for crn: $crn")
       null
-    }
-    else {
+    } else {
       val (courtCode, caseNumber) = courtSubject
       val courtCase = courtCaseClient.getCourtCase(courtCode, caseNumber)
       Address.from(courtCase?.defendantAddress)
@@ -69,8 +68,7 @@ class OffenderService(
     return if (court == null) {
       log.info("No court data found for crn: $crn")
       null
-    }
-    else {
+    } else {
       val (courtCode, caseNumber) = court.sourceId!!.split('|')
       Pair(courtCode, caseNumber)
     }

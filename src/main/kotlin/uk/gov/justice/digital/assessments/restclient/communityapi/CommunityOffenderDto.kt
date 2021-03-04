@@ -11,7 +11,7 @@ data class CommunityOffenderDto(
   val dateOfBirth: LocalDate? = null,
   val gender: String? = null,
   val otherIds: IDs? = null,
-  val offenderAliases: List<OffenderAlias>
+  val offenderAliases: List<OffenderAlias>? = null
 )
 
 data class OffenderAlias(
