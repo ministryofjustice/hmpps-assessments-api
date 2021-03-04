@@ -584,7 +584,7 @@ class AssessmentServiceTest {
     val answerSchema = AnswerSchemaEntity(value = "YES", answerSchemaId = 1, answerSchemaUuid = answer1Uuid, answerSchemaCode = "A1", answerSchemaGroup = AnswerSchemaGroupEntity(answerSchemaId = 1, answerSchemaGroupUuid = UUID.randomUUID()))
     val mapping = OASysMappingEntity(sectionCode = "1", questionCode = "R1.3", logicalPage = 1, fixed_field = false, mappingId = 1, questionSchema = QuestionSchemaEntity(questionSchemaId = 1))
 
-    val result = assessmentsService.mapOasysAnswer(mapping, null, setOf(answerSchema))[0]
+    val result = assessmentsService.mapOasysAnswer(mapping, null, setOf(answerSchema), "radios")[0]
 
     assertThat(result.answer).isEqualTo("YES")
     assertThat(result.logicalPage).isEqualTo(1)
@@ -599,13 +599,20 @@ class AssessmentServiceTest {
     val answerSchema = AnswerSchemaEntity(value = "YES", answerSchemaId = 1, answerSchemaUuid = answer1Uuid, answerSchemaCode = "A1", answerSchemaGroup = AnswerSchemaGroupEntity(answerSchemaId = 1, answerSchemaGroupUuid = UUID.randomUUID()))
     val mapping = OASysMappingEntity(sectionCode = "1", questionCode = "R1.3", logicalPage = 1, fixed_field = false, mappingId = 1, questionSchema = QuestionSchemaEntity(questionSchemaId = 1))
 
-    val result = assessmentsService.mapOasysAnswer(mapping, "Free Text", setOf(answerSchema))[0]
+    val result = assessmentsService.mapOasysAnswer(mapping, "Free Text", setOf(answerSchema), "radios")[0]
 
     assertThat(result.answer).isEqualTo("Free Text")
     assertThat(result.logicalPage).isEqualTo(1)
     assertThat(result.isStatic).isFalse()
     assertThat(result.questionCode).isEqualTo("R1.3")
     assertThat(result.sectionCode).isEqualTo("1")
+  }
+
+  @Test
+  fun `should create Oasys Answer with correct date format`() {
+    val mapping = OASysMappingEntity(sectionCode = "1", questionCode = "R1.3", logicalPage = 1, fixed_field = false, mappingId = 1, questionSchema = QuestionSchemaEntity(questionSchemaId = 1))
+    val result = assessmentsService.mapOasysAnswer(mapping, "1975-01-20T00:00:00.000Z", emptySet(), "date")[0]
+    assertThat(result.answer).isEqualTo("20/01/1975")
   }
 
   private fun setupAnswerCodes() {

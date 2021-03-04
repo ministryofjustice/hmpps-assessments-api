@@ -26,12 +26,14 @@ import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OasysAn
 import uk.gov.justice.digital.assessments.restclient.courtcaseapi.CourtCase
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.UUID
 import javax.transaction.Transactional
 
 @Service
-open class AssessmentService(
+class AssessmentService(
   private val assessmentRepository: AssessmentRepository,
   private val subjectRepository: SubjectRepository,
   private val questionService: QuestionService,
@@ -42,6 +44,7 @@ open class AssessmentService(
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
     const val courtSource = "COURT"
+    val oasysDateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
   }
 
   fun createNewAssessment(newAssessment: CreateAssessmentDto): AssessmentDto {
@@ -55,7 +58,7 @@ open class AssessmentService(
   }
 
   @Transactional
-  open fun createNewEpisode(assessmentUuid: UUID, reason: String, assessmentType: AssessmentType): AssessmentEpisodeDto {
+  fun createNewEpisode(assessmentUuid: UUID, reason: String, assessmentType: AssessmentType): AssessmentEpisodeDto {
     val assessment = getAssessmentByUuid(assessmentUuid)
     val episode = createPrepopulatedEpisode(assessment, reason, assessmentType = assessmentType)
     log.info("New episode created for assessment $assessmentUuid")
@@ -164,7 +167,7 @@ open class AssessmentService(
   }
 
   @Transactional
-  open fun updateEpisode(
+  fun updateEpisode(
     assessmentUuid: UUID,
     episodeUuid: UUID,
     updatedEpisodeAnswers: UpdateAssessmentEpisodeDto
@@ -174,7 +177,7 @@ open class AssessmentService(
   }
 
   @Transactional
-  open fun updateCurrentEpisode(
+  fun updateCurrentEpisode(
     assessmentUuid: UUID,
     updatedEpisodeAnswers: UpdateAssessmentEpisodeDto
   ): AssessmentEpisodeDto {
@@ -234,23 +237,28 @@ open class AssessmentService(
 
       // TODO: If we want to handle multiple mappings per question we will need to add assessment type to the mapping
       val oasysMapping = question?.oasysMappings?.toList()?.getOrNull(0)
-      answers.addAll(mapOasysAnswer(oasysMapping, episodeAnswer.value.freeTextAnswer, answerSchema))
+      answers.addAll(mapOasysAnswer(oasysMapping, episodeAnswer.value.freeTextAnswer, answerSchema, question?.answerType))
     }
     assessmentUpdateRestClient.updateAssessment(offenderPk, episode.oasysSetPk!!, episode.assessmentType!!, answers.toSet())
     log.info("Updated OASys assessment oasysSet: ${episode.oasysSetPk}")
   }
 
-  fun mapOasysAnswer(oasysMapping: OASysMappingEntity?, freeTextAnswer: String?, answerSchemas: Set<AnswerSchemaEntity>): List<OasysAnswer> {
+  fun mapOasysAnswer(oasysMapping: OASysMappingEntity?, freeTextAnswer: String?, answerSchemas: Set<AnswerSchemaEntity>, answerType: String?): List<OasysAnswer> {
     if (oasysMapping == null) return emptyList()
 
     if (freeTextAnswer?.isNotEmpty() == true) {
+      val answer = when (answerType) {
+        "date" -> LocalDate.parse(freeTextAnswer, DateTimeFormatter.ISO_DATE_TIME).format(oasysDateFormatter)
+        else -> freeTextAnswer
+      }
       return listOf(
         (
+
           OasysAnswer(
             oasysMapping.sectionCode,
             oasysMapping.logicalPage,
             oasysMapping.questionCode,
-            freeTextAnswer,
+            answer,
             oasysMapping.isFixed
           )
           )
