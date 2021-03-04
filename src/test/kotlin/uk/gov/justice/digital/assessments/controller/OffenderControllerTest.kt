@@ -40,7 +40,6 @@ class OffenderControllerTest : IntegrationTest() {
     assertThat(offenderDto?.offence?.convictionId).isEqualTo(convictionId)
     assertThat(offenderDto?.offence?.mainOffenceId).isEqualTo("offence1")
     assertThat(offenderDto?.offence?.offenceCode).isEqualTo("code1")
-
   }
 
   @Test
