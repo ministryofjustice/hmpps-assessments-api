@@ -4,18 +4,26 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClientException
+import uk.gov.justice.digital.assessments.api.Address
 import uk.gov.justice.digital.assessments.api.OffenceDto
 import uk.gov.justice.digital.assessments.api.OffenderDto
+import uk.gov.justice.digital.assessments.jpa.repositories.SubjectRepository
 import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
+import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 
 @Service
-class OffenderService(private val communityApiRestClient: CommunityApiRestClient) {
+class OffenderService(
+  private val communityApiRestClient: CommunityApiRestClient,
+  private val subjectRepository: SubjectRepository,
+  private val courtCaseClient: CourtCaseRestClient
+) {
 
   fun getOffenderAndOffence(crn: String, convictionId: Long): OffenderDto {
     val offender = getOffender(crn)
     val offence = getOffence(crn, convictionId)
-    return offender.copy(offence = offence)
+    val address = getOffenderAddress(crn)
+    return offender.copy(offence = offence, address = address)
   }
 
   fun getOffender(crn: String): OffenderDto {
@@ -39,6 +47,27 @@ class OffenderService(private val communityApiRestClient: CommunityApiRestClient
     } catch (e: WebClientException) {
       println(e.message)
       throw EntityNotFoundException("No offence found for crn: $crn, conviction id: $convictionId")
+    }
+  }
+
+  fun getOffenderAddress(crn: String): Address? {
+    val courtSubject = getCourtSubjectByCrn(crn)
+    return if (courtSubject == null)
+      null
+    else {
+      val (courtCode, caseNumber) = courtSubject
+      val courtCase = courtCaseClient.getCourtCase(courtCode, caseNumber)
+      return Address.from(courtCase?.defendantAddress)
+    }
+  }
+
+  fun getCourtSubjectByCrn(crn: String): Pair<String, String>? {
+    val court = subjectRepository.findAllByCrnAndSourceOrderByCreatedDateDesc(crn, "COURT").firstOrNull()
+    return if (court == null)
+      null
+    else {
+      val (courtCode, caseNumber) = court.sourceId!!.split('|')
+      Pair(courtCode, caseNumber)
     }
   }
 

@@ -33,7 +33,7 @@ import java.util.UUID
 import javax.transaction.Transactional
 
 @Service
-class AssessmentService(
+open class AssessmentService(
   private val assessmentRepository: AssessmentRepository,
   private val subjectRepository: SubjectRepository,
   private val questionService: QuestionService,
@@ -58,7 +58,7 @@ class AssessmentService(
   }
 
   @Transactional
-  fun createNewEpisode(assessmentUuid: UUID, reason: String, assessmentType: AssessmentType): AssessmentEpisodeDto {
+  open fun createNewEpisode(assessmentUuid: UUID, reason: String, assessmentType: AssessmentType): AssessmentEpisodeDto {
     val assessment = getAssessmentByUuid(assessmentUuid)
     val episode = createPrepopulatedEpisode(assessment, reason, assessmentType = assessmentType)
     log.info("New episode created for assessment $assessmentUuid")
@@ -167,7 +167,7 @@ class AssessmentService(
   }
 
   @Transactional
-  fun updateEpisode(
+  open fun updateEpisode(
     assessmentUuid: UUID,
     episodeUuid: UUID,
     updatedEpisodeAnswers: UpdateAssessmentEpisodeDto
@@ -177,7 +177,7 @@ class AssessmentService(
   }
 
   @Transactional
-  fun updateCurrentEpisode(
+  open fun updateCurrentEpisode(
     assessmentUuid: UUID,
     updatedEpisodeAnswers: UpdateAssessmentEpisodeDto
   ): AssessmentEpisodeDto {
@@ -243,6 +243,7 @@ class AssessmentService(
     log.info("Updated OASys assessment oasysSet: ${episode.oasysSetPk}")
   }
 
+
   fun mapOasysAnswer(oasysMapping: OASysMappingEntity?, freeTextAnswer: String?, answerSchemas: Set<AnswerSchemaEntity>, answerType: String?): List<OasysAnswer> {
     if (oasysMapping == null) return emptyList()
 
@@ -253,7 +254,6 @@ class AssessmentService(
       }
       return listOf(
         (
-
           OasysAnswer(
             oasysMapping.sectionCode,
             oasysMapping.logicalPage,

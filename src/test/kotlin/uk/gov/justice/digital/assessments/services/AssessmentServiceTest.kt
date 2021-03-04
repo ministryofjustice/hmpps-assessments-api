@@ -585,7 +585,6 @@ class AssessmentServiceTest {
     val mapping = OASysMappingEntity(sectionCode = "1", questionCode = "R1.3", logicalPage = 1, fixed_field = false, mappingId = 1, questionSchema = QuestionSchemaEntity(questionSchemaId = 1))
 
     val result = assessmentsService.mapOasysAnswer(mapping, null, setOf(answerSchema), "radios")[0]
-
     assertThat(result.answer).isEqualTo("YES")
     assertThat(result.logicalPage).isEqualTo(1)
     assertThat(result.isStatic).isFalse()
@@ -598,9 +597,7 @@ class AssessmentServiceTest {
 
     val answerSchema = AnswerSchemaEntity(value = "YES", answerSchemaId = 1, answerSchemaUuid = answer1Uuid, answerSchemaCode = "A1", answerSchemaGroup = AnswerSchemaGroupEntity(answerSchemaId = 1, answerSchemaGroupUuid = UUID.randomUUID()))
     val mapping = OASysMappingEntity(sectionCode = "1", questionCode = "R1.3", logicalPage = 1, fixed_field = false, mappingId = 1, questionSchema = QuestionSchemaEntity(questionSchemaId = 1))
-
     val result = assessmentsService.mapOasysAnswer(mapping, "Free Text", setOf(answerSchema), "radios")[0]
-
     assertThat(result.answer).isEqualTo("Free Text")
     assertThat(result.logicalPage).isEqualTo(1)
     assertThat(result.isStatic).isFalse()
