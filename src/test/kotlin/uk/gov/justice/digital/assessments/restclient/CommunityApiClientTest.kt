@@ -13,14 +13,21 @@ class CommunityApiClientTest : IntegrationTest() {
   val convictionId = 636401162L
 
   @Test
-  fun `get OASys Offender`() {
+  fun `get Delius Offender returns offender DTO`() {
     val offenderDto = communityApiRestClient.getOffender(crn)
     assertThat(offenderDto?.offenderId).isEqualTo(101L)
     assertThat(offenderDto?.otherIds?.crn).isEqualTo(crn)
   }
 
   @Test
-  fun `get OASys Conviction`() {
+  fun `get Delius Offender returns offender DTO with aliases`() {
+    val offenderDto = communityApiRestClient.getOffender(crn)
+    assertThat(offenderDto?.offenderAliases?.get(0)?.firstName).isEqualTo("John")
+    assertThat(offenderDto?.offenderAliases?.get(0)?.surname).isEqualTo("Smithy")
+  }
+
+  @Test
+  fun `get Delius Conviction returns conviction DTO`() {
     val convictionDto = communityApiRestClient.getConviction(crn, convictionId)
     assertThat(convictionDto?.convictionId).isEqualTo(636401162L)
     assertThat(convictionDto?.offences?.get(0)?.mainOffence).isEqualTo(true)

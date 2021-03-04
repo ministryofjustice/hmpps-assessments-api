@@ -14,8 +14,9 @@ data class OffenderDto(
   val pncNumber: String? = null,
   val croNumber: String? = null,
   val offence: OffenceDto? = null,
-  val address: Address? = null
-
+  val address: Address? = null,
+  val firstNameAliases: List<String>? = emptyList(),
+  val surnameAliases: List<String>? = emptyList()
 ) {
   companion object {
 
@@ -28,7 +29,9 @@ data class OffenderDto(
         gender = communityOffenderDto.gender,
         crn = communityOffenderDto.otherIds?.crn,
         pncNumber = communityOffenderDto.otherIds?.pncNumber,
-        croNumber = communityOffenderDto.otherIds?.croNumber
+        croNumber = communityOffenderDto.otherIds?.croNumber,
+        firstNameAliases = communityOffenderDto.offenderAliases.mapNotNull { it.firstName },
+        surnameAliases = communityOffenderDto.offenderAliases.mapNotNull { it.surname }
       )
     }
   }
@@ -40,7 +43,6 @@ data class Address(
   val address3: String? = null,
   val address4: String? = null,
   val address5: String? = null,
-  val address6: String? = null,
   val postcode: String? = null
 ) {
   companion object {

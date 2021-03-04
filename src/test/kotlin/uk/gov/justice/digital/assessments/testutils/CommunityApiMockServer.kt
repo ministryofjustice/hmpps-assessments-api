@@ -13,6 +13,7 @@ import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffen
 import uk.gov.justice.digital.assessments.restclient.communityapi.IDs
 import uk.gov.justice.digital.assessments.restclient.communityapi.Offence
 import uk.gov.justice.digital.assessments.restclient.communityapi.OffenceDetail
+import uk.gov.justice.digital.assessments.restclient.communityapi.OffenderAlias
 import java.time.LocalDate
 
 @Component
@@ -73,6 +74,14 @@ class CommunityApiMockServer : WireMockServer(9096) {
       otherIds = IDs(
         crn = "DX12340A",
         pncNumber = "A/1234560BA"
+      ),
+      offenderAliases = listOf(
+        OffenderAlias(
+          firstName = "John",
+          surname = "Smithy"
+        ),
+        OffenderAlias(
+          firstName = "Jonny")
       )
     )
   }
