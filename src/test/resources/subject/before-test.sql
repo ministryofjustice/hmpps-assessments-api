@@ -1,5 +1,9 @@
 -- noinspection SqlResolveForFile
 
+delete from assessed_episode where true;
+delete from subject where true;
+delete from assessment where true;
+
 /* Assessment with Court Subject */
 insert into assessment  (assessment_id, assessment_uuid, supervision_id, created_date) values
 (1, '2e020e78-a81c-407f-bc78-e5f284e237e5', 'CRN1', '2019-11-14 09:00'),
