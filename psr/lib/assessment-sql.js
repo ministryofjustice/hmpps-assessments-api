@@ -41,15 +41,12 @@ class AssessmentSql {
   }
 
   isTopLevelGroup(record) {
-    const cleaned = record.filter(f => f)
-    return (record[this.headers.TITLE] && cleaned.length <= 2)
+    const hasHeadingNumber = record[this.headers.TITLE].match(/^[1-9]+\. /)
+    return hasHeadingNumber
   }
 
   isGroup(record) {
-    const isTopLevel = this.isTopLevelGroup(record)
-    const isSecondLevel = record[this.headers.OASYS_REF].toLowerCase() === 'heading'
-
-    return isTopLevel || isSecondLevel
+    return (record[this.headers.TITLE] && record.filter(f => f).length <= 2)
   }
 
   addGrouping(record) {
