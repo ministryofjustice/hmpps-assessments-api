@@ -61,7 +61,7 @@ class AssessmentSql {
   }
 
   _createGrouping(record) {
-    const heading = record[this.headers.TITLE]
+    const heading = record[this.headers.TITLE].replace(/'/g, "''")
     const groupCode = heading.replace(/[ '\-,\\.\\(\\)\\?\\/]+/g, '_').toLowerCase()
     const group = {
       group_uuid: groupUuids(groupCode, groupCode),
@@ -178,7 +178,7 @@ class AssessmentSql {
           this.dependencies.push({
             subject_question_code: dependency.target.trim(),
             trigger_question_uuid: question.question_schema_uuid,
-            trigger_answer_value: dependency.value.trim().toLowerCase(),
+            trigger_answer_value: dependency.value.trim().toLowerCase().replace(/'/g, "''"),
             dependency_start: '2020-11-30 14:50:00',
             display_inline: dependency.display_inline
           })
