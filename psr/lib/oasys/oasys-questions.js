@@ -79,7 +79,7 @@ class OasysQuestions {
     const candidates = this.questions.filter(questionFilter)
     if (candidates.length === 0) {
       console.warn(`Could not find OASys question ${questionCode}`)
-      return 
+      return
     }
     if (candidates.length > 1)
       return console.warn(`Multiple OASys questions match ${questionCode} - ${candidates.map(q => `${q.ref_section_code} ${q.ref_question_code}`)}`)
@@ -89,6 +89,9 @@ class OasysQuestions {
 
 function fixedRef(fixedCode) {
   const [sectionCode, questionCode] = fixedCode.split('/')
+  if (!questionCode)
+    return null;
+
   return {
     ref_section_code: sectionCode,
     ref_question_code: questionCode,

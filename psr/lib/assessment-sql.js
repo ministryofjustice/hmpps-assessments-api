@@ -41,15 +41,12 @@ class AssessmentSql {
   }
 
   isTopLevelGroup(record) {
-    const cleaned = record.filter(f => f)
-    return (record[this.headers.TITLE] && cleaned.length <= 2)
+    const hasHeadingNumber = record[this.headers.TITLE].match(/^[1-9]+\. /)
+    return hasHeadingNumber
   }
 
   isGroup(record) {
-    const isTopLevel = this.isTopLevelGroup(record)
-    const isSecondLevel = record[this.headers.OASYS_REF].toLowerCase() === 'heading'
-
-    return isTopLevel || isSecondLevel
+    return (record[this.headers.TITLE] && record.filter(f => f).length <= 2)
   }
 
   addGrouping(record) {
@@ -64,7 +61,7 @@ class AssessmentSql {
   }
 
   _createGrouping(record) {
-    const heading = record[this.headers.TITLE]
+    const heading = record[this.headers.TITLE].replace(/'/g, "''")
     const groupCode = heading.replace(/[ '\-,\\.\\(\\)\\?\\/]+/g, '_').toLowerCase()
     const group = {
       group_uuid: groupUuids(groupCode, groupCode),
@@ -181,7 +178,7 @@ class AssessmentSql {
           this.dependencies.push({
             subject_question_code: dependency.target.trim(),
             trigger_question_uuid: question.question_schema_uuid,
-            trigger_answer_value: dependency.value.trim().toLowerCase(),
+            trigger_answer_value: dependency.value.trim().toLowerCase().replace(/'/g, "''"),
             dependency_start: '2020-11-30 14:50:00',
             display_inline: dependency.display_inline
           })
