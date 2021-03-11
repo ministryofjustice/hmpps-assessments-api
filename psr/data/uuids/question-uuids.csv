@@ -358,3 +358,8 @@ book_number_,289.1-freetext-book_number_,fce3b416-4145-4a4a-afed-51dbf8fa4e7d
 give_details,220.2-freetext,ee92d71a-29b5-497c-998f-d7f645c7ae16
 have_there_been_any_concerns_about_self-harm_in_the_past,290.1-freetext,bc8bf6f0-f9f7-4119-baff-68fccd2467fd
 give_details,290.2-freetext,32e2fb0f-a6d0-4dc5-b6fc-6c7313542926
+date_of_first_sanction,291-freetext,f92b71f3-c991-4aa5-80db-4618db0e9f6d
+source,298.1-checkbox,2b93527c-a545-4e41-9fb4-98ee127af393
+current_category_of_child_protection_registration_ie_neglect_physical_sexual_or_emotional,210.1-checkbox,16b0d3cd-77b7-4ab5-a394-38edb45d7b0f
+previous_category_of_child_protection_registration_ie_neglect_physical_sexual_or_emotional,211.1-checkbox,9e3d1286-93d6-42a3-9ed1-2d81a1170ce5
+give_details,299.1-textarea,d9846a60-5ba6-450f-9934-2c9646771f9d

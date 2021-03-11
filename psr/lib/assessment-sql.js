@@ -210,11 +210,15 @@ class AssessmentSql {
         return ['dropdown', this.answerSchemaGroup(lines)]
       if (type.match(/radio/))
         return ['radio', this.answerSchemaGroup(lines)]
+      if (type.match(/checkbox/))
+        return ['checkbox', this.answerSchemaGroup(lines)]
       if (oasysQuestion?.answers) {
         return [oasysQuestion.answers[0], this.answerSchemaGroup(oasysQuestion.answers)]
       }
     }
 
+    if (answerField.match(/text ?area/i))
+      return ['textarea', null]
     if (answerField.match(/date/i))
       return ['date', null]
     return ['freetext', null]
