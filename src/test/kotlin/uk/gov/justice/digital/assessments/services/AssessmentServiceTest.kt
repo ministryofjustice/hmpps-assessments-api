@@ -82,7 +82,7 @@ class AssessmentServiceTest {
   @DisplayName("creating assessments")
   inner class CreatingAssessments {
     @Test
-    fun `should save new assessment`() {
+    fun `create new assessment`() {
       every { assessmentRepository.findBySupervisionId(any()) } returns null
       every { assessmentRepository.save(any()) } returns AssessmentEntity(assessmentId = assessmentId)
 
@@ -91,7 +91,7 @@ class AssessmentServiceTest {
     }
 
     @Test
-    fun `should save new assessment from court`() {
+    fun `create new assessment from court`() {
       every { subjectRepository.findBySourceAndSourceId(AssessmentService.courtSource, "$courtCode|$caseNumber") } returns null
       every { assessmentRepository.save(any()) } returns AssessmentEntity(assessmentId = assessmentId)
       every { courtCaseRestClient.getCourtCase(courtCode, caseNumber) } returns CourtCase(crn = crn)
@@ -106,7 +106,7 @@ class AssessmentServiceTest {
     }
 
     @Test
-    fun `should return existing assessment if one exists`() {
+    fun `return existing assessment if one already exists`() {
       every { assessmentRepository.findBySupervisionId(any()) } returns AssessmentEntity(assessmentId = assessmentId, assessmentUuid = assessmentUuid)
 
       val assessmentDto = assessmentsService.createNewAssessment(CreateAssessmentDto("SupervisionId", assessmentType = assessmentType))
@@ -115,7 +115,7 @@ class AssessmentServiceTest {
     }
 
     @Test
-    fun `should return existing assessment if one exists from court`() {
+    fun `return existing assessment if one exists from court`() {
       every { subjectRepository.findBySourceAndSourceId(AssessmentService.courtSource, "$courtCode|$caseNumber") } returns SubjectEntity(assessment = AssessmentEntity(assessmentId = 1))
 
       assessmentsService.createNewAssessment(CreateAssessmentDto(courtCode = courtCode, caseNumber = caseNumber, assessmentType = AssessmentType.SHORT_FORM_PSR))
@@ -130,7 +130,7 @@ class AssessmentServiceTest {
   @DisplayName("episodes")
   inner class CreatingEpisode {
     @Test
-    fun `should create new episode`() {
+    fun `create new episode`() {
       val assessment: AssessmentEntity = mockk()
       every { assessment.assessmentUuid } returns assessmentUuid
       every { assessment.assessmentId } returns 0
@@ -145,7 +145,7 @@ class AssessmentServiceTest {
     }
 
     @Test
-    fun `should return all episodes for an assessment`() {
+    fun `fetch all episodes for an assessment`() {
       val assessment = AssessmentEntity(
         assessmentId = assessmentId,
         episodes = mutableListOf(
@@ -161,7 +161,7 @@ class AssessmentServiceTest {
     }
 
     @Test
-    fun `get episodes throws exception if assessment does not exist`() {
+    fun `throw exception if assessment does not exist`() {
 
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns null
 
@@ -171,7 +171,7 @@ class AssessmentServiceTest {
     }
 
     @Test
-    fun `should return latest episode for an assessment`() {
+    fun `get latest assessment episode`() {
       val assessment = AssessmentEntity(
         assessmentId = assessmentId,
         episodes = mutableListOf(
@@ -211,7 +211,7 @@ class AssessmentServiceTest {
   @DisplayName("update episode")
   inner class UpdateAnswers {
     @Test
-    fun `update episode should throw exception if episode does not exist`() {
+    fun `update episode throws exception if episode does not exist`() {
 
       val assessment = AssessmentEntity(
         assessmentId = assessmentId,
@@ -230,7 +230,7 @@ class AssessmentServiceTest {
     }
 
     @Test
-    fun `should add new answers to existing question for an episode`() {
+    fun `add new answers to existing question for an episode`() {
 
       val answers = mutableMapOf(
         existingQuestionUuid to AnswerEntity(
@@ -255,7 +255,7 @@ class AssessmentServiceTest {
     }
 
     @Test
-    fun `should change an existing answer for an episode`() {
+    fun `change an existing answer for an episode`() {
       val answers = mutableMapOf(
         existingQuestionUuid to AnswerEntity(
           freeTextAnswer = "free text",
@@ -279,7 +279,7 @@ class AssessmentServiceTest {
     }
 
     @Test
-    fun `should remove answers for an existing question for an episode`() {
+    fun `remove answers for an existing question for an episode`() {
 
       val answers = mutableMapOf(
         existingQuestionUuid to AnswerEntity(
@@ -304,7 +304,7 @@ class AssessmentServiceTest {
     }
 
     @Test
-    fun `should retain existing questions and answers when not included in update`() {
+    fun `retain existing questions and answers when not included in update`() {
 
       val answers = mutableMapOf(
         existingQuestionUuid to AnswerEntity(
@@ -331,7 +331,7 @@ class AssessmentServiceTest {
     }
 
     @Test
-    fun `should not update a closed episode`() {
+    fun `do not update a closed episode`() {
 
       val assessment = AssessmentEntity(
         assessmentId = assessmentId,
@@ -357,9 +357,13 @@ class AssessmentServiceTest {
         .isInstanceOf(UpdateClosedEpisodeException::class.java)
         .hasMessage("Cannot update closed Episode $episodeUuid for assessment $assessmentUuid")
     }
+  }
 
+  @Nested
+  @DisplayName("coded answers")
+  inner class CodedAnswers {
     @Test
-    fun `should return answers for all episodes`() {
+    fun `fetch answers for all episodes`() {
 
       setupQuestionCodes()
       setupAnswerCodes()
@@ -396,7 +400,7 @@ class AssessmentServiceTest {
     }
 
     @Test
-    fun `should overwrite older episode answers with newer episode answers`() {
+    fun `overwrite older episode answers with newer episode answers`() {
       setupQuestionCodes()
       setupAnswerCodes()
 
@@ -439,7 +443,7 @@ class AssessmentServiceTest {
     }
 
     @Test
-    fun `should overwrite older episode answers latest episode answers`() {
+    fun `overwrite older episode answers latest episode answers`() {
       setupQuestionCodes()
       setupAnswerCodes()
 
@@ -483,7 +487,7 @@ class AssessmentServiceTest {
     }
 
     @Test
-    fun `should not return free text answers`() {
+    fun `only fetch coded answers`() {
 
       setupQuestionCodes()
       setupAnswerCodes()
@@ -510,7 +514,7 @@ class AssessmentServiceTest {
     }
 
     @Test
-    fun `should throw exception when question code lookup fails`() {
+    fun `throw exception when question code lookup fails`() {
       every { questionService.getAllQuestions() } returns listOf(
         QuestionSchemaEntity(questionSchemaId = 2, questionSchemaUuid = question2Uuid, questionCode = "Q2")
       )
@@ -536,7 +540,7 @@ class AssessmentServiceTest {
     }
 
     @Test
-    fun `should throw exception when answer code lookup fails`() {
+    fun `throw exception when answer code lookup fails`() {
       every { questionService.getAllQuestions() } returns listOf(
         QuestionSchemaEntity(questionSchemaId = 1, questionSchemaUuid = question1Uuid, questionCode = "Q1")
       )
@@ -630,7 +634,6 @@ class AssessmentServiceTest {
   }
 
   private fun setupAnswerCodes() {
-    println("answer1Uuid: $answer1Uuid, answer2Uuid: $answer2Uuid, answer3Uuid: $answer3Uuid,")
     every { questionService.getAllAnswers() } returns listOf(
       AnswerSchemaEntity(answerSchemaId = 1, answerSchemaUuid = answer1Uuid, answerSchemaCode = "A1", answerSchemaGroup = AnswerSchemaGroupEntity(answerSchemaId = 1, answerSchemaGroupUuid = UUID.randomUUID())),
       AnswerSchemaEntity(answerSchemaId = 2, answerSchemaUuid = answer2Uuid, answerSchemaCode = "A2", answerSchemaGroup = AnswerSchemaGroupEntity(answerSchemaId = 2, answerSchemaGroupUuid = UUID.randomUUID())),
