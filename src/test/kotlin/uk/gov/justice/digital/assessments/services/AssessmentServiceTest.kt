@@ -563,15 +563,14 @@ class AssessmentServiceTest {
   }
 
   private fun setupQuestionCodes() {
-    val group1 = AnswerSchemaGroupEntity(answerSchemaId = 1)
-    val group2 = AnswerSchemaGroupEntity(answerSchemaId = 2)
+    val dummy = AnswerSchemaGroupEntity(answerSchemaId = 99)
 
-    val yes = AnswerSchemaEntity(answerSchemaId = 1, answerSchemaUuid = answer1Uuid, value = "YES", answerSchemaGroup = group1)
-    val maybe = AnswerSchemaEntity(answerSchemaId = 2, answerSchemaUuid = answer2Uuid, value = "MAYBE", answerSchemaGroup = group2)
-    val no = AnswerSchemaEntity(answerSchemaId = 3, answerSchemaUuid = answer3Uuid, value = "NO", answerSchemaGroup = group2)
+    val yes = AnswerSchemaEntity(answerSchemaId = 1, answerSchemaUuid = answer1Uuid, value = "YES", answerSchemaGroup = dummy)
+    val maybe = AnswerSchemaEntity(answerSchemaId = 2, answerSchemaUuid = answer2Uuid, value = "MAYBE", answerSchemaGroup = dummy)
+    val no = AnswerSchemaEntity(answerSchemaId = 3, answerSchemaUuid = answer3Uuid, value = "NO", answerSchemaGroup = dummy)
 
-    group1.answerSchemaEntities = listOf(yes)
-    group2.answerSchemaEntities = listOf(maybe, no)
+    val group1 = AnswerSchemaGroupEntity(answerSchemaId = 1, answerSchemaEntities = listOf(yes))
+    val group2 = AnswerSchemaGroupEntity(answerSchemaId = 2, answerSchemaEntities = listOf(maybe, no))
 
     every { questionService.getAllQuestions() } returns listOf(
       QuestionSchemaEntity(questionSchemaId = 1, questionSchemaUuid = question1Uuid, questionCode = "Q1", answerSchemaGroup = group1),
