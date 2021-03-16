@@ -30,5 +30,5 @@ class AnswerSchemaGroupEntity(
   val groupEnd: LocalDateTime? = null,
 
   @OneToMany(mappedBy = "answerSchemaGroup", fetch = FetchType.EAGER)
-  val answerSchemaEntities: Collection<AnswerSchemaEntity> = emptyList()
+  var answerSchemaEntities: Collection<AnswerSchemaEntity> = emptyList()
 ) : Serializable

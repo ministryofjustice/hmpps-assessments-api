@@ -231,103 +231,73 @@ class AssessmentServiceTest {
 
     @Test
     fun `add new answers to existing question for an episode`() {
-
       val answers = mutableMapOf(
-        existingQuestionUuid to AnswerEntity(
-          freeTextAnswer = "free text",
-          answers = mapOf(existingAnswerUuid to "answer 1")
-        )
+        existingQuestionUuid to AnswerEntity("free text")
       )
       val assessment = assessmentEntity(answers)
 
-      val newAnswerUUID = UUID.randomUUID()
-      val updatedAnswers = UpdateAssessmentEpisodeDto(mapOf(existingQuestionUuid to AnswerDto(freeTextAnswer = "free text", answers = mapOf(existingAnswerUuid to "answer 1", newAnswerUUID to "answer 2"))))
-
-      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
-
-      val episodeDto = assessmentsService.updateEpisode(assessmentUuid, episodeUuid, updatedAnswers)
-
-      assertThat(episodeDto.answers).hasSize(1)
-      val answer = episodeDto.answers[existingQuestionUuid]
-      assertThat(answer?.answers).hasSize(2)
-      assertThat(answer?.answers).containsKey(existingAnswerUuid)
-      assertThat(answer?.answers).containsKey(newAnswerUUID)
-    }
-
-    @Test
-    fun `change an existing answer for an episode`() {
-      val answers = mutableMapOf(
-        existingQuestionUuid to AnswerEntity(
-          freeTextAnswer = "free text",
-          answers = mapOf(existingAnswerUuid to "answer 1")
-        )
-      )
-      val assessment = assessmentEntity(answers)
-
-      val updatedAnswers = UpdateAssessmentEpisodeDto(mapOf(existingQuestionUuid to AnswerDto(freeTextAnswer = "new free text", answers = mapOf(existingAnswerUuid to "new answer"))))
-
-      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
-
-      val episodeDto = assessmentsService.updateEpisode(assessmentUuid, episodeUuid, updatedAnswers)
-
-      assertThat(episodeDto.answers).hasSize(1)
-      val answer = episodeDto.answers.get(existingQuestionUuid)
-      assertThat(answer?.answers).hasSize(1)
-      assertThat(answer?.freeTextAnswer).isEqualTo("new free text")
-      assertThat(answer?.answers).containsKey(existingAnswerUuid)
-      assertThat(answer?.answers).containsValue("new answer")
-    }
-
-    @Test
-    fun `remove answers for an existing question for an episode`() {
-
-      val answers = mutableMapOf(
-        existingQuestionUuid to AnswerEntity(
-          freeTextAnswer = "free text",
-          answers = mapOf(existingAnswerUuid to "answer 1")
-        )
-      )
-      val assessment = assessmentEntity(answers)
-
-      val newAnswerUUID = UUID.randomUUID()
-      val updatedAnswers = UpdateAssessmentEpisodeDto(mapOf(existingQuestionUuid to AnswerDto(freeTextAnswer = "free text", answers = mapOf(newAnswerUUID to "answer 2"))))
-
-      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
-
-      val episodeDto = assessmentsService.updateEpisode(assessmentUuid, episodeUuid, updatedAnswers)
-
-      assertThat(episodeDto.answers).hasSize(1)
-      val answer = episodeDto.answers[existingQuestionUuid]
-      assertThat(answer?.answers).hasSize(1)
-      assertThat(answer?.answers).doesNotContainKey(existingAnswerUuid)
-      assertThat(answer?.answers).containsKey(newAnswerUUID)
-    }
-
-    @Test
-    fun `retain existing questions and answers when not included in update`() {
-
-      val answers = mutableMapOf(
-        existingQuestionUuid to AnswerEntity(
-          freeTextAnswer = "free text"
-        )
-      )
-      val assessment = assessmentEntity(answers)
-
-      val newQuestionUUID = UUID.randomUUID()
-      val newAnswerUUID = UUID.randomUUID()
-      val updatedAnswers = UpdateAssessmentEpisodeDto(mapOf(newQuestionUUID to AnswerDto(freeTextAnswer = "new free text", answers = mapOf(newAnswerUUID to "answer 2"))))
+      val newQuestionUuid = UUID.randomUUID()
+      val updatedAnswers = UpdateAssessmentEpisodeDto(
+        mapOf(newQuestionUuid to listOf("trousers")))
 
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
 
       val episodeDto = assessmentsService.updateEpisode(assessmentUuid, episodeUuid, updatedAnswers)
 
       assertThat(episodeDto.answers).hasSize(2)
-      val existingAnswer = episodeDto.answers[existingQuestionUuid]
-      assertThat(existingAnswer?.freeTextAnswer).isEqualTo("free text")
+      with(episodeDto.answers[existingQuestionUuid]!!.answer) {
+        assertThat(size).isEqualTo(1)
+        assertThat(first()).isEqualTo("free text")
+      }
 
-      val newAnswer = episodeDto.answers[newQuestionUUID]
-      assertThat(newAnswer?.freeTextAnswer).isEqualTo("new free text")
-      assertThat(newAnswer?.answers).containsKey(newAnswerUUID)
+      with(episodeDto.answers[newQuestionUuid]!!.answer) {
+        assertThat(size).isEqualTo(1)
+        assertThat(first()).isEqualTo("trousers")
+      }
+    }
+
+    @Test
+    fun `change an existing answer for an episode`() {
+      val answers = mutableMapOf(
+        existingQuestionUuid to AnswerEntity("free text")
+      )
+      val assessment = assessmentEntity(answers)
+
+      val updatedAnswers = UpdateAssessmentEpisodeDto(
+        mapOf(existingQuestionUuid to listOf("new free text"))
+      )
+
+      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
+
+      val episodeDto = assessmentsService.updateEpisode(assessmentUuid, episodeUuid, updatedAnswers)
+
+      assertThat(episodeDto.answers).hasSize(1)
+      with(episodeDto.answers[existingQuestionUuid]!!.answer) {
+        assertThat(size).isEqualTo(1)
+        assertThat(first()).isEqualTo("new free text")
+      }
+    }
+
+    @Test
+    fun `remove answers for an existing question for an episode`() {
+      val answers = mutableMapOf(
+        existingQuestionUuid to AnswerEntity(listOf("free text", "fruit loops", "biscuits"))
+      )
+      val assessment = assessmentEntity(answers)
+
+      val updatedAnswers = UpdateAssessmentEpisodeDto(
+        mapOf(existingQuestionUuid to listOf("fruit loops", "custard"))
+      )
+
+      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
+
+      val episodeDto = assessmentsService.updateEpisode(assessmentUuid, episodeUuid, updatedAnswers)
+
+      assertThat(episodeDto.answers).hasSize(1)
+      with(episodeDto.answers[existingQuestionUuid]!!.answer) {
+        assertThat(size).isEqualTo(2)
+        assertThat(this).containsAll(listOf("fruit loops", "custard"))
+      }
     }
 
     @Test
@@ -342,9 +312,7 @@ class AssessmentServiceTest {
             endDate = LocalDateTime.now().minusDays(1),
             changeReason = "Change of Circs 2",
             answers = mutableMapOf(
-              existingQuestionUuid to AnswerEntity(
-                freeTextAnswer = "free text"
-              )
+              existingQuestionUuid to AnswerEntity("free text")
             ),
             assessment = AssessmentEntity(assessmentUuid = assessmentUuid)
           )
@@ -366,26 +334,17 @@ class AssessmentServiceTest {
     fun `fetch answers for all episodes`() {
 
       setupQuestionCodes()
-      setupAnswerCodes()
 
       val assessment = AssessmentEntity(
         assessmentId = assessmentId,
         episodes = mutableListOf(
           AssessmentEpisodeEntity(
             episodeId = episodeId1,
-            answers = mutableMapOf(
-              question1Uuid to AnswerEntity(
-                answers = mutableMapOf(answer1Uuid to "")
-              )
-            )
+            answers = mutableMapOf(question1Uuid to AnswerEntity("YES"))
           ),
           AssessmentEpisodeEntity(
             episodeId = episodeId2,
-            answers = mutableMapOf(
-              question2Uuid to AnswerEntity(
-                answers = mutableMapOf(answer2Uuid to "")
-              )
-            )
+            answers = mutableMapOf(question2Uuid to AnswerEntity("NO"))
           )
         )
       )
@@ -395,14 +354,13 @@ class AssessmentServiceTest {
       val result = assessmentsService.getCurrentAssessmentCodedAnswers(assessmentUuid)
 
       assertThat(result.assessmentUuid).isEqualTo(assessmentUuid)
-      assertThat(result.answers["Q1"]?.first()?.answerSchemaCode).isEqualTo("A1")
-      assertThat(result.answers["Q2"]?.first()?.answerSchemaCode).isEqualTo("A2")
+      assertThat(result.answers["Q1"]?.first()?.answerSchemaUuid).isEqualTo(answer1Uuid)
+      assertThat(result.answers["Q2"]?.first()?.answerSchemaUuid).isEqualTo(answer3Uuid)
     }
 
     @Test
     fun `overwrite older episode answers with newer episode answers`() {
       setupQuestionCodes()
-      setupAnswerCodes()
 
       val assessment = AssessmentEntity(
         assessmentId = assessmentId,
@@ -411,27 +369,21 @@ class AssessmentServiceTest {
             episodeId = episodeId1,
             endDate = LocalDateTime.of(2020, 10, 1, 9, 0, 0),
             answers = mutableMapOf(
-              question1Uuid to AnswerEntity(
-                answers = mutableMapOf(answer1Uuid to "")
-              )
+              question1Uuid to AnswerEntity("YES")
             )
           ),
           AssessmentEpisodeEntity(
             episodeId = episodeId3,
             endDate = LocalDateTime.of(2020, 10, 2, 10, 0, 0),
             answers = mutableMapOf(
-              question1Uuid to AnswerEntity(
-                answers = mutableMapOf(answer3Uuid to "")
-              )
+              question1Uuid to AnswerEntity("MAYBE")
             )
           ),
           AssessmentEpisodeEntity(
             episodeId = episodeId2,
             endDate = LocalDateTime.of(2020, 10, 2, 9, 0, 0),
             answers = mutableMapOf(
-              question1Uuid to AnswerEntity(
-                answers = mutableMapOf(answer2Uuid to "")
-              )
+              question1Uuid to AnswerEntity("NO")
             )
           ),
         )
@@ -445,7 +397,6 @@ class AssessmentServiceTest {
     @Test
     fun `overwrite older episode answers latest episode answers`() {
       setupQuestionCodes()
-      setupAnswerCodes()
 
       val assessment = AssessmentEntity(
         assessmentId = assessmentId,
@@ -454,27 +405,21 @@ class AssessmentServiceTest {
             episodeId = episodeId1,
             endDate = LocalDateTime.of(2020, 10, 1, 9, 0, 0),
             answers = mutableMapOf(
-              question1Uuid to AnswerEntity(
-                answers = mutableMapOf(answer1Uuid to "")
-              )
+              question1Uuid to AnswerEntity("YES")
             )
           ),
           AssessmentEpisodeEntity(
             episodeId = episodeId3,
             endDate = null,
             answers = mutableMapOf(
-              question1Uuid to AnswerEntity(
-                answers = mutableMapOf(answer3Uuid to "")
-              )
+              question1Uuid to AnswerEntity("NO")
             )
           ),
           AssessmentEpisodeEntity(
             episodeId = episodeId2,
             endDate = LocalDateTime.of(2020, 10, 2, 9, 0, 0),
             answers = mutableMapOf(
-              question1Uuid to AnswerEntity(
-                answers = mutableMapOf(answer2Uuid to "")
-              )
+              question1Uuid to AnswerEntity("MAYBE")
             )
           ),
         )
@@ -490,7 +435,6 @@ class AssessmentServiceTest {
     fun `only fetch coded answers`() {
 
       setupQuestionCodes()
-      setupAnswerCodes()
 
       val assessment = AssessmentEntity(
         assessmentId = assessmentId,
@@ -498,8 +442,8 @@ class AssessmentServiceTest {
           AssessmentEpisodeEntity(
             episodeId = episodeId1,
             answers = mutableMapOf(
-              question1Uuid to AnswerEntity(answers = mutableMapOf(answer1Uuid to "")),
-              question2Uuid to AnswerEntity(freeTextAnswer = "free text")
+              question1Uuid to AnswerEntity("YES"),
+              question2Uuid to AnswerEntity("free text")
             )
           )
         )
@@ -527,14 +471,16 @@ class AssessmentServiceTest {
           AssessmentEpisodeEntity(
             episodeId = episodeId1,
             answers = mutableMapOf(
-              question1Uuid to AnswerEntity(answers = mutableMapOf(answer1Uuid to ""))
+              question1Uuid to AnswerEntity("YES")
             )
           )
         )
       )
 
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
-      assertThatThrownBy { assessmentsService.getCurrentAssessmentCodedAnswers(assessmentUuid) }
+      assertThatThrownBy {
+        assessmentsService.getCurrentAssessmentCodedAnswers(assessmentUuid)
+      }
         .isInstanceOf(IllegalStateException::class.java)
         .hasMessage("Question Code not found for UUID $question1Uuid")
     }
@@ -553,7 +499,7 @@ class AssessmentServiceTest {
           AssessmentEpisodeEntity(
             episodeId = episodeId1,
             answers = mutableMapOf(
-              question1Uuid to AnswerEntity(answers = mutableMapOf(answer1Uuid to ""))
+              question1Uuid to AnswerEntity("YES")
             )
           )
         )
@@ -561,7 +507,7 @@ class AssessmentServiceTest {
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
       assertThatThrownBy { assessmentsService.getCurrentAssessmentCodedAnswers(assessmentUuid) }
         .isInstanceOf(IllegalStateException::class.java)
-        .hasMessage("Answer Code not found for UUID $answer1Uuid")
+        .hasMessage("Answer Code not found for question $question1Uuid answer value YES")
     }
   }
 
@@ -572,7 +518,7 @@ class AssessmentServiceTest {
     fun `should update OASys if OASysSet stored against episode`() {
 
       setupQuestionCodes()
-      setupAnswerCodes()
+
       val episode = AssessmentEpisodeEntity(
         episodeId = episodeId1,
         assessmentType = AssessmentType.SHORT_FORM_PSR,
@@ -586,9 +532,8 @@ class AssessmentServiceTest {
 
     @Test
     fun `should not update OASys if no OASysSet stored against episode`() {
-
       setupQuestionCodes()
-      setupAnswerCodes()
+
       val episode = AssessmentEpisodeEntity(
         oasysSetPk = oasysSetPk
       )
@@ -599,25 +544,11 @@ class AssessmentServiceTest {
     }
 
     @Test
-    fun `should create Oasys Answer from Answer schema`() {
-
-      val answerSchema = AnswerSchemaEntity(value = "YES", answerSchemaId = 1, answerSchemaUuid = answer1Uuid, answerSchemaCode = "A1", answerSchemaGroup = AnswerSchemaGroupEntity(answerSchemaId = 1, answerSchemaGroupUuid = UUID.randomUUID()))
-      val mapping = OASysMappingEntity(sectionCode = "1", questionCode = "R1.3", logicalPage = 1, fixed_field = false, mappingId = 1, questionSchema = QuestionSchemaEntity(questionSchemaId = 1))
-
-      val result = assessmentsService.mapOasysAnswer(mapping, null, setOf(answerSchema), "radios")[0]
-      assertThat(result.answer).isEqualTo("YES")
-      assertThat(result.logicalPage).isEqualTo(1)
-      assertThat(result.isStatic).isFalse()
-      assertThat(result.questionCode).isEqualTo("R1.3")
-      assertThat(result.sectionCode).isEqualTo("1")
-    }
-
-    @Test
     fun `should create Oasys Answer from free text answer`() {
 
       val answerSchema = AnswerSchemaEntity(value = "YES", answerSchemaId = 1, answerSchemaUuid = answer1Uuid, answerSchemaCode = "A1", answerSchemaGroup = AnswerSchemaGroupEntity(answerSchemaId = 1, answerSchemaGroupUuid = UUID.randomUUID()))
       val mapping = OASysMappingEntity(sectionCode = "1", questionCode = "R1.3", logicalPage = 1, fixed_field = false, mappingId = 1, questionSchema = QuestionSchemaEntity(questionSchemaId = 1))
-      val result = assessmentsService.mapOasysAnswer(mapping, "Free Text", setOf(answerSchema), "radios")[0]
+      val result = assessmentsService.mapOasysAnswer(mapping, listOf("Free Text"), "radios")[0]
       assertThat(result.answer).isEqualTo("Free Text")
       assertThat(result.logicalPage).isEqualTo(1)
       assertThat(result.isStatic).isFalse()
@@ -628,23 +559,25 @@ class AssessmentServiceTest {
     @Test
     fun `should create Oasys Answer with correct date format`() {
       val mapping = OASysMappingEntity(sectionCode = "1", questionCode = "R1.3", logicalPage = 1, fixed_field = false, mappingId = 1, questionSchema = QuestionSchemaEntity(questionSchemaId = 1))
-      val result = assessmentsService.mapOasysAnswer(mapping, "1975-01-20T00:00:00.000Z", emptySet(), "date")[0]
+      val result = assessmentsService.mapOasysAnswer(mapping, listOf("1975-01-20T00:00:00.000Z"), "date")[0]
       assertThat(result.answer).isEqualTo("20/01/1975")
     }
   }
 
-  private fun setupAnswerCodes() {
-    every { questionService.getAllAnswers() } returns listOf(
-      AnswerSchemaEntity(answerSchemaId = 1, answerSchemaUuid = answer1Uuid, answerSchemaCode = "A1", answerSchemaGroup = AnswerSchemaGroupEntity(answerSchemaId = 1, answerSchemaGroupUuid = UUID.randomUUID())),
-      AnswerSchemaEntity(answerSchemaId = 2, answerSchemaUuid = answer2Uuid, answerSchemaCode = "A2", answerSchemaGroup = AnswerSchemaGroupEntity(answerSchemaId = 2, answerSchemaGroupUuid = UUID.randomUUID())),
-      AnswerSchemaEntity(answerSchemaId = 3, answerSchemaUuid = answer3Uuid, answerSchemaCode = "A3", answerSchemaGroup = AnswerSchemaGroupEntity(answerSchemaId = 2, answerSchemaGroupUuid = UUID.randomUUID())),
-    )
-  }
-
   private fun setupQuestionCodes() {
+    val group1 = AnswerSchemaGroupEntity(answerSchemaId = 1)
+    val group2 = AnswerSchemaGroupEntity(answerSchemaId = 2)
+
+    val yes = AnswerSchemaEntity(answerSchemaId = 1, answerSchemaUuid = answer1Uuid, value = "YES", answerSchemaGroup = group1)
+    val maybe = AnswerSchemaEntity(answerSchemaId = 2, answerSchemaUuid = answer2Uuid, value = "MAYBE", answerSchemaGroup = group2)
+    val no = AnswerSchemaEntity(answerSchemaId = 3, answerSchemaUuid = answer3Uuid, value = "NO", answerSchemaGroup = group2)
+
+    group1.answerSchemaEntities = listOf(yes)
+    group2.answerSchemaEntities = listOf(maybe, no)
+
     every { questionService.getAllQuestions() } returns listOf(
-      QuestionSchemaEntity(questionSchemaId = 1, questionSchemaUuid = question1Uuid, questionCode = "Q1"),
-      QuestionSchemaEntity(questionSchemaId = 2, questionSchemaUuid = question2Uuid, questionCode = "Q2")
+      QuestionSchemaEntity(questionSchemaId = 1, questionSchemaUuid = question1Uuid, questionCode = "Q1", answerSchemaGroup = group1),
+      QuestionSchemaEntity(questionSchemaId = 2, questionSchemaUuid = question2Uuid, questionCode = "Q2", answerSchemaGroup = group2)
     )
   }
 

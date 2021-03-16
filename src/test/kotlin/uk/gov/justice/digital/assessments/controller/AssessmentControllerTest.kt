@@ -167,7 +167,7 @@ class AssessmentControllerTest : IntegrationTest() {
     fun `updates episode answers`() {
       val newQuestionUUID = UUID.randomUUID()
       val updateEpisodeDto = UpdateAssessmentEpisodeDto(
-        mapOf(newQuestionUUID to AnswerDto(freeTextAnswer = "new free text"))
+        mapOf(newQuestionUUID to listOf("new free text"))
       )
       val episode = webTestClient.post().uri("/assessments/2e020e78-a81c-407f-bc78-e5f284e237e5/episodes/f3569440-efd5-4289-8fdd-4560360e5259")
         .bodyValue(updateEpisodeDto)
@@ -179,17 +179,17 @@ class AssessmentControllerTest : IntegrationTest() {
         .responseBody
 
       assertThat(episode).isNotNull
-      assertThat(episode.answers).containsKey(newQuestionUUID)
+      assertThat(episode?.answers).containsKey(newQuestionUUID)
 
-      val answer = episode.answers.get(newQuestionUUID)!!
-      assertThat(answer.freeTextAnswer).isEqualTo("new free text")
+      val answer = episode?.answers?.get(newQuestionUUID)!!
+      assertThat(answer.answer.size).isEqualTo(1)
+      assertThat(answer.answer.first()).isEqualTo("new free text")
     }
 
     @Test
     fun `does not update episode answers if episode is closed`() {
       val newQuestionUUID = UUID.randomUUID()
-      val newAnswerUUID = UUID.randomUUID()
-      val updateEpisodeDto = UpdateAssessmentEpisodeDto(mapOf(newQuestionUUID to AnswerDto(freeTextAnswer = "new free text", answers = mapOf(newAnswerUUID to "answer 2"))))
+      val updateEpisodeDto = UpdateAssessmentEpisodeDto(mapOf(newQuestionUUID to listOf("new free text")))
       webTestClient.post().uri("/assessments/2e020e78-a81c-407f-bc78-e5f284e237e5/episodes/d7aafe55-0cff-4f20-a57a-b66d79eb9c91")
         .bodyValue(updateEpisodeDto)
         .headers(setAuthorisation())
