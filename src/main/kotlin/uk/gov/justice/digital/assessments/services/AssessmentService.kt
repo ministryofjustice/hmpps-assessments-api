@@ -111,12 +111,15 @@ class AssessmentService(
 
     episode.answers?.forEach { episodeAnswer ->
       val question = questions.firstOrNull { it.questionSchemaUuid == episodeAnswer.key }
-      val questionCode = question?.questionCode
-        ?: throw IllegalStateException("Question Code not found for UUID ${episodeAnswer.key}")
+        ?: throw IllegalStateException("Question not found for UUID ${episodeAnswer.key}")
 
-      val answerSchema = matchAnswers(episodeAnswer, question)
-      if (answerSchema.isNotEmpty()) {
-        answers[questionCode] = AnswerSchemaDto.from(answerSchema)
+      if (question.answerSchemaGroup != null) {
+        val questionCode = question?.questionCode
+          ?: throw IllegalStateException("Question Code not found for UUID ${episodeAnswer.key}")
+        val answerSchema = matchAnswers(episodeAnswer, question)
+        if (answerSchema.isNotEmpty()) {
+          answers[questionCode] = AnswerSchemaDto.from(answerSchema)
+        }
       }
     }
 

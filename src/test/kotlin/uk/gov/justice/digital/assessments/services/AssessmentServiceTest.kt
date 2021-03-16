@@ -66,11 +66,11 @@ class AssessmentServiceTest {
 
   private val episodeUuid = UUID.randomUUID()
 
-  private val existingAnswerUuid = UUID.randomUUID()
   private val existingQuestionUuid = UUID.randomUUID()
 
   private val question1Uuid = UUID.randomUUID()
   private val question2Uuid = UUID.randomUUID()
+  private val question3Uuid = UUID.randomUUID()
   private val answer1Uuid = UUID.randomUUID()
   private val answer2Uuid = UUID.randomUUID()
   private val answer3Uuid = UUID.randomUUID()
@@ -376,14 +376,14 @@ class AssessmentServiceTest {
             episodeId = episodeId3,
             endDate = LocalDateTime.of(2020, 10, 2, 10, 0, 0),
             answers = mutableMapOf(
-              question1Uuid to AnswerEntity("MAYBE")
+              question2Uuid to AnswerEntity("MAYBE")
             )
           ),
           AssessmentEpisodeEntity(
             episodeId = episodeId2,
             endDate = LocalDateTime.of(2020, 10, 2, 9, 0, 0),
             answers = mutableMapOf(
-              question1Uuid to AnswerEntity("NO")
+              question2Uuid to AnswerEntity("NO")
             )
           ),
         )
@@ -391,7 +391,8 @@ class AssessmentServiceTest {
 
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
       val result = assessmentsService.getCurrentAssessmentCodedAnswers(assessmentUuid)
-      assertThat(result.answers["Q1"]?.first()?.answerSchemaCode).isEqualTo("A3")
+      assertThat(result.answers["Q1"]?.first()?.answerSchemaUuid).isEqualTo(answer1Uuid)
+      assertThat(result.answers["Q2"]?.first()?.answerSchemaUuid).isEqualTo(answer2Uuid)
     }
 
     @Test
@@ -443,7 +444,7 @@ class AssessmentServiceTest {
             episodeId = episodeId1,
             answers = mutableMapOf(
               question1Uuid to AnswerEntity("YES"),
-              question2Uuid to AnswerEntity("free text")
+              question3Uuid to AnswerEntity("free text")
             )
           )
         )
@@ -453,14 +454,14 @@ class AssessmentServiceTest {
       val result = assessmentsService.getCurrentAssessmentCodedAnswers(assessmentUuid)
 
       assertThat(result.assessmentUuid).isEqualTo(assessmentUuid)
-      assertThat(result.answers["Q1"]?.first()?.answerSchemaCode).isEqualTo("A1")
+      assertThat(result.answers["Q1"]?.first()?.answerSchemaUuid).isEqualTo(answer1Uuid)
       assertThat(result.answers).doesNotContainKey("Q2")
     }
 
     @Test
     fun `throw exception when question code lookup fails`() {
       every { questionService.getAllQuestions() } returns listOf(
-        QuestionSchemaEntity(questionSchemaId = 2, questionSchemaUuid = question2Uuid, questionCode = "Q2")
+        QuestionSchemaEntity(questionSchemaId = 2, questionSchemaUuid = question2Uuid, answerSchemaGroup = AnswerSchemaGroupEntity(1))
       )
 
       every { questionService.getAllAnswers() } returns listOf()
@@ -471,7 +472,7 @@ class AssessmentServiceTest {
           AssessmentEpisodeEntity(
             episodeId = episodeId1,
             answers = mutableMapOf(
-              question1Uuid to AnswerEntity("YES")
+              question2Uuid to AnswerEntity("YES")
             )
           )
         )
@@ -482,7 +483,7 @@ class AssessmentServiceTest {
         assessmentsService.getCurrentAssessmentCodedAnswers(assessmentUuid)
       }
         .isInstanceOf(IllegalStateException::class.java)
-        .hasMessage("Question Code not found for UUID $question1Uuid")
+        .hasMessage("Question Code not found for UUID $question2Uuid")
     }
 
     @Test
@@ -577,7 +578,8 @@ class AssessmentServiceTest {
 
     every { questionService.getAllQuestions() } returns listOf(
       QuestionSchemaEntity(questionSchemaId = 1, questionSchemaUuid = question1Uuid, questionCode = "Q1", answerSchemaGroup = group1),
-      QuestionSchemaEntity(questionSchemaId = 2, questionSchemaUuid = question2Uuid, questionCode = "Q2", answerSchemaGroup = group2)
+      QuestionSchemaEntity(questionSchemaId = 2, questionSchemaUuid = question2Uuid, questionCode = "Q2", answerSchemaGroup = group2),
+      QuestionSchemaEntity(questionSchemaId = 3, questionSchemaUuid = question3Uuid)
     )
   }
 
