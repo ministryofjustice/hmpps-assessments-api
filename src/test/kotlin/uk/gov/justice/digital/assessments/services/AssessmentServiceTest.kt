@@ -413,14 +413,14 @@ class AssessmentServiceTest {
             episodeId = episodeId3,
             endDate = null,
             answers = mutableMapOf(
-              question1Uuid to AnswerEntity("NO")
+              question2Uuid to AnswerEntity("NO")
             )
           ),
           AssessmentEpisodeEntity(
             episodeId = episodeId2,
             endDate = LocalDateTime.of(2020, 10, 2, 9, 0, 0),
             answers = mutableMapOf(
-              question1Uuid to AnswerEntity("MAYBE")
+              question2Uuid to AnswerEntity("MAYBE")
             )
           ),
         )
@@ -429,7 +429,8 @@ class AssessmentServiceTest {
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
 
       val result = assessmentsService.getCurrentAssessmentCodedAnswers(assessmentUuid)
-      assertThat(result.answers["Q1"]?.first()?.answerSchemaCode).isEqualTo("A3")
+      assertThat(result.answers["Q1"]?.first()?.answerSchemaUuid).isEqualTo(answer1Uuid)
+      assertThat(result.answers["Q2"]?.first()?.answerSchemaUuid).isEqualTo(answer3Uuid)
     }
 
     @Test
@@ -488,11 +489,7 @@ class AssessmentServiceTest {
 
     @Test
     fun `throw exception when answer code lookup fails`() {
-      every { questionService.getAllQuestions() } returns listOf(
-        QuestionSchemaEntity(questionSchemaId = 1, questionSchemaUuid = question1Uuid, questionCode = "Q1")
-      )
-
-      every { questionService.getAllAnswers() } returns listOf()
+      setupQuestionCodes()
 
       val assessment = AssessmentEntity(
         assessmentId = assessmentId,
@@ -500,7 +497,7 @@ class AssessmentServiceTest {
           AssessmentEpisodeEntity(
             episodeId = episodeId1,
             answers = mutableMapOf(
-              question1Uuid to AnswerEntity("YES")
+              question1Uuid to AnswerEntity("NO")
             )
           )
         )
@@ -508,7 +505,7 @@ class AssessmentServiceTest {
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
       assertThatThrownBy { assessmentsService.getCurrentAssessmentCodedAnswers(assessmentUuid) }
         .isInstanceOf(IllegalStateException::class.java)
-        .hasMessage("Answer Code not found for question $question1Uuid answer value YES")
+        .hasMessage("Answer Code not found for question $question1Uuid answer value NO")
     }
   }
 
