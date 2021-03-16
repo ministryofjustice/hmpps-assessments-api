@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.assessments.api
 
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.DisplayName
 import uk.gov.justice.digital.assessments.jpa.entities.GroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionGroupEntity
