@@ -11,7 +11,7 @@ import uk.gov.justice.digital.assessments.services.exceptions.OASysClientExcepti
 import uk.gov.justice.digital.assessments.services.exceptions.UserNotAuthorisedException
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 
-class AssessmentUpdateClientTest : IntegrationTest() {
+class OASysUpdateClientTest : IntegrationTest() {
   @Autowired
   internal lateinit var assessmentUpdateRestClient: AssessmentUpdateRestClient
 
