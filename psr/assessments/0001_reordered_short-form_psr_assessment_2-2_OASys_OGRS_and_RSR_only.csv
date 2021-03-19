@@ -1,4 +1,4 @@
-Re-ordered Oral & Short-form PSR assessment content v2.2 OASys OGRS & RSR only,,,,,,,,,,,,,,,,,,,,,,,,,,
+Re-ordered Oral & Short-form PSR assessment content v3.0 OASys RSR & ROSHa only,,,,,,,,,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,,
 ,,,,,,,,,,,,,,,,,,,,,,,,,,
@@ -7,6 +7,7 @@ Question or information,Content ref.,Short-format PSR (Delius),Offender Group Re
 (note that items marked out-of-line will show elsewhere on the page)",Notes,Spec ref.,OASys ref.,Value passed from OASys to RSR calculation,Mandatory for minimum OASys,Potentially exposed to changes to answer reference data?,Pre-populated?,Type (assumes new case),Taxonomy classification,Validated OASys Field,OASys Fixed Field Name ,
 1. Individual and case details,S1,,,,,,,,,,,,,,,,,,,,,,,,,
 [Name of person]'s details,S1.1,,,,,,,,,,,,,,,,,,,,,,,,,
+Personal details,ui,,,,,,,,Personal details,,,,presentation: heading,,,,,,,,,,,,,
 Family name,3.1,X,X,X,X,X,X,"Family name
 Surname",Family name or names,N/A ,N/A,Covers cases where a person may have more than one family name (not aliases),"Free text, read only",None,,ID.1,oasys_set.family_name,,X,,Y,I,Name,x,OFFIN/family_name,
 Surname (aliases),5.1,,,,,,X,Surname (aliases),Family name (aliases),N/A ,N/A,Culturally neutral,"Free text, read only",None,,ID.3,offender_alias_in_set.alias_family_name,,,,Y,I,Name,x,,
@@ -16,8 +17,10 @@ First name","First name or names
 ",N/A ,N/A,Covers cases where a person may have more than one first name (not aliases),"Free text, read only",None,,ID.2,oasys_set.forename_1,,X,,Y,I,Name,x,OFFIN/forename,
 Forename (aliases),4.1,,,,,,X,Forename (aliases),First name (aliases),N/A ,N/A,Culturally neutral,"Free text, read only",None,,ID.4,offender_alias_in_set.alias_forename_1,,,,Y,I,Name,x,,
 Date of birth,6.1,X,X,X,X,X,,"Date of birth
-DOB",Date of birth,N/A ,N/A,Avoid initialisms and acronyms,Date ,None,,,,OASYS_SET.DATE_OF_BIRTH,,,Y,I,Biometric,Banner Data,OFFIN/date_of_birth,
-Age,7.1,X,X,X,X,X,,Age,Age,N/A ,N/A,Consistency,Numeric,None,,,,,,,Y,I,Biometric,Banner Data,,
+DOB",Date of birth,N/A ,N/A,Avoid initialisms and acronyms,"Date, read only ",None,,,,OASYS_SET.DATE_OF_BIRTH,,,Y,I,Biometric,Banner Data,OFFIN/date_of_birth,
+Age,7.1,X,X,X,X,X,,Age,Age,N/A ,N/A,Consistency,"Numeric, read only",None,,,,,,,Y,I,Biometric,Banner Data,,
+page divider,ui,,,,,,,,,,,,presentation: divider,,,,,,,,,,,,,
+Record details,ui,,,,,,,,Record details,,,,presentation: heading,,,,,,,,,,,,,
 Gender,8.1,,X,,,,X,"Gender
 ",Gender,N/A ,N/A,Consistency,"Text, drop-down, read only
 TBC",None,,ID.7,oasys_set.gender_elm,OASYS_SET.GENDER converted from code to text description (upper case),X,,Y,I,Biometric,x,OFFIN/gender,
@@ -27,7 +30,9 @@ Criminal Records Office (CRO) Number,12.1,,,,,,X,Criminal Records Office (CRO) N
 Probation Case Reference Number/CRN,13.1,,,,,,X,Probation Case Reference Number,Probation Case Reference Number,N/A ,N/A,Consistency,Alphanumeric? read only,None,,ID.11,oasys_set.cms_prob_number,,X,,Y,I,Identifiers,x,OFFIN/crn,
 Nomis ID,,,,,,,,,,N/A ,N/A,,Read only ,,Only populated when offender has come from Prison,,,,,,,,,x,,
 CRN,10.1,X,X,X,X,X,,"Delius CRN
-CRN",CRN,N/A ,N/A,Simplicity,Alphanumeric,None,,,,,,,Y,I,Identifiers,Banner Data,,
+CRN",CRN,N/A ,N/A,Simplicity,"Alphanumeric, read only",None,,,,,,,Y,I,Identifiers,Banner Data,,
+page divider,ui,,,,,,,,,,,,presentation: divider,,,,,,,,,,,,,
+Contact details,ui,,,,,,,,Contact details,,,,presentation: heading,,,,,,,,,,,,,
 Address,14.1,X,X,X,X,X,X,"Address
 Address + postcode",Address,N/A if pre-populated,N/A if pre-populated,Consistency,"Alphanumeric, read only",None,6 lines inc. postcode,ID.15,"oasys_set.current_addess_line1 - line6, current_post_code",,,,Y,I,Address,x,,
 Assessment details,S1.2,,,,,,,,,,,,,,,,,,,,,,,,,
@@ -45,10 +50,10 @@ Signing history,33.1,,,,,,X,Signing history,Signing history,N/A if pre-populated
 Date report completed and signed,24.1,,,X,X,X,X,"Completion date
 Date report completed and signed
 Date assessment completed",Date report completed and signed,N/A if pre-populated,N/A if pre-populated,Clarity,Date,None,Out of scope - will be responsibility of PIC team. The system may automatically record this? Once the question part is finished and 'sent' is it deemed to be 'signed'?,,NOT HELD,,X,,Y,I,Report details,,,
-2. Sources of information,S2,,,,,,,,,,,,,,,,,,,,,,,,,
+Sources of information,S2,,,,,,,,,,,,,,,,,,,,,,,,,
 Select sources,S2.1,,,,,,,,,,,,,,,,,,,,,,,,,
-Source,298.1,,,,,,X,Sources of information,Sources of information,Select sources of information,Select sources of information,Consistency,"Check Boxes:
-Bail inormation record
+Source,298.1,,,,,,X,Sources of information,Sources of information,,,Consistency,"Checkboxes:
+Bail information record
 Basic custody screening
 Community payback
 Hostel
@@ -69,8 +74,8 @@ Psychology
 Request for information
 Victim statement
 Other",None,,ID.45,"Each individual source held, sources_information_pivot.sources_information_ELM",,,,N,Q,Information sources,x,PROPIN/sources_info,
-Give details,299.1,,,,,,X,N/A,Give details,Enter details,Enter details,Consistency,Free text,None,Static free text box with 4000 character limit,ID.46,sources_info_other_ftxt,,,,N,Q,Information sources,x,PROPIN/sources_other_text,
-"3. Offences, convictions and needs",S3,,,,,,,,,,,,,,,,,,,,,,,,,
+Give details,299.1,,,,,,X,N/A,Give details,,,Consistency,textarea,None,Static free text box with 4000 character limit,ID.46,sources_info_other_ftxt,,,,N,Q,Information sources,x,PROPIN/sources_other_text,
+"Offences, convictions and needs",S3,,,,,,,,,,,,,,,,,,,,,,,,,
 Offences and convictions,S3.1,,,,,,,,,,,,,,,,,,,,,,,,,
 PSR/Court considered offence (Primary/most serious offence as judged by assessor),35.1,,X,,,,X,PSR/Court considered offence (Primary/most serious offence as judged by assessor),PSR or Court considered offence (Primary or most serious offence as judged by assessor),N/A if pre-populated,N/A if pre-populated,"Avoid use of slashes
 Avoid use of parentheses","See OASys screens.
@@ -86,23 +91,66 @@ Both fields displaying (numeric?) code values
 (Free text?) fields to right of each '+' sign
 button",None,,ID.44,1.1,"This is the offence code and subcode concatenated together taken from the CURRENT EVENT eg. 17505
 
-NOTE: the RSR code will then need to work out if the offence is violent or not.  The RSR code package will need to work this out reading the CT_OFFENCE record and using the value in RSR_OFFENCE_CATEGORY accordingly. 
+NOTE: the RSR code will then need to work out if the offence is violent or not.  The RSR code package will need to work this out reading the CT_OFFENCE record and using the value in RSR_OFFENCE_CATEGORY accordingly.
 
 This requires update to CT_OFFENCE table – JIRA NOD-294 which is part of 6.21 release
 ",,,Y,I,Offence details,x,,
 "Number of court appearances at which convicted, or received a conditional or absolute discharge aged under 18 years",43.1,,,,,,X,"Number of court appearances at which convicted, or received a conditional or absolute discharge aged under 18 years","Number of court appearances at which convicted, or received a conditional or absolute discharge aged under 18 years","Enter the number of court appearances at which convicted, or received a conditional or absolute discharge aged under 18 years","Enter the number of court appearances at which convicted, or received a conditional or absolute discharge aged under 18 years",Consistency,Numeric,None,,S1.34,1.5,,,,N,Q,Court appearances and convictions,x,,
 "Number of court appearances at which convicted, or received a conditional or absolute discharge aged 18 years and over. Do not include current appearances.",44.1,,,,,,X,"Number of court appearances at which convicted, or received a conditional or absolute discharge aged 18 years and over. Do not include current appearances.","Number of court appearances at which convicted, or received a conditional or absolute discharge aged 18 years and over. Do not include current appearances.","Enter the number of court appearances at which convicted, or received a conditional or absolute discharge aged 18 years and over. Do not include current appearances.","Enter the number of court appearances at which convicted, or received a conditional or absolute discharge aged 18 years and over. Do not include current appearances.",Consistency,Numeric,None,,S1.36,1.6,,,,N,Q,Court appearances and convictions,x,,
-"Age at first conviction, conditional or absolute discharge (record in years)",45.1,,,,,,X,"Age at first conviction, conditional or absolute discharge (record in years)","Age at first conviction, conditional or absolute discharge (record in years)",Enter age,Enter age,Shorter. 'record in years' instruction can be shown in grey text,Numeric,None,,S1.38,1.7,"ARN Content ref. 45.1 Age at first conviction, conditional or absolute discharge (record in years)
-Pass blank if the question has NOT been answered 
+Date of first sanction,291.1,,,,,,X,Date of first sanction,Date of first sanction,"[Business Rule - Must not be a date in the future]
+The date of first sanction must not be in the future
+
+[Business rule - Must be a date greater than offender DOB]
+The date of first sanction must be later than the individual's date of birth","[Business Rule - Must not be a date in the future]
+The date of first sanction must not be in the future
+
+[Business rule - Must be a date greater than offender DOB] The date of first sanction must be later than the individual's date of birth",,Date,"Populates offenders age 'Age at first conviction' ref 45.1
+
+Business Rule - Must not be a date in the future
+
+Business rule - Must be a date greater than offender DOB
+
+",,S1.38,1.7,,,,N,,Court appearances and convictions,x,,
+"Age at first conviction, conditional or absolute discharge (record in years)",45.1,,,,,,X,"Age at first conviction, conditional or absolute discharge (record in years)","Age at first conviction, conditional or absolute discharge (record in years)",N/A as pre-populated,N/A as pre-populated,Shorter. 'record in years' instruction can be shown in grey text,Numeric (read only),Calculation based on offenders DOB and date of first conviction entered in ref 291.1 = age displayed,,S1.38,1.7,"ARN Content ref. 45.1 Age at first conviction, conditional or absolute discharge (record in years)
+Pass blank if the question has NOT been answered
 otherwise pass the number",,,N,Q,Court appearances and convictions,x,,
 "Number of previous formal cautions, reprimands and final warnings",46.1,,,,,,X,"Number of previous formal cautions, reprimands and final warnings","Number of previous formal cautions, reprimands and final warnings","Enter the number of previous formal cautions, reprimands and final warnings","Enter the number of previous formal cautions, reprimands and final warnings",Consistency,Numeric,None,,S1.42,1.24,,,,N,Q,Court appearances and convictions,To be removed?,Being replaced with 1 question - Total number of sanctions,
-"How many of the sum [1.5, 1.6 and 1.24] previous convictions, conditional or absolute discharges, cautions, reprimands or final warnings included any violent offences?",47.1,,,,,,X,"How many of the sum of previous convictions, conditional or absolute discharges, cautions, reprimands or final warnings included any violent offences?","How many of the sum of previous convictions, conditional or absolute discharges, cautions, reprimands or final warnings included any violent offences?","Enter the sum of previous convictions, conditional or absolute discharges, cautions, reprimands or final warnings included any violent offences","Enter the sum of previous convictions, conditional or absolute discharges, cautions, reprimands or final warnings included any violent offences",Simpler. Will require the screen layout to show the details for each field that needs to be analysed for the required figure.,Numeric,None,"Need to specifiy which fields in the ARN system relate to 1.5, 1.6 and 1.24 in OASys",S1.43,1.26,"1.26 How many of the sum [OASys ref. 1.5, 1.6 and 1.24]  [ARN content ref. 43.1, 44.1 and 46.1] previous convictions, conditional or absolute discharges, cautions, reprimands or final warnings included any violent offences?
+"How many of the sum [1.5, 1.6 and 1.24] previous convictions, conditional or absolute discharges, cautions, reprimands or final warnings included any violent offences?",47.1,,,,,,X,"How many of the sum of previous convictions, conditional or absolute discharges, cautions, reprimands or final warnings included any violent offences?","How many of the sum of previous convictions, conditional or absolute discharges, cautions, reprimands or final warnings included any violent offences?","[If blank]
+Enter the sum of previous convictions, conditional or absolute discharges, cautions, reprimands or final warnings that included any violent offences
+
+[If more than sum of all convictions]
+Number cannot be more than the sum of previous convictions, conditional or absolute discharges, cautions, reprimands or final warnings ","[If blank]
+Enter the sum of previous convictions, conditional or absolute discharges, cautions, reprimands or final warnings that included any violent offences
+
+[If more than sum of all convictions]
+Number cannot be more than the sum of previous convictions, conditional or absolute discharges, cautions, reprimands or final warnings ",Simpler. Will require the screen layout to show the details for each field that needs to be analysed for the required figure.,Numeric,"must be between 0 and the sum of 43.1, 44.1 & 46.1","Need to specifiy which fields in the ARN system relate to 1.5, 1.6 and 1.24 in OASys",S1.43,1.26,"1.26 How many of the sum [OASys ref. 1.5, 1.6 and 1.24]  [ARN content ref. 43.1, 44.1 and 46.1] previous convictions, conditional or absolute discharges, cautions, reprimands or final warnings included any violent offences?
 
 PLUS add 1 if the current offence is a violent type.
 NOTE: this also includes checking of any additional offence attached to the current event (as per the OVP calculation).
 
 Pass blank if question 1.26 has NOT been answered otherwise pass the resulting number",,,N,Q,Court appearances and convictions,To be removed?,Being replaced with 1 question - Total number of sanctions,
-Date of current conviction,48.1,,X,,,,X,Date of current conviction,Date of current conviction,Add date of current conviction,Add date of current conviction,Consistency,Date,None,,OGRS3,1.29,"ARN Content ref. 48.1 Date of current conviction
+Date of current conviction,48.1,,X,,,,X,Date of current conviction,Date of current conviction,"Business Rule - Must not be a date in the future]
+The current conviction date must not be in the future
+
+[Business rule - Must be a date greater than offender DOB]
+The current conviction date must be later than the individual's date of birth
+
+[Business rule - The offender's age at current conviction (<displays age with a minus sign>) must not be less than the offender's age at first conviction]
+The individual's age (calculated from the date of current conviction) would be (x years) less than their age at first conviction. Change the current conviction date to correct this.
+","Business Rule - Must not be a date in the future]
+The current conviction date must not be in the future
+
+[Business rule - Must be a date greater than offender DOB]
+The current conviction date must be later than the individual's date of birth
+
+[Business rule - The offender's age at current conviction (<displays age with a minus sign>) must not be less than the offender's age at first conviction]
+The individual's age (calculated from the date of current conviction) would be (x years) less than their age at first conviction. Change the current conviction date to correct this.",Consistency,Date,"Business rule - Must not be a date in the future
+
+Business rule - Must be a date greater than offender DOB
+
+Business rule - The offender's age at current conviction (<displays age with a minus sign>) must not be less than the offender's age at first conviction
+
+",,OGRS3,1.29,"ARN Content ref. 48.1 Date of current conviction
 Pass blank or date",,,N,Q,Court apperances & convictions,x,,
 Have they ever committed a sexual or sexually motivated offence?,59.1,,,,,,X,Have they ever committed a sexual or sexually motivated offence?,Have they ever committed a sexual or sexually motivated offence?,Select yes or no (sexual or sexually-motivated offence),Select yes or no,Consistency,Y/N,"If Y then display questions
 61.1
@@ -126,13 +174,28 @@ Number of previous or current sanctions involving contact adult sexual or sexual
 Pass blank if the question has NOT been answered otherwise pass the number",,,N,Q,Offence and sentence,x,,
 Number of previous or current sanctions involving contact child sexual or sexually motivated offences,64.1,,,,,,X,Number of previous/current sanctions involving contact child sexual offences,Number of previous or current sanctions involving contact child sexual or sexually motivated offences,Enter the number of previous or current sanctions involving contact child sexual or sexually motivated offences,Enter the number of previous or current sanctions involving contact child sexual or sexually offences,Clarity,Numeric,None,,RSR,1.35,"ARN content ref. 64.1 Number of previous/current sanctions involving contact child sexual/sexually motivated offences.
 Pass blank if the question has NOT been answered otherwise pass the number",,,N,Q,Offence and sentence,x,,
-Number of previous or current sanctions involving indecent child image sexual or sexually motivted offences,65.1,,,,,,X,Number of previous/current sanctions involving indecent image sexual offences,Number of previous or current sanctions involving indecent child image sexual or sexually motivted offences,Enter the number of previous or current sanctions involving indecent child image sexual or sexually motivated offences,Enter the number of previous or current sanctions involving indecent child image sexual or sexually motivated offences,Clarity,Numeric,None,,RSR,1.36,"ARN content ref. 65.1 Number of previous/current sanctions involving indecent child image sexual/sexually motivated offences.
+Number of previous or current sanctions involving indecent child image sexual or sexually motivted offences,65.1,,,,,,X,Number of previous/current sanctions involving indecent image sexual offences,Number of previous or current sanctions involving indecent child image sexual or sexually motivated offences,Enter the number of previous or current sanctions involving indecent child image sexual or sexually motivated offences,Enter the number of previous or current sanctions involving indecent child image sexual or sexually motivated offences,Clarity,Numeric,None,,RSR,1.36,"ARN content ref. 65.1 Number of previous/current sanctions involving indecent child image sexual/sexually motivated offences.
 Pass blank if the question has NOT been answered otherwise pass the number",,,N,Q,Offence and sentence,x,,
-Number of previous or current sanctions involving other non-contact sexual or sexually motivated offences,66.1,,,,,,X,Number of previous/current sanctions involving paraphilia sexual offences,Number of previous or current sanctions involving other non-contact sexual or sexually motivated offences,Number of previous or current sanctions involving other non-contact sexual or sexually motivated offences,Number of previous or current sanctions involving other non-contact sexual or sexually motivated offences,Clarity,Numeric,None,,RSR,1.37,"ARN content ref. 66.1 Number of previous/current sanctions involving other non-contact sexual/sexually motivated offences.
+Number of previous or current sanctions involving other non-contact sexual or sexually motivated offences,66.1,,,,,,X,Number of previous/current sanctions involving paraphilia sexual offences,Number of previous or current sanctions involving other non-contact sexual or sexually motivated offences,Number of previous or current sanctions involving other non-contact sexual or sexually motivated offences,Enter the number of previous or current sanctions involving other non-contact sexual or sexually motivated offences,Clarity,Numeric,None,,RSR,1.37,"ARN content ref. 66.1 Number of previous/current sanctions involving other non-contact sexual/sexually motivated offences.
 Pass blank if the question has NOT been answered otherwise pass the number",,,N,Q,Offence and sentence,x,,
-Date of commencement of community sentence or earliest possible release from custody,60.1,,,,,,X,Date of commencement of community sentence or earliest possible release from custody,Date of commencement of community sentence or earliest possible release from custody,Enter a date,Enter a date,Simpler,Date,None,,RSR,1.38,"ARN content ref. 60.1 Date of commencement of community sentence or earliest possible release from custody
+Date of commencement of community sentence or earliest possible release from custody,60.1,,,,,,X,Date of commencement of community sentence or earliest possible release from custody,Date of commencement of community sentence or earliest possible release from custody,Enter a date,,Simpler,Date,None,,RSR,1.38,"ARN content ref. 60.1 Date of commencement of community sentence or earliest possible release from custody
 Pass blank or the date",,,N,Q,Offence details,x,,
-Have you completed an offender interview?,67.1,,,,,,X,Have you completed an offender interview?,Have you completed an interview?,Select yes or no (interview completion),Select yes or no,Avoid use of 'offender' which introduces cognitive bias,Y/N,None,,RSR,None,"See static_calc function.
+Needs,S3.2,,,,,,,,,,,,,,,,,,,,,,,,,
+Have you completed an offender interview?,67.1,,,,,,X,Have you completed an offender interview?,Have you completed an interview?,Select yes or no (interview completion),,Avoid use of 'offender' which introduces cognitive bias,Y/N,"If Y then display questions
+69.1
+75.1
+80.1
+86.1
+87.1
+88.1
+90.1
+92.1
+113.1
+115.1
+116.1
+
+
+",,RSR,None,"See static_calc function.
 
 The answer to ARN Content ref. 67.1 Have you completed an interview? is used in the following way:
 
@@ -141,19 +204,21 @@ If the assessment is a RoSHA and ARN Content ref. 67.1 (OASys ref1.39) Have you 
 Otherwise (ARN Content ref. 67.1 (OASys ref1.39) is set to ‘No’ or assessor has blanked it out)
  Pass ‘Y’
 End
- 
+
 ",X,,N,Q,Risk screening,x,,
-Did the offence involve carrying/use of a weapon?,69.1,,,,,,X,Did the offence involve carrying/use of a weapon?,Did the offence involve carrying or use of a weapon?,Select yes or no (carrying or using weapon),Select yes or no,Clarity (avoid slashes),Y/N,Y > 70.1,,S2.2,2.2,"ARN Content ref. 69.1 From a Layer 3 or RoSHA this is question 2.2 ‘Carrying or using a weapon’ – if checkbox has been checked pass 1
+Did the offence involve carrying/use of a weapon?,69.1,,,,,,X,Did the offence involve carrying/use of a weapon?,Did the offence involve carrying or use of a weapon?,Select yes or no (carrying or using weapon),,Clarity (avoid slashes),Y/N,Y > 70.1,,S2.2,2.2,"ARN Content ref. 69.1 From a Layer 3 or RoSHA this is question 2.2 ‘Carrying or using a weapon’ – if checkbox has been checked pass 1
 otherwise pass 0",,,N,Q,Offence details,x,,
 Specify which weapon,70.1,,,,,,X,Specify which weapon,Specify which weapon,,,Consistency,Free text?,None,,S2.3,None,,,,N,Q,Offence details,x,,
-Needs,S3.2,,,,,,,,,,,,,,,,,,,,,,,,,
 Is the offender living in suitable accommodation?,75.1,,,,,,X,Is the offender living in suitable accommodation?,Is the individual living in suitable accommodation?,Select the degree to which this is an issue (suitability of accommodation),Select the degree to which this is an issue,Avoid use of 'offender' which introduces cognitive bias,"Radios:
 No problems
 Some problems
-Significant problems","Some problems > 76.1 
-Significant problems > 76.1","0,1,2 equates to none, some significant (problem) in OASys. This does not match the question wording very well. ",RSR,3.4,"ARN Content ref. 77.2 Suitability of accommodation
+Significant problems",,"0,1,2 equates to none, some significant (problem) in OASys. This does not match the question wording very well. ",RSR,3.4,"ARN Content ref. 77.2 Suitability of accommodation
 If blank or M pass NULL otherwise pass the score (0, 1, 2)",,,N,Q,Accommodation,x,,
-Is the person unemployed or will be unemployed upon release?,80.2,,,,,,X,Is the person unemployed or will be unemployed upon release?,Is the person unemployed or will be unemployed upon release?,Enter yes or no (unemployed now or on release),,Consistency,Y/N,None,,,4.2,"ARN Content ref. 80.2 Is the person unemployed, or will be unemployed on release
+Is the person unemployed or will be unemployed upon release?,80.1,,,,,,X,Is the person unemployed or will be unemployed upon release?,Is the person unemployed or will be unemployed upon release?,Enter yes or no (unemployed now or on release),,Consistency,"Radios:
+No
+Not available for work
+Yes
+",None,,,4.2,"ARN Content ref. 80.2 Is the person unemployed, or will be unemployed on release
 If blank or M
  Pass NULL
 Otherwise
@@ -162,15 +227,15 @@ Otherwise
  Otherwise (entered 0 – No {ref_answer_code = ‘NO’} or   0- not available for work
 {ref_answer_code = ‘NA’})
      Pass 0
-  End 
+  End
 End
- 
+
 ",,,N,Q,"Education, training and employability",x,,
 Relationships,86.1,X,,,X,,X,"What is the person's current relationship with his/her partner?
 Relationships
 Relevant factor: relationships",What is the person's current relationship with their partner?,Select the degree to which this is an issue (current relationship with partner),Select the degree to which this is an issue,Consistency,"Radios:
-No problems 
-Some problems 
+No problems
+Some problems
 Significant problems",None,"0,1,2 equates to none, some significant (problem) in OASys. This does not match the question wording very well.",RSR,6.4,"ARN Content ref. 86.1 Current relationship with partner
 
 If blank or M pass NULL otherwise pass the score (0, 1, 2)",,,N,Q,Relationships,x,,
@@ -185,23 +250,20 @@ Alcohol misuse,90.1,,,X,,X,X,"Is alcohol misuse linked to offending behaviour?
 Is the person's current use of alcohol a problem?",Is the person's current use of alcohol a problem?,Select the degree to which this is an issue (current use of alcohol),Select the degree to which this is an issue,Consistency with RSR,"Radios:
 No problems
 Some problems
-Significant problems","Some problems > 91.1
-Significant problems > 91.1","0,1,2 equates to none, some significant (problem) in OASys. This does not match the question wording very well.",RSR,9.1,"ARN Content ref. 90.1 Is current use a problem
+Significant problems",None,"0,1,2 equates to none, some significant (problem) in OASys. This does not match the question wording very well.",RSR,9.1,"ARN Content ref. 90.1 Is current use a problem
 
 If blank or M pass NULL otherwise pass the score (0, 1, 2)",,,N,Q,Alcohol misuse,Remove,Is the persons use of alcohol a probmen 9.1 OASys,
 Is there evidence of binge drinking or excessive use of alcohol in the last 6 months?,92.1,,,,,,X,Is there evidence of binge drinking or excessive use of alcohol in the last 6 months?,Is there evidence of binge drinking or excessive use of alcohol in the last 6 months?,Select the degree to which this is an issue (evidence of binge drinking or excessive alcohol use),Select the degree to which this is an issue,Consistency,"Radios:
 No problems
 Some problems
-Significant problems","Some problems > 93.1
-Significant problems > 93.1","0,1,2 equates to none, some significant (problem) in OASys. This does not match the question wording very well.",RSR,9.2,"ARN Content ref. 92.1 Binge drinking or excessive use of alcohol in last 6 months
+Significant problems",None,"0,1,2 equates to none, some significant (problem) in OASys. This does not match the question wording very well.",RSR,9.2,"ARN Content ref. 92.1 Binge drinking or excessive use of alcohol in last 6 months
 
 If blank or M pass NULL otherwise pass the score (0, 1, 2)",,,N,Q,Alcohol misuse,x,,
 Is impulsivity a problem for the offender?,113.1,,,X,,,X,"Is impulsivity a problem for the offender?
 Is there evidence that the offender demonstrates impulsive thinking and / or behaviour?",Is impulsivity a problem for the individual?,Select the degree to which this is an issue (impulsivity),Select the degree to which this is an issue,Avoid use of 'offender' which introduces cognitive bias,"Radios:
 No problems
 Some problems
-Significant problems","Some problems > 114.1
-Significant problems > 114.1","0,1,2 equates to none, some significant (problem) in OASys. This does not match the question wording very well.",RSR,11.2,"ARN Content ref. 113.1 Impulsivity
+Significant problems",None,"0,1,2 equates to none, some significant (problem) in OASys. This does not match the question wording very well.",RSR,11.2,"ARN Content ref. 113.1 Impulsivity
 
 If blank or M pass NULL otherwise pass the score (0, 1, 2)",,,N,Q,Thinking & behaviour,x,,
 Is temper control a problem for the offender?,115.1,,,,,,X,Is temper control a problem for the offender?,Is temper control a problem for the individual?,Select the degree to which this is an issue (temper control),Select the degree to which this is an issue,Avoid use of 'offender' which introduces cognitive bias,"Radios:
@@ -216,7 +278,7 @@ Some problems
 Significant problems",None,"0,1,2 equates to none, some significant (problem) in OASys. This does not match the question wording very well.",RSR,12.1,"ARN Content ref. 116.1 Pro-criminal attitudes
 
 If blank or M pass NULL otherwise pass the score (0, 1, 2)",,,N,Q,Thinking & behaviour,x,,
-Are you completing a risk assessment?,128.1,,,,,,X,Are you completing a risk assessment?,Are you completing a risk assessment?,Select yes or no (risk assessment),Select yes or no,Consistency,Y/N,If N then do not display sections S10 to S23 inclusive,,RSR,None,,X,,N,Q,Risk analysis and summaries,x,,
+Are you completing a risk assessment?,128.1,,,,,,X,Are you completing a risk assessment?,Are you completing a risk assessment?,Select yes or no (risk assessment),Select yes or no,Consistency,Y/N,IF no then do not display sections 4 and 5,,RSR,None,,X,,N,Q,Risk analysis and summaries,x,,
 4. ROSH screening,S4,,,,,,,,,,,,,,,,,,,,,,,,,
 Risk to others,S4.1,,,,,,,,,,,,,,,,,,,,,,,,,
 Has offender been convicted of any of the following offences:,129.1,,,,,,,Has offender been convicted of any of the following offences:,Has the individual been convicted of any of the following?,Select any previous convictions,Select any previous convictions,"Shorter
@@ -250,7 +312,7 @@ Previous offence",None,,SC.2,R1.2.6.2,"ARN Content ref. 135.1 Aggravated burglar
 If this checkbox is checked (R1.2.6.2 in database) pass 1 otherwise 0",,,N,Q,Offence analysis,x,,
 Arson,136.1,,,,,,,Arson,Arson,N/A,N/A,Consistency,"Text, checkboxes
 Current offence
-Previous offence",None,,SC.2,R1.2.7.2,"ARN Content ref. 136.1  Arson 
+Previous offence",None,,SC.2,R1.2.7.2,"ARN Content ref. 136.1  Arson
 If this checkbox is checked (R1.2.7.2 in database) pass 1 otherwise 0",,,N,Q,Offence analysis,x,,
 Criminal damage with intent to endanger life,137.1,,,,,,,Criminal damage with intent to endanger life,Criminal damage with intent to endanger life,N/A,N/A,Consistency,"Text, checkboxes
 Current offence
@@ -339,8 +401,8 @@ No
 Don't know",If Y then sections S15 and S16 must be completed ,,SC.4,R2.1,,X,,N,Q,Risk to children,x,,
 Are there any concerns in relation to children,166.1,,,,,,,Are there any concerns in relation to children,Are there any concerns in relation to children?,"Select yes, no or don't know (concerns in relation to children)","Select yes, no or don't know",Consistency,"Yes
 No
-Don't know","If Y then section S13 and S14 must be completed unless answer to question 180.1 is 'Yes'. 
-If Y then sections S15 and S16 must also be completed if the identity of the children is known unless the answer to question 180.1 is 'Yes'. 
+Don't know","If Y then section S13 and S14 must be completed unless answer to question 180.1 is 'Yes'.
+If Y then sections S15 and S16 must also be completed if the identity of the children is known unless the answer to question 180.1 is 'Yes'.
 ",If Y this would benefit from us adding a conditional question 'Are the identities of any of the children known?' to determine whether sections S15 and S16 are shown.,SC.5,R2.2,,X,,N,Q,Risk to children,x,,
 Should contact be made with social services?,167.1,,,,,,,Should contact be made with social services?,Should contact be made with social services?,"Select yes, no or don't know (contacting social services)","Select yes, no or don't know",Consistency,"Yes
 No
@@ -408,7 +470,7 @@ If Y then a full ROSH analysis is done.
 As long as 180.1 has not been completed then if ‘Yes’ has been answered to question 178.1 then, regardless of what else has been answered on the RoSH Screening, ALL questions on the RoSH Full Analysis are to appear.",,SC.14,R5.1,,X,,N,Q,Other risks,x,,
 Give details,179.1,,,,,,,Give details,Give details,Enter details,Enter details,Consistency,Free text,None,,SC.14,R5.1.t,,,,N,Q,Other risks,x,,
 "In your professional opinion, do you consider it appropriate to not undertake a full risk of harm analysis?",180.1,,,,,,,"In your professional opinion, do you consider it appropriate to not undertake a full risk of harm analysis?","In your professional opinion, is it appropriate to not do a full risk of harm analysis?",Select yes or no (full risk of harm analysis),Select yes or no,Simplicity,Y/N,"If Y then display 110.1
- 
+
 AND
 user should not complete section S13",,SC.16,R5.2 ,,,,N,Q,Risk analysis and summaries,x,,
 Give details,110.1,,,,,,,Give details,Give details,Enter details,Enter details,Consistency,Free text,None,,,R5.2.t,,,,,,,New,,
@@ -518,7 +580,7 @@ Don't know","Y > 231.1
 
 230.1 vulnerability questions should be displayed only if answer to 172.1 is ‘Yes’",Use details component for extra information,FA.47,FA47,,,,N,Q,Risk of serious harm: full analysis,x,,
 "Describe circumstances, relevant issues and needs",231.1,,,,,,,"Describe circumstances, relevant issues and needs","Describe circumstances, relevant issues and needs","Describe circumstances, relevant issues and needs","Describe circumstances, relevant issues and needs",Consistency,Free text,None,,FA.48,FA47.t,,,,N,Q,Risk of serious harm: full analysis,x,,
-"Do any of the above (R8.1 – 8.3) indicate a risk of serious harm to others. If YES complete the risk of serious harm analysis, R6",232.1,,,,,,,"Do any of the above (R8.1 – 8.3) indicate a risk of serious harm to others. If YES complete the risk of serious harm analysis, R6","Do any of the questions in sections 16, 17 or 18 indicate a risk of serious harm to others? ",Select yes or no (risk of serious harm to others),Select yes or no,Simpler,Y/N,"Y > 233.1
+"Do any of the above (R8.1 – 8.3) indicate a risk of serious harm to others. If YES complete the risk of serious harm analysis, R6",232.1,,,,,,,"Do any of the above (R8.1 – 8.3) indicate a risk of serious harm to others. If YES complete the risk of serious harm analysis, R6","Do any of the questions about suicide, self-harm, coping in custody or a hostel setting, or vulnerability indicate a risk of serious harm to others? ",Select yes or no (risk of serious harm to others),Select yes or no,Simpler,Y/N,"Y > 233.1
 
 If Y then S13 and S14 are displayed / available - the business logic is to instruct the user to complete S13 and S14",,FA.49,FA49,,,,N,Q,Risk of serious harm: full analysis,x,,
 "Describe circumstances, relevant issues and needs",233.1,,,,,,,"Describe circumstances, relevant issues and needs","Describe circumstances, relevant issues and needs","Describe circumstances, relevant issues and needs","Describe circumstances, relevant issues and needs",Consistency,Free text,None,,FA.50,FA49.t,,,,N,Q,Risk of serious harm: full analysis,x,,
@@ -643,4 +705,4 @@ Has the offender been identified as presenting an ongoing risk to children?,278.
 Is the offender subject to Prison Service Order 4400 Prisoner Communications?,280.1,,,,,,,Is the offender subject to Prison Service Order 4400 Prisoner Communications?,Is the individual subject to Prison Service Order 4400 Prisoner Communications?,Select yes or no (subject to Prison Service Order 4400?),Select yes or no,Avoid use of 'offender' which introduces cognitive bias,Y/N,None,,RM.14,RM14,,,,N,Q,Risk of serious harm: full analysis,x,,
 Is the offender a conditionally discharged patient under Section 41 of the Mental Health Act 1983? ,281.1,,,,,,,Is the offender a conditionally discharged patient under Section 41 of the Mental Health Act 1983? ,Is the individual a conditionally discharged patient under Section 41 of the Mental Health Act 1983? ,Select yes or no (conditionally discharged under Mental Health Act?),Select yes or no,Avoid use of 'offender' which introduces cognitive bias,Y/N,None,,RM.15,RM15,,,,N,Q,Risk of serious harm: full analysis,x,,
 "Is the offender on life licence following a sentence of imprisonment or detention for public protection (Section 230, schedule 18)  ",282.1,,,,,,,"Is the offender on life licence following a sentence of imprisonment or detention for public protection (Section 230, schedule 18)  ","Is the individual on life licence following a sentence of imprisonment or detention for public protection? (Section 230, schedule 18)  ",Select yes or no (on life licence?),Select yes or no,Avoid use of 'offender' which introduces cognitive bias,Y/N,None,,RM.16,RM16,,,,N,Q,Risk of serious harm: full analysis,x,,
-Has the offfender received an extended sentence?,283.1,,,,,,,Has the offfender received an extended sentence?,Has the individual received an extended sentence?,Select yes or no (extended sentence?),Select yes or no,Avoid use of 'offender' which introduces cognitive bias,Y/N,None,,RM.17,RM17,,,,N,Q,Risk of serious harm: full analysis,x,,
+Has the offender received an extended sentence?,283.1,,,,,,,Has the offender received an extended sentence?,Has the individual received an extended sentence?,Select yes or no (extended sentence?),Select yes or no,Avoid use of 'offender' which introduces cognitive bias,Y/N,None,,RM.17,RM17,,,,N,Q,Risk of serious harm: full analysis,x,,
