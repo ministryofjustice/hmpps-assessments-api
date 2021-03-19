@@ -41,8 +41,9 @@ class AssessmentSql {
   }
 
   isTopLevelGroup(record) {
-    const hasHeadingNumber = record[this.headers.TITLE].match(/^[1-9]+\. /)
-    return hasHeadingNumber
+    // if ref is S1, S3, S12 etc this is a top level group
+    const hasHeadingRef = record[this.headers.REF].match(/^S[1-9]+$/)
+    return hasHeadingRef
   }
 
   isGroup(record) {
@@ -221,6 +222,8 @@ class AssessmentSql {
       return ['textarea', null]
     if (answerField.match(/date/i))
       return ['date', null]
+    if (answerField.match(/^presentation:/i))
+      return [answerField, null]
     return ['freetext', null]
   }
 
