@@ -5,11 +5,11 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
+import org.springframework.http.MediaType
 import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.context.jdbc.SqlConfig
 import org.springframework.test.context.jdbc.SqlGroup
 import org.springframework.test.web.reactive.server.expectBody
-import uk.gov.justice.digital.assessments.api.AnswerDto
 import uk.gov.justice.digital.assessments.api.AssessmentDto
 import uk.gov.justice.digital.assessments.api.AssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.api.AssessmentSubjectDto
@@ -184,6 +184,30 @@ class AssessmentControllerTest : IntegrationTest() {
       val answer = episode?.answers?.get(newQuestionUUID)!!
       assertThat(answer.size).isEqualTo(1)
       assertThat(answer.first()).isEqualTo("new free text")
+    }
+
+    @Test
+    fun `updates episode answers from JSON string`() {
+      val newQuestionUUID = UUID.randomUUID()
+      val answerText = "one day I'll fly away"
+      val jsonString = "{\"answers\":{\"${newQuestionUUID}\":[\"${answerText}\"]}}"
+
+      val episode = webTestClient.post().uri("/assessments/2e020e78-a81c-407f-bc78-e5f284e237e5/episodes/f3569440-efd5-4289-8fdd-4560360e5259")
+        .contentType(MediaType.APPLICATION_JSON)
+        .bodyValue(jsonString)
+        .headers(setAuthorisation())
+        .exchange()
+        .expectStatus().isOk
+        .expectBody<AssessmentEpisodeDto>()
+        .returnResult()
+        .responseBody
+
+      assertThat(episode).isNotNull
+      assertThat(episode?.answers).containsKey(newQuestionUUID)
+
+      val answer = episode?.answers?.get(newQuestionUUID)!!
+      assertThat(answer.size).isEqualTo(1)
+      assertThat(answer.first()).isEqualTo(answerText)
     }
 
     @Test
