@@ -1,8 +1,8 @@
 
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "2.1.1"
-  kotlin("plugin.spring") version "1.4.21"
-  kotlin("plugin.jpa") version "1.4.21"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "3.1.1"
+  kotlin("plugin.spring") version "1.4.30"
+  kotlin("plugin.jpa") version "1.4.30"
 }
 
 allOpen {
@@ -61,6 +61,5 @@ dependencies {
   }
   testImplementation("com.ninja-squad:springmockk:2.0.3")
   testImplementation("io.jsonwebtoken:jjwt:0.9.1")
-  implementation("com.nimbusds:nimbus-jose-jwt:9.1.5")
   testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
 }
