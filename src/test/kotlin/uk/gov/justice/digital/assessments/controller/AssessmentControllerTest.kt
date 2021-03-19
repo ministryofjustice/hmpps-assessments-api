@@ -187,11 +187,24 @@ class AssessmentControllerTest : IntegrationTest() {
     }
 
     @Test
-    fun `updates episode answers from JSON string`() {
+    fun `update episode answers from JSON`() {
       val newQuestionUUID = UUID.randomUUID()
       val answerText = "one day I'll fly away"
       val jsonString = "{\"answers\":{\"${newQuestionUUID}\":[\"${answerText}\"]}}"
 
+      updateFromJSON(newQuestionUUID, answerText, jsonString)
+    }
+
+    @Test
+    fun `update episode answers from JSON - single answer, not array`() {
+      val newQuestionUUID = UUID.randomUUID()
+      val answerText = "one day I'll fly away"
+      val jsonString = "{\"answers\":{\"${newQuestionUUID}\":\"${answerText}\"}}"
+
+      updateFromJSON(newQuestionUUID, answerText, jsonString)
+    }
+
+    fun updateFromJSON(questionUUID: UUID, expectedAnswer: String, jsonString: String) {
       val episode = webTestClient.post().uri("/assessments/2e020e78-a81c-407f-bc78-e5f284e237e5/episodes/f3569440-efd5-4289-8fdd-4560360e5259")
         .contentType(MediaType.APPLICATION_JSON)
         .bodyValue(jsonString)
@@ -203,11 +216,11 @@ class AssessmentControllerTest : IntegrationTest() {
         .responseBody
 
       assertThat(episode).isNotNull
-      assertThat(episode?.answers).containsKey(newQuestionUUID)
+      assertThat(episode?.answers).containsKey(questionUUID)
 
-      val answer = episode?.answers?.get(newQuestionUUID)!!
+      val answer = episode?.answers?.get(questionUUID)!!
       assertThat(answer.size).isEqualTo(1)
-      assertThat(answer.first()).isEqualTo(answerText)
+      assertThat(answer.first()).isEqualTo(expectedAnswer)
     }
 
     @Test
