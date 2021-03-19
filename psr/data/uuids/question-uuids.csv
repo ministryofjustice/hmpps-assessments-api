@@ -363,3 +363,13 @@ source,298.1-checkbox,2b93527c-a545-4e41-9fb4-98ee127af393
 current_category_of_child_protection_registration_ie_neglect_physical_sexual_or_emotional,210.1-checkbox,16b0d3cd-77b7-4ab5-a394-38edb45d7b0f
 previous_category_of_child_protection_registration_ie_neglect_physical_sexual_or_emotional,211.1-checkbox,9e3d1286-93d6-42a3-9ed1-2d81a1170ce5
 give_details,299.1-textarea,d9846a60-5ba6-450f-9934-2c9646771f9d
+personal_details,ui-freetext,754ffc64-92d7-4fb8-b5e6-23177fd46abe
+page_divider,ui-freetext-page_divider,7773b05a-b17c-4f46-96bf-7a29c9b711f1
+record_details,ui-freetext-record_details,1f206b5a-8c7f-4de3-81f9-4d4aab65bc44
+contact_details,ui-freetext-contact_details,7e188344-be66-4438-ba0f-c024a5388aa1
+date_of_first_sanction,291.1-date,53daee33-2c52-48af-99cc-178c483bcf09
+personal_details,ui-presentation: heading,3cbcca0f-02c9-4bbe-afc4-cd1e27a889dc
+page_divider,ui-presentation: divider,a999178f-6525-4a07-b790-d8e071ba91e1
+record_details,ui-presentation: heading-record_details,672c97fb-caa8-4f16-8b0d-e909d499ff16
+page_divider,ui-presentation: divider-page_divider,b5237439-d0af-484e-aeda-c0c783111b19
+contact_details,ui-presentation: heading-contact_details,64df334c-65aa-4926-b20b-e5b47c79e1bd
