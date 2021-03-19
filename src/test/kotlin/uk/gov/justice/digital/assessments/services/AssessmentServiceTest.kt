@@ -245,12 +245,12 @@ class AssessmentServiceTest {
       val episodeDto = assessmentsService.updateEpisode(assessmentUuid, episodeUuid, updatedAnswers)
 
       assertThat(episodeDto.answers).hasSize(2)
-      with(episodeDto.answers[existingQuestionUuid]!!.answer) {
+      with(episodeDto.answers[existingQuestionUuid]!!) {
         assertThat(size).isEqualTo(1)
         assertThat(first()).isEqualTo("free text")
       }
 
-      with(episodeDto.answers[newQuestionUuid]!!.answer) {
+      with(episodeDto.answers[newQuestionUuid]!!) {
         assertThat(size).isEqualTo(1)
         assertThat(first()).isEqualTo("trousers")
       }
@@ -272,7 +272,7 @@ class AssessmentServiceTest {
       val episodeDto = assessmentsService.updateEpisode(assessmentUuid, episodeUuid, updatedAnswers)
 
       assertThat(episodeDto.answers).hasSize(1)
-      with(episodeDto.answers[existingQuestionUuid]!!.answer) {
+      with(episodeDto.answers[existingQuestionUuid]!!) {
         assertThat(size).isEqualTo(1)
         assertThat(first()).isEqualTo("new free text")
       }
@@ -294,7 +294,7 @@ class AssessmentServiceTest {
       val episodeDto = assessmentsService.updateEpisode(assessmentUuid, episodeUuid, updatedAnswers)
 
       assertThat(episodeDto.answers).hasSize(1)
-      with(episodeDto.answers[existingQuestionUuid]!!.answer) {
+      with(episodeDto.answers[existingQuestionUuid]!!) {
         assertThat(size).isEqualTo(2)
         assertThat(this).containsAll(listOf("fruit loops", "custard"))
       }

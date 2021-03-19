@@ -182,8 +182,8 @@ class AssessmentControllerTest : IntegrationTest() {
       assertThat(episode?.answers).containsKey(newQuestionUUID)
 
       val answer = episode?.answers?.get(newQuestionUUID)!!
-      assertThat(answer.answer.size).isEqualTo(1)
-      assertThat(answer.answer.first()).isEqualTo("new free text")
+      assertThat(answer.size).isEqualTo(1)
+      assertThat(answer.first()).isEqualTo("new free text")
     }
 
     @Test
