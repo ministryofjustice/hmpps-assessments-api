@@ -220,7 +220,7 @@ class AssessmentSql {
 
     if (answerField.match(/text ?area/i))
       return ['textarea', null]
-    if (answerField.match(/date/i))
+    if (answerField.match(/^date/i))
       return ['date', null]
     if (answerField.match(/^presentation:/i))
       return [answerField, null]

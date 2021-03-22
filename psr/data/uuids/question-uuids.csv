@@ -373,3 +373,4 @@ page_divider,ui-presentation: divider,a999178f-6525-4a07-b790-d8e071ba91e1
 record_details,ui-presentation: heading-record_details,672c97fb-caa8-4f16-8b0d-e909d499ff16
 page_divider,ui-presentation: divider-page_divider,b5237439-d0af-484e-aeda-c0c783111b19
 contact_details,ui-presentation: heading-contact_details,64df334c-65aa-4926-b20b-e5b47c79e1bd
+update_assessment_details,ui-presentation: link("/update-assessment"),a0337576-bee4-45a5-b169-3f25b7e8d3cf
