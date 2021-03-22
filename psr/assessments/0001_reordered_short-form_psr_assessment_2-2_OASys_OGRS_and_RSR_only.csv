@@ -5,7 +5,7 @@ Re-ordered Oral & Short-form PSR assessment content v3.0 OASys RSR & ROSHa only,
 Question or information,Content ref.,Short-format PSR (Delius),Offender Group Reconviction Scale (OGRS),OASys Fast Delivery Report (FDR),Short-format PSR: printed template,Pre-sentence report (Template for reports delivered orally),"Risk of Serious Recidivism (RSR)
 ","Current question wording, inc. variations",Proposed question wording,Error summary,Error message,Reason for wording choice or change,Input type,"Business logic
 (note that items marked out-of-line will show elsewhere on the page)",Notes,Spec ref.,OASys ref.,Value passed from OASys to RSR calculation,Mandatory for minimum OASys,Potentially exposed to changes to answer reference data?,Pre-populated?,Type (assumes new case),Taxonomy classification,Validated OASys Field,OASys Fixed Field Name ,
-1. Individual and case details,S1,,,,,,,,,,,,,,,,,,,,,,,,,
+Individual and case details,S1,,,,,,,,,,,,,,,,,,,,,,,,,
 [Name of person]'s details,S1.1,,,,,,,,,,,,,,,,,,,,,,,,,
 Personal details,ui,,,,,,,,Personal details,,,,presentation: heading,,,,,,,,,,,,,
 Family name,3.1,X,X,X,X,X,X,"Family name
@@ -45,11 +45,12 @@ Telephone number,28.1,,,,,,X,Telephone number,Telephone number,Enter a telephone
 Probation provider/prison,29.1,,,,,,X,Probation provider/prison,Probation provider/prison,N/A if pre-populated,N/A if pre-populated,Consistency,Free text? read only,None,,ID.31,oasys_set.assessor_area_est_code,,X,,N,Q,Assessor details,x,OFFIN/provider,
 LDU,30.1,,,,,,X,LDU,LDU,Select a LDU,select a LDU,Consistency,Dropdown read only,None,"Use dummy data for prototype prior to live system build, but will require up-to-date reference data for live",ID.33,oasys_set.originating_division_code,,X,,N,Q,Assessor details,x,OFFIN/assessor_office,
 Team,31.1,,,,,,X,Team,Team,Select a team,Select a team,Consistency,Dropdown read only,None,"Use dummy data for prototype prior to live system build, but will require up-to-date reference data for live",ID.35,oasys_set.originating_team_code,,X,,N,Q,Assessor details,x,OFFIN/assessor_team,
-NPS countersigner/HMPS supervisor,32.1,,,,,,X,NPS countersigner/HMPS supervisor,NPS countersigner or HMPS supervisor,N/A if pre-populated,N/A if pre-populated,Avoid use of slashes,Free text?,None,,ID.36,oasys_set.countersigner_nam,,,,Y,I,Assessor details,x,OFFIN/supervisor,
-Signing history,33.1,,,,,,X,Signing history,Signing history,N/A if pre-populated,N/A if pre-populated,Consistency,TBD,None,,ID.129,oasys_signing table,,X,,Y,I,Assessor details,x,,
+NPS countersigner/HMPS supervisor,32.1,,,,,,X,NPS countersigner/HMPS supervisor,NPS countersigner or HMPS supervisor,N/A if pre-populated,N/A if pre-populated,Avoid use of slashes,Free text? read only,None,,ID.36,oasys_set.countersigner_nam,,,,Y,I,Assessor details,x,OFFIN/supervisor,
+Signing history,33.1,,,,,,X,Signing history,Signing history,N/A if pre-populated,N/A if pre-populated,Consistency,"TBD, read only",None,,ID.129,oasys_signing table,,X,,Y,I,Assessor details,x,,
 Date report completed and signed,24.1,,,X,X,X,X,"Completion date
 Date report completed and signed
-Date assessment completed",Date report completed and signed,N/A if pre-populated,N/A if pre-populated,Clarity,Date,None,Out of scope - will be responsibility of PIC team. The system may automatically record this? Once the question part is finished and 'sent' is it deemed to be 'signed'?,,NOT HELD,,X,,Y,I,Report details,,,
+Date assessment completed",Date report completed and signed,N/A if pre-populated,N/A if pre-populated,Clarity,"Date, read only",None,Out of scope - will be responsibility of PIC team. The system may automatically record this? Once the question part is finished and 'sent' is it deemed to be 'signed'?,,NOT HELD,,X,,Y,I,Report details,,,
+Update assessment details,ui,,,,,,,,Contact details,,,,"presentation: link(""/update-assessment"")",,format may need more work when we implement the update assessment page,,,,,,,,,,,
 Sources of information,S2,,,,,,,,,,,,,,,,,,,,,,,,,
 Select sources,S2.1,,,,,,,,,,,,,,,,,,,,,,,,,
 Source,298.1,,,,,,X,Sources of information,Sources of information,,,Consistency,"Checkboxes:
@@ -279,12 +280,12 @@ Significant problems",None,"0,1,2 equates to none, some significant (problem) in
 
 If blank or M pass NULL otherwise pass the score (0, 1, 2)",,,N,Q,Thinking & behaviour,x,,
 Are you completing a risk assessment?,128.1,,,,,,X,Are you completing a risk assessment?,Are you completing a risk assessment?,Select yes or no (risk assessment),Select yes or no,Consistency,Y/N,IF no then do not display sections 4 and 5,,RSR,None,,X,,N,Q,Risk analysis and summaries,x,,
-4. ROSH screening,S4,,,,,,,,,,,,,,,,,,,,,,,,,
+ROSH screening,S4,,,,,,,,,,,,,,,,,,,,,,,,,
 Risk to others,S4.1,,,,,,,,,,,,,,,,,,,,,,,,,
 Has offender been convicted of any of the following offences:,129.1,,,,,,,Has offender been convicted of any of the following offences:,Has the individual been convicted of any of the following?,Select any previous convictions,Select any previous convictions,"Shorter
-Avoid use of 'offender' which introduces cognitive bias",Non-input,"If any of the checkboxes 130.1 to 164.1 are selected then section S13 must be completed unless answer to question 180.1 is 'Yes'.
+Avoid use of 'offender' which introduces cognitive bias",Button - Mark all as no,"If any of the checkboxes 130.1 to 163.2 are selected then full ROSH must be completed unless answer to question 180.1 is 'Yes'.
 
-The RoSH Full Analysis only appears if the RoSH Screening section has section S10 completed and/or any of the other questions within the RoSH Screening are marked as ‘Yes’ (apart from 145.1 and 164.1 having ‘None of the above apply) and 180.1 has NOT been completed.",,,R1.2 Heading,,,,N/A,I,Offence analysis,Heading,,
+",,,R1.2 Heading,,,,N/A,I,Offence analysis,Heading,,
 Murder/attempted murder/threat or conspiracy to murder/manslaughter,130.1,,,,,,,Murder/attempted murder/threat or conspiracy to murder/manslaughter,"Murder, attempted murder, threat or conspiracy to murder, or manslaughter",N/A,N/A,Clarity (avoid slashes),"Text, checkboxes
 Current offence
 Previous offence",None,,SC.2,R1.2.1.2,"ARN Content ref. 130.1 ‘Murder / attempted murder / threat or conspiracy to murder / manslaughter’
@@ -347,9 +348,6 @@ Current offence
 Previous offence","Current offence > 144.1
 Previous offence > 144.1",,SC.2,R1.2.14.2,,,,N,Q,Offence analysis,x,,
 Give details,144.1,,,,,,,N/A,Give details,N/A,N/A,Consistency,Free text,None,,SC.2,R1.2.14.t,,,,N,Q,Offence analysis,x,,
-None of the above apply,145.1,,,,,,,None of the above apply,None of the above apply,N/A,N/A,Consistency,"Text, checkboxes
-Current offence
-Previous offence",None,,SC.2,R1.2.15.2,,X,,N,Q,Offence analysis,x,,
 On the information available to you has the offender,146.1,,,,,,,On the information available to you has the offender,On the information available to you has the individual,,,Consistency,,None,,,HEADING,,,,Y,I,Offence analysis,Heading,,
 Assaulted / threatened staff,147.1,,,,,,,Assaulted / threatened staff,Assaulted or threatened staff,N/A,N/A,Clarity (avoid slashes),"Text, checkboxes
 Current offence
@@ -398,15 +396,13 @@ Current offence
 Previous behaviour",None,,SC.3,R1.3.19.2,,X,,N,Q,Offence analysis,x,,
 "Is the offender, now or on release, likely to live with, or have frequent contact with, any child who is on the child protection register or is being looked after by the local authority.",165.1,,,,,,,"Is the offender, now or on release, likely to live with, or have frequent contact with, any child who is on the child protection register or is being looked after by the local authority.","Is the individual, now or on release, likely to live with, or have frequent contact with, any child who is on the child protection register or is being looked after by the local authority.","Select yes, no or don't know","Select yes, no or don't know",Avoid use of 'offender' which introduces cognitive bias,"Yes
 No
-Don't know",If Y then sections S15 and S16 must be completed ,,SC.4,R2.1,,X,,N,Q,Risk to children,x,,
+Don't know",If Y then sections 5.3 and 5.4 must be completed unless answer to question 180.1 is 'Yes'. ,,SC.4,R2.1,,X,,N,Q,Risk to children,x,,
 Are there any concerns in relation to children,166.1,,,,,,,Are there any concerns in relation to children,Are there any concerns in relation to children?,"Select yes, no or don't know (concerns in relation to children)","Select yes, no or don't know",Consistency,"Yes
 No
-Don't know","If Y then section S13 and S14 must be completed unless answer to question 180.1 is 'Yes'.
-If Y then sections S15 and S16 must also be completed if the identity of the children is known unless the answer to question 180.1 is 'Yes'.
-",If Y this would benefit from us adding a conditional question 'Are the identities of any of the children known?' to determine whether sections S15 and S16 are shown.,SC.5,R2.2,,X,,N,Q,Risk to children,x,,
+Don't know","If Y then sections 5.3 and 5.4 must be completed unless answer to question 180.1 is 'Yes'.
+IF Y then >167.1",If Y this would benefit from us adding a conditional question 'Are the identities of any of the children known?' to determine whether sections S15 and S16 are shown.,SC.5,R2.2,,X,,N,Q,Risk to children,x,,
 Should contact be made with social services?,167.1,,,,,,,Should contact be made with social services?,Should contact be made with social services?,"Select yes, no or don't know (contacting social services)","Select yes, no or don't know",Consistency,"Yes
-No
-Don't know",None,,SC.5,R2.2.1,,,,N,Q,Risk to children,x,,
+No",None,,SC.5,R2.2.1,,,,N,Q,Risk to children,x,,
 Risk to self,S4.2,,,,,,,,,,,,,,,,,,,,,,,,,
 From what you know about this offender have there been or are there currently any concerns in relation to,168.1,,,,,,,From what you know about this offender have there been or are there currently any concerns in relation to,From what you know about this individual have there been or are there currently any concerns in relation to,,,Avoid use of 'offender' which introduces cognitive bias,,None,,,HEADING,,,,Y,I,Risks to the individual,Heading,,
 Risk of suicide,169.1,,,,,,,Risk of suicide,Risk of suicide,"Select yes, no or don't know (risk of suicide)","Select yes, no or don't know",Consistency,"Yes
@@ -472,9 +468,9 @@ Give details,179.1,,,,,,,Give details,Give details,Enter details,Enter details,C
 "In your professional opinion, do you consider it appropriate to not undertake a full risk of harm analysis?",180.1,,,,,,,"In your professional opinion, do you consider it appropriate to not undertake a full risk of harm analysis?","In your professional opinion, is it appropriate to not do a full risk of harm analysis?",Select yes or no (full risk of harm analysis),Select yes or no,Simplicity,Y/N,"If Y then display 110.1
 
 AND
-user should not complete section S13",,SC.16,R5.2 ,,,,N,Q,Risk analysis and summaries,x,,
+user should not complete section 5 full ROSH analysis",,SC.16,R5.2 ,,,,N,Q,Risk analysis and summaries,x,,
 Give details,110.1,,,,,,,Give details,Give details,Enter details,Enter details,Consistency,Free text,None,,,R5.2.t,,,,,,,New,,
-5. ROSH full analysis,S5,,,,,,,,,,,,,,,,,,,,,,,,,
+ROSH full analysis,S5,,,,,,,,,,,,,,,,,,,,,,,,,
 Current behaviour,S5.1,,,,,,,,,,,,,,,,,,,,,,,,,
 Most recent behaviour / offence indicative of risk of serious harm,181.1,,,,,,,Most recent behaviour / offence indicative of risk of serious harm,Most recent behaviour or offence indicative of risk of serious harm,,,Avoid use of slashes,,None,,,HEADING,,,,Y,I,Risk of serious harm: full analysis,x,,
 Offence details (take details from 2.1 as to what s/he did),182.1,,,,,,,Offence details (take details from 2.1 as to what s/he did),Offence details ,Enter offence details,Enter offence details,Simplicity,Free text,None,"If pre-pospulated, additional instruction not required",FA.1,FA1.1,,,,N,Q,Risk of serious harm: full analysis,x,,
@@ -698,7 +694,7 @@ Has this case been referred as a Critical Public Protection case (refer to the P
 "If not, should this case be referred pre-release?",273.1,,,,,,,"If not, should this case be referred pre-release?","If not, should this case be referred pre-release?",Select yes or no (should case be referred pre-release?),Select yes or no,Consistency,Y/N,None,,RM.7,RM7,,,,N,Q,Risk of serious harm: full analysis,x,,
 Is the offender required to register under the Sex Offender Act 1997?,274.1,,,,,,,Is the offender required to register under the Sex Offender Act 1997?,Is the individual required to register under the Sex Offender Act 1997?,Select yes or no (required to register under Sex Offender Act?),Select yes or no,Avoid use of 'offender' which introduces cognitive bias,Y./N,None,,RM.8,RM8,,,,N,Q,Risk of serious harm: full analysis,x,,
 "If yes, has the offender registered?",275.1,,,,,,,"If yes, has the offender registered?","If yes, have they registered?",Select yes or no (have they registered?),Select yes or no,Avoid use of 'offender' which introduces cognitive bias,Y/N,None,,RM.9,RM9,,,,N,Q,Risk of serious harm: full analysis,x,,
-Is the offender disquaified from working with children as set out in Section 35 (4) of the Criminal Justice & Court Services Act 2000? ,276.1,,,,,,,Is the offender disquaified from working with children as set out in Section 35 (4) of the Criminal Justice & Court Services Act 2000? ,Is the individual disquaified from working with children as set out in Section 35 (4) of the Criminal Justice & Court Services Act 2000? ,Select yes or no (are they disqualified from working with children?),Select yes or no,Avoid use of 'offender' which introduces cognitive bias,Y/N,None,,RM.10,RM10,,,,N,Q,Risk of serious harm: full analysis,x,,
+Is the offender disqualified from working with children as set out in Section 35 (4) of the Criminal Justice & Court Services Act 2000? ,276.1,,,,,,,Is the offender disquaified from working with children as set out in Section 35 (4) of the Criminal Justice & Court Services Act 2000? ,Is the individual disquaified from working with children as set out in Section 35 (4) of the Criminal Justice & Court Services Act 2000? ,Select yes or no (are they disqualified from working with children?),Select yes or no,Avoid use of 'offender' which introduces cognitive bias,Y/N,None,,RM.10,RM10,,,,N,Q,Risk of serious harm: full analysis,x,,
 Has the offender been identified as having a present or previous conviction against a child?,277.1,,,,,,,Has the offender been identified as having a present or previous conviction against a child?,Does the individual have a present or previous conviction against a child?,Select yes or no (have they  present or previous conviction against a child?),Select yes or no,Avoid use of 'offender' which introduces cognitive bias,Y/N,None,,RM.11,RM11,,,,N,Q,Risk of serious harm: full analysis,x,,
 Has the offender been identified as presenting an ongoing risk to children?,278.1,,,,,,,Has the offender been identified as presenting an ongoing risk to children?,Does the individual present an ongoing risk to children?,Select yes or no (are they an ongoing risk to children?),Select yes or no,Avoid use of 'offender' which introduces cognitive bias,Y/N,None,,RM.12,RM12,,,,N,Q,Risk of serious harm: full analysis,x,,
 "Is there a requirement for the Police, Local Authority and the Offender Manager to be notified prior to the release of the offender from custody? ",279.1,,,,,,,"Is there a requirement for the Police, Local Authority and the Offender Manager to be notified prior to the release of the offender from custody? ","Do the Police, Local Authority and Offender Manager need to be notified prior to the release of the individual from custody? ",Select yes or no (notification to authorities prior to release),Select yes or no,Consistency,Y/N,None,,RM.13,RM13,,,,N,Q,Risk of serious harm: full analysis,x,,
