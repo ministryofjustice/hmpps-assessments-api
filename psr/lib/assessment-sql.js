@@ -134,7 +134,7 @@ class AssessmentSql {
       question_text: question_text,
       question_start: '2020-11-30 14:50:00',
       external_source: externalSources(question_code),
-      read_only: read_only
+      read_only: (question_code === 'ui' ? true : read_only)
     }
     this.questions.push(question)
 
