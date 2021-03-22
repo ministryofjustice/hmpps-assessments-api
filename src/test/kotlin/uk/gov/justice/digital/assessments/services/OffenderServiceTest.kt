@@ -25,7 +25,7 @@ import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundExce
 import java.time.LocalDate
 
 @ExtendWith(MockKExtension::class)
-@DisplayName("Assessment Service Tests")
+@DisplayName("Offender Service Tests")
 class OffenderServiceTest {
 
   private val communityApiRestClient: CommunityApiRestClient = mockk()
