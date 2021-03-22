@@ -4,8 +4,6 @@ import io.swagger.v3.oas.annotations.media.Schema
 import java.util.UUID
 
 class UpdateAssessmentEpisodeDto(
-
   @Schema(description = "Answers associated with this episode")
-  val answers: Map<UUID, AnswerDto>
-
+  val answers: Map<UUID, Collection<String>>
 )

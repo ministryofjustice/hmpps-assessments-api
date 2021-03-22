@@ -4,8 +4,7 @@ import java.io.Serializable
 import java.util.UUID
 
 data class AnswerEntity(
-
-  var freeTextAnswer: String? = null,
-  var answers: Map<UUID, String> = emptyMap()
-
-) : Serializable
+  var answers: Collection<String> = emptyList()
+) : Serializable {
+  constructor(answer: String) : this(listOf(answer)) { }
+}

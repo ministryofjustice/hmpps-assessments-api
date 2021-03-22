@@ -82,34 +82,47 @@ class AssessmentService(
   }
 
   fun getCurrentAssessmentCodedAnswers(assessmentUuid: UUID): AssessmentAnswersDto {
-    val questionCodes: Map<UUID, String?> =
-      questionService.getAllQuestions().map { it.questionSchemaUuid to it.questionCode }.toMap()
-    val answerSchemas = questionService.getAllAnswers()
+    val questions = questionService.getAllQuestions()
     val assessment = getAssessmentByUuid(assessmentUuid)
     val answers: MutableMap<String, Collection<AnswerSchemaDto>> =
-      mapAssessmentQuestionAndAnswerCodes(assessment, questionCodes, answerSchemas)
+      mapAssessmentQuestionAndAnswerCodes(assessment, questions)
     return AssessmentAnswersDto(assessmentUuid, answers)
   }
 
   private fun mapAssessmentQuestionAndAnswerCodes(
     assessment: AssessmentEntity,
-    questionCodes: Map<UUID, String?>,
-    answerSchemas: List<AnswerSchemaEntity>
+    questions: List<QuestionSchemaEntity>
   ): MutableMap<String, Collection<AnswerSchemaDto>> {
     val answers: MutableMap<String, Collection<AnswerSchemaDto>> = mutableMapOf()
 
-    assessment.episodes.sortedWith(compareBy(nullsLast()) { it.endDate }).forEach { episode ->
-      if (episode.answers != null) {
-        episode.answers!!.forEach { episodeAnswer ->
-          val questionCode = questionCodes[episodeAnswer.key]
-            ?: throw IllegalStateException("Question Code not found for UUID ${episodeAnswer.key}")
-          val answerSchema = matchAnswers(episodeAnswer, answerSchemas)
-          if (answerSchema.isNotEmpty()) {
-            answers[questionCode] = AnswerSchemaDto.from(answerSchema)
-          }
+    assessment.episodes.sortedWith(compareBy(nullsLast()) { it.endDate }).forEach {
+      val episodeAnswers = mapAssessmentQuestionAndAnswerCodes(it, questions)
+      answers += episodeAnswers
+    }
+
+    return answers
+  }
+
+  private fun mapAssessmentQuestionAndAnswerCodes(
+    episode: AssessmentEpisodeEntity,
+    questions: List<QuestionSchemaEntity>
+  ): MutableMap<String, Collection<AnswerSchemaDto>> {
+    val answers: MutableMap<String, Collection<AnswerSchemaDto>> = mutableMapOf()
+
+    episode.answers?.forEach { episodeAnswer ->
+      val question = questions.firstOrNull { it.questionSchemaUuid == episodeAnswer.key }
+        ?: throw IllegalStateException("Question not found for UUID ${episodeAnswer.key}")
+
+      if (question.answerSchemaGroup != null) {
+        val questionCode = question?.questionCode
+          ?: throw IllegalStateException("Question Code not found for UUID ${episodeAnswer.key}")
+        val answerSchema = matchAnswers(episodeAnswer, question)
+        if (answerSchema.isNotEmpty()) {
+          answers[questionCode] = AnswerSchemaDto.from(answerSchema)
         }
       }
     }
+
     return answers
   }
 
@@ -157,12 +170,13 @@ class AssessmentService(
 
   private fun matchAnswers(
     episodeAnswer: Map.Entry<UUID, AnswerEntity>,
-    answerSchemas: List<AnswerSchemaEntity>
+    question: QuestionSchemaEntity
   ): Set<AnswerSchemaEntity> {
-    return episodeAnswer.value.answers.map {
+    val answerSchemas = question.answerSchemaEntities
+    return episodeAnswer.value.answers.map { answer ->
       answerSchemas.firstOrNull { answerSchema ->
-        answerSchema.answerSchemaUuid == episodeAnswer.value.answers.keys.first()
-      } ?: throw IllegalStateException("Answer Code not found for UUID ${it.key}")
+        answerSchema.value == answer
+      } ?: throw IllegalStateException("Answer Code not found for question ${question.questionSchemaUuid} answer value ${answer}")
     }.toSet()
   }
 
@@ -197,11 +211,10 @@ class AssessmentService(
       if (currentQuestionAnswer == null) {
         episode.answers?.put(
           updatedAnswer.key,
-          AnswerEntity(updatedAnswer.value.freeTextAnswer, updatedAnswer.value.answers)
+          AnswerEntity(updatedAnswer.value)
         )
       } else {
-        currentQuestionAnswer.freeTextAnswer = updatedAnswer.value.freeTextAnswer
-        currentQuestionAnswer.answers = updatedAnswer.value.answers
+        currentQuestionAnswer.answers = updatedAnswer.value
       }
     }
     log.info("Updated episode ${episode.episodeUuid} with ${updatedEpisodeAnswers.answers.size} answer(s) for assessment ${episode.assessment?.assessmentUuid}")
@@ -215,7 +228,6 @@ class AssessmentService(
     offenderPk: Long?,
     episode: AssessmentEpisodeEntity
   ) {
-
     if (episode.assessmentType == null || episode.oasysSetPk == null || offenderPk == null) {
       log.info("Unable to update OASys Assessment with keys type: ${episode.assessmentType} oasysSet: ${episode.oasysSetPk} offenderPk: $offenderPk")
       return
@@ -223,57 +235,46 @@ class AssessmentService(
 
     val questions: Map<UUID, QuestionSchemaEntity?> =
       questionService.getAllQuestions().map { it.questionSchemaUuid to it }.toMap()
-    val answerSchemas = questionService.getAllAnswers()
 
-    val answers: MutableList<OasysAnswer> = mutableListOf()
+    val oasysAnswers: MutableList<OasysAnswer> = mutableListOf()
 
+    // TODO: If we want to handle multiple mappings per question we will need to add assessment type to the mapping
     episode.answers?.forEach { episodeAnswer ->
       val question = questions[episodeAnswer.key]
-      val answerSchema = episodeAnswer.value.answers.map {
-        answerSchemas.firstOrNull { answerSchema ->
-          answerSchema.answerSchemaUuid == it.key
-        } ?: throw IllegalStateException("Answer Code not found for UUID ${it.key}")
-      }.toSet()
-
-      // TODO: If we want to handle multiple mappings per question we will need to add assessment type to the mapping
       val oasysMapping = question?.oasysMappings?.toList()?.getOrNull(0)
-      answers.addAll(mapOasysAnswer(oasysMapping, episodeAnswer.value.freeTextAnswer, answerSchema, question?.answerType))
+      oasysAnswers.addAll(
+        mapOasysAnswer(
+          oasysMapping,
+          episodeAnswer.value.answers,
+          question?.answerType)
+        )
     }
-    assessmentUpdateRestClient.updateAssessment(offenderPk, episode.oasysSetPk!!, episode.assessmentType!!, answers.toSet())
+
+    assessmentUpdateRestClient.updateAssessment(offenderPk, episode.oasysSetPk!!, episode.assessmentType!!, oasysAnswers.toSet())
     log.info("Updated OASys assessment oasysSet: ${episode.oasysSetPk}")
   }
 
-  fun mapOasysAnswer(oasysMapping: OASysMappingEntity?, freeTextAnswer: String?, answerSchemas: Set<AnswerSchemaEntity>, answerType: String?): List<OasysAnswer> {
+  fun mapOasysAnswer(
+    oasysMapping: OASysMappingEntity?,
+    answers: Collection<String>,
+    answerType: String?
+  ): List<OasysAnswer> {
     if (oasysMapping == null) return emptyList()
 
-    if (freeTextAnswer?.isNotEmpty() == true) {
+    return answers.map { it ->
       val answer = when (answerType) {
-        "date" -> LocalDate.parse(freeTextAnswer, DateTimeFormatter.ISO_DATE_TIME).format(oasysDateFormatter)
-        else -> freeTextAnswer
+      "date" -> LocalDate.parse(it, DateTimeFormatter.ISO_DATE_TIME).format(oasysDateFormatter)
+        else -> it
       }
-      return listOf(
-        (
 
-          OasysAnswer(
-            oasysMapping.sectionCode,
-            oasysMapping.logicalPage,
-            oasysMapping.questionCode,
-            answer,
-            oasysMapping.isFixed
-          )
-          )
+      OasysAnswer(
+        oasysMapping.sectionCode,
+        oasysMapping.logicalPage,
+        oasysMapping.questionCode,
+        answer,
+        oasysMapping.isFixed
       )
-    } else {
-      return answerSchemas.map { answer ->
-        OasysAnswer(
-          oasysMapping.sectionCode,
-          oasysMapping.logicalPage,
-          oasysMapping.questionCode,
-          answer.value,
-          oasysMapping.isFixed
-        )
-      }.toList()
-    }
+    }.toList()
   }
 
   private fun getEpisode(episodeUuid: UUID, assessmentUuid: UUID): AssessmentEpisodeEntity {
