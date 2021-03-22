@@ -130,7 +130,7 @@ class AssessmentService(
     val existingAssessment = assessmentRepository.findBySupervisionId(supervisionId)
 
     if (existingAssessment != null) {
-      log.info("Existing a>?ssessment found for supervision $supervisionId")
+      log.info("Existing assessment found for supervision $supervisionId")
       return AssessmentDto.from(existingAssessment)
     }
 
