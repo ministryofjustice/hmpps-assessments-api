@@ -10,7 +10,6 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import uk.gov.justice.digital.assessments.api.AnswerDto
 import uk.gov.justice.digital.assessments.api.CreateAssessmentDto
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.jpa.entities.AnswerEntity
@@ -241,6 +240,7 @@ class AssessmentServiceTest {
         mapOf(newQuestionUuid to listOf("trousers")))
 
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
+      every { assessmentRepository.save(any()) } returns null
 
       val episodeDto = assessmentsService.updateEpisode(assessmentUuid, episodeUuid, updatedAnswers)
 
@@ -268,6 +268,7 @@ class AssessmentServiceTest {
       )
 
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
+      every { assessmentRepository.save(any()) } returns null
 
       val episodeDto = assessmentsService.updateEpisode(assessmentUuid, episodeUuid, updatedAnswers)
 
@@ -290,6 +291,7 @@ class AssessmentServiceTest {
       )
 
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
+      every { assessmentRepository.save(any()) } returns null
 
       val episodeDto = assessmentsService.updateEpisode(assessmentUuid, episodeUuid, updatedAnswers)
 
@@ -435,7 +437,6 @@ class AssessmentServiceTest {
 
     @Test
     fun `only fetch coded answers`() {
-
       setupQuestionCodes()
 
       val assessment = AssessmentEntity(

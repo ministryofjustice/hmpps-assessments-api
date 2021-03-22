@@ -205,6 +205,22 @@ class AssessmentService(
   ): AssessmentEpisodeDto {
     if (episode.isClosed()) throw UpdateClosedEpisodeException("Cannot update closed Episode ${episode.episodeUuid} for assessment ${episode.assessment?.assessmentUuid}")
 
+    updateEpisodeAnswers(episode, updatedEpisodeAnswers)
+    log.info("Updated episode ${episode.episodeUuid} with ${updatedEpisodeAnswers.answers.size} answer(s) for assessment ${episode.assessment?.assessmentUuid}")
+
+    updateOASysAssessment(episode.assessment?.subject?.oasysOffenderPk, episode)
+    log.info("Updated OASys ${episode.assessment?.subject?.oasysOffenderPk} with ${updatedEpisodeAnswers.answers.size} answer(s) for assessment ${episode.assessment?.assessmentUuid}")
+
+    assessmentRepository.save(episode.assessment)
+    log.info("Saved episode ${episode.episodeUuid} for assessment ${episode.assessment?.assessmentUuid}")
+
+    return AssessmentEpisodeDto.from(episode)
+  }
+
+  private fun updateEpisodeAnswers(
+    episode: AssessmentEpisodeEntity,
+    updatedEpisodeAnswers: UpdateAssessmentEpisodeDto
+  ) {
     for (updatedAnswer in updatedEpisodeAnswers.answers) {
       val currentQuestionAnswer = episode.answers?.get(updatedAnswer.key)
 
@@ -217,11 +233,6 @@ class AssessmentService(
         currentQuestionAnswer.answers = updatedAnswer.value
       }
     }
-    log.info("Updated episode ${episode.episodeUuid} with ${updatedEpisodeAnswers.answers.size} answer(s) for assessment ${episode.assessment?.assessmentUuid}")
-
-    updateOASysAssessment(episode.assessment?.subject?.oasysOffenderPk, episode)
-
-    return AssessmentEpisodeDto.from(episode)
   }
 
   fun updateOASysAssessment(
