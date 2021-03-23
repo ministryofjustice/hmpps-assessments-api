@@ -23,6 +23,7 @@ import uk.gov.justice.digital.assessments.jpa.repositories.SubjectRepository
 import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OasysAnswer
+import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.UpdateAssessmentAnswersResponseDto
 import uk.gov.justice.digital.assessments.restclient.courtcaseapi.CourtCase
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
@@ -209,7 +210,6 @@ class AssessmentService(
     log.info("Updated episode ${episode.episodeUuid} with ${updatedEpisodeAnswers.answers.size} answer(s) for assessment ${episode.assessment?.assessmentUuid}")
 
     updateOASysAssessment(episode.assessment?.subject?.oasysOffenderPk, episode)
-    log.info("Updated OASys ${episode.assessment?.subject?.oasysOffenderPk} with ${updatedEpisodeAnswers.answers.size} answer(s) for assessment ${episode.assessment?.assessmentUuid}")
 
     assessmentRepository.save(episode.assessment)
     log.info("Saved episode ${episode.episodeUuid} for assessment ${episode.assessment?.assessmentUuid}")
@@ -238,10 +238,10 @@ class AssessmentService(
   fun updateOASysAssessment(
     offenderPk: Long?,
     episode: AssessmentEpisodeEntity
-  ) {
+  ): UpdateAssessmentAnswersResponseDto? {
     if (episode.assessmentType == null || episode.oasysSetPk == null || offenderPk == null) {
       log.info("Unable to update OASys Assessment with keys type: ${episode.assessmentType} oasysSet: ${episode.oasysSetPk} offenderPk: $offenderPk")
-      return
+      return null
     }
 
     val questions: Map<UUID, QuestionSchemaEntity?> =
@@ -261,8 +261,9 @@ class AssessmentService(
         )
     }
 
-    assessmentUpdateRestClient.updateAssessment(offenderPk, episode.oasysSetPk!!, episode.assessmentType!!, oasysAnswers.toSet())
+    val oasysUpdateResult = assessmentUpdateRestClient.updateAssessment(offenderPk, episode.oasysSetPk!!, episode.assessmentType!!, oasysAnswers.toSet())
     log.info("Updated OASys assessment oasysSet: ${episode.oasysSetPk}")
+    return oasysUpdateResult
   }
 
   fun mapOasysAnswer(
