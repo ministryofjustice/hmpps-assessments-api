@@ -29,7 +29,10 @@ class AssessmentEpisodeDto(
   val ended: LocalDateTime? = null,
 
   @Schema(description = "Answers associated with this episode")
-  val answers: Map<UUID, Collection<String>> = emptyMap()
+  val answers: Map<UUID, Collection<String>> = emptyMap(),
+
+  @Schema(description = "Validation errors on this episode, indexed by question UUID")
+  val errors: Map<UUID, Collection<String>>? = null
 ) {
   companion object {
 
