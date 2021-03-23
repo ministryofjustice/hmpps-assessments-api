@@ -4,11 +4,9 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestMethod
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.*
 import uk.gov.justice.digital.assessments.api.AssessmentDto
 import uk.gov.justice.digital.assessments.api.AssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.api.AssessmentSubjectDto
@@ -96,8 +94,10 @@ class AssessmentController(val assessmentService: AssessmentService) {
     @Parameter(description = "Assessment UUID", required = true, example = "1234") @PathVariable assessmentUuid: UUID,
     @Parameter(description = "Episode UUID", required = true) @PathVariable episodeUuid: UUID,
     @Parameter(description = "Episode Answers", required = true) @RequestBody episodeAnswers: UpdateAssessmentEpisodeDto
-  ): AssessmentEpisodeDto? {
-    return assessmentService.updateEpisode(assessmentUuid, episodeUuid, episodeAnswers)
+  ): ResponseEntity<AssessmentEpisodeDto> {
+    return updateResponse(
+      assessmentService.updateEpisode(assessmentUuid, episodeUuid, episodeAnswers)
+    )
   }
 
   @RequestMapping(path = ["/assessments/{assessmentUuid}/episodes/current"], method = [RequestMethod.POST])
@@ -111,7 +111,16 @@ class AssessmentController(val assessmentService: AssessmentService) {
   fun updateAssessmentEpisode(
     @Parameter(description = "Assessment UUID", required = true, example = "1234") @PathVariable assessmentUuid: UUID,
     @Parameter(description = "Episode Answers", required = true) @RequestBody episodeAnswers: UpdateAssessmentEpisodeDto
-  ): AssessmentEpisodeDto? {
-    return assessmentService.updateCurrentEpisode(assessmentUuid, episodeAnswers)
+  ): ResponseEntity<AssessmentEpisodeDto> {
+    return updateResponse(
+      assessmentService.updateCurrentEpisode(assessmentUuid, episodeAnswers)
+    )
+  }
+
+  private fun updateResponse(
+    assessmentEpisode: AssessmentEpisodeDto
+  ): ResponseEntity<AssessmentEpisodeDto> {
+    val code = if (assessmentEpisode.errors == null) HttpStatus.OK else HttpStatus.UNPROCESSABLE_ENTITY
+    return ResponseEntity(assessmentEpisode, code)
   }
 }
