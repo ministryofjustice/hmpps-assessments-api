@@ -16,7 +16,7 @@ class EpisodeService(
   private val courtCaseRestClient: CourtCaseRestClient
 ) {
   fun prepopulate(episode: AssessmentEpisodeEntity): AssessmentEpisodeEntity {
-    val questionsToPopulate = questionService.getAllQuestions().filter { it.externalSource != null }
+    val questionsToPopulate = questionService.getAllQuestions().withExternalSource()
     if (questionsToPopulate.isEmpty())
       return episode
 

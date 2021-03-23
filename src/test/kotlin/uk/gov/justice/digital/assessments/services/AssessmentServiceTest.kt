@@ -337,10 +337,6 @@ class AssessmentServiceTest {
       )
       val assessment = assessmentEntityWithOasysOffender(answers)
 
-      val updatedAnswers = UpdateAssessmentEpisodeDto(
-        mapOf(existingQuestionUuid to listOf("fruit loops", "custard"))
-      )
-
       val oaSysMappings = mutableListOf<OASysMappingEntity>()
       val question = QuestionSchemaEntity(
         questionSchemaId = 9,
@@ -357,23 +353,31 @@ class AssessmentServiceTest {
         questionSchema = question
       ))
 
-      every { questionService.getAllQuestions() } returns listOf(question)
+      every { questionService.getAllQuestions() } returns QuestionSchemaEntities(listOf(question))
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
-      every { assessmentRepository.save(any()) } returns null
+      every { assessmentRepository.save(any()) } returns null // should save when errors?
       val oasysError = UpdateAssessmentAnswersResponseDto(7777, setOf(
         ValidationErrorDto("section1", null, "Q1", "OOPS", "NO", false)
       ))
       every { assessmentupdateRestClient.updateAssessment(any(), any(), any(), any(), any(), any()) } returns oasysError
+      // Christ, what a lot of set up
 
+      // Apply the update
+      val updatedAnswers = UpdateAssessmentEpisodeDto(
+        mapOf(existingQuestionUuid to listOf("fruit loops", "custard"))
+      )
       val episodeDto = assessmentsService.updateEpisode(assessmentUuid, episodeUuid, updatedAnswers)
 
+      // Updated answers in returned DTO
       assertThat(episodeDto.answers).hasSize(1)
       with(episodeDto.answers[existingQuestionUuid]!!) {
         assertThat(size).isEqualTo(2)
         assertThat(this).containsAll(listOf("fruit loops", "custard"))
       }
+
+      // But also errors!
       assertThat(episodeDto.errors).hasSize(1)
-      with(episodeDto.answers[existingQuestionUuid]!!) {
+      with(episodeDto.errors!![existingQuestionUuid]!!) {
         assertThat(size).isEqualTo(1)
         assertThat(this).contains("NO")
       }
@@ -513,9 +517,9 @@ class AssessmentServiceTest {
 
     @Test
     fun `throw exception when question code lookup fails`() {
-      every { questionService.getAllQuestions() } returns listOf(
+      every { questionService.getAllQuestions() } returns QuestionSchemaEntities(listOf(
         QuestionSchemaEntity(questionSchemaId = 2, questionSchemaUuid = question2Uuid, answerSchemaGroup = AnswerSchemaGroupEntity(1))
-      )
+      ))
 
       every { questionService.getAllAnswers() } returns listOf()
 
@@ -623,11 +627,11 @@ class AssessmentServiceTest {
     val group1 = AnswerSchemaGroupEntity(answerSchemaId = 1, answerSchemaEntities = listOf(yes))
     val group2 = AnswerSchemaGroupEntity(answerSchemaId = 2, answerSchemaEntities = listOf(maybe, no))
 
-    every { questionService.getAllQuestions() } returns listOf(
+    every { questionService.getAllQuestions() } returns QuestionSchemaEntities(listOf(
       QuestionSchemaEntity(questionSchemaId = 1, questionSchemaUuid = question1Uuid, questionCode = "Q1", answerSchemaGroup = group1),
       QuestionSchemaEntity(questionSchemaId = 2, questionSchemaUuid = question2Uuid, questionCode = "Q2", answerSchemaGroup = group2),
       QuestionSchemaEntity(questionSchemaId = 3, questionSchemaUuid = question3Uuid)
-    )
+    ))
   }
 
   private fun assessmentEntity(answers: MutableMap<UUID, AnswerEntity>): AssessmentEntity {

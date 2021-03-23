@@ -40,7 +40,7 @@ class AssessmentEpisodeDto(
       return episodes.mapNotNull { from(it) }.toSet()
     }
 
-    fun from(episode: AssessmentEpisodeEntity): AssessmentEpisodeDto {
+    fun from(episode: AssessmentEpisodeEntity, errors: Map<UUID, Collection<String>>? = null): AssessmentEpisodeDto {
       return AssessmentEpisodeDto(
         episode.episodeId,
         episode.episodeUuid,
@@ -49,7 +49,8 @@ class AssessmentEpisodeDto(
         episode.changeReason,
         episode.createdDate,
         episode.endDate,
-        AnswerDto.from(episode.answers) ?: emptyMap()
+        AnswerDto.from(episode.answers) ?: emptyMap(),
+        errors
       )
     }
   }
