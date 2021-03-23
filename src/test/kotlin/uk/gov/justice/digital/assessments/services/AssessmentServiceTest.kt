@@ -26,11 +26,13 @@ import uk.gov.justice.digital.assessments.jpa.repositories.SubjectRepository
 import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.UpdateAssessmentAnswersResponseDto
+import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.ValidationErrorDto
 import uk.gov.justice.digital.assessments.restclient.courtcaseapi.CourtCase
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
 import java.time.LocalDateTime
 import java.util.UUID
+import javax.persistence.*
 
 @ExtendWith(MockKExtension::class)
 @DisplayName("Assessment Service Tests")
@@ -304,7 +306,6 @@ class AssessmentServiceTest {
 
     @Test
     fun `do not update a closed episode`() {
-
       val assessment = AssessmentEntity(
         assessmentId = assessmentId,
         episodes = mutableListOf(
@@ -326,6 +327,56 @@ class AssessmentServiceTest {
       assertThatThrownBy { assessmentsService.updateEpisode(assessmentUuid, episodeUuid, UpdateAssessmentEpisodeDto(answers = emptyMap())) }
         .isInstanceOf(UpdateClosedEpisodeException::class.java)
         .hasMessage("Cannot update closed Episode $episodeUuid for assessment $assessmentUuid")
+    }
+
+    @Test
+    fun `returns validation errors from OASys`()
+    {
+      val answers = mutableMapOf(
+        existingQuestionUuid to AnswerEntity(listOf("free text", "fruit loops", "biscuits"))
+      )
+      val assessment = assessmentEntityWithOasysOffender(answers)
+
+      val updatedAnswers = UpdateAssessmentEpisodeDto(
+        mapOf(existingQuestionUuid to listOf("fruit loops", "custard"))
+      )
+
+      val oaSysMappings = mutableListOf<OASysMappingEntity>()
+      val question = QuestionSchemaEntity(
+        questionSchemaId = 9,
+        questionSchemaUuid = existingQuestionUuid,
+        questionCode = "question",
+        questionText = "favourite breakfast cereal?",
+        oasysMappings = oaSysMappings
+      )
+      oaSysMappings.add(OASysMappingEntity(
+        mappingId = 1,
+        sectionCode = "section1",
+        logicalPage = null,
+        questionCode = "Q1",
+        questionSchema = question
+      ))
+
+      every { questionService.getAllQuestions() } returns listOf(question)
+      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
+      every { assessmentRepository.save(any()) } returns null
+      val oasysError = UpdateAssessmentAnswersResponseDto(7777, setOf(
+        ValidationErrorDto("section1", null, "Q1", "OOPS", "NO", false)
+      ))
+      every { assessmentupdateRestClient.updateAssessment(any(), any(), any(), any(), any(), any()) } returns oasysError
+
+      val episodeDto = assessmentsService.updateEpisode(assessmentUuid, episodeUuid, updatedAnswers)
+
+      assertThat(episodeDto.answers).hasSize(1)
+      with(episodeDto.answers[existingQuestionUuid]!!) {
+        assertThat(size).isEqualTo(2)
+        assertThat(this).containsAll(listOf("fruit loops", "custard"))
+      }
+      assertThat(episodeDto.errors).hasSize(1)
+      with(episodeDto.answers[existingQuestionUuid]!!) {
+        assertThat(size).isEqualTo(1)
+        assertThat(this).contains("NO")
+      }
     }
   }
 
@@ -515,7 +566,6 @@ class AssessmentServiceTest {
   inner class UpdatingOAsys {
     @Test
     fun `should update OASys if OASysSet stored against episode`() {
-
       setupQuestionCodes()
 
       val episode = AssessmentEpisodeEntity(
@@ -592,5 +642,29 @@ class AssessmentServiceTest {
         )
       )
     )
+  }
+
+  private fun assessmentEntityWithOasysOffender(answers: MutableMap<UUID, AnswerEntity>): AssessmentEntity {
+    val subject = SubjectEntity(oasysOffenderPk = 9999)
+    val episodes = mutableListOf<AssessmentEpisodeEntity>()
+    val assessment = AssessmentEntity(
+      assessmentId = assessmentId,
+      episodes = episodes,
+      subject_ = mutableListOf(subject)
+    )
+
+    episodes.add(
+      AssessmentEpisodeEntity(
+        episodeUuid = episodeUuid,
+        episodeId = episodeId2,
+        assessment = assessment,
+        assessmentType = AssessmentType.SHORT_FORM_PSR,
+        changeReason = "Change of Circs 2",
+        oasysSetPk = 7777,
+        answers = answers
+      )
+    )
+
+    return assessment
   }
 }
