@@ -7,7 +7,7 @@ Question or information,Content ref.,Short-format PSR (Delius),Offender Group Re
 (note that items marked out-of-line will show elsewhere on the page)",Notes,Spec ref.,OASys ref.,Value passed from OASys to RSR calculation,Mandatory for minimum OASys,Potentially exposed to changes to answer reference data?,Pre-populated?,Type (assumes new case),Taxonomy classification,Validated OASys Field,OASys Fixed Field Name ,
 Individual and case details,S1,,,,,,,,,,,,,,,,,,,,,,,,,
 [Name of person]'s details,S1.1,,,,,,,,,,,,,,,,,,,,,,,,,
-Personal details,ui,,,,,,,,Personal details,,,,presentation: heading,,,,,,,,,,,,,
+Personal details,ui3.1,,,,,,,,Personal details,,,,presentation: heading,,,,,,,,,,,,,
 Family name,3.1,X,X,X,X,X,X,"Family name
 Surname",Family name or names,N/A ,N/A,Covers cases where a person may have more than one family name (not aliases),"Free text, read only",None,,ID.1,oasys_set.family_name,,X,,Y,I,Name,x,OFFIN/family_name,
 Surname (aliases),5.1,,,,,,X,Surname (aliases),Family name (aliases),N/A ,N/A,Culturally neutral,"Free text, read only",None,,ID.3,offender_alias_in_set.alias_family_name,,,,Y,I,Name,x,,
@@ -19,8 +19,8 @@ Forename (aliases),4.1,,,,,,X,Forename (aliases),First name (aliases),N/A ,N/A,C
 Date of birth,6.1,X,X,X,X,X,,"Date of birth
 DOB",Date of birth,N/A ,N/A,Avoid initialisms and acronyms,"Date, read only ",None,,,,OASYS_SET.DATE_OF_BIRTH,,,Y,I,Biometric,Banner Data,OFFIN/date_of_birth,
 Age,7.1,X,X,X,X,X,,Age,Age,N/A ,N/A,Consistency,"Numeric, read only",None,,,,,,,Y,I,Biometric,Banner Data,,
-page divider,ui,,,,,,,,,,,,presentation: divider,,,,,,,,,,,,,
-Record details,ui,,,,,,,,Record details,,,,presentation: heading,,,,,,,,,,,,,
+page divider,ui7.1,,,,,,,,,,,,presentation: divider,,,,,,,,,,,,,
+Record details,ui8.1,,,,,,,,Record details,,,,presentation: heading,,,,,,,,,,,,,
 Gender,8.1,,X,,,,X,"Gender
 ",Gender,N/A ,N/A,Consistency,"Text, drop-down, read only
 TBC",None,,ID.7,oasys_set.gender_elm,OASYS_SET.GENDER converted from code to text description (upper case),X,,Y,I,Biometric,x,OFFIN/gender,
@@ -31,8 +31,8 @@ Probation Case Reference Number/CRN,13.1,,,,,,X,Probation Case Reference Number,
 Nomis ID,,,,,,,,,,N/A ,N/A,,Read only ,,Only populated when offender has come from Prison,,,,,,,,,x,,
 CRN,10.1,X,X,X,X,X,,"Delius CRN
 CRN",CRN,N/A ,N/A,Simplicity,"Alphanumeric, read only",None,,,,,,,Y,I,Identifiers,Banner Data,,
-page divider,ui,,,,,,,,,,,,presentation: divider,,,,,,,,,,,,,
-Contact details,ui,,,,,,,,Contact details,,,,presentation: heading,,,,,,,,,,,,,
+page divider,ui10.1,,,,,,,,,,,,presentation: divider,,,,,,,,,,,,,
+Contact details,ui14.1,,,,,,,,Contact details,,,,presentation: heading,,,,,,,,,,,,,
 Address,14.1,X,X,X,X,X,X,"Address
 Address + postcode",Address,N/A if pre-populated,N/A if pre-populated,Consistency,"Alphanumeric, read only",None,6 lines inc. postcode,ID.15,"oasys_set.current_addess_line1 - line6, current_post_code",,,,Y,I,Address,x,,
 Assessment details,S1.2,,,,,,,,,,,,,,,,,,,,,,,,,
@@ -50,7 +50,7 @@ Signing history,33.1,,,,,,X,Signing history,Signing history,N/A if pre-populated
 Date report completed and signed,24.1,,,X,X,X,X,"Completion date
 Date report completed and signed
 Date assessment completed",Date report completed and signed,N/A if pre-populated,N/A if pre-populated,Clarity,"Date, read only",None,Out of scope - will be responsibility of PIC team. The system may automatically record this? Once the question part is finished and 'sent' is it deemed to be 'signed'?,,NOT HELD,,X,,Y,I,Report details,,,
-Update assessment details,ui,,,,,,,,Update assessment details,,,,"presentation: link(""/update-assessment"")",,format may need more work when we implement the update assessment page,,,,,,,,,,,
+Update assessment details,ui24.1,,,,,,,,Update assessment details,,,,"presentation: link(""/update-assessment"")",,format may need more work when we implement the update assessment page,,,,,,,,,,,
 Sources of information,S2,,,,,,,,,,,,,,,,,,,,,,,,,
 Select sources,S2.1,,,,,,,,,,,,,,,,,,,,,,,,,
 Source,298.1,,,,,,X,Sources of information,Sources of information,,,Consistency,"Checkboxes:
@@ -78,7 +78,7 @@ Other",None,,ID.45,"Each individual source held, sources_information_pivot.sourc
 Give details,299.1,,,,,,X,N/A,Give details,,,Consistency,textarea,None,Static free text box with 4000 character limit,ID.46,sources_info_other_ftxt,,,,N,Q,Information sources,x,PROPIN/sources_other_text,
 "Offences, convictions and needs",S3,,,,,,,,,,,,,,,,,,,,,,,,,
 Offences and convictions,S3.1,,,,,,,,,,,,,,,,,,,,,,,,,
-PSR/Court considered offence (Primary/most serious offence as judged by assessor),ui,,,,,,,,PSR or Court considered offence (Primary or most serious offence as judged by assessor),,,"Avoid use of slashes
+PSR/Court considered offence (Primary/most serious offence as judged by assessor),ui35.1.1,,,,,,,,PSR or Court considered offence (Primary or most serious offence as judged by assessor),,,"Avoid use of slashes
 Avoid use of parentheses",presentation: heading_large,,,,,,,,,,,,,
 Offence,35.1.1,,X,,,,X,Offence,Offence,N/A if pre-populated,N/A if pre-populated,,"Free text, read only",,,ID.44,,"This is the offence code and subcode concatenated together taken from the CURRENT EVENT eg. 17505
 
@@ -92,8 +92,8 @@ NOTE: the RSR code will then need to work out if the offence is violent or not. 
 
 This requires update to CT_OFFENCE table – JIRA NOD-294 which is part of 6.21 release
 ",,,Y,I,Offence details,x,,
-page divider,ui,,,,,,,,,,,,presentation: divider,,,,,,,,,,,,,
-PSR/Court considered offence (Primary/most serious offence as judged by assessor),ui,,,,,,,,RSR analysis,,,,presentation: heading_large,,,,,,,,,,,,,
+page divider,ui35.1.2,,,,,,,,,,,,presentation: divider,,,,,,,,,,,,,
+PSR/Court considered offence (Primary/most serious offence as judged by assessor),ui43.1,,,,,,,,RSR analysis,,,,presentation: heading_large,,,,,,,,,,,,,
 "Number of court appearances at which convicted, or received a conditional or absolute discharge aged under 18 years",43.1,,,,,,X,"Number of court appearances at which convicted, or received a conditional or absolute discharge aged under 18 years","Number of court appearances at which convicted, or received a conditional or absolute discharge aged under 18 years","Enter the number of court appearances at which convicted, or received a conditional or absolute discharge aged under 18 years","Enter the number of court appearances at which convicted, or received a conditional or absolute discharge aged under 18 years",Consistency,Numeric,None,,S1.34,1.5,,,,N,Q,Court appearances and convictions,x,,
 "Number of court appearances at which convicted, or received a conditional or absolute discharge aged 18 years and over. Do not include current appearances.",44.1,,,,,,X,"Number of court appearances at which convicted, or received a conditional or absolute discharge aged 18 years and over. Do not include current appearances.","Number of court appearances at which convicted, or received a conditional or absolute discharge aged 18 years and over. Do not include current appearances.","Enter the number of court appearances at which convicted, or received a conditional or absolute discharge aged 18 years and over. Do not include current appearances.","Enter the number of court appearances at which convicted, or received a conditional or absolute discharge aged 18 years and over. Do not include current appearances.",Consistency,Numeric,None,,S1.36,1.6,,,,N,Q,Court appearances and convictions,x,,
 Date of first sanction,291.1,,,,,,X,Date of first sanction,Date of first sanction,"[Business Rule - Must not be a date in the future]

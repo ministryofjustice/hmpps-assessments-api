@@ -380,3 +380,12 @@ subcode,35.1.2-freetext,91c83565-91dc-4876-97d7-f186ce04584c
 psr_court_considered_offence_primary_most_serious_offence_as_judged_by_assessor_,ui-presentation: heading_large-psr_court_considered_offence_primary_most_serious_offence_as_judged_by_assessor_,ad1c2a7f-7a0d-4720-9f78-a7edf9722351
 any_other_previous_current_offence_which_is_as_serious_eg_blackmail_harassment_stalking_child_pornography_child_neglect_abduction_etc_indicate_offence_below,143.1-checkbox-any_other_previous_current_offence_which_is_as_serious_eg_blackmail_harassment_stalking_child_pornography_child_neglect_abduction_etc_indicate_offence_below,e23653ff-2b5b-4ecf-8154-b3ff4a6aea3a
 give_details,294.1-freetext,0dd75d47-c713-4e65-ae73-7038dc0d9e6b
+personal_details,ui3.1-presentation: heading,1ea17930-d467-44c0-9e72-517747618acb
+page_divider,ui7.1-presentation: divider,36c52415-8790-424b-bb9b-d329e0ef4183
+record_details,ui8.1-presentation: heading,6ce641b7-5aaf-4c9f-aa0b-9c2cab42cfdb
+page_divider,ui10.1-presentation: divider,cfed0f26-3fb3-4c9d-bd91-22ca04af3734
+contact_details,ui14.1-presentation: heading,783d7918-b217-48a5-b50b-d958253ac646
+update_assessment_details,ui24.1-presentation: link(_/update-assessment_),c2cb3e8b-a544-4b72-a533-223498fcb986
+psr_court_considered_offence_primary_most_serious_offence_as_judged_by_assessor_,ui35.1.1-presentation: heading_large,0bc681b4-7f70-477e-8ef5-0daaf8aa0495
+page_divider,ui35.1.2-presentation: divider,de19c962-bd78-428f-ad29-ab002e7ef25a
+psr_court_considered_offence_primary_most_serious_offence_as_judged_by_assessor_,ui43.1-presentation: heading_large,96d6c7fd-c755-4dad-b3be-8619674c8ad7
