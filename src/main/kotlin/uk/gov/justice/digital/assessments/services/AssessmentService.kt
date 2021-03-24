@@ -281,16 +281,7 @@ class AssessmentService(
   ): Map<UUID, Collection<String>>? {
     if (oasysUpdateResult == null || oasysUpdateResult.validationErrorDtos.isEmpty())
       return null
-/*
-class ValidationErrorDto(
-  val sectionCode: String? = null,
-  val logicalPage: Long? = null,
-  val questionCode: String? = null,
-  val errorCode: String? = null,
-  val message: String? = null,
-  val assessmentValidationError: Boolean? = true
-)
- */
+
     val questionsInThisEpisode = episode.answers?.keys ?: emptySet()
 
     val mappedErrors = mutableMapOf<UUID, Collection<String>>()
