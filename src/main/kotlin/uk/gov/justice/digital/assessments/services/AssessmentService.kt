@@ -23,6 +23,7 @@ import uk.gov.justice.digital.assessments.jpa.repositories.SubjectRepository
 import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OasysAnswer
+import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.UpdateAssessmentAnswersResponseDto
 import uk.gov.justice.digital.assessments.restclient.courtcaseapi.CourtCase
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
@@ -91,7 +92,7 @@ class AssessmentService(
 
   private fun mapAssessmentQuestionAndAnswerCodes(
     assessment: AssessmentEntity,
-    questions: List<QuestionSchemaEntity>
+    questions: QuestionSchemaEntities
   ): MutableMap<String, Collection<AnswerSchemaDto>> {
     val answers: MutableMap<String, Collection<AnswerSchemaDto>> = mutableMapOf()
 
@@ -105,12 +106,12 @@ class AssessmentService(
 
   private fun mapAssessmentQuestionAndAnswerCodes(
     episode: AssessmentEpisodeEntity,
-    questions: List<QuestionSchemaEntity>
+    questions: QuestionSchemaEntities
   ): MutableMap<String, Collection<AnswerSchemaDto>> {
     val answers: MutableMap<String, Collection<AnswerSchemaDto>> = mutableMapOf()
 
     episode.answers?.forEach { episodeAnswer ->
-      val question = questions.firstOrNull { it.questionSchemaUuid == episodeAnswer.key }
+      val question = questions[episodeAnswer.key]
         ?: throw IllegalStateException("Question not found for UUID ${episodeAnswer.key}")
 
       if (question.answerSchemaGroup != null) {
@@ -205,6 +206,21 @@ class AssessmentService(
   ): AssessmentEpisodeDto {
     if (episode.isClosed()) throw UpdateClosedEpisodeException("Cannot update closed Episode ${episode.episodeUuid} for assessment ${episode.assessment?.assessmentUuid}")
 
+    updateEpisodeAnswers(episode, updatedEpisodeAnswers)
+    log.info("Updated episode ${episode.episodeUuid} with ${updatedEpisodeAnswers.answers.size} answer(s) for assessment ${episode.assessment?.assessmentUuid}")
+
+    val oasysResult = updateOASysAssessment(episode.assessment?.subject?.oasysOffenderPk, episode)
+
+    assessmentRepository.save(episode.assessment)
+    log.info("Saved episode ${episode.episodeUuid} for assessment ${episode.assessment?.assessmentUuid}")
+
+    return AssessmentEpisodeDto.from(episode, oasysResult)
+  }
+
+  private fun updateEpisodeAnswers(
+    episode: AssessmentEpisodeEntity,
+    updatedEpisodeAnswers: UpdateAssessmentEpisodeDto
+  ) {
     for (updatedAnswer in updatedEpisodeAnswers.answers) {
       val currentQuestionAnswer = episode.answers?.get(updatedAnswer.key)
 
@@ -217,26 +233,31 @@ class AssessmentService(
         currentQuestionAnswer.answers = updatedAnswer.value
       }
     }
-    log.info("Updated episode ${episode.episodeUuid} with ${updatedEpisodeAnswers.answers.size} answer(s) for assessment ${episode.assessment?.assessmentUuid}")
-
-    updateOASysAssessment(episode.assessment?.subject?.oasysOffenderPk, episode)
-
-    return AssessmentEpisodeDto.from(episode)
   }
 
   fun updateOASysAssessment(
     offenderPk: Long?,
     episode: AssessmentEpisodeEntity
-  ) {
+  ): Map<UUID, Collection<String>>?? {
     if (episode.assessmentType == null || episode.oasysSetPk == null || offenderPk == null) {
       log.info("Unable to update OASys Assessment with keys type: ${episode.assessmentType} oasysSet: ${episode.oasysSetPk} offenderPk: $offenderPk")
-      return
+      return null
     }
 
-    val questions: Map<UUID, QuestionSchemaEntity?> =
-      questionService.getAllQuestions().map { it.questionSchemaUuid to it }.toMap()
+    val questions = questionService.getAllQuestions()
+    val oasysAnswers = mapOasysAnswers(episode, questions)
 
-    val oasysAnswers: MutableList<OasysAnswer> = mutableListOf()
+    val oasysUpdateResult = assessmentUpdateRestClient.updateAssessment(offenderPk, episode.oasysSetPk!!, episode.assessmentType!!, oasysAnswers)
+    log.info("Updated OASys assessment oasysSet ${episode.oasysSetPk} ${if(oasysUpdateResult?.validationErrorDtos?.isNotEmpty() == true) "with errors" else "successfully"}")
+
+    return mapOasysErrors(episode, questions, oasysUpdateResult)
+  }
+
+  private fun mapOasysAnswers(
+    episode: AssessmentEpisodeEntity,
+    questions: QuestionSchemaEntities
+  ): Set<OasysAnswer> {
+    val oasysAnswers = mutableSetOf<OasysAnswer>()
 
     // TODO: If we want to handle multiple mappings per question we will need to add assessment type to the mapping
     episode.answers?.forEach { episodeAnswer ->
@@ -247,11 +268,31 @@ class AssessmentService(
           oasysMapping,
           episodeAnswer.value.answers,
           question?.answerType)
-        )
+      )
     }
 
-    assessmentUpdateRestClient.updateAssessment(offenderPk, episode.oasysSetPk!!, episode.assessmentType!!, oasysAnswers.toSet())
-    log.info("Updated OASys assessment oasysSet: ${episode.oasysSetPk}")
+    return oasysAnswers
+  }
+
+  private fun mapOasysErrors(
+    episode: AssessmentEpisodeEntity,
+    questions: QuestionSchemaEntities,
+    oasysUpdateResult: UpdateAssessmentAnswersResponseDto?
+  ): Map<UUID, Collection<String>>? {
+    if (oasysUpdateResult == null || oasysUpdateResult.validationErrorDtos.isEmpty())
+      return null
+
+    val questionsInThisEpisode = episode.answers?.keys ?: emptySet()
+
+    val mappedErrors = mutableMapOf<UUID, Collection<String>>()
+    oasysUpdateResult.validationErrorDtos.forEach {
+      val mappedQuestions = questions.forOasysMapping(it.sectionCode, it.logicalPage, it.questionCode)
+      mappedQuestions
+        .filter { q -> questionsInThisEpisode.contains(q.questionSchemaUuid) }
+        .forEach { q -> mappedErrors[q.questionSchemaUuid] = listOf(it.message!!) }
+    }
+
+    return mappedErrors
   }
 
   fun mapOasysAnswer(

@@ -91,8 +91,8 @@ class QuestionService(
     return GroupSectionsDto.from(group, contents)
   }
 
-  fun getAllQuestions(): List<QuestionSchemaEntity> {
-    return questionSchemaRepository.findAll()
+  fun getAllQuestions(): QuestionSchemaEntities {
+    return QuestionSchemaEntities(questionSchemaRepository.findAll())
   }
 
   fun getAllAnswers(): List<AnswerSchemaEntity> {
@@ -114,6 +114,84 @@ class QuestionService(
   private fun codeToUuid(code: String): UUID {
     try { return UUID.fromString(code) } catch (e: IllegalArgumentException) {
       throw EntityNotFoundException("Group not found: $code")
+    }
+  }
+}
+
+class QuestionSchemaEntities(
+  questionsList: List<QuestionSchemaEntity>
+) {
+  private val questions = questionsList.map { it.questionSchemaUuid to it }.toMap()
+  private val oasysMapping = mapByOasysCoords(questionsList)
+
+  operator fun get(questionSchemaUuid: UUID) = questions[questionSchemaUuid]
+
+  fun withExternalSource(): List<QuestionSchemaEntity> {
+    return questions.values.filter { it.externalSource != null }
+  }
+
+  fun forOasysMapping(
+    sectionCode: String?,
+    logicalPage: Long?,
+    questionCode: String?,
+  ): Collection<QuestionSchemaEntity> {
+    val questions = oasysMapping.section(sectionCode)?.logicalPage(logicalPage)?.questionCode(questionCode)
+    return questions ?: emptyList()
+  }
+
+  private class OasysMappingTree {
+    private val sections: MutableMap<String?, LogicalPage> = mutableMapOf()
+
+    fun section(sectionCode: String?) = sections[sectionCode]
+
+    fun addSection(sectionCode: String?): LogicalPage {
+      if (!sections.containsKey(sectionCode))
+        sections[sectionCode] = LogicalPage()
+      return sections[sectionCode]!!
+    }
+  }
+  private class LogicalPage {
+    private val logicalPages: MutableMap<Long?, QuestionCode> = mutableMapOf()
+
+    fun logicalPage(logicalPage: Long?) = logicalPages[logicalPage]
+
+    fun addLogicalPage(logicalPage: Long?): QuestionCode {
+      if (!logicalPages.containsKey(logicalPage))
+        logicalPages[logicalPage] = QuestionCode()
+      return logicalPages[logicalPage]!!
+    }
+  }
+  private class QuestionCode {
+    private val questionCodes: MutableMap<String?, Questions> = mutableMapOf()
+
+    fun questionCode(questionCode: String?) = questionCodes[questionCode]
+
+    fun addQuestionCode(questionCode: String?): Questions {
+      if (!questionCodes.containsKey(questionCode))
+        questionCodes[questionCode] = Questions()
+      return questionCodes[questionCode]!!
+    }
+  }
+  private class Questions(
+    private val questions: MutableList<QuestionSchemaEntity> = mutableListOf()
+  ): List<QuestionSchemaEntity> by questions {
+    fun addQuestion(question: QuestionSchemaEntity) {
+      questions.add(question)
+    }
+  }
+
+  companion object {
+    private fun mapByOasysCoords(questionsList: List<QuestionSchemaEntity>): OasysMappingTree {
+      val mapping = OasysMappingTree()
+      questionsList.forEach { question->
+        question.oasysMappings.forEach {
+          mapping.addSection(it.sectionCode)
+            .addLogicalPage(it.logicalPage)
+            .addQuestionCode(it.questionCode)
+            .addQuestion(question)
+        }
+      }
+      return mapping
     }
   }
 }

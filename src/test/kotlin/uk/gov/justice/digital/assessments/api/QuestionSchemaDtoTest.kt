@@ -7,7 +7,6 @@ import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
 import java.time.LocalDateTime
 import java.util.UUID
 
-@DisplayName("Assessment DTO Tests")
 class QuestionSchemaDtoTest {
 
   @Test
