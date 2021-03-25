@@ -653,7 +653,7 @@ VALUES ('9905a862-94a0-434a-b5ae-ff7b9a77c7c4', '33923c1e-e3ba-4c02-ba42-3b8d828
     ('2824352e-f85f-4415-9749-7f2e5da44350', 'd9846a60-5ba6-450f-9934-2c9646771f9d', 'PROPIN', null, 'sources_other_text', true),
     ('bba4fc28-8c4a-4334-aede-bdd41a7512ac', 'd84cef29-893b-4e92-bc98-12a2b4fe75b6', '1', null, '1.5', false),
     ('e6d03dde-9ef4-49a3-9515-96acc0653500', 'feb7ffe9-1e59-4516-9cb8-a1a41f37078f', '1', null, '1.6', false),
-    ('d0f38871-8621-4fe3-8238-1fbf7e2261f6', '53daee33-2c52-48af-99cc-178c483bcf09', '1', null, '1.7', false),
+    ('d0f38871-8621-4fe3-8238-1fbf7e2261f6', '53daee33-2c52-48af-99cc-178c483bcf09', '1', null, '1.7.2', false),
     ('3b4fa455-a171-4c4b-bdc4-ad859499bff3', '48bdcea3-55a6-4916-9040-2ea3770a0331', '1', null, '1.7', false),
     ('1fed82fa-1d88-421e-a043-a7d8faef60bf', 'f5d1dd7c-1774-4c76-89c2-a47240ad98ba', '1', null, '1.29', false),
     ('1f4179fa-cd57-4327-a515-f012adbc1ea6', '58d3efd1-65a1-439b-952f-b2826ffa5e71', '1', null, '1.30', false),
