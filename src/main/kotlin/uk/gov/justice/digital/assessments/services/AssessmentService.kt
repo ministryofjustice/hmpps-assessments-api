@@ -249,6 +249,12 @@ class AssessmentService(
 
     val oasysUpdateResult = assessmentUpdateRestClient.updateAssessment(offenderPk, episode.oasysSetPk!!, episode.assessmentType!!, oasysAnswers)
     log.info("Updated OASys assessment oasysSet ${episode.oasysSetPk} ${if(oasysUpdateResult?.validationErrorDtos?.isNotEmpty() == true) "with errors" else "successfully"}")
+    oasysAnswers.forEach {
+      log.info("Answer ${it.sectionCode}.${it.logicalPage}.${it.questionCode}: ${it.answer}")
+    }
+    oasysUpdateResult?.validationErrorDtos?.forEach {
+      log.info("Error ${it.sectionCode}.${it.logicalPage}.${it.questionCode}: ${it.message}")
+    }
 
     return mapOasysErrors(episode, questions, oasysUpdateResult)
   }
