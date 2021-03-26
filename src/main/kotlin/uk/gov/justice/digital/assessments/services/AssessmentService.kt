@@ -214,7 +214,7 @@ class AssessmentService(
     assessmentRepository.save(episode.assessment)
     log.info("Saved episode ${episode.episodeUuid} for assessment ${episode.assessment?.assessmentUuid}")
 
-    return AssessmentEpisodeDto.from(episode, oasysResult)
+    return AssessmentEpisodeDto.from(episode, oasysResult?.first, oasysResult?.second)
   }
 
   private fun updateEpisodeAnswers(
@@ -238,7 +238,7 @@ class AssessmentService(
   fun updateOASysAssessment(
     offenderPk: Long?,
     episode: AssessmentEpisodeEntity
-  ): Map<UUID, Collection<String>>?? {
+  ): Pair<Map<UUID, Collection<String>>?, Collection<String>?>? {
     if (episode.assessmentType == null || episode.oasysSetPk == null || offenderPk == null) {
       log.info("Unable to update OASys Assessment with keys type: ${episode.assessmentType} oasysSet: ${episode.oasysSetPk} offenderPk: $offenderPk")
       return null
@@ -256,7 +256,10 @@ class AssessmentService(
       log.info("Error ${it.sectionCode}.${it.logicalPage}.${it.questionCode}: ${it.message}")
     }
 
-    return mapOasysErrors(episode, questions, oasysUpdateResult)
+    val questionErrors = mapOasysErrors(episode, questions, oasysUpdateResult)
+    val pageErrors = mapOasysPageErrors(oasysUpdateResult)
+
+    return Pair(questionErrors, pageErrors)
   }
 
   private fun mapOasysAnswers(
@@ -295,10 +298,21 @@ class AssessmentService(
       val mappedQuestions = questions.forOasysMapping(it.sectionCode, it.logicalPage, it.questionCode)
       mappedQuestions
         .filter { q -> questionsInThisEpisode.contains(q.questionSchemaUuid) }
-        .forEach { q -> mappedErrors[q.questionSchemaUuid] = listOf(it.message!!) }
+        .forEach { q -> mappedErrors[q.questionSchemaUuid] = listOf(it.message ?: "Field validation error") }
     }
 
     return mappedErrors
+  }
+
+  private fun mapOasysPageErrors(
+    oasysUpdateResult: UpdateAssessmentAnswersResponseDto?
+  ): Collection<String>? {
+    if (oasysUpdateResult == null || oasysUpdateResult.validationErrorDtos.isEmpty())
+      return null
+
+    return oasysUpdateResult.validationErrorDtos
+      .filter { it.questionCode == null }
+      .map { it.message ?: "Error on page" }
   }
 
   fun mapOasysAnswer(
