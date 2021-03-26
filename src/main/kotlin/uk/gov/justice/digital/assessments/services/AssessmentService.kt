@@ -310,7 +310,7 @@ class AssessmentService(
 
     return answers.map { it ->
       val answer = when (answerType) {
-      "date" -> LocalDate.parse(it, DateTimeFormatter.ISO_DATE_TIME).format(oasysDateFormatter)
+      "date" -> toOASysDate(it)
         else -> it
       }
 
@@ -322,6 +322,12 @@ class AssessmentService(
         oasysMapping.isFixed
       )
     }.toList()
+  }
+
+  private fun toOASysDate(dateStr: String): String {
+    if (dateStr.length < 10)
+      return dateStr
+    return LocalDate.parse(dateStr.substring(0, 10), DateTimeFormatter.ISO_DATE).format(oasysDateFormatter)
   }
 
   private fun getEpisode(episodeUuid: UUID, assessmentUuid: UUID): AssessmentEpisodeEntity {
