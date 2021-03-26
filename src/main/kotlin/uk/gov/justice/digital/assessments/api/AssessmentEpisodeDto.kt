@@ -32,7 +32,9 @@ class AssessmentEpisodeDto(
   val answers: Map<UUID, Collection<String>> = emptyMap(),
 
   @Schema(description = "Validation errors on this episode, indexed by question UUID")
-  val errors: Map<UUID, Collection<String>>? = null
+  val errors: Map<UUID, Collection<String>>? = null,
+
+  val pageErrors: Collection<String>? = null
 ) {
   companion object {
 
@@ -40,7 +42,11 @@ class AssessmentEpisodeDto(
       return episodes.mapNotNull { from(it) }.toSet()
     }
 
-    fun from(episode: AssessmentEpisodeEntity, errors: Map<UUID, Collection<String>>? = null): AssessmentEpisodeDto {
+    fun from(
+      episode: AssessmentEpisodeEntity,
+      errors: Map<UUID, Collection<String>>? = null,
+      pageErrors: Collection<String>? = null
+    ): AssessmentEpisodeDto {
       return AssessmentEpisodeDto(
         episode.episodeId,
         episode.episodeUuid,
@@ -50,7 +56,8 @@ class AssessmentEpisodeDto(
         episode.createdDate,
         episode.endDate,
         AnswerDto.from(episode.answers) ?: emptyMap(),
-        errors
+        errors,
+        pageErrors
       )
     }
   }
