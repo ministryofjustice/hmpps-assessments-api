@@ -658,7 +658,7 @@ VALUES ('9905a862-94a0-434a-b5ae-ff7b9a77c7c4', '33923c1e-e3ba-4c02-ba42-3b8d828
     ('d0f38871-8621-4fe3-8238-1fbf7e2261f6', '53daee33-2c52-48af-99cc-178c483bcf09', '1', null, '1.7.2', false),
     ('3b4fa455-a171-4c4b-bdc4-ad859499bff3', '48bdcea3-55a6-4916-9040-2ea3770a0331', '1', null, '1.7', false),
     ('1fed82fa-1d88-421e-a043-a7d8faef60bf', 'f5d1dd7c-1774-4c76-89c2-a47240ad98ba', 'RSR', null, 'rsr_current_conviction_date', true),
-    ('1f4179fa-cd57-4327-a515-f012adbc1ea6', '58d3efd1-65a1-439b-952f-b2826ffa5e71', 'RSR', null, 'rsr_recent_sex_offence_date', true),
+    ('1f4179fa-cd57-4327-a515-f012adbc1ea6', '58d3efd1-65a1-439b-952f-b2826ffa5e71', 'RSR', null, 'rsr_sexual_offences', true),
     ('4e268e64-7f81-4e35-af3f-744ba937ff4f', '86ee742c-4bfb-4e29-afca-04ad35a3abda', 'RSR', null, 'rsr_stranger', true),
     ('9e6cce74-ee14-473b-b15c-59e9b29749ff', 'a00223d0-1c20-43b5-8076-8a292ca25773', 'RSR', null, 'rsr_recent_sex_offence_date', true),
     ('ba1a0388-5382-4bca-a43b-d8df56da50f9', '466d3da9-2d4b-4f8c-a958-90d188c956b4', 'RSR', null, 'rsr_previous_contact_offences_adult', true),
