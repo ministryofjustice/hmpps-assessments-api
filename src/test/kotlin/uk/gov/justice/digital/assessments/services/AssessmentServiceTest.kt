@@ -25,9 +25,11 @@ import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.SubjectRepository
 import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
+import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OasysAnswer
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.UpdateAssessmentAnswersResponseDto
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.ValidationErrorDto
 import uk.gov.justice.digital.assessments.restclient.courtcaseapi.CourtCase
+import uk.gov.justice.digital.assessments.services.dto.OasysAnswers
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
 import java.time.LocalDateTime
@@ -601,7 +603,7 @@ class AssessmentServiceTest {
 
       val answerSchema = AnswerSchemaEntity(value = "YES", answerSchemaId = 1, answerSchemaUuid = answer1Uuid, answerSchemaCode = "A1", answerSchemaGroup = AnswerSchemaGroupEntity(answerSchemaId = 1, answerSchemaGroupUuid = UUID.randomUUID()))
       val mapping = OASysMappingEntity(sectionCode = "1", questionCode = "R1.3", logicalPage = 1, fixed_field = false, mappingId = 1, questionSchema = QuestionSchemaEntity(questionSchemaId = 1))
-      val result = assessmentsService.mapOasysAnswer(mapping, listOf("Free Text"), "radios")[0]
+      val result = OasysAnswers.mapOasysAnswer(mapping, listOf("Free Text"), "radios")[0]
       assertThat(result.answer).isEqualTo("Free Text")
       assertThat(result.logicalPage).isEqualTo(1)
       assertThat(result.isStatic).isFalse()
@@ -612,7 +614,7 @@ class AssessmentServiceTest {
     @Test
     fun `should create Oasys Answer with correct date format`() {
       val mapping = OASysMappingEntity(sectionCode = "1", questionCode = "R1.3", logicalPage = 1, fixed_field = false, mappingId = 1, questionSchema = QuestionSchemaEntity(questionSchemaId = 1))
-      val result = assessmentsService.mapOasysAnswer(mapping, listOf("1975-01-20T00:00:00.000Z"), "date")[0]
+      val result = OasysAnswers.mapOasysAnswer(mapping, listOf("1975-01-20T00:00:00.000Z"), "date")[0]
       assertThat(result.answer).isEqualTo("20/01/1975")
     }
   }

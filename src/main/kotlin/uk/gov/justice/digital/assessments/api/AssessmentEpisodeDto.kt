@@ -2,6 +2,7 @@ package uk.gov.justice.digital.assessments.api
 
 import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
+import uk.gov.justice.digital.assessments.services.dto.AssessmentEpisodeUpdateErrors
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -44,8 +45,7 @@ class AssessmentEpisodeDto(
 
     fun from(
       episode: AssessmentEpisodeEntity,
-      errors: Map<UUID, Collection<String>>? = null,
-      pageErrors: Collection<String>? = null
+      errors: AssessmentEpisodeUpdateErrors? = null,
     ): AssessmentEpisodeDto {
       return AssessmentEpisodeDto(
         episode.episodeId,
@@ -56,8 +56,8 @@ class AssessmentEpisodeDto(
         episode.createdDate,
         episode.endDate,
         AnswerDto.from(episode.answers) ?: emptyMap(),
-        errors,
-        pageErrors
+        errors?.errors,
+        errors?.pageErrors
       )
     }
   }
