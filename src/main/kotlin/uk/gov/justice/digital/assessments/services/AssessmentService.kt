@@ -25,6 +25,7 @@ import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OasysAnswer
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.UpdateAssessmentAnswersResponseDto
 import uk.gov.justice.digital.assessments.restclient.courtcaseapi.CourtCase
+import uk.gov.justice.digital.assessments.services.dto.AssessmentEpisodeUpdateErrors
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
 import java.time.LocalDate
@@ -115,7 +116,7 @@ class AssessmentService(
         ?: throw IllegalStateException("Question not found for UUID ${episodeAnswer.key}")
 
       if (question.answerSchemaGroup != null) {
-        val questionCode = question?.questionCode
+        val questionCode = question.questionCode
           ?: throw IllegalStateException("Question Code not found for UUID ${episodeAnswer.key}")
         val answerSchema = matchAnswers(episodeAnswer, question)
         if (answerSchema.isNotEmpty()) {
@@ -214,7 +215,7 @@ class AssessmentService(
     assessmentRepository.save(episode.assessment)
     log.info("Saved episode ${episode.episodeUuid} for assessment ${episode.assessment?.assessmentUuid}")
 
-    return AssessmentEpisodeDto.from(episode, oasysResult?.first, oasysResult?.second)
+    return AssessmentEpisodeDto.from(episode, oasysResult)
   }
 
   private fun updateEpisodeAnswers(
@@ -238,7 +239,7 @@ class AssessmentService(
   fun updateOASysAssessment(
     offenderPk: Long?,
     episode: AssessmentEpisodeEntity
-  ): Pair<Map<UUID, Collection<String>>?, Collection<String>?>? {
+  ): AssessmentEpisodeUpdateErrors? {
     if (episode.assessmentType == null || episode.oasysSetPk == null || offenderPk == null) {
       log.info("Unable to update OASys Assessment with keys type: ${episode.assessmentType} oasysSet: ${episode.oasysSetPk} offenderPk: $offenderPk")
       return null
@@ -256,10 +257,7 @@ class AssessmentService(
       log.info("Error ${it.sectionCode}.${it.logicalPage}.${it.questionCode}: ${it.message}")
     }
 
-    val questionErrors = mapOasysErrors(episode, questions, oasysUpdateResult)
-    val pageErrors = mapOasysPageErrors(oasysUpdateResult)
-
-    return Pair(questionErrors, pageErrors)
+    return AssessmentEpisodeUpdateErrors.mapOasysErrors(episode, questions, oasysUpdateResult)
   }
 
   private fun mapOasysAnswers(
@@ -281,38 +279,6 @@ class AssessmentService(
     }
 
     return oasysAnswers
-  }
-
-  private fun mapOasysErrors(
-    episode: AssessmentEpisodeEntity,
-    questions: QuestionSchemaEntities,
-    oasysUpdateResult: UpdateAssessmentAnswersResponseDto?
-  ): Map<UUID, Collection<String>>? {
-    if (oasysUpdateResult == null || oasysUpdateResult.validationErrorDtos.isEmpty())
-      return null
-
-    val questionsInThisEpisode = episode.answers?.keys ?: emptySet()
-
-    val mappedErrors = mutableMapOf<UUID, Collection<String>>()
-    oasysUpdateResult.validationErrorDtos.forEach {
-      val mappedQuestions = questions.forOasysMapping(it.sectionCode, it.logicalPage, it.questionCode)
-      mappedQuestions
-        .filter { q -> questionsInThisEpisode.contains(q.questionSchemaUuid) }
-        .forEach { q -> mappedErrors[q.questionSchemaUuid] = listOf(it.message ?: "Field validation error") }
-    }
-
-    return mappedErrors
-  }
-
-  private fun mapOasysPageErrors(
-    oasysUpdateResult: UpdateAssessmentAnswersResponseDto?
-  ): Collection<String>? {
-    if (oasysUpdateResult == null || oasysUpdateResult.validationErrorDtos.isEmpty())
-      return null
-
-    return oasysUpdateResult.validationErrorDtos
-      .filter { it.questionCode == null }
-      .map { it.message ?: "Error on page" }
   }
 
   fun mapOasysAnswer(
