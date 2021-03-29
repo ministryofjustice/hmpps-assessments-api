@@ -26,6 +26,7 @@ import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OasysAn
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.UpdateAssessmentAnswersResponseDto
 import uk.gov.justice.digital.assessments.restclient.courtcaseapi.CourtCase
 import uk.gov.justice.digital.assessments.services.dto.AssessmentEpisodeUpdateErrors
+import uk.gov.justice.digital.assessments.services.dto.OasysAnswers
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
 import java.time.LocalDate
@@ -46,7 +47,6 @@ class AssessmentService(
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
     const val courtSource = "COURT"
-    val oasysDateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
   }
 
   fun createNewAssessment(newAssessment: CreateAssessmentDto): AssessmentDto {
@@ -246,7 +246,7 @@ class AssessmentService(
     }
 
     val questions = questionService.getAllQuestions()
-    val oasysAnswers = mapOasysAnswers(episode, questions)
+    val oasysAnswers = OasysAnswers.from(episode, questions)
 
     val oasysUpdateResult = assessmentUpdateRestClient.updateAssessment(offenderPk, episode.oasysSetPk!!, episode.assessmentType!!, oasysAnswers)
     log.info("Updated OASys assessment oasysSet ${episode.oasysSetPk} ${if(oasysUpdateResult?.validationErrorDtos?.isNotEmpty() == true) "with errors" else "successfully"}")
@@ -258,56 +258,6 @@ class AssessmentService(
     }
 
     return AssessmentEpisodeUpdateErrors.mapOasysErrors(episode, questions, oasysUpdateResult)
-  }
-
-  private fun mapOasysAnswers(
-    episode: AssessmentEpisodeEntity,
-    questions: QuestionSchemaEntities
-  ): Set<OasysAnswer> {
-    val oasysAnswers = mutableSetOf<OasysAnswer>()
-
-    // TODO: If we want to handle multiple mappings per question we will need to add assessment type to the mapping
-    episode.answers?.forEach { episodeAnswer ->
-      val question = questions[episodeAnswer.key]
-      val oasysMapping = question?.oasysMappings?.toList()?.getOrNull(0)
-      oasysAnswers.addAll(
-        mapOasysAnswer(
-          oasysMapping,
-          episodeAnswer.value.answers,
-          question?.answerType)
-      )
-    }
-
-    return oasysAnswers
-  }
-
-  fun mapOasysAnswer(
-    oasysMapping: OASysMappingEntity?,
-    answers: Collection<String>,
-    answerType: String?
-  ): List<OasysAnswer> {
-    if (oasysMapping == null) return emptyList()
-
-    return answers.map { it ->
-      val answer = when (answerType) {
-      "date" -> toOASysDate(it)
-        else -> it
-      }
-
-      OasysAnswer(
-        oasysMapping.sectionCode,
-        oasysMapping.logicalPage,
-        oasysMapping.questionCode,
-        answer,
-        oasysMapping.isFixed
-      )
-    }.toList()
-  }
-
-  private fun toOASysDate(dateStr: String): String {
-    if (dateStr.length < 10)
-      return dateStr
-    return LocalDate.parse(dateStr.substring(0, 10), DateTimeFormatter.ISO_DATE).format(oasysDateFormatter)
   }
 
   private fun getEpisode(episodeUuid: UUID, assessmentUuid: UUID): AssessmentEpisodeEntity {
