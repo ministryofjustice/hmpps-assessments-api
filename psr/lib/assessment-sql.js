@@ -122,6 +122,7 @@ class AssessmentSql {
       return
 
     const question_text = record[this.headers.QUESTION].replace(/'/g, "''").replace(/\r\n/g, ' ')
+    const question_help_text = record[this.headers.HINT_TEXT].replace(/'/g, "''").replace(/\r\n/g, ' ').replace(/\[.*\] *\n*/g, '')
     const [answer_type, answer_schema_group_uuid, read_only] = this.answerType(record[this.headers.ANSWER_TYPE], oasys_question)
 
     const business_logic = record[this.headers.LOGIC]
@@ -132,6 +133,7 @@ class AssessmentSql {
       answer_type: answer_type,
       answer_schema_group_uuid: answer_schema_group_uuid,
       question_text: question_text,
+      question_help_text: question_help_text,
       question_start: '2020-11-30 14:50:00',
       external_source: externalSources(question_code),
       read_only: (question_code.substring(0,2) === 'ui' ? true : read_only)
