@@ -224,6 +224,8 @@ class AssessmentSql {
       return ['date', null]
     if (answerField.match(/^presentation:/i))
       return [answerField, null]
+    if (answerField.match(/^numeric/i))
+      return ['numeric', null]
     return ['freetext', null]
   }
 
