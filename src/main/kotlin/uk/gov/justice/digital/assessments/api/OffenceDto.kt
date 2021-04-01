@@ -9,7 +9,12 @@ class OffenceDto(
   val convictionId: Long? = null,
   val convictionDate: LocalDate? = null,
   val mainOffenceId: String? = null,
-  val offenceCode: String? = null
+  val offenceCode: String? = null,
+  val offenceDescription: String? = null,
+  val categoryCode: String? = null,
+  val categoryDescription: String? = null,
+  val subCategoryCode: String? = null,
+  val subCategoryDescription: String? = null
 ) {
   companion object {
     fun from(convictionDto: CommunityConvictionDto): OffenceDto {
@@ -18,7 +23,12 @@ class OffenceDto(
         convictionId = convictionDto.convictionId,
         convictionDate = convictionDto.convictionDate,
         mainOffenceId = offence.offenceId,
-        offenceCode = offence.detail?.code
+        offenceCode = offence.detail?.code,
+        offenceDescription = offence.detail?.description,
+        categoryCode = offence.detail?.mainCategoryCode,
+        categoryDescription = offence.detail?.mainCategoryDescription,
+        subCategoryCode = offence.detail?.subCategoryCode,
+        subCategoryDescription = offence.detail?.subCategoryDescription
       )
     }
 

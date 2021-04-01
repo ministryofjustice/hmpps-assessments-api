@@ -96,7 +96,11 @@ class CommunityApiMockServer : WireMockServer(9096) {
           mainOffence = true,
           detail = OffenceDetail(
             code = "code1",
-            description = "Offence description"
+            description = "Offence description",
+            mainCategoryCode = "cat1",
+            mainCategoryDescription = "category description 1",
+            subCategoryCode = "cat2",
+            subCategoryDescription = "category description 2"
           )
         ),
         Offence(
@@ -104,7 +108,11 @@ class CommunityApiMockServer : WireMockServer(9096) {
           mainOffence = false,
           detail = OffenceDetail(
             code = "code2",
-            description = "Offence description"
+            description = "Offence description",
+            mainCategoryCode = "cat1",
+            mainCategoryDescription = "category description 1",
+            subCategoryCode = "cat2",
+            subCategoryDescription = "category description 2"
           )
         )
       ),
