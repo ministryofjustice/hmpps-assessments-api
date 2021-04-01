@@ -43,7 +43,7 @@ class OffenderControllerTest : IntegrationTest() {
   }
 
   @Test
-  fun `get offender returns offender with address for crn and conviction ID`() {
+  fun `returns offender with address`() {
     val offenderDto = webTestClient.get().uri("/offender/crn/$crn/conviction/$convictionId")
       .headers(setAuthorisation())
       .exchange()
@@ -58,7 +58,7 @@ class OffenderControllerTest : IntegrationTest() {
   }
 
   @Test
-  fun `get offender returns not found for invalid crn`() {
+  fun `returns not found for invalid crn`() {
     val invalidCrn = "invalid"
     webTestClient.get().uri("/offender/crn/$invalidCrn/conviction/$convictionId")
       .headers(setAuthorisation())
@@ -67,7 +67,7 @@ class OffenderControllerTest : IntegrationTest() {
   }
 
   @Test
-  fun `get offender returns offender with aliases for crn and conviction ID`() {
+  fun `returns offender with aliases`() {
     val offenderDto = webTestClient.get().uri("/offender/crn/$crn/conviction/$convictionId")
       .headers(setAuthorisation())
       .exchange()
@@ -79,5 +79,24 @@ class OffenderControllerTest : IntegrationTest() {
     assertThat(offenderDto?.offenderId).isEqualTo(oasysUserId)
     assertThat(offenderDto?.firstNameAliases).containsOnly("John", "Jonny")
     assertThat(offenderDto?.surnameAliases).containsOnly("Smithy")
+  }
+
+  @Test
+  fun `returns offence with category codes and code descriptions`() {
+    val offenderDto = webTestClient.get().uri("/offender/crn/$crn/conviction/$convictionId")
+      .headers(setAuthorisation())
+      .exchange()
+      .expectStatus().isOk
+      .expectBody<OffenderDto>()
+      .returnResult()
+      .responseBody
+
+    assertThat(offenderDto?.offenderId).isEqualTo(oasysUserId)
+    assertThat(offenderDto?.offence?.offenceCode).isEqualTo("code1")
+    assertThat(offenderDto?.offence?.offenceDescription).isEqualTo("Offence description")
+    assertThat(offenderDto?.offence?.categoryCode).isEqualTo("cat1")
+    assertThat(offenderDto?.offence?.categoryDescription).isEqualTo("category description 1")
+    assertThat(offenderDto?.offence?.subCategoryCode).isEqualTo("cat2")
+    assertThat(offenderDto?.offence?.subCategoryDescription).isEqualTo("category description 2")
   }
 }
