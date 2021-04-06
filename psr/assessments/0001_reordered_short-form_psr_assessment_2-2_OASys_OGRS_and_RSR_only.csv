@@ -79,8 +79,7 @@ Give details,299.1,,,,,,X,N/A,Give details,,,,Consistency,textarea,None,Static f
 "Offences, convictions and needs",S3,,,,,,,,,,,,,,,,,,,,,,,,,,
 Offences and convictions,S3.1,,,,,,,,,,,,,,,,,,,,,,,,,,
 PSR/Court considered offence (Primary/most serious offence as judged by assessor),ui35.1.1,,,,,,,,PSR or Court considered offence ,"[Below H2]
-Primary or most serious offence as judged by assessor
-",,,"Avoid use of slashes
+Primary or most serious offence as judged by assessor",,,"Avoid use of slashes
 Avoid use of parentheses",presentation: heading_large,,,,,,,,,,,,,
 Offence,35.1.1,,X,,,,X,Offence,Offence,,N/A if pre-populated,N/A if pre-populated,,"Free text, read only",,,ID.44,,"This is the offence code and subcode concatenated together taken from the CURRENT EVENT eg. 17505
 
@@ -188,24 +187,20 @@ Pass blank if the question has NOT been answered otherwise pass the number",,,N,
 Number of previous or current sanctions involving other non-contact sexual or sexually motivated offences,66.1,,,,,,X,Number of previous/current sanctions involving paraphilia sexual offences,Number of previous or current sanctions involving other non-contact sexual or sexually motivated offences,,Number of previous or current sanctions involving other non-contact sexual or sexually motivated offences,Enter the number of previous or current sanctions involving other non-contact sexual or sexually motivated offences,Clarity,Numeric,None,,RSR,1.37,"ARN content ref. 66.1 Number of previous/current sanctions involving other non-contact sexual/sexually motivated offences.
 Pass blank if the question has NOT been answered otherwise pass the number",,,N,Q,Offence and sentence,x,,
 Date of commencement of community sentence or earliest possible release from custody,60.1,,,,,,X,Date of commencement of community sentence or earliest possible release from custody,Date of commencement of community sentence or earliest possible release from custody,"[Below question text]
-For example, 12 11 2007",Enter a date,,Simpler,Date,None,,RSR,1.38,"ARN content ref. 60.1 Date of commencement of community sentence or earliest possible release from custody
+For example, 12 11 2007",Enter a date,Enter a date,Simpler,Date,None,,RSR,1.38,"ARN content ref. 60.1 Date of commencement of community sentence or earliest possible release from custody
 Pass blank or the date",,,N,Q,Offence details,x,,
 Needs,S3.2,,,,,,,,,,,,,,,,,,,,,,,,,,
-Have you completed an offender interview?,67.1,,,,,,X,Have you completed an offender interview?,Have you completed an interview?,,Select yes or no (interview completion),,Avoid use of 'offender' which introduces cognitive bias,Y/N,"If Y then display questions
-69.1
-75.1
-80.1
-86.1
-87.1
-88.1
-90.1
-92.1
-113.1
-115.1
-116.1
-
-
-",,RSR,None,"See static_calc function.
+Have you completed an offender interview?,67.1,,,,,,X,Have you completed an offender interview?,Have you completed an interview?,,Select yes or no (interview completion),Select yes or no,Avoid use of 'offender' which introduces cognitive bias,Y/N,"YES > 69.1 out-of-line
+YES > 75.1 out-of-line
+YES > 80.1 out-of-line
+YES > 86.1 out-of-line
+YES > 87.1 out-of-line
+YES > 88.1 out-of-line
+YES > 90.1 out-of-line
+YES > 92.1 out-of-line
+YES > 113.1 out-of-line
+YES > 115.1 out-of-line
+YES > 116.1 out-of-line",,RSR,None,"See static_calc function.
 
 The answer to ARN Content ref. 67.1 Have you completed an interview? is used in the following way:
 
@@ -216,19 +211,18 @@ Otherwise (ARN Content ref. 67.1 (OASys ref1.39) is set to ‘No’ or assessor 
 End
 
 ",X,,N,Q,Risk screening,x,,
-Did the offence involve carrying/use of a weapon?,69.1,,,,,,X,Did the offence involve carrying/use of a weapon?,Did the offence involve carrying or use of a weapon?,,Select yes or no (carrying or using weapon),,Clarity (avoid slashes),Y/N,Y > 70.1,,S2.2,2.2,"ARN Content ref. 69.1 From a Layer 3 or RoSHA this is question 2.2 ‘Carrying or using a weapon’ – if checkbox has been checked pass 1
+Did the offence involve carrying/use of a weapon?,69.1,,,,,,X,Did the offence involve carrying/use of a weapon?,Did the offence involve carrying or use of a weapon?,,Select yes or no (carrying or using weapon),Select yes or no,Clarity (avoid slashes),Y/N,YES > 70.1,,S2.2,2.2,"ARN Content ref. 69.1 From a Layer 3 or RoSHA this is question 2.2 ‘Carrying or using a weapon’ – if checkbox has been checked pass 1
 otherwise pass 0",,,N,Q,Offence details,x,,
-Specify which weapon,70.1,,,,,,X,Specify which weapon,Specify which weapon,,,,Consistency,Free text?,None,,S2.3,None,,,,N,Q,Offence details,x,,
+Specify which weapon,70.1,,,,,,X,Specify which weapon,Specify which weapon,,,,Consistency,Free text,None,,S2.3,None,,,,N,Q,Offence details,x,,
 Is the offender living in suitable accommodation?,75.1,,,,,,X,Is the offender living in suitable accommodation?,Is the individual living in suitable accommodation?,,Select the degree to which this is an issue (suitability of accommodation),Select the degree to which this is an issue,Avoid use of 'offender' which introduces cognitive bias,"Radios:
 No problems
 Some problems
 Significant problems",,"0,1,2 equates to none, some significant (problem) in OASys. This does not match the question wording very well. ",RSR,3.4,"ARN Content ref. 77.2 Suitability of accommodation
 If blank or M pass NULL otherwise pass the score (0, 1, 2)",,,N,Q,Accommodation,x,,
-Is the person unemployed or will be unemployed upon release?,80.1,,,,,,X,Is the person unemployed or will be unemployed upon release?,Is the person unemployed or will be unemployed upon release?,,Enter yes or no (unemployed now or on release),,Consistency,"Radios:
+Is the person unemployed or will be unemployed upon release?,80.1,,,,,,X,Is the person unemployed or will be unemployed upon release?,Is the person unemployed or will be unemployed upon release?,,Enter yes or no (unemployed now or on release),Select an option,Consistency,"Radios:
 No
 Not available for work
-Yes
-",None,,,4.2,"ARN Content ref. 80.2 Is the person unemployed, or will be unemployed on release
+Yes",None,,,4.2,"ARN Content ref. 80.2 Is the person unemployed, or will be unemployed on release
 If blank or M
  Pass NULL
 Otherwise
@@ -250,9 +244,7 @@ Significant problems",None,"0,1,2 equates to none, some significant (problem) in
 
 If blank or M pass NULL otherwise pass the score (0, 1, 2)",,,N,Q,Relationships,x,,
 Is there evidence that the offender is a perpetrator of domestic violence/partner abuse?,87.1,,,,,,X,Is there evidence that the offender is a perpetrator of domestic violence/partner abuse?,Is there evidence that the individual is a perpetrator of domestic violence or partner abuse?,,Select yes or no (perpetrator of domestic violence or partner abuse?),Select yes or no,"Clarity (avoid slashes)
-Avoid use of 'offender' which introduces cognitive bias",Y/N,"If Y display question 88.1
-And
-If Y then display victim/perpetrator radios",,RSR,6.7,,,,N,Q,Relationships,x,,
+Avoid use of 'offender' which introduces cognitive bias",Y/N,YES > 88.1,,RSR,6.7,,,,N,Q,Relationships,x,,
 Victim/perpetrator,88.1,,,,,,X,Victim/perpetrator,Victim or perpetrator,,Select victim or perpetrator,Select victim or perpetrator,Avoid slashes,"Radios
 Victim
 Perpetrator",None,,RSR,None,ARN Content ref. 88.1 From a Layer 3 or RoSHA at 6.7 if the PERPETRATOR checkbox has been checked pass 1 otherwise 0,,,N,Q,Relationships,x,,

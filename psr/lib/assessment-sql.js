@@ -275,8 +275,7 @@ class AssessmentSql {
 
   compileValidation(record) {
     const errorMessage = record[this.headers.ERROR_MESSAGE]
-    if (errorMessage.startsWith('N/A'))
-      return null
+    if (errorMessage === '' || errorMessage.startsWith('N/A')) return null
 
     return JSON.stringify({
       mandatory: {
