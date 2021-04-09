@@ -44,7 +44,9 @@ class AssessmentUpdateRestClient {
       .onStatus(HttpStatus::is4xxClientError) { handleOffenderError(crn, user, it) }
       .onStatus(HttpStatus::is5xxServerError) { throw OASysClientException("Failed to create offender $crn in OASYs") }
       .bodyToMono(CreateOffenderResponseDto::class.java)
-      .block()?.oasysOffenderId
+      .block()?.oasysOffenderId.also {
+        log.info("Created offender in OASys for crn: $crn, area: $area, user: $user, delius event: $deliusEvent")
+      }
   }
 
   fun createAssessment(
@@ -60,7 +62,9 @@ class AssessmentUpdateRestClient {
       .onStatus(HttpStatus::is4xxClientError) { handleAssessmentError(offenderPK, user, assessmentType, it) }
       .onStatus(HttpStatus::is5xxServerError) { throw OASysClientException("Failed to create assessment for offender $offenderPK in OASYs") }
       .bodyToMono(CreateAssessmentResponse::class.java)
-      .block()?.oasysSetPk
+      .block()?.oasysSetPk.also {
+        log.info("Created Assessment of type $assessmentType in OASys for offender: $offenderPK, area: $area, user: $user")
+      }
   }
 
   fun updateAssessment(
@@ -78,7 +82,9 @@ class AssessmentUpdateRestClient {
       .onStatus(HttpStatus::is4xxClientError) { handleAssessmentError(offenderPK, user, assessmentType, it) }
       .onStatus(HttpStatus::is5xxServerError) { throw OASysClientException("Failed to update assessment for offender $offenderPK in OASYs") }
       .bodyToMono(UpdateAssessmentAnswersResponseDto::class.java)
-      .block()
+      .block().also {
+        log.info("Updated answers for Assessment $oasysSetPk in OASys for offender: $offenderPK, area: $area, user: $user")
+      }
   }
 
   fun handleOffenderError(crn: String?, user: String?, clientResponse: ClientResponse): Mono<out Throwable?>? {

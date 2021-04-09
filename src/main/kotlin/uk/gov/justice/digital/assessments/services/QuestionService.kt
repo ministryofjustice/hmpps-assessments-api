@@ -174,7 +174,7 @@ class QuestionSchemaEntities(
   }
   private class Questions(
     private val questions: MutableList<QuestionSchemaEntity> = mutableListOf()
-  ): List<QuestionSchemaEntity> by questions {
+  ) : List<QuestionSchemaEntity> by questions {
     fun addQuestion(question: QuestionSchemaEntity) {
       questions.add(question)
     }
@@ -183,7 +183,7 @@ class QuestionSchemaEntities(
   companion object {
     private fun mapByOasysCoords(questionsList: List<QuestionSchemaEntity>): OasysMappingTree {
       val mapping = OasysMappingTree()
-      questionsList.forEach { question->
+      questionsList.forEach { question ->
         question.oasysMappings.forEach {
           mapping.addSection(it.sectionCode)
             .addLogicalPage(it.logicalPage)

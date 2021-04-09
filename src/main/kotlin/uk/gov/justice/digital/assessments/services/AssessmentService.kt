@@ -15,23 +15,18 @@ import uk.gov.justice.digital.assessments.jpa.entities.AnswerSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
-import uk.gov.justice.digital.assessments.jpa.entities.OASysMappingEntity
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.SubjectRepository
 import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
-import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OasysAnswer
-import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.UpdateAssessmentAnswersResponseDto
 import uk.gov.justice.digital.assessments.restclient.courtcaseapi.CourtCase
 import uk.gov.justice.digital.assessments.services.dto.AssessmentEpisodeUpdateErrors
 import uk.gov.justice.digital.assessments.services.dto.OasysAnswers
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
-import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.UUID
 import javax.transaction.Transactional
 
@@ -178,7 +173,7 @@ class AssessmentService(
     return episodeAnswer.value.answers.map { answer ->
       answerSchemas.firstOrNull { answerSchema ->
         answerSchema.value == answer
-      } ?: throw IllegalStateException("Answer Code not found for question ${question.questionSchemaUuid} answer value ${answer}")
+      } ?: throw IllegalStateException("Answer Code not found for question ${question.questionSchemaUuid} answer value $answer")
     }.toSet()
   }
 
@@ -249,7 +244,7 @@ class AssessmentService(
     val oasysAnswers = OasysAnswers.from(episode, questions)
 
     val oasysUpdateResult = assessmentUpdateRestClient.updateAssessment(offenderPk, episode.oasysSetPk!!, episode.assessmentType!!, oasysAnswers)
-    log.info("Updated OASys assessment oasysSet ${episode.oasysSetPk} ${if(oasysUpdateResult?.validationErrorDtos?.isNotEmpty() == true) "with errors" else "successfully"}")
+    log.info("Updated OASys assessment oasysSet ${episode.oasysSetPk} ${if (oasysUpdateResult?.validationErrorDtos?.isNotEmpty() == true) "with errors" else "successfully"}")
     oasysAnswers.forEach {
       log.info("Answer ${it.sectionCode}.${it.logicalPage}.${it.questionCode}: ${it.answer}")
     }

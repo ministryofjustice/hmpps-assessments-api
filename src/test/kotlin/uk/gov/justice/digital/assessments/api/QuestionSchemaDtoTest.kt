@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.assessments.api
 
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
 import java.time.LocalDateTime
