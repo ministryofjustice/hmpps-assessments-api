@@ -100,6 +100,24 @@ class AssessmentUpdateRestClient {
       .block()
   }
 
+  fun completeAssessment(
+    offenderPK: Long,
+    oasysSetPk: Long,
+    assessmentType: AssessmentType,
+    ignoreWarnings: Boolean = true,
+    user: String = "STUARTWHITLAM",
+    area: String = "WWS"
+  ): UpdateAssessmentAnswersResponseDto? {
+    log.info("Completing Assessment $oasysSetPk in OASys for offender: $offenderPK, area: $area, user: $user")
+    return webClient
+      .put("/assessments/complete", CompleteAssessmentDto(oasysSetPk, offenderPK, area, user, assessmentType, ignoreWarnings))
+      .retrieve()
+      .onStatus(HttpStatus::is4xxClientError) { handleAssessmentError(offenderPK, user, assessmentType, it) }
+      .onStatus(HttpStatus::is5xxServerError) { throw OASysClientException("Failed to complete assessment for offender $offenderPK in OASYs") }
+      .bodyToMono(UpdateAssessmentAnswersResponseDto::class.java)
+      .block()
+  }
+
   fun handleOffenderError(crn: String?, user: String?, clientResponse: ClientResponse): Mono<out Throwable?>? {
     return when {
       HttpStatus.CONFLICT == clientResponse.statusCode() -> {
