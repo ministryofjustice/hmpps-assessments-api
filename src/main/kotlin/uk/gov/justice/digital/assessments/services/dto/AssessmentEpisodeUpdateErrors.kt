@@ -68,6 +68,6 @@ class AssessmentEpisodeUpdateErrors (
   }
 
   fun hasErrors(): Boolean{
-    return answerErrors.isEmpty() && errorsOnPage.isEmpty()
+    return answerErrors.isNotEmpty() || errorsOnPage.isNotEmpty()
   }
 }
