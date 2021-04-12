@@ -15,23 +15,18 @@ import uk.gov.justice.digital.assessments.jpa.entities.AnswerSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
-import uk.gov.justice.digital.assessments.jpa.entities.OASysMappingEntity
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.SubjectRepository
 import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
-import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OasysAnswer
-import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.UpdateAssessmentAnswersResponseDto
 import uk.gov.justice.digital.assessments.restclient.courtcaseapi.CourtCase
 import uk.gov.justice.digital.assessments.services.dto.AssessmentEpisodeUpdateErrors
 import uk.gov.justice.digital.assessments.services.dto.OasysAnswers
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
-import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.UUID
 import javax.transaction.Transactional
 
@@ -80,7 +75,7 @@ class AssessmentService(
   }
 
   fun getCurrentAssessmentEpisode(assessmentUuid: UUID): AssessmentEpisodeDto {
-    return AssessmentEpisodeDto.from(getCurrentEpsiode(assessmentUuid))
+    return AssessmentEpisodeDto.from(getCurrentEpisode(assessmentUuid))
   }
 
   fun getCurrentAssessmentCodedAnswers(assessmentUuid: UUID): AssessmentAnswersDto {
@@ -197,7 +192,7 @@ class AssessmentService(
     assessmentUuid: UUID,
     updatedEpisodeAnswers: UpdateAssessmentEpisodeDto
   ): AssessmentEpisodeDto {
-    val episode = getCurrentEpsiode(assessmentUuid)
+    val episode = getCurrentEpisode(assessmentUuid)
     return updateEpisode(episode, updatedEpisodeAnswers)
   }
 
@@ -260,12 +255,56 @@ class AssessmentService(
     return AssessmentEpisodeUpdateErrors.mapOasysErrors(episode, questions, oasysUpdateResult)
   }
 
+  @Transactional
+  fun closeEpisode(
+    assessmentUuid: UUID
+  ): AssessmentEpisodeDto {
+    val episode = getCurrentEpisode(assessmentUuid)
+    if (episode.isClosed()) throw UpdateClosedEpisodeException("Episode ${episode.episodeUuid} for assessment $assessmentUuid is already closed")
+    val offenderPk: Long? = episode.assessment?.subject?.oasysOffenderPk
+    if (episode.assessmentType == null || episode.oasysSetPk == null || offenderPk == null) {
+      log.info("Unable to complete OASys Assessment with keys type: ${episode.assessmentType} oasysSet: ${episode.oasysSetPk} offenderPk: $offenderPk")
+      return AssessmentEpisodeDto.from(episode, null)
+    }
+    val oasysResult = completeOASysAssessment(offenderPk, episode)
+    if (oasysResult == null) {
+      log.info("Unable to close episode ${episode.episodeUuid} for assessment ${episode.assessment?.assessmentUuid} with OASys restclient")
+    } else {
+      episode.close()
+      assessmentRepository.save(episode.assessment)
+      log.info("Saved closed episode ${episode.episodeUuid} for assessment ${episode.assessment?.assessmentUuid}")
+    }
+    return AssessmentEpisodeDto.from(episode, oasysResult)
+  }
+
+  fun completeOASysAssessment(
+    offenderPk: Long,
+    episode: AssessmentEpisodeEntity,
+  ): AssessmentEpisodeUpdateErrors? {
+    val oasysUpdateResult = assessmentUpdateRestClient.completeAssessment(offenderPk, episode.oasysSetPk!!, episode.assessmentType!!)
+    if (oasysUpdateResult?.validationErrorDtos?.isNotEmpty() == true){
+      log.info("Could not complete OASys assessment oasysSet ${episode.oasysSetPk} with errors")
+    } else log.info("Completed OASys assessment oasysSet $episode.oasysSetPk successfully")
+
+    oasysUpdateResult?.validationErrorDtos?.forEach {
+      log.info("Error ${it.sectionCode}.${it.logicalPage}.${it.questionCode}: ${it.message}")
+    }
+
+    return AssessmentEpisodeUpdateErrors.mapOasysErrors(episode, null, oasysUpdateResult)
+  }
+
+
+
+
+
+
+
   private fun getEpisode(episodeUuid: UUID, assessmentUuid: UUID): AssessmentEpisodeEntity {
     return getAssessmentByUuid(assessmentUuid).episodes.firstOrNull { it.episodeUuid == episodeUuid }
       ?: throw EntityNotFoundException("No Episode $episodeUuid for $assessmentUuid")
   }
 
-  private fun getCurrentEpsiode(assessmentUuid: UUID): AssessmentEpisodeEntity {
+  private fun getCurrentEpisode(assessmentUuid: UUID): AssessmentEpisodeEntity {
     val assessment = getAssessmentByUuid(assessmentUuid)
     return assessment.getCurrentEpisode()
       ?: throw EntityNotFoundException("No current Episode for $assessmentUuid")

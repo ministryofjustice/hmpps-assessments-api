@@ -117,6 +117,22 @@ class AssessmentController(val assessmentService: AssessmentService) {
     )
   }
 
+  @RequestMapping(path = ["/assessments/{assessmentUuid}/complete"], method = [RequestMethod.POST])
+  @Operation(description = "completes current episode")
+  @ApiResponses(
+    value = [
+      ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
+      ApiResponse(responseCode = "200", description = "OK")
+    ]
+  )
+  fun completeAssessmentEpisode(
+    @Parameter(description = "Assessment UUID", required = true, example = "1234") @PathVariable assessmentUuid: UUID,
+  ): ResponseEntity<AssessmentEpisodeDto> {
+    return updateResponse(
+      assessmentService.closeEpisode(assessmentUuid)
+    )
+  }
+
   private fun updateResponse(
     assessmentEpisode: AssessmentEpisodeDto
   ): ResponseEntity<AssessmentEpisodeDto> {
