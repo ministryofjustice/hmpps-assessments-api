@@ -33,6 +33,7 @@ CREATE TABLE IF NOT EXISTS question_schema
     answer_schema_group_uuid UUID       NULL,
     question_text           TEXT,
     question_help_text      TEXT,
+    reference_data_category TEXT,
     FOREIGN KEY (answer_schema_group_uuid) REFERENCES answer_schema_group (answer_schema_group_uuid)
 );
 
