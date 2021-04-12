@@ -49,7 +49,7 @@ class AssessmentEpisodeEntity(
   val createdDate: LocalDateTime? = null,
 
   @Column(name = "END_DATE")
-  val endDate: LocalDateTime? = null,
+  var endDate: LocalDateTime? = null,
 
   @Column(name = "CHANGE_REASON")
   val changeReason: String? = null,
@@ -60,5 +60,9 @@ class AssessmentEpisodeEntity(
 ) {
   fun isClosed(): Boolean {
     return endDate != null
+  }
+
+  fun close() {
+    endDate = LocalDateTime.now()
   }
 }
