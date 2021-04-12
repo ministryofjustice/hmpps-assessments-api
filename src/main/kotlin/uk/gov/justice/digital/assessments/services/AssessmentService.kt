@@ -293,12 +293,6 @@ class AssessmentService(
     return AssessmentEpisodeUpdateErrors.mapOasysErrors(episode, null, oasysUpdateResult)
   }
 
-
-
-
-
-
-
   private fun getEpisode(episodeUuid: UUID, assessmentUuid: UUID): AssessmentEpisodeEntity {
     return getAssessmentByUuid(assessmentUuid).episodes.firstOrNull { it.episodeUuid == episodeUuid }
       ?: throw EntityNotFoundException("No Episode $episodeUuid for $assessmentUuid")
