@@ -147,7 +147,7 @@ VALUES ('1ea17930-d467-44c0-9e72-517747618acb', 'ui3.1', null, '2020-11-30 14:50
        ('d9ca82ca-8684-49e4-b7eb-91fb0effed91', '33.1', 'oasys_signing table', '2020-11-30 14:50:00', null, 'freetext', null, 'Signing history', null, null, null),
        ('eef973e6-f493-4460-b094-2162fc8dc7e9', '24.1', 'NOT HELD', '2020-11-30 14:50:00', null, 'date', null, 'Date report completed and signed', null, null, null),
        ('c2cb3e8b-a544-4b72-a533-223498fcb986', 'ui24.1', null, '2020-11-30 14:50:00', null, 'presentation: link("/update-assessment")', null, 'Update assessment details', null, null, null),
-       ('2b93527c-a545-4e41-9fb4-98ee127af393', '298.1', 'Each individual source held, sources_information_pivot.sources_information_ELM', '2020-11-30 14:50:00', null, 'checkbox', 'ee47fa78-eaba-421a-bcaf-0aea184dc5a3', 'Sources of information', null, null, null),
+       ('2b93527c-a545-4e41-9fb4-98ee127af393', '298.1', 'Each individual source held, sources_information_pivot.sources_information_ELM', '2020-11-30 14:50:00', null, 'checkbox', 'ee47fa78-eaba-421a-bcaf-0aea184dc5a3', 'Sources of information', null, null, 'SOURCES_OF_INFORMATION'),
        ('d9846a60-5ba6-450f-9934-2c9646771f9d', '299.1', 'sources_info_other_ftxt', '2020-11-30 14:50:00', null, 'textarea', null, 'Give details', null, null, null),
        ('0bc681b4-7f70-477e-8ef5-0daaf8aa0495', 'ui35.1.1', null, '2020-11-30 14:50:00', null, 'presentation: heading_large', null, 'PSR or Court considered offence ', 'Primary or most serious offence as judged by assessor', null, null),
        ('54b03faa-efc0-49ef-9add-7581dca17d70', '35.1.1', null, '2020-11-30 14:50:00', null, 'freetext', null, 'Offence', null, null, null),
