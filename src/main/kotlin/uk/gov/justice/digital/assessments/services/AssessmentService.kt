@@ -289,7 +289,6 @@ class AssessmentService(
     oasysUpdateResult?.validationErrorDtos?.forEach {
       log.info("Error ${it.sectionCode}.${it.logicalPage}.${it.questionCode}: ${it.message}")
     }
-
     return AssessmentEpisodeUpdateErrors.mapOasysErrors(episode, null, oasysUpdateResult)
   }
 
