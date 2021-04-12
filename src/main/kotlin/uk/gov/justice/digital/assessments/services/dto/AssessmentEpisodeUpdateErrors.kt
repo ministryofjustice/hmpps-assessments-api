@@ -26,15 +26,16 @@ class AssessmentEpisodeUpdateErrors (
   companion object {
     fun mapOasysErrors(
       episode: AssessmentEpisodeEntity,
-      questions: QuestionSchemaEntities,
+      questions: QuestionSchemaEntities?,
       oasysUpdateResult: UpdateAssessmentAnswersResponseDto?
     ): AssessmentEpisodeUpdateErrors? {
       if (oasysUpdateResult == null || oasysUpdateResult.validationErrorDtos.isEmpty())
         return null
 
       val updateErrors = AssessmentEpisodeUpdateErrors()
-
-      mapAnswerErrors(updateErrors, episode, questions, oasysUpdateResult)
+      if (questions != null) {
+        mapAnswerErrors(updateErrors, episode, questions, oasysUpdateResult)
+      }
       mapPageErrors(updateErrors, oasysUpdateResult)
 
       return updateErrors
