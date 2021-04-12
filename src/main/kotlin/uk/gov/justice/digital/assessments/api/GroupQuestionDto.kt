@@ -37,6 +37,9 @@ data class GroupQuestionDto(
   @Schema(description = "Is the question display conditional on some other question", example = "false")
   val conditional: Boolean? = null,
 
+  @Schema(description = "Reference Data Category", example = "GENDER")
+  val referenceDataCategory: String? = null,
+
   @Schema(description = "Reference Answer Schemas")
   val answerSchemas: Collection<AnswerSchemaDto>? = null,
 ) : GroupContentDto {
@@ -57,6 +60,7 @@ data class GroupQuestionDto(
         validation = questionGroupEntity.validation,
         readOnly = questionGroupEntity.readOnly,
         conditional = questionDependencies.hasDependency(questionSchemaEntity.questionSchemaUuid),
+        referenceDataCategory = questionSchemaEntity.referenceDataCategory,
         answerSchemas = AnswerSchemaDto.from(
           questionSchemaEntity.answerSchemaEntities,
           questionDependencies.answerTriggers(questionSchemaEntity.questionSchemaUuid)

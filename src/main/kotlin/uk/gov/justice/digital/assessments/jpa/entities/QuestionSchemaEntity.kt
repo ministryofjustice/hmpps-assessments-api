@@ -50,6 +50,9 @@ class QuestionSchemaEntity(
   @Column(name = "question_help_text")
   val questionHelpText: String? = null,
 
+  @Column(name = "reference_data_category")
+  val referenceDataCategory: String? = null,
+
   @ManyToOne
   @JoinColumn(name = "answer_schema_group_uuid", referencedColumnName = "answer_schema_group_uuid")
   val answerSchemaGroup: AnswerSchemaGroupEntity? = null,

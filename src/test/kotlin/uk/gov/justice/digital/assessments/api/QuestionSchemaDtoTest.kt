@@ -22,7 +22,8 @@ class QuestionSchemaDtoTest {
       LocalDateTime.of(2020, 8, 1, 8, 0),
       "Freetext",
       "Question text",
-      "Question help text"
+      "Question help text",
+      "TEST_REF_DATA_CAT",
     )
 
     val questionSchemaDto = QuestionSchemaDto.from(questionSchemaEntity)
@@ -36,5 +37,6 @@ class QuestionSchemaDtoTest {
     assertThat(questionSchemaDto.answerType).isEqualTo(questionSchemaEntity.answerType)
     assertThat(questionSchemaDto.questionText).isEqualTo(questionSchemaEntity.questionText)
     assertThat(questionSchemaDto.questionHelpText).isEqualTo(questionSchemaEntity.questionHelpText)
+    assertThat(questionSchemaDto.referenceDataCategory).isEqualTo(questionSchemaEntity.referenceDataCategory)
   }
 }

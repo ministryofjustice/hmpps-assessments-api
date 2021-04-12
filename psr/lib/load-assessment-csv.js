@@ -34,12 +34,13 @@ function findHeaders(headers) {
   const ERROR_MESSAGE = headers.findIndex(field => field.match(/error message/i))
   const LOGIC = headers.findIndex(field => field.match(/business logic/i))
   const HINT_TEXT = headers.findIndex(field => field.match(/hint text/i))
+  const REFERENCE_DATA_CATEGORY = headers.findIndex(field => field.match(/reference data category/i))
 
-  if ([TITLE, REF, QUESTION, ANSWER_TYPE, OASYS_REF, LOGIC].includes(-1)) {
+  if ([TITLE, REF, QUESTION, ANSWER_TYPE, OASYS_REF, LOGIC, REFERENCE_DATA_CATEGORY].includes(-1)) {
     console.error(`${csvfile} does not look like I expect!`)
     process.exit(-1)
   }
-  return { TITLE, REF, QUESTION, ANSWER_TYPE, OASYS_REF, OASYS_FIXED, ERROR_MESSAGE, ERROR_SUMMARY, LOGIC, HINT_TEXT }
+  return { TITLE, REF, QUESTION, ANSWER_TYPE, OASYS_REF, OASYS_FIXED, ERROR_MESSAGE, ERROR_SUMMARY, LOGIC, HINT_TEXT, REFERENCE_DATA_CATEGORY }
 }
 
 function patchInAddress(records, headers) {

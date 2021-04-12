@@ -34,6 +34,9 @@ data class QuestionSchemaDto(
   @Schema(description = "Question Help Text", example = "Some question help text")
   val questionHelpText: String? = null,
 
+  @Schema(description = "Reference Data Category")
+  val referenceDataCategory: String? = null,
+
   @Schema(description = "List of Reference Answer Schemas")
   val answerSchemas: Collection<AnswerSchemaDto>,
 
@@ -56,6 +59,7 @@ data class QuestionSchemaDto(
         questionSchema?.answerType,
         questionSchema?.questionText,
         questionSchema?.questionHelpText,
+        questionSchema?.referenceDataCategory,
         AnswerSchemaDto.from(
           questionSchema?.answerSchemaEntities
         )
