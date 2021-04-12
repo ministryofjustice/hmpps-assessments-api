@@ -74,7 +74,7 @@ Psychiatric
 Psychology
 Request for information
 Victim statement
-Other",,None,,ID.45,"Each individual source held, sources_information_pivot.sources_information_ELM",,,,N,Q,Information sources,x,PROPIN/sources_info,
+Other",SOURCES_OF_INFORMATION,None,,ID.45,"Each individual source held, sources_information_pivot.sources_information_ELM",,,,N,Q,Information sources,x,PROPIN/sources_info,
 Give details,299.1,,,,,,X,N/A,Give details,,,,Consistency,textarea,,None,Static free text box with 4000 character limit,ID.46,sources_info_other_ftxt,,,,N,Q,Information sources,x,PROPIN/sources_other_text,
 "Offences, convictions and needs",S3,,,,,,,,,,,,,,,,,,,,,,,,,,,
 Offences and convictions,S3.1,,,,,,,,,,,,,,,,,,,,,,,,,,,
