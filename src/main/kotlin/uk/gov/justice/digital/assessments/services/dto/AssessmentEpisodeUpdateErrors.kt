@@ -66,4 +66,8 @@ class AssessmentEpisodeUpdateErrors (
         .forEach { updateErrors.addPageError(it.message) }
     }
   }
+
+  fun hasErrors(): Boolean{
+    return answerErrors.isEmpty() && errorsOnPage.isEmpty()
+  }
 }

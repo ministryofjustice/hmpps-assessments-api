@@ -267,7 +267,7 @@ class AssessmentService(
       return AssessmentEpisodeDto.from(episode, null)
     }
     val oasysResult = completeOASysAssessment(offenderPk, episode)
-    if (oasysResult == null) {
+    if (oasysResult == null || oasysResult.hasErrors()) {
       log.info("Unable to close episode ${episode.episodeUuid} for assessment ${episode.assessment?.assessmentUuid} with OASys restclient")
     } else {
       episode.close()
@@ -289,7 +289,6 @@ class AssessmentService(
     oasysUpdateResult?.validationErrorDtos?.forEach {
       log.info("Error ${it.sectionCode}.${it.logicalPage}.${it.questionCode}: ${it.message}")
     }
-
     return AssessmentEpisodeUpdateErrors.mapOasysErrors(episode, null, oasysUpdateResult)
   }
 
