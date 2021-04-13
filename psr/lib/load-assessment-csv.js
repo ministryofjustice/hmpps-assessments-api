@@ -26,7 +26,7 @@ function loadAssessmentCsv(csvFile) {
 function findHeaders(headers) {
   const TITLE = headers.findIndex(field => field.match(/^question/i))
   const REF = headers.findIndex(field => field.match(/content.*ref/i))
-  const QUESTION = headers.findIndex(field => field.match(/proposed.*wording/i))
+  const QUESTION = headers.findIndex(field => field.match(/final.*wording/i))
   const ANSWER_TYPE = headers.findIndex(field => field.match(/input type/i))
   const OASYS_REF = headers.findIndex(field => field.match(/oasys ref/i))
   const OASYS_FIXED = headers.findIndex(field => field.match(/oasys fixed field/i))
