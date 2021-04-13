@@ -3,7 +3,9 @@ package uk.gov.justice.digital.assessments.api
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import uk.gov.justice.digital.assessments.restclient.communityapi.*
+import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityConvictionDto
+import uk.gov.justice.digital.assessments.restclient.communityapi.Offence
+import uk.gov.justice.digital.assessments.restclient.communityapi.OffenceDetail
 import uk.gov.justice.digital.assessments.restclient.courtcaseapi.DefendantAddress
 import java.time.LocalDate
 

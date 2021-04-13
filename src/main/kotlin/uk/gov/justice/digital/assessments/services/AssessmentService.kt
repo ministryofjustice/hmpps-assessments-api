@@ -173,7 +173,7 @@ class AssessmentService(
     return episodeAnswer.value.answers.map { answer ->
       answerSchemas.firstOrNull { answerSchema ->
         answerSchema.value == answer
-      } ?: throw IllegalStateException("Answer Code not found for question ${question.questionSchemaUuid} answer value ${answer}")
+      } ?: throw IllegalStateException("Answer Code not found for question ${question.questionSchemaUuid} answer value $answer")
     }.toSet()
   }
 
@@ -244,7 +244,7 @@ class AssessmentService(
     val oasysAnswers = OasysAnswers.from(episode, questions)
 
     val oasysUpdateResult = assessmentUpdateRestClient.updateAssessment(offenderPk, episode.oasysSetPk!!, episode.assessmentType!!, oasysAnswers)
-    log.info("Updated OASys assessment oasysSet ${episode.oasysSetPk} ${if(oasysUpdateResult?.validationErrorDtos?.isNotEmpty() == true) "with errors" else "successfully"}")
+    log.info("Updated OASys assessment oasysSet ${episode.oasysSetPk} ${if (oasysUpdateResult?.validationErrorDtos?.isNotEmpty() == true) "with errors" else "successfully"}")
     oasysAnswers.forEach {
       log.info("Answer ${it.sectionCode}.${it.logicalPage}.${it.questionCode}: ${it.answer}")
     }

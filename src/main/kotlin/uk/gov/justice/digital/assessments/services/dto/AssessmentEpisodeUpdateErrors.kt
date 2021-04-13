@@ -3,12 +3,12 @@ package uk.gov.justice.digital.assessments.services.dto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.UpdateAssessmentAnswersResponseDto
 import uk.gov.justice.digital.assessments.services.QuestionSchemaEntities
-import java.util.*
+import java.util.UUID
 
-class AssessmentEpisodeUpdateErrors (
+class AssessmentEpisodeUpdateErrors(
   private val answerErrors: MutableMap<UUID, MutableCollection<String>> = mutableMapOf(),
   private val errorsOnPage: MutableList<String> = mutableListOf()
-){
+) {
   val errors: Map<UUID, Collection<String>>?
     get() = if (answerErrors.isNotEmpty()) answerErrors else null
   val pageErrors: Collection<String>?

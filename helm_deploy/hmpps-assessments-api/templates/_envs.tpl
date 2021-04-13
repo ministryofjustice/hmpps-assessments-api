@@ -46,6 +46,21 @@ env:
         name: {{ template "app.name" . }}
         key: API_CLIENT_SECRET
 
+  - name: ASSESSMENT__API_BASE_URL
+    value: "{{ .Values.env.ASSESSMENT_API_BASE_URL }}"
+
+  - name: ASSESSMENT_API_ID
+    valueFrom:
+      secretKeyRef:
+        name: {{ template "app.name" . }}
+        key: API_CLIENT_ID
+
+  - name: ASSESSMENT_API_CLIENT_SECRET
+    valueFrom:
+      secretKeyRef:
+        name: {{ template "app.name" . }}
+        key: API_CLIENT_SECRET
+
   - name: COMMUNITY_API_BASE_URL
     value: "{{ .Values.env.COMMUNITY_API_BASE_URL }}"
 
