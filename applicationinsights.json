@@ -1,0 +1,12 @@
+{
+  "role": {
+    "name": "hmpps-assessments-api"
+  },
+  "customDimensions": {
+    "service.version": "${BUILD_NUMBER}"
+  },
+  "selfDiagnostics": {
+    "destination": "console",
+    "level": "INFO"
+  }
+}
