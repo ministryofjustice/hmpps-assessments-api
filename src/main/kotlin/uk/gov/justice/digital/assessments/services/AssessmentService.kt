@@ -18,6 +18,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
+import uk.gov.justice.digital.assessments.jpa.repositories.EpisodeRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.SubjectRepository
 import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
@@ -33,6 +34,7 @@ import javax.transaction.Transactional
 @Service
 class AssessmentService(
   private val assessmentRepository: AssessmentRepository,
+  private val episodeRepository: EpisodeRepository,
   private val subjectRepository: SubjectRepository,
   private val questionService: QuestionService,
   private val episodeService: EpisodeService,
@@ -260,7 +262,6 @@ class AssessmentService(
     assessmentUuid: UUID
   ): AssessmentEpisodeDto {
     val episode = getCurrentEpisode(assessmentUuid)
-    if (episode.isClosed()) throw UpdateClosedEpisodeException("Episode ${episode.episodeUuid} for assessment $assessmentUuid is already closed")
     val offenderPk: Long? = episode.assessment?.subject?.oasysOffenderPk
     if (episode.assessmentType == null || episode.oasysSetPk == null || offenderPk == null) {
       log.info("Unable to complete OASys Assessment with keys type: ${episode.assessmentType} oasysSet: ${episode.oasysSetPk} offenderPk: $offenderPk")
@@ -271,7 +272,7 @@ class AssessmentService(
       log.info("Unable to close episode ${episode.episodeUuid} for assessment ${episode.assessment?.assessmentUuid} with OASys restclient")
     } else {
       episode.close()
-      assessmentRepository.save(episode.assessment)
+      episodeRepository.save(episode)
       log.info("Saved closed episode ${episode.episodeUuid} for assessment ${episode.assessment?.assessmentUuid}")
     }
     return AssessmentEpisodeDto.from(episode, oasysResult)
@@ -282,7 +283,7 @@ class AssessmentService(
     episode: AssessmentEpisodeEntity,
   ): AssessmentEpisodeUpdateErrors? {
     val oasysUpdateResult = assessmentUpdateRestClient.completeAssessment(offenderPk, episode.oasysSetPk!!, episode.assessmentType!!)
-    if (oasysUpdateResult?.validationErrorDtos?.isNotEmpty() == true){
+    if (oasysUpdateResult?.validationErrorDtos?.isNotEmpty() == true) {
       log.info("Could not complete OASys assessment oasysSet ${episode.oasysSetPk} with errors")
     } else log.info("Completed OASys assessment oasysSet $episode.oasysSetPk successfully")
 

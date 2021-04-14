@@ -238,6 +238,60 @@ class AssessmentControllerTest : IntegrationTest() {
     }
   }
 
+  @Nested
+  @DisplayName("completing assessment episodes")
+  inner class CompletingEpisodes {
+    private val assessmentUuid = UUID.fromString("e399ed1b-0e77-4c68-8bbc-d2f0befece84")
+
+    @Test
+    fun `access forbidden when no authority`() {
+      webTestClient.get().uri("/assessments/$assessmentUuid/complete")
+        .header("Content-Type", "application/json")
+        .exchange()
+        .expectStatus().isUnauthorized
+    }
+
+    @Test
+    fun `complete assessment episode returns episode`() {
+      val assessmentEpisode = webTestClient.post().uri("/assessments/$assessmentUuid/complete")
+        .headers(setAuthorisation())
+        .exchange()
+        .expectStatus().isOk
+        .expectBody<AssessmentEpisodeDto>()
+        .returnResult()
+        .responseBody
+      assertThat(assessmentEpisode.assessmentUuid).isEqualTo(assessmentUuid)
+      assertThat(assessmentEpisode.ended).isEqualToIgnoringMinutes(LocalDateTime.now())
+    }
+
+    @Test
+    fun `complete episode returns not found when there are no current episodes for assessment`() {
+      val noEpisodesUUID = UUID.fromString("6082265e-885d-4526-b713-77e59b70691e")
+      webTestClient.post().uri("/assessments/$noEpisodesUUID/complete")
+        .headers(setAuthorisation())
+        .exchange()
+        .expectStatus().isNotFound
+        .expectBody<ErrorResponse>()
+        .returnResult()
+        .responseBody
+    }
+
+    @Test
+    fun `complete assessment episode with errors returns assessment level errors`() {
+      val assessmentErrorsUUID = UUID.fromString("aa47e6c4-e41f-467c-95e7-fcf5ffd422f5")
+      val assessmentEpisode = webTestClient.post().uri("/assessments/$assessmentErrorsUUID/complete")
+        .headers(setAuthorisation())
+        .exchange()
+        .expectStatus().isOk
+        .expectBody<AssessmentEpisodeDto>()
+        .returnResult()
+        .responseBody
+      assertThat(assessmentEpisode.ended).isNull()
+      assertThat(assessmentEpisode.assessmentErrors).hasSize(1)
+
+    }
+  }
+
   private fun createAssessment(supervisionId: String): AssessmentDto {
     return createAssessment(CreateAssessmentDto(supervisionId, assessmentType = AssessmentType.SHORT_FORM_PSR))
   }

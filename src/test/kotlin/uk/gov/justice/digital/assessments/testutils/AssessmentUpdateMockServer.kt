@@ -147,6 +147,30 @@ class AssessmentUpdateMockServer : WireMockServer(9003) {
         )
     )
 
+    stubFor(
+      WireMock.put(WireMock.urlEqualTo("/assessments/complete"))
+        .withRequestBody(equalToJson("{ \"oasysSetPk\": 5555, \"offenderPk\": 12345, \"areaCode\": \"WWS\", \"oasysUserCode\": \"STUARTWHITLAM\", \"assessmentType\": \"SHORT_FORM_PSR\", \"ignoreWarnings\": true }", true, true))
+        .willReturn(
+          WireMock.aResponse()
+            .withStatus(200)
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withBody(completeAssessmentJson)
+        )
+    )
+
+    stubFor(
+      WireMock.put(WireMock.urlEqualTo("/assessments/complete"))
+        .withRequestBody(
+          equalToJson("{ \"oasysSetPk\": 6666, \"offenderPk\": 12345, \"areaCode\": \"WWS\", \"oasysUserCode\": \"STUARTWHITLAM\", \"assessmentType\": \"SHORT_FORM_PSR\", \"ignoreWarnings\": true }", true, true)
+        )
+        .willReturn(
+          WireMock.aResponse()
+            .withStatus(200)
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withBody(completeAssessmentErrorJson)
+        )
+    )
+
     // stubFor(
     //   WireMock.put(WireMock.urlEqualTo("/assessments"))
     //     .withRequestBody(equalToJson("{ \"offenderPk\": 2, \"assessmentType\": \"SHORT_FORM_PSR\" }", true, true))
@@ -190,5 +214,19 @@ class AssessmentUpdateMockServer : WireMockServer(9003) {
 
     val updateAssessmentJson =
       """{ "oasysSetPk": "1" }""".trimIndent()
+
+    val completeAssessmentJson =
+      """{ "oasysSetPk": "1" , "validationErrorDtos": [] }""".trimIndent()
+
+    val completeAssessmentErrorJson =
+      """{     "oasysSetPk": 9496348, "validationErrorDtos": [
+        {
+            "sectionCode": "ASSESSMENT",
+            "questionCode": "R1.2",
+            "errorType": "mandatory_question_missing",
+            "message": "R1.2 Has offender been convicted of any of the following offences.",
+            "assessmentValidationError": true
+        }]}
+        """.trimIndent()
   }
 }

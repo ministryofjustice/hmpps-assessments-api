@@ -22,6 +22,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.OASysMappingEntity
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
+import uk.gov.justice.digital.assessments.jpa.repositories.EpisodeRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.SubjectRepository
 import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
@@ -38,6 +39,7 @@ import java.util.UUID
 @DisplayName("Assessment Service Tests")
 class AssessmentServiceTest {
   private val assessmentRepository: AssessmentRepository = mockk()
+  private val episodeRepository: EpisodeRepository = mockk()
   private val subjectRepository: SubjectRepository = mockk()
   private val questionService: QuestionService = mockk()
   private val courtCaseRestClient: CourtCaseRestClient = mockk()
@@ -46,6 +48,7 @@ class AssessmentServiceTest {
 
   private val assessmentsService = AssessmentService(
     assessmentRepository,
+    episodeRepository,
     subjectRepository,
     questionService,
     episodeService,
@@ -460,7 +463,6 @@ class AssessmentServiceTest {
     @Test
     fun `overwrite older episode answers latest episode answers`() {
       setupQuestionCodes()
-
       val assessment = AssessmentEntity(
         assessmentId = assessmentId,
         episodes = mutableListOf(
@@ -605,8 +607,6 @@ class AssessmentServiceTest {
 
     @Test
     fun `should create Oasys Answer from free text answer`() {
-
-      val answerSchema = AnswerSchemaEntity(value = "YES", answerSchemaId = 1, answerSchemaUuid = answer1Uuid, answerSchemaCode = "A1", answerSchemaGroup = AnswerSchemaGroupEntity(answerSchemaId = 1, answerSchemaGroupUuid = UUID.randomUUID()))
       val mapping = OASysMappingEntity(sectionCode = "1", questionCode = "R1.3", logicalPage = 1, fixed_field = false, mappingId = 1, questionSchema = QuestionSchemaEntity(questionSchemaId = 1))
       val result = OasysAnswers.mapOasysAnswer(mapping, listOf("Free Text"), "radios")[0]
       assertThat(result.answer).isEqualTo("Free Text")
