@@ -22,10 +22,10 @@ import uk.gov.justice.digital.assessments.jpa.entities.OASysMappingEntity
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
+import uk.gov.justice.digital.assessments.jpa.repositories.EpisodeRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.SubjectRepository
 import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
-import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OasysAnswer
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.UpdateAssessmentAnswersResponseDto
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.ValidationErrorDto
 import uk.gov.justice.digital.assessments.restclient.courtcaseapi.CourtCase
@@ -34,12 +34,12 @@ import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundExce
 import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
 import java.time.LocalDateTime
 import java.util.UUID
-import javax.persistence.*
 
 @ExtendWith(MockKExtension::class)
 @DisplayName("Assessment Service Tests")
 class AssessmentServiceTest {
   private val assessmentRepository: AssessmentRepository = mockk()
+  private val episodeRepository: EpisodeRepository = mockk()
   private val subjectRepository: SubjectRepository = mockk()
   private val questionService: QuestionService = mockk()
   private val courtCaseRestClient: CourtCaseRestClient = mockk()
@@ -48,6 +48,7 @@ class AssessmentServiceTest {
 
   private val assessmentsService = AssessmentService(
     assessmentRepository,
+    episodeRepository,
     subjectRepository,
     questionService,
     episodeService,
@@ -241,7 +242,8 @@ class AssessmentServiceTest {
 
       val newQuestionUuid = UUID.randomUUID()
       val updatedAnswers = UpdateAssessmentEpisodeDto(
-        mapOf(newQuestionUuid to listOf("trousers")))
+        mapOf(newQuestionUuid to listOf("trousers"))
+      )
 
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
       every { assessmentRepository.save(any()) } returns null
@@ -332,8 +334,7 @@ class AssessmentServiceTest {
     }
 
     @Test
-    fun `returns validation errors from OASys`()
-    {
+    fun `returns validation errors from OASys`() {
       val answers = mutableMapOf(
         existingQuestionUuid to AnswerEntity(listOf("free text", "fruit loops", "biscuits"))
       )
@@ -347,20 +348,25 @@ class AssessmentServiceTest {
         questionText = "favourite breakfast cereal?",
         oasysMappings = oaSysMappings
       )
-      oaSysMappings.add(OASysMappingEntity(
-        mappingId = 1,
-        sectionCode = "section1",
-        logicalPage = null,
-        questionCode = "Q1",
-        questionSchema = question
-      ))
+      oaSysMappings.add(
+        OASysMappingEntity(
+          mappingId = 1,
+          sectionCode = "section1",
+          logicalPage = null,
+          questionCode = "Q1",
+          questionSchema = question
+        )
+      )
 
       every { questionService.getAllQuestions() } returns QuestionSchemaEntities(listOf(question))
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
       every { assessmentRepository.save(any()) } returns null // should save when errors?
-      val oasysError = UpdateAssessmentAnswersResponseDto(7777, setOf(
-        ValidationErrorDto("section1", null, "Q1", "OOPS", "NO", false)
-      ))
+      val oasysError = UpdateAssessmentAnswersResponseDto(
+        7777,
+        setOf(
+          ValidationErrorDto("section1", null, "Q1", "OOPS", "NO", false)
+        )
+      )
       every { assessmentupdateRestClient.updateAssessment(any(), any(), any(), any(), any(), any()) } returns oasysError
       // Christ, what a lot of set up
 
@@ -457,7 +463,6 @@ class AssessmentServiceTest {
     @Test
     fun `overwrite older episode answers latest episode answers`() {
       setupQuestionCodes()
-
       val assessment = AssessmentEntity(
         assessmentId = assessmentId,
         episodes = mutableListOf(
@@ -519,9 +524,11 @@ class AssessmentServiceTest {
 
     @Test
     fun `throw exception when question code lookup fails`() {
-      every { questionService.getAllQuestions() } returns QuestionSchemaEntities(listOf(
-        QuestionSchemaEntity(questionSchemaId = 2, questionSchemaUuid = question2Uuid, answerSchemaGroup = AnswerSchemaGroupEntity(1))
-      ))
+      every { questionService.getAllQuestions() } returns QuestionSchemaEntities(
+        listOf(
+          QuestionSchemaEntity(questionSchemaId = 2, questionSchemaUuid = question2Uuid, answerSchemaGroup = AnswerSchemaGroupEntity(1))
+        )
+      )
 
       every { questionService.getAllAnswers() } returns listOf()
 
@@ -600,8 +607,6 @@ class AssessmentServiceTest {
 
     @Test
     fun `should create Oasys Answer from free text answer`() {
-
-      val answerSchema = AnswerSchemaEntity(value = "YES", answerSchemaId = 1, answerSchemaUuid = answer1Uuid, answerSchemaCode = "A1", answerSchemaGroup = AnswerSchemaGroupEntity(answerSchemaId = 1, answerSchemaGroupUuid = UUID.randomUUID()))
       val mapping = OASysMappingEntity(sectionCode = "1", questionCode = "R1.3", logicalPage = 1, fixed_field = false, mappingId = 1, questionSchema = QuestionSchemaEntity(questionSchemaId = 1))
       val result = OasysAnswers.mapOasysAnswer(mapping, listOf("Free Text"), "radios")[0]
       assertThat(result.answer).isEqualTo("Free Text")
@@ -629,11 +634,13 @@ class AssessmentServiceTest {
     val group1 = AnswerSchemaGroupEntity(answerSchemaId = 1, answerSchemaEntities = listOf(yes))
     val group2 = AnswerSchemaGroupEntity(answerSchemaId = 2, answerSchemaEntities = listOf(maybe, no))
 
-    every { questionService.getAllQuestions() } returns QuestionSchemaEntities(listOf(
-      QuestionSchemaEntity(questionSchemaId = 1, questionSchemaUuid = question1Uuid, questionCode = "Q1", answerSchemaGroup = group1),
-      QuestionSchemaEntity(questionSchemaId = 2, questionSchemaUuid = question2Uuid, questionCode = "Q2", answerSchemaGroup = group2),
-      QuestionSchemaEntity(questionSchemaId = 3, questionSchemaUuid = question3Uuid)
-    ))
+    every { questionService.getAllQuestions() } returns QuestionSchemaEntities(
+      listOf(
+        QuestionSchemaEntity(questionSchemaId = 1, questionSchemaUuid = question1Uuid, questionCode = "Q1", answerSchemaGroup = group1),
+        QuestionSchemaEntity(questionSchemaId = 2, questionSchemaUuid = question2Uuid, questionCode = "Q2", answerSchemaGroup = group2),
+        QuestionSchemaEntity(questionSchemaId = 3, questionSchemaUuid = question3Uuid)
+      )
+    )
   }
 
   private fun assessmentEntity(answers: MutableMap<UUID, AnswerEntity>): AssessmentEntity {
