@@ -40,6 +40,9 @@ data class GroupQuestionDto(
   @Schema(description = "Reference Data Category", example = "GENDER")
   val referenceDataCategory: String? = null,
 
+  @Schema(description = "Reference Data Target", example = "assessor,assessor_office,assessor_team")
+  val referenceDataTarget: String? = null,
+
   @Schema(description = "Reference Answer Schemas")
   val answerSchemas: Collection<AnswerSchemaDto>? = null,
 ) : GroupContentDto {
@@ -61,6 +64,7 @@ data class GroupQuestionDto(
         readOnly = questionGroupEntity.readOnly,
         conditional = questionDependencies.hasDependency(questionSchemaEntity.questionSchemaUuid),
         referenceDataCategory = questionSchemaEntity.referenceDataCategory,
+        referenceDataTarget = questionSchemaEntity.referenceDataTarget,
         answerSchemas = AnswerSchemaDto.from(
           questionSchemaEntity.answerSchemaEntities,
           questionDependencies.answerTriggers(questionSchemaEntity.questionSchemaUuid)
