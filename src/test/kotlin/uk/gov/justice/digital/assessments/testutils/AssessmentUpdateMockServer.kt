@@ -147,9 +147,10 @@ class AssessmentUpdateMockServer : WireMockServer(9003) {
         )
     )
 
+    //complete assessment successfully
     stubFor(
       WireMock.put(WireMock.urlEqualTo("/assessments/complete"))
-        .withRequestBody(equalToJson("{ \"oasysSetPk\": 5555, \"offenderPk\": 12345, \"areaCode\": \"WWS\", \"oasysUserCode\": \"STUARTWHITLAM\", \"assessmentType\": \"SHORT_FORM_PSR\", \"ignoreWarnings\": true }", true, true))
+        .withRequestBody(equalToJson("{ \"oasysSetPk\": 1, \"offenderPk\": 1, \"areaCode\": \"WWS\", \"oasysUserCode\": \"STUARTWHITLAM\", \"assessmentType\": \"SHORT_FORM_PSR\", \"ignoreWarnings\": true }", true, true))
         .willReturn(
           WireMock.aResponse()
             .withStatus(200)
@@ -158,16 +159,41 @@ class AssessmentUpdateMockServer : WireMockServer(9003) {
         )
     )
 
+    //complete assessment forbidden
     stubFor(
       WireMock.put(WireMock.urlEqualTo("/assessments/complete"))
         .withRequestBody(
-          equalToJson("{ \"oasysSetPk\": 6666, \"offenderPk\": 12345, \"areaCode\": \"WWS\", \"oasysUserCode\": \"STUARTWHITLAM\", \"assessmentType\": \"SHORT_FORM_PSR\", \"ignoreWarnings\": true }", true, true)
+          equalToJson("{ \"oasysSetPk\": 1, \"offenderPk\": 2, \"areaCode\": \"WWS\", \"oasysUserCode\": \"STUARTWHITLAM\", \"assessmentType\": \"SHORT_FORM_PSR\", \"ignoreWarnings\": true }", true, true))
+        .willReturn(
+          WireMock.aResponse()
+            .withStatus(403)
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withBody(createAssessmentForbiddenJson)
+        )
+    )
+
+    // complete assessment returns oasys assessment validation error
+    stubFor(
+      WireMock.put(WireMock.urlEqualTo("/assessments/complete"))
+        .withRequestBody(
+          equalToJson("{ \"oasysSetPk\": 1, \"offenderPk\": 5, \"areaCode\": \"WWS\", \"oasysUserCode\": \"STUARTWHITLAM\", \"assessmentType\": \"SHORT_FORM_PSR\", \"ignoreWarnings\": true }", true, true)
         )
         .willReturn(
           WireMock.aResponse()
             .withStatus(200)
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
             .withBody(completeAssessmentErrorJson)
+        )
+    )
+
+    //complete assessment oasys server error
+    stubFor(
+      WireMock.put(WireMock.urlEqualTo("/assessments/complete"))
+        .withRequestBody(equalToJson("{ \"oasysSetPk\": 1, \"offenderPk\": 4, \"areaCode\": \"WWS\", \"oasysUserCode\": \"STUARTWHITLAM\", \"assessmentType\": \"SHORT_FORM_PSR\", \"ignoreWarnings\": true }", true, true))
+        .willReturn(
+          WireMock.aResponse()
+            .withStatus(500)
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
         )
     )
 
@@ -219,7 +245,7 @@ class AssessmentUpdateMockServer : WireMockServer(9003) {
       """{ "oasysSetPk": "1" , "validationErrorDtos": [] }""".trimIndent()
 
     val completeAssessmentErrorJson =
-      """{     "oasysSetPk": 9496348, "validationErrorDtos": [
+      """{     "oasysSetPk": 1, "validationErrorDtos": [
         {
             "sectionCode": "ASSESSMENT",
             "questionCode": "R1.2",

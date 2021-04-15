@@ -258,7 +258,7 @@ class AssessmentService(
   }
 
   @Transactional
-  fun closeEpisode(
+  fun closeCurrentEpisode(
     assessmentUuid: UUID
   ): AssessmentEpisodeDto {
     val episode = getCurrentEpisode(assessmentUuid)
