@@ -127,6 +127,7 @@ class AssessmentSql {
 
     const business_logic = record[this.headers.LOGIC]
     const reference_data_category = record[this.headers.REFERENCE_DATA_CATEGORY]
+    const reference_data_target = record[this.headers.REFERENCE_DATA_TARGET]
     const question = {
       question_schema_uuid: questionUuids(question_code, answer_type, question_title),
       question_code: question_code,
@@ -139,6 +140,7 @@ class AssessmentSql {
       external_source: externalSources(question_code),
       read_only: (question_code.substring(0,2) === 'ui' ? true : read_only),
       reference_data_category: reference_data_category,
+      reference_data_target: reference_data_target,
     }
     this.questions.push(question)
 
@@ -348,7 +350,7 @@ class AssessmentSql {
   questionsSql() {
     return AssessmentSql.tableSql(
       'question_schema',
-      ['question_schema_uuid', 'question_code', 'oasys_question_code', 'question_start', 'question_end', 'answer_type', 'answer_schema_group_uuid', 'question_text', 'question_help_text', 'external_source', 'reference_data_category'],
+      ['question_schema_uuid', 'question_code', 'oasys_question_code', 'question_start', 'question_end', 'answer_type', 'answer_schema_group_uuid', 'question_text', 'question_help_text', 'external_source', 'reference_data_category', 'reference_data_target'],
       this.questions
     )
   }

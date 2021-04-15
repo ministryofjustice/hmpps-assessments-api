@@ -23,6 +23,7 @@ class QuestionSchemaDtoTest {
       "Question text",
       "Question help text",
       "TEST_REF_DATA_CAT",
+      "test_field_1,test_field_2,test_field_3",
     )
 
     val questionSchemaDto = QuestionSchemaDto.from(questionSchemaEntity)
@@ -37,5 +38,6 @@ class QuestionSchemaDtoTest {
     assertThat(questionSchemaDto.questionText).isEqualTo(questionSchemaEntity.questionText)
     assertThat(questionSchemaDto.questionHelpText).isEqualTo(questionSchemaEntity.questionHelpText)
     assertThat(questionSchemaDto.referenceDataCategory).isEqualTo(questionSchemaEntity.referenceDataCategory)
+    assertThat(questionSchemaDto.referenceDataTarget).isEqualTo(questionSchemaEntity.referenceDataTarget)
   }
 }

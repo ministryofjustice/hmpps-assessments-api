@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS question_schema
     question_text           TEXT,
     question_help_text      TEXT,
     reference_data_category TEXT,
+    reference_data_target TEXT,
     FOREIGN KEY (answer_schema_group_uuid) REFERENCES answer_schema_group (answer_schema_group_uuid)
 );
 
