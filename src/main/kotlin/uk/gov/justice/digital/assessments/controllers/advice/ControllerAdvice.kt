@@ -11,9 +11,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
 import uk.gov.justice.digital.assessments.api.ErrorResponse
-import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
-import uk.gov.justice.digital.assessments.services.exceptions.OASysClientException
-import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
+import uk.gov.justice.digital.assessments.services.exceptions.*
 
 @ControllerAdvice
 class ControllerAdvice {
@@ -69,6 +67,20 @@ class ControllerAdvice {
   fun handle(e: OASysClientException): ResponseEntity<ErrorResponse?> {
     log.error("OASysClientException: {}", e.message)
     return ResponseEntity(ErrorResponse(status = 500, developerMessage = e.message), HttpStatus.INTERNAL_SERVER_ERROR)
+  }
+
+  @ExceptionHandler(ReferenceDataInvalidRequestException::class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  fun handle(e: ReferenceDataInvalidRequestException): ResponseEntity<ErrorResponse?> {
+    log.error("ReferenceDataInvalidRequestException: {}", e.message)
+    return ResponseEntity(ErrorResponse(status = 400, developerMessage = e.message), HttpStatus.BAD_REQUEST)
+  }
+
+  @ExceptionHandler(ReferenceDataAuthorisationException::class)
+  @ResponseStatus(HttpStatus.UNAUTHORIZED)
+  fun handle(e: ReferenceDataAuthorisationException): ResponseEntity<ErrorResponse?> {
+    log.error("ReferenceDataAuthorisationException: {}", e.message)
+    return ResponseEntity(ErrorResponse(status = 401, developerMessage = e.message), HttpStatus.UNAUTHORIZED)
   }
 
   @ExceptionHandler(Exception::class)
