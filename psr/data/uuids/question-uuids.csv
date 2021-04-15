@@ -406,3 +406,4 @@ age_,204.1-numeric,0a305419-4d12-427d-a3aa-f7b204c49b00
 gender,206.1-radio,106f08df-ceef-41f0-9d1a-2c44bf8c4f6f
 has_offender_been_convicted_of_any_of_the_following_offences:,129.1-presentation: text,a39461e5-ef95-4f54-a775-41ee714006f0
 has_offender_been_convicted_of_any_of_the_following_offences:,129.1-noinput,5da33301-6e4e-4eb5-bf95-748494029669
+murder_attempted_murder_threat_or_conspiracy_to_murder_manslaughter_-_previous,130.1-checkbox-murder_attempted_murder_threat_or_conspiracy_to_murder_manslaughter_-_previous,052646b6-0b9d-44c6-87dc-bff5b729f521

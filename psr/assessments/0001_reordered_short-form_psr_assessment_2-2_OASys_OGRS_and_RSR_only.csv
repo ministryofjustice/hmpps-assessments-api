@@ -288,8 +288,12 @@ Select all that apply.",Select any previous convictions,Select any previous conv
 Avoid use of 'offender' which introduces cognitive bias",no input,,,"If any of the checkboxes 130.1 to 143.1 =Yes are then full ROSH must be completed unless answer to question 180.1 is 'Yes'.
 
 ",Button - Mark all as no,,R1.2 Heading,,,,N/A,I,Offence analysis,Heading,,
-Murder/attempted murder/threat or conspiracy to murder/manslaughter,130.1,,,,,,,Murder/attempted murder/threat or conspiracy to murder/manslaughter,"Murder, attempted murder, threat or conspiracy to murder, or manslaughter",,N/A,N/A,Clarity (avoid slashes),"Text, checkboxes
+Murder/attempted murder/threat or conspiracy to murder/manslaughter - Current,130.1,,,,,,,Murder/attempted murder/threat or conspiracy to murder/manslaughter,"Murder, attempted murder, threat or conspiracy to murder, or manslaughter",,N/A,N/A,Clarity (avoid slashes),"Text, checkboxes
 Current offence
+",,,None,,SC.2,R1.2.1.1,"ARN Content ref. 130.1 ‘Murder / attempted murder / threat or conspiracy to murder / manslaughter’
+
+If this checkbox is checked (R1.2.1.1 in database) pass 1 otherwise pass 0",,,N,Q,Offence analysis,x,,
+Murder/attempted murder/threat or conspiracy to murder/manslaughter - Previous,130.1,,,,,,,Murder/attempted murder/threat or conspiracy to murder/manslaughter,,,N/A,N/A,Presentation,"Text, checkboxes
 Previous offence",,,None,,SC.2,R1.2.1.2,"ARN Content ref. 130.1 ‘Murder / attempted murder / threat or conspiracy to murder / manslaughter’
 
 If this checkbox is checked (R1.2.1.2 in database) pass 1 otherwise pass 0",,,N,Q,Offence analysis,x,,
