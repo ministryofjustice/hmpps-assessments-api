@@ -121,7 +121,7 @@ class AssessmentSql {
     if (!question_code)
       return
 
-    const question_text = record[this.headers.QUESTION].replace(/'/g, "''").replace(/\r\n/g, ' ')
+    const question_text = record[this.headers.QUESTION].replace(/'/g, "''").replace(/\r\n/g, ' ').trim()
     const question_help_text = record[this.headers.HINT_TEXT].replace(/'/g, "''").replace(/\r\n/g, ' ').replace(/\[.*\] *\n*/g, '')
     const [answer_type, answer_schema_group_uuid, read_only] = this.answerType(record[this.headers.ANSWER_TYPE], oasys_question)
 
@@ -224,6 +224,8 @@ class AssessmentSql {
       }
     }
 
+    if (answerField.match(/no ?input/i))
+      return ['noinput', null]
     if (answerField.match(/text ?area/i))
       return ['textarea', null]
     if (answerField.match(/^date/i))
