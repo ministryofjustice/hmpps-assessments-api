@@ -297,60 +297,91 @@ Murder/attempted murder/threat or conspiracy to murder/manslaughter - Previous,1
 Previous offence",,,None,,SC.2,R1.2.1.2,"ARN Content ref. 130.1 ‘Murder / attempted murder / threat or conspiracy to murder / manslaughter’
 
 If this checkbox is checked (R1.2.1.2 in database) pass 1 otherwise pass 0",,,N,Q,Offence analysis,x,,
-Wounding/GBH (Sections 18/20 Offences Against the Person ACT 1861),131.1,,,,,,,Wounding/GBH (Sections 18/20 Offences Against the Person ACT 1861),Wounding or GBH ,,N/A,N/A,"Clarity (avoid slashes)
+Wounding/GBH (Sections 18/20 Offences Against the Person ACT 1861) - Current,131.1,,,,,,,Wounding/GBH (Sections 18/20 Offences Against the Person ACT 1861),Wounding or GBH ,,N/A,N/A,"Clarity (avoid slashes)
 Simpler. Text in parentheses can be shown via display component if required.","Text, checkboxes
 Current offence
+",,,None,,SC.2,R1.2.2.1,"ARN Content ref. 131.1 R1.2 ‘Wounding / GBH (Sections 18/20 Offences Against the Person Act)’
+
+If this checkbox is checked (R1.2.2.1 in database) pass 1 otherwise 0",,,N,Q,Offence analysis,x,,
+Wounding/GBH (Sections 18/20 Offences Against the Person ACT 1861) - Previous,131.1,,,,,,,Wounding/GBH (Sections 18/20 Offences Against the Person ACT 1861),,,N/A,N/A,Presentation,"Text, checkboxes
 Previous offence",,,None,,SC.2,R1.2.2.2,"ARN Content ref. 131.1 R1.2 ‘Wounding / GBH (Sections 18/20 Offences Against the Person Act)’
 
 If this checkbox is checked (R1.2.2.2 in database) pass 1 otherwise 0",,,N,Q,Offence analysis,x,,
-Any sexual offence against a child(ren,132.1,,,,,,,Any sexual offence against a child(ren,Any sexual offence against a child,,N/A,N/A,Simpler. Plural can be implied.,"Text, checkboxes
-Current offence
+Any sexual offence against a child(ren) - Current,132.1,,,,,,,Any sexual offence against a child(ren,Any sexual offence against a child,,N/A,N/A,Simpler. Plural can be implied.,"Text, checkboxes
+Current offence",,,None,,SC.2,R1.2.3.1,,,,N,Q,Offence analysis,x,,
+Any sexual offence against a child(ren) - Previous,132.1,,,,,,,Any sexual offence against a child(ren,,,N/A,N/A,Presentation,"Text, checkboxes
 Previous offence",,,None,,SC.2,R1.2.3.2,,,,N,Q,Offence analysis,x,,
-Rape or serious sexual offence against an adult,133.1,,,,,,,Rape or serious sexual offence against an adult,Rape or serious sexual offence against an adult,,N/A,N/A,Consistency,"Text, checkboxes
+Rape or serious sexual offence against an adult - Current,133.1,,,,,,,Rape or serious sexual offence against an adult,Rape or serious sexual offence against an adult,,N/A,N/A,Consistency,"Text, checkboxes
 Current offence
+",,,None,,SC.2,R1.2.4.1,,,,N,Q,Offence analysis,x,,
+Rape or serious sexual offence against an adult - Previous,133.1,,,,,,,Rape or serious sexual offence against an adult,,,N/A,N/A,Presentation,"Text, checkboxes
 Previous offence",,,None,,SC.2,R1.2.4.2,,,,N,Q,Offence analysis,x,,
-Any other offence against a child (see revised Appendix 1),134.1,,,,,,,Any other offence against a child (see revised Appendix 1),Any other offence against a child ,,N/A,N/A,Text in parentheses can be shown via display component if required.,"Text, checkboxes
-Current offence
+Any other offence against a child (see revised Appendix 1) - Current,134.1,,,,,,,Any other offence against a child (see revised Appendix 1),Any other offence against a child ,,N/A,N/A,Text in parentheses can be shown via display component if required.,"Text, checkboxes
+Current offence",,,None,Use detail component for help re. appendix reference,SC.2,R1.2.5.1,,,,N,Q,Offence analysis,x,,
+Any other offence against a child (see revised Appendix 1) - Previous,134.1,,,,,,,Any other offence against a child (see revised Appendix 1),,,N/A,N/A,Presentation,"Text, checkboxes
 Previous offence",,,None,Use detail component for help re. appendix reference,SC.2,R1.2.5.2,,,,N,Q,Offence analysis,x,,
-Aggravated burglary,135.1,,,,,,,Aggravated burglary,Aggravated burglary,,N/A,N/A,Consistency,"Text, checkboxes
-Current offence
+Aggravated burglary - Current,135.1,,,,,,,Aggravated burglary,Aggravated burglary,,N/A,N/A,Consistency,"Text, checkboxes
+Current offence",,,None,,SC.2,R1.2.6.1,"ARN Content ref. 135.1 Aggravated burglary
+
+If this checkbox is checked (R1.2.6.1 in database) pass 1 otherwise 0",,,N,Q,Offence analysis,x,,
+Aggravated burglary - Previous,135.1,,,,,,,Aggravated burglary,,,N/A,N/A,Presentation,"Text, checkboxes
 Previous offence",,,None,,SC.2,R1.2.6.2,"ARN Content ref. 135.1 Aggravated burglary
 
 If this checkbox is checked (R1.2.6.2 in database) pass 1 otherwise 0",,,N,Q,Offence analysis,x,,
-Arson,136.1,,,,,,,Arson,Arson,,N/A,N/A,Consistency,"Text, checkboxes
-Current offence
+Arson - Current,136.1,,,,,,,Arson,Arson,,N/A,N/A,Consistency,"Text, checkboxes
+Current offence",,,None,,SC.2,R1.2.7.1,"ARN Content ref. 136.1  Arson 
+If this checkbox is checked (R1.2.7.1 in database) pass 1 otherwise 0",,,N,Q,Offence analysis,x,,
+Arson - Previous,136.1,,,,,,,Arson,,,N/A,N/A,Presentation,"Text, checkboxes
 Previous offence",,,None,,SC.2,R1.2.7.2,"ARN Content ref. 136.1  Arson 
 If this checkbox is checked (R1.2.7.2 in database) pass 1 otherwise 0",,,N,Q,Offence analysis,x,,
-Criminal damage with intent to endanger life,137.1,,,,,,,Criminal damage with intent to endanger life,Criminal damage with intent to endanger life,,N/A,N/A,Consistency,"Text, checkboxes
-Current offence
+Criminal damage with intent to endanger life - Current,137.1,,,,,,,Criminal damage with intent to endanger life,Criminal damage with intent to endanger life,,N/A,N/A,Consistency,"Text, checkboxes
+Current offence",,,None,,SC.2,R1.2.8.1,"ARN Content ref. 137.1 ‘Criminal damage with the intent to endanger life’
+
+If this checkbox is checked (R1.2.8.1 in database) pass 1 otherwise 0",,,N,Q,Offence analysis,x,,
+Criminal damage with intent to endanger life - Previous,137.1,,,,,,,Criminal damage with intent to endanger life,,,N/A,N/A,Presentation,"Text, checkboxes
 Previous offence",,,None,,SC.2,R1.2.8.2,"ARN Content ref. 137.1 ‘Criminal damage with the intent to endanger life’
 
 If this checkbox is checked (R1.2.8.2 in database) pass 1 otherwise 0",,,N,Q,Offence analysis,x,,
-Kidnapping/false imprisonment,138.1,,,,,,,Kidnapping/false imprisonment,Kidnapping or false imprisonment,,N/A,N/A,Clarity (avoid slashes),"Text, checkboxes
-Current offence
+Kidnapping/false imprisonment - Current,138.1,,,,,,,Kidnapping/false imprisonment,Kidnapping or false imprisonment,,N/A,N/A,Clarity (avoid slashes),"Text, checkboxes
+Current offence",,,None,,SC.2,R1.2.9.1,"ARN Content ref. 138.1 ‘Kidnapping / false imprisonment’
+
+If this checkbox is checked (R1.2.9.1 in database) pass 1 otherwise 0",,,N,Q,Offence analysis,x,,
+Kidnapping/false imprisonment - Previous,138.1,,,,,,,Kidnapping/false imprisonment,,,N/A,N/A,Presentation,"Text, checkboxes
 Previous offence",,,None,,SC.2,R1.2.9.2,"ARN Content ref. 138.1 ‘Kidnapping / false imprisonment’
 
 If this checkbox is checked (R1.2.9.2 in database) pass 1 otherwise 0",,,N,Q,Offence analysis,x,,
-Possession of a firearm with intent to endanger life or resist arrest,139.1,,,,,,,Possession of a firearm with intent to endanger life or resist arrest,Possession of a firearm with intent to endanger life or resist arrest,,N/A,N/A,Consistency,"Text, checkboxes
-Current offence
+Possession of a firearm with intent to endanger life or resist arrest - Current,139.1,,,,,,,Possession of a firearm with intent to endanger life or resist arrest,Possession of a firearm with intent to endanger life or resist arrest,,N/A,N/A,Consistency,"Text, checkboxes
+Current offence",,,None,,SC.2,R1.2.10.1,"ARN Content ref. 139.1 ‘Possession of a firearm with intent to endanger life or resist arrest’
+
+If this checkbox is checked (R1.2.10.1 in database) pass 1 otherwise 0",,,N,Q,Offence analysis,x,,
+Possession of a firearm with intent to endanger life or resist arrest - Previous,139.1,,,,,,,Possession of a firearm with intent to endanger life or resist arrest,,,N/A,N/A,Presentation,"Text, checkboxes
 Previous offence",,,None,,SC.2,R1.2.10.2,"ARN Content ref. 139.1 ‘Possession of a firearm with intent to endanger life or resist arrest’
 
 If this checkbox is checked (R1.2.10.2 in database) pass 1 otherwise 0",,,N,Q,Offence analysis,x,,
-Racially motivated / racially aggravated offence,140.1,,,,,,,Racially motivated / racially aggravated offence,A racially motivated or racially aggravated offence,,N/A,N/A,Clarity (avoid slashes),"Text, checkboxes
-Current offence
+Racially motivated / racially aggravated offence - Current,140.1,,,,,,,Racially motivated / racially aggravated offence,A racially motivated or racially aggravated offence,,N/A,N/A,Clarity (avoid slashes),"Text, checkboxes
+Current offence",,,None,,SC.2,R1.2.11.1,,,,N,Q,Offence analysis,x,,
+Racially motivated / racially aggravated offence - Previous,140.1,,,,,,,Racially motivated / racially aggravated offence,,,N/A,N/A,Presentation,"Text, checkboxes
 Previous offence",,,None,,SC.2,R1.2.11.2,,,,N,Q,Offence analysis,x,,
-Robbery,141.1,,,,,,,Robbery,Robbery,,N/A,N/A,Consistency,"Text, checkboxes
-Current offence
+Robbery - Current,141.1,,,,,,,Robbery,Robbery,,N/A,N/A,Consistency,"Text, checkboxes
+Current offence",,,None,,SC.2,R1.2.12.1,"ARN Content ref. 141.1
+
+If this checkbox is checked (R1.2.12.1 in database) pass 1 otherwise 0",,,N,Q,Offence analysis,x,,
+Robbery - Previous,141.1,,,,,,,Robbery,,,N/A,N/A,Presentation,"Text, checkboxes
 Previous offence",,,None,,SC.2,R1.2.12.2,"ARN Content ref. 141.1
 
 If this checkbox is checked (R1.2.12.2 in database) pass 1 otherwise 0",,,N,Q,Offence analysis,x,,
-Any other offence involving possession and/or use of weapons,142.1,,,,,,,Any other offence involving possession and/or use of weapons,Any current or previous offence involving possession and/or use of weapons?,,N/A,N/A,Consistency,"Text, checkboxes
-Current offence
+Any other offence involving possession and/or use of weapons - Current,142.1,,,,,,,Any other offence involving possession and/or use of weapons,Any current or previous offence involving possession and/or use of weapons?,,N/A,N/A,Consistency,"Text, checkboxes
+Current offence",,,Mandatory question,Ask as a separate question.,SC.2,R1.2.13.1,"ARN Content ref. 142.1 ‘Any offence involving possession and/or use of weapons’
+
+If this checkbox is checked (R1.2.13.1 in database) pass 1 otherwise 0",,,N,Q,Offence analysis,x,,
+Any other offence involving possession and/or use of weapons - Previous,142.1,,,,,,,Any other offence involving possession and/or use of weapons,,,N/A,N/A,Presentation,"Text, checkboxes
 Previous offence",,,Mandatory question,Ask as a separate question.,SC.2,R1.2.13.2,"ARN Content ref. 142.1 ‘Any offence involving possession and/or use of weapons’
 
 If this checkbox is checked (R1.2.13.2 in database) pass 1 otherwise 0",,,N,Q,Offence analysis,x,,
 "Any other current offence which is as serious, eg blackmail, harassment, stalking, child pornography, child neglect, abduction etc.  Indicate offence below",143.1,,,,,,,"Any other offence which is as serious, eg blackmail, harassment, stalking, child pornography, child neglect, abduction etc.  Indicate offence below","Any other offence which is as serious, eg blackmail, harassment, stalking, child pornography, child neglect, abduction etc.  Indicate offence below",,N/A,N/A,Consistency,"Text, checkboxes
-Current offence
+Current offence",,,"Current offence > 144.1
+Previous offence > 144.1",,SC.2,R1.2.14.2,,,,N,Q,Offence analysis,x,,
+"Any other current offence which is as serious, eg blackmail, harassment, stalking, child pornography, child neglect, abduction etc.  Indicate offence below",143.1,,,,,,,"Any other offence which is as serious, eg blackmail, harassment, stalking, child pornography, child neglect, abduction etc.  Indicate offence below",,,N/A,N/A,Presentation,"Text, checkboxes
 Previous offence",,,"Current offence > 144.1
 Previous offence > 144.1",,SC.2,R1.2.14.2,,,,N,Q,Offence analysis,x,,
 Give details,144.1,,,,,,,N/A,Give details,,N/A,N/A,Consistency,Free text,,,Maps to OASys field R1.2.14.t,,SC.2,R1.2.14.t,,,,N,Q,Offence analysis,x,,
