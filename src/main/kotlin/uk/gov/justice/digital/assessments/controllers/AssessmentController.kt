@@ -129,7 +129,7 @@ class AssessmentController(val assessmentService: AssessmentService) {
     @Parameter(description = "Assessment UUID", required = true, example = "1234") @PathVariable assessmentUuid: UUID,
   ): ResponseEntity<AssessmentEpisodeDto> {
     return updateResponse(
-      assessmentService.closeEpisode(assessmentUuid)
+      assessmentService.closeCurrentEpisode(assessmentUuid)
     )
   }
 
