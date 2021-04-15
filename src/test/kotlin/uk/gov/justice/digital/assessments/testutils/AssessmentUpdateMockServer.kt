@@ -147,7 +147,7 @@ class AssessmentUpdateMockServer : WireMockServer(9003) {
         )
     )
 
-    //complete assessment successfully
+    // complete assessment successfully
     stubFor(
       WireMock.put(WireMock.urlEqualTo("/assessments/complete"))
         .withRequestBody(equalToJson("{ \"oasysSetPk\": 1, \"offenderPk\": 1, \"areaCode\": \"WWS\", \"oasysUserCode\": \"STUARTWHITLAM\", \"assessmentType\": \"SHORT_FORM_PSR\", \"ignoreWarnings\": true }", true, true))
@@ -159,11 +159,12 @@ class AssessmentUpdateMockServer : WireMockServer(9003) {
         )
     )
 
-    //complete assessment forbidden
+    // complete assessment forbidden
     stubFor(
       WireMock.put(WireMock.urlEqualTo("/assessments/complete"))
         .withRequestBody(
-          equalToJson("{ \"oasysSetPk\": 1, \"offenderPk\": 2, \"areaCode\": \"WWS\", \"oasysUserCode\": \"STUARTWHITLAM\", \"assessmentType\": \"SHORT_FORM_PSR\", \"ignoreWarnings\": true }", true, true))
+          equalToJson("{ \"oasysSetPk\": 1, \"offenderPk\": 2, \"areaCode\": \"WWS\", \"oasysUserCode\": \"STUARTWHITLAM\", \"assessmentType\": \"SHORT_FORM_PSR\", \"ignoreWarnings\": true }", true, true)
+        )
         .willReturn(
           WireMock.aResponse()
             .withStatus(403)
@@ -186,7 +187,7 @@ class AssessmentUpdateMockServer : WireMockServer(9003) {
         )
     )
 
-    //complete assessment oasys server error
+    // complete assessment oasys server error
     stubFor(
       WireMock.put(WireMock.urlEqualTo("/assessments/complete"))
         .withRequestBody(equalToJson("{ \"oasysSetPk\": 1, \"offenderPk\": 4, \"areaCode\": \"WWS\", \"oasysUserCode\": \"STUARTWHITLAM\", \"assessmentType\": \"SHORT_FORM_PSR\", \"ignoreWarnings\": true }", true, true))
@@ -253,6 +254,6 @@ class AssessmentUpdateMockServer : WireMockServer(9003) {
             "message": "R1.2 Has offender been convicted of any of the following offences.",
             "assessmentValidationError": true
         }]}
-        """.trimIndent()
+      """.trimIndent()
   }
 }
