@@ -404,3 +404,5 @@ possession_of_a_firearm_with_intent_to_endanger_life_or_resist_arrest,139.1-radi
 is_the_conviction_of_possession_of_a_firearm_for_a_current_or_a_previous_offence_,292.1-checkbox,d733c2dc-64a2-4837-a57a-42a1065dde67
 age_,204.1-numeric,0a305419-4d12-427d-a3aa-f7b204c49b00
 gender,206.1-radio,106f08df-ceef-41f0-9d1a-2c44bf8c4f6f
+has_offender_been_convicted_of_any_of_the_following_offences:,129.1-presentation: text,a39461e5-ef95-4f54-a775-41ee714006f0
+has_offender_been_convicted_of_any_of_the_following_offences:,129.1-noinput,5da33301-6e4e-4eb5-bf95-748494029669
