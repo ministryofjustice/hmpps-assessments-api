@@ -37,7 +37,7 @@ data class QuestionSchemaDto(
   @Schema(description = "Reference Data Category")
   val referenceDataCategory: String? = null,
 
-@Schema(description = "Reference Data Category")
+  @Schema(description = "Reference Data Category")
   val referenceDataTarget: String? = null,
 
   @Schema(description = "List of Reference Answer Schemas")

@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.assessments.restclient
 
-import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
@@ -27,6 +27,7 @@ class OASysUpdateClientTest : IntegrationTest() {
   val forbiddenOffenderPk = 2L
   val duplicateOffenderPk = 3L
   val serverErrorOffenderPk = 4L
+  val validationErrorOffenderPk = 5L
 
   @Test
   fun `create OASys Offender`() {
@@ -36,32 +37,32 @@ class OASysUpdateClientTest : IntegrationTest() {
 
   @Test
   fun `create OASys Offender throws exception when forbidden response received`() {
-    Assertions.assertThatThrownBy {
+    assertThatThrownBy {
       assessmentUpdateRestClient.createOasysOffender(forbiddenCrn)
     }.isInstanceOf(UserNotAuthorisedException::class.java)
   }
 
   @Test
   fun `create OASys Offender throws exception when duplicate error response received`() {
-    Assertions.assertThatThrownBy { assessmentUpdateRestClient.createOasysOffender(duplicateCrn) }
+    assertThatThrownBy { assessmentUpdateRestClient.createOasysOffender(duplicateCrn) }
       .isInstanceOf(DuplicateOffenderRecordException::class.java)
   }
 
   @Test
   fun `create OASys Offender throws exception on server error`() {
-    Assertions.assertThatThrownBy { assessmentUpdateRestClient.createOasysOffender(serverErrorCrn) }
+    assertThatThrownBy { assessmentUpdateRestClient.createOasysOffender(serverErrorCrn) }
       .isInstanceOf(OASysClientException::class.java)
   }
 
   @Test
   fun `create OASys Offender throws exception on unknown client error`() {
-    Assertions.assertThatThrownBy { assessmentUpdateRestClient.createOasysOffender(clientErrorCrn) }
+    assertThatThrownBy { assessmentUpdateRestClient.createOasysOffender(clientErrorCrn) }
       .isInstanceOf(OASysClientException::class.java)
   }
 
   @Test
   fun `create OASys Offender throws exception on unknown client error without body`() {
-    Assertions.assertThatThrownBy { assessmentUpdateRestClient.createOasysOffender(clientErrorCrnNoBody) }
+    assertThatThrownBy { assessmentUpdateRestClient.createOasysOffender(clientErrorCrnNoBody) }
       .isInstanceOf(OASysClientException::class.java)
   }
 
@@ -73,19 +74,19 @@ class OASysUpdateClientTest : IntegrationTest() {
 
   @Test
   fun `create OASys Assessment throws exception when forbidden response received`() {
-    Assertions.assertThatThrownBy { assessmentUpdateRestClient.createAssessment(forbiddenOffenderPk, assessmentType) }
+    assertThatThrownBy { assessmentUpdateRestClient.createAssessment(forbiddenOffenderPk, assessmentType) }
       .isInstanceOf(UserNotAuthorisedException::class.java)
   }
 
   @Test
   fun `create OASys Assessment throws exception when duplicate error response received`() {
-    Assertions.assertThatThrownBy { assessmentUpdateRestClient.createAssessment(duplicateOffenderPk, assessmentType) }
+    assertThatThrownBy { assessmentUpdateRestClient.createAssessment(duplicateOffenderPk, assessmentType) }
       .isInstanceOf(DuplicateOffenderRecordException::class.java)
   }
 
   @Test
   fun `create OASys Assessment throws exception on server error`() {
-    Assertions.assertThatThrownBy { assessmentUpdateRestClient.createAssessment(serverErrorOffenderPk, assessmentType) }
+    assertThatThrownBy { assessmentUpdateRestClient.createAssessment(serverErrorOffenderPk, assessmentType) }
       .isInstanceOf(OASysClientException::class.java)
   }
 
@@ -100,13 +101,38 @@ class OASysUpdateClientTest : IntegrationTest() {
 
   @Test
   fun `update OASys Assessment throws exception when forbidden response received`() {
-    Assertions.assertThatThrownBy { assessmentUpdateRestClient.createAssessment(forbiddenOffenderPk, assessmentType) }
+    assertThatThrownBy { assessmentUpdateRestClient.createAssessment(forbiddenOffenderPk, assessmentType) }
       .isInstanceOf(UserNotAuthorisedException::class.java)
   }
 
   @Test
   fun `update OASys Assessment throws exception on server error`() {
-    Assertions.assertThatThrownBy { assessmentUpdateRestClient.createAssessment(serverErrorOffenderPk, assessmentType) }
+    assertThatThrownBy { assessmentUpdateRestClient.createAssessment(serverErrorOffenderPk, assessmentType) }
+      .isInstanceOf(OASysClientException::class.java)
+  }
+
+  @Test
+  fun `complete OASys Assessment`() {
+    val returnAssessment = assessmentUpdateRestClient.completeAssessment(offenderPk, oasysSetPk, assessmentType)
+    assertThat(returnAssessment?.oasysSetPk).isEqualTo(1)
+  }
+
+  @Test
+  fun `complete OASys Assessment with validation errors`() {
+    val returnAssessment = assessmentUpdateRestClient.completeAssessment(validationErrorOffenderPk, oasysSetPk, assessmentType)
+    assertThat(returnAssessment?.oasysSetPk).isEqualTo(1)
+    assertThat(returnAssessment?.validationErrorDtos).hasSize(1)
+  }
+
+  @Test
+  fun `complete OASys Assessment throws exception when forbidden response received`() {
+    assertThatThrownBy { assessmentUpdateRestClient.completeAssessment(forbiddenOffenderPk, oasysSetPk, assessmentType) }
+      .isInstanceOf(UserNotAuthorisedException::class.java)
+  }
+
+  @Test
+  fun `complete OASys Assessment throws exception on server error`() {
+    assertThatThrownBy { assessmentUpdateRestClient.completeAssessment(serverErrorOffenderPk, oasysSetPk, assessmentType) }
       .isInstanceOf(OASysClientException::class.java)
   }
 }

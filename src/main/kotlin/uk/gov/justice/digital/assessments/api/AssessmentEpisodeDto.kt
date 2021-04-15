@@ -35,7 +35,8 @@ class AssessmentEpisodeDto(
   @Schema(description = "Validation errors on this episode, indexed by question UUID")
   val errors: Map<UUID, Collection<String>>? = null,
 
-  val pageErrors: Collection<String>? = null
+  val pageErrors: Collection<String>? = null,
+  val assessmentErrors: Collection<String>? = null
 ) {
   companion object {
 
@@ -57,7 +58,8 @@ class AssessmentEpisodeDto(
         episode.endDate,
         AnswerDto.from(episode.answers) ?: emptyMap(),
         errors?.errors,
-        errors?.pageErrors
+        errors?.pageErrors,
+        errors?.assessmentErrors
       )
     }
   }

@@ -7,12 +7,15 @@ import java.util.UUID
 
 class AssessmentEpisodeUpdateErrors(
   private val answerErrors: MutableMap<UUID, MutableCollection<String>> = mutableMapOf(),
-  private val errorsOnPage: MutableList<String> = mutableListOf()
+  private val errorsOnPage: MutableList<String> = mutableListOf(),
+  private val errorsInAssessment: MutableList<String> = mutableListOf(),
 ) {
   val errors: Map<UUID, Collection<String>>?
-    get() = if (answerErrors.isNotEmpty()) answerErrors else null
+    get() = answerErrors.ifEmpty { null }
   val pageErrors: Collection<String>?
-    get() = if (errorsOnPage.isNotEmpty()) errorsOnPage else null
+    get() = errorsOnPage.ifEmpty { null }
+  val assessmentErrors: Collection<String>?
+    get() = errorsInAssessment.ifEmpty { null }
 
   private fun addAnswerError(question: UUID, message: String?) {
     answerErrors.putIfAbsent(question, mutableListOf())
@@ -21,6 +24,9 @@ class AssessmentEpisodeUpdateErrors(
 
   private fun addPageError(message: String?) {
     errorsOnPage.add(message ?: "Error on page")
+  }
+  private fun addAssessmentError(message: String?) {
+    errorsInAssessment.add(message ?: "Error in episode")
   }
 
   companion object {
@@ -37,7 +43,7 @@ class AssessmentEpisodeUpdateErrors(
         mapAnswerErrors(updateErrors, episode, questions, oasysUpdateResult)
       }
       mapPageErrors(updateErrors, oasysUpdateResult)
-
+      mapAssessmentErrors(updateErrors, oasysUpdateResult)
       return updateErrors
     }
 
@@ -65,9 +71,18 @@ class AssessmentEpisodeUpdateErrors(
         .filter { it.questionCode == null }
         .forEach { updateErrors.addPageError(it.message) }
     }
+
+    private fun mapAssessmentErrors(
+      updateErrors: AssessmentEpisodeUpdateErrors,
+      oasysUpdateResult: UpdateAssessmentAnswersResponseDto
+    ) {
+      oasysUpdateResult.validationErrorDtos
+        .filter { it.sectionCode == "ASSESSMENT" }
+        .forEach { updateErrors.addAssessmentError(it.message) }
+    }
   }
 
-  fun hasErrors(): Boolean{
-    return answerErrors.isNotEmpty() || errorsOnPage.isNotEmpty()
+  fun hasErrors(): Boolean {
+    return answerErrors.isNotEmpty() || errorsOnPage.isNotEmpty() || errorsInAssessment.isNotEmpty()
   }
 }

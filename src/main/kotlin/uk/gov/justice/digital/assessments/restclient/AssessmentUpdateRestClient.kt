@@ -9,7 +9,13 @@ import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.ClientResponse
 import reactor.core.publisher.Mono
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
-import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.*
+import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.CompleteAssessmentDto
+import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.CreateOffenderDto
+import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.CreateOffenderResponseDto
+import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OASysErrorResponse
+import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OasysAnswer
+import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.UpdateAssessmentAnswersDto
+import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.UpdateAssessmentAnswersResponseDto
 import uk.gov.justice.digital.assessments.services.exceptions.DuplicateOffenderRecordException
 import uk.gov.justice.digital.assessments.services.exceptions.OASysClientException
 import uk.gov.justice.digital.assessments.services.exceptions.UserNotAuthorisedException
