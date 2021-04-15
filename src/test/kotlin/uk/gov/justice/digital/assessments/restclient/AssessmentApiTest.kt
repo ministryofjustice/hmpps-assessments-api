@@ -47,4 +47,42 @@ class AssessmentApiTest : IntegrationTest() {
       assessmentApiRestClient.getOASysAssessment(3)
     }.isInstanceOf(OASysClientException::class.java)
   }
+
+  @Test
+  fun `retrieve OASys filtered reference data`() {
+    val returnedReferenceData =
+      assessmentApiRestClient.getFilteredReferenceData(
+        1,
+        "TEST_USER",
+        "WWS",
+        "Team1",
+        123456,
+        "TEST_USER",
+        "SHORT_FORM_PSR",
+        "CONTINUE",
+        "RSR",
+        "assessor_office",
+        mapOf("assessor" to "OASYS_ADMIN" )
+      )
+    assertThat(returnedReferenceData?.get("assessor_office")).isNotEmpty
+  }
+
+  @Test
+  fun `retrieve OASys filtered reference data throws exception on server error`() {
+    Assertions.assertThatThrownBy {
+      assessmentApiRestClient.getFilteredReferenceData(
+        2,
+        "TEST_USER",
+        "WWS",
+        "Team1",
+        123456,
+        "TEST_USER",
+        "SHORT_FORM_PSR",
+        "CONTINUE",
+        "RSR",
+        "assessor_office",
+        mapOf("assessor" to "OASYS_ADMIN" )
+      )
+    }.isInstanceOf(OASysClientException::class.java)
+  }
 }
