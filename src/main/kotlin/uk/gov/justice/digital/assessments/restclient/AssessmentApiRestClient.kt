@@ -17,6 +17,7 @@ import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundExce
 import uk.gov.justice.digital.assessments.services.exceptions.OASysClientException
 import uk.gov.justice.digital.assessments.services.exceptions.ReferenceDataAuthorisationException
 import uk.gov.justice.digital.assessments.services.exceptions.ReferenceDataInvalidRequestException
+import java.util.*
 
 @Component
 class AssessmentApiRestClient {
@@ -45,26 +46,23 @@ class AssessmentApiRestClient {
 
   fun getFilteredReferenceData(
     oasysSetPk: Long,
-    oasysUserCode: String,
-    oasysAreaCode: String,
-    team: String?,
+    oasysUserCode: String = "STUARTWHITLAM",
+    oasysAreaCode: String = "WWS",
     offenderPk: Long?,
-    assessor: String?,
     assessmentType: String,
-    assessmentStage: String,
     sectionCode: String,
     fieldName: String,
     parentList: Map<String, String>?
-  ) : Map<String, Collection<RefElementDto>>? {
+  ): Map<String, Collection<RefElementDto>>? {
     return webClient
       .post("/referencedata/filtered", FilteredReferenceDataDto(
-        oasysSetPk, oasysUserCode, oasysAreaCode, team, offenderPk, assessor, assessmentType, assessmentStage, sectionCode, fieldName, parentList
+        oasysSetPk, oasysUserCode, oasysAreaCode, offenderPk, assessmentType, sectionCode, fieldName, parentList
       ))
       .retrieve()
       .onStatus(HttpStatus::is4xxClientError) { handleReferenceDataError(fieldName, it) }
       .onStatus(HttpStatus::is5xxServerError) { throw OASysClientException("Failed to retrieve OASys filtered reference data for $fieldName") }
       .bodyToMono(typeReference<Map<String, Collection<RefElementDto>>>())
-      .block().also { log.info("Retrieved OASys filtered reference data for $fieldName")}
+      .block().also { log.info("Retrieved OASys filtered reference data for $fieldName") }
   }
 
   fun handleAssessmentError(
@@ -89,17 +87,17 @@ class AssessmentApiRestClient {
       HttpStatus.BAD_REQUEST -> {
         log.error("Bad request for reference data $fieldName")
         clientResponse.bodyToMono(OASysErrorResponse::class.java)
-          .map {error -> ReferenceDataInvalidRequestException(error.developerMessage)}
+          .map { error -> ReferenceDataInvalidRequestException(error.developerMessage) }
       }
       HttpStatus.UNAUTHORIZED -> {
         log.error("Unauthorised request for reference data $fieldName")
         clientResponse.bodyToMono(OASysErrorResponse::class.java)
-          .map {error -> ReferenceDataAuthorisationException(error.developerMessage)}
+          .map { error -> ReferenceDataAuthorisationException(error.developerMessage) }
       }
       HttpStatus.NOT_FOUND -> {
         log.error("Reference data not found for $fieldName")
         clientResponse.bodyToMono(OASysErrorResponse::class.java)
-          .map {error -> EntityNotFoundException(error.developerMessage)}
+          .map { error -> EntityNotFoundException(error.developerMessage) }
       }
       else -> handleError(clientResponse)
     }
