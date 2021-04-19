@@ -8,7 +8,7 @@ import uk.gov.justice.digital.assessments.jpa.repositories.OASysMappingRepositor
 import uk.gov.justice.digital.assessments.restclient.AssessmentApiRestClient
 import uk.gov.justice.digital.assessments.restclient.assessmentapi.RefElementDto
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
-import java.util.*
+import java.util.UUID
 
 @Service
 class ReferenceDataService(

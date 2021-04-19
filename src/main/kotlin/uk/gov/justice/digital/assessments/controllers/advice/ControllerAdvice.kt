@@ -11,7 +11,11 @@ import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
 import uk.gov.justice.digital.assessments.api.ErrorResponse
-import uk.gov.justice.digital.assessments.services.exceptions.*
+import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
+import uk.gov.justice.digital.assessments.services.exceptions.OASysClientException
+import uk.gov.justice.digital.assessments.services.exceptions.ReferenceDataAuthorisationException
+import uk.gov.justice.digital.assessments.services.exceptions.ReferenceDataInvalidRequestException
+import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
 
 @ControllerAdvice
 class ControllerAdvice {

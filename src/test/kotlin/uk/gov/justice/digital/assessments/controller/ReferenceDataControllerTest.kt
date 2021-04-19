@@ -14,7 +14,7 @@ import uk.gov.justice.digital.assessments.api.ErrorResponse
 import uk.gov.justice.digital.assessments.api.FilteredReferenceDataRequest
 import uk.gov.justice.digital.assessments.restclient.assessmentapi.RefElementDto
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
-import java.util.*
+import java.util.UUID
 
 @SqlGroup(
   Sql(scripts = ["classpath:filteredReferenceData/before-test.sql"], config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED)),
@@ -23,8 +23,8 @@ import java.util.*
 @AutoConfigureWebTestClient(timeout = "50000")
 class ReferenceDataControllerTest : IntegrationTest() {
   private val validAssessmentUuid = UUID.fromString("2e020e78-a81c-407f-bc78-e5f284e237e5")
-  private val validQuestionUuid = UUID.fromString("ead7aa8a-e20d-4822-9b3b-aedf186333b1")
-  private val validParentQuestionUuid = UUID.fromString("a64dc082-980a-43e0-b443-cf196f35d571")
+  private val validQuestionUuid = UUID.fromString("2fe94330-22c4-4a6e-a494-9f53dc2139c6")
+  private val validParentQuestionUuid = UUID.fromString("8d48ff4d-60f6-461b-ab00-67d1c2ed5f6b")
   private val invalidUuid = UUID.fromString("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee")
 
   @Nested

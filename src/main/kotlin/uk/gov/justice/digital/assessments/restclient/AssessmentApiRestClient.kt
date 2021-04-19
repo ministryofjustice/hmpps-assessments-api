@@ -17,7 +17,7 @@ import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundExce
 import uk.gov.justice.digital.assessments.services.exceptions.OASysClientException
 import uk.gov.justice.digital.assessments.services.exceptions.ReferenceDataAuthorisationException
 import uk.gov.justice.digital.assessments.services.exceptions.ReferenceDataInvalidRequestException
-import java.util.*
+import java.util.UUID
 
 @Component
 class AssessmentApiRestClient {

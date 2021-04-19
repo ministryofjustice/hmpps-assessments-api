@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.assessments.api
 
-import java.util.*
+import java.util.UUID
 
 data class FilteredReferenceDataRequest(
   val assessmentUuid: UUID,
