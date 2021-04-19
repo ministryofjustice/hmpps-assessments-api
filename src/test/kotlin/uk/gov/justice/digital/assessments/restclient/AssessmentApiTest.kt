@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import uk.gov.justice.digital.assessments.services.exceptions.OASysClientException
+import uk.gov.justice.digital.assessments.services.exceptions.ReferenceDataAuthorisationException
+import uk.gov.justice.digital.assessments.services.exceptions.ReferenceDataInvalidRequestException
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 
 class AssessmentApiTest : IntegrationTest() {
@@ -46,5 +48,86 @@ class AssessmentApiTest : IntegrationTest() {
     Assertions.assertThatThrownBy {
       assessmentApiRestClient.getOASysAssessment(3)
     }.isInstanceOf(OASysClientException::class.java)
+  }
+
+  @Test
+  fun `retrieve OASys filtered reference data`() {
+    val returnedReferenceData =
+      assessmentApiRestClient.getFilteredReferenceData(
+        1,
+        "TEST_USER",
+        "WWS",
+        123456,
+        "SHORT_FORM_PSR",
+        "RSR",
+        "assessor_office",
+        mapOf("assessor" to "OASYS_ADMIN" )
+      )
+    assertThat(returnedReferenceData?.get("assessor_office")).isNotEmpty
+  }
+
+  @Test
+  fun `retrieve OASys filtered reference data throws exception on 500 errors`() {
+    Assertions.assertThatThrownBy {
+      assessmentApiRestClient.getFilteredReferenceData(
+        2,
+        "TEST_USER",
+        "WWS",
+        123456,
+        "SHORT_FORM_PSR",
+        "RSR",
+        "assessor_office",
+        mapOf("assessor" to "OASYS_ADMIN" )
+      )
+    }.isInstanceOf(OASysClientException::class.java)
+  }
+
+  @Test
+  fun `retrieve OASys filtered reference data throws exception on 400 errors`() {
+    Assertions.assertThatThrownBy {
+      assessmentApiRestClient.getFilteredReferenceData(
+        3,
+        "TEST_USER",
+        "WWS",
+        123456,
+        "SHORT_FORM_PSR",
+        "RSR",
+        "assessor_office",
+        mapOf("assessor" to "OASYS_ADMIN" )
+      )
+    }.isInstanceOf(ReferenceDataInvalidRequestException::class.java)
+  }
+
+
+  @Test
+  fun `retrieve OASys filtered reference data throws exception on 401 errors`() {
+    Assertions.assertThatThrownBy {
+      assessmentApiRestClient.getFilteredReferenceData(
+        4,
+        "TEST_USER",
+        "WWS",
+        123456,
+        "SHORT_FORM_PSR",
+        "RSR",
+        "assessor_office",
+        mapOf("assessor" to "OASYS_ADMIN" )
+      )
+    }.isInstanceOf(ReferenceDataAuthorisationException::class.java)
+  }
+
+  @Test
+  fun `retrieve OASys filtered reference data throws exception on 404 errors`() {
+    Assertions.assertThatThrownBy {
+      assessmentApiRestClient.getFilteredReferenceData(
+        5,
+        "TEST_USER",
+        "WWS",
+        123456,
+        "SHORT_FORM_PSR",
+        "RSR",
+        "assessor_office",
+        mapOf("assessor" to "OASYS_ADMIN" )
+      )
+    }.isInstanceOf(EntityNotFoundException::class.java)
   }
 }

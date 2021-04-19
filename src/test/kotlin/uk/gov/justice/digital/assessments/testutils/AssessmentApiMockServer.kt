@@ -54,6 +54,60 @@ class AssessmentApiMockServer : WireMockServer(9004) {
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
         )
     )
+
+    stubFor(
+      WireMock.post(WireMock.urlEqualTo("/referencedata/filtered"))
+        .withRequestBody(WireMock.equalToJson("{ \"oasysSetPk\": 1 }",true, true ))
+        .willReturn(
+          WireMock.aResponse()
+            .withStatus(200)
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withBody(filteredReferenceDataJson)
+        )
+    )
+
+    stubFor(
+      WireMock.post(WireMock.urlEqualTo("/referencedata/filtered"))
+        .withRequestBody(WireMock.equalToJson("{ \"oasysSetPk\": 2 }",true, true ))
+        .willReturn(
+          WireMock.aResponse()
+            .withStatus(500)
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+        )
+    )
+
+    stubFor(
+      WireMock.post(WireMock.urlEqualTo("/referencedata/filtered"))
+        .withRequestBody(WireMock.equalToJson("{ \"oasysSetPk\": 3 }",true, true ))
+        .willReturn(
+          WireMock.aResponse()
+            .withStatus(400)
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withBody(referenceData400Error)
+        )
+    )
+
+    stubFor(
+      WireMock.post(WireMock.urlEqualTo("/referencedata/filtered"))
+        .withRequestBody(WireMock.equalToJson("{ \"oasysSetPk\": 4 }",true, true ))
+        .willReturn(
+          WireMock.aResponse()
+            .withStatus(401)
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withBody(referenceData401Error)
+        )
+    )
+
+    stubFor(
+      WireMock.post(WireMock.urlEqualTo("/referencedata/filtered"))
+        .withRequestBody(WireMock.equalToJson("{ \"oasysSetPk\": 5 }",true, true ))
+        .willReturn(
+          WireMock.aResponse()
+            .withStatus(404)
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withBody(referenceData404Error)
+        )
+    )
   }
 
   companion object {
@@ -110,5 +164,30 @@ class AssessmentApiMockServer : WireMockServer(9004) {
 
     val getAssessmentNotFoundJson =
       """{ "developerMessage": "Assessment not found" }""".trimIndent()
+
+    val referenceData400Error =
+      """{ "developerMessage": "Bad Request" }""".trimIndent()
+
+    val referenceData401Error =
+      """{ "developerMessage": "Not Authorised" }""".trimIndent()
+
+    val referenceData404Error =
+      """{ "developerMessage": "Not Found" }""".trimIndent()
+
+    val filteredReferenceDataJson =
+        """{
+            "assessor_office": [
+              {
+                "longDescription": "Test Assessment Office 1",
+                "description": "Test Assessment 1",
+                "code": "123456"
+              },
+              {
+                "longDescription": "Test Assessment Office 2",
+                "description": "Test Assessment 2",
+                "code": "123456"
+              }
+            ]
+        }""".trimIndent()
   }
 }
