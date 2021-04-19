@@ -26,9 +26,6 @@ class AssessmentEntity(
   @Column(name = "ASSESSMENT_UUID")
   val assessmentUuid: UUID = UUID.randomUUID(),
 
-  @Column(name = "SUPERVISION_ID")
-  val supervisionId: String? = null,
-
   @Column(name = "CREATED_DATE")
   val createdDate: LocalDateTime? = null,
 

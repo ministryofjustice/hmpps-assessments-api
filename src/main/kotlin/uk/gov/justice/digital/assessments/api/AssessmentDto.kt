@@ -13,9 +13,6 @@ class AssessmentDto(
   @Schema(description = "Assessment UUID", example = "0e5e0848-6ab0-4b1b-a354-f7894913d8e4")
   val assessmentUuid: UUID? = null,
 
-  @Schema(description = "Supervision ID", example = "1234")
-  val supervisionId: String? = null,
-
   @Schema(description = "Created Date", example = "2020-01-02T16:00:00")
   val createdDate: LocalDateTime? = null,
 
@@ -30,7 +27,6 @@ class AssessmentDto(
       return AssessmentDto(
         assessment?.assessmentId,
         assessment?.assessmentUuid,
-        assessment?.supervisionId,
         assessment?.createdDate,
         assessment?.completedDate
       )

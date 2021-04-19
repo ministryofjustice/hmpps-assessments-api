@@ -23,15 +23,27 @@ import java.util.UUID
 @RestController
 class AssessmentController(val assessmentService: AssessmentService) {
 
-  @RequestMapping(path = ["/assessments/supervision"], method = [RequestMethod.POST])
-  @Operation(description = "Creates a new assessment for a supervision, or a court code and case number")
+  @RequestMapping(path = ["/assessments/delius"], method = [RequestMethod.POST])
+  @Operation(description = "Creates a new assessment for a Delius event ID and CRN")
   @ApiResponses(
     value = [
       ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
       ApiResponse(responseCode = "200", description = "OK")
     ]
   )
-  fun createNewAssessment(@Parameter(description = "Supervision Id", required = true) @RequestBody createAssessmentDto: CreateAssessmentDto): AssessmentDto {
+  fun createNewDeliusAssessment(@RequestBody createAssessmentDto: CreateAssessmentDto): AssessmentDto {
+    return assessmentService.createNewAssessment(createAssessmentDto)
+  }
+
+  @RequestMapping(path = ["/assessments/court"], method = [RequestMethod.POST])
+  @Operation(description = "Creates a new assessment for a court code and case number")
+  @ApiResponses(
+    value = [
+      ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
+      ApiResponse(responseCode = "200", description = "OK")
+    ]
+  )
+  fun createNewCourtAssessment(@RequestBody createAssessmentDto: CreateAssessmentDto): AssessmentDto {
     return assessmentService.createNewAssessment(createAssessmentDto)
   }
 
@@ -48,7 +60,7 @@ class AssessmentController(val assessmentService: AssessmentService) {
   }
 
   @RequestMapping(path = ["/assessments/{assessmentUuid}/episodes"], method = [RequestMethod.POST])
-  @Operation(description = "Creates a new episode for a supervision")
+  @Operation(description = "Creates a new episode for an assessment")
   @ApiResponses(
     value = [
       ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
