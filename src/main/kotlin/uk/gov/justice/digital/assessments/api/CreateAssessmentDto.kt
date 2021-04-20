@@ -4,8 +4,11 @@ import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 
 data class CreateAssessmentDto(
-  @Schema(description = "Supervision ID", example = "CRN1")
-  val supervisionId: String? = null,
+  @Schema(description = "Delius Event ID", example = "1234")
+  val deliusEventId: Int? = null,
+
+  @Schema(description = "Offender CRN", example = "CRN1")
+  val crn: String? = null,
 
   @Schema(description = "Court Code", example = "SHF")
   val courtCode: String? = null,
@@ -17,6 +20,6 @@ data class CreateAssessmentDto(
   val assessmentType: AssessmentType = AssessmentType.SHORT_FORM_PSR
 
 ) {
-  fun isSupervision() = supervisionId != null
+  fun isDelius() = (deliusEventId != null && crn != null)
   fun isCourtCase() = (courtCode != null && caseNumber != null)
 }

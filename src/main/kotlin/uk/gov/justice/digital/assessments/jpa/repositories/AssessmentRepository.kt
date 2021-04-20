@@ -8,7 +8,5 @@ import java.util.UUID
 @Repository
 interface AssessmentRepository : JpaRepository<AssessmentEntity, Long> {
 
-  fun findBySupervisionId(supervisionId: String?): AssessmentEntity?
-
   fun findByAssessmentUuid(assessmentUuid: UUID): AssessmentEntity?
 }

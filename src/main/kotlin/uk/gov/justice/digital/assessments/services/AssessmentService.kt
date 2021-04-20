@@ -9,6 +9,7 @@ import uk.gov.justice.digital.assessments.api.AssessmentDto
 import uk.gov.justice.digital.assessments.api.AssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.api.AssessmentSubjectDto
 import uk.gov.justice.digital.assessments.api.CreateAssessmentDto
+import uk.gov.justice.digital.assessments.api.OffenderDto
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.jpa.entities.AnswerEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AnswerSchemaEntity
@@ -39,16 +40,18 @@ class AssessmentService(
   private val questionService: QuestionService,
   private val episodeService: EpisodeService,
   private val courtCaseClient: CourtCaseRestClient,
-  private val assessmentUpdateRestClient: AssessmentUpdateRestClient
+  private val assessmentUpdateRestClient: AssessmentUpdateRestClient,
+  private val offenderService: OffenderService
 ) {
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
     const val courtSource = "COURT"
+    const val deliusSource = "DELIUS"
   }
 
   fun createNewAssessment(newAssessment: CreateAssessmentDto): AssessmentDto {
-    if (newAssessment.isSupervision()) {
-      return createFromSupervision(newAssessment.supervisionId)
+    if (newAssessment.isDelius()) {
+      return createFromDelius(newAssessment.deliusEventId, newAssessment.crn, newAssessment.assessmentType)
     }
     if (newAssessment.isCourtCase()) {
       return createFromCourtCase(newAssessment.courtCode!!, newAssessment.caseNumber!!, newAssessment.assessmentType)
@@ -121,22 +124,29 @@ class AssessmentService(
         }
       }
     }
-
     return answers
   }
 
-  private fun createFromSupervision(supervisionId: String?): AssessmentDto {
-    val existingAssessment = assessmentRepository.findBySupervisionId(supervisionId)
-
-    if (existingAssessment != null) {
-      log.info("Existing assessment found for supervision $supervisionId")
-      return AssessmentDto.from(existingAssessment)
+  private fun createFromDelius(eventId: Int?, crn: String?, assessmentType: AssessmentType?): AssessmentDto {
+    if (eventId == null || crn.isNullOrEmpty() || assessmentType == null) {
+      throw IllegalStateException("Unable to create OASys Assessment with assessment type: $assessmentType, eventId: $eventId, crn: $crn")
     }
-
-    val newAssessment =
-      assessmentRepository.save(AssessmentEntity(supervisionId = supervisionId, createdDate = LocalDateTime.now()))
-    log.info("New assessment created for supervision $supervisionId")
-    return AssessmentDto.from(newAssessment)
+    val existingSubject = subjectRepository.findBySourceAndSourceIdAndCrn(deliusSource, eventId.toString(), crn)
+    if (existingSubject != null) {
+      log.info("Existing assessment ${existingSubject.assessment?.assessmentUuid} found for delius event id: $eventId, crn: $crn")
+      return AssessmentDto.from(existingSubject.assessment)
+    }
+    val offender = offenderService.getOffender(crn)
+    val oasysOffenderPk = assessmentUpdateRestClient.createOasysOffender(crn = crn, deliusEvent = eventId)
+    val oasysSetPK = oasysOffenderPk?.let { assessmentUpdateRestClient.createAssessment(it, assessmentType) }
+    return createDeliusAssessmentWithPrepopulatedEpisode(
+      crn,
+      offender,
+      oasysOffenderPk,
+      oasysSetPK,
+      eventId,
+      assessmentType
+    )
   }
 
   private fun createFromCourtCase(
@@ -343,6 +353,33 @@ class AssessmentService(
     createPrepopulatedEpisode(assessment, "Court Request", oasysSetPK, assessmentType)
     val newAssessment = AssessmentDto.from(assessmentRepository.save(assessment))
     log.info("New assessment ${assessment.assessmentUuid} created for court $courtCode, case $caseNumber")
+    return newAssessment
+  }
+
+  private fun createDeliusAssessmentWithPrepopulatedEpisode(
+    crn: String,
+    offender: OffenderDto,
+    oasysOffenderPk: Long?,
+    oasysSetPK: Long?,
+    eventId: Int,
+    assessmentType: AssessmentType
+  ): AssessmentDto {
+    val assessment = AssessmentEntity(createdDate = LocalDateTime.now())
+    val subject = SubjectEntity(
+      source = deliusSource,
+      sourceId = eventId.toString(),
+      name = "${offender.firstName} ${offender.surname}",
+      oasysOffenderPk = oasysOffenderPk,
+      pnc = offender.pncNumber,
+      crn = crn,
+      dateOfBirth = offender.dateOfBirth,
+      createdDate = assessment.createdDate,
+      assessment = assessment
+    )
+    assessment.addSubject(subject)
+    createPrepopulatedEpisode(assessment, "", oasysSetPK, assessmentType)
+    val newAssessment = AssessmentDto.from(assessmentRepository.save(assessment))
+    log.info("New assessment ${assessment.assessmentUuid} created for Delius event ID: $eventId, CRN: $crn")
     return newAssessment
   }
 

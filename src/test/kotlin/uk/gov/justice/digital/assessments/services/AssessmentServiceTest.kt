@@ -9,8 +9,10 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import uk.gov.justice.digital.assessments.api.CreateAssessmentDto
+import uk.gov.justice.digital.assessments.api.OffenderDto
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.jpa.entities.AnswerEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AnswerSchemaEntity
@@ -44,7 +46,8 @@ class AssessmentServiceTest {
   private val questionService: QuestionService = mockk()
   private val courtCaseRestClient: CourtCaseRestClient = mockk()
   private val episodeService: EpisodeService = mockk()
-  private val assessmentupdateRestClient: AssessmentUpdateRestClient = mockk()
+  private val offenderService: OffenderService = mockk()
+  private val assessmentUpdateRestClient: AssessmentUpdateRestClient = mockk()
 
   private val assessmentsService = AssessmentService(
     assessmentRepository,
@@ -53,7 +56,8 @@ class AssessmentServiceTest {
     questionService,
     episodeService,
     courtCaseRestClient,
-    assessmentupdateRestClient
+    assessmentUpdateRestClient,
+    offenderService
   )
 
   private val assessmentUuid = UUID.randomUUID()
@@ -82,47 +86,139 @@ class AssessmentServiceTest {
   private val courtCode = "SHF06"
   private val caseNumber = "668911253"
 
+  private val deliusSource = "DELIUS"
+  private val eventId = 1
+
   @Nested
-  @DisplayName("creating assessments")
-  inner class CreatingAssessments {
+  @DisplayName("creating assessments from Delius")
+  inner class CreatingDeliusAssessments {
     @Test
-    fun `create new assessment`() {
-      every { assessmentRepository.findBySupervisionId(any()) } returns null
+    fun `create new offender with new assessment from delius event id and crn`() {
+      every { subjectRepository.findBySourceAndSourceIdAndCrn(deliusSource, eventId.toString(), crn) } returns null
+      every { offenderService.getOffender("X12345") } returns OffenderDto()
+      every { assessmentUpdateRestClient.createOasysOffender(crn = crn, deliusEvent = eventId) } returns oasysOffenderPk
+      every { assessmentUpdateRestClient.createAssessment(oasysOffenderPk, assessmentType) } returns oasysSetPk
+      every { episodeService.prepopulate(any()) } returnsArgument 0
       every { assessmentRepository.save(any()) } returns AssessmentEntity(assessmentId = assessmentId)
 
-      assessmentsService.createNewAssessment(CreateAssessmentDto("SupervisionId", assessmentType = assessmentType))
+      assessmentsService.createNewAssessment(
+        CreateAssessmentDto(
+          deliusEventId = eventId,
+          crn = crn,
+          assessmentType = assessmentType
+        )
+      )
       verify(exactly = 1) { assessmentRepository.save(any()) }
     }
 
     @Test
+    fun `return existing assessment from delius event id and crn if one already exists`() {
+      every { subjectRepository.findBySourceAndSourceIdAndCrn(deliusSource, eventId.toString(), crn) } returns
+        SubjectEntity(assessment = AssessmentEntity(assessmentId = assessmentId, assessmentUuid = assessmentUuid))
+
+      val assessmentDto =
+        assessmentsService.createNewAssessment(
+          CreateAssessmentDto(
+            deliusEventId = eventId,
+            crn = crn,
+            assessmentType = assessmentType
+          )
+        )
+      assertThat(assessmentDto.assessmentUuid).isEqualTo(assessmentUuid)
+      verify(exactly = 0) { assessmentRepository.save(any()) }
+    }
+  }
+
+  @Test
+  fun `throw exception if crn is null`() {
+    assertThrows<IllegalStateException> {
+      assessmentsService.createNewAssessment(
+        CreateAssessmentDto(
+          deliusEventId = eventId,
+          crn = null,
+          assessmentType = assessmentType
+        )
+      )
+    }
+    verify(exactly = 0) { assessmentRepository.save(any()) }
+  }
+
+  @Test
+  fun `throw exception if delius event id is null`() {
+    assertThrows<IllegalStateException> {
+      assessmentsService.createNewAssessment(
+        CreateAssessmentDto(
+          deliusEventId = null,
+          crn = crn,
+          assessmentType = assessmentType
+        )
+      )
+    }
+    verify(exactly = 0) { assessmentRepository.save(any()) }
+  }
+
+  @Test
+  fun `throw exception if offender is not returned from Delius`() {
+    every { subjectRepository.findBySourceAndSourceIdAndCrn(deliusSource, eventId.toString(), crn) } returns null
+    every { offenderService.getOffender("X12345") } throws EntityNotFoundException("")
+
+    assertThrows<EntityNotFoundException> {
+      assessmentsService.createNewAssessment(
+        CreateAssessmentDto(
+          deliusEventId = eventId,
+          crn = crn,
+          assessmentType = assessmentType
+        )
+      )
+    }
+    verify(exactly = 0) { assessmentRepository.save(any()) }
+  }
+
+  @Nested
+  @DisplayName("creating assessments from court")
+  inner class CreatingCourtAssessments {
+    @Test
     fun `create new assessment from court`() {
-      every { subjectRepository.findBySourceAndSourceId(AssessmentService.courtSource, "$courtCode|$caseNumber") } returns null
+      every {
+        subjectRepository.findBySourceAndSourceId(
+          AssessmentService.courtSource,
+          "$courtCode|$caseNumber"
+        )
+      } returns null
       every { assessmentRepository.save(any()) } returns AssessmentEntity(assessmentId = assessmentId)
       every { courtCaseRestClient.getCourtCase(courtCode, caseNumber) } returns CourtCase(crn = crn)
-      every { assessmentupdateRestClient.createOasysOffender(crn) } returns oasysOffenderPk
-      every { assessmentupdateRestClient.createAssessment(oasysOffenderPk, assessmentType) } returns oasysSetPk
+      every { assessmentUpdateRestClient.createOasysOffender(crn) } returns oasysOffenderPk
+      every { assessmentUpdateRestClient.createAssessment(oasysOffenderPk, assessmentType) } returns oasysSetPk
       every { episodeService.prepopulate(any()) } returnsArgument 0
 
-      assessmentsService.createNewAssessment(CreateAssessmentDto(courtCode = courtCode, caseNumber = caseNumber, assessmentType = assessmentType))
+      assessmentsService.createNewAssessment(
+        CreateAssessmentDto(
+          courtCode = courtCode,
+          caseNumber = caseNumber,
+          assessmentType = assessmentType
+        )
+      )
 
       verify(exactly = 1) { assessmentRepository.save(any()) }
       verify(exactly = 1) { courtCaseRestClient.getCourtCase(courtCode, caseNumber) }
     }
 
     @Test
-    fun `return existing assessment if one already exists`() {
-      every { assessmentRepository.findBySupervisionId(any()) } returns AssessmentEntity(assessmentId = assessmentId, assessmentUuid = assessmentUuid)
-
-      val assessmentDto = assessmentsService.createNewAssessment(CreateAssessmentDto("SupervisionId", assessmentType = assessmentType))
-      assertThat(assessmentDto.assessmentUuid).isEqualTo(assessmentUuid)
-      verify(exactly = 0) { assessmentRepository.save(any()) }
-    }
-
-    @Test
     fun `return existing assessment if one exists from court`() {
-      every { subjectRepository.findBySourceAndSourceId(AssessmentService.courtSource, "$courtCode|$caseNumber") } returns SubjectEntity(assessment = AssessmentEntity(assessmentId = 1))
+      every {
+        subjectRepository.findBySourceAndSourceId(
+          AssessmentService.courtSource,
+          "$courtCode|$caseNumber"
+        )
+      } returns SubjectEntity(assessment = AssessmentEntity(assessmentId = 1))
 
-      assessmentsService.createNewAssessment(CreateAssessmentDto(courtCode = courtCode, caseNumber = caseNumber, assessmentType = AssessmentType.SHORT_FORM_PSR))
+      assessmentsService.createNewAssessment(
+        CreateAssessmentDto(
+          courtCode = courtCode,
+          caseNumber = caseNumber,
+          assessmentType = AssessmentType.SHORT_FORM_PSR
+        )
+      )
 
       verify(exactly = 0) { assessmentRepository.save(any()) }
       verify(exactly = 0) { courtCaseRestClient.getCourtCase(courtCode, caseNumber) }
@@ -367,7 +463,7 @@ class AssessmentServiceTest {
           ValidationErrorDto("section1", null, "Q1", "OOPS", "NO", false)
         )
       )
-      every { assessmentupdateRestClient.updateAssessment(any(), any(), any(), any(), any(), any()) } returns oasysError
+      every { assessmentUpdateRestClient.updateAssessment(any(), any(), any(), any(), any(), any()) } returns oasysError
       // Christ, what a lot of set up
 
       // Apply the update
@@ -587,9 +683,9 @@ class AssessmentServiceTest {
         oasysSetPk = oasysSetPk
       )
 
-      every { assessmentupdateRestClient.updateAssessment(oasysOffenderPk, oasysSetPk, assessmentType, any()) } returns UpdateAssessmentAnswersResponseDto()
+      every { assessmentUpdateRestClient.updateAssessment(oasysOffenderPk, oasysSetPk, assessmentType, any()) } returns UpdateAssessmentAnswersResponseDto()
       assessmentsService.updateOASysAssessment(oasysOffenderPk, episode)
-      verify(exactly = 1) { assessmentupdateRestClient.updateAssessment(oasysOffenderPk, oasysSetPk, assessmentType, any()) }
+      verify(exactly = 1) { assessmentUpdateRestClient.updateAssessment(oasysOffenderPk, oasysSetPk, assessmentType, any()) }
     }
 
     @Test
@@ -600,9 +696,9 @@ class AssessmentServiceTest {
         oasysSetPk = oasysSetPk
       )
 
-      every { assessmentupdateRestClient.updateAssessment(oasysOffenderPk, oasysSetPk, assessmentType, any()) } returns UpdateAssessmentAnswersResponseDto()
+      every { assessmentUpdateRestClient.updateAssessment(oasysOffenderPk, oasysSetPk, assessmentType, any()) } returns UpdateAssessmentAnswersResponseDto()
       assessmentsService.updateOASysAssessment(oasysOffenderPk, episode)
-      verify(exactly = 0) { assessmentupdateRestClient.updateAssessment(oasysOffenderPk, oasysSetPk, assessmentType, any()) }
+      verify(exactly = 0) { assessmentUpdateRestClient.updateAssessment(oasysOffenderPk, oasysSetPk, assessmentType, any()) }
     }
 
     @Test
