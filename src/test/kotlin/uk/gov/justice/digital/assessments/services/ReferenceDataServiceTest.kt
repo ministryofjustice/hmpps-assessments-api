@@ -8,13 +8,17 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import uk.gov.justice.digital.assessments.jpa.entities.*
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEntity
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
+import uk.gov.justice.digital.assessments.jpa.entities.OASysMappingEntity
+import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.OASysMappingRepository
 import uk.gov.justice.digital.assessments.restclient.AssessmentApiRestClient
 import uk.gov.justice.digital.assessments.restclient.assessmentapi.RefElementDto
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
-import java.util.*
+import java.util.UUID
 
 private val assessmentApiRestClient: AssessmentApiRestClient = mockk()
 private val assessmentRepository: AssessmentRepository = mockk()

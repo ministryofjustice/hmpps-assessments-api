@@ -87,7 +87,7 @@ class AssessmentServiceTest {
   private val caseNumber = "668911253"
 
   private val deliusSource = "DELIUS"
-  private val eventId = 1
+  private val eventId = 1L
 
   @Nested
   @DisplayName("creating assessments from Delius")

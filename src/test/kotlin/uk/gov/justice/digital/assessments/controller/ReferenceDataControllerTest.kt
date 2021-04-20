@@ -43,12 +43,14 @@ class ReferenceDataControllerTest : IntegrationTest() {
     fun `returns filtered reference data`() {
       val currentEpisode = fetchCurrentEpisode(validAssessmentUuid.toString())
       val response = webTestClient.post().uri("/referenceData/filtered")
-        .bodyValue(FilteredReferenceDataRequest(
-          validAssessmentUuid,
-          currentEpisode.episodeUuid!!,
-          validQuestionUuid,
-          mapOf(validParentQuestionUuid to "test"),
-        ))
+        .bodyValue(
+          FilteredReferenceDataRequest(
+            validAssessmentUuid,
+            currentEpisode.episodeUuid!!,
+            validQuestionUuid,
+            mapOf(validParentQuestionUuid to "test")
+          )
+        )
         .headers(setAuthorisation())
         .exchange()
         .expectStatus().isOk
@@ -63,12 +65,14 @@ class ReferenceDataControllerTest : IntegrationTest() {
     fun `returns not found when unable to find OASys mapping for the question`() {
       val currentEpisode = fetchCurrentEpisode(validAssessmentUuid.toString())
       webTestClient.post().uri("/referenceData/filtered")
-        .bodyValue(FilteredReferenceDataRequest(
-          validAssessmentUuid,
-          currentEpisode.episodeUuid!!,
-          invalidUuid,
-          mapOf(validParentQuestionUuid to "test"),
-        ))
+        .bodyValue(
+          FilteredReferenceDataRequest(
+            validAssessmentUuid,
+            currentEpisode.episodeUuid!!,
+            invalidUuid,
+            mapOf(validParentQuestionUuid to "test")
+          )
+        )
         .headers(setAuthorisation())
         .exchange()
         .expectStatus().isNotFound
@@ -81,12 +85,14 @@ class ReferenceDataControllerTest : IntegrationTest() {
     fun `returns not found when unable to find OASys mapping for parent questions`() {
       val currentEpisode = fetchCurrentEpisode(validAssessmentUuid.toString())
       webTestClient.post().uri("/referenceData/filtered")
-        .bodyValue(FilteredReferenceDataRequest(
-          validAssessmentUuid,
-          currentEpisode.episodeUuid!!,
-          validQuestionUuid,
-          mapOf(invalidUuid to "test"),
-        ))
+        .bodyValue(
+          FilteredReferenceDataRequest(
+            validAssessmentUuid,
+            currentEpisode.episodeUuid!!,
+            validQuestionUuid,
+            mapOf(invalidUuid to "test")
+          )
+        )
         .headers(setAuthorisation())
         .exchange()
         .expectStatus().isNotFound
@@ -100,12 +106,14 @@ class ReferenceDataControllerTest : IntegrationTest() {
       val assessmentUuid = UUID.fromString("8177b6c7-1b20-459b-b6ee-0aeeb2f16857")
       val currentEpisode = fetchCurrentEpisode(assessmentUuid.toString())
       webTestClient.post().uri("/referenceData/filtered")
-        .bodyValue(FilteredReferenceDataRequest(
-          assessmentUuid,
-          currentEpisode.episodeUuid!!,
-          validQuestionUuid,
-          mapOf(validParentQuestionUuid to "test"),
-        ))
+        .bodyValue(
+          FilteredReferenceDataRequest(
+            assessmentUuid,
+            currentEpisode.episodeUuid!!,
+            validQuestionUuid,
+            mapOf(validParentQuestionUuid to "test")
+          )
+        )
         .headers(setAuthorisation())
         .exchange()
         .expectStatus().isNotFound
@@ -119,12 +127,14 @@ class ReferenceDataControllerTest : IntegrationTest() {
       val assessmentUuid = UUID.fromString("80fd9a2a-59dd-4783-8cac-1689a0464437")
       val currentEpisode = fetchCurrentEpisode(assessmentUuid.toString())
       webTestClient.post().uri("/referenceData/filtered")
-        .bodyValue(FilteredReferenceDataRequest(
-          assessmentUuid,
-          currentEpisode.episodeUuid!!,
-          validQuestionUuid,
-          mapOf(validParentQuestionUuid to "test"),
-        ))
+        .bodyValue(
+          FilteredReferenceDataRequest(
+            assessmentUuid,
+            currentEpisode.episodeUuid!!,
+            validQuestionUuid,
+            mapOf(validParentQuestionUuid to "test")
+          )
+        )
         .headers(setAuthorisation())
         .exchange()
         .expectStatus().isUnauthorized
@@ -138,12 +148,14 @@ class ReferenceDataControllerTest : IntegrationTest() {
       val assessmentUuid = UUID.fromString("bd5e5a88-c0ac-4f55-9c08-b8e8bdd9568c")
       val currentEpisode = fetchCurrentEpisode(assessmentUuid.toString())
       webTestClient.post().uri("/referenceData/filtered")
-        .bodyValue(FilteredReferenceDataRequest(
-          assessmentUuid,
-          currentEpisode.episodeUuid!!,
-          validQuestionUuid,
-          mapOf(validParentQuestionUuid to "test"),
-        ))
+        .bodyValue(
+          FilteredReferenceDataRequest(
+            assessmentUuid,
+            currentEpisode.episodeUuid!!,
+            validQuestionUuid,
+            mapOf(validParentQuestionUuid to "test")
+          )
+        )
         .headers(setAuthorisation())
         .exchange()
         .expectStatus().isBadRequest
@@ -157,12 +169,14 @@ class ReferenceDataControllerTest : IntegrationTest() {
       val assessmentUuid = UUID.fromString("bbbae903-7803-4206-800c-2d3b81116d5c")
       val currentEpisode = fetchCurrentEpisode(assessmentUuid.toString())
       webTestClient.post().uri("/referenceData/filtered")
-        .bodyValue(FilteredReferenceDataRequest(
-          assessmentUuid,
-          currentEpisode.episodeUuid!!,
-          validQuestionUuid,
-          mapOf(validParentQuestionUuid to "test"),
-        ))
+        .bodyValue(
+          FilteredReferenceDataRequest(
+            assessmentUuid,
+            currentEpisode.episodeUuid!!,
+            validQuestionUuid,
+            mapOf(validParentQuestionUuid to "test")
+          )
+        )
         .headers(setAuthorisation())
         .exchange()
         .expectStatus().is5xxServerError

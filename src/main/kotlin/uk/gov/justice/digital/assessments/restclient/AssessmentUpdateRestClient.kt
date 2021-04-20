@@ -36,7 +36,7 @@ class AssessmentUpdateRestClient {
     crn: String,
     user: String = "STUARTWHITLAM",
     area: String = "WWS",
-    deliusEvent: Int = 123456
+    deliusEvent: Long? = 123456
   ): Long? {
     log.info("Creating offender in OASys for crn: $crn, area: $area, user: $user, delius event: $deliusEvent")
     return webClient

@@ -127,7 +127,7 @@ class AssessmentService(
     return answers
   }
 
-  private fun createFromDelius(eventId: Int?, crn: String?, assessmentType: AssessmentType?): AssessmentDto {
+  private fun createFromDelius(eventId: Long?, crn: String?, assessmentType: AssessmentType?): AssessmentDto {
     if (eventId == null || crn.isNullOrEmpty() || assessmentType == null) {
       throw IllegalStateException("Unable to create OASys Assessment with assessment type: $assessmentType, eventId: $eventId, crn: $crn")
     }
@@ -361,7 +361,7 @@ class AssessmentService(
     offender: OffenderDto,
     oasysOffenderPk: Long?,
     oasysSetPK: Long?,
-    eventId: Int,
+    eventId: Long?,
     assessmentType: AssessmentType
   ): AssessmentDto {
     val assessment = AssessmentEntity(createdDate = LocalDateTime.now())
