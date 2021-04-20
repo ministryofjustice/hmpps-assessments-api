@@ -1,6 +1,6 @@
 
-INSERT INTO assessment (assessment_uuid, supervision_id, created_date, completed_date )
-VALUES ('e69a61ff-7395-4a12-b434-b1aa6478aded', '12345', '2019-11-14 08:11:53.177108', null);
+INSERT INTO assessment (assessment_uuid, created_date, completed_date )
+VALUES ('e69a61ff-7395-4a12-b434-b1aa6478aded', '2019-11-14 08:11:53.177108', null);
 
 
 INSERT INTO assessed_episode (episode_uuid, user_id, created_date, end_date, change_reason, assessment_type, assessment_uuid, answers  )

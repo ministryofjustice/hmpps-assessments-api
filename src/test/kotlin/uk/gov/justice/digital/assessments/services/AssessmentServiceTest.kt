@@ -131,24 +131,28 @@ class AssessmentServiceTest {
 
   @Test
   fun `throw exception if crn is null`() {
-    assertThrows<IllegalStateException> { assessmentsService.createNewAssessment(
-      CreateAssessmentDto(
-        deliusEventId = eventId,
-        crn = null,
-        assessmentType = assessmentType
-      ))
+    assertThrows<IllegalStateException> {
+      assessmentsService.createNewAssessment(
+        CreateAssessmentDto(
+          deliusEventId = eventId,
+          crn = null,
+          assessmentType = assessmentType
+        )
+      )
     }
     verify(exactly = 0) { assessmentRepository.save(any()) }
   }
 
   @Test
   fun `throw exception if delius event id is null`() {
-    assertThrows<IllegalStateException> { assessmentsService.createNewAssessment(
-      CreateAssessmentDto(
-        deliusEventId = null,
-        crn = crn,
-        assessmentType = assessmentType
-      ))
+    assertThrows<IllegalStateException> {
+      assessmentsService.createNewAssessment(
+        CreateAssessmentDto(
+          deliusEventId = null,
+          crn = crn,
+          assessmentType = assessmentType
+        )
+      )
     }
     verify(exactly = 0) { assessmentRepository.save(any()) }
   }
@@ -158,12 +162,14 @@ class AssessmentServiceTest {
     every { subjectRepository.findBySourceAndSourceIdAndCrn(deliusSource, eventId.toString(), crn) } returns null
     every { offenderService.getOffender("X12345") } throws EntityNotFoundException("")
 
-    assertThrows<EntityNotFoundException> { assessmentsService.createNewAssessment(
-      CreateAssessmentDto(
-        deliusEventId = eventId,
-        crn = crn,
-        assessmentType = assessmentType
-      ))
+    assertThrows<EntityNotFoundException> {
+      assessmentsService.createNewAssessment(
+        CreateAssessmentDto(
+          deliusEventId = eventId,
+          crn = crn,
+          assessmentType = assessmentType
+        )
+      )
     }
     verify(exactly = 0) { assessmentRepository.save(any()) }
   }

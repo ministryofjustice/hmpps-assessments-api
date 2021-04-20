@@ -125,8 +125,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
     }
   }
 
-
-    private fun createDeliusAssessment(crn: String, deliusId: Int): AssessmentDto {
+  private fun createDeliusAssessment(crn: String, deliusId: Int): AssessmentDto {
     return createDeliusAssessment(CreateAssessmentDto(crn = crn, deliusEventId = deliusId, assessmentType = AssessmentType.SHORT_FORM_PSR))
   }
 

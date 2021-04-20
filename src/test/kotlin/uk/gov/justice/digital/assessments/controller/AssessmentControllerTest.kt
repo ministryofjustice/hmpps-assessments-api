@@ -27,10 +27,9 @@ class AssessmentControllerTest : IntegrationTest() {
   val assessmentUuid = "2e020e78-a81c-407f-bc78-e5f284e237e5"
   val episodeId = "current"
 
-
   @Nested
   @DisplayName("fetching subject")
-  inner class FetchingSubject{
+  inner class FetchingSubject {
     @Test
     fun `get the subject details for an assessment`() {
       val subject = fetchAssessmentSubject("19c8d211-68dc-4692-a6e2-d58468127056")
