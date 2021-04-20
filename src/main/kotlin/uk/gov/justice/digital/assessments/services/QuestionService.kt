@@ -65,17 +65,24 @@ class QuestionService(
     val contents = groupContents
       .map {
         when (it.contentType) {
-          "question" -> GroupQuestionDto.from(
-            questionSchemaRepository.findByQuestionSchemaUuid(it.contentUuid)!!,
-            it,
-            dependencies
-          )
+          "question" -> getGroupQuestion(it, dependencies)
           "group" -> getQuestionGroupContents(findByGroupUuid(it.contentUuid), it, dependencies)
           else -> throw EntityNotFoundException("Bad group content type")
         }
       }
 
     return GroupWithContentsDto.from(group, contents, parentGroup)
+  }
+
+  private fun getGroupQuestion(
+    question: QuestionGroupEntity,
+    dependencies: QuestionDependencies
+  ): GroupQuestionDto {
+    return GroupQuestionDto.from(
+      questionSchemaRepository.findByQuestionSchemaUuid(question.contentUuid)!!,
+      question,
+      dependencies
+    )
   }
 
   private fun fetchGroupSections(
