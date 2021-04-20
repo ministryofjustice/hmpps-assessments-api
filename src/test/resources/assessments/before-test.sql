@@ -35,3 +35,7 @@ insert into assessed_episode  (episode_id, episode_uuid, user_id, assessment_typ
 (3, '163cf020-ff53-4dc6-a15c-e93e8537d347', 'USER1', 0, 1, '2019-11-14 09:00', null, 'More Change of Circs', 'e399ed1b-0e77-4c68-8bbc-d2f0befece84', '{}'),
 (4, '461994f9-86b9-4177-8412-de8dbb18415b', 'USER1', 0, 5678, '2019-11-14 09:00', '2019-11-14 12:00', 'More Change of Circs', '6082265e-885d-4526-b713-77e59b70691e', '{}'),
 (5, '4f99ea18-6559-460e-9693-68f0f5e5bebc', 'USER1', 0, 1, '2019-11-14 09:00', null, 'More Change of Circs', 'aa47e6c4-e41f-467c-95e7-fcf5ffd422f5', '{}');
+
+/* Existing Delius Subject */
+insert into subject (subject_id, subject_uuid, source, source_id, name, pnc, crn, date_of_birth, created_date, assessment_uuid) values
+(6, '362aae3c-852d-4a39-80f4-f41adc249bae', 'DELIUS', '12345', 'John Smith', 'dummy-pnc', 'CRN1', '1928-08-01', '2019-11-14 08:30', '19c8d211-68dc-4692-a6e2-d58468127056');

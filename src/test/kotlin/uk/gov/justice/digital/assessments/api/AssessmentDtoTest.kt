@@ -14,7 +14,6 @@ class AssessmentDtoTest {
     val assessmentEntity = AssessmentEntity(
       1,
       UUID.randomUUID(),
-      "SupervisionId",
       LocalDateTime.of(2019, 8, 1, 8, 0),
       LocalDateTime.of(2020, 8, 1, 8, 0)
     )
@@ -22,7 +21,6 @@ class AssessmentDtoTest {
     val assessmentDto = AssessmentDto.from(assessmentEntity)
 
     assertThat(assessmentDto.assessmentId).isEqualTo(assessmentEntity.assessmentId)
-    assertThat(assessmentDto.supervisionId).isEqualTo(assessmentEntity.supervisionId)
     assertThat(assessmentDto.createdDate).isEqualTo(assessmentEntity.createdDate)
     assertThat(assessmentDto.completedDate).isEqualTo(assessmentEntity.completedDate)
   }

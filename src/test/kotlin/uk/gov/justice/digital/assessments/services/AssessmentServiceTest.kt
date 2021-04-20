@@ -9,8 +9,10 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import uk.gov.justice.digital.assessments.api.CreateAssessmentDto
+import uk.gov.justice.digital.assessments.api.OffenderDto
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.jpa.entities.AnswerEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AnswerSchemaEntity
@@ -44,6 +46,7 @@ class AssessmentServiceTest {
   private val questionService: QuestionService = mockk()
   private val courtCaseRestClient: CourtCaseRestClient = mockk()
   private val episodeService: EpisodeService = mockk()
+  private val offenderService: OffenderService = mockk()
   private val assessmentUpdateRestClient: AssessmentUpdateRestClient = mockk()
 
   private val assessmentsService = AssessmentService(
@@ -53,7 +56,8 @@ class AssessmentServiceTest {
     questionService,
     episodeService,
     courtCaseRestClient,
-    assessmentUpdateRestClient
+    assessmentUpdateRestClient,
+    offenderService
   )
 
   private val assessmentUuid = UUID.randomUUID()
@@ -83,7 +87,7 @@ class AssessmentServiceTest {
   private val caseNumber = "668911253"
 
   private val deliusSource = "DELIUS"
-  private val eventId = 1L
+  private val eventId = 1
 
   @Nested
   @DisplayName("creating assessments from Delius")
@@ -91,11 +95,11 @@ class AssessmentServiceTest {
     @Test
     fun `create new offender with new assessment from delius event id and crn`() {
       every { subjectRepository.findBySourceAndSourceIdAndCrn(deliusSource, eventId.toString(), crn) } returns null
-      every { assessmentUpdateRestClient.createOasysOffender(crn = crn, deliusEvent = eventId.toInt()) } returns oasysOffenderPk
+      every { offenderService.getOffender("X12345") } returns OffenderDto()
+      every { assessmentUpdateRestClient.createOasysOffender(crn = crn, deliusEvent = eventId) } returns oasysOffenderPk
       every { assessmentUpdateRestClient.createAssessment(oasysOffenderPk, assessmentType) } returns oasysSetPk
       every { episodeService.prepopulate(any()) } returnsArgument 0
       every { assessmentRepository.save(any()) } returns AssessmentEntity(assessmentId = assessmentId)
-      every { subjectRepository.save(any()) } returns SubjectEntity()
 
       assessmentsService.createNewAssessment(
         CreateAssessmentDto(
@@ -104,15 +108,13 @@ class AssessmentServiceTest {
           assessmentType = assessmentType
         )
       )
-
-      verify(exactly = 1) { subjectRepository.save(any()) }
       verify(exactly = 1) { assessmentRepository.save(any()) }
     }
 
     @Test
     fun `return existing assessment from delius event id and crn if one already exists`() {
       every { subjectRepository.findBySourceAndSourceIdAndCrn(deliusSource, eventId.toString(), crn) } returns
-        SubjectEntity(assessment = AssessmentEntity(assessmentId = assessmentId))
+        SubjectEntity(assessment = AssessmentEntity(assessmentId = assessmentId, assessmentUuid = assessmentUuid))
 
       val assessmentDto =
         assessmentsService.createNewAssessment(
@@ -125,6 +127,45 @@ class AssessmentServiceTest {
       assertThat(assessmentDto.assessmentUuid).isEqualTo(assessmentUuid)
       verify(exactly = 0) { assessmentRepository.save(any()) }
     }
+  }
+
+  @Test
+  fun `throw exception if crn is null`() {
+    assertThrows<IllegalStateException> { assessmentsService.createNewAssessment(
+      CreateAssessmentDto(
+        deliusEventId = eventId,
+        crn = null,
+        assessmentType = assessmentType
+      ))
+    }
+    verify(exactly = 0) { assessmentRepository.save(any()) }
+  }
+
+  @Test
+  fun `throw exception if delius event id is null`() {
+    assertThrows<IllegalStateException> { assessmentsService.createNewAssessment(
+      CreateAssessmentDto(
+        deliusEventId = null,
+        crn = crn,
+        assessmentType = assessmentType
+      ))
+    }
+    verify(exactly = 0) { assessmentRepository.save(any()) }
+  }
+
+  @Test
+  fun `throw exception if offender is not returned from Delius`() {
+    every { subjectRepository.findBySourceAndSourceIdAndCrn(deliusSource, eventId.toString(), crn) } returns null
+    every { offenderService.getOffender("X12345") } throws EntityNotFoundException("")
+
+    assertThrows<EntityNotFoundException> { assessmentsService.createNewAssessment(
+      CreateAssessmentDto(
+        deliusEventId = eventId,
+        crn = crn,
+        assessmentType = assessmentType
+      ))
+    }
+    verify(exactly = 0) { assessmentRepository.save(any()) }
   }
 
   @Nested

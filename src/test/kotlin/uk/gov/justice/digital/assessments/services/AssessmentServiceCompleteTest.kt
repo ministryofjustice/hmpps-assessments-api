@@ -34,6 +34,7 @@ class AssessmentServiceCompleteTest {
   private val questionService: QuestionService = mockk()
   private val courtCaseRestClient: CourtCaseRestClient = mockk()
   private val episodeService: EpisodeService = mockk()
+  private val offenderService: OffenderService = mockk()
   private val assessmentUpdateRestClient: AssessmentUpdateRestClient = mockk()
 
   private val assessmentsService = AssessmentService(
@@ -43,7 +44,8 @@ class AssessmentServiceCompleteTest {
     questionService,
     episodeService,
     courtCaseRestClient,
-    assessmentUpdateRestClient
+    assessmentUpdateRestClient,
+    offenderService
   )
 
   @Nested

@@ -5,7 +5,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 
 data class CreateAssessmentDto(
   @Schema(description = "Delius Event ID", example = "1234")
-  val deliusEventId: Long? = null,
+  val deliusEventId: Int? = null,
 
   @Schema(description = "Offender CRN", example = "CRN1")
   val crn: String? = null,
