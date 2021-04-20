@@ -53,8 +53,9 @@ class QuestionSchemaEntity(
   @Column(name = "reference_data_category")
   val referenceDataCategory: String? = null,
 
-  @Column(name = "reference_data_target")
-  val referenceDataTarget: String? = null,
+  @ManyToOne()
+  @JoinColumn(name = "reference_data_target", referencedColumnName = "question_schema_uuid")
+  val referenceDataTarget: QuestionSchemaEntity? = null,
 
   @ManyToOne
   @JoinColumn(name = "answer_schema_group_uuid", referencedColumnName = "answer_schema_group_uuid")

@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS question_schema
     question_text           TEXT,
     question_help_text      TEXT,
     reference_data_category TEXT,
-    reference_data_target TEXT,
+    reference_data_target   UUID,
     FOREIGN KEY (answer_schema_group_uuid) REFERENCES answer_schema_group (answer_schema_group_uuid)
 );
 
@@ -49,6 +49,9 @@ CREATE TABLE IF NOT EXISTS oasys_question_mapping
     fixed_field           BOOLEAN,
     FOREIGN KEY (question_schema_uuid) REFERENCES question_schema (question_schema_uuid)
 );
+
+ALTER TABLE question_schema
+    ADD FOREIGN KEY (reference_data_target) REFERENCES question_schema (question_schema_uuid);
 
 CREATE TABLE IF NOT EXISTS grouping
 (

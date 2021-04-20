@@ -38,7 +38,7 @@ data class QuestionSchemaDto(
   val referenceDataCategory: String? = null,
 
   @Schema(description = "Reference Data Category")
-  val referenceDataTarget: String? = null,
+  val referenceDataTarget: UUID? = null,
 
   @Schema(description = "List of Reference Answer Schemas")
   val answerSchemas: Collection<AnswerSchemaDto>,
@@ -63,7 +63,7 @@ data class QuestionSchemaDto(
         questionSchema?.questionText,
         questionSchema?.questionHelpText,
         questionSchema?.referenceDataCategory,
-        questionSchema?.referenceDataTarget,
+        questionSchema?.referenceDataTarget?.questionSchemaUuid,
         AnswerSchemaDto.from(
           questionSchema?.answerSchemaEntities
         )

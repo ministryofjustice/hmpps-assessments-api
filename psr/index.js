@@ -23,5 +23,6 @@ for (const record of records) {
 }
 
 assessment.addDependencyUuids()
+assessment.addFilteredReferenceDataTargets()
 assessment.toSql()
 
