@@ -73,7 +73,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
   inner class CreatingAssessmentFromCrn {
 
     private val crn = "DX12340A"
-    private val eventID = 1
+    private val eventID = 1L
 
     @Test
     fun `access forbidden when no authority`() {
@@ -95,7 +95,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
     @Test
     fun `creating an assessment for a delius event id and crn when one already exists in ARN returns the existing assessment`() {
       val existingCrn = "CRN1"
-      val existingEventId = 12345
+      val existingEventId = 12345L
       val existingAssessment = createDeliusAssessment(existingCrn, existingEventId)
       val assessmentDto = createDeliusAssessment(existingCrn, existingEventId)
 
@@ -125,7 +125,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
     }
   }
 
-  private fun createDeliusAssessment(crn: String, deliusId: Int): AssessmentDto {
+  private fun createDeliusAssessment(crn: String, deliusId: Long): AssessmentDto {
     return createDeliusAssessment(CreateAssessmentDto(crn = crn, deliusEventId = deliusId, assessmentType = AssessmentType.SHORT_FORM_PSR))
   }
 
