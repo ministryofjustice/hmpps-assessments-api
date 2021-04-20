@@ -72,8 +72,24 @@ class QuestionServiceTest {
     answerType = "table:children"
   )
 
+  private val tableGroupContents = mutableListOf<QuestionGroupEntity>()
+  private val tableGroup = GroupEntity(
+    groupId = 2,
+    groupUuid = UUID.randomUUID(),
+    groupCode = "children",
+    contents = tableGroupContents
+  )
   private val tableSubQuestion1Id = UUID.randomUUID()
   private val tableSubQuestion2Id = UUID.randomUUID()
+  private val tableSubQuestion1 = QuestionSchemaEntity(
+    questionSchemaId = 12,
+    questionSchemaUuid = tableSubQuestion1Id
+  )
+  private val tableSubQuestion2 = QuestionSchemaEntity(
+    questionSchemaId = 14,
+    questionSchemaUuid = tableSubQuestion2Id
+  )
+
 
   @BeforeEach
   fun setup() {
@@ -109,7 +125,24 @@ class QuestionServiceTest {
       readOnly = false
     ))
 
-
+    tableGroupContents.add(QuestionGroupEntity(
+      questionGroupId = 100,
+      group = tableGroup,
+      contentUuid = tableSubQuestion1Id,
+      contentType = "question",
+      displayOrder = 1,
+      question = tableSubQuestion1,
+      nestedGroup = null
+    ))
+    tableGroupContents.add(QuestionGroupEntity(
+      questionGroupId = 100,
+      group = tableGroup,
+      contentUuid = tableSubQuestion2Id,
+      contentType = "question",
+      displayOrder = 2,
+      question = tableSubQuestion2,
+      nestedGroup = null
+    ))
   }
 
   @Test
@@ -152,8 +185,11 @@ class QuestionServiceTest {
   @Test
   fun `get group contents with table`() {
     every { groupRepository.findByGroupUuid(groupWithTableUuid) } returns groupWithTable
+    every { groupRepository.findByGroupCode("children") } returns tableGroup
     every { questionSchemaRepository.findByQuestionSchemaUuid(questionUuid) } returns question
     every { questionSchemaRepository.findByQuestionSchemaUuid(tableQuestionUuid) } returns tableQuestion
+    every { questionSchemaRepository.findByQuestionSchemaUuid(tableSubQuestion1Id) } returns tableSubQuestion1
+    every { questionSchemaRepository.findByQuestionSchemaUuid(tableSubQuestion2Id) } returns tableSubQuestion2
     every { dependencyService.dependencies() } returns QuestionDependencies(emptyList())
 
     val groupQuestions = questionService.getGroupContents(groupWithTableUuid)
@@ -167,7 +203,7 @@ class QuestionServiceTest {
     assertThat(questionRef.questionId).isEqualTo(questionUuid)
 
     val tableRef = groupContents[1] as TableQuestionDto
-    assertThat(tableRef.tableId).isEqualTo(tableQuestionUuid)
+    assertThat(tableRef.tableId).isEqualTo(tableGroup.groupUuid)
     assertThat(tableRef.contents).hasSize(2)
     val tableQuestionIds = tableRef.contents.map { (it as GroupQuestionDto).questionId }
     assertThat(tableQuestionIds).contains(tableSubQuestion1Id, tableSubQuestion2Id)

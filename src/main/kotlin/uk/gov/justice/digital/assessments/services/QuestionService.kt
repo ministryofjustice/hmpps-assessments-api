@@ -1,11 +1,7 @@
 package uk.gov.justice.digital.assessments.services
 
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.assessments.api.GroupQuestionDto
-import uk.gov.justice.digital.assessments.api.GroupSectionsDto
-import uk.gov.justice.digital.assessments.api.GroupSummaryDto
-import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
-import uk.gov.justice.digital.assessments.api.QuestionSchemaDto
+import uk.gov.justice.digital.assessments.api.*
 import uk.gov.justice.digital.assessments.jpa.entities.AnswerSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.GroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionGroupEntity
@@ -59,6 +55,23 @@ class QuestionService(
     parentGroup: QuestionGroupEntity?,
     dependencies: QuestionDependencies
   ): GroupWithContentsDto {
+    return expandGroupContents(group, parentGroup, dependencies, GroupWithContentsDto::from) as GroupWithContentsDto
+  }
+
+  private fun getTableGroupContents(
+    group: GroupEntity,
+    parentGroup: QuestionGroupEntity?,
+    dependencies: QuestionDependencies
+  ): TableQuestionDto {
+    return expandGroupContents(group, parentGroup, dependencies, TableQuestionDto::from) as TableQuestionDto
+  }
+
+  private fun expandGroupContents(
+    group: GroupEntity,
+    parentGroup: QuestionGroupEntity?,
+    dependencies: QuestionDependencies,
+    toDto: (GroupEntity, List<GroupContentDto>, QuestionGroupEntity?) -> GroupContentDto
+  ): GroupContentDto {
     val groupContents = group.contents.sortedBy { it.displayOrder }
     if (groupContents.isEmpty()) throw EntityNotFoundException("Questions not found for Group: ${group.groupUuid}")
 
@@ -71,18 +84,33 @@ class QuestionService(
         }
       }
 
-    return GroupWithContentsDto.from(group, contents, parentGroup)
+    return toDto(group, contents, parentGroup)
   }
+
 
   private fun getGroupQuestion(
     question: QuestionGroupEntity,
     dependencies: QuestionDependencies
-  ): GroupQuestionDto {
+  ): GroupContentDto {
+    val questionEntity = questionSchemaRepository.findByQuestionSchemaUuid(question.contentUuid)!!
+    if (questionEntity.answerType?.startsWith("table:") == true)
+      return tableGroupQuestion(questionEntity, dependencies)
     return GroupQuestionDto.from(
-      questionSchemaRepository.findByQuestionSchemaUuid(question.contentUuid)!!,
+      questionEntity,
       question,
       dependencies
     )
+  }
+
+  private fun tableGroupQuestion(
+    questionEntity: QuestionSchemaEntity,
+    dependencies: QuestionDependencies
+  ): TableQuestionDto {
+    val tableName = questionEntity.answerType?.split(":")?.get(1)
+      ?: throw EntityNotFoundException("Could not get table name for question ${questionEntity.questionCode}")
+    val tableGroup = groupRepository.findByGroupCode(tableName)
+      ?: throw EntityNotFoundException("Could not find group ${tableName} for question ${questionEntity.questionCode}")
+    return getTableGroupContents(tableGroup, null, dependencies)
   }
 
   private fun fetchGroupSections(
