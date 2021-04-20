@@ -5,12 +5,12 @@ delete from subject where true;
 delete from assessment where true;
 
 /* Assessment with Episodes */
-insert into assessment  (assessment_id, assessment_uuid, supervision_id, created_date) values
-(1, '2e020e78-a81c-407f-bc78-e5f284e237e5', 'CRN1', '2019-11-14 09:00'),
-(2, 'bbbae903-7803-4206-800c-2d3b81116d5c', 'CRN1', '2019-11-14 09:00'),
-(3, 'bd5e5a88-c0ac-4f55-9c08-b8e8bdd9568c', 'CRN1', '2019-11-14 09:00'),
-(4, '80fd9a2a-59dd-4783-8cac-1689a0464437', 'CRN1', '2019-11-14 09:00'),
-(5, '8177b6c7-1b20-459b-b6ee-0aeeb2f16857', 'CRN1', '2019-11-14 09:00');
+insert into assessment  (assessment_id, assessment_uuid, created_date) values
+(1, '2e020e78-a81c-407f-bc78-e5f284e237e5', '2019-11-14 09:00'),
+(2, 'bbbae903-7803-4206-800c-2d3b81116d5c', '2019-11-14 09:00'),
+(3, 'bd5e5a88-c0ac-4f55-9c08-b8e8bdd9568c', '2019-11-14 09:00'),
+(4, '80fd9a2a-59dd-4783-8cac-1689a0464437', '2019-11-14 09:00'),
+(5, '8177b6c7-1b20-459b-b6ee-0aeeb2f16857', '2019-11-14 09:00');
 
 insert into subject (subject_id, subject_uuid, source, source_id, name, pnc, crn, date_of_birth, created_date, assessment_uuid) values
 (1, 'a4e73a2c-3f1c-4f83-88b6-dd3ce1b78530', 'COURT', 'courtCode|caseNumber', 'John Smith', 'dummy-pnc', 'dummy-crn', '1928-08-01', '2019-11-14 08:30', '2e020e78-a81c-407f-bc78-e5f284e237e5'),
