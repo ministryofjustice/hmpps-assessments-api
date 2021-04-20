@@ -17,7 +17,6 @@ import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundExce
 import uk.gov.justice.digital.assessments.services.exceptions.OASysClientException
 import uk.gov.justice.digital.assessments.services.exceptions.ReferenceDataAuthorisationException
 import uk.gov.justice.digital.assessments.services.exceptions.ReferenceDataInvalidRequestException
-import java.util.UUID
 
 @Component
 class AssessmentApiRestClient {
@@ -55,9 +54,12 @@ class AssessmentApiRestClient {
     parentList: Map<String, String>?
   ): Map<String, Collection<RefElementDto>>? {
     return webClient
-      .post("/referencedata/filtered", FilteredReferenceDataDto(
-        oasysSetPk, oasysUserCode, oasysAreaCode, offenderPk, assessmentType, sectionCode, fieldName, parentList
-      ))
+      .post(
+        "/referencedata/filtered",
+        FilteredReferenceDataDto(
+          oasysSetPk, oasysUserCode, oasysAreaCode, offenderPk, assessmentType, sectionCode, fieldName, parentList
+        )
+      )
       .retrieve()
       .onStatus(HttpStatus::is4xxClientError) { handleReferenceDataError(fieldName, it) }
       .onStatus(HttpStatus::is5xxServerError) { throw OASysClientException("Failed to retrieve OASys filtered reference data for $fieldName") }

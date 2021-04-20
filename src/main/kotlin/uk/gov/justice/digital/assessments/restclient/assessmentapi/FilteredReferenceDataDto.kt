@@ -1,7 +1,5 @@
 package uk.gov.justice.digital.assessments.restclient.assessmentapi
 
-import java.util.*
-
 data class FilteredReferenceDataDto(
   val oasysSetPk: Long,
   val oasysUserCode: String,
