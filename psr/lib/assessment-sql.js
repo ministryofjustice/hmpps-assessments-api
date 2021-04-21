@@ -114,7 +114,7 @@ class AssessmentSql {
     return group
   }
 
-  _addGroupQuestion(content_uuid, content_type, group_uuid, validation) {
+  _addGroupQuestion(content_uuid, content_type, group_uuid, validation, read_only = false) {
     const [uuid, existing] = questionGroupUuids(content_uuid, group_uuid)
     const questionGroup = {
       question_group_uuid: uuid,
@@ -123,7 +123,8 @@ class AssessmentSql {
       group_uuid: group_uuid,
       display_order: this.questionGroups.filter(qg => qg.group_uuid === group_uuid).length + 1,
       mandatory: true,
-      validation: validation
+      validation: validation,
+      read_only: read_only
     }
     if (this.shouldAdd(existing))
       this.questionGroups.push(questionGroup)
