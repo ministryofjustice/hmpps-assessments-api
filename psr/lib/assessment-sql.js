@@ -277,6 +277,8 @@ class AssessmentSql {
       return [answerField, null]
     if (answerField.match(/^numeric/i))
       return ['numeric', null]
+    if (answerField.match(/^table\:/))
+      return [answerField, null]
     return ['freetext', null]
   }
 
