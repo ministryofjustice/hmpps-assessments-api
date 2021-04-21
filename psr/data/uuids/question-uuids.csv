@@ -411,3 +411,13 @@ child_at_risk_of_serious_harm:,		-freetext,f9a22a7d-12c0-44d0-89a9-33722801b3ac
 book_number,289.1-freetext-book_number,65a621e0-3e4d-40cb-bca0-1f8bb8e8fba9
 child_at_risk_of_serious_harm:,		-table,23829fbc-ca3e-4189-b58b-7890782f453e
 child_at_risk_of_serious_harm:,		-table:children_at_risk_of_serious_harm,bc5776e9-6356-4899-b3cf-da95fc497538
+child_at_risk_of_serious_harm:,202.1-freetext,b9ed154e-5b4e-43af-a405-2ae0f22f2ac6
+name,203.1-freetext,23c3e984-54c7-480f-b06c-7d000e2fb87c
+age_,204.1-numeric,263c9dde-4290-4bf9-a596-f470b68da524
+date_of_birth,205.1-date,41677239-234c-4653-ac98-4e2e002948cc
+gender,206.1-radio,61857dff-dfd8-4b92-a8c7-1ddfc4cebc45
+address_if_disclosable_,207.1-freetext,c4a648af-8a53-452d-b575-35697932531e
+currently_registered_with_social_services,208.1-radio,ecb880ef-02c7-4ffc-8726-7e0f60f1191c
+previously_registered_with_social_services,209.1-radio,775cd8bf-fe1b-4625-9937-ae8a238a8402
+current_category_of_child_protection_registration_ie_neglect_physical_sexual_or_emotional_,210.1-checkbox,ad56e86d-56df-4c1a-974f-81454e941be0
+previous_category_of_child_protection_registration_ie_neglect_physical_sexual_or_emotional_,211.1-checkbox,b0a4f119-6226-452b-a145-1f822d5737fe
