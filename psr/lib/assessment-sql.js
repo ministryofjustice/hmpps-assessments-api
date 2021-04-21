@@ -20,9 +20,46 @@ class AssessmentSql {
     this.assessmentGroup = this._createGrouping([assessmentName])
     this.currentGroup = this.assessmentGroup
     this.dependencies = []
+    this.questionsWithReferenceDataTargets = []
+    this.fixedOasysCodeLookup = []
 
     this.oasysQuestions = oasysQuestions()
     this.yes_no = ['radio', this.answerSchemaGroup(['radios:', 'Yes|YES', 'No|NO'])]
+  }
+
+  addFilteredReferenceDataTargets() {
+    const hasReferenceDataTarget = ({question_schema_uuid}) => this.questionsWithReferenceDataTargets.filter(([uuid]) => uuid === question_schema_uuid).length > 0
+    const withoutTargets = this.questions.filter(q => !hasReferenceDataTarget(q))
+    const withTargets = this.questions.filter(q => hasReferenceDataTarget(q))
+
+    console.warn(`Adding reference data targets for ${withTargets.length} item(s)`)
+
+    this.questions = [
+        ...withoutTargets,
+        ...withTargets.map(question => {
+          const result = {
+            ...question,
+          }
+
+          const [_, target_field] = this.questionsWithReferenceDataTargets.filter(([uuid]) => uuid === question.question_schema_uuid).shift()
+
+          const matches = this.fixedOasysCodeLookup.filter(([oasys_fixed_field]) => {
+            return oasys_fixed_field === target_field
+          })
+
+          if (matches.length < 1) {
+            console.warn(`No matching target found for question "${question.question_text}"`)
+          } else if (matches.length > 1) {
+            console.warn(`Ambiguous match for question "${question.question_text}" - ${matches.length} results found for reference data target`)
+          } else {
+            const [[_, reference_field_uuid]] = matches
+            console.warn(`Found reference data target UUID for "${question.question_text}" - "${reference_field_uuid}"`)
+            result.reference_data_target = reference_field_uuid
+          }
+
+          return result
+        })
+    ]
   }
 
   addDependencyUuids() {
@@ -124,12 +161,20 @@ class AssessmentSql {
     const question_text = record[this.headers.QUESTION].replace(/'/g, "''").replace(/\r\n/g, ' ').trim()
     const question_help_text = record[this.headers.HINT_TEXT].replace(/'/g, "''").replace(/\r\n/g, ' ').replace(/\[.*\] *\n*/g, '')
     const [answer_type, answer_schema_group_uuid, read_only] = this.answerType(record[this.headers.ANSWER_TYPE], oasys_question)
+    const question_schema_uuid = questionUuids(question_code, answer_type, question_title)
 
     const business_logic = record[this.headers.LOGIC]
     const reference_data_category = record[this.headers.REFERENCE_DATA_CATEGORY]
     const reference_data_target = record[this.headers.REFERENCE_DATA_TARGET]
+
+    if (reference_data_target)
+      this.questionsWithReferenceDataTargets.push([question_schema_uuid, reference_data_target])
+
+    if (oasys_fixed_field)
+      this.fixedOasysCodeLookup.push([oasys_fixed_field, question_schema_uuid])
+
     const question = {
-      question_schema_uuid: questionUuids(question_code, answer_type, question_title),
+      question_schema_uuid:  question_schema_uuid,
       question_code: question_code,
       oasys_question_code: oasys_question_code,
       answer_type: answer_type,
@@ -140,7 +185,6 @@ class AssessmentSql {
       external_source: externalSources(question_code),
       read_only: (question_code.substring(0,2) === 'ui' ? true : read_only),
       reference_data_category: reference_data_category,
-      reference_data_target: reference_data_target,
     }
     this.questions.push(question)
 
