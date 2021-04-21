@@ -8,8 +8,9 @@ const oasysMappingUuids = require('./uuids/oasys-mapping-uuids')
 const oasysQuestions = require('./oasys/oasys-questions')
 
 class AssessmentSql {
-  constructor(assessmentName, headers) {
+  constructor(assessmentName, headers, incremental) {
     this.headers = headers
+    this.incremental = incremental
 
     this.answerSchemaGroups = []
     this.answerSchemas = []
@@ -101,35 +102,31 @@ class AssessmentSql {
   _createGrouping(record) {
     const heading = record[this.headers.TITLE].replace(/'/g, "''")
     const groupCode = heading.replace(/[ '\-,\\.\\(\\)\\?\\/]+/g, '_').toLowerCase()
+    const [uuid, existing] = groupUuids(groupCode, groupCode)
     const group = {
-      group_uuid: groupUuids(groupCode, groupCode),
+      group_uuid: uuid,
       group_code: groupCode,
       heading: heading,
       group_start: '2020-11-30 14:50:00'
     }
-    // duplicate section names :(
-    const existing = this.groups.filter(g => g.group_uuid === group.group_uuid)
-    if (existing.length) {
-      record[this.headers.TITLE] = `${heading}~`
-      return this._createGrouping(record)
-    }
-
-    this.groups.push(group)
+    if (this.shouldAdd(existing))
+      this.groups.push(group)
     return group
   }
 
-  _addGroupQuestion(content_uuid, content_type, group_uuid, validation = null, read_only = false) {
+  _addGroupQuestion(content_uuid, content_type, group_uuid, validation) {
+    const [uuid, existing] = questionGroupUuids(content_uuid, group_uuid)
     const questionGroup = {
-      question_group_uuid: questionGroupUuids(content_uuid),
+      question_group_uuid: uuid,
       content_uuid: content_uuid,
       content_type: content_type,
       group_uuid: group_uuid,
       display_order: this.questionGroups.filter(qg => qg.group_uuid === group_uuid).length + 1,
       mandatory: true,
-      validation: validation,
-      read_only: read_only
+      validation: validation
     }
-    this.questionGroups.push(questionGroup)
+    if (this.shouldAdd(existing))
+      this.questionGroups.push(questionGroup)
   }
 
   addQuestion(record) {
@@ -161,7 +158,7 @@ class AssessmentSql {
     const question_text = record[this.headers.QUESTION].replace(/'/g, "''").replace(/\r\n/g, ' ').trim()
     const question_help_text = record[this.headers.HINT_TEXT].replace(/'/g, "''").replace(/\r\n/g, ' ').replace(/\[.*\] *\n*/g, '')
     const [answer_type, answer_schema_group_uuid, read_only] = this.answerType(record[this.headers.ANSWER_TYPE], oasys_question)
-    const question_schema_uuid = questionUuids(question_code, answer_type, question_title)
+    const [question_schema_uuid, existing] = questionUuids(question_code, answer_type, question_title)
 
     const business_logic = record[this.headers.LOGIC]
     const reference_data_category = record[this.headers.REFERENCE_DATA_CATEGORY]
@@ -174,7 +171,7 @@ class AssessmentSql {
       this.fixedOasysCodeLookup.push([oasys_fixed_field, question_schema_uuid])
 
     const question = {
-      question_schema_uuid:  question_schema_uuid,
+      question_schema_uuid: question_schema_uuid,
       question_code: question_code,
       oasys_question_code: oasys_question_code,
       answer_type: answer_type,
@@ -186,11 +183,12 @@ class AssessmentSql {
       read_only: (question_code.substring(0,2) === 'ui' ? true : read_only),
       reference_data_category: reference_data_category,
     }
-    this.questions.push(question)
+    if (this.shouldAdd(existing))
+      this.questions.push(question)
 
     if (oasys_question) {
       const mapping = {
-        mapping_uuid: oasysMappingUuids(question.question_schema_uuid, oasys_question),
+        mapping_uuid: oasysMappingUuids(question.question_schema_uuid, oasys_question)[0],
         question_schema_uuid: question.question_schema_uuid,
         ref_section_code: oasys_question.ref_section_code,
         logical_page: oasys_question.logicalpage,
@@ -293,24 +291,27 @@ class AssessmentSql {
       .join('-')
       .replace(/[ ',\\.\\(\\)\\?\\/]+/g, '')
       .toLowerCase()
-    const existing = this.answerSchemaGroups
+    const existingGroup = this.answerSchemaGroups
       .find(a => a.answer_schema_group_code === name)
-    if (existing) return existing.answer_schema_group_uuid
+    if (existingGroup) return existingGroup.answer_schema_group_uuid
 
+    const [uuid, existing] = answerSchemaGroupUuids(name)
     const answerGroup = {
-      answer_schema_group_uuid: answerSchemaGroupUuids(name),
-      answer_schema_group_code: name ||  answerSchemaGroupUuids(name),
+      answer_schema_group_uuid: uuid,
+      answer_schema_group_code: name || uuid,
       group_start: '2020-11-30 14:50:00',
       group_end: null
     }
 
-    this.answerSchemaGroups.push(answerGroup)
+    if (this.shouldAdd(existing))
+      this.answerSchemaGroups.push(answerGroup)
 
     for (const [text, value] of newlines) {
       if (!text) continue
       const code = text.replace(/[ ',\\.\\(\\)\\?\\/]+/g, '_').toLowerCase()
+      const [uuid, existing] = answerSchemaUuids(code, answerGroup.answer_schema_group_code)
       const answerSchema = {
-        answer_schema_uuid: answerSchemaUuids(code, answerGroup.answer_schema_group_code),
+        answer_schema_uuid: uuid,
         answer_schema_code: code,
         answer_schema_group_uuid: answerGroup.answer_schema_group_uuid,
         answer_start: '2020-11-30 14:50:00',
@@ -318,7 +319,8 @@ class AssessmentSql {
         value: value ? value.replace(/'+/g, '\'\'') : null,
         text: text ? text.replace(/'+/g, '\'\'') : null,
       }
-      this.answerSchemas.push(answerSchema)
+      if (this.shouldAdd(existing))
+        this.answerSchemas.push(answerSchema)
     }
     return answerGroup.answer_schema_group_uuid
   }
@@ -345,6 +347,11 @@ class AssessmentSql {
     console.log(this.mappingSql())
   }
 
+  shouldAdd(existing) {
+    if (!existing) return true
+    return !this.incremental
+  }
+
   ///////////////////////////
   static insertSql(table, fields) {
     return `INSERT INTO ${table} (${fields.join(', ')})\nVALUES `
@@ -360,6 +367,7 @@ class AssessmentSql {
   }
 
   static tableSql(table, fields, data) {
+    if (data.length === 0) return ''
     const insert = AssessmentSql.insertSql(table, fields)
     const values = data.map(row => AssessmentSql.valueSql(fields, row)).join(',\n    ')
     return `${insert}${values};\n\n`
@@ -432,4 +440,4 @@ class AssessmentSql {
   }
 }
 
-module.exports = (name, headers) => new AssessmentSql(name, headers)
+module.exports = (name, headers, incremental) => new AssessmentSql(name, headers, incremental)

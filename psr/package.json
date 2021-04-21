@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "commander": "^7.0.0",
     "csv-parse": "^4.14.1",
     "lodash.snakecase": "^4.1.1",
     "uuid": "^8.3.1"
