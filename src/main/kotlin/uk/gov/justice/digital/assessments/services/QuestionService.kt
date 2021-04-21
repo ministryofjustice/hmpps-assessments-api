@@ -92,7 +92,8 @@ class QuestionService(
     question: QuestionGroupEntity,
     dependencies: QuestionDependencies
   ): GroupContentDto {
-    val questionEntity = questionSchemaRepository.findByQuestionSchemaUuid(question.contentUuid)!!
+    val questionEntity = questionSchemaRepository.findByQuestionSchemaUuid(question.contentUuid)
+      ?: throw EntityNotFoundException("Could not get question ${question.contentUuid}")
     if (questionEntity.answerType?.startsWith("table:") == true)
       return tableGroupQuestion(questionEntity, dependencies)
     return GroupQuestionDto.from(
