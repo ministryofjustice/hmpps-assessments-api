@@ -11,6 +11,11 @@ class QuestionSchemaDtoTest {
   @Test
   fun `builds valid Question Schema DTO`() {
 
+    val targetQuestionSchemaEntity = QuestionSchemaEntity(
+      questionSchemaId = 2L,
+      questionSchemaUuid = UUID.randomUUID(),
+    )
+
     val questionSchemaEntity = QuestionSchemaEntity(
       1L,
       UUID.randomUUID(),
@@ -23,7 +28,7 @@ class QuestionSchemaDtoTest {
       "Question text",
       "Question help text",
       "TEST_REF_DATA_CAT",
-      "test_field_1,test_field_2,test_field_3",
+      targetQuestionSchemaEntity,
     )
 
     val questionSchemaDto = QuestionSchemaDto.from(questionSchemaEntity)
@@ -38,6 +43,6 @@ class QuestionSchemaDtoTest {
     assertThat(questionSchemaDto.questionText).isEqualTo(questionSchemaEntity.questionText)
     assertThat(questionSchemaDto.questionHelpText).isEqualTo(questionSchemaEntity.questionHelpText)
     assertThat(questionSchemaDto.referenceDataCategory).isEqualTo(questionSchemaEntity.referenceDataCategory)
-    assertThat(questionSchemaDto.referenceDataTarget).isEqualTo(questionSchemaEntity.referenceDataTarget)
+    assertThat(questionSchemaDto.referenceDataTarget).isEqualTo(questionSchemaEntity.referenceDataTarget?.questionSchemaUuid)
   }
 }
