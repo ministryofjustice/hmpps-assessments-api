@@ -47,7 +47,9 @@ class AssessmentSql {
             return oasys_fixed_field === target_field
           })
 
-          if (matches.length > 1) {
+          if (matches.length < 1) {
+            console.warn(`No matching target found for question "${question.question_text}"`)
+          } else if (matches.length > 1) {
             console.warn(`Ambiguous match for question "${question.question_text}" - ${matches.length} results found for reference data target`)
           } else {
             const [[_, reference_field_uuid]] = matches
