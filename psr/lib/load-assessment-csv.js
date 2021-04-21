@@ -17,7 +17,7 @@ function loadAssessmentCsv(csvFile) {
   })
 
   const headers = findHeaders(all_records[headerLine])
-  const records = all_records.slice(headerLine + 1, footerLine || all_records.length)
+  const records = all_records.slice(headerLine + 1, (footerLine !== -1) ? footerLine : all_records.length)
 
   patchInAddress(records, headers)
   return { headers, records }
