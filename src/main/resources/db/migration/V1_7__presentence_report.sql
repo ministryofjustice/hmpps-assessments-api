@@ -133,7 +133,6 @@ VALUES ('1ea17930-d467-44c0-9e72-517747618acb', 'ui3.1', null, '2020-11-30 14:50
     ('6b85d0ac-d8e9-41e9-8dd9-caab1979da39', '28.1', 'oasys_set.assessor_phone_number', '2020-11-30 14:50:00', null, 'numeric', null, 'Telephone number', null, null, null, null),
     ('5af89c42-ffa2-4a29-8975-ab0eb8770a1c', '29.1', 'oasys_set.assessor_area_est_code', '2020-11-30 14:50:00', null, 'freetext', null, 'Probation provider/prison', null, null, null, null),
     ('ead7aa8a-e20d-4822-9b3b-aedf186333b1', '30.1', 'oasys_set.originating_division_code', '2020-11-30 14:50:00', null, 'freetext', null, 'LDU', null, null, null, null),
-    ('a64dc082-980a-43e0-b443-cf196f35d571', '31.1', 'oasys_set.originating_team_code', '2020-11-30 14:50:00', null, 'freetext', null, 'Team', null, null, null, null),
     ('10c93cf5-cc0c-404b-b6e4-da176db45527', '32.1', 'oasys_set.countersigner_nam', '2020-11-30 14:50:00', null, 'freetext', null, 'Countersigner', null, null, null, null),
     ('d9ca82ca-8684-49e4-b7eb-91fb0effed91', '33.1', 'oasys_signing table', '2020-11-30 14:50:00', null, 'freetext', null, 'Signing history', null, null, null, null),
     ('eef973e6-f493-4460-b094-2162fc8dc7e9', '24.1', 'NOT HELD', '2020-11-30 14:50:00', null, 'date', null, 'Date report completed and signed', null, null, null, null),
@@ -337,7 +336,9 @@ VALUES ('1ea17930-d467-44c0-9e72-517747618acb', 'ui3.1', null, '2020-11-30 14:50
     ('7954e117-966a-470f-b577-f7dc36ae269e', '279.1', 'RM13', '2020-11-30 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Do the Police, Local Authority and Offender Manager need to be notified prior to the release of the individual from custody?', null, null, null, null),
     ('106e8722-04b3-4f55-b661-1eb250e1d5f6', '280.1', 'RM14', '2020-11-30 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Is the individual subject to Public Protection Manual restrictions or communications?', null, null, null, null),
     ('0a7bc16c-5213-4a1a-8cd2-f29162eab17d', '281.1', 'RM15', '2020-11-30 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Is the individual a conditionally discharged patient under Section 41 of the Mental Health Act 1983?', null, null, null, null),
-    ('b06ab9df-16b9-4dd2-8a91-1f45aeaa4f2c', '282.1', 'RM16', '2020-11-30 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Is the individual on life licence following a sentence of imprisonment or detention for public protection? (Section 230, schedule 18)', null, null, null, null);
+    ('b06ab9df-16b9-4dd2-8a91-1f45aeaa4f2c', '282.1', 'RM16', '2020-11-30 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Is the individual on life licence following a sentence of imprisonment or detention for public protection? (Section 230, schedule 18)', null, null, null, null),
+    ('9a8d6d8e-ac11-4ff5-b4e6-9553fd462851', '283.1', 'RM17', '2020-11-30 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Has the individual received an extended sentence?', null, null, null, null),
+    ('a64dc082-980a-43e0-b443-cf196f35d571', '31.1', 'oasys_set.originating_team_code', '2020-11-30 14:50:00', null, 'freetext', null, 'Team', null, null, null, 'ead7aa8a-e20d-4822-9b3b-aedf186333b1');
 
 
 INSERT INTO question_group (question_group_uuid, content_uuid, content_type, group_uuid, display_order, mandatory, validation, read_only)
@@ -371,8 +372,8 @@ VALUES ('e224345c-0ac8-4a52-b170-97ef35e71967', '5d77fc6b-0001-4955-ad54-7f417be
     ('4b74a1e3-909b-4078-b75c-0f1f7b1326a6', 'f693bf6e-be3b-4f5c-8a06-aefeddea311b', 'question', '78b595f6-efed-405e-9d6e-07882db416a6', 3, true, null, true),
     ('34aac520-832b-4e8e-b584-5535de416c95', '6b85d0ac-d8e9-41e9-8dd9-caab1979da39', 'question', '78b595f6-efed-405e-9d6e-07882db416a6', 4, true, '{"mandatory":{"errorMessage":"Enter a telephone number","errorSummary":"Enter a telephone number"}}', true),
     ('960532fa-e9ac-4a00-b6ea-5b624a8af181', '5af89c42-ffa2-4a29-8975-ab0eb8770a1c', 'question', '78b595f6-efed-405e-9d6e-07882db416a6', 5, true, null, true),
-    ('53eeaadb-635f-4f22-90e1-fb54e2a431e8', 'ead7aa8a-e20d-4822-9b3b-aedf186333b1', 'question', '78b595f6-efed-405e-9d6e-07882db416a6', 6, true, '{"mandatory":{"errorMessage":"select a LDU","errorSummary":"Select a LDU"}}', true),
-    ('f66cdf16-7f3c-4713-84bc-f3811c62af49', 'a64dc082-980a-43e0-b443-cf196f35d571', 'question', '78b595f6-efed-405e-9d6e-07882db416a6', 7, true, '{"mandatory":{"errorMessage":"Select a team","errorSummary":"Select a team"}}', true),
+    ('53eeaadb-635f-4f22-90e1-fb54e2a431e8', 'ead7aa8a-e20d-4822-9b3b-aedf186333b1', 'question', '78b595f6-efed-405e-9d6e-07882db416a6', 6, true, '{"mandatory":{"errorMessage":"select a LDU","errorSummary":"Select a LDU"}}', false),
+    ('f66cdf16-7f3c-4713-84bc-f3811c62af49', 'a64dc082-980a-43e0-b443-cf196f35d571', 'question', '78b595f6-efed-405e-9d6e-07882db416a6', 7, true, '{"mandatory":{"errorMessage":"Select a team","errorSummary":"Select a team"}}', false),
     ('7fee9742-5062-4141-8e2b-29786abaed6c', '10c93cf5-cc0c-404b-b6e4-da176db45527', 'question', '78b595f6-efed-405e-9d6e-07882db416a6', 8, true, null, true),
     ('48ee5287-7b48-4812-bbcc-b13651021258', 'd9ca82ca-8684-49e4-b7eb-91fb0effed91', 'question', '78b595f6-efed-405e-9d6e-07882db416a6', 9, true, null, true),
     ('a529cec4-0a6f-4204-8ac5-611353e73080', 'eef973e6-f493-4460-b094-2162fc8dc7e9', 'question', '78b595f6-efed-405e-9d6e-07882db416a6', 10, true, null, true),
@@ -516,7 +517,7 @@ VALUES ('e224345c-0ac8-4a52-b170-97ef35e71967', '5d77fc6b-0001-4955-ad54-7f417be
     ('c2eb71ea-5dc1-48ee-a21f-08d9942f31c6', 'ea039639-7f05-496d-8bcf-12e5f2f96a27', 'question', '76704e7d-71bb-46e3-b78d-73a85de99198', 5, true, '{"mandatory":{"errorMessage":"Select yes or no","errorSummary":"Select yes or no (identifiable children at risk from others)"}}', false),
     ('9871fc7d-0f15-43de-afe3-e2d321f280a1', '5824adec-fe20-4504-8c15-2d8d5053b47e', 'question', '76704e7d-71bb-46e3-b78d-73a85de99198', 6, true, '{"mandatory":{"errorMessage":"Explain the individual''s involvement in the family","errorSummary":"Explain the individual''s involvement in the family"}}', false),
     ('36fcd037-ef05-4a62-b6cf-279ae0980a94', '42222235-2e18-4de6-a9e2-95f5a628b605', 'group', '7773691f-7244-4415-b410-17c495bf9a59', 4, true, null, false),
-    ('4ac5a5ad-9649-40a6-8ab0-f56ee9e33c51', 'bc5776e9-6356-4899-b3cf-da95fc497538', 'question', '42222235-2e18-4de6-a9e2-95f5a628b605', 1, true, null, false),
+    ('1a39dbd0-754d-40e3-90fb-6d6c2209a65f', 'bc5776e9-6356-4899-b3cf-da95fc497538', 'question', '42222235-2e18-4de6-a9e2-95f5a628b605', 1, true, null, false),
     ('688cfdf0-f19d-4c69-851f-bd30c2b52149', '04a8eea7-18a4-4a5b-bbbb-9fe04e322abe', 'question', '42222235-2e18-4de6-a9e2-95f5a628b605', 2, true, '{"mandatory":{"errorMessage":"Enter details of child protection conferences, child protection decisions and looked after children review dates","errorSummary":"Enter details of child protection conferences, child protection decisions and looked after children review dates"}}', false),
     ('fa799fbd-6e8f-4262-b88f-95c20ede906a', 'e474f386-d90e-41ca-b17f-ee45c724dbc4', 'question', '42222235-2e18-4de6-a9e2-95f5a628b605', 3, true, '{"mandatory":{"errorMessage":"Enter Local Authority Children’s Services  key worker name, address and telephone number,","errorSummary":"Enter Local Authority Children’s Services  key worker name, address and telephone number,"}}', false),
     ('efec05fb-2257-4eab-a447-3910afc94142', 'e68d9e2b-5a67-449a-85dc-a941504cdd0c', 'question', '42222235-2e18-4de6-a9e2-95f5a628b605', 4, true, '{"mandatory":{"errorMessage":"Enter other agencies and personnel involved","errorSummary":"Enter other agencies and personnel involved"}}', false),
@@ -600,7 +601,8 @@ VALUES ('e224345c-0ac8-4a52-b170-97ef35e71967', '5d77fc6b-0001-4955-ad54-7f417be
     ('ed551bed-b9fc-454c-9c8a-51db9514cec9', '7954e117-966a-470f-b577-f7dc36ae269e', 'question', '1d69e176-8459-4d30-8410-006828ff8c72', 15, true, '{"mandatory":{"errorMessage":"Select yes or no","errorSummary":"Select yes or no (notification to authorities prior to release)"}}', false),
     ('e0a2f314-74b8-4de0-bd3c-5903967deba5', '106e8722-04b3-4f55-b661-1eb250e1d5f6', 'question', '1d69e176-8459-4d30-8410-006828ff8c72', 16, true, '{"mandatory":{"errorMessage":"Select yes or no","errorSummary":"Select yes or no (subject to Public Protection Manual restrictions or communications?)"}}', false),
     ('c0ff0bdd-9e54-490c-a9ca-25878507c7fc', '0a7bc16c-5213-4a1a-8cd2-f29162eab17d', 'question', '1d69e176-8459-4d30-8410-006828ff8c72', 17, true, '{"mandatory":{"errorMessage":"Select yes or no","errorSummary":"Select yes or no (conditionally discharged under Mental Health Act?)"}}', false),
-    ('f2f2eced-32da-4a8b-b9db-e7154f69068a', 'b06ab9df-16b9-4dd2-8a91-1f45aeaa4f2c', 'question', '1d69e176-8459-4d30-8410-006828ff8c72', 18, true, '{"mandatory":{"errorMessage":"Select yes or no","errorSummary":"Select yes or no (on life licence?)"}}', false);
+    ('f2f2eced-32da-4a8b-b9db-e7154f69068a', 'b06ab9df-16b9-4dd2-8a91-1f45aeaa4f2c', 'question', '1d69e176-8459-4d30-8410-006828ff8c72', 18, true, '{"mandatory":{"errorMessage":"Select yes or no","errorSummary":"Select yes or no (on life licence?)"}}', false),
+    ('19356581-ba3f-47ca-9a43-a294beb3bdf7', '9a8d6d8e-ac11-4ff5-b4e6-9553fd462851', 'question', '1d69e176-8459-4d30-8410-006828ff8c72', 19, true, '{"mandatory":{"errorMessage":"Select yes or no","errorSummary":"Select yes or no (extended sentence?)"}}', false);
 
 
 INSERT INTO question_dependency (subject_question_uuid, trigger_question_uuid, trigger_answer_value, dependency_start, display_inline)
@@ -825,6 +827,7 @@ VALUES ('9905a862-94a0-434a-b5ae-ff7b9a77c7c4', '33923c1e-e3ba-4c02-ba42-3b8d828
     ('8f8e5629-e427-47a3-9502-292fd14aae30', '7954e117-966a-470f-b577-f7dc36ae269e', 'RMP', null, 'RM13', false),
     ('38cc53ef-0f25-479a-b43e-536d552193db', '106e8722-04b3-4f55-b661-1eb250e1d5f6', 'RMP', null, 'RM14', false),
     ('7b5abf35-77b8-4c69-8f35-98d3da15f7f2', '0a7bc16c-5213-4a1a-8cd2-f29162eab17d', 'RMP', null, 'RM15', false),
-    ('3605f7e3-f236-44fb-acd8-3d893f5256cc', 'b06ab9df-16b9-4dd2-8a91-1f45aeaa4f2c', 'RMP', null, 'RM16', false);
+    ('3605f7e3-f236-44fb-acd8-3d893f5256cc', 'b06ab9df-16b9-4dd2-8a91-1f45aeaa4f2c', 'RMP', null, 'RM16', false),
+    ('6aea7808-dccc-4ed9-971f-f9fc4c01602d', '9a8d6d8e-ac11-4ff5-b4e6-9553fd462851', 'RMP', null, 'RM17', false);
 
 
