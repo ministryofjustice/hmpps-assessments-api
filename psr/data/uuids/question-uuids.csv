@@ -154,16 +154,6 @@ presents_a_risk_to_identifiable_children,198.1-radio,7714eddc-a028-484e-8505-b13
 give_details_of_relevant_factors_and_situations_if_not_covered_previously,199.1-freetext,ce2dd109-a3a8-4303-a3c0-b21e5180e883
 is_involved_in_a_situation_where_there_are_identifiable_children_who_are_considered_to_be_at_risk_from_others,200.1-radio,ea039639-7f05-496d-8bcf-12e5f2f96a27
 explain_the_offender’s_involvement_in_the_family_say_how_when_and_from_whom_the_child_ren_are_believed_to_be_at_risk_specify_the_nature_of_the_concern_,201.1-freetext,5824adec-fe20-4504-8c15-2d8d5053b47e
-child_at_risk_of_serious_harm:,202.1-freetext,59b77990-875e-47ef-8b39-607fb48b254c
-name,203.1-freetext,b46893d5-b69f-4743-addd-57bc2a5651c7
-age_,204.1-freetext,a1a44650-d22a-45e3-88c6-8c4a9075938c
-date_of_birth,205.1-date,af8444f9-9e71-49e0-b171-8a88006a589e
-gender,206.1-freetext,a840a988-ca2e-45bc-9b5e-c4382d2eefed
-address_if_disclosable_,207.1-freetext,ac9308db-2dea-4b20-8b23-b0badfc992aa
-currently_registered_with_social_services,208.1-radio,43cddd02-3f2f-472f-8211-ebc5b109ec7a
-previously_registered_with_social_services,209.1-radio,362b2ae7-7eae-42e8-9725-d7a76cb241ae
-current_category_of_child_protection_registration_ie_neglect_physical_sexual_or_emotional,210.1-freetext,6d429e85-3b54-4d57-bc5a-e26b3dac7f7f
-previous_category_of_child_protection_registration_ie_neglect_physical_sexual_or_emotional,211.1-freetext,2d2258d7-7521-45b3-a6a5-9d9c3c1c23c4
 have_there_been_any_child_protection_conferences_or_‘looked_after_children’_reviews,212.1-freetext,c9418087-0390-491e-8fcb-045bda93fdd7
 give_details_of_child_protection_conferences_child_protection_decisions_and_looked_after_children_review_dates_–_if_applicable,213.1-freetext,04a8eea7-18a4-4a5b-bbbb-9fe04e322abe
 local_authority_children’s_services_key_worker_name_address_and_telephone_number_if_applicable,214.1-freetext,e474f386-d90e-41ca-b17f-ee45c724dbc4
@@ -360,8 +350,6 @@ have_there_been_any_concerns_about_self-harm_in_the_past,290.1-freetext,bc8bf6f0
 give_details,290.2-freetext,32e2fb0f-a6d0-4dc5-b6fc-6c7313542926
 date_of_first_sanction,291-freetext,f92b71f3-c991-4aa5-80db-4618db0e9f6d
 source,298.1-checkbox,2b93527c-a545-4e41-9fb4-98ee127af393
-current_category_of_child_protection_registration_ie_neglect_physical_sexual_or_emotional,210.1-checkbox,16b0d3cd-77b7-4ab5-a394-38edb45d7b0f
-previous_category_of_child_protection_registration_ie_neglect_physical_sexual_or_emotional,211.1-checkbox,9e3d1286-93d6-42a3-9ed1-2d81a1170ce5
 give_details,299.1-textarea,d9846a60-5ba6-450f-9934-2c9646771f9d
 personal_details,ui-freetext,754ffc64-92d7-4fb8-b5e6-23177fd46abe
 page_divider,ui-freetext-page_divider,7773b05a-b17c-4f46-96bf-7a29c9b711f1
@@ -402,8 +390,6 @@ number_of_previous_or_current_sanctions_involving_indecent_child_image_sexual_or
 number_of_previous_or_current_sanctions_involving_other_non-contact_sexual_or_sexually_motivated_offences,66.1-numeric,1b6c8f79-0fd9-45d4-ba50-309c3ccfdb2d
 possession_of_a_firearm_with_intent_to_endanger_life_or_resist_arrest,139.1-radio,e887bcea-91d1-4c50-a25e-4335fa1e6ae5
 is_the_conviction_of_possession_of_a_firearm_for_a_current_or_a_previous_offence_,292.1-checkbox,d733c2dc-64a2-4837-a57a-42a1065dde67
-age_,204.1-numeric,0a305419-4d12-427d-a3aa-f7b204c49b00
-gender,206.1-radio,106f08df-ceef-41f0-9d1a-2c44bf8c4f6f
 has_offender_been_convicted_of_any_of_the_following_offences:,129.1-presentation: text,a39461e5-ef95-4f54-a775-41ee714006f0
 has_offender_been_convicted_of_any_of_the_following_offences:,129.1-noinput,5da33301-6e4e-4eb5-bf95-748494029669
 murder_attempted_murder_threat_or_conspiracy_to_murder_manslaughter_-_previous,130.1-checkbox-murder_attempted_murder_threat_or_conspiracy_to_murder_manslaughter_-_previous,052646b6-0b9d-44c6-87dc-bff5b729f521
@@ -421,3 +407,17 @@ robbery_-_previous,141.1-checkbox-robbery_-_previous,1acda4d9-1f78-4e3a-8cce-7ef
 any_other_offence_involving_possession_and_or_use_of_weapons_-_previous,142.1-checkbox-any_other_offence_involving_possession_and_or_use_of_weapons_-_previous,ca4f688f-110b-41b0-bca9-6eb21261c4a9
 any_other_current_offence_which_is_as_serious_eg_blackmail_harassment_stalking_child_pornography_child_neglect_abduction_etc_indicate_offence_below,143.1-checkbox-any_other_current_offence_which_is_as_serious_eg_blackmail_harassment_stalking_child_pornography_child_neglect_abduction_etc_indicate_offence_below,d29ba709-ec2e-4c9c-b794-35aaa869dd99
 personal_details,ui3.1-presentation: heading-personal_details,0524eb01-8c14-45cd-8fb4-8183eba11a12
+child_at_risk_of_serious_harm:,		-freetext,f9a22a7d-12c0-44d0-89a9-33722801b3ac
+book_number,289.1-freetext-book_number,65a621e0-3e4d-40cb-bca0-1f8bb8e8fba9
+child_at_risk_of_serious_harm:,		-table,23829fbc-ca3e-4189-b58b-7890782f453e
+child_at_risk_of_serious_harm:,		-table:children_at_risk_of_serious_harm,bc5776e9-6356-4899-b3cf-da95fc497538
+child_at_risk_of_serious_harm:,202.1-freetext,b9ed154e-5b4e-43af-a405-2ae0f22f2ac6
+name,203.1-freetext,23c3e984-54c7-480f-b06c-7d000e2fb87c
+age_,204.1-numeric,263c9dde-4290-4bf9-a596-f470b68da524
+date_of_birth,205.1-date,41677239-234c-4653-ac98-4e2e002948cc
+gender,206.1-radio,61857dff-dfd8-4b92-a8c7-1ddfc4cebc45
+address_if_disclosable_,207.1-freetext,c4a648af-8a53-452d-b575-35697932531e
+currently_registered_with_social_services,208.1-radio,ecb880ef-02c7-4ffc-8726-7e0f60f1191c
+previously_registered_with_social_services,209.1-radio,775cd8bf-fe1b-4625-9937-ae8a238a8402
+current_category_of_child_protection_registration_ie_neglect_physical_sexual_or_emotional_,210.1-checkbox,ad56e86d-56df-4c1a-974f-81454e941be0
+previous_category_of_child_protection_registration_ie_neglect_physical_sexual_or_emotional_,211.1-checkbox,b0a4f119-6226-452b-a145-1f822d5737fe
