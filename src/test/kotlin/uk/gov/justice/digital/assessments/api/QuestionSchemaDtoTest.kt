@@ -46,6 +46,6 @@ class QuestionSchemaDtoTest {
     assertThat(questionSchemaDto.questionText).isEqualTo(questionSchemaEntity.questionText)
     assertThat(questionSchemaDto.questionHelpText).isEqualTo(questionSchemaEntity.questionHelpText)
     assertThat(questionSchemaDto.referenceDataCategory).isEqualTo(questionSchemaEntity.referenceDataCategory)
-    assertThat(questionSchemaDto.referenceDataTargets.first()).isEqualTo(referenceDataTargetMappingEntity)
+    assertThat(questionSchemaDto.referenceDataTargets.first().questionSchemaUuid).isEqualTo(referenceDataTargetMappingEntity.parentQuestionSchema.questionSchemaUuid)
   }
 }

@@ -39,7 +39,7 @@ data class QuestionSchemaDto(
   val referenceDataCategory: String? = null,
 
   @Schema(description = "Reference Data Targets")
-  val referenceDataTargets: Collection<ReferenceDataTargetDto>,
+  val referenceDataTargets: Collection<ReferenceDataTargetDto> = emptyList(),
 
   @Schema(description = "List of Reference Answer Schemas")
   val answerSchemas: Collection<AnswerSchemaDto>,
