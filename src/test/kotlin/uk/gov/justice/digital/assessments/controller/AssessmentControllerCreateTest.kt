@@ -130,7 +130,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
   }
 
   private fun createDeliusAssessment(cad: CreateAssessmentDto): AssessmentDto {
-    val assessment = webTestClient.post().uri("/assessments/delius")
+    val assessment = webTestClient.post().uri("/assessments")
       .bodyValue(cad)
       .headers(setAuthorisation())
       .exchange()
@@ -146,7 +146,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
   }
 
   private fun createCourtAssessment(cad: CreateAssessmentDto): AssessmentDto {
-    val assessment = webTestClient.post().uri("/assessments/court")
+    val assessment = webTestClient.post().uri("/assessments")
       .bodyValue(cad)
       .headers(setAuthorisation())
       .exchange()

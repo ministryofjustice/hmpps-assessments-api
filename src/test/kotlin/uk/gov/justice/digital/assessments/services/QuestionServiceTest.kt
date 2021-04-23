@@ -90,59 +90,68 @@ class QuestionServiceTest {
     questionSchemaUuid = tableSubQuestion2Id
   )
 
-
   @BeforeEach
   fun setup() {
-    contents.add(QuestionGroupEntity(
-      questionGroupId = 99,
-      group = group,
-      contentUuid = questionUuid,
-      contentType = "question",
-      displayOrder = 1,
-      question = question,
-      nestedGroup = null,
-      readOnly = false
-    ))
+    contents.add(
+      QuestionGroupEntity(
+        questionGroupId = 99,
+        group = group,
+        contentUuid = questionUuid,
+        contentType = "question",
+        displayOrder = 1,
+        question = question,
+        nestedGroup = null,
+        readOnly = false
+      )
+    )
 
-    groupWithTableContents.add(QuestionGroupEntity(
-      questionGroupId = 99,
-      group = groupWithTable,
-      contentUuid = questionUuid,
-      contentType = "question",
-      displayOrder = 1,
-      question = question,
-      nestedGroup = null,
-      readOnly = false
-    ))
-    groupWithTableContents.add(QuestionGroupEntity(
-      questionGroupId = 99,
-      group = groupWithTable,
-      contentUuid = tableQuestionUuid,
-      contentType = "question",
-      displayOrder = 2,
-      question = tableQuestion,
-      nestedGroup = null,
-      readOnly = false
-    ))
+    groupWithTableContents.add(
+      QuestionGroupEntity(
+        questionGroupId = 99,
+        group = groupWithTable,
+        contentUuid = questionUuid,
+        contentType = "question",
+        displayOrder = 1,
+        question = question,
+        nestedGroup = null,
+        readOnly = false
+      )
+    )
+    groupWithTableContents.add(
+      QuestionGroupEntity(
+        questionGroupId = 99,
+        group = groupWithTable,
+        contentUuid = tableQuestionUuid,
+        contentType = "question",
+        displayOrder = 2,
+        question = tableQuestion,
+        nestedGroup = null,
+        readOnly = false
+      )
+    )
 
-    tableGroupContents.add(QuestionGroupEntity(
-      questionGroupId = 100,
-      group = tableGroup,
-      contentUuid = tableSubQuestion1Id,
-      contentType = "question",
-      displayOrder = 1,
-      question = tableSubQuestion1,
-      nestedGroup = null
-    ))
-    tableGroupContents.add(QuestionGroupEntity(
-      questionGroupId = 100,
-      group = tableGroup,
-      contentUuid = tableSubQuestion2Id,
-      contentType = "question",
-      displayOrder = 2,
-      question = tableSubQuestion2,
-      nestedGroup = null
-    ))
+    tableGroupContents.add(
+      QuestionGroupEntity(
+        questionGroupId = 100,
+        group = tableGroup,
+        contentUuid = tableSubQuestion1Id,
+        contentType = "question",
+        displayOrder = 1,
+        question = tableSubQuestion1,
+        nestedGroup = null
+      )
+    )
+    tableGroupContents.add(
+      QuestionGroupEntity(
+        questionGroupId = 100,
+        group = tableGroup,
+        contentUuid = tableSubQuestion2Id,
+        contentType = "question",
+        displayOrder = 2,
+        question = tableSubQuestion2,
+        nestedGroup = null
+      )
+    )
   }
 
   @Test

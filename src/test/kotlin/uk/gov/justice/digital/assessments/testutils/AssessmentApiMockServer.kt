@@ -57,7 +57,7 @@ class AssessmentApiMockServer : WireMockServer(9004) {
 
     stubFor(
       WireMock.post(WireMock.urlEqualTo("/referencedata/filtered"))
-        .withRequestBody(WireMock.equalToJson("{ \"oasysSetPk\": 1 }",true, true ))
+        .withRequestBody(WireMock.equalToJson("{ \"oasysSetPk\": 1 }", true, true))
         .willReturn(
           WireMock.aResponse()
             .withStatus(200)
@@ -68,7 +68,7 @@ class AssessmentApiMockServer : WireMockServer(9004) {
 
     stubFor(
       WireMock.post(WireMock.urlEqualTo("/referencedata/filtered"))
-        .withRequestBody(WireMock.equalToJson("{ \"oasysSetPk\": 2 }",true, true ))
+        .withRequestBody(WireMock.equalToJson("{ \"oasysSetPk\": 2 }", true, true))
         .willReturn(
           WireMock.aResponse()
             .withStatus(500)
@@ -78,7 +78,7 @@ class AssessmentApiMockServer : WireMockServer(9004) {
 
     stubFor(
       WireMock.post(WireMock.urlEqualTo("/referencedata/filtered"))
-        .withRequestBody(WireMock.equalToJson("{ \"oasysSetPk\": 3 }",true, true ))
+        .withRequestBody(WireMock.equalToJson("{ \"oasysSetPk\": 3 }", true, true))
         .willReturn(
           WireMock.aResponse()
             .withStatus(400)
@@ -89,7 +89,7 @@ class AssessmentApiMockServer : WireMockServer(9004) {
 
     stubFor(
       WireMock.post(WireMock.urlEqualTo("/referencedata/filtered"))
-        .withRequestBody(WireMock.equalToJson("{ \"oasysSetPk\": 4 }",true, true ))
+        .withRequestBody(WireMock.equalToJson("{ \"oasysSetPk\": 4 }", true, true))
         .willReturn(
           WireMock.aResponse()
             .withStatus(401)
@@ -100,7 +100,7 @@ class AssessmentApiMockServer : WireMockServer(9004) {
 
     stubFor(
       WireMock.post(WireMock.urlEqualTo("/referencedata/filtered"))
-        .withRequestBody(WireMock.equalToJson("{ \"oasysSetPk\": 5 }",true, true ))
+        .withRequestBody(WireMock.equalToJson("{ \"oasysSetPk\": 5 }", true, true))
         .willReturn(
           WireMock.aResponse()
             .withStatus(404)
@@ -175,7 +175,7 @@ class AssessmentApiMockServer : WireMockServer(9004) {
       """{ "developerMessage": "Not Found" }""".trimIndent()
 
     val filteredReferenceDataJson =
-        """{
+      """{
             "assessor_office": [
               {
                 "longDescription": "Test Assessment Office 1",
@@ -188,6 +188,7 @@ class AssessmentApiMockServer : WireMockServer(9004) {
                 "code": "123456"
               }
             ]
-        }""".trimIndent()
+        }
+      """.trimIndent()
   }
 }
