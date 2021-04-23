@@ -9,17 +9,17 @@ VALUES ('e641baa1-d3d6-4b31-8a7e-3ddc7e267d5f', 'psr_children_at_risk', 'psr-chi
     ('fb777be0-a183-4c83-8209-e7871df9c547', 'children_at_risk_of_serious_harm', 'Children at Risk of Serious Harm', null, null, '2020-11-30 14:50:00', null);
 
 
-INSERT INTO question_schema (question_schema_uuid, question_code, oasys_question_code, question_start, question_end, answer_type, answer_schema_group_uuid, question_text, question_help_text, external_source, reference_data_category, reference_data_target)
-VALUES ('b9ed154e-5b4e-43af-a405-2ae0f22f2ac6', '202.1', 'HEADING', '2020-11-30 14:50:00', null, 'freetext', null, 'Inset text: Consider carefully whether this information can be recorded safely.', null, null, null, null),
-    ('23c3e984-54c7-480f-b06c-7d000e2fb87c', '203.1', 'child_at_risk_pivot.name_of_child', '2020-11-30 14:50:00', null, 'freetext', null, 'Name', null, null, null, null),
-    ('263c9dde-4290-4bf9-a596-f470b68da524', '204.1', 'child_at_risk_pivot.age_of_child', '2020-11-30 14:50:00', null, 'numeric', null, 'Age', 'Enter an age in years from 0 to 17', null, null, null),
-    ('41677239-234c-4653-ac98-4e2e002948cc', '205.1', 'child_at_risk_pivot.date_of_birth', '2020-11-30 14:50:00', null, 'date', null, 'Date of Birth', null, null, null, null),
-    ('61857dff-dfd8-4b92-a8c7-1ddfc4cebc45', '206.1', 'child_at_risk_pivot.gender_ELM', '2020-11-30 14:50:00', null, 'radio', '8ad6d0ab-bb5e-4ead-8596-f670aa3aa55b', 'Gender', null, null, null, null),
-    ('c4a648af-8a53-452d-b575-35697932531e', '207.1', 'child_at_risk_pivot.address_of_child', '2020-11-30 14:50:00', null, 'freetext', null, 'Address (if disclosable)', null, null, null, null),
-    ('ecb880ef-02c7-4ffc-8726-7e0f60f1191c', '208.1', 'child_at_risk_pivot.curreg_sclsrvs_ind', '2020-11-30 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Currently Registered with Social Services', null, null, null, null),
-    ('775cd8bf-fe1b-4625-9937-ae8a238a8402', '209.1', 'child_at_risk_pivot.evr_prv_social_srv_ind', '2020-11-30 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Previously Registered with Social Services', null, null, null, null),
-    ('ad56e86d-56df-4c1a-974f-81454e941be0', '210.1', 'child_at_risk_reg_pivot_pivot.catg_cpr_ELM for current_previous_ELM = ‘Current’', '2020-11-30 14:50:00', null, 'checkbox', '7f0dfd25-4ea5-4ade-ad51-4cb1ac1966d9', 'Current category of child protection registration', null, null, null, null),
-    ('b0a4f119-6226-452b-a145-1f822d5737fe', '211.1', 'child_at_risk_reg_pivot_pivot.catg_cpr_ELM for current_previous_ELM = ‘Current’', '2020-11-30 14:50:00', null, 'checkbox', '7f0dfd25-4ea5-4ade-ad51-4cb1ac1966d9', 'Previous category of child protection registration', null, null, null, null);
+INSERT INTO question_schema (question_schema_uuid, question_code, oasys_question_code, question_start, question_end, answer_type, answer_schema_group_uuid, question_text, question_help_text, external_source, reference_data_category)
+VALUES ('b9ed154e-5b4e-43af-a405-2ae0f22f2ac6', '202.1', 'HEADING', '2020-11-30 14:50:00', null, 'freetext', null, 'Inset text: Consider carefully whether this information can be recorded safely.', null, null, null),
+    ('23c3e984-54c7-480f-b06c-7d000e2fb87c', '203.1', 'child_at_risk_pivot.name_of_child', '2020-11-30 14:50:00', null, 'freetext', null, 'Name', null, null, null),
+    ('263c9dde-4290-4bf9-a596-f470b68da524', '204.1', 'child_at_risk_pivot.age_of_child', '2020-11-30 14:50:00', null, 'numeric', null, 'Age', 'Enter an age in years from 0 to 17', null, null),
+    ('41677239-234c-4653-ac98-4e2e002948cc', '205.1', 'child_at_risk_pivot.date_of_birth', '2020-11-30 14:50:00', null, 'date', null, 'Date of Birth', null, null, null),
+    ('61857dff-dfd8-4b92-a8c7-1ddfc4cebc45', '206.1', 'child_at_risk_pivot.gender_ELM', '2020-11-30 14:50:00', null, 'radio', '8ad6d0ab-bb5e-4ead-8596-f670aa3aa55b', 'Gender', null, null, null),
+    ('c4a648af-8a53-452d-b575-35697932531e', '207.1', 'child_at_risk_pivot.address_of_child', '2020-11-30 14:50:00', null, 'freetext', null, 'Address (if disclosable)', null, null, null),
+    ('ecb880ef-02c7-4ffc-8726-7e0f60f1191c', '208.1', 'child_at_risk_pivot.curreg_sclsrvs_ind', '2020-11-30 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Currently Registered with Social Services', null, null, null),
+    ('775cd8bf-fe1b-4625-9937-ae8a238a8402', '209.1', 'child_at_risk_pivot.evr_prv_social_srv_ind', '2020-11-30 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Previously Registered with Social Services', null, null, null),
+    ('ad56e86d-56df-4c1a-974f-81454e941be0', '210.1', 'child_at_risk_reg_pivot_pivot.catg_cpr_ELM for current_previous_ELM = ‘Current’', '2020-11-30 14:50:00', null, 'checkbox', '7f0dfd25-4ea5-4ade-ad51-4cb1ac1966d9', 'Current category of child protection registration', null, null, null),
+    ('b0a4f119-6226-452b-a145-1f822d5737fe', '211.1', 'child_at_risk_reg_pivot_pivot.catg_cpr_ELM for current_previous_ELM = ‘Current’', '2020-11-30 14:50:00', null, 'checkbox', '7f0dfd25-4ea5-4ade-ad51-4cb1ac1966d9', 'Previous category of child protection registration', null, null, null);
 
 
 INSERT INTO question_group (question_group_uuid, content_uuid, content_type, group_uuid, display_order, mandatory, validation, read_only)
