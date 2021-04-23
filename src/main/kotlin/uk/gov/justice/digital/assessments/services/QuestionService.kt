@@ -1,7 +1,13 @@
 package uk.gov.justice.digital.assessments.services
 
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.assessments.api.*
+import uk.gov.justice.digital.assessments.api.GroupContentDto
+import uk.gov.justice.digital.assessments.api.GroupQuestionDto
+import uk.gov.justice.digital.assessments.api.GroupSectionsDto
+import uk.gov.justice.digital.assessments.api.GroupSummaryDto
+import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
+import uk.gov.justice.digital.assessments.api.QuestionSchemaDto
+import uk.gov.justice.digital.assessments.api.TableQuestionDto
 import uk.gov.justice.digital.assessments.jpa.entities.AnswerSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.GroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionGroupEntity
@@ -83,10 +89,8 @@ class QuestionService(
           else -> throw EntityNotFoundException("Bad group content type")
         }
       }
-
     return toDto(group, contents, parentGroup)
   }
-
 
   private fun getGroupQuestion(
     question: QuestionGroupEntity,
@@ -110,7 +114,7 @@ class QuestionService(
     val tableName = questionEntity.answerType?.split(":")?.get(1)
       ?: throw EntityNotFoundException("Could not get table name for question ${questionEntity.questionCode}")
     val tableGroup = groupRepository.findByGroupCode(tableName)
-      ?: throw EntityNotFoundException("Could not find group ${tableName} for question ${questionEntity.questionCode}")
+      ?: throw EntityNotFoundException("Could not find group $tableName for question ${questionEntity.questionCode}")
     return getTableGroupContents(tableGroup, null, dependencies)
   }
 

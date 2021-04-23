@@ -61,7 +61,7 @@ class AssessmentApiTest : IntegrationTest() {
         "SHORT_FORM_PSR",
         "RSR",
         "assessor_office",
-        mapOf("assessor" to "OASYS_ADMIN" )
+        mapOf("assessor" to "OASYS_ADMIN")
       )
     assertThat(returnedReferenceData?.get("assessor_office")).isNotEmpty
   }
@@ -77,7 +77,7 @@ class AssessmentApiTest : IntegrationTest() {
         "SHORT_FORM_PSR",
         "RSR",
         "assessor_office",
-        mapOf("assessor" to "OASYS_ADMIN" )
+        mapOf("assessor" to "OASYS_ADMIN")
       )
     }.isInstanceOf(OASysClientException::class.java)
   }
@@ -93,11 +93,10 @@ class AssessmentApiTest : IntegrationTest() {
         "SHORT_FORM_PSR",
         "RSR",
         "assessor_office",
-        mapOf("assessor" to "OASYS_ADMIN" )
+        mapOf("assessor" to "OASYS_ADMIN")
       )
     }.isInstanceOf(ReferenceDataInvalidRequestException::class.java)
   }
-
 
   @Test
   fun `retrieve OASys filtered reference data throws exception on 401 errors`() {
@@ -110,7 +109,7 @@ class AssessmentApiTest : IntegrationTest() {
         "SHORT_FORM_PSR",
         "RSR",
         "assessor_office",
-        mapOf("assessor" to "OASYS_ADMIN" )
+        mapOf("assessor" to "OASYS_ADMIN")
       )
     }.isInstanceOf(ReferenceDataAuthorisationException::class.java)
   }
@@ -126,7 +125,7 @@ class AssessmentApiTest : IntegrationTest() {
         "SHORT_FORM_PSR",
         "RSR",
         "assessor_office",
-        mapOf("assessor" to "OASYS_ADMIN" )
+        mapOf("assessor" to "OASYS_ADMIN")
       )
     }.isInstanceOf(EntityNotFoundException::class.java)
   }
