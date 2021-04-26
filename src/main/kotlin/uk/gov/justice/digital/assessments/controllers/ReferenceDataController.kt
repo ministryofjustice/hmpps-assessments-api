@@ -15,7 +15,7 @@ import uk.gov.justice.digital.assessments.services.ReferenceDataService
 @RestController
 class ReferenceDataController(val referenceDataService: ReferenceDataService) {
 
-  @RequestMapping(path = ["/referenceData/filtered"], method = [RequestMethod.POST])
+  @RequestMapping(path = ["/referencedata/filtered"], method = [RequestMethod.POST])
   @Operation(description = "Gets filtered reference data for a field")
   @ApiResponses(
     value = [
