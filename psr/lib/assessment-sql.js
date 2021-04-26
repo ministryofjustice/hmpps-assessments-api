@@ -166,7 +166,7 @@ class AssessmentSql {
     const [question_schema_uuid, existing] = questionUuids(question_code, answer_type, question_title)
 
     const business_logic = record[this.headers.LOGIC]
-    const reference_data_category = record[this.headers.REFERENCE_DATA_CATEGORY]
+    let reference_data_category = record[this.headers.REFERENCE_DATA_CATEGORY]
     const reference_data_target = record[this.headers.REFERENCE_DATA_TARGET]
 
     const isDynamicType = (answer_field) => {
@@ -174,8 +174,10 @@ class AssessmentSql {
       return type.match(/dynamic-drop-?down/) || type.match(/dynamic-radio/)
     }
 
-    if (isDynamicType(record[this.headers.ANSWER_TYPE]) && reference_data_target !== '')
+    if (isDynamicType(record[this.headers.ANSWER_TYPE])) {
       this.questionsWithFilteredReferenceData.push([question_schema_uuid, reference_data_target])
+      reference_data_category = 'FILTERED_REFERENCE_DATA'
+    }
 
     if (oasys_fixed_field)
       this.fixedOasysCodeLookup.push([oasys_fixed_field, question_schema_uuid])
