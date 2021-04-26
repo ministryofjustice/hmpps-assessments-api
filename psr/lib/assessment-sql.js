@@ -21,46 +21,50 @@ class AssessmentSql {
     this.assessmentGroup = this._createGrouping([assessmentName])
     this.currentGroup = this.assessmentGroup
     this.dependencies = []
-    this.questionsWithReferenceDataTargets = []
+    this.questionsWithFilteredReferenceData = []
     this.fixedOasysCodeLookup = []
+    this.filteredReferenceDataMappings = []
 
     this.oasysQuestions = oasysQuestions()
     this.yes_no = ['radio', this.answerSchemaGroup(['radios:', 'Yes|YES', 'No|NO'])]
   }
 
   addFilteredReferenceDataTargets() {
-    const hasReferenceDataTarget = ({question_schema_uuid}) => this.questionsWithReferenceDataTargets.filter(([uuid]) => uuid === question_schema_uuid).length > 0
-    const withoutTargets = this.questions.filter(q => !hasReferenceDataTarget(q))
+    const hasReferenceDataTarget = ({question_schema_uuid}) => this.questionsWithFilteredReferenceData.filter(([uuid]) => uuid === question_schema_uuid).length > 0
     const withTargets = this.questions.filter(q => hasReferenceDataTarget(q))
 
     console.warn(`Adding reference data targets for ${withTargets.length} item(s)`)
 
-    this.questions = [
-        ...withoutTargets,
-        ...withTargets.map(question => {
-          const result = {
-            ...question,
-          }
+    this.filteredReferenceDataMappings = withTargets.map(question => {
+          const [question_schema_uuid, target_fields_string] = this.questionsWithFilteredReferenceData.filter(([uuid]) => uuid === question.question_schema_uuid).shift()
+          return target_fields_string
+              .split(',')
+              .map(s => s.trim())
+              .filter(s => s.match(/^\w+\/\w+\??$/g))
+              .map(s => {
+                const [_, fixed_field, is_optional] = s.match(/^(\w+\/\w+)(\?)?$/)
 
-          const [_, target_field] = this.questionsWithReferenceDataTargets.filter(([uuid]) => uuid === question.question_schema_uuid).shift()
+                const matches = this.fixedOasysCodeLookup.filter(([oasys_fixed_field]) =>  oasys_fixed_field === fixed_field)
 
-          const matches = this.fixedOasysCodeLookup.filter(([oasys_fixed_field]) => {
-            return oasys_fixed_field === target_field
-          })
+                if (matches.length < 1) {
+                  console.warn(`No matching target found for question "${question.question_text}"`)
+                } else if (matches.length > 1) {
+                  console.warn(`Ambiguous match for question "${question.question_text}" - ${matches.length} results found for reference data target`)
+                } else {
+                  const [[_, parent_question_schema_uuid]] = matches
+                  console.warn(`Found reference data target UUID for "${question.question_text}" - "${parent_question_schema_uuid}"`)
+                  return {
+                    question_schema_uuid,
+                    parent_question_schema_uuid,
+                    is_required: !is_optional
+                  }
+                }
 
-          if (matches.length < 1) {
-            console.warn(`No matching target found for question "${question.question_text}"`)
-          } else if (matches.length > 1) {
-            console.warn(`Ambiguous match for question "${question.question_text}" - ${matches.length} results found for reference data target`)
-          } else {
-            const [[_, reference_field_uuid]] = matches
-            console.warn(`Found reference data target UUID for "${question.question_text}" - "${reference_field_uuid}"`)
-            result.reference_data_target = reference_field_uuid
-          }
-
-          return result
+                return null
+              })
+              .filter(m => m)
         })
-    ]
+        .flat()
   }
 
   addDependencyUuids() {
@@ -162,11 +166,18 @@ class AssessmentSql {
     const [question_schema_uuid, existing] = questionUuids(question_code, answer_type, question_title)
 
     const business_logic = record[this.headers.LOGIC]
-    const reference_data_category = record[this.headers.REFERENCE_DATA_CATEGORY]
+    let reference_data_category = record[this.headers.REFERENCE_DATA_CATEGORY]
     const reference_data_target = record[this.headers.REFERENCE_DATA_TARGET]
 
-    if (reference_data_target)
-      this.questionsWithReferenceDataTargets.push([question_schema_uuid, reference_data_target])
+    const isDynamicType = (answer_field) => {
+      const type = answer_field.split('\n').shift().toLowerCase()
+      return type.match(/dynamic-drop-?down/) || type.match(/dynamic-radio/)
+    }
+
+    if (isDynamicType(record[this.headers.ANSWER_TYPE])) {
+      this.questionsWithFilteredReferenceData.push([question_schema_uuid, reference_data_target])
+      reference_data_category = 'FILTERED_REFERENCE_DATA'
+    }
 
     if (oasys_fixed_field)
       this.fixedOasysCodeLookup.push([oasys_fixed_field, question_schema_uuid])
@@ -267,6 +278,11 @@ class AssessmentSql {
       }
     }
 
+    if (answerField.match(/dynamic-radio/i))
+      return ['radio', null]
+    if (answerField.match(/dynamic-drop-?down/i))
+      return ['dropdown', null]
+
     if (answerField.match(/no ?input/i))
       return ['noinput', null]
     if (answerField.match(/text ?area/i))
@@ -348,6 +364,7 @@ class AssessmentSql {
     console.log(this.questionGroupSql())
     console.log(this.dependenciesSql())
     console.log(this.mappingSql())
+    console.log(this.filteredReferenceDataMappingsSql())
   }
 
   shouldAdd(existing) {
@@ -407,7 +424,7 @@ class AssessmentSql {
   questionsSql() {
     return AssessmentSql.tableSql(
       'question_schema',
-      ['question_schema_uuid', 'question_code', 'oasys_question_code', 'question_start', 'question_end', 'answer_type', 'answer_schema_group_uuid', 'question_text', 'question_help_text', 'external_source', 'reference_data_category', 'reference_data_target'],
+      ['question_schema_uuid', 'question_code', 'oasys_question_code', 'question_start', 'question_end', 'answer_type', 'answer_schema_group_uuid', 'question_text', 'question_help_text', 'external_source', 'reference_data_category'],
       this.questions
     )
   }
@@ -439,6 +456,14 @@ class AssessmentSql {
       'oasys_question_mapping',
       ['mapping_uuid', 'question_schema_uuid', 'ref_section_code', 'logical_page', 'ref_question_code', 'fixed_field'],
       this.oasysMapping
+    )
+  }
+
+  filteredReferenceDataMappingsSql() {
+    return AssessmentSql.tableSql(
+        'oasys_reference_data_target_mapping',
+        ['question_schema_uuid', 'parent_question_schema_uuid', 'is_required'],
+        this.filteredReferenceDataMappings
     )
   }
 }

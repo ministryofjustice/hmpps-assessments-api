@@ -3,6 +3,11 @@
 delete from assessed_episode where true;
 delete from subject where true;
 delete from assessment where true;
+delete from question_group where true;
+delete from oasys_question_mapping where true;
+delete from oasys_reference_data_target_mapping where true;
+delete from grouping where true;
+delete from question_schema where true;
 
 /* Assessment with Episodes */
 insert into assessment  (assessment_id, assessment_uuid, created_date) values
@@ -26,9 +31,9 @@ insert into assessed_episode  (episode_id, episode_uuid, user_id, created_date, 
 (4, 'd26658e9-73bf-421c-9de7-a57b602d43e0', 'USER1', '2019-11-14 09:00', null,'Change of Circs', '80fd9a2a-59dd-4783-8cac-1689a0464437', '{}', 4),
 (5, '060714ba-dea2-4a1b-bfa6-c07e4934d365', 'USER1', '2019-11-14 09:00', null,'Change of Circs', '8177b6c7-1b20-459b-b6ee-0aeeb2f16857', '{}', 5);
 
-insert into question_schema (question_schema_uuid, question_code, oasys_question_code, question_start, question_end, answer_type, answer_schema_group_uuid, question_text, question_help_text, external_source, reference_data_category, reference_data_target) values
-('2fe94330-22c4-4a6e-a494-9f53dc2139c6', '30.1', 'oasys_set.originating_division_code', '2019-11-14 08:30', null, 'freetext', null, 'LDU', null, null, null, null),
-('8d48ff4d-60f6-461b-ab00-67d1c2ed5f6b', '31.1', 'oasys_set.originating_team_code', '2019-11-14 08:30', null, 'freetext', null, 'Team', null, null, null, null);
+insert into question_schema (question_schema_uuid, question_code, oasys_question_code, question_start, question_end, answer_type, answer_schema_group_uuid, question_text, question_help_text, external_source, reference_data_category) values
+('2fe94330-22c4-4a6e-a494-9f53dc2139c6', '30.1', 'oasys_set.originating_division_code', '2019-11-14 08:30', null, 'freetext', null, 'LDU', null, null, null),
+('8d48ff4d-60f6-461b-ab00-67d1c2ed5f6b', '31.1', 'oasys_set.originating_team_code', '2019-11-14 08:30', null, 'freetext', null, 'Team', null, null, null);
 
 insert into grouping (group_uuid, group_code, heading, subheading, help_text, group_start, group_end) values
 ('1250321c-feff-4b87-83a7-00a65095cab1', 'individual_and_case_details', 'Individual and case details', null, null, '2019-11-14 08:30', null),

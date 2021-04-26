@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
 import java.time.LocalDateTime
 import java.util.UUID
+import kotlin.streams.toList
 
 data class QuestionSchemaDto(
 
@@ -37,8 +38,8 @@ data class QuestionSchemaDto(
   @Schema(description = "Reference Data Category")
   val referenceDataCategory: String? = null,
 
-  @Schema(description = "Reference Data Category")
-  val referenceDataTarget: UUID? = null,
+  @Schema(description = "Reference Data Targets")
+  val referenceDataTargets: Collection<ReferenceDataTargetDto> = emptyList(),
 
   @Schema(description = "List of Reference Answer Schemas")
   val answerSchemas: Collection<AnswerSchemaDto>,
@@ -63,7 +64,7 @@ data class QuestionSchemaDto(
         questionSchema?.questionText,
         questionSchema?.questionHelpText,
         questionSchema?.referenceDataCategory,
-        questionSchema?.referenceDataTarget?.questionSchemaUuid,
+        ReferenceDataTargetDto.from(questionSchema?.referenceDataTargets),
         AnswerSchemaDto.from(
           questionSchema?.answerSchemaEntities
         )

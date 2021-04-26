@@ -3,6 +3,7 @@ package uk.gov.justice.digital.assessments.api
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
+import uk.gov.justice.digital.assessments.jpa.entities.ReferenceDataTargetMappingEntity
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -11,9 +12,11 @@ class QuestionSchemaDtoTest {
   @Test
   fun `builds valid Question Schema DTO`() {
 
-    val targetQuestionSchemaEntity = QuestionSchemaEntity(
-      questionSchemaId = 2L,
-      questionSchemaUuid = UUID.randomUUID(),
+    val referenceDataTargetMappingEntity = ReferenceDataTargetMappingEntity(
+      id = 2L,
+      questionSchema = QuestionSchemaEntity(1L),
+      parentQuestionSchema = QuestionSchemaEntity(2L),
+      isRequired = false
     )
 
     val questionSchemaEntity = QuestionSchemaEntity(
@@ -28,7 +31,7 @@ class QuestionSchemaDtoTest {
       "Question text",
       "Question help text",
       "TEST_REF_DATA_CAT",
-      targetQuestionSchemaEntity,
+      listOf(referenceDataTargetMappingEntity),
     )
 
     val questionSchemaDto = QuestionSchemaDto.from(questionSchemaEntity)
@@ -43,6 +46,6 @@ class QuestionSchemaDtoTest {
     assertThat(questionSchemaDto.questionText).isEqualTo(questionSchemaEntity.questionText)
     assertThat(questionSchemaDto.questionHelpText).isEqualTo(questionSchemaEntity.questionHelpText)
     assertThat(questionSchemaDto.referenceDataCategory).isEqualTo(questionSchemaEntity.referenceDataCategory)
-    assertThat(questionSchemaDto.referenceDataTarget).isEqualTo(questionSchemaEntity.referenceDataTarget?.questionSchemaUuid)
+    assertThat(questionSchemaDto.referenceDataTargets.first().questionSchemaUuid).isEqualTo(referenceDataTargetMappingEntity.parentQuestionSchema.questionSchemaUuid)
   }
 }

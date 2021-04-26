@@ -34,7 +34,6 @@ CREATE TABLE IF NOT EXISTS question_schema
     question_text           TEXT,
     question_help_text      TEXT,
     reference_data_category TEXT,
-    reference_data_target   UUID,
     FOREIGN KEY (answer_schema_group_uuid) REFERENCES answer_schema_group (answer_schema_group_uuid)
 );
 
@@ -50,8 +49,15 @@ CREATE TABLE IF NOT EXISTS oasys_question_mapping
     FOREIGN KEY (question_schema_uuid) REFERENCES question_schema (question_schema_uuid)
 );
 
-ALTER TABLE question_schema
-    ADD FOREIGN KEY (reference_data_target) REFERENCES question_schema (question_schema_uuid);
+CREATE TABLE IF NOT EXISTS oasys_reference_data_target_mapping
+(
+    id                          SERIAL  PRIMARY KEY,
+    question_schema_uuid        UUID    NOT NULL,
+    parent_question_schema_uuid UUID    NOT NULL,
+    is_required                 BOOLEAN NOT NULL,
+    FOREIGN KEY (question_schema_uuid) REFERENCES question_schema(question_schema_uuid),
+    FOREIGN KEY (parent_question_schema_uuid) REFERENCES question_schema(question_schema_uuid)
+);
 
 CREATE TABLE IF NOT EXISTS grouping
 (
