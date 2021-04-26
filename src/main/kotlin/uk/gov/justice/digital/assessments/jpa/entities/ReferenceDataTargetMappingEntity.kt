@@ -1,9 +1,16 @@
 package uk.gov.justice.digital.assessments.jpa.entities
 
-import javax.persistence.*
+import javax.persistence.Column
+import javax.persistence.Entity
+import javax.persistence.GeneratedValue
+import javax.persistence.GenerationType
+import javax.persistence.Id
+import javax.persistence.JoinColumn
+import javax.persistence.ManyToOne
+import javax.persistence.Table
 
 @Entity(name = "reference_data_target")
-@Table(name = "REFERENCE_DATA_TARGET_MAPPING")
+@Table(name = "OASYS_REFERENCE_DATA_TARGET_MAPPING")
 class ReferenceDataTargetMappingEntity(
 
   @Id

@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS oasys_question_mapping
     FOREIGN KEY (question_schema_uuid) REFERENCES question_schema (question_schema_uuid)
 );
 
-CREATE TABLE IF NOT EXISTS reference_data_target_mapping
+CREATE TABLE IF NOT EXISTS oasys_reference_data_target_mapping
 (
     id                          SERIAL  PRIMARY KEY,
     question_schema_uuid        UUID    NOT NULL,

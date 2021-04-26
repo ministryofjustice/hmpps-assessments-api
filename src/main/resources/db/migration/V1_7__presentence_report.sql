@@ -831,7 +831,7 @@ VALUES ('9905a862-94a0-434a-b5ae-ff7b9a77c7c4', '33923c1e-e3ba-4c02-ba42-3b8d828
     ('6aea7808-dccc-4ed9-971f-f9fc4c01602d', '9a8d6d8e-ac11-4ff5-b4e6-9553fd462851', 'RMP', null, 'RM17', false);
 
 
-INSERT INTO reference_data_target_mapping (question_schema_uuid, parent_question_schema_uuid, is_required)
+INSERT INTO oasys_reference_data_target_mapping (question_schema_uuid, parent_question_schema_uuid, is_required)
 VALUES ('fc0cca36-a482-4df9-af06-1de0aba78a96', '880c524d-3c34-48a1-8125-e2dea946e6a9', true),
     ('fc0cca36-a482-4df9-af06-1de0aba78a96', 'fc0cca36-a482-4df9-af06-1de0aba78a96', false);
 

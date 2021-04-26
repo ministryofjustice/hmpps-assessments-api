@@ -461,7 +461,7 @@ class AssessmentSql {
 
   filteredReferenceDataMappingsSql() {
     return AssessmentSql.tableSql(
-        'reference_data_target_mapping',
+        'oasys_reference_data_target_mapping',
         ['question_schema_uuid', 'parent_question_schema_uuid', 'is_required'],
         this.filteredReferenceDataMappings
     )
