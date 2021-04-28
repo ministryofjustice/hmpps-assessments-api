@@ -26,7 +26,7 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 @ExtendWith(MockKExtension::class)
-@DisplayName("Assessment Service Tests")
+@DisplayName("Assessment Service Complete Tests")
 class AssessmentServiceCompleteTest {
   private val assessmentRepository: AssessmentRepository = mockk()
   private val episodeRepository: EpisodeRepository = mockk()
@@ -48,33 +48,29 @@ class AssessmentServiceCompleteTest {
     offenderService
   )
 
-  @Nested
-  @DisplayName("completing assessments")
-  inner class CompletingAssessments {
-    @Test
-    fun `close episode`() {
-      val assessment = assessmentEntity()
-      every { assessmentRepository.findByAssessmentUuid(any()) } returns assessment
-      every { episodeRepository.save(any()) } returns assessment.episodes[0]
-      every {
-        assessmentUpdateRestClient.completeAssessment(9999, 7777, AssessmentType.SHORT_FORM_PSR)
-      } returns UpdateAssessmentAnswersResponseDto(7777)
+  @Test
+  fun `close episode`() {
+    val assessment = assessmentEntity()
+    every { assessmentRepository.findByAssessmentUuid(any()) } returns assessment
+    every { episodeRepository.save(any()) } returns assessment.episodes[0]
+    every {
+      assessmentUpdateRestClient.completeAssessment(9999, 7777, AssessmentType.SHORT_FORM_PSR)
+    } returns UpdateAssessmentAnswersResponseDto(7777)
 
-      val episode = assessmentsService.closeCurrentEpisode(UUID.fromString("7b4de6d5-4488-4c29-a909-7d3fdf15393d"))
+    val episode = assessmentsService.closeCurrentEpisode(UUID.fromString("7b4de6d5-4488-4c29-a909-7d3fdf15393d"))
 
-      verify(exactly = 1) { episodeRepository.save(any()) }
-      verify(exactly = 1) { assessmentUpdateRestClient.completeAssessment(any(), any(), any(), any()) }
-      assertThat(episode.ended).isEqualToIgnoringMinutes(LocalDateTime.now())
-    }
+    verify(exactly = 1) { episodeRepository.save(any()) }
+    verify(exactly = 1) { assessmentUpdateRestClient.completeAssessment(any(), any(), any(), any()) }
+    assertThat(episode.ended).isEqualToIgnoringMinutes(LocalDateTime.now())
+  }
 
-    @Test
-    fun `close episode for assessment with no episodes throws exception`() {
-      every { assessmentRepository.findByAssessmentUuid(any()) } returns assessmentWithNoEpisodeEntity()
+  @Test
+  fun `close episode for assessment with no episodes throws exception`() {
+    every { assessmentRepository.findByAssessmentUuid(any()) } returns assessmentWithNoEpisodeEntity()
 
-      assertThrows<EntityNotFoundException> { assessmentsService.closeCurrentEpisode(UUID.fromString("7b4de6d5-4488-4c29-a909-7d3fdf15393d")) }
-      verify(exactly = 0) { episodeRepository.save(any()) }
-      verify(exactly = 0) { assessmentUpdateRestClient.completeAssessment(any(), any(), any(), any()) }
-    }
+    assertThrows<EntityNotFoundException> { assessmentsService.closeCurrentEpisode(UUID.fromString("7b4de6d5-4488-4c29-a909-7d3fdf15393d")) }
+    verify(exactly = 0) { episodeRepository.save(any()) }
+    verify(exactly = 0) { assessmentUpdateRestClient.completeAssessment(any(), any(), any(), any()) }
   }
 
   @Test
