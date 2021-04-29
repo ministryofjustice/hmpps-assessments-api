@@ -108,6 +108,27 @@ class AssessmentServiceOASysTest {
   }
 
   @Test
+  fun `map Oasys answers from ARN questions and answers`() {
+    val answers = mutableMapOf(
+      question1Uuid to AnswerEntity("some free text"),
+      question2Uuid to AnswerEntity("1975-01-20T00:00:00.000Z"),
+      question3Uuid to AnswerEntity("not mapped to oasys")
+    )
+    val episode = AssessmentEpisodeEntity(
+      answers = answers
+    )
+    val questions = QuestionSchemaEntities(listOf(
+      makeQuestion(1, question1Uuid, "FreeText", "freetext", null, "section1", 1, "name"),
+      makeQuestion(2, question2Uuid, "Date", "date", null, "section1", 1, "dob"),
+      makeQuestion(3, question3Uuid, "ExtraInfo")
+    ))
+
+    val oasysAnswers = OasysAnswers.from(episode, questions);
+
+    assertThat(oasysAnswers).hasSize(2);
+  }
+
+  @Test
   fun `update OASys if OASysSet stored against episode`() {
     every { questionService.getAllQuestions() } returns setupQuestionCodes()
     every { assessmentUpdateRestClient.updateAssessment(oasysOffenderPk, oasysSetPk, assessmentType, any()) } returns UpdateAssessmentAnswersResponseDto()
