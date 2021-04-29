@@ -82,110 +82,111 @@ class AssessmentServiceOASysTest {
   private val answer3Uuid = UUID.randomUUID()
 
   @Test
+  fun `map Oasys answer from free text answer`() {
+    val mapping = OASysMappingEntity(sectionCode = "1", questionCode = "R1.3", logicalPage = 1, fixed_field = false, mappingId = 1, questionSchema = QuestionSchemaEntity(questionSchemaId = 1))
+
+    val result = OasysAnswers.mapOasysAnswer(mapping, listOf("Free Text"), "radios")[0]
+
+    assertThat(result.answer).isEqualTo("Free Text")
+    assertThat(result.logicalPage).isEqualTo(1)
+    assertThat(result.isStatic).isFalse()
+    assertThat(result.questionCode).isEqualTo("R1.3")
+    assertThat(result.sectionCode).isEqualTo("1")
+  }
+
+  @Test
+  fun `map Oasys answer with correct date format`() {
+    val mapping = OASysMappingEntity(sectionCode = "1", questionCode = "R1.3", logicalPage = 1, fixed_field = false, mappingId = 1, questionSchema = QuestionSchemaEntity(questionSchemaId = 1))
+
+    val result = OasysAnswers.mapOasysAnswer(mapping, listOf("1975-01-20T00:00:00.000Z"), "date")[0]
+
+    assertThat(result.answer).isEqualTo("20/01/1975")
+    assertThat(result.logicalPage).isEqualTo(1)
+    assertThat(result.isStatic).isFalse()
+    assertThat(result.questionCode).isEqualTo("R1.3")
+    assertThat(result.sectionCode).isEqualTo("1")
+  }
+
+  @Test
   fun `update OASys if OASysSet stored against episode`() {
-      setupQuestionCodes()
+    every { questionService.getAllQuestions() } returns setupQuestionCodes()
+    every { assessmentUpdateRestClient.updateAssessment(oasysOffenderPk, oasysSetPk, assessmentType, any()) } returns UpdateAssessmentAnswersResponseDto()
 
-      val episode = AssessmentEpisodeEntity(
-        episodeId = episodeId1,
-        assessmentType = AssessmentType.SHORT_FORM_PSR,
-        oasysSetPk = oasysSetPk
-      )
+    val episode = AssessmentEpisodeEntity(
+      episodeId = episodeId1,
+      assessmentType = AssessmentType.SHORT_FORM_PSR,
+      oasysSetPk = oasysSetPk
+    )
 
-      every { assessmentUpdateRestClient.updateAssessment(oasysOffenderPk, oasysSetPk, assessmentType, any()) } returns UpdateAssessmentAnswersResponseDto()
-      assessmentsService.updateOASysAssessment(oasysOffenderPk, episode)
-      verify(exactly = 1) { assessmentUpdateRestClient.updateAssessment(oasysOffenderPk, oasysSetPk, assessmentType, any()) }
+    assessmentsService.updateOASysAssessment(oasysOffenderPk, episode)
+
+    verify(exactly = 1) {
+      assessmentUpdateRestClient.updateAssessment(oasysOffenderPk, oasysSetPk, assessmentType, any())
     }
+  }
 
   @Test
   fun `don't update OASys if no OASysSet stored against episode`() {
-      setupQuestionCodes()
+    every { questionService.getAllQuestions() } returns setupQuestionCodes()
+    every { assessmentUpdateRestClient.updateAssessment(oasysOffenderPk, oasysSetPk, assessmentType, any()) } returns UpdateAssessmentAnswersResponseDto()
 
-      val episode = AssessmentEpisodeEntity(
-        oasysSetPk = oasysSetPk
-      )
+    val episode = AssessmentEpisodeEntity(
+      oasysSetPk = oasysSetPk
+    )
 
-      every { assessmentUpdateRestClient.updateAssessment(oasysOffenderPk, oasysSetPk, assessmentType, any()) } returns UpdateAssessmentAnswersResponseDto()
-      assessmentsService.updateOASysAssessment(oasysOffenderPk, episode)
-      verify(exactly = 0) { assessmentUpdateRestClient.updateAssessment(oasysOffenderPk, oasysSetPk, assessmentType, any()) }
+    assessmentsService.updateOASysAssessment(oasysOffenderPk, episode)
+
+    verify(exactly = 0) {
+      assessmentUpdateRestClient.updateAssessment(oasysOffenderPk, oasysSetPk, assessmentType, any())
     }
-
-  @Test
-  fun `create Oasys Answer from free text answer`() {
-      val mapping = OASysMappingEntity(sectionCode = "1", questionCode = "R1.3", logicalPage = 1, fixed_field = false, mappingId = 1, questionSchema = QuestionSchemaEntity(questionSchemaId = 1))
-      val result = OasysAnswers.mapOasysAnswer(mapping, listOf("Free Text"), "radios")[0]
-      assertThat(result.answer).isEqualTo("Free Text")
-      assertThat(result.logicalPage).isEqualTo(1)
-      assertThat(result.isStatic).isFalse()
-      assertThat(result.questionCode).isEqualTo("R1.3")
-      assertThat(result.sectionCode).isEqualTo("1")
-    }
-
-  @Test
-  fun `create Oasys Answer with correct date format`() {
-      val mapping = OASysMappingEntity(sectionCode = "1", questionCode = "R1.3", logicalPage = 1, fixed_field = false, mappingId = 1, questionSchema = QuestionSchemaEntity(questionSchemaId = 1))
-      val result = OasysAnswers.mapOasysAnswer(mapping, listOf("1975-01-20T00:00:00.000Z"), "date")[0]
-      assertThat(result.answer).isEqualTo("20/01/1975")
-    }
+  }
 
   @Test
   fun `returns validation errors from OASys`() {
-      val answers = mutableMapOf(
-        existingQuestionUuid to AnswerEntity(listOf("free text", "fruit loops", "biscuits"))
-      )
-      val assessment = assessmentEntityWithOasysOffender(answers)
+    val question = makeQuestion(9, existingQuestionUuid, "question", "freetext", null, "section1", null, "Q1")
+    every { questionService.getAllQuestions() } returns QuestionSchemaEntities(listOf(question))
 
-      val oaSysMappings = mutableListOf<OASysMappingEntity>()
-      val question = QuestionSchemaEntity(
-        questionSchemaId = 9,
-        questionSchemaUuid = existingQuestionUuid,
-        questionCode = "question",
-        questionText = "favourite breakfast cereal?",
-        oasysMappings = oaSysMappings
-      )
-      oaSysMappings.add(
-        OASysMappingEntity(
-          mappingId = 1,
-          sectionCode = "section1",
-          logicalPage = null,
-          questionCode = "Q1",
-          questionSchema = question
-        )
-      )
+    val assessment = assessmentEntityWithOasysOffender(mutableMapOf(
+      existingQuestionUuid to AnswerEntity(listOf("free text", "fruit loops", "biscuits"))
+    ))
+    every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
+    every { assessmentRepository.save(any()) } returns null // should save when errors?
 
-      every { questionService.getAllQuestions() } returns QuestionSchemaEntities(listOf(question))
-      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
-      every { assessmentRepository.save(any()) } returns null // should save when errors?
-      val oasysError = UpdateAssessmentAnswersResponseDto(
-        7777,
-        setOf(
-          ValidationErrorDto("section1", null, "Q1", "OOPS", "NO", false)
-        )
-      )
-      every { assessmentUpdateRestClient.updateAssessment(any(), any(), any(), any(), any(), any()) } returns oasysError
-      // Christ, what a lot of set up
+    val oasysError = UpdateAssessmentAnswersResponseDto(
+      7777,
+      setOf(ValidationErrorDto(
+        "section1",
+        null,
+        "Q1",
+        "OOPS",
+        "NO",
+        false))
+    )
+    every { assessmentUpdateRestClient.updateAssessment(any(), any(), any(), any(), any(), any()) } returns oasysError
+    // Christ, what a lot of set up
 
-      // Apply the update
-      val updatedAnswers = UpdateAssessmentEpisodeDto(
-        mapOf(existingQuestionUuid to listOf("fruit loops", "custard"))
-      )
-      val episodeDto = assessmentsService.updateEpisode(assessmentUuid, episodeUuid, updatedAnswers)
+    // Apply the update
+    val updatedAnswers = UpdateAssessmentEpisodeDto(
+      mapOf(existingQuestionUuid to listOf("fruit loops", "custard"))
+    )
+    val episodeDto = assessmentsService.updateEpisode(assessmentUuid, episodeUuid, updatedAnswers)
 
-      // Updated answers in returned DTO
-      assertThat(episodeDto.answers).hasSize(1)
-      with(episodeDto.answers[existingQuestionUuid]!!) {
-        assertThat(size).isEqualTo(2)
-        assertThat(this).containsAll(listOf("fruit loops", "custard"))
-      }
-
-      // But also errors!
-      assertThat(episodeDto.errors).hasSize(1)
-      with(episodeDto.errors!![existingQuestionUuid]!!) {
-        assertThat(size).isEqualTo(1)
-        assertThat(this).contains("NO")
-      }
+    // Updated answers in returned DTO
+    assertThat(episodeDto.answers).hasSize(1)
+    with(episodeDto.answers[existingQuestionUuid]!!) {
+      assertThat(size).isEqualTo(2)
+      assertThat(this).containsAll(listOf("fruit loops", "custard"))
     }
 
-  private fun setupQuestionCodes() {
+    // But also errors!
+    assertThat(episodeDto.errors).hasSize(1)
+    with(episodeDto.errors!![existingQuestionUuid]!!) {
+      assertThat(size).isEqualTo(1)
+      assertThat(this).contains("NO")
+    }
+  }
+
+  private fun setupQuestionCodes(): QuestionSchemaEntities {
     val dummy = AnswerSchemaGroupEntity(answerSchemaId = 99)
 
     val yes = AnswerSchemaEntity(answerSchemaId = 1, answerSchemaUuid = answer1Uuid, value = "YES", answerSchemaGroup = dummy)
@@ -195,13 +196,45 @@ class AssessmentServiceOASysTest {
     val group1 = AnswerSchemaGroupEntity(answerSchemaId = 1, answerSchemaEntities = listOf(yes))
     val group2 = AnswerSchemaGroupEntity(answerSchemaId = 2, answerSchemaEntities = listOf(maybe, no))
 
-    every { questionService.getAllQuestions() } returns QuestionSchemaEntities(
+    return QuestionSchemaEntities(
       listOf(
-        QuestionSchemaEntity(questionSchemaId = 1, questionSchemaUuid = question1Uuid, questionCode = "Q1", answerSchemaGroup = group1),
-        QuestionSchemaEntity(questionSchemaId = 2, questionSchemaUuid = question2Uuid, questionCode = "Q2", answerSchemaGroup = group2),
-        QuestionSchemaEntity(questionSchemaId = 3, questionSchemaUuid = question3Uuid)
+        makeQuestion(1, question1Uuid, "Q1", "checkbox", group1),
+        makeQuestion(2, question2Uuid, "Q2", "radio", group2),
+        makeQuestion(3, question3Uuid, "Q3")
       )
     )
+  }
+
+  private fun makeQuestion(
+    questionSchemaId: Long,
+    questionSchemaUuid: UUID,
+    questionCode: String,
+    answerType: String = "freetext",
+    answerSchemaGroup: AnswerSchemaGroupEntity? = null,
+    oasysSectionCode: String? = null,
+    oasysLogicalPage: Long? = null,
+    oasysQuestionCode: String? = null,
+  ): QuestionSchemaEntity {
+    val oaSysMappings = mutableListOf<OASysMappingEntity>()
+    val question = QuestionSchemaEntity(
+      questionSchemaId = questionSchemaId,
+      questionSchemaUuid = questionSchemaUuid,
+      questionCode = questionCode,
+      answerType = answerType,
+      answerSchemaGroup = answerSchemaGroup,
+      oasysMappings = oaSysMappings
+    )
+    if (oasysSectionCode != null)
+      oaSysMappings.add(
+        OASysMappingEntity(
+          mappingId = questionSchemaId,
+          sectionCode = oasysSectionCode,
+          logicalPage = oasysLogicalPage,
+          questionCode = oasysQuestionCode!!,
+          questionSchema = question
+        )
+      )
+    return question
   }
 
   private fun assessmentEntityWithOasysOffender(answers: MutableMap<UUID, AnswerEntity>): AssessmentEntity {
