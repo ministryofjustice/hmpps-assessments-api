@@ -15,12 +15,17 @@ class OasysAnswers(
   }
 
   companion object {
+    interface MappingProvider {
+      fun getAllQuestions(): QuestionSchemaEntities
+    }
+
     fun from(
       episode: AssessmentEpisodeEntity,
-      questions: QuestionSchemaEntities
+      mappingProvider: MappingProvider
     ): OasysAnswers {
       val oasysAnswers = OasysAnswers()
 
+      val questions = mappingProvider.getAllQuestions()
       // TODO: If we want to handle multiple mappings per question we will need to add assessment type to the mapping
       episode.answers?.forEach { episodeAnswer ->
         val question = questions[episodeAnswer.key]

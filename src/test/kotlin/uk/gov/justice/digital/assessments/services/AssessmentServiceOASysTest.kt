@@ -124,7 +124,9 @@ class AssessmentServiceOASysTest {
       makeQuestion(3, question3Uuid, "ExtraInfo")
     ))
 
-    val oasysAnswers = OasysAnswers.from(episode, questions)
+    val oasysAnswers = OasysAnswers.from(episode, object: OasysAnswers.Companion.MappingProvider  {
+      override fun getAllQuestions(): QuestionSchemaEntities = questions
+    })
 
     assertThat(oasysAnswers).hasSize(2)
     assertThat(oasysAnswers).contains(OasysAnswer("section1", 1, "name", "some free text"))
@@ -156,7 +158,9 @@ class AssessmentServiceOASysTest {
       makeQuestion(11, childQuestion2, "Address", "freetext", null, "children", null, "childaddress")
     ))
 
-    val oasysAnswers = OasysAnswers.from(episode, questions)
+    val oasysAnswers = OasysAnswers.from(episode, object: OasysAnswers.Companion.MappingProvider  {
+      override fun getAllQuestions(): QuestionSchemaEntities = questions
+    })
 
     assertThat(oasysAnswers).hasSize(4)
     assertThat(oasysAnswers).contains(OasysAnswer("section1", 1, "name", "some free text"))
