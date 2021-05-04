@@ -28,6 +28,7 @@ import uk.gov.justice.digital.assessments.jpa.repositories.EpisodeRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.SubjectRepository
 import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
+import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OasysAnswer
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.UpdateAssessmentAnswersResponseDto
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.ValidationErrorDto
 import uk.gov.justice.digital.assessments.restclient.courtcaseapi.CourtCase
@@ -123,9 +124,45 @@ class AssessmentServiceOASysTest {
       makeQuestion(3, question3Uuid, "ExtraInfo")
     ))
 
-    val oasysAnswers = OasysAnswers.from(episode, questions);
+    val oasysAnswers = OasysAnswers.from(episode, questions)
 
-    assertThat(oasysAnswers).hasSize(2);
+    assertThat(oasysAnswers).hasSize(2)
+    assertThat(oasysAnswers).contains(OasysAnswer("section1", 1, "name", "some free text"))
+    assertThat(oasysAnswers).contains(OasysAnswer("section1", 1, "dob", "20/01/1975"))
+  }
+
+  @Test
+  fun `map Oasys answers from ARN questions and answers with one child`() {
+    val tableQuestion = UUID.randomUUID()
+    val childQuestion1 = UUID.randomUUID()
+    val childQuestion2 = UUID.randomUUID()
+    val answers = mutableMapOf(
+      question1Uuid to AnswerEntity("some free text"),
+      question2Uuid to AnswerEntity("1975-01-20T00:00:00.000Z"),
+      question3Uuid to AnswerEntity("not mapped to oasys"),
+      childQuestion1 to AnswerEntity("child name"),
+      childQuestion2 to AnswerEntity("child address")
+    )
+
+    val episode = AssessmentEpisodeEntity(
+      answers = answers
+    )
+    val questions = QuestionSchemaEntities(listOf(
+      makeQuestion(1, question1Uuid, "FreeText", "freetext", null, "section1", 1, "name"),
+      makeQuestion(2, question2Uuid, "Date", "date", null, "section1", 1, "dob"),
+      makeQuestion(3, question3Uuid, "ExtraInfo"),
+      makeQuestion(4, tableQuestion, "Children", "table:children_at_risk"),
+      makeQuestion(10, childQuestion1, "Name", "freetext", null, "children", null, "childname"),
+      makeQuestion(11, childQuestion2, "Address", "freetext", null, "children", null, "childaddress")
+    ))
+
+    val oasysAnswers = OasysAnswers.from(episode, questions)
+
+    assertThat(oasysAnswers).hasSize(4)
+    assertThat(oasysAnswers).contains(OasysAnswer("section1", 1, "name", "some free text"))
+    assertThat(oasysAnswers).contains(OasysAnswer("section1", 1, "dob", "20/01/1975"))
+    assertThat(oasysAnswers).contains(OasysAnswer("children", 1, "childname", "child name"))
+    assertThat(oasysAnswers).contains(OasysAnswer("children", 1, "childaddress", "child address"))
   }
 
   @Test
