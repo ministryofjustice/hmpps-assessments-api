@@ -5,14 +5,10 @@ import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
-import uk.gov.justice.digital.assessments.api.CreateAssessmentDto
-import uk.gov.justice.digital.assessments.api.OffenderDto
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.jpa.entities.AnswerEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AnswerSchemaEntity
@@ -31,11 +27,7 @@ import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OasysAnswer
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.UpdateAssessmentAnswersResponseDto
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.ValidationErrorDto
-import uk.gov.justice.digital.assessments.restclient.courtcaseapi.CourtCase
 import uk.gov.justice.digital.assessments.services.dto.OasysAnswers
-import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
-import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
-import java.time.LocalDateTime
 import java.util.UUID
 
 @ExtendWith(MockKExtension::class)
@@ -86,7 +78,7 @@ class AssessmentServiceOASysTest {
   fun `map Oasys answer from free text answer`() {
     val mapping = OASysMappingEntity(sectionCode = "1", questionCode = "R1.3", logicalPage = 1, fixed_field = false, mappingId = 1, questionSchema = QuestionSchemaEntity(questionSchemaId = 1))
 
-    val result = OasysAnswers.mapOasysAnswer(mapping, listOf("Free Text"), "radios")[0]
+    val result = OasysAnswers.mapOasysAnswers(mapping, listOf("Free Text"), "radios")[0]
 
     assertThat(result.answer).isEqualTo("Free Text")
     assertThat(result.logicalPage).isEqualTo(1)
@@ -99,7 +91,7 @@ class AssessmentServiceOASysTest {
   fun `map Oasys answer with correct date format`() {
     val mapping = OASysMappingEntity(sectionCode = "1", questionCode = "R1.3", logicalPage = 1, fixed_field = false, mappingId = 1, questionSchema = QuestionSchemaEntity(questionSchemaId = 1))
 
-    val result = OasysAnswers.mapOasysAnswer(mapping, listOf("1975-01-20T00:00:00.000Z"), "date")[0]
+    val result = OasysAnswers.mapOasysAnswers(mapping, listOf("1975-01-20T00:00:00.000Z"), "date")[0]
 
     assertThat(result.answer).isEqualTo("20/01/1975")
     assertThat(result.logicalPage).isEqualTo(1)
