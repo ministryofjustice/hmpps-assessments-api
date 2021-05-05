@@ -26,8 +26,6 @@ abstract class IntegrationTest {
   internal lateinit var jwtHelper: JwtAuthHelper
 
   companion object {
-
-    internal val oauthMockServer = OAuthMockServer()
     internal val courtCaseMockServer = CourtCaseMockServer()
     internal val assessmentUpdateMockServer = AssessmentUpdateMockServer()
     internal val communityApiMockServer = CommunityApiMockServer()
@@ -36,7 +34,6 @@ abstract class IntegrationTest {
     @BeforeAll
     @JvmStatic
     fun startMocks() {
-      oauthMockServer.start()
       courtCaseMockServer.start()
       assessmentUpdateMockServer.start()
       communityApiMockServer.start()
@@ -47,7 +44,6 @@ abstract class IntegrationTest {
     @JvmStatic
     fun stopMocks() {
       courtCaseMockServer.stop()
-      oauthMockServer.stop()
       assessmentUpdateMockServer.stop()
       communityApiMockServer.stop()
       assessmentApiMockServer.stop()
@@ -62,8 +58,6 @@ abstract class IntegrationTest {
 
   @BeforeEach
   fun resetStubs() {
-    oauthMockServer.resetAll()
-    oauthMockServer.stubGrantToken()
     courtCaseMockServer.resetAll()
     courtCaseMockServer.stubCourtCase()
     assessmentUpdateMockServer.stubCreateOffender()
