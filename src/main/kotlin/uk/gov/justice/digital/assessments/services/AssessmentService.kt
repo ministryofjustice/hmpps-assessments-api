@@ -255,6 +255,8 @@ class AssessmentService(
     val questions = questionService.getAllQuestions()
     val oasysAnswers = OasysAnswers.from(episode, object: OasysAnswers.Companion.MappingProvider {
       override fun getAllQuestions(): QuestionSchemaEntities = questionService.getAllQuestions()
+      override fun getTableQuestions(tableCode: String): QuestionSchemaEntities =
+        questionService.getAllGroupQuestions(tableCode)
     })
 
     val oasysUpdateResult = assessmentUpdateRestClient.updateAssessment(offenderPk, episode.oasysSetPk!!, episode.assessmentType!!, oasysAnswers)

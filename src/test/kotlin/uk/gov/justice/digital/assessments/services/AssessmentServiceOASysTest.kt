@@ -126,6 +126,9 @@ class AssessmentServiceOASysTest {
 
     val oasysAnswers = OasysAnswers.from(episode, object: OasysAnswers.Companion.MappingProvider  {
       override fun getAllQuestions(): QuestionSchemaEntities = questions
+      override fun getTableQuestions(tableCode: String): QuestionSchemaEntities {
+        throw RuntimeException("Should not be called")
+      }
     })
 
     assertThat(oasysAnswers).hasSize(2)
@@ -149,24 +152,88 @@ class AssessmentServiceOASysTest {
     val episode = AssessmentEpisodeEntity(
       answers = answers
     )
-    val questions = QuestionSchemaEntities(listOf(
+    val childNameQuestion = makeQuestion(10, childQuestion1, "Name", "freetext", null, "children", null, "childname")
+    val childAddressQuestion = makeQuestion(11, childQuestion2, "Address", "freetext", null, "children", null, "childaddress")
+
+    val allQuestions = QuestionSchemaEntities(listOf(
       makeQuestion(1, question1Uuid, "FreeText", "freetext", null, "section1", 1, "name"),
       makeQuestion(2, question2Uuid, "Date", "date", null, "section1", 1, "dob"),
       makeQuestion(3, question3Uuid, "ExtraInfo"),
       makeQuestion(4, tableQuestion, "Children", "table:children_at_risk"),
-      makeQuestion(10, childQuestion1, "Name", "freetext", null, "children", null, "childname"),
-      makeQuestion(11, childQuestion2, "Address", "freetext", null, "children", null, "childaddress")
+      childNameQuestion,
+      childAddressQuestion
+    ))
+    val childTableQuestions = QuestionSchemaEntities(listOf(
+      childNameQuestion,
+      childAddressQuestion
     ))
 
     val oasysAnswers = OasysAnswers.from(episode, object: OasysAnswers.Companion.MappingProvider  {
-      override fun getAllQuestions(): QuestionSchemaEntities = questions
+      override fun getAllQuestions(): QuestionSchemaEntities = allQuestions
+      override fun getTableQuestions(tableCode: String): QuestionSchemaEntities =
+        if(tableCode == "children_at_risk")
+          childTableQuestions
+        else
+          throw RuntimeException("Should only be called for children_at_risk table")
     })
 
     assertThat(oasysAnswers).hasSize(4)
     assertThat(oasysAnswers).contains(OasysAnswer("section1", 1, "name", "some free text"))
     assertThat(oasysAnswers).contains(OasysAnswer("section1", 1, "dob", "20/01/1975"))
-    assertThat(oasysAnswers).contains(OasysAnswer("children", 1, "childname", "child name"))
-    assertThat(oasysAnswers).contains(OasysAnswer("children", 1, "childaddress", "child address"))
+    assertThat(oasysAnswers).contains(OasysAnswer("children", 0, "childname", "child name"))
+    assertThat(oasysAnswers).contains(OasysAnswer("children", 0, "childaddress", "child address"))
+  }
+
+  @Test
+  fun `map Oasys answers from ARN questions and answers with multiple children`() {
+    val tableQuestion = UUID.randomUUID()
+    val childQuestion1 = UUID.randomUUID()
+    val childQuestion2 = UUID.randomUUID()
+    val answers = mutableMapOf(
+      question1Uuid to AnswerEntity("some free text"),
+      question2Uuid to AnswerEntity("1975-01-20T00:00:00.000Z"),
+      question3Uuid to AnswerEntity("not mapped to oasys"),
+      childQuestion1 to AnswerEntity(listOf("name1", "name2", "name3")),
+      childQuestion2 to AnswerEntity(listOf("address1", "", "address3"))
+    )
+
+    val episode = AssessmentEpisodeEntity(
+      answers = answers
+    )
+    val childNameQuestion = makeQuestion(10, childQuestion1, "Name", "freetext", null, "children", null, "childname")
+    val childAddressQuestion = makeQuestion(11, childQuestion2, "Address", "freetext", null, "children", null, "childaddress")
+
+    val allQuestions = QuestionSchemaEntities(listOf(
+      makeQuestion(1, question1Uuid, "FreeText", "freetext", null, "section1", 1, "name"),
+      makeQuestion(2, question2Uuid, "Date", "date", null, "section1", 1, "dob"),
+      makeQuestion(3, question3Uuid, "ExtraInfo"),
+      makeQuestion(4, tableQuestion, "Children", "table:children_at_risk"),
+      childNameQuestion,
+      childAddressQuestion
+    ))
+    val childTableQuestions = QuestionSchemaEntities(listOf(
+      childNameQuestion,
+      childAddressQuestion
+    ))
+
+    val oasysAnswers = OasysAnswers.from(episode, object: OasysAnswers.Companion.MappingProvider  {
+      override fun getAllQuestions(): QuestionSchemaEntities = allQuestions
+      override fun getTableQuestions(tableCode: String): QuestionSchemaEntities =
+        if(tableCode == "children_at_risk")
+          childTableQuestions
+        else
+          throw RuntimeException("Should only be called for children_at_risk table")
+    })
+
+    assertThat(oasysAnswers).hasSize(8)
+    assertThat(oasysAnswers).contains(OasysAnswer("section1", 1, "name", "some free text"))
+    assertThat(oasysAnswers).contains(OasysAnswer("section1", 1, "dob", "20/01/1975"))
+    assertThat(oasysAnswers).contains(OasysAnswer("children", 0, "childname", "name1"))
+    assertThat(oasysAnswers).contains(OasysAnswer("children", 0, "childaddress", "address1"))
+    assertThat(oasysAnswers).contains(OasysAnswer("children", 1, "childname", "name2"))
+    assertThat(oasysAnswers).contains(OasysAnswer("children", 1, "childaddress", ""))
+    assertThat(oasysAnswers).contains(OasysAnswer("children", 2, "childname", "name3"))
+    assertThat(oasysAnswers).contains(OasysAnswer("children", 2, "childaddress", "address3"))
   }
 
   @Test
