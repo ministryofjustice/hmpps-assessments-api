@@ -1,31 +1,30 @@
-PSR Children,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+PSR Children,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 Question or information,Content ref.,Short-format PSR (Delius),Offender Group Reconviction Scale (OGRS),OASys Fast Delivery Report (FDR),Short-format PSR: printed template,Pre-sentence report (Template for reports delivered orally),"Risk of Serious Recidivism (RSR)
 ","Current question wording, inc. variations",Final question wording,Grey hint text,Error summary,Error message,Reason for wording choice or change,Input type,Reference Data Category,Reference Data Target,"Business logic
-(note that items marked out-of-line will show elsewhere on the page)",Notes,Spec ref.,OASys ref.,Value passed from OASys to RSR calculation,Mandatory for minimum OASys,Potentially exposed to changes to answer reference data?,Pre-populated?,Type (assumes new case),Taxonomy classification,Validated OASys Field,OASys Fixed Field Name ,
-Children at Risk of Serious Harm,S5,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-Child at Risk of Serious Harm:,202.1,,,,,,,Child at Risk of Serious Harm:,Inset text: Consider carefully whether this information can be recorded safely.,,,,Consistency,,,,None,All S16 questions should be displayed only if any of the answers to 165.1 and 166.1 are ‘Yes’.,,HEADING,,,,Y,I,Risk of serious harm: full analysis,x,,
-Name,203.1,,,,,,,Name,Name,,Enter name,Enter name,Consistency,Free text,,,None,All S16 questions should be displayed only if any of the answers to 165.1 and 166.1 are ‘Yes’.,FA.18,child_at_risk_pivot.name_of_child,,,,N,Q,Risk of serious harm: full analysis,x,,
-Age ,204.1,,,,,,,Age ,Age ,Enter an age in years from 0 to 17,Age cannot be more than 17,Age cannot be more than 17,Consistency,Numeric,,,"Age range 0 - 17, errors on page save",All S16 questions should be displayed only if any of the answers to 165.1 and 166.1 are ‘Yes’.,FA.19,child_at_risk_pivot.age_of_child,,,,N,Q,Risk of serious harm: full analysis,x,,
-Date of Birth,205.1,,,,,,,Date of Birth,Date of Birth,,Enter date of birth,Enter date of birth,Consistency,Date,,,None,All S16 questions should be displayed only if any of the answers to 165.1 and 166.1 are ‘Yes’.,FA.62,child_at_risk_pivot.date_of_birth,,,,N,Q,Risk of serious harm: full analysis,x,,
+(note that items marked out-of-line will show elsewhere on the page)",Notes,Spec ref.,OASys ref.,Value passed from OASys to RSR calculation,Mandatory for minimum OASys,Potentially exposed to changes to answer reference data?,Pre-populated?,Type (assumes new case),Taxonomy classification,Validated OASys Field,OASys Fixed Field Name
+Children at Risk of Serious Harm,S5,,,,,,,,,,,,,,,,,,,,,,,,,,,
+Child at Risk of Serious Harm:,202.1,,,,,,,Child at Risk of Serious Harm:,Inset text: Consider carefully whether this information can be recorded safely.,,,,Consistency,,,,None,All S16 questions should be displayed only if any of the answers to 165.1 and 166.1 are ‘Yes’.,,HEADING,,,,Y,I,Risk of serious harm: full analysis,x,
+Name,203.1,,,,,,,Name,Name,,Enter name,Enter name,Consistency,Free text,,,None,All S16 questions should be displayed only if any of the answers to 165.1 and 166.1 are ‘Yes’.,FA.18,child_at_risk_pivot.name_of_child,,,,N,Q,Risk of serious harm: full analysis,x,
+Age,204.1,,,,,,,Age,Age,Enter an age in years from 0 to 17,Age cannot be more than 17,Age cannot be more than 17,Consistency,Numeric,,,"Age range 0 - 17, errors on page save",All S16 questions should be displayed only if any of the answers to 165.1 and 166.1 are ‘Yes’.,FA.19,child_at_risk_pivot.age_of_child,,,,N,Q,Risk of serious harm: full analysis,x,
+Date of Birth,205.1,,,,,,,Date of Birth,Date of Birth,,Enter date of birth,Enter date of birth,Consistency,Date,,,None,All S16 questions should be displayed only if any of the answers to 165.1 and 166.1 are ‘Yes’.,FA.62,child_at_risk_pivot.date_of_birth,,,,N,Q,Risk of serious harm: full analysis,x,
 Gender,206.1,,,,,,,Gender,Gender,,Select gender,Select gender,Consistency,"Radio buttons:
 Male
 Female
 Not specified
-Not known",,,None,All S16 questions should be displayed only if any of the answers to 165.1 and 166.1 are ‘Yes’.,FA.20,child_at_risk_pivot.gender_ELM,,,,N,Q,Risk of serious harm: full analysis,x,,
-Address (if disclosable),207.1,,,,,,,Address (if disclosable),Address (if disclosable),,Enter address,Enter address,Consistency,Free text,,,None,All S16 questions should be displayed only if any of the answers to 165.1 and 166.1 are ‘Yes’.,FA.21,child_at_risk_pivot.address_of_child,,,,N,Q,Risk of serious harm: full analysis,x,,
-Currently Registered with Social Services,208.1,,,,,,,Currently Registered with Social Services,Currently Registered with Social Services,,Select yes or no,Select yes or no,Consistency,Y/N,,,None,All S16 questions should be displayed only if any of the answers to 165.1 and 166.1 are ‘Yes’.,FA.22,child_at_risk_pivot.curreg_sclsrvs_ind,,,,N,Q,Risk of serious harm: full analysis,x,,
-Previously Registered with Social Services,209.1,,,,,,,Previously Registered with Social Services,Previously Registered with Social Services,,Select yes or no,Select yes or no,Consistency,Y/N,,,None,All S16 questions should be displayed only if any of the answers to 165.1 and 166.1 are ‘Yes’.,FA.23,child_at_risk_pivot.evr_prv_social_srv_ind,,,,N,Q,Risk of serious harm: full analysis,x,,
-"Current category of Child protection registration (ie neglect, physical, sexual or emotional)",210.1,,,,,,,"Category of Child protection registration (ie neglect, physical, sexual or emotional",Current category of child protection registration ,,Select a current category of child protection registration,Select a currentcategory of child protection registration,Simpler. Checkboxes will be visible.,"Checkboxes:
+Not known",,,None,All S16 questions should be displayed only if any of the answers to 165.1 and 166.1 are ‘Yes’.,FA.20,child_at_risk_pivot.gender_ELM,,,,N,Q,Risk of serious harm: full analysis,x,
+Address (if disclosable),207.1,,,,,,,Address (if disclosable),Address (if disclosable),,Enter address,Enter address,Consistency,Free text,,,None,All S16 questions should be displayed only if any of the answers to 165.1 and 166.1 are ‘Yes’.,FA.21,child_at_risk_pivot.address_of_child,,,,N,Q,Risk of serious harm: full analysis,x,
+Currently Registered with Social Services,208.1,,,,,,,Currently Registered with Social Services,Currently Registered with Social Services,,Select yes or no,Select yes or no,Consistency,Y/N,,,None,All S16 questions should be displayed only if any of the answers to 165.1 and 166.1 are ‘Yes’.,FA.22,child_at_risk_pivot.curreg_sclsrvs_ind,,,,N,Q,Risk of serious harm: full analysis,x,
+Previously Registered with Social Services,209.1,,,,,,,Previously Registered with Social Services,Previously Registered with Social Services,,Select yes or no,Select yes or no,Consistency,Y/N,,,None,All S16 questions should be displayed only if any of the answers to 165.1 and 166.1 are ‘Yes’.,FA.23,child_at_risk_pivot.evr_prv_social_srv_ind,,,,N,Q,Risk of serious harm: full analysis,x,
+"Current category of Child protection registration (ie neglect, physical, sexual or emotional)",210.1,,,,,,,"Category of Child protection registration (ie neglect, physical, sexual or emotional",Current category of child protection registration,,Select a current category of child protection registration,Select a current category of child protection registration,Simpler. Checkboxes will be visible.,"Checkboxes:
 Neglect
 Physical
 Sexual
-Emotional",,,None,All S16 questions should be displayed only if any of the answers to 165.1 and 166.1 are ‘Yes’.,FA.24,child_at_risk_reg_pivot_pivot.catg_cpr_ELM for current_previous_ELM = ‘Current’,,,,N,Q,Risk of serious harm: full analysis,x,,
-"Previous category of Child protection registration (ie neglect, physical, sexual or emotional)",211.1,,,,,,,"Category of Child protection registration (ie neglect, physical, sexual or emotional",Previous category of child protection registration ,,Select a previous category of child protection registration,Select a previous category of child protection registration,Simpler. Checkboxes will be visible.,"Checkboxes:
+Emotional",,,None,All S16 questions should be displayed only if any of the answers to 165.1 and 166.1 are ‘Yes’.,FA.24,child_at_risk_reg_pivot_pivot.catg_cpr_ELM for current_previous_ELM = ‘Current’,,,,N,Q,Risk of serious harm: full analysis,x,
+"Previous category of Child protection registration (ie neglect, physical, sexual or emotional)",211.1,,,,,,,"Category of Child protection registration (ie neglect, physical, sexual or emotional",Previous category of child protection registration,,Select a previous category of child protection registration,Select a previous category of child protection registration,Simpler. Checkboxes will be visible.,"Checkboxes:
 Neglect
 Physical
 Sexual
-Emotional",,,None,All S16 questions should be displayed only if any of the answers to 165.1 and 166.1 are ‘Yes’.,FA.25,child_at_risk_reg_pivot_pivot.catg_cpr_ELM for current_previous_ELM = ‘Current’,,,,N,Q,Risk of serious harm: full analysis,x,,
-
+Emotional",,,None,All S16 questions should be displayed only if any of the answers to 165.1 and 166.1 are ‘Yes’.,FA.25,child_at_risk_reg_pivot_pivot.catg_cpr_ELM for current_previous_ELM = ‘Current’,,,,N,Q,Risk of serious harm: full analysis,x,
