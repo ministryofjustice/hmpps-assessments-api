@@ -135,6 +135,12 @@ class QuestionService(
     return QuestionSchemaEntities(questionSchemaRepository.findAll())
   }
 
+  fun getAllGroupQuestions(groupCode: String): QuestionSchemaEntities {
+    val group = findByGroupCode(groupCode)
+    val questionsInGroup = group.contents.filter { it.question != null }.map { it.question!! }
+    return QuestionSchemaEntities(questionsInGroup)
+  }
+
   fun getAllAnswers(): List<AnswerSchemaEntity> {
     return answerSchemaRepository.findAll()
   }
@@ -160,7 +166,7 @@ class QuestionService(
 
 class QuestionSchemaEntities(
   questionsList: List<QuestionSchemaEntity>
-) {
+): List<QuestionSchemaEntity> by questionsList {
   private val questions = questionsList.map { it.questionSchemaUuid to it }.toMap()
   private val oasysMapping = mapByOasysCoords(questionsList)
 

@@ -64,10 +64,6 @@ class AssessmentServiceTest {
   private val assessmentId = 1L
   private val assessmentType = AssessmentType.SHORT_FORM_PSR
 
-  private val oasysOffenderPk = 1L
-  private val crn = "X12345"
-  private val oasysSetPk = 1L
-
   private val episodeId1 = 1L
   private val episodeId2 = 2L
   private val episodeId3 = 3L
@@ -82,149 +78,6 @@ class AssessmentServiceTest {
   private val answer1Uuid = UUID.randomUUID()
   private val answer2Uuid = UUID.randomUUID()
   private val answer3Uuid = UUID.randomUUID()
-
-  private val courtCode = "SHF06"
-  private val caseNumber = "668911253"
-
-  private val deliusSource = "DELIUS"
-  private val eventId = 1L
-
-  @Nested
-  @DisplayName("creating assessments from Delius")
-  inner class CreatingDeliusAssessments {
-    @Test
-    fun `create new offender with new assessment from delius event id and crn`() {
-      every { subjectRepository.findBySourceAndSourceIdAndCrn(deliusSource, eventId.toString(), crn) } returns null
-      every { offenderService.getOffender("X12345") } returns OffenderDto()
-      every { assessmentUpdateRestClient.createOasysOffender(crn = crn, deliusEvent = eventId) } returns oasysOffenderPk
-      every { assessmentUpdateRestClient.createAssessment(oasysOffenderPk, assessmentType) } returns oasysSetPk
-      every { episodeService.prepopulate(any()) } returnsArgument 0
-      every { assessmentRepository.save(any()) } returns AssessmentEntity(assessmentId = assessmentId)
-
-      assessmentsService.createNewAssessment(
-        CreateAssessmentDto(
-          deliusEventId = eventId,
-          crn = crn,
-          assessmentType = assessmentType
-        )
-      )
-      verify(exactly = 1) { assessmentRepository.save(any()) }
-    }
-
-    @Test
-    fun `return existing assessment from delius event id and crn if one already exists`() {
-      every { subjectRepository.findBySourceAndSourceIdAndCrn(deliusSource, eventId.toString(), crn) } returns
-        SubjectEntity(assessment = AssessmentEntity(assessmentId = assessmentId, assessmentUuid = assessmentUuid))
-
-      val assessmentDto =
-        assessmentsService.createNewAssessment(
-          CreateAssessmentDto(
-            deliusEventId = eventId,
-            crn = crn,
-            assessmentType = assessmentType
-          )
-        )
-      assertThat(assessmentDto.assessmentUuid).isEqualTo(assessmentUuid)
-      verify(exactly = 0) { assessmentRepository.save(any()) }
-    }
-  }
-
-  @Test
-  fun `throw exception if crn is null`() {
-    assertThrows<IllegalStateException> {
-      assessmentsService.createNewAssessment(
-        CreateAssessmentDto(
-          deliusEventId = eventId,
-          crn = null,
-          assessmentType = assessmentType
-        )
-      )
-    }
-    verify(exactly = 0) { assessmentRepository.save(any()) }
-  }
-
-  @Test
-  fun `throw exception if delius event id is null`() {
-    assertThrows<IllegalStateException> {
-      assessmentsService.createNewAssessment(
-        CreateAssessmentDto(
-          deliusEventId = null,
-          crn = crn,
-          assessmentType = assessmentType
-        )
-      )
-    }
-    verify(exactly = 0) { assessmentRepository.save(any()) }
-  }
-
-  @Test
-  fun `throw exception if offender is not returned from Delius`() {
-    every { subjectRepository.findBySourceAndSourceIdAndCrn(deliusSource, eventId.toString(), crn) } returns null
-    every { offenderService.getOffender("X12345") } throws EntityNotFoundException("")
-
-    assertThrows<EntityNotFoundException> {
-      assessmentsService.createNewAssessment(
-        CreateAssessmentDto(
-          deliusEventId = eventId,
-          crn = crn,
-          assessmentType = assessmentType
-        )
-      )
-    }
-    verify(exactly = 0) { assessmentRepository.save(any()) }
-  }
-
-  @Nested
-  @DisplayName("creating assessments from court")
-  inner class CreatingCourtAssessments {
-    @Test
-    fun `create new assessment from court`() {
-      every {
-        subjectRepository.findBySourceAndSourceId(
-          AssessmentService.courtSource,
-          "$courtCode|$caseNumber"
-        )
-      } returns null
-      every { assessmentRepository.save(any()) } returns AssessmentEntity(assessmentId = assessmentId)
-      every { courtCaseRestClient.getCourtCase(courtCode, caseNumber) } returns CourtCase(crn = crn)
-      every { assessmentUpdateRestClient.createOasysOffender(crn) } returns oasysOffenderPk
-      every { assessmentUpdateRestClient.createAssessment(oasysOffenderPk, assessmentType) } returns oasysSetPk
-      every { episodeService.prepopulate(any()) } returnsArgument 0
-
-      assessmentsService.createNewAssessment(
-        CreateAssessmentDto(
-          courtCode = courtCode,
-          caseNumber = caseNumber,
-          assessmentType = assessmentType
-        )
-      )
-
-      verify(exactly = 1) { assessmentRepository.save(any()) }
-      verify(exactly = 1) { courtCaseRestClient.getCourtCase(courtCode, caseNumber) }
-    }
-
-    @Test
-    fun `return existing assessment if one exists from court`() {
-      every {
-        subjectRepository.findBySourceAndSourceId(
-          AssessmentService.courtSource,
-          "$courtCode|$caseNumber"
-        )
-      } returns SubjectEntity(assessment = AssessmentEntity(assessmentId = 1))
-
-      assessmentsService.createNewAssessment(
-        CreateAssessmentDto(
-          courtCode = courtCode,
-          caseNumber = caseNumber,
-          assessmentType = AssessmentType.SHORT_FORM_PSR
-        )
-      )
-
-      verify(exactly = 0) { assessmentRepository.save(any()) }
-      verify(exactly = 0) { courtCaseRestClient.getCourtCase(courtCode, caseNumber) }
-      verify(exactly = 0) { assessmentRepository.save(any()) }
-    }
-  }
 
   @Nested
   @DisplayName("episodes")
@@ -428,64 +281,6 @@ class AssessmentServiceTest {
         .isInstanceOf(UpdateClosedEpisodeException::class.java)
         .hasMessage("Cannot update closed Episode $episodeUuid for assessment $assessmentUuid")
     }
-
-    @Test
-    fun `returns validation errors from OASys`() {
-      val answers = mutableMapOf(
-        existingQuestionUuid to AnswerEntity(listOf("free text", "fruit loops", "biscuits"))
-      )
-      val assessment = assessmentEntityWithOasysOffender(answers)
-
-      val oaSysMappings = mutableListOf<OASysMappingEntity>()
-      val question = QuestionSchemaEntity(
-        questionSchemaId = 9,
-        questionSchemaUuid = existingQuestionUuid,
-        questionCode = "question",
-        questionText = "favourite breakfast cereal?",
-        oasysMappings = oaSysMappings
-      )
-      oaSysMappings.add(
-        OASysMappingEntity(
-          mappingId = 1,
-          sectionCode = "section1",
-          logicalPage = null,
-          questionCode = "Q1",
-          questionSchema = question
-        )
-      )
-
-      every { questionService.getAllQuestions() } returns QuestionSchemaEntities(listOf(question))
-      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
-      every { assessmentRepository.save(any()) } returns null // should save when errors?
-      val oasysError = UpdateAssessmentAnswersResponseDto(
-        7777,
-        setOf(
-          ValidationErrorDto("section1", null, "Q1", "OOPS", "NO", false)
-        )
-      )
-      every { assessmentUpdateRestClient.updateAssessment(any(), any(), any(), any(), any(), any()) } returns oasysError
-      // Christ, what a lot of set up
-
-      // Apply the update
-      val updatedAnswers = UpdateAssessmentEpisodeDto(
-        mapOf(existingQuestionUuid to listOf("fruit loops", "custard"))
-      )
-      val episodeDto = assessmentsService.updateEpisode(assessmentUuid, episodeUuid, updatedAnswers)
-
-      // Updated answers in returned DTO
-      assertThat(episodeDto.answers).hasSize(1)
-      with(episodeDto.answers[existingQuestionUuid]!!) {
-        assertThat(size).isEqualTo(2)
-        assertThat(this).containsAll(listOf("fruit loops", "custard"))
-      }
-
-      // But also errors!
-      assertThat(episodeDto.errors).hasSize(1)
-      with(episodeDto.errors!![existingQuestionUuid]!!) {
-        assertThat(size).isEqualTo(1)
-        assertThat(this).contains("NO")
-      }
-    }
   }
 
   @Nested
@@ -670,56 +465,6 @@ class AssessmentServiceTest {
     }
   }
 
-  @Nested
-  @DisplayName("OAsys")
-  inner class UpdatingOAsys {
-    @Test
-    fun `should update OASys if OASysSet stored against episode`() {
-      setupQuestionCodes()
-
-      val episode = AssessmentEpisodeEntity(
-        episodeId = episodeId1,
-        assessmentType = AssessmentType.SHORT_FORM_PSR,
-        oasysSetPk = oasysSetPk
-      )
-
-      every { assessmentUpdateRestClient.updateAssessment(oasysOffenderPk, oasysSetPk, assessmentType, any()) } returns UpdateAssessmentAnswersResponseDto()
-      assessmentsService.updateOASysAssessment(oasysOffenderPk, episode)
-      verify(exactly = 1) { assessmentUpdateRestClient.updateAssessment(oasysOffenderPk, oasysSetPk, assessmentType, any()) }
-    }
-
-    @Test
-    fun `should not update OASys if no OASysSet stored against episode`() {
-      setupQuestionCodes()
-
-      val episode = AssessmentEpisodeEntity(
-        oasysSetPk = oasysSetPk
-      )
-
-      every { assessmentUpdateRestClient.updateAssessment(oasysOffenderPk, oasysSetPk, assessmentType, any()) } returns UpdateAssessmentAnswersResponseDto()
-      assessmentsService.updateOASysAssessment(oasysOffenderPk, episode)
-      verify(exactly = 0) { assessmentUpdateRestClient.updateAssessment(oasysOffenderPk, oasysSetPk, assessmentType, any()) }
-    }
-
-    @Test
-    fun `should create Oasys Answer from free text answer`() {
-      val mapping = OASysMappingEntity(sectionCode = "1", questionCode = "R1.3", logicalPage = 1, fixed_field = false, mappingId = 1, questionSchema = QuestionSchemaEntity(questionSchemaId = 1))
-      val result = OasysAnswers.mapOasysAnswer(mapping, listOf("Free Text"), "radios")[0]
-      assertThat(result.answer).isEqualTo("Free Text")
-      assertThat(result.logicalPage).isEqualTo(1)
-      assertThat(result.isStatic).isFalse()
-      assertThat(result.questionCode).isEqualTo("R1.3")
-      assertThat(result.sectionCode).isEqualTo("1")
-    }
-
-    @Test
-    fun `should create Oasys Answer with correct date format`() {
-      val mapping = OASysMappingEntity(sectionCode = "1", questionCode = "R1.3", logicalPage = 1, fixed_field = false, mappingId = 1, questionSchema = QuestionSchemaEntity(questionSchemaId = 1))
-      val result = OasysAnswers.mapOasysAnswer(mapping, listOf("1975-01-20T00:00:00.000Z"), "date")[0]
-      assertThat(result.answer).isEqualTo("20/01/1975")
-    }
-  }
-
   private fun setupQuestionCodes() {
     val dummy = AnswerSchemaGroupEntity(answerSchemaId = 99)
 
@@ -751,29 +496,5 @@ class AssessmentServiceTest {
         )
       )
     )
-  }
-
-  private fun assessmentEntityWithOasysOffender(answers: MutableMap<UUID, AnswerEntity>): AssessmentEntity {
-    val subject = SubjectEntity(oasysOffenderPk = 9999)
-    val episodes = mutableListOf<AssessmentEpisodeEntity>()
-    val assessment = AssessmentEntity(
-      assessmentId = assessmentId,
-      episodes = episodes,
-      subject_ = mutableListOf(subject)
-    )
-
-    episodes.add(
-      AssessmentEpisodeEntity(
-        episodeUuid = episodeUuid,
-        episodeId = episodeId2,
-        assessment = assessment,
-        assessmentType = AssessmentType.SHORT_FORM_PSR,
-        changeReason = "Change of Circs 2",
-        oasysSetPk = 7777,
-        answers = answers
-      )
-    )
-
-    return assessment
   }
 }
