@@ -6,10 +6,7 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
-import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.Nested
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.api.*
 import org.junit.jupiter.api.extension.ExtendWith
 import uk.gov.justice.digital.assessments.api.CreateAssessmentDto
 import uk.gov.justice.digital.assessments.api.OffenderDto
@@ -470,6 +467,19 @@ class AssessmentServiceTest {
   @Nested
   @DisplayName("update episode with table answers")
   inner class TableAnswers {
+    val childNameQuestion = makeQuestion(10, childQuestion1, "Name")
+    val childAddressQuestion = makeQuestion(11, childQuestion2, "Address")
+    val childTableQuestions = QuestionSchemaEntities(listOf(
+      childNameQuestion,
+      childAddressQuestion
+    ))
+
+    @BeforeEach
+    fun setup() {
+      every { assessmentRepository.save(any()) } returns null
+      every { questionService.getAllGroupQuestions("children_at_risk") } returns childTableQuestions
+    }
+
     @Test
     fun `add first row to table`() {
       val answers = mutableMapOf(
@@ -478,7 +488,6 @@ class AssessmentServiceTest {
         question3Uuid to AnswerEntity("not mapped to oasys"),
       )
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity(answers)
-      every { assessmentRepository.save(any()) } returns null
 
       val tableAnswers = UpdateAssessmentEpisodeDto(
         mapOf(
@@ -507,10 +516,9 @@ class AssessmentServiceTest {
         question2Uuid to AnswerEntity("1975-01-20T00:00:00.000Z"),
         question3Uuid to AnswerEntity("not mapped to oasys"),
         childQuestion1 to AnswerEntity("child name 1"),
-        childQuestion2 to AnswerEntity("child answer 1")
+        childQuestion2 to AnswerEntity("child address 1")
       )
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity(answers)
-      every { assessmentRepository.save(any()) } returns null
 
       val tableAnswers = UpdateAssessmentEpisodeDto(
         mapOf(
@@ -523,16 +531,14 @@ class AssessmentServiceTest {
       assertThat(episodeDto.answers).hasSize(5)
       with(episodeDto.answers[childQuestion1]!!) {
         assertThat(size).isEqualTo(2)
-        assertThat(first()).isEqualTo(
-          listOf("child name 1", "child name 2")
-        )
+        assertThat(first()).isEqualTo("child name 1")
+        assertThat(last()).isEqualTo("child name 2")
       }
 
       with(episodeDto.answers[childQuestion2]!!) {
         assertThat(size).isEqualTo(2)
-        assertThat(first()).isEqualTo(
-          listOf("child address 1", "child address 2")
-        )
+        assertThat(first()).isEqualTo("child address 1")
+        assertThat(last()).isEqualTo("child address 2")
       }
     }
 
@@ -543,10 +549,10 @@ class AssessmentServiceTest {
         question2Uuid to AnswerEntity("1975-01-20T00:00:00.000Z"),
         question3Uuid to AnswerEntity("not mapped to oasys"),
         childQuestion1 to AnswerEntity("child name 1"),
-        childQuestion2 to AnswerEntity("child answer 1")
+        childQuestion2 to AnswerEntity("child address 1")
       )
+
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity(answers)
-      every { assessmentRepository.save(any()) } returns null
 
       val tableAnswers = UpdateAssessmentEpisodeDto(
         mapOf(
@@ -558,16 +564,14 @@ class AssessmentServiceTest {
       assertThat(episodeDto.answers).hasSize(5)
       with(episodeDto.answers[childQuestion1]!!) {
         assertThat(size).isEqualTo(2)
-        assertThat(first()).isEqualTo(
-          listOf("child name 1", "child name 2")
-        )
+        assertThat(first()).isEqualTo("child name 1")
+        assertThat(last()).isEqualTo("child name 2")
       }
 
       with(episodeDto.answers[childQuestion2]!!) {
         assertThat(size).isEqualTo(2)
-        assertThat(first()).isEqualTo(
-          listOf("child address 1", "")
-        )
+        assertThat(first()).isEqualTo("child address 1")
+        assertThat(last()).isEqualTo("")
       }
     }
   }
@@ -604,4 +608,19 @@ class AssessmentServiceTest {
       )
     )
   }
+
+  private fun makeQuestion(
+    questionSchemaId: Long,
+    questionSchemaUuid: UUID,
+    questionCode: String
+  ): QuestionSchemaEntity {
+    val question = QuestionSchemaEntity(
+      questionSchemaId = questionSchemaId,
+      questionSchemaUuid = questionSchemaUuid,
+      questionCode = questionCode,
+      answerType = "free text"
+    )
+    return question
+  }
+
 }
