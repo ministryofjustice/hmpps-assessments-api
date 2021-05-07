@@ -75,6 +75,8 @@ class AssessmentServiceTest {
   private val question1Uuid = UUID.randomUUID()
   private val question2Uuid = UUID.randomUUID()
   private val question3Uuid = UUID.randomUUID()
+  private val childQuestion1 = UUID.randomUUID()
+  private val childQuestion2 = UUID.randomUUID()
   private val answer1Uuid = UUID.randomUUID()
   private val answer2Uuid = UUID.randomUUID()
   private val answer3Uuid = UUID.randomUUID()
@@ -462,6 +464,111 @@ class AssessmentServiceTest {
       assertThatThrownBy { assessmentsService.getCurrentAssessmentCodedAnswers(assessmentUuid) }
         .isInstanceOf(IllegalStateException::class.java)
         .hasMessage("Answer Code not found for question $question1Uuid answer value NO")
+    }
+  }
+
+  @Nested
+  @DisplayName("update episode with table answers")
+  inner class TableAnswers {
+    @Test
+    fun `add first row to table`() {
+      val answers = mutableMapOf(
+        question1Uuid to AnswerEntity("some free text"),
+        question2Uuid to AnswerEntity("1975-01-20T00:00:00.000Z"),
+        question3Uuid to AnswerEntity("not mapped to oasys"),
+      )
+      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity(answers)
+      every { assessmentRepository.save(any()) } returns null
+
+      val tableAnswers = UpdateAssessmentEpisodeDto(
+        mapOf(
+          childQuestion1 to listOf("child name"),
+          childQuestion2 to listOf("child address"))
+      )
+
+      val episodeDto = assessmentsService.addEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", tableAnswers)
+
+      assertThat(episodeDto.answers).hasSize(5)
+      with(episodeDto.answers[childQuestion1]!!) {
+        assertThat(size).isEqualTo(1)
+        assertThat(first()).isEqualTo("child name")
+      }
+
+      with(episodeDto.answers[childQuestion2]!!) {
+        assertThat(size).isEqualTo(1)
+        assertThat(first()).isEqualTo("child address")
+      }
+    }
+
+    @Test
+    fun `add second row to table`() {
+      val answers = mutableMapOf(
+        question1Uuid to AnswerEntity("some free text"),
+        question2Uuid to AnswerEntity("1975-01-20T00:00:00.000Z"),
+        question3Uuid to AnswerEntity("not mapped to oasys"),
+        childQuestion1 to AnswerEntity("child name 1"),
+        childQuestion2 to AnswerEntity("child answer 1")
+      )
+      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity(answers)
+      every { assessmentRepository.save(any()) } returns null
+
+      val tableAnswers = UpdateAssessmentEpisodeDto(
+        mapOf(
+          childQuestion1 to listOf("child name 2"),
+          childQuestion2 to listOf("child address 2"))
+      )
+
+      val episodeDto = assessmentsService.addEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", tableAnswers)
+
+      assertThat(episodeDto.answers).hasSize(5)
+      with(episodeDto.answers[childQuestion1]!!) {
+        assertThat(size).isEqualTo(2)
+        assertThat(first()).isEqualTo(
+          listOf("child name 1", "child name 2")
+        )
+      }
+
+      with(episodeDto.answers[childQuestion2]!!) {
+        assertThat(size).isEqualTo(2)
+        assertThat(first()).isEqualTo(
+          listOf("child address 1", "child address 2")
+        )
+      }
+    }
+
+    @Test
+    fun `add second row with partial data to table`() {
+      val answers = mutableMapOf(
+        question1Uuid to AnswerEntity("some free text"),
+        question2Uuid to AnswerEntity("1975-01-20T00:00:00.000Z"),
+        question3Uuid to AnswerEntity("not mapped to oasys"),
+        childQuestion1 to AnswerEntity("child name 1"),
+        childQuestion2 to AnswerEntity("child answer 1")
+      )
+      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity(answers)
+      every { assessmentRepository.save(any()) } returns null
+
+      val tableAnswers = UpdateAssessmentEpisodeDto(
+        mapOf(
+          childQuestion1 to listOf("child name 2"))
+      )
+
+      val episodeDto = assessmentsService.addEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", tableAnswers)
+
+      assertThat(episodeDto.answers).hasSize(5)
+      with(episodeDto.answers[childQuestion1]!!) {
+        assertThat(size).isEqualTo(2)
+        assertThat(first()).isEqualTo(
+          listOf("child name 1", "child name 2")
+        )
+      }
+
+      with(episodeDto.answers[childQuestion2]!!) {
+        assertThat(size).isEqualTo(2)
+        assertThat(first()).isEqualTo(
+          listOf("child address 1", "")
+        )
+      }
     }
   }
 

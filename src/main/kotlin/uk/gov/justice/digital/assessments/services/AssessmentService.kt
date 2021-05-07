@@ -208,6 +208,17 @@ class AssessmentService(
     return updateEpisode(episode, updatedEpisodeAnswers)
   }
 
+  @Transactional
+  fun addEpisodeTableRow(
+    assessmentUuid: UUID,
+    episodeUuid: UUID,
+    tableName: String,
+    tableRowAnswers: UpdateAssessmentEpisodeDto
+  ): AssessmentEpisodeDto {
+    val episode = getEpisode(episodeUuid, assessmentUuid)
+    return updateEpisode(episode, tableRowAnswers)
+  }
+
   private fun updateEpisode(
     episode: AssessmentEpisodeEntity,
     updatedEpisodeAnswers: UpdateAssessmentEpisodeDto
