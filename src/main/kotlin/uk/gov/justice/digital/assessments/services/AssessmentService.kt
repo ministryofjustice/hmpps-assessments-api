@@ -217,7 +217,7 @@ class AssessmentService(
   ): AssessmentEpisodeDto {
     val tableQuestions = questionService.getAllGroupQuestions(tableName)
     if (tableQuestions.isEmpty())
-      throw IllegalStateException("Empty create assessment request")
+      throw IllegalStateException("No questions found for table $tableName")
 
     val episode = getEpisode(episodeUuid, assessmentUuid)
 
