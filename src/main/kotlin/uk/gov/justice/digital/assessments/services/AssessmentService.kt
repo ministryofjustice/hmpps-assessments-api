@@ -32,6 +32,8 @@ import java.time.LocalDateTime
 import java.util.UUID
 import javax.transaction.Transactional
 
+typealias TableAnswers = Map<UUID, Collection<String>>
+
 @Service
 class AssessmentService(
   private val assessmentRepository: AssessmentRepository,
@@ -247,7 +249,7 @@ class AssessmentService(
     assessmentUuid: UUID,
     episodeUuid: UUID,
     tableName: String,
-    modifyFn: (Map<UUID, Collection<String>>) -> Map<UUID, Collection<String>>
+    modifyFn: (TableAnswers) -> TableAnswers
   ): AssessmentEpisodeDto {
     val tableQuestions = questionService.getAllGroupQuestions(tableName)
     if (tableQuestions.isEmpty())
@@ -264,7 +266,7 @@ class AssessmentService(
   private fun grabExistingTableAnswers(
     episode: AssessmentEpisodeEntity,
     tableQuestions: QuestionSchemaEntities
-  ): Map<UUID, Collection<String>> {
+  ): TableAnswers {
     val existingTable = mutableMapOf<UUID, Collection<String>>()
 
     for (questionUuid in tableQuestions.map { it.questionSchemaUuid }) {
@@ -276,9 +278,9 @@ class AssessmentService(
   }
 
   private fun extendTableAnswers(
-    existingTable: Map<UUID, Collection<String>>,
-    newTableRow: Map<UUID, Collection<String>>
-  ): Map<UUID, Collection<String>> {
+    existingTable: TableAnswers,
+    newTableRow: TableAnswers
+  ): TableAnswers {
     val updatedTable = mutableMapOf<UUID, Collection<String>>()
 
     for ((id, answers) in existingTable) {
@@ -291,10 +293,10 @@ class AssessmentService(
   }
 
   private fun updateTableAnswers(
-    existingTable: Map<UUID, Collection<String>>,
+    existingTable: TableAnswers,
     index: Int,
-    updatedTableRow: Map<UUID, Collection<String>>
-  ): Map<UUID, Collection<String>> {
+    updatedTableRow: TableAnswers
+  ): TableAnswers {
     val updatedTable = mutableMapOf<UUID, Collection<String>>()
 
     for ((id, answers) in existingTable) {
