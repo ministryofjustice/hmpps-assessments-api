@@ -18,7 +18,7 @@ interface QuestionGroupRepository : JpaRepository<QuestionGroupEntity, String> {
       "(g.heading\\:\\:varchar) as heading, " +
       "count(qg.content_uuid) as contentCount, " +
       "count(case when qg.content_type = 'grouping' then qg.content_uuid end) as groupCount, " +
-      "count(case when qg.content_type = 'question' then qg.content_uuid end) as questionCount, " +
+      "count(case when qg.content_type = 'question' then qg.content_uuid end) as questionCount " +
       "from question_group qg " +
       "left join grouping g on qg.group_uuid = g.group_uuid " +
       "group by g.group_uuid, g.heading ",
