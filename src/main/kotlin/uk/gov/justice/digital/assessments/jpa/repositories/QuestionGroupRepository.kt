@@ -21,7 +21,7 @@ interface QuestionGroupRepository : JpaRepository<QuestionGroupEntity, String> {
       "count(case when qg.content_type = 'question' then qg.content_uuid end) as questionCount " +
       "from question_group qg " +
       "left join grouping g on qg.group_uuid = g.group_uuid " +
-      "group by g.group_uuid, g.heading ",
+      "group by g.group_uuid, g.heading, g.group_code",
     nativeQuery = true
   )
   fun listGroups(): Collection<GroupSummaryEntity>
