@@ -210,6 +210,7 @@ class AssessmentService(
     return updateEpisode(episode, updatedEpisodeAnswers)
   }
 
+  @Transactional
   fun addEpisodeTableRow(
     assessmentUuid: UUID,
     episodeUuid: UUID,
@@ -225,6 +226,7 @@ class AssessmentService(
     }
   }
 
+  @Transactional
   fun updateEpisodeTableRow(
     assessmentUuid: UUID,
     episodeUuid: UUID,
@@ -244,7 +246,6 @@ class AssessmentService(
     }
   }
 
-  @Transactional
   private fun modifyEpisodeTableRow(
     assessmentUuid: UUID,
     episodeUuid: UUID,
