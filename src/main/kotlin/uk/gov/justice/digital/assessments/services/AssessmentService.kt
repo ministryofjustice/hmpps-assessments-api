@@ -32,6 +32,8 @@ import java.time.LocalDateTime
 import java.util.UUID
 import javax.transaction.Transactional
 
+typealias TableAnswers = Map<UUID, Collection<String>>
+
 @Service
 class AssessmentService(
   private val assessmentRepository: AssessmentRepository,
@@ -215,6 +217,41 @@ class AssessmentService(
     tableName: String,
     newTableRow: UpdateAssessmentEpisodeDto
   ): AssessmentEpisodeDto {
+    return modifyEpisodeTableRow(
+      assessmentUuid,
+      episodeUuid,
+      tableName
+    ) { existingTable ->
+        extendTableAnswers(existingTable, newTableRow.answers)
+    }
+  }
+
+  @Transactional
+  fun updateEpisodeTableRow(
+    assessmentUuid: UUID,
+    episodeUuid: UUID,
+    tableName: String,
+    index: Int,
+    updatedTableRow: UpdateAssessmentEpisodeDto
+  ): AssessmentEpisodeDto {
+    return modifyEpisodeTableRow(
+      assessmentUuid,
+      episodeUuid,
+      tableName
+    ) { existingTable ->
+      if ((index < 0) || (index >= existingTable.values.first().size))
+        throw IllegalStateException("Bad index $index for table $tableName")
+
+      updateTableAnswers(existingTable, index, updatedTableRow.answers)
+    }
+  }
+
+  private fun modifyEpisodeTableRow(
+    assessmentUuid: UUID,
+    episodeUuid: UUID,
+    tableName: String,
+    modifyFn: (TableAnswers) -> TableAnswers
+  ): AssessmentEpisodeDto {
     val tableQuestions = questionService.getAllGroupQuestions(tableName)
     if (tableQuestions.isEmpty())
       throw IllegalStateException("No questions found for table $tableName")
@@ -222,7 +259,7 @@ class AssessmentService(
     val episode = getEpisode(episodeUuid, assessmentUuid)
 
     val existingTable = grabExistingTableAnswers(episode, tableQuestions);
-    val updatedTable = extendTableAnswers(existingTable, newTableRow.answers)
+    val updatedTable = modifyFn(existingTable)
 
     return updateEpisode(episode, UpdateAssessmentEpisodeDto(updatedTable))
   }
@@ -230,7 +267,7 @@ class AssessmentService(
   private fun grabExistingTableAnswers(
     episode: AssessmentEpisodeEntity,
     tableQuestions: QuestionSchemaEntities
-  ): Map<UUID, Collection<String>> {
+  ): TableAnswers {
     val existingTable = mutableMapOf<UUID, Collection<String>>()
 
     for (questionUuid in tableQuestions.map { it.questionSchemaUuid }) {
@@ -242,15 +279,33 @@ class AssessmentService(
   }
 
   private fun extendTableAnswers(
-    existingTable: Map<UUID, Collection<String>>,
-    newTableRow: Map<UUID, Collection<String>>
-  ): Map<UUID, Collection<String>> {
+    existingTable: TableAnswers,
+    newTableRow: TableAnswers
+  ): TableAnswers {
     val updatedTable = mutableMapOf<UUID, Collection<String>>()
 
     for ((id, answers) in existingTable) {
       val newAnswer = newTableRow.getOrDefault(id, listOf(""))
       val extendedAnswer = listOf(answers, newAnswer).flatten()
-      updatedTable.put(id, extendedAnswer)
+      updatedTable[id] = extendedAnswer
+    }
+
+    return updatedTable
+  }
+
+  private fun updateTableAnswers(
+    existingTable: TableAnswers,
+    index: Int,
+    updatedTableRow: TableAnswers
+  ): TableAnswers {
+    val updatedTable = mutableMapOf<UUID, Collection<String>>()
+
+    for ((id, answers) in existingTable) {
+      val updatedAnswer = updatedTableRow.getOrDefault(id, listOf(""))
+      val before = answers.toList().subList(0, index)
+      val after = answers.toList().subList(index+1, answers.size)
+      val extendedAnswer = listOf(before, updatedAnswer, after).flatten()
+      updatedTable[id] = extendedAnswer
     }
 
     return updatedTable
