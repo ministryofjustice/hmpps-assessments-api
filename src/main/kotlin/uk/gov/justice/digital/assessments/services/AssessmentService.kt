@@ -208,6 +208,54 @@ class AssessmentService(
     return updateEpisode(episode, updatedEpisodeAnswers)
   }
 
+  @Transactional
+  fun addEpisodeTableRow(
+    assessmentUuid: UUID,
+    episodeUuid: UUID,
+    tableName: String,
+    newTableRow: UpdateAssessmentEpisodeDto
+  ): AssessmentEpisodeDto {
+    val tableQuestions = questionService.getAllGroupQuestions(tableName)
+    if (tableQuestions.isEmpty())
+      throw IllegalStateException("No questions found for table $tableName")
+
+    val episode = getEpisode(episodeUuid, assessmentUuid)
+
+    val existingTable = grabExistingTableAnswers(episode, tableQuestions);
+    val updatedTable = extendTableAnswers(existingTable, newTableRow.answers)
+
+    return updateEpisode(episode, UpdateAssessmentEpisodeDto(updatedTable))
+  }
+
+  private fun grabExistingTableAnswers(
+    episode: AssessmentEpisodeEntity,
+    tableQuestions: QuestionSchemaEntities
+  ): Map<UUID, Collection<String>> {
+    val existingTable = mutableMapOf<UUID, Collection<String>>()
+
+    for (questionUuid in tableQuestions.map { it.questionSchemaUuid }) {
+      val answer = episode.answers?.get(questionUuid) ?: AnswerEntity()
+      existingTable[questionUuid] = answer.answers
+    }
+
+    return existingTable
+  }
+
+  private fun extendTableAnswers(
+    existingTable: Map<UUID, Collection<String>>,
+    newTableRow: Map<UUID, Collection<String>>
+  ): Map<UUID, Collection<String>> {
+    val updatedTable = mutableMapOf<UUID, Collection<String>>()
+
+    for ((id, answers) in existingTable) {
+      val newAnswer = newTableRow.getOrDefault(id, listOf(""))
+      val extendedAnswer = listOf(answers, newAnswer).flatten()
+      updatedTable.put(id, extendedAnswer)
+    }
+
+    return updatedTable
+  }
+
   private fun updateEpisode(
     episode: AssessmentEpisodeEntity,
     updatedEpisodeAnswers: UpdateAssessmentEpisodeDto
