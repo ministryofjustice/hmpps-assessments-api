@@ -125,6 +125,27 @@ class AssessmentController(val assessmentService: AssessmentService) {
     )
   }
 
+  @RequestMapping(path = ["/assessments/{assessmentUuid}/episodes/{episodeUuid}/{tableName}/{index}"], method = [RequestMethod.POST])
+  @Operation(description = "adds a row to a table answer")
+  @ApiResponses(
+    value = [
+      ApiResponse(responseCode = "200", description = "OK"),
+      ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
+      ApiResponse(responseCode = "422", description = "The update couldn't be processed")
+    ]
+  )
+  fun updateAssessmentEpisodeTableRow(
+    @Parameter(description = "Assessment UUID", required = true, example = "1234") @PathVariable assessmentUuid: UUID,
+    @Parameter(description = "Episode UUID", required = true) @PathVariable episodeUuid: UUID,
+    @Parameter(description = "Table Name", required = true) @PathVariable tableName: String,
+    @Parameter(description = "Row index", required = true) @PathVariable index: Int,
+    @Parameter(description = "Updated Row", required = true) @RequestBody episodeAnswers: UpdateAssessmentEpisodeDto
+  ): ResponseEntity<AssessmentEpisodeDto> {
+    return updateResponse(
+      assessmentService.updateEpisodeTableRow(assessmentUuid, episodeUuid, tableName, index, episodeAnswers)
+    )
+  }
+
   @RequestMapping(path = ["/assessments/{assessmentUuid}/episodes/current"], method = [RequestMethod.POST])
   @Operation(description = "updates the answers for the current episode")
   @ApiResponses(

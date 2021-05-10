@@ -227,6 +227,29 @@ class AssessmentService(
     return updateEpisode(episode, UpdateAssessmentEpisodeDto(updatedTable))
   }
 
+  @Transactional
+  fun updateEpisodeTableRow(
+    assessmentUuid: UUID,
+    episodeUuid: UUID,
+    tableName: String,
+    index: Int,
+    updatedTableRow: UpdateAssessmentEpisodeDto
+  ): AssessmentEpisodeDto {
+    val tableQuestions = questionService.getAllGroupQuestions(tableName)
+    if (tableQuestions.isEmpty())
+      throw IllegalStateException("No questions found for table $tableName")
+
+    val episode = getEpisode(episodeUuid, assessmentUuid)
+
+    val existingTable = grabExistingTableAnswers(episode, tableQuestions);
+    if ((index < 0) || (index >= existingTable.values.first().size))
+      throw IllegalStateException("Bad index $index for table $tableName")
+
+    val updatedTable = updateTableAnswers(existingTable, index, updatedTableRow.answers)
+
+    return updateEpisode(episode, UpdateAssessmentEpisodeDto(updatedTable))
+  }
+
   private fun grabExistingTableAnswers(
     episode: AssessmentEpisodeEntity,
     tableQuestions: QuestionSchemaEntities
@@ -250,7 +273,25 @@ class AssessmentService(
     for ((id, answers) in existingTable) {
       val newAnswer = newTableRow.getOrDefault(id, listOf(""))
       val extendedAnswer = listOf(answers, newAnswer).flatten()
-      updatedTable.put(id, extendedAnswer)
+      updatedTable[id] = extendedAnswer
+    }
+
+    return updatedTable
+  }
+
+  private fun updateTableAnswers(
+    existingTable: Map<UUID, Collection<String>>,
+    index: Int,
+    updatedTableRow: Map<UUID, Collection<String>>
+  ): Map<UUID, Collection<String>> {
+    val updatedTable = mutableMapOf<UUID, Collection<String>>()
+
+    for ((id, answers) in existingTable) {
+      val updatedAnswer = updatedTableRow.getOrDefault(id, listOf(""))
+      val before = answers.toList().subList(0, index)
+      val after = answers.toList().subList(index+1, answers.size)
+      val extendedAnswer = listOf(before, updatedAnswer, after).flatten()
+      updatedTable[id] = extendedAnswer
     }
 
     return updatedTable
