@@ -208,26 +208,21 @@ class AssessmentService(
     return updateEpisode(episode, updatedEpisodeAnswers)
   }
 
-  @Transactional
   fun addEpisodeTableRow(
     assessmentUuid: UUID,
     episodeUuid: UUID,
     tableName: String,
     newTableRow: UpdateAssessmentEpisodeDto
   ): AssessmentEpisodeDto {
-    val tableQuestions = questionService.getAllGroupQuestions(tableName)
-    if (tableQuestions.isEmpty())
-      throw IllegalStateException("No questions found for table $tableName")
-
-    val episode = getEpisode(episodeUuid, assessmentUuid)
-
-    val existingTable = grabExistingTableAnswers(episode, tableQuestions);
-    val updatedTable = extendTableAnswers(existingTable, newTableRow.answers)
-
-    return updateEpisode(episode, UpdateAssessmentEpisodeDto(updatedTable))
+    return modifyEpisodeTableRow(
+      assessmentUuid,
+      episodeUuid,
+      tableName
+    ) { existingTable ->
+        extendTableAnswers(existingTable, newTableRow.answers)
+    }
   }
 
-  @Transactional
   fun updateEpisodeTableRow(
     assessmentUuid: UUID,
     episodeUuid: UUID,
@@ -235,6 +230,25 @@ class AssessmentService(
     index: Int,
     updatedTableRow: UpdateAssessmentEpisodeDto
   ): AssessmentEpisodeDto {
+    return modifyEpisodeTableRow(
+      assessmentUuid,
+      episodeUuid,
+      tableName
+    ) { existingTable ->
+      if ((index < 0) || (index >= existingTable.values.first().size))
+        throw IllegalStateException("Bad index $index for table $tableName")
+
+      updateTableAnswers(existingTable, index, updatedTableRow.answers)
+    }
+  }
+
+  @Transactional
+  private fun modifyEpisodeTableRow(
+    assessmentUuid: UUID,
+    episodeUuid: UUID,
+    tableName: String,
+    modifyFn: (Map<UUID, Collection<String>>) -> Map<UUID, Collection<String>>
+  ): AssessmentEpisodeDto {
     val tableQuestions = questionService.getAllGroupQuestions(tableName)
     if (tableQuestions.isEmpty())
       throw IllegalStateException("No questions found for table $tableName")
@@ -242,10 +256,7 @@ class AssessmentService(
     val episode = getEpisode(episodeUuid, assessmentUuid)
 
     val existingTable = grabExistingTableAnswers(episode, tableQuestions);
-    if ((index < 0) || (index >= existingTable.values.first().size))
-      throw IllegalStateException("Bad index $index for table $tableName")
-
-    val updatedTable = updateTableAnswers(existingTable, index, updatedTableRow.answers)
+    val updatedTable = modifyFn(existingTable)
 
     return updateEpisode(episode, UpdateAssessmentEpisodeDto(updatedTable))
   }
