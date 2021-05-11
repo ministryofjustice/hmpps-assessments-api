@@ -166,8 +166,8 @@ class QuestionService(
 
 class QuestionSchemaEntities(
   questionsList: List<QuestionSchemaEntity>
-): List<QuestionSchemaEntity> by questionsList {
-  private val questions = questionsList.map { it.questionSchemaUuid to it }.toMap()
+) : List<QuestionSchemaEntity> by questionsList {
+  private val questions = questionsList.associateBy { it.questionSchemaUuid }
   private val oasysMapping = mapByOasysCoords(questionsList)
 
   operator fun get(questionSchemaUuid: UUID) = questions[questionSchemaUuid]

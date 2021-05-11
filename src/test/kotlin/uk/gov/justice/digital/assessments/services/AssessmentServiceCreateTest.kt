@@ -5,7 +5,6 @@ import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -13,35 +12,21 @@ import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import uk.gov.justice.digital.assessments.api.CreateAssessmentDto
 import uk.gov.justice.digital.assessments.api.OffenderDto
-import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
-import uk.gov.justice.digital.assessments.jpa.entities.AnswerEntity
-import uk.gov.justice.digital.assessments.jpa.entities.AnswerSchemaEntity
-import uk.gov.justice.digital.assessments.jpa.entities.AnswerSchemaGroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEntity
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
-import uk.gov.justice.digital.assessments.jpa.entities.OASysMappingEntity
-import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
-import uk.gov.justice.digital.assessments.jpa.repositories.EpisodeRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.SubjectRepository
 import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
-import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.UpdateAssessmentAnswersResponseDto
-import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.ValidationErrorDto
 import uk.gov.justice.digital.assessments.restclient.courtcaseapi.CourtCase
-import uk.gov.justice.digital.assessments.services.dto.OasysAnswers
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
-import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
-import java.time.LocalDateTime
 import java.util.UUID
 
 @ExtendWith(MockKExtension::class)
 @DisplayName("Assessment Service Create Tests")
 class AssessmentServiceCreateTest {
   private val assessmentRepository: AssessmentRepository = mockk()
-  private val episodeRepository: EpisodeRepository = mockk()
   private val subjectRepository: SubjectRepository = mockk()
   private val questionService: QuestionService = mockk()
   private val courtCaseRestClient: CourtCaseRestClient = mockk()
@@ -51,7 +36,6 @@ class AssessmentServiceCreateTest {
 
   private val assessmentsService = AssessmentService(
     assessmentRepository,
-    episodeRepository,
     subjectRepository,
     questionService,
     episodeService,

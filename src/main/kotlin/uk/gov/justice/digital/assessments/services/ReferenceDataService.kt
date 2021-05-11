@@ -29,15 +29,14 @@ class ReferenceDataService(
     parentFields?.mapNotNull { parentField -> parentField.key }?.toCollection(questionUuids)
 
     val oasysMappings = oaSysMappingRepository.findAllByQuestionSchema_QuestionSchemaUuidIn(questionUuids)
-      ?.map { m -> m.questionSchema.questionSchemaUuid to m }
-      ?.toMap()
+      ?.associate { m -> m.questionSchema.questionSchemaUuid to m }
 
     val questionSchema = oasysMappings?.get(questionUuid)
       ?: throw EntityNotFoundException("Failed to find OASys mappings for question schema $questionUuid")
 
     val mappedParentFields: Map<String, String>? = parentFields
       ?.map { (key, value) ->
-        oasysMappings.getOrElse(key, { throw EntityNotFoundException("Failed to find OASys mappings for parent field $key") }).questionCode to value
+        oasysMappings.getOrElse(key) { throw EntityNotFoundException("Failed to find OASys mappings for parent field $key") }.questionCode to value
       }?.toMap()
 
     return episode.oasysSetPk.let {

@@ -32,25 +32,32 @@ import java.util.UUID
 
 @ExtendWith(MockKExtension::class)
 @DisplayName("Assessment Service OASys Tests")
-class AssessmentServiceOASysTest {
+class AssessmentUpdateServiceOASysTest {
   private val assessmentRepository: AssessmentRepository = mockk()
   private val episodeRepository: EpisodeRepository = mockk()
-  private val subjectRepository: SubjectRepository = mockk()
   private val questionService: QuestionService = mockk()
+  private val assessmentUpdateRestClient: AssessmentUpdateRestClient = mockk()
+  private val subjectRepository: SubjectRepository = mockk()
   private val courtCaseRestClient: CourtCaseRestClient = mockk()
   private val episodeService: EpisodeService = mockk()
   private val offenderService: OffenderService = mockk()
-  private val assessmentUpdateRestClient: AssessmentUpdateRestClient = mockk()
 
-  private val assessmentsService = AssessmentService(
+  private val assessmentService = AssessmentService(
     assessmentRepository,
-    episodeRepository,
     subjectRepository,
     questionService,
     episodeService,
     courtCaseRestClient,
     assessmentUpdateRestClient,
     offenderService
+  )
+
+  private val assessmentsService = AssessmentUpdateService(
+    assessmentRepository,
+    episodeRepository,
+    questionService,
+    assessmentUpdateRestClient,
+    assessmentService
   )
 
   private val assessmentUuid = UUID.randomUUID()
@@ -82,7 +89,7 @@ class AssessmentServiceOASysTest {
 
     assertThat(result.answer).isEqualTo("Free Text")
     assertThat(result.logicalPage).isEqualTo(1)
-    assertThat(result.isStatic).isFalse()
+    assertThat(result.isStatic).isFalse
     assertThat(result.questionCode).isEqualTo("R1.3")
     assertThat(result.sectionCode).isEqualTo("1")
   }
@@ -95,7 +102,7 @@ class AssessmentServiceOASysTest {
 
     assertThat(result.answer).isEqualTo("20/01/1975")
     assertThat(result.logicalPage).isEqualTo(1)
-    assertThat(result.isStatic).isFalse()
+    assertThat(result.isStatic).isFalse
     assertThat(result.questionCode).isEqualTo("R1.3")
     assertThat(result.sectionCode).isEqualTo("1")
   }
@@ -110,18 +117,23 @@ class AssessmentServiceOASysTest {
     val episode = AssessmentEpisodeEntity(
       answers = answers
     )
-    val questions = QuestionSchemaEntities(listOf(
-      makeQuestion(1, question1Uuid, "FreeText", "freetext", null, "section1", 1, "name"),
-      makeQuestion(2, question2Uuid, "Date", "date", null, "section1", 1, "dob"),
-      makeQuestion(3, question3Uuid, "ExtraInfo")
-    ))
+    val questions = QuestionSchemaEntities(
+      listOf(
+        makeQuestion(1, question1Uuid, "FreeText", "freetext", null, "section1", 1, "name"),
+        makeQuestion(2, question2Uuid, "Date", "date", null, "section1", 1, "dob"),
+        makeQuestion(3, question3Uuid, "ExtraInfo")
+      )
+    )
 
-    val oasysAnswers = OasysAnswers.from(episode, object: OasysAnswers.Companion.MappingProvider  {
-      override fun getAllQuestions(): QuestionSchemaEntities = questions
-      override fun getTableQuestions(tableCode: String): QuestionSchemaEntities {
-        throw RuntimeException("Should not be called")
+    val oasysAnswers = OasysAnswers.from(
+      episode,
+      object : OasysAnswers.Companion.MappingProvider {
+        override fun getAllQuestions(): QuestionSchemaEntities = questions
+        override fun getTableQuestions(tableCode: String): QuestionSchemaEntities {
+          throw RuntimeException("Should not be called")
+        }
       }
-    })
+    )
 
     assertThat(oasysAnswers).hasSize(2)
     assertThat(oasysAnswers).contains(OasysAnswer("section1", 1, "name", "some free text"))
@@ -131,27 +143,31 @@ class AssessmentServiceOASysTest {
   @Nested
   @DisplayName("map Oasys answers from ARN questions and answers with children")
   inner class WithChildren {
-    val tableQuestion = UUID.randomUUID()
-    val childQuestion1 = UUID.randomUUID()
-    val childQuestion2 = UUID.randomUUID()
+    private val tableQuestion = UUID.randomUUID()
+    private val childQuestion1 = UUID.randomUUID()
+    private val childQuestion2 = UUID.randomUUID()
 
-    val childNameQuestion = makeQuestion(10, childQuestion1, "Name", "freetext", null, "children", null, "childname")
-    val childAddressQuestion = makeQuestion(11, childQuestion2, "Address", "freetext", null, "children", null, "childaddress")
+    private val childNameQuestion = makeQuestion(10, childQuestion1, "Name", "freetext", null, "children", null, "childname")
+    private val childAddressQuestion = makeQuestion(11, childQuestion2, "Address", "freetext", null, "children", null, "childaddress")
 
-    val allQuestions = QuestionSchemaEntities(listOf(
-      makeQuestion(1, question1Uuid, "FreeText", "freetext", null, "section1", 1, "name"),
-      makeQuestion(2, question2Uuid, "Date", "date", null, "section1", 1, "dob"),
-      makeQuestion(3, question3Uuid, "ExtraInfo"),
-      makeQuestion(4, tableQuestion, "Children", "table:children_at_risk"),
-      childNameQuestion,
-      childAddressQuestion
-    ))
-    val childTableQuestions = QuestionSchemaEntities(listOf(
-      childNameQuestion,
-      childAddressQuestion
-    ))
+    val allQuestions = QuestionSchemaEntities(
+      listOf(
+        makeQuestion(1, question1Uuid, "FreeText", "freetext", null, "section1", 1, "name"),
+        makeQuestion(2, question2Uuid, "Date", "date", null, "section1", 1, "dob"),
+        makeQuestion(3, question3Uuid, "ExtraInfo"),
+        makeQuestion(4, tableQuestion, "Children", "table:children_at_risk"),
+        childNameQuestion,
+        childAddressQuestion
+      )
+    )
+    val childTableQuestions = QuestionSchemaEntities(
+      listOf(
+        childNameQuestion,
+        childAddressQuestion
+      )
+    )
 
-    val testMapper =  object : OasysAnswers.Companion.MappingProvider {
+    private val testMapper = object : OasysAnswers.Companion.MappingProvider {
       override fun getAllQuestions(): QuestionSchemaEntities = allQuestions
       override fun getTableQuestions(tableCode: String): QuestionSchemaEntities =
         if (tableCode == "children_at_risk")
@@ -249,21 +265,26 @@ class AssessmentServiceOASysTest {
     val question = makeQuestion(9, existingQuestionUuid, "question", "freetext", null, "section1", null, "Q1")
     every { questionService.getAllQuestions() } returns QuestionSchemaEntities(listOf(question))
 
-    val assessment = assessmentEntityWithOasysOffender(mutableMapOf(
-      existingQuestionUuid to AnswerEntity(listOf("free text", "fruit loops", "biscuits"))
-    ))
+    val assessment = assessmentEntityWithOasysOffender(
+      mutableMapOf(
+        existingQuestionUuid to AnswerEntity(listOf("free text", "fruit loops", "biscuits"))
+      )
+    )
     every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
     every { assessmentRepository.save(any()) } returns null // should save when errors?
 
     val oasysError = UpdateAssessmentAnswersResponseDto(
       7777,
-      setOf(ValidationErrorDto(
-        "section1",
-        null,
-        "Q1",
-        "OOPS",
-        "NO",
-        false))
+      setOf(
+        ValidationErrorDto(
+          "section1",
+          null,
+          "Q1",
+          "OOPS",
+          "NO",
+          false
+        )
+      )
     )
     every { assessmentUpdateRestClient.updateAssessment(any(), any(), any(), any(), any(), any()) } returns oasysError
     // Christ, what a lot of set up
