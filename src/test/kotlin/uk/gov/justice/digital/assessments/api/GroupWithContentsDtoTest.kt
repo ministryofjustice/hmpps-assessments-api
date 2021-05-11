@@ -227,7 +227,7 @@ class GroupWithContentsDtoTest {
       assertThat(qc.readOnly).isEqualTo(entity.readOnly)
 
       val question = entity.question
-      assertThat(question).isNotNull()
+      assertThat(question).isNotNull
 
       assertThat(qc.questionId).isEqualTo(question?.questionSchemaUuid)
       assertThat(qc.questionCode).isEqualTo(question?.questionCode)
@@ -244,7 +244,7 @@ class GroupWithContentsDtoTest {
       assertThat(gc.validation).isEqualTo(entity.validation)
 
       val group = entity.nestedGroup
-      assertThat(group).isNotNull()
+      assertThat(group).isNotNull
 
       assertThat(gc.groupId).isEqualTo(group?.groupUuid)
       assertThat(gc.groupCode).isEqualTo(group?.groupCode)

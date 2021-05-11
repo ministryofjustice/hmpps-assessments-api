@@ -70,7 +70,7 @@ class QuestionControllerTest : IntegrationTest() {
     val answerSchemaUuids = questionRef.answerSchemas?.map { it.answerSchemaUuid }
     assertThat(answerSchemaUuids).contains(UUID.fromString(answerSchemaUuid))
 
-    val subGroup = questionRefs?.last() as GroupWithContentsDto
+    val subGroup = questionRefs.last() as GroupWithContentsDto
     assertThat(subGroup.groupId).isEqualTo(UUID.fromString(subgroupUuid))
     assertThat(subGroup.contents.size).isEqualTo(1)
     val subQuestion = subGroup.contents.first() as GroupQuestionDto
@@ -89,10 +89,10 @@ class QuestionControllerTest : IntegrationTest() {
       ?.contents
 
     val subjectQuestion = questions?.find { (it as GroupQuestionDto).questionId.toString() == subjectQuestionUuid } as GroupQuestionDto
-    assertThat(subjectQuestion.conditional).isTrue()
+    assertThat(subjectQuestion.conditional).isTrue
 
     val triggerQuestion = questions.find { (it as GroupQuestionDto).questionId.toString() == questionSchemaUuid } as GroupQuestionDto
-    assertThat(triggerQuestion.conditional).isFalse()
+    assertThat(triggerQuestion.conditional).isFalse
     val yesAnswer = triggerQuestion.answerSchemas?.find { it.value == "true" }
     assertThat(yesAnswer?.conditionals?.first()?.conditional.toString()).isEqualTo(subjectQuestionUuid)
     val noAnswer = triggerQuestion.answerSchemas?.find { it.value == "false" }

@@ -18,10 +18,11 @@ import uk.gov.justice.digital.assessments.api.CreateAssessmentDto
 import uk.gov.justice.digital.assessments.api.CreateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.services.AssessmentService
+import uk.gov.justice.digital.assessments.services.AssessmentUpdateService
 import java.util.UUID
 
 @RestController
-class AssessmentController(val assessmentService: AssessmentService) {
+class AssessmentController(val assessmentService: AssessmentService, val assessmentUpdateService: AssessmentUpdateService) {
 
   @RequestMapping(path = ["/assessments"], method = [RequestMethod.POST])
   @Operation(description = "Creates a new assessment")
@@ -101,7 +102,7 @@ class AssessmentController(val assessmentService: AssessmentService) {
     @Parameter(description = "Episode Answers", required = true) @RequestBody episodeAnswers: UpdateAssessmentEpisodeDto
   ): ResponseEntity<AssessmentEpisodeDto> {
     return updateResponse(
-      assessmentService.updateEpisode(assessmentUuid, episodeUuid, episodeAnswers)
+      assessmentUpdateService.updateEpisode(assessmentUuid, episodeUuid, episodeAnswers)
     )
   }
 
@@ -121,7 +122,7 @@ class AssessmentController(val assessmentService: AssessmentService) {
     @Parameter(description = "New Row", required = true) @RequestBody episodeAnswers: UpdateAssessmentEpisodeDto
   ): ResponseEntity<AssessmentEpisodeDto> {
     return updateResponse(
-      assessmentService.addEpisodeTableRow(assessmentUuid, episodeUuid, tableName, episodeAnswers)
+      assessmentUpdateService.addEpisodeTableRow(assessmentUuid, episodeUuid, tableName, episodeAnswers)
     )
   }
 
@@ -142,7 +143,7 @@ class AssessmentController(val assessmentService: AssessmentService) {
     @Parameter(description = "Updated Row", required = true) @RequestBody episodeAnswers: UpdateAssessmentEpisodeDto
   ): ResponseEntity<AssessmentEpisodeDto> {
     return updateResponse(
-      assessmentService.updateEpisodeTableRow(assessmentUuid, episodeUuid, tableName, index, episodeAnswers)
+      assessmentUpdateService.updateEpisodeTableRow(assessmentUuid, episodeUuid, tableName, index, episodeAnswers)
     )
   }
 
@@ -160,7 +161,7 @@ class AssessmentController(val assessmentService: AssessmentService) {
     @Parameter(description = "Episode Answers", required = true) @RequestBody episodeAnswers: UpdateAssessmentEpisodeDto
   ): ResponseEntity<AssessmentEpisodeDto> {
     return updateResponse(
-      assessmentService.updateCurrentEpisode(assessmentUuid, episodeAnswers)
+      assessmentUpdateService.updateCurrentEpisode(assessmentUuid, episodeAnswers)
     )
   }
 
@@ -177,7 +178,7 @@ class AssessmentController(val assessmentService: AssessmentService) {
     @Parameter(description = "Assessment UUID", required = true, example = "1234") @PathVariable assessmentUuid: UUID,
   ): ResponseEntity<AssessmentEpisodeDto> {
     return updateResponse(
-      assessmentService.closeCurrentEpisode(assessmentUuid)
+      assessmentUpdateService.closeCurrentEpisode(assessmentUuid)
     )
   }
 

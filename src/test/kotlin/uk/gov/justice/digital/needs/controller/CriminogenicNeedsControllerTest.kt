@@ -46,7 +46,7 @@ class CriminogenicNeedsControllerTest : IntegrationTest() {
       .responseBody
 
     val need = result!!.criminogenicNeeds.toList().first { it.need == CriminogenicNeed.ACCOMMODATION }
-    assertThat(need.riskOfHarm).isTrue()
+    assertThat(need.riskOfHarm).isTrue
     assertThat(need.lowScoringNeed).isNull()
     assertThat(need.overThreshold).isNull()
     assertThat(need.riskOfReoffending).isNull()

@@ -34,7 +34,7 @@ class CriminogenicNeedsServiceTest {
     every { assessmentService.getCurrentAssessmentCodedAnswers(assessmentUUID) } returns (assessmentAnswerDto)
     val need = calculateAccommodationNeeds(assessmentUUID)
 
-    assertThat(need.riskOfHarm).isTrue()
+    assertThat(need.riskOfHarm).isTrue
     assertThat(need.lowScoringNeed).isNull()
     assertThat(need.overThreshold).isNull()
     assertThat(need.riskOfReoffending).isNull()
@@ -56,10 +56,10 @@ class CriminogenicNeedsServiceTest {
     every { assessmentService.getCurrentAssessmentCodedAnswers(assessmentUUID) } returns (assessmentAnswerDto)
     val need = calculateAccommodationNeeds(assessmentUUID)
 
-    assertThat(need.riskOfHarm).isFalse()
+    assertThat(need.riskOfHarm).isFalse
     assertThat(need.lowScoringNeed).isNull()
     assertThat(need.overThreshold).isNull()
-    assertThat(need.riskOfReoffending).isFalse()
+    assertThat(need.riskOfReoffending).isFalse
     assertThat(need.needStatus).isEqualTo(NeedStatus.INSUFFICIENT_DATA)
   }
 
@@ -82,8 +82,8 @@ class CriminogenicNeedsServiceTest {
 
     assertThat(need.riskOfHarm).isNull()
     assertThat(need.lowScoringNeed).isNull()
-    assertThat(need.overThreshold).isFalse()
-    assertThat(need.riskOfReoffending).isFalse()
+    assertThat(need.overThreshold).isFalse
+    assertThat(need.riskOfReoffending).isFalse
     assertThat(need.needStatus).isEqualTo(NeedStatus.INSUFFICIENT_DATA)
   }
 
@@ -104,9 +104,9 @@ class CriminogenicNeedsServiceTest {
     every { assessmentService.getCurrentAssessmentCodedAnswers(assessmentUUID) } returns (assessmentAnswerDto)
     val need = calculateAccommodationNeeds(assessmentUUID)
 
-    assertThat(need.riskOfHarm).isFalse()
+    assertThat(need.riskOfHarm).isFalse
     assertThat(need.lowScoringNeed).isNull()
-    assertThat(need.overThreshold).isFalse()
+    assertThat(need.overThreshold).isFalse
     assertThat(need.riskOfReoffending).isNull()
     assertThat(need.needStatus).isEqualTo(NeedStatus.INSUFFICIENT_DATA)
   }
@@ -129,10 +129,10 @@ class CriminogenicNeedsServiceTest {
     every { assessmentService.getCurrentAssessmentCodedAnswers(assessmentUUID) } returns (assessmentAnswerDto)
     val need = calculateAccommodationNeeds(assessmentUUID)
 
-    assertThat(need.riskOfHarm).isFalse()
+    assertThat(need.riskOfHarm).isFalse
     assertThat(need.lowScoringNeed).isNull()
-    assertThat(need.overThreshold).isFalse()
-    assertThat(need.riskOfReoffending).isFalse()
+    assertThat(need.overThreshold).isFalse
+    assertThat(need.riskOfReoffending).isFalse
     assertThat(need.needStatus).isEqualTo(NeedStatus.NO_NEED_IDENTIFIED)
   }
 
@@ -155,10 +155,10 @@ class CriminogenicNeedsServiceTest {
     every { assessmentService.getCurrentAssessmentCodedAnswers(assessmentUUID) } returns (assessmentAnswerDto)
     val need = calculateAccommodationNeeds(assessmentUUID)
 
-    assertThat(need.riskOfHarm).isFalse()
-    assertThat(need.lowScoringNeed).isFalse()
-    assertThat(need.overThreshold).isFalse()
-    assertThat(need.riskOfReoffending).isFalse()
+    assertThat(need.riskOfHarm).isFalse
+    assertThat(need.lowScoringNeed).isFalse
+    assertThat(need.overThreshold).isFalse
+    assertThat(need.riskOfReoffending).isFalse
     assertThat(need.needStatus).isEqualTo(NeedStatus.NO_NEED_IDENTIFIED)
   }
 
@@ -178,7 +178,7 @@ class CriminogenicNeedsServiceTest {
     assertThat(need.riskOfHarm).isNull()
     assertThat(need.lowScoringNeed).isNull()
     assertThat(need.overThreshold).isNull()
-    assertThat(need.riskOfReoffending).isTrue()
+    assertThat(need.riskOfReoffending).isTrue
     assertThat(need.needStatus).isEqualTo(NeedStatus.NEED_IDENTIFIED)
   }
 
@@ -196,7 +196,7 @@ class CriminogenicNeedsServiceTest {
     val need = calculateAccommodationNeeds(assessmentUUID)
 
     assertThat(need.riskOfHarm).isNull()
-    assertThat(need.lowScoringNeed).isTrue()
+    assertThat(need.lowScoringNeed).isTrue
     assertThat(need.overThreshold).isNull()
     assertThat(need.riskOfReoffending).isNull()
     assertThat(need.needStatus).isEqualTo(NeedStatus.NEED_IDENTIFIED)
@@ -218,7 +218,7 @@ class CriminogenicNeedsServiceTest {
 
     assertThat(need.riskOfHarm).isNull()
     assertThat(need.lowScoringNeed).isNull()
-    assertThat(need.overThreshold).isTrue()
+    assertThat(need.overThreshold).isTrue
     assertThat(need.riskOfReoffending).isNull()
     assertThat(need.needStatus).isEqualTo(NeedStatus.NEED_IDENTIFIED)
   }
@@ -238,7 +238,7 @@ class CriminogenicNeedsServiceTest {
 
     assertThat(need.riskOfHarm).isNull()
     assertThat(need.lowScoringNeed).isNull()
-    assertThat(need.overThreshold).isTrue()
+    assertThat(need.overThreshold).isTrue
     assertThat(need.riskOfReoffending).isNull()
     assertThat(need.needStatus).isEqualTo(NeedStatus.NEED_IDENTIFIED)
   }
@@ -259,7 +259,7 @@ class CriminogenicNeedsServiceTest {
     every { assessmentService.getCurrentAssessmentCodedAnswers(assessmentUUID) } returns (assessmentAnswerDto)
     val need = calculateAccommodationNeeds(assessmentUUID)
 
-    assertThat(need.overThreshold).isFalse()
+    assertThat(need.overThreshold).isFalse
   }
 
   @Test
@@ -276,7 +276,7 @@ class CriminogenicNeedsServiceTest {
     every { assessmentService.getCurrentAssessmentCodedAnswers(assessmentUUID) } returns (assessmentAnswerDto)
     val need = calculateAccommodationNeeds(assessmentUUID)
 
-    assertThat(need.overThreshold).isTrue()
+    assertThat(need.overThreshold).isTrue
   }
 
   @Test
@@ -293,7 +293,7 @@ class CriminogenicNeedsServiceTest {
     every { assessmentService.getCurrentAssessmentCodedAnswers(assessmentUUID) } returns (assessmentAnswerDto)
     val need = calculateAccommodationNeeds(assessmentUUID)
 
-    assertThat(need.overThreshold).isTrue()
+    assertThat(need.overThreshold).isTrue
   }
 
   @Test

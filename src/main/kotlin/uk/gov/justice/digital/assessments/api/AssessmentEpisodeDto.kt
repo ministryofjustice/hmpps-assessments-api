@@ -41,7 +41,7 @@ class AssessmentEpisodeDto(
   companion object {
 
     fun from(episodes: MutableCollection<AssessmentEpisodeEntity>): Collection<AssessmentEpisodeDto> {
-      return episodes.mapNotNull { from(it) }.toSet()
+      return episodes.map { from(it) }.toSet()
     }
 
     fun from(

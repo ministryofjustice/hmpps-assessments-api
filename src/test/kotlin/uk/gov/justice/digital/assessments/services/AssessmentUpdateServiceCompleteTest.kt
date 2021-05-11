@@ -6,7 +6,6 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
@@ -27,25 +26,32 @@ import java.util.UUID
 
 @ExtendWith(MockKExtension::class)
 @DisplayName("Assessment Service Complete Tests")
-class AssessmentServiceCompleteTest {
+class AssessmentUpdateServiceCompleteTest {
   private val assessmentRepository: AssessmentRepository = mockk()
   private val episodeRepository: EpisodeRepository = mockk()
-  private val subjectRepository: SubjectRepository = mockk()
   private val questionService: QuestionService = mockk()
+  private val assessmentUpdateRestClient: AssessmentUpdateRestClient = mockk()
+  private val subjectRepository: SubjectRepository = mockk()
   private val courtCaseRestClient: CourtCaseRestClient = mockk()
   private val episodeService: EpisodeService = mockk()
   private val offenderService: OffenderService = mockk()
-  private val assessmentUpdateRestClient: AssessmentUpdateRestClient = mockk()
 
-  private val assessmentsService = AssessmentService(
+  private val assessmentService = AssessmentService(
     assessmentRepository,
-    episodeRepository,
     subjectRepository,
     questionService,
     episodeService,
     courtCaseRestClient,
     assessmentUpdateRestClient,
     offenderService
+  )
+
+  private val assessmentUpdateService = AssessmentUpdateService(
+    assessmentRepository,
+    episodeRepository,
+    questionService,
+    assessmentUpdateRestClient,
+    assessmentService
   )
 
   @Test
@@ -57,7 +63,7 @@ class AssessmentServiceCompleteTest {
       assessmentUpdateRestClient.completeAssessment(9999, 7777, AssessmentType.SHORT_FORM_PSR)
     } returns UpdateAssessmentAnswersResponseDto(7777)
 
-    val episode = assessmentsService.closeCurrentEpisode(UUID.fromString("7b4de6d5-4488-4c29-a909-7d3fdf15393d"))
+    val episode = assessmentUpdateService.closeCurrentEpisode(UUID.fromString("7b4de6d5-4488-4c29-a909-7d3fdf15393d"))
 
     verify(exactly = 1) { episodeRepository.save(any()) }
     verify(exactly = 1) { assessmentUpdateRestClient.completeAssessment(any(), any(), any(), any()) }
@@ -68,7 +74,7 @@ class AssessmentServiceCompleteTest {
   fun `close episode for assessment with no episodes throws exception`() {
     every { assessmentRepository.findByAssessmentUuid(any()) } returns assessmentWithNoEpisodeEntity()
 
-    assertThrows<EntityNotFoundException> { assessmentsService.closeCurrentEpisode(UUID.fromString("7b4de6d5-4488-4c29-a909-7d3fdf15393d")) }
+    assertThrows<EntityNotFoundException> { assessmentUpdateService.closeCurrentEpisode(UUID.fromString("7b4de6d5-4488-4c29-a909-7d3fdf15393d")) }
     verify(exactly = 0) { episodeRepository.save(any()) }
     verify(exactly = 0) { assessmentUpdateRestClient.completeAssessment(any(), any(), any(), any()) }
   }
@@ -82,7 +88,7 @@ class AssessmentServiceCompleteTest {
       assessmentUpdateRestClient.completeAssessment(9999, 7777, AssessmentType.SHORT_FORM_PSR)
     } returns oasysAssessmentError()
 
-    val episode = assessmentsService.closeCurrentEpisode(UUID.fromString("7b4de6d5-4488-4c29-a909-7d3fdf15393d"))
+    val episode = assessmentUpdateService.closeCurrentEpisode(UUID.fromString("7b4de6d5-4488-4c29-a909-7d3fdf15393d"))
 
     verify(exactly = 0) { episodeRepository.save(any()) }
     verify(exactly = 1) { assessmentUpdateRestClient.completeAssessment(any(), any(), any(), any()) }

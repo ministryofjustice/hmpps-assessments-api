@@ -8,7 +8,7 @@ import uk.gov.justice.digital.assessments.services.QuestionSchemaEntities
 import java.lang.IllegalStateException
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.*
+import java.util.UUID
 
 class OasysAnswers(
   private val allAnswers: MutableSet<OasysAnswer> = mutableSetOf()
@@ -38,8 +38,10 @@ class OasysAnswers(
       val nonTableAnswers = buildOasysAnswers(
         questions,
         episodeAnswers.filterNot { episodeAnswer -> // skip table questions - we've already done them
-          processedQuestions.contains(episodeAnswer.key) },
-        ::mapOasysAnswers)
+          processedQuestions.contains(episodeAnswer.key)
+        },
+        ::mapOasysAnswers
+      )
 
       val oasysAnswers = OasysAnswers()
       oasysAnswers.addAll(oasysTableAnswers)
@@ -57,7 +59,8 @@ class OasysAnswers(
     private fun buildAllTableAnswers(
       tables: Set<String>,
       answers: Map<UUID, AnswerEntity>,
-      mappingProvider: MappingProvider): Pair<Set<UUID>, OasysAnswers> {
+      mappingProvider: MappingProvider
+    ): Pair<Set<UUID>, OasysAnswers> {
 
       val allTableQuestionIds = mutableSetOf<UUID>()
       val allTableAnswers = OasysAnswers()
@@ -84,7 +87,7 @@ class OasysAnswers(
 
       // consistency check
       val tableLength = tableAnswers.values.first().answers.size
-      if (tableAnswers.values.filter { it.answers.size != tableLength }.isNotEmpty())
+      if (tableAnswers.values.any { it.answers.size != tableLength })
         throw IllegalStateException("Inconsistent table answers") // this is rubbish message
 
       // build OasysAnswers
@@ -105,7 +108,7 @@ class OasysAnswers(
         // TODO: If we want to handle multiple mappings per question we will need to add assessment type to the mapping
         question?.oasysMappings?.firstOrNull()?.let { oasysMapping ->
           oasysAnswers.addAll(
-            builder(oasysMapping, tableAnswer.value.answers, question?.answerType)
+            builder(oasysMapping, tableAnswer.value.answers, question.answerType)
           )
         }
       }
@@ -136,7 +139,8 @@ class OasysAnswers(
       value: String,
       oasysMapping: OASysMappingEntity,
       answerType: String?,
-      index: Long? = null): OasysAnswer {
+      index: Long? = null
+    ): OasysAnswer {
       val answer = when (answerType) {
         "date" -> toOASysDate(value)
         else -> value
@@ -157,6 +161,6 @@ class OasysAnswers(
       return LocalDate.parse(dateStr.substring(0, 10), DateTimeFormatter.ISO_DATE).format(oasysDateFormatter)
     }
 
-    val oasysDateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+    private val oasysDateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
   }
 }

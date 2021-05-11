@@ -19,8 +19,8 @@ import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.UpdateA
 import uk.gov.justice.digital.assessments.services.exceptions.DuplicateOffenderRecordException
 import uk.gov.justice.digital.assessments.services.exceptions.OASysClientException
 import uk.gov.justice.digital.assessments.services.exceptions.UserNotAuthorisedException
-import uk.gov.justice.digital.hmpps.offenderassessmentsupdates.api.CreateAssessmentDto
-import uk.gov.justice.digital.hmpps.offenderassessmentsupdates.api.CreateAssessmentResponse
+import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.CreateAssessmentDto
+import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.CreateAssessmentResponse
 
 @Component
 class AssessmentUpdateRestClient {
