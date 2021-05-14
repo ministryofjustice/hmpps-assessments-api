@@ -3,6 +3,7 @@ package uk.gov.justice.digital.assessments.services
 import io.mockk.every
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
+import io.mockk.slot
 import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
@@ -230,14 +231,17 @@ class AssessmentUpdateServiceOASysTest {
   fun `update OASys if OASysSet stored against episode`() {
     every { questionService.getAllQuestions() } returns setupQuestionCodes()
     every { assessmentUpdateRestClient.updateAssessment(oasysOffenderPk, oasysSetPk, assessmentType, any()) } returns UpdateAssessmentAnswersResponseDto()
-
+    every { questionService.getAllQuestionsForSectionsForQuestions(any())} returns QuestionSchemaEntities( questionsList = emptyList())
     val episode = AssessmentEpisodeEntity(
       episodeId = episodeId1,
       assessmentType = AssessmentType.SHORT_FORM_PSR,
       oasysSetPk = oasysSetPk
     )
+    val update = UpdateAssessmentEpisodeDto(
+      answers = mapOf(question1Uuid to listOf("YES"))
+    )
 
-    assessmentsService.updateOASysAssessment(oasysOffenderPk, episode)
+    assessmentsService.updateOASysAssessment(episode, update)
 
     verify(exactly = 1) {
       assessmentUpdateRestClient.updateAssessment(oasysOffenderPk, oasysSetPk, assessmentType, any())
@@ -252,8 +256,11 @@ class AssessmentUpdateServiceOASysTest {
     val episode = AssessmentEpisodeEntity(
       oasysSetPk = oasysSetPk
     )
+    val update = UpdateAssessmentEpisodeDto(
+      answers = mapOf(question1Uuid to listOf("YES"))
+    )
 
-    assessmentsService.updateOASysAssessment(oasysOffenderPk, episode)
+    assessmentsService.updateOASysAssessment(episode, update)
 
     verify(exactly = 0) {
       assessmentUpdateRestClient.updateAssessment(oasysOffenderPk, oasysSetPk, assessmentType, any())
@@ -272,6 +279,7 @@ class AssessmentUpdateServiceOASysTest {
     )
     every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
     every { assessmentRepository.save(any()) } returns null // should save when errors?
+    every { questionService.getAllQuestionsForSectionsForQuestions(any())} returns QuestionSchemaEntities( questionsList = emptyList())
 
     val oasysError = UpdateAssessmentAnswersResponseDto(
       7777,
@@ -309,6 +317,31 @@ class AssessmentUpdateServiceOASysTest {
       assertThat(this).contains("NO")
     }
   }
+
+  @Test
+  fun `update episode sends only updated sections to oasys`(){
+    every { questionService.getAllQuestions() } returns setupQuestionCodes()
+    val answersSlot = slot<Set<OasysAnswer>>()
+    every { assessmentUpdateRestClient.updateAssessment(oasysOffenderPk, oasysSetPk, assessmentType, capture(answersSlot)) } returns UpdateAssessmentAnswersResponseDto()
+    every { questionService.getAllQuestionsForSectionsForQuestions(any())} returns QuestionSchemaEntities( questionsList = emptyList())
+    val episode = AssessmentEpisodeEntity(
+      episodeId = episodeId1,
+      assessmentType = AssessmentType.SHORT_FORM_PSR,
+      oasysSetPk = oasysSetPk
+    )
+    val update = UpdateAssessmentEpisodeDto(
+      answers = mapOf(question1Uuid to listOf("YES"))
+    )
+
+    assessmentsService.updateOASysAssessment(episode, update)
+
+    verify(exactly = 1) {
+      assessmentUpdateRestClient.updateAssessment(oasysOffenderPk, oasysSetPk, assessmentType, any())
+    }
+    assertThat(answersSlot.captured.first().questionCode).isEqualTo("")
+  }
+
+
 
   private fun setupQuestionCodes(): QuestionSchemaEntities {
     val dummy = AnswerSchemaGroupEntity(answerSchemaId = 99)

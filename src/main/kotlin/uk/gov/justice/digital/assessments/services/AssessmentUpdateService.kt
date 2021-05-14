@@ -57,10 +57,10 @@ class AssessmentUpdateService(
   ): AssessmentEpisodeDto {
     if (episode.isClosed()) throw UpdateClosedEpisodeException("Cannot update closed Episode ${episode.episodeUuid} for assessment ${episode.assessment?.assessmentUuid}")
 
-    updateEpisodeAnswers(episode, updatedEpisodeAnswers)
+    episode.updateEpisodeAnswers(updatedEpisodeAnswers)
     log.info("Updated episode ${episode.episodeUuid} with ${updatedEpisodeAnswers.answers.size} answer(s) for assessment ${episode.assessment?.assessmentUuid}")
 
-    val oasysResult = updateOASysAssessment(episode.assessment?.subject?.oasysOffenderPk, episode)
+    val oasysResult = updateOASysAssessment(episode, updatedEpisodeAnswers)
 
     assessmentRepository.save(episode.assessment)
     log.info("Saved episode ${episode.episodeUuid} for assessment ${episode.assessment?.assessmentUuid}")
@@ -68,19 +68,36 @@ class AssessmentUpdateService(
     return AssessmentEpisodeDto.from(episode, oasysResult)
   }
 
+  fun AssessmentEpisodeEntity.updateEpisodeAnswers(
+    updatedEpisodeAnswers: UpdateAssessmentEpisodeDto
+  ) {
+    for (updatedAnswer in updatedEpisodeAnswers.answers) {
+      val currentQuestionAnswer = this.answers?.get(updatedAnswer.key)
+
+      if (currentQuestionAnswer == null) {
+        this.answers?.put(
+          updatedAnswer.key,
+          AnswerEntity(updatedAnswer.value)
+        )
+      } else {
+        currentQuestionAnswer.answers = updatedAnswer.value
+      }
+    }
+  }
+
   fun updateOASysAssessment(
-    offenderPk: Long?,
-    episode: AssessmentEpisodeEntity
+    episode: AssessmentEpisodeEntity,
+    updatedEpisodeAnswers: UpdateAssessmentEpisodeDto
   ): AssessmentEpisodeUpdateErrors? {
+    val offenderPk = episode.oasysSetPk
     if (episode.assessmentType == null || episode.oasysSetPk == null || offenderPk == null) {
       log.info("Unable to update OASys Assessment with keys type: ${episode.assessmentType} oasysSet: ${episode.oasysSetPk} offenderPk: $offenderPk")
       return null
     }
 
-    val questions = questionService.getAllQuestions()
     val oasysAnswers = OasysAnswers.from(
       episode, object : OasysAnswers.Companion.MappingProvider {
-      override fun getAllQuestions(): QuestionSchemaEntities = questionService.getAllQuestions()
+      override fun getAllQuestions(): QuestionSchemaEntities = questionService.getAllQuestionsForSectionsForQuestions(updatedEpisodeAnswers.answers.keys.toList())
       override fun getTableQuestions(tableCode: String): QuestionSchemaEntities =
         questionService.getAllGroupQuestions(tableCode)
     }
@@ -100,25 +117,7 @@ class AssessmentUpdateService(
       log.info("Error ${it.sectionCode}.${it.logicalPage}.${it.questionCode}: ${it.message}")
     }
 
-    return AssessmentEpisodeUpdateErrors.mapOasysErrors(episode, questions, oasysUpdateResult)
-  }
-
-  private fun updateEpisodeAnswers(
-    episode: AssessmentEpisodeEntity,
-    updatedEpisodeAnswers: UpdateAssessmentEpisodeDto
-  ) {
-    for (updatedAnswer in updatedEpisodeAnswers.answers) {
-      val currentQuestionAnswer = episode.answers?.get(updatedAnswer.key)
-
-      if (currentQuestionAnswer == null) {
-        episode.answers?.put(
-          updatedAnswer.key,
-          AnswerEntity(updatedAnswer.value)
-        )
-      } else {
-        currentQuestionAnswer.answers = updatedAnswer.value
-      }
-    }
+    return AssessmentEpisodeUpdateErrors.mapOasysErrors(episode, questionService.getAllQuestions(), oasysUpdateResult)
   }
 
   @Transactional

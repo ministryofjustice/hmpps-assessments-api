@@ -14,6 +14,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.QuestionGroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.AnswerSchemaRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.GroupRepository
+import uk.gov.justice.digital.assessments.jpa.repositories.OASysMappingRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.QuestionGroupRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.QuestionSchemaRepository
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
@@ -25,6 +26,7 @@ class QuestionService(
   private val questionGroupRepository: QuestionGroupRepository,
   private val groupRepository: GroupRepository,
   private val answerSchemaRepository: AnswerSchemaRepository,
+  private val oasysMappingRepository: OASysMappingRepository,
   private val questionDependencyService: QuestionDependencyService
 ) {
   fun getQuestionSchema(questionSchemaId: UUID): QuestionSchemaDto {
@@ -161,6 +163,15 @@ class QuestionService(
     try { return UUID.fromString(code) } catch (e: IllegalArgumentException) {
       throw EntityNotFoundException("Group not found: $code")
     }
+  }
+
+  fun getAllQuestionsForSectionsForQuestions(questions:List<UUID>): QuestionSchemaEntities {
+    val mappings = oasysMappingRepository.findAllByQuestionSchema_QuestionSchemaUuidIn(questions)
+    val sections = mappings?.map { it.sectionCode }
+    return QuestionSchemaEntities(
+      sections!!.flatMap { oasysMappingRepository.findAllBySectionCode(it) }.map {
+          it.questionSchema }.distinct()
+    )
   }
 }
 
