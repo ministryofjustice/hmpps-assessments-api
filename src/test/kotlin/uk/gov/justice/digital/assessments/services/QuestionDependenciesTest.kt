@@ -19,8 +19,8 @@ class QuestionDependenciesTest(
   @Autowired
   private val questionDependencyService: QuestionDependencyService
 ) : IntegrationTest() {
-  val subjectUuid = UUID.fromString("11111111-1111-1111-1111-111111111113")
-  val triggerUuid = UUID.fromString("11111111-1111-1111-1111-111111111112")
+  val subjectUuid: UUID = UUID.fromString("11111111-1111-1111-1111-111111111113")
+  val triggerUuid: UUID = UUID.fromString("11111111-1111-1111-1111-111111111112")
   lateinit var dependencies: QuestionDependencies
 
   @BeforeEach
@@ -30,12 +30,12 @@ class QuestionDependenciesTest(
 
   @Test
   fun `question has a dependency`() {
-    assertThat(dependencies.hasDependency(subjectUuid)).isTrue()
+    assertThat(dependencies.hasDependency(subjectUuid)).isTrue
   }
 
   @Test
   fun `question has no dependency`() {
-    assertThat(dependencies.hasDependency(triggerUuid)).isFalse()
+    assertThat(dependencies.hasDependency(triggerUuid)).isFalse
   }
 
   @Test

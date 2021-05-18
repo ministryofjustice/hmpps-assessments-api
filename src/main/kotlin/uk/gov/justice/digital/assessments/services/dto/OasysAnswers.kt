@@ -1,11 +1,14 @@
 package uk.gov.justice.digital.assessments.services.dto
 
+import uk.gov.justice.digital.assessments.jpa.entities.AnswerEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.OASysMappingEntity
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OasysAnswer
 import uk.gov.justice.digital.assessments.services.QuestionSchemaEntities
+import java.lang.IllegalStateException
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.util.UUID
 
 class OasysAnswers(
   private val allAnswers: MutableSet<OasysAnswer> = mutableSetOf()
@@ -15,49 +18,141 @@ class OasysAnswers(
   }
 
   companion object {
+    interface MappingProvider {
+      fun getAllQuestions(): QuestionSchemaEntities
+      fun getTableQuestions(tableCode: String): QuestionSchemaEntities
+    }
+
     fun from(
       episode: AssessmentEpisodeEntity,
-      questions: QuestionSchemaEntities
+      mappingProvider: MappingProvider
     ): OasysAnswers {
+      val episodeAnswers = episode.answers ?: return OasysAnswers()
+
+      val questions = mappingProvider.getAllQuestions()
+      val tables = pullTableNames(questions)
+
+      val (processedQuestions, oasysTableAnswers) =
+        buildAllTableAnswers(tables, episodeAnswers, mappingProvider)
+
+      val nonTableAnswers = buildOasysAnswers(
+        questions,
+        episodeAnswers.filterNot { episodeAnswer -> // skip table questions - we've already done them
+          processedQuestions.contains(episodeAnswer.key)
+        },
+        ::mapOasysAnswers
+      )
+
       val oasysAnswers = OasysAnswers()
-
-      // TODO: If we want to handle multiple mappings per question we will need to add assessment type to the mapping
-      episode.answers?.forEach { episodeAnswer ->
-        val question = questions[episodeAnswer.key]
-        val oasysMapping = question?.oasysMappings?.toList()?.getOrNull(0)
-        oasysAnswers.addAll(
-          mapOasysAnswer(
-            oasysMapping,
-            episodeAnswer.value.answers,
-            question?.answerType
-          )
-        )
-      }
-
+      oasysAnswers.addAll(oasysTableAnswers)
+      oasysAnswers.addAll(nonTableAnswers)
       return oasysAnswers
     }
 
-    fun mapOasysAnswer(
-      oasysMapping: OASysMappingEntity?,
+    private fun pullTableNames(questions: QuestionSchemaEntities): Set<String> {
+      return questions
+        .filter { it.answerType?.startsWith("table:") == true }
+        .map { it.answerType!!.split(":")[1] }
+        .toSet()
+    }
+
+    private fun buildAllTableAnswers(
+      tables: Set<String>,
+      answers: Map<UUID, AnswerEntity>,
+      mappingProvider: MappingProvider
+    ): Pair<Set<UUID>, OasysAnswers> {
+
+      val allTableQuestionIds = mutableSetOf<UUID>()
+      val allTableAnswers = OasysAnswers()
+      tables.forEach { table ->
+        val tableQuestions = mappingProvider.getTableQuestions(table)
+
+        val (tableQuestionIds, tableAnswers) = buildTableAnswers(tableQuestions, answers)
+
+        allTableQuestionIds.addAll(tableQuestionIds)
+        allTableAnswers.addAll(tableAnswers)
+      }
+      return Pair(allTableQuestionIds, allTableAnswers)
+    }
+
+    private fun buildTableAnswers(
+      tableQuestions: QuestionSchemaEntities,
+      answers: Map<UUID, AnswerEntity>
+    ): Pair<List<UUID>, OasysAnswers> {
+      // gather tables answers
+      val questionUuids = tableQuestions.map { it.questionSchemaUuid }
+      val tableAnswers = answers.filter { questionUuids.contains(it.key) }
+
+      if (tableAnswers.isEmpty()) return Pair(questionUuids, OasysAnswers())
+
+      // consistency check
+      val tableLength = tableAnswers.values.first().answers.size
+      if (tableAnswers.values.any { it.answers.size != tableLength })
+        throw IllegalStateException("Inconsistent table answers") // this is rubbish message
+
+      // build OasysAnswers
+      return Pair(
+        questionUuids,
+        buildOasysAnswers(tableQuestions, tableAnswers, ::mapOasysTableAnswers)
+      )
+    }
+
+    private fun buildOasysAnswers(
+      questions: QuestionSchemaEntities,
+      answers: Map<UUID, AnswerEntity>,
+      builder: (OASysMappingEntity, Collection<String>, String?) -> List<OasysAnswer>
+    ): OasysAnswers {
+      val oasysAnswers = OasysAnswers()
+      answers.forEach { tableAnswer ->
+        val question = questions[tableAnswer.key]
+        // TODO: If we want to handle multiple mappings per question we will need to add assessment type to the mapping
+        question?.oasysMappings?.firstOrNull()?.let { oasysMapping ->
+          oasysAnswers.addAll(
+            builder(oasysMapping, tableAnswer.value.answers, question.answerType)
+          )
+        }
+      }
+      return oasysAnswers
+    }
+
+    fun mapOasysAnswers(
+      oasysMapping: OASysMappingEntity,
       answers: Collection<String>,
       answerType: String?
     ): List<OasysAnswer> {
-      if (oasysMapping == null) return emptyList()
-
-      return answers.map { it ->
-        val answer = when (answerType) {
-          "date" -> toOASysDate(it)
-          else -> it
-        }
-
-        OasysAnswer(
-          oasysMapping.sectionCode,
-          oasysMapping.logicalPage,
-          oasysMapping.questionCode,
-          answer,
-          oasysMapping.isFixed
-        )
+      return answers.map {
+        makeOasysAnswer(it, oasysMapping, answerType)
       }.toList()
+    }
+
+    private fun mapOasysTableAnswers(
+      oasysMapping: OASysMappingEntity,
+      answers: Collection<String>,
+      answerType: String?
+    ): List<OasysAnswer> {
+      return answers.mapIndexed { index, value ->
+        makeOasysAnswer(value, oasysMapping, answerType, index.toLong())
+      }.toList()
+    }
+
+    private fun makeOasysAnswer(
+      value: String,
+      oasysMapping: OASysMappingEntity,
+      answerType: String?,
+      index: Long? = null
+    ): OasysAnswer {
+      val answer = when (answerType) {
+        "date" -> toOASysDate(value)
+        else -> value
+      }
+
+      return OasysAnswer(
+        oasysMapping.sectionCode,
+        index ?: oasysMapping.logicalPage,
+        oasysMapping.questionCode,
+        answer,
+        oasysMapping.isFixed
+      )
     }
 
     private fun toOASysDate(dateStr: String): String {
@@ -66,6 +161,6 @@ class OasysAnswers(
       return LocalDate.parse(dateStr.substring(0, 10), DateTimeFormatter.ISO_DATE).format(oasysDateFormatter)
     }
 
-    val oasysDateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+    private val oasysDateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
   }
 }

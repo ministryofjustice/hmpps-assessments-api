@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
 import java.time.LocalDateTime
 import java.util.UUID
-import kotlin.streams.toList
 
 data class QuestionSchemaDto(
 

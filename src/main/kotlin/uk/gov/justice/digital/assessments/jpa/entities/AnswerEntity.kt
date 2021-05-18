@@ -5,5 +5,5 @@ import java.io.Serializable
 data class AnswerEntity(
   var answers: Collection<String> = emptyList()
 ) : Serializable {
-  constructor(answer: String) : this(listOf(answer)) { }
+  constructor(answer: String) : this(listOf(answer))
 }

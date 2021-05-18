@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.hmpps.offenderassessmentsupdates.api
+package uk.gov.justice.digital.assessments.restclient.assessmentupdateapi
 
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 

@@ -15,7 +15,7 @@ import javax.transaction.Transactional
   Sql(scripts = ["classpath:referenceData/before-test.sql"], config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED)),
   Sql(scripts = ["classpath:referenceData/after-test.sql"], config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED), executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 )
-open class QuestionSchemaRepositoryTest(@Autowired val questionSchemaRepository: QuestionSchemaRepository) : IntegrationTest() {
+class QuestionSchemaRepositoryTest(@Autowired val questionSchemaRepository: QuestionSchemaRepository) : IntegrationTest() {
 
   @Test
   fun `return Question by UUID`() {
@@ -28,7 +28,7 @@ open class QuestionSchemaRepositoryTest(@Autowired val questionSchemaRepository:
 
   @Transactional
   @Test
-  open fun `question with OASys mapping`() {
+  fun `question with OASys mapping`() {
     val questionSchemaUuid = UUID.fromString("a5830801-533c-4b9e-bab1-03272718d6dc")
     val questionSchemaEntity = questionSchemaRepository.findByQuestionSchemaUuid(questionSchemaUuid)
     assertThat(questionSchemaEntity?.questionSchemaUuid).isEqualTo(questionSchemaUuid)
@@ -37,12 +37,12 @@ open class QuestionSchemaRepositoryTest(@Autowired val questionSchemaRepository:
     assertThat(oasysMapping?.sectionCode).isEqualTo("RSR")
     assertThat(oasysMapping?.logicalPage).isEqualTo(1)
     assertThat(oasysMapping?.questionCode).isEqualTo("RSR_02")
-    assertThat(oasysMapping?.isFixed).isFalse()
+    assertThat(oasysMapping?.isFixed).isFalse
   }
 
   @Transactional
   @Test
-  open fun `question with OASys fixed field mapping`() {
+  fun `question with OASys fixed field mapping`() {
     val questionSchemaUuid = UUID.fromString("a8e303f5-5f88-4343-94d1-a369ca1f86cb")
     val questionSchemaEntity = questionSchemaRepository.findByQuestionSchemaUuid(questionSchemaUuid)
     assertThat(questionSchemaEntity?.questionSchemaUuid).isEqualTo(questionSchemaUuid)
@@ -51,12 +51,12 @@ open class QuestionSchemaRepositoryTest(@Autowired val questionSchemaRepository:
     assertThat(oasysMapping?.sectionCode).isEqualTo("OFFIN")
     assertThat(oasysMapping?.logicalPage).isEqualTo(null)
     assertThat(oasysMapping?.questionCode).isEqualTo("test_field")
-    assertThat(oasysMapping?.isFixed).isTrue()
+    assertThat(oasysMapping?.isFixed).isTrue
   }
 
   @Transactional
   @Test
-  open fun `question without OASys mapping`() {
+  fun `question without OASys mapping`() {
     val questionSchemaUuid = UUID.fromString("1948af63-07f2-4a8c-9e4c-0ec347bd6ba8")
     val questionSchemaEntity = questionSchemaRepository.findByQuestionSchemaUuid(questionSchemaUuid)
     assertThat(questionSchemaEntity?.questionSchemaUuid).isEqualTo(questionSchemaUuid)

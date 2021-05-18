@@ -18,10 +18,11 @@ import uk.gov.justice.digital.assessments.api.CreateAssessmentDto
 import uk.gov.justice.digital.assessments.api.CreateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.services.AssessmentService
+import uk.gov.justice.digital.assessments.services.AssessmentUpdateService
 import java.util.UUID
 
 @RestController
-class AssessmentController(val assessmentService: AssessmentService) {
+class AssessmentController(val assessmentService: AssessmentService, val assessmentUpdateService: AssessmentUpdateService) {
 
   @RequestMapping(path = ["/assessments"], method = [RequestMethod.POST])
   @Operation(description = "Creates a new assessment")
@@ -90,8 +91,9 @@ class AssessmentController(val assessmentService: AssessmentService) {
   @Operation(description = "updates the answers for an episode")
   @ApiResponses(
     value = [
+      ApiResponse(responseCode = "200", description = "OK"),
       ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
-      ApiResponse(responseCode = "200", description = "OK")
+      ApiResponse(responseCode = "422", description = "The update couldn't be processed")
     ]
   )
   fun updateAssessmentEpisode(
@@ -100,7 +102,48 @@ class AssessmentController(val assessmentService: AssessmentService) {
     @Parameter(description = "Episode Answers", required = true) @RequestBody episodeAnswers: UpdateAssessmentEpisodeDto
   ): ResponseEntity<AssessmentEpisodeDto> {
     return updateResponse(
-      assessmentService.updateEpisode(assessmentUuid, episodeUuid, episodeAnswers)
+      assessmentUpdateService.updateEpisode(assessmentUuid, episodeUuid, episodeAnswers)
+    )
+  }
+
+  @RequestMapping(path = ["/assessments/{assessmentUuid}/episodes/{episodeUuid}/{tableName}"], method = [RequestMethod.POST])
+  @Operation(description = "adds a row to a table answer")
+  @ApiResponses(
+    value = [
+      ApiResponse(responseCode = "200", description = "OK"),
+      ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
+      ApiResponse(responseCode = "422", description = "The update couldn't be processed")
+    ]
+  )
+  fun addAssessmentEpisodeTableRow(
+    @Parameter(description = "Assessment UUID", required = true, example = "1234") @PathVariable assessmentUuid: UUID,
+    @Parameter(description = "Episode UUID", required = true) @PathVariable episodeUuid: UUID,
+    @Parameter(description = "Table Name", required = true) @PathVariable tableName: String,
+    @Parameter(description = "New Row", required = true) @RequestBody episodeAnswers: UpdateAssessmentEpisodeDto
+  ): ResponseEntity<AssessmentEpisodeDto> {
+    return updateResponse(
+      assessmentUpdateService.addEpisodeTableRow(assessmentUuid, episodeUuid, tableName, episodeAnswers)
+    )
+  }
+
+  @RequestMapping(path = ["/assessments/{assessmentUuid}/episodes/{episodeUuid}/{tableName}/{index}"], method = [RequestMethod.POST])
+  @Operation(description = "adds a row to a table answer")
+  @ApiResponses(
+    value = [
+      ApiResponse(responseCode = "200", description = "OK"),
+      ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
+      ApiResponse(responseCode = "422", description = "The update couldn't be processed")
+    ]
+  )
+  fun updateAssessmentEpisodeTableRow(
+    @Parameter(description = "Assessment UUID", required = true, example = "1234") @PathVariable assessmentUuid: UUID,
+    @Parameter(description = "Episode UUID", required = true) @PathVariable episodeUuid: UUID,
+    @Parameter(description = "Table Name", required = true) @PathVariable tableName: String,
+    @Parameter(description = "Row index", required = true) @PathVariable index: Int,
+    @Parameter(description = "Updated Row", required = true) @RequestBody episodeAnswers: UpdateAssessmentEpisodeDto
+  ): ResponseEntity<AssessmentEpisodeDto> {
+    return updateResponse(
+      assessmentUpdateService.updateEpisodeTableRow(assessmentUuid, episodeUuid, tableName, index, episodeAnswers)
     )
   }
 
@@ -108,8 +151,9 @@ class AssessmentController(val assessmentService: AssessmentService) {
   @Operation(description = "updates the answers for the current episode")
   @ApiResponses(
     value = [
+      ApiResponse(responseCode = "200", description = "OK"),
       ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
-      ApiResponse(responseCode = "200", description = "OK")
+      ApiResponse(responseCode = "422", description = "The update couldn't be processed")
     ]
   )
   fun updateAssessmentEpisode(
@@ -117,7 +161,7 @@ class AssessmentController(val assessmentService: AssessmentService) {
     @Parameter(description = "Episode Answers", required = true) @RequestBody episodeAnswers: UpdateAssessmentEpisodeDto
   ): ResponseEntity<AssessmentEpisodeDto> {
     return updateResponse(
-      assessmentService.updateCurrentEpisode(assessmentUuid, episodeAnswers)
+      assessmentUpdateService.updateCurrentEpisode(assessmentUuid, episodeAnswers)
     )
   }
 
@@ -125,15 +169,16 @@ class AssessmentController(val assessmentService: AssessmentService) {
   @Operation(description = "completes current episode")
   @ApiResponses(
     value = [
+      ApiResponse(responseCode = "200", description = "OK"),
       ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
-      ApiResponse(responseCode = "200", description = "OK")
+      ApiResponse(responseCode = "422", description = "The update couldn't be processed")
     ]
   )
   fun completeAssessmentEpisode(
     @Parameter(description = "Assessment UUID", required = true, example = "1234") @PathVariable assessmentUuid: UUID,
   ): ResponseEntity<AssessmentEpisodeDto> {
     return updateResponse(
-      assessmentService.closeCurrentEpisode(assessmentUuid)
+      assessmentUpdateService.closeCurrentEpisode(assessmentUuid)
     )
   }
 
