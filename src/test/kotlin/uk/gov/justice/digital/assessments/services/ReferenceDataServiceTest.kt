@@ -43,7 +43,7 @@ private val parentQuestionMapping = OASysMappingEntity(mappingId = 5678, questio
 class ReferenceDataServiceTest {
   @Test
   fun `returns reference data`() {
-    every { assessmentApiRestClient.getFilteredReferenceData(any(), any(), any(), any(), any(), any(), any(), any()) } returns referenceData
+    every { assessmentApiRestClient.getFilteredReferenceData(any(), any(), any(), any(), any(), any(), any()) } returns referenceData
 
     every { assessmentRepository.findByAssessmentUuid(any()) } returns assessment
     every { oaSysMappingRepository.findAllByQuestionSchema_QuestionSchemaUuidIn(any()) } returns listOf(questionMapping, parentQuestionMapping)
@@ -60,7 +60,7 @@ class ReferenceDataServiceTest {
 
   @Test
   fun `passes exceptions thrown by the assessments client`() {
-    every { assessmentApiRestClient.getFilteredReferenceData(any(), any(), any(), any(), any(), any(), any(), any()) } throws Exception("Something went wrong in the client")
+    every { assessmentApiRestClient.getFilteredReferenceData(any(), any(), any(), any(), any(), any(), any()) } throws Exception("Something went wrong in the client")
 
     every { assessmentRepository.findByAssessmentUuid(any()) } returns assessment
     every { oaSysMappingRepository.findAllByQuestionSchema_QuestionSchemaUuidIn(any()) } returns listOf(questionMapping, parentQuestionMapping)
@@ -77,7 +77,7 @@ class ReferenceDataServiceTest {
 
   @Test
   fun `throws when unable to find the selected episode`() {
-    every { assessmentApiRestClient.getFilteredReferenceData(any(), any(), any(), any(), any(), any(), any(), any()) } returns referenceData
+    every { assessmentApiRestClient.getFilteredReferenceData(any(), any(), any(), any(), any(), any(), any()) } returns referenceData
 
     every { assessmentRepository.findByAssessmentUuid(any()) } returns AssessmentEntity(episodes = mutableListOf())
     every { oaSysMappingRepository.findAllByQuestionSchema_QuestionSchemaUuidIn(any()) } returns listOf(questionMapping, parentQuestionMapping)
@@ -96,7 +96,7 @@ class ReferenceDataServiceTest {
 
   @Test
   fun `throws when unable to find the OASys mapping for the question`() {
-    every { assessmentApiRestClient.getFilteredReferenceData(any(), any(), any(), any(), any(), any(), any(), any()) } returns referenceData
+    every { assessmentApiRestClient.getFilteredReferenceData(any(), any(), any(), any(), any(), any(), any()) } returns referenceData
 
     every { assessmentRepository.findByAssessmentUuid(any()) } returns assessment
     every { oaSysMappingRepository.findAllByQuestionSchema_QuestionSchemaUuidIn(any()) } returns listOf(parentQuestionMapping)
@@ -115,7 +115,7 @@ class ReferenceDataServiceTest {
 
   @Test
   fun `throws when unable to find the OASys mapping for the parent question`() {
-    every { assessmentApiRestClient.getFilteredReferenceData(any(), any(), any(), any(), any(), any(), any(), any()) } returns referenceData
+    every { assessmentApiRestClient.getFilteredReferenceData(any(), any(), any(), any(), any(), any(), any()) } returns referenceData
 
     every { assessmentRepository.findByAssessmentUuid(any()) } returns assessment
     every { oaSysMappingRepository.findAllByQuestionSchema_QuestionSchemaUuidIn(any()) } returns listOf(questionMapping)

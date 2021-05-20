@@ -16,6 +16,7 @@ import uk.gov.justice.digital.assessments.api.CreateAssessmentDto
 import uk.gov.justice.digital.assessments.api.CreateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
+import uk.gov.justice.digital.assessments.utils.RequestData
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -131,6 +132,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
   private fun createDeliusAssessment(cad: CreateAssessmentDto): AssessmentDto {
     val assessment = webTestClient.post().uri("/assessments")
       .bodyValue(cad)
+      .header(RequestData.USER_AREA_HEADER_NAME, "WWS")
       .headers(setAuthorisation())
       .exchange()
       .expectStatus().isOk
@@ -147,6 +149,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
   private fun createCourtAssessment(cad: CreateAssessmentDto): AssessmentDto {
     val assessment = webTestClient.post().uri("/assessments")
       .bodyValue(cad)
+      .header(RequestData.USER_AREA_HEADER_NAME, "WWS")
       .headers(setAuthorisation())
       .exchange()
       .expectStatus().isOk

@@ -16,6 +16,12 @@ import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.CreateO
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OasysAnswer
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.UpdateAssessmentAnswersDto
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.UpdateAssessmentAnswersResponseDto
+import uk.gov.justice.digital.assessments.services.exceptions.DuplicateOffenderRecordException
+import uk.gov.justice.digital.assessments.services.exceptions.OASysClientException
+import uk.gov.justice.digital.assessments.services.exceptions.UserNotAuthorisedException
+import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.CreateAssessmentDto
+import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.CreateAssessmentResponse
+import uk.gov.justice.digital.assessments.utils.RequestData
 
 @Component
 class AssessmentUpdateRestClient {
@@ -30,9 +36,9 @@ class AssessmentUpdateRestClient {
   fun createOasysOffender(
     crn: String,
     user: String = "STUARTWHITLAM",
-    area: String = "WWS",
     deliusEvent: Long? = 123456
   ): Long? {
+    val area = RequestData.getAreaCode()
     log.info("Creating offender in OASys for crn: $crn, area: $area, user: $user, delius event: $deliusEvent")
     val path = "/offenders"
     return webClient
@@ -55,9 +61,9 @@ class AssessmentUpdateRestClient {
   fun createAssessment(
     offenderPK: Long,
     assessmentType: AssessmentType,
-    user: String = "STUARTWHITLAM",
-    area: String = "WWS",
+    user: String = "STUARTWHITLAM"
   ): Long? {
+    val area = RequestData.getAreaCode()
     log.info("Creating Assessment of type $assessmentType in OASys for offender: $offenderPK, area: $area, user: $user")
     val path = "/assessments"
     return webClient
@@ -92,9 +98,9 @@ class AssessmentUpdateRestClient {
     oasysSetPk: Long,
     assessmentType: AssessmentType,
     answers: Set<OasysAnswer>,
-    user: String = "STUARTWHITLAM",
-    area: String = "WWS",
+    user: String = "STUARTWHITLAM"
   ): UpdateAssessmentAnswersResponseDto? {
+    val area = RequestData.getAreaCode()
     log.info("Updating answers for Assessment $oasysSetPk in OASys for offender: $offenderPK, area: $area, user: $user, answers: $answers")
     val path = "/assessments"
     return webClient
@@ -129,9 +135,9 @@ class AssessmentUpdateRestClient {
     oasysSetPk: Long,
     assessmentType: AssessmentType,
     ignoreWarnings: Boolean = true,
-    user: String = "STUARTWHITLAM",
-    area: String = "WWS"
+    user: String = "STUARTWHITLAM"
   ): UpdateAssessmentAnswersResponseDto? {
+    val area = RequestData.getAreaCode()
     log.info("Completing Assessment $oasysSetPk in OASys for offender: $offenderPK, area: $area, user: $user")
     val path = "/assessments/complete"
     return webClient

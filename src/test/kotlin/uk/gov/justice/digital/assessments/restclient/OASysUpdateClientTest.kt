@@ -2,7 +2,9 @@ package uk.gov.justice.digital.assessments.restclient
 
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.slf4j.MDC
 import org.springframework.beans.factory.annotation.Autowired
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OasysAnswer
@@ -10,6 +12,7 @@ import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiUnknown
 import uk.gov.justice.digital.assessments.services.exceptions.DuplicateOffenderRecordException
 import uk.gov.justice.digital.assessments.services.exceptions.UserNotAuthorisedException
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
+import uk.gov.justice.digital.assessments.utils.RequestData
 
 class OASysUpdateClientTest : IntegrationTest() {
   @Autowired
@@ -28,6 +31,11 @@ class OASysUpdateClientTest : IntegrationTest() {
   val duplicateOffenderPk = 3L
   val serverErrorOffenderPk = 4L
   val validationErrorOffenderPk = 5L
+
+  @BeforeEach
+  fun setup() {
+    MDC.put(RequestData.USER_AREA_HEADER, "WWS")
+  }
 
   @Test
   fun `create OASys Offender`() {

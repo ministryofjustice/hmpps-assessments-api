@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
+import org.springframework.http.HttpHeaders
 import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.context.jdbc.SqlConfig
 import org.springframework.test.context.jdbc.SqlGroup
@@ -14,6 +15,7 @@ import uk.gov.justice.digital.assessments.api.ErrorResponse
 import uk.gov.justice.digital.assessments.api.FilteredReferenceDataRequest
 import uk.gov.justice.digital.assessments.restclient.assessmentapi.RefElementDto
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
+import uk.gov.justice.digital.assessments.utils.RequestData
 import java.util.UUID
 
 @SqlGroup(
@@ -51,6 +53,7 @@ class ReferenceDataControllerTest : IntegrationTest() {
             mapOf(validParentQuestionUuid to "test")
           )
         )
+        .header(RequestData.USER_AREA_HEADER_NAME, "WWS")
         .headers(setAuthorisation())
         .exchange()
         .expectStatus().isOk
@@ -114,6 +117,7 @@ class ReferenceDataControllerTest : IntegrationTest() {
             mapOf(validParentQuestionUuid to "test")
           )
         )
+        .header(RequestData.USER_AREA_HEADER_NAME, "WWS")
         .headers(setAuthorisation())
         .exchange()
         .expectStatus().isNotFound
@@ -135,6 +139,7 @@ class ReferenceDataControllerTest : IntegrationTest() {
             mapOf(validParentQuestionUuid to "test")
           )
         )
+        .header(RequestData.USER_AREA_HEADER_NAME, "WWS")
         .headers(setAuthorisation())
         .exchange()
         .expectStatus().isUnauthorized
@@ -156,6 +161,7 @@ class ReferenceDataControllerTest : IntegrationTest() {
             mapOf(validParentQuestionUuid to "test")
           )
         )
+        .header(RequestData.USER_AREA_HEADER_NAME, "WWS")
         .headers(setAuthorisation())
         .exchange()
         .expectStatus().isBadRequest
@@ -177,6 +183,7 @@ class ReferenceDataControllerTest : IntegrationTest() {
             mapOf(validParentQuestionUuid to "test")
           )
         )
+        .header(RequestData.USER_AREA_HEADER_NAME, "WWS")
         .headers(setAuthorisation())
         .exchange()
         .expectStatus().is5xxServerError

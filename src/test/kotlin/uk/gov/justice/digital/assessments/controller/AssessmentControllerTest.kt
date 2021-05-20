@@ -15,6 +15,7 @@ import uk.gov.justice.digital.assessments.api.AssessmentSubjectDto
 import uk.gov.justice.digital.assessments.api.ErrorResponse
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
+import uk.gov.justice.digital.assessments.utils.RequestData
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -175,6 +176,7 @@ class AssessmentControllerTest : IntegrationTest() {
     @Test
     fun `complete assessment episode returns episode`() {
       val assessmentEpisode = webTestClient.post().uri("/assessments/$assessmentUuid/complete")
+        .header(RequestData.USER_AREA_HEADER_NAME, "WWS")
         .headers(setAuthorisation())
         .exchange()
         .expectStatus().isOk
@@ -201,6 +203,7 @@ class AssessmentControllerTest : IntegrationTest() {
     fun `complete assessment episode with errors returns assessment level errors`() {
       val assessmentErrorsUUID = UUID.fromString("aa47e6c4-e41f-467c-95e7-fcf5ffd422f5")
       val assessmentEpisode = webTestClient.post().uri("/assessments/$assessmentErrorsUUID/complete")
+        .header(RequestData.USER_AREA_HEADER_NAME, "WWS")
         .headers(setAuthorisation())
         .exchange()
         .expectStatus().isOk

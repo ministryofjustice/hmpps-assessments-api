@@ -12,10 +12,14 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
 import uk.gov.justice.digital.assessments.HmppsAssessmentApiApplication
 import uk.gov.justice.digital.assessments.JwtAuthHelper
+import uk.gov.justice.digital.assessments.utils.RequestData
 import java.time.Duration
 
 @Suppress("SpringJavaInjectionPointsAutowiringInspection")
-@SpringBootTest(classes = [HmppsAssessmentApiApplication::class], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(
+  classes = [HmppsAssessmentApiApplication::class],
+  webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
+)
 @ActiveProfiles(profiles = ["test"])
 abstract class IntegrationTest {
 
@@ -67,7 +71,10 @@ abstract class IntegrationTest {
     assessmentApiMockServer.stubGetAssessment()
   }
 
-  internal fun setAuthorisation(user: String = "offender-assessment-api", roles: List<String> = listOf()): (HttpHeaders) -> Unit {
+  internal fun setAuthorisation(
+    user: String = "offender-assessment-api",
+    roles: List<String> = listOf()
+  ): (HttpHeaders) -> Unit {
     val token = jwtHelper.createJwt(
       subject = user,
       scope = listOf("read"),
@@ -76,4 +83,5 @@ abstract class IntegrationTest {
     )
     return { it.set(HttpHeaders.AUTHORIZATION, "Bearer $token") }
   }
+
 }

@@ -20,6 +20,7 @@ class RequestData(excludeUris: String?) : HandlerInterceptor {
     request.setAttribute("startTime", LocalDateTime.now().toString())
     MDC.clear()
     MDC.put(USER_ID_HEADER, initialiseUserId(request))
+    MDC.put(USER_AREA_HEADER, request.getHeader(USER_AREA_HEADER_NAME))
 
     if (excludeUriRegex.matcher(request.requestURI).matches()) {
       MDC.put(SKIP_LOGGING, "true")
@@ -54,11 +55,17 @@ class RequestData(excludeUris: String?) : HandlerInterceptor {
 
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
-    private const val ANONYMOUS = "anonymous"
     const val SKIP_LOGGING = "skipLogging"
     const val REQUEST_DURATION = "duration"
     const val RESPONSE_STATUS = "status"
     const val USER_ID_HEADER = "userId"
+    const val USER_AREA_HEADER = "userArea"
+    const val USER_AREA_HEADER_NAME = "x-user-area"
     val isLoggingAllowed: Boolean = "true" != MDC.get(SKIP_LOGGING)
+
+    fun getAreaCode(): String {
+      return MDC.get(USER_AREA_HEADER) ?: throw UserAreaHeaderIsMandatoryException("Area Code header is Mandatory")
+    }
+    class UserAreaHeaderIsMandatoryException(msg: String?) : RuntimeException(msg)
   }
 }
