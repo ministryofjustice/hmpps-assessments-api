@@ -2,6 +2,7 @@ package uk.gov.justice.digital.assessments.restclient
 
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.slf4j.MDC
 import org.springframework.beans.factory.annotation.Autowired
@@ -17,6 +18,11 @@ class AssessmentApiTest : IntegrationTest() {
   internal lateinit var assessmentApiRestClient: AssessmentApiRestClient
 
   val oasysSetPk = 1L
+
+  @BeforeEach
+  fun setup() {
+    MDC.put(USER_AREA_HEADER, "WWS")
+  }
 
   @Test
   fun `retrieve OASys Assessment`() {
