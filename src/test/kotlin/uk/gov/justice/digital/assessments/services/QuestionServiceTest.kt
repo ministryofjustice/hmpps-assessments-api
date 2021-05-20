@@ -283,6 +283,8 @@ class QuestionServiceTest {
   fun `all questions in a group`() {
     every { groupRepository.findByGroupCode("children") } returns tableGroup
     every { groupRepository.findByGroupCode("childrenSubGroup") } returns tableSubGroup
+    every { groupRepository.findByGroupUuid(tableSubGroup.groupUuid) } returns tableSubGroup
+    every { groupRepository.findByGroupCode(tableSubGroup.groupUuid.toString()) } returns null
     every { questionSchemaRepository.findByQuestionSchemaUuid(questionUuid) } returns question
     every { questionSchemaRepository.findByQuestionSchemaUuid(tableQuestionUuid) } returns tableQuestion
     every { questionSchemaRepository.findByQuestionSchemaUuid(tableSubQuestion1Id) } returns tableSubQuestion1

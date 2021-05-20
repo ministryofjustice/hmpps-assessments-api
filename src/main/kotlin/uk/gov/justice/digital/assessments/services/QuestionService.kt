@@ -136,19 +136,15 @@ class QuestionService(
   }
 
   fun getAllGroupQuestions(groupCode: String): QuestionSchemaEntities {
-    val groups: Queue<GroupEntity> = LinkedList()
-    groups.add(findByGroupCode(groupCode))
-
+    val group = findByGroupCode(groupCode);
     val allQuestions = mutableListOf<QuestionSchemaEntity>()
 
-    while (groups.isNotEmpty()) {
-      val currentGroup = groups.remove();
-      currentGroup.contents.forEach {
-        if(it.question != null)
-          allQuestions.add(it.question!!)
-        if(it.nestedGroup != null)
-          groups.add(it.nestedGroup!!)
-      }
+    group.contents.forEach {
+      if (it.contentType == "question")
+        allQuestions.add(questionSchemaRepository.findByQuestionSchemaUuid(it.contentUuid)!!)
+      if (it.contentType == "group")
+        allQuestions.addAll(
+          getAllGroupQuestions(it.contentUuid.toString()))
     }
 
     return QuestionSchemaEntities(allQuestions)
