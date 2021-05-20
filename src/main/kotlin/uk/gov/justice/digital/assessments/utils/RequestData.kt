@@ -64,7 +64,7 @@ class RequestData(excludeUris: String?) : HandlerInterceptor {
     val isLoggingAllowed: Boolean = "true" != MDC.get(SKIP_LOGGING)
 
     fun getAreaCode(): String {
-      return MDC.get(USER_AREA_HEADER) ?: throw UserAreaHeaderIsMandatoryException("Area Code header is Mandatory")
+      return MDC.get(USER_AREA_HEADER) ?: throw UserAreaHeaderIsMandatoryException("Area Code Header is mandatory")
     }
     class UserAreaHeaderIsMandatoryException(msg: String?) : RuntimeException(msg)
   }

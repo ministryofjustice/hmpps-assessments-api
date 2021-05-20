@@ -5,7 +5,6 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
-import org.springframework.http.HttpHeaders
 import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.context.jdbc.SqlConfig
 import org.springframework.test.context.jdbc.SqlGroup
@@ -19,8 +18,15 @@ import uk.gov.justice.digital.assessments.utils.RequestData
 import java.util.UUID
 
 @SqlGroup(
-  Sql(scripts = ["classpath:filteredReferenceData/before-test.sql"], config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED)),
-  Sql(scripts = ["classpath:filteredReferenceData/after-test.sql"], config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED), executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+  Sql(
+    scripts = ["classpath:filteredReferenceData/before-test.sql"],
+    config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED)
+  ),
+  Sql(
+    scripts = ["classpath:filteredReferenceData/after-test.sql"],
+    config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED),
+    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
+  )
 )
 @AutoConfigureWebTestClient(timeout = "50000")
 class ReferenceDataControllerTest : IntegrationTest() {
@@ -39,6 +45,28 @@ class ReferenceDataControllerTest : IntegrationTest() {
         .header("Content-Type", "application/json")
         .exchange()
         .expectStatus().isUnauthorized
+    }
+
+    @Test
+    fun `should return bad request when no user area header is set`() {
+      val currentEpisode = fetchCurrentEpisode(validAssessmentUuid.toString())
+      webTestClient.post().uri("/referencedata/filtered")
+        .bodyValue(
+          FilteredReferenceDataRequest(
+            validAssessmentUuid,
+            currentEpisode.episodeUuid!!,
+            validQuestionUuid,
+            mapOf(validParentQuestionUuid to "test")
+          )
+        )
+        .headers(setAuthorisation())
+        .exchange()
+        .expectStatus().isBadRequest
+        .expectBody<ErrorResponse>()
+        .consumeWith {
+          assertThat(it.responseBody?.status).isEqualTo(400)
+          assertThat(it.responseBody?.developerMessage).isEqualTo("Area Code Header is mandatory")
+        }
     }
 
     @Test
