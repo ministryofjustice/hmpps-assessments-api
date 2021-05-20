@@ -129,9 +129,37 @@ class AssessmentUpdateService(
     index: Int,
     updatedTableRow: UpdateAssessmentEpisodeDto
   ): AssessmentEpisodeDto {
+    return updateTableRow(
+      assessmentService.getEpisode(episodeUuid, assessmentUuid),
+      tableName,
+      index,
+      updatedTableRow
+    )
+  }
+
+  @Transactional
+  fun updateCurrentEpisodeTableRow(
+    assessmentUuid: UUID,
+    tableName: String,
+    index: Int,
+    updatedTableRow: UpdateAssessmentEpisodeDto
+  ): AssessmentEpisodeDto {
+    return updateTableRow(
+      assessmentService.getCurrentEpisode(assessmentUuid),
+      tableName,
+      index,
+      updatedTableRow
+    )
+  }
+
+  private fun updateTableRow(
+    episode: AssessmentEpisodeEntity,
+    tableName: String,
+    index: Int,
+    updatedTableRow: UpdateAssessmentEpisodeDto
+  ): AssessmentEpisodeDto {
     return modifyEpisodeTableRow(
-      assessmentUuid,
-      episodeUuid,
+      episode,
       tableName
     ) { existingTable ->
       if ((index < 0) || (index >= existingTable.values.first().size))
@@ -149,8 +177,33 @@ class AssessmentUpdateService(
     newTableRow: UpdateAssessmentEpisodeDto
   ): AssessmentEpisodeDto {
     return modifyEpisodeTableRow(
-      assessmentUuid,
-      episodeUuid,
+      assessmentService.getEpisode(episodeUuid, assessmentUuid),
+      tableName
+    ) { existingTable ->
+      extendTableAnswers(existingTable, newTableRow.answers)
+    }
+  }
+
+  @Transactional
+  fun addCurrentEpisodeTableRow(
+    assessmentUuid: UUID,
+    tableName: String,
+    newTableRow: UpdateAssessmentEpisodeDto
+  ): AssessmentEpisodeDto {
+    return addTableRow(
+      assessmentService.getCurrentEpisode(assessmentUuid),
+      tableName,
+      newTableRow
+    )
+  }
+
+  private fun addTableRow(
+    episode: AssessmentEpisodeEntity,
+    tableName: String,
+    newTableRow: UpdateAssessmentEpisodeDto
+  ): AssessmentEpisodeDto {
+    return modifyEpisodeTableRow(
+      episode,
       tableName
     ) { existingTable ->
       extendTableAnswers(existingTable, newTableRow.answers)
@@ -158,16 +211,13 @@ class AssessmentUpdateService(
   }
 
   private fun modifyEpisodeTableRow(
-    assessmentUuid: UUID,
-    episodeUuid: UUID,
+    episode: AssessmentEpisodeEntity,
     tableName: String,
     modifyFn: (TableAnswers) -> TableAnswers
   ): AssessmentEpisodeDto {
     val tableQuestions = questionService.getAllGroupQuestions(tableName)
     if (tableQuestions.isEmpty())
       throw IllegalStateException("No questions found for table $tableName")
-
-    val episode = assessmentService.getEpisode(episodeUuid, assessmentUuid)
 
     val existingTable = grabExistingTableAnswers(episode, tableQuestions)
     val updatedTable = modifyFn(existingTable)
