@@ -249,42 +249,45 @@ class QuestionServiceTest {
   }
 
   @Test
-  fun `get all questions for a section that the given question belongs to`(){
+  fun `get all questions for a section that the given question belongs to`() {
     val questionUuid1 = UUID.randomUUID()
     val questionUuid2 = UUID.randomUUID()
     every { oasysMappingRepository.findAllByQuestionSchema_QuestionSchemaUuidIn(any()) } returns
-      listOf(OASysMappingEntity(
-        mappingId = 1,
-        sectionCode = "section",
-        questionCode = "code",
-        questionSchema = QuestionSchemaEntity(
-          questionSchemaId = 1,
-          questionSchemaUuid = questionUuid1
+      listOf(
+        OASysMappingEntity(
+          mappingId = 1,
+          sectionCode = "section",
+          questionCode = "code",
+          questionSchema = QuestionSchemaEntity(
+            questionSchemaId = 1,
+            questionSchemaUuid = questionUuid1
+          )
         )
       )
-    )
 
-    every { oasysMappingRepository.findAllBySectionCode("section") } returns
-      listOf(OASysMappingEntity(
-        mappingId = 1,
-        sectionCode = "section",
-        questionCode = "code",
-        questionSchema = QuestionSchemaEntity(
-          questionSchemaId = 1,
-          questionSchemaUuid = questionUuid1
-        )
-      ), OASysMappingEntity(
-        mappingId = 1,
-        sectionCode = "section",
-        questionCode = "code",
-        questionSchema = QuestionSchemaEntity(
-          questionSchemaId = 2,
-          questionSchemaUuid = questionUuid2
+    every { oasysMappingRepository.findAllBySectionCodeIn(listOf("section")) } returns
+      listOf(
+        OASysMappingEntity(
+          mappingId = 1,
+          sectionCode = "section",
+          questionCode = "code",
+          questionSchema = QuestionSchemaEntity(
+            questionSchemaId = 1,
+            questionSchemaUuid = questionUuid1
+          )
+        ),
+        OASysMappingEntity(
+          mappingId = 1,
+          sectionCode = "section",
+          questionCode = "code",
+          questionSchema = QuestionSchemaEntity(
+            questionSchemaId = 2,
+            questionSchemaUuid = questionUuid2
+          )
         )
       )
-    )
 
-    val result = questionService.getAllQuestionsForSectionsForQuestions(listOf(questionUuid1))
+    val result = questionService.getAllSectionQuestionsForQuestions(listOf(questionUuid1))
 
     verify(exactly = 1) { oasysMappingRepository.findAllByQuestionSchema_QuestionSchemaUuidIn(any()) }
     assertThat(result).hasSize(2)

@@ -62,6 +62,7 @@ class AssessmentUpdateService(
 
     val oasysResult = updateOASysAssessment(episode, updatedEpisodeAnswers)
 
+    //shouldn't need this because of the transactional annotation, unless there is an exception which needs handling.
     assessmentRepository.save(episode.assessment)
     log.info("Saved episode ${episode.episodeUuid} for assessment ${episode.assessment?.assessmentUuid}")
 
@@ -89,7 +90,7 @@ class AssessmentUpdateService(
     episode: AssessmentEpisodeEntity,
     updatedEpisodeAnswers: UpdateAssessmentEpisodeDto
   ): AssessmentEpisodeUpdateErrors? {
-    val offenderPk = episode.oasysSetPk
+    val offenderPk = episode.assessment?.subject?.oasysOffenderPk
     if (episode.assessmentType == null || episode.oasysSetPk == null || offenderPk == null) {
       log.info("Unable to update OASys Assessment with keys type: ${episode.assessmentType} oasysSet: ${episode.oasysSetPk} offenderPk: $offenderPk")
       return null
@@ -97,7 +98,7 @@ class AssessmentUpdateService(
 
     val oasysAnswers = OasysAnswers.from(
       episode, object : OasysAnswers.Companion.MappingProvider {
-      override fun getAllQuestions(): QuestionSchemaEntities = questionService.getAllQuestionsForSectionsForQuestions(updatedEpisodeAnswers.answers.keys.toList())
+      override fun getAllQuestions(): QuestionSchemaEntities = questionService.getAllSectionQuestionsForQuestions(updatedEpisodeAnswers.answers.keys.toList())
       override fun getTableQuestions(tableCode: String): QuestionSchemaEntities =
         questionService.getAllGroupQuestions(tableCode)
     }

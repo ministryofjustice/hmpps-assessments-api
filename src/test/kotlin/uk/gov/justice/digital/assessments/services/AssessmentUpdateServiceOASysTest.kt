@@ -2,7 +2,9 @@ package uk.gov.justice.digital.assessments.services
 
 import io.mockk.every
 import io.mockk.junit5.MockKExtension
+import io.mockk.justRun
 import io.mockk.mockk
+import io.mockk.mockkObject
 import io.mockk.slot
 import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
@@ -22,9 +24,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.EpisodeRepository
-import uk.gov.justice.digital.assessments.jpa.repositories.SubjectRepository
 import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient
-import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OasysAnswer
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.UpdateAssessmentAnswersResponseDto
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.ValidationErrorDto
@@ -38,22 +38,9 @@ class AssessmentUpdateServiceOASysTest {
   private val episodeRepository: EpisodeRepository = mockk()
   private val questionService: QuestionService = mockk()
   private val assessmentUpdateRestClient: AssessmentUpdateRestClient = mockk()
-  private val subjectRepository: SubjectRepository = mockk()
-  private val courtCaseRestClient: CourtCaseRestClient = mockk()
-  private val episodeService: EpisodeService = mockk()
-  private val offenderService: OffenderService = mockk()
+  private val assessmentService: AssessmentService = mockk()
 
-  private val assessmentService = AssessmentService(
-    assessmentRepository,
-    subjectRepository,
-    questionService,
-    episodeService,
-    courtCaseRestClient,
-    assessmentUpdateRestClient,
-    offenderService
-  )
-
-  private val assessmentsService = AssessmentUpdateService(
+  private val assessmentsUpdateService = AssessmentUpdateService(
     assessmentRepository,
     episodeRepository,
     questionService,
@@ -231,7 +218,7 @@ class AssessmentUpdateServiceOASysTest {
   fun `update OASys if OASysSet stored against episode`() {
     every { questionService.getAllQuestions() } returns setupQuestionCodes()
     every { assessmentUpdateRestClient.updateAssessment(oasysOffenderPk, oasysSetPk, assessmentType, any()) } returns UpdateAssessmentAnswersResponseDto()
-    every { questionService.getAllQuestionsForSectionsForQuestions(any())} returns QuestionSchemaEntities( questionsList = emptyList())
+    every { questionService.getAllSectionQuestionsForQuestions(any()) } returns QuestionSchemaEntities(questionsList = emptyList())
     val episode = AssessmentEpisodeEntity(
       episodeId = episodeId1,
       assessmentType = AssessmentType.SHORT_FORM_PSR,
@@ -241,7 +228,7 @@ class AssessmentUpdateServiceOASysTest {
       answers = mapOf(question1Uuid to listOf("YES"))
     )
 
-    assessmentsService.updateOASysAssessment(episode, update)
+    assessmentsUpdateService.updateOASysAssessment(episode, update)
 
     verify(exactly = 1) {
       assessmentUpdateRestClient.updateAssessment(oasysOffenderPk, oasysSetPk, assessmentType, any())
@@ -260,7 +247,7 @@ class AssessmentUpdateServiceOASysTest {
       answers = mapOf(question1Uuid to listOf("YES"))
     )
 
-    assessmentsService.updateOASysAssessment(episode, update)
+    assessmentsUpdateService.updateOASysAssessment(episode, update)
 
     verify(exactly = 0) {
       assessmentUpdateRestClient.updateAssessment(oasysOffenderPk, oasysSetPk, assessmentType, any())
@@ -279,7 +266,7 @@ class AssessmentUpdateServiceOASysTest {
     )
     every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
     every { assessmentRepository.save(any()) } returns null // should save when errors?
-    every { questionService.getAllQuestionsForSectionsForQuestions(any())} returns QuestionSchemaEntities( questionsList = emptyList())
+    every { questionService.getAllSectionQuestionsForQuestions(any()) } returns QuestionSchemaEntities(questionsList = emptyList())
 
     val oasysError = UpdateAssessmentAnswersResponseDto(
       7777,
@@ -301,7 +288,7 @@ class AssessmentUpdateServiceOASysTest {
     val updatedAnswers = UpdateAssessmentEpisodeDto(
       mapOf(existingQuestionUuid to listOf("fruit loops", "custard"))
     )
-    val episodeDto = assessmentsService.updateEpisode(assessmentUuid, episodeUuid, updatedAnswers)
+    val episodeDto = assessmentsUpdateService.updateEpisode(assessmentUuid, episodeUuid, updatedAnswers)
 
     // Updated answers in returned DTO
     assertThat(episodeDto.answers).hasSize(1)
@@ -319,29 +306,35 @@ class AssessmentUpdateServiceOASysTest {
   }
 
   @Test
-  fun `update episode sends only updated sections to oasys`(){
-    every { questionService.getAllQuestions() } returns setupQuestionCodes()
-    val answersSlot = slot<Set<OasysAnswer>>()
-    every { assessmentUpdateRestClient.updateAssessment(oasysOffenderPk, oasysSetPk, assessmentType, capture(answersSlot)) } returns UpdateAssessmentAnswersResponseDto()
-    every { questionService.getAllQuestionsForSectionsForQuestions(any())} returns QuestionSchemaEntities( questionsList = emptyList())
-    val episode = AssessmentEpisodeEntity(
-      episodeId = episodeId1,
-      assessmentType = AssessmentType.SHORT_FORM_PSR,
-      oasysSetPk = oasysSetPk
-    )
-    val update = UpdateAssessmentEpisodeDto(
-      answers = mapOf(question1Uuid to listOf("YES"))
-    )
+  fun `update episode sends only updated sections to oasys`() {
 
-    assessmentsService.updateOASysAssessment(episode, update)
+    every { assessmentService.getEpisode(episodeUuid, assessmentUuid) } returns setupEpisode()
+
+    every { questionService.getAllSectionQuestionsForQuestions(listOf(question1Uuid)) } returns setupSectionQuestionCodes()
+    val oasysAnswersSlot = slot<Set<OasysAnswer>>()
+    every { assessmentUpdateRestClient.updateAssessment(oasysOffenderPk, oasysSetPk, assessmentType, capture(oasysAnswersSlot)) } returns UpdateAssessmentAnswersResponseDto()
+    every { questionService.getAllQuestions() } returns setupQuestionCodes()
+    every { assessmentRepository.save(any()) } returns mockk()
+
+    val update = UpdateAssessmentEpisodeDto(answers = mapOf(question1Uuid to listOf("Updated")))
+    val updatedEpisode = assessmentsUpdateService.updateEpisode(assessmentUuid, episodeUuid, update)
 
     verify(exactly = 1) {
       assessmentUpdateRestClient.updateAssessment(oasysOffenderPk, oasysSetPk, assessmentType, any())
     }
-    assertThat(answersSlot.captured.first().questionCode).isEqualTo("")
+    with(oasysAnswersSlot.captured) {
+      assertThat(map { it.questionCode }).containsOnly("oasysQ1", "oasysQ2")
+      assertThat(map { it.sectionCode }).containsOnly("section1")
+      assertThat(first { it.questionCode == "oasysQ1" }.answer).isEqualTo("Updated")
+      assertThat(first { it.questionCode == "oasysQ2" }.answer).isEqualTo("1975-01-20T00:00:00.000Z")
+      assertThat(map { it.answer }).doesNotContain("not mapped to oasys")
+    }
+
+    with(updatedEpisode.answers) {
+      assertThat(map { it.key }).containsOnlyOnce(question1Uuid, question2Uuid)
+      assertThat(flatMap { it.value }).contains("Updated", "1975-01-20T00:00:00.000Z", "not mapped to oasys")
+    }
   }
-
-
 
   private fun setupQuestionCodes(): QuestionSchemaEntities {
     val dummy = AnswerSchemaGroupEntity(answerSchemaId = 99)
@@ -361,6 +354,25 @@ class AssessmentUpdateServiceOASysTest {
       )
     )
   }
+
+  private fun setupSectionQuestionCodes(): QuestionSchemaEntities {
+    val dummy = AnswerSchemaGroupEntity(answerSchemaId = 99)
+
+    val yes = AnswerSchemaEntity(answerSchemaId = 1, answerSchemaUuid = answer1Uuid, value = "YES", answerSchemaGroup = dummy)
+    val maybe = AnswerSchemaEntity(answerSchemaId = 2, answerSchemaUuid = answer2Uuid, value = "MAYBE", answerSchemaGroup = dummy)
+    val no = AnswerSchemaEntity(answerSchemaId = 3, answerSchemaUuid = answer3Uuid, value = "NO", answerSchemaGroup = dummy)
+
+    val group1 = AnswerSchemaGroupEntity(answerSchemaId = 1, answerSchemaEntities = listOf(yes))
+    val group2 = AnswerSchemaGroupEntity(answerSchemaId = 2, answerSchemaEntities = listOf(maybe, no))
+
+    return QuestionSchemaEntities(
+      listOf(
+        makeQuestion(1, question1Uuid, "Q1", "checkbox", group1, "section1", 1, "oasysQ1"),
+        makeQuestion(2, question2Uuid, "Q2", "radio", group2, "section1", 1, "oasysQ2")
+      )
+    )
+  }
+
 
   private fun makeQuestion(
     questionSchemaId: Long,
@@ -416,5 +428,27 @@ class AssessmentUpdateServiceOASysTest {
     )
 
     return assessment
+  }
+
+  private fun setupEpisode(): AssessmentEpisodeEntity {
+    val answers = mutableMapOf(
+      question1Uuid to AnswerEntity("some free text"),
+      question2Uuid to AnswerEntity("1975-01-20T00:00:00.000Z"),
+      question3Uuid to AnswerEntity("not mapped to oasys")
+    )
+    return AssessmentEpisodeEntity(
+      episodeId = episodeId1,
+      assessmentType = AssessmentType.SHORT_FORM_PSR,
+      oasysSetPk = oasysSetPk,
+      answers = answers,
+      assessment = AssessmentEntity(
+        subject_ = mutableListOf(
+          SubjectEntity(
+            oasysOffenderPk = 1,
+            subjectUuid = UUID.randomUUID()
+          )
+        )
+      )
+    )
   }
 }
