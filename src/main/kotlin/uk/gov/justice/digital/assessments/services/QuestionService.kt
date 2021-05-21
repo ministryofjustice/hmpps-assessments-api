@@ -168,8 +168,10 @@ class QuestionService(
   fun getAllSectionQuestionsForQuestions(questions: List<UUID>): QuestionSchemaEntities {
     val mappings = oasysMappingRepository.findAllByQuestionSchema_QuestionSchemaUuidIn(questions)
     val sections = mappings?.map { it.sectionCode }?.distinct() ?: emptyList()
-    return QuestionSchemaEntities(oasysMappingRepository.findAllBySectionCodeIn(sections)
-      .map { it.questionSchema }.distinct())
+    return QuestionSchemaEntities(
+      oasysMappingRepository.findAllBySectionCodeIn(sections)
+        .map { it.questionSchema }.distinct()
+    )
   }
 }
 

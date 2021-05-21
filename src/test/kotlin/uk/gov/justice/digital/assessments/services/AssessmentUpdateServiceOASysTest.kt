@@ -2,9 +2,7 @@ package uk.gov.justice.digital.assessments.services
 
 import io.mockk.every
 import io.mockk.junit5.MockKExtension
-import io.mockk.justRun
 import io.mockk.mockk
-import io.mockk.mockkObject
 import io.mockk.slot
 import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
@@ -372,7 +370,6 @@ class AssessmentUpdateServiceOASysTest {
       )
     )
   }
-
 
   private fun makeQuestion(
     questionSchemaId: Long,

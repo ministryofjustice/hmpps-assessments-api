@@ -62,7 +62,7 @@ class AssessmentUpdateService(
 
     val oasysResult = updateOASysAssessment(episode, updatedEpisodeAnswers)
 
-    //shouldn't need this because of the transactional annotation, unless there is an exception which needs handling.
+    // shouldn't need this because of the transactional annotation, unless there is an exception which needs handling.
     assessmentRepository.save(episode.assessment)
     log.info("Saved episode ${episode.episodeUuid} for assessment ${episode.assessment?.assessmentUuid}")
 
@@ -97,11 +97,12 @@ class AssessmentUpdateService(
     }
 
     val oasysAnswers = OasysAnswers.from(
-      episode, object : OasysAnswers.Companion.MappingProvider {
-      override fun getAllQuestions(): QuestionSchemaEntities = questionService.getAllSectionQuestionsForQuestions(updatedEpisodeAnswers.answers.keys.toList())
-      override fun getTableQuestions(tableCode: String): QuestionSchemaEntities =
-        questionService.getAllGroupQuestions(tableCode)
-    }
+      episode,
+      object : OasysAnswers.Companion.MappingProvider {
+        override fun getAllQuestions(): QuestionSchemaEntities = questionService.getAllSectionQuestionsForQuestions(updatedEpisodeAnswers.answers.keys.toList())
+        override fun getTableQuestions(tableCode: String): QuestionSchemaEntities =
+          questionService.getAllGroupQuestions(tableCode)
+      }
     )
 
     val oasysUpdateResult = assessmentUpdateRestClient.updateAssessment(
