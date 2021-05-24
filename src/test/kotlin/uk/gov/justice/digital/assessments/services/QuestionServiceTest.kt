@@ -16,10 +16,12 @@ import uk.gov.justice.digital.assessments.api.QuestionSchemaDto
 import uk.gov.justice.digital.assessments.api.TableQuestionDto
 import uk.gov.justice.digital.assessments.jpa.entities.GroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.GroupSummaryEntity
+import uk.gov.justice.digital.assessments.jpa.entities.OASysMappingEntity
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionGroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.AnswerSchemaRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.GroupRepository
+import uk.gov.justice.digital.assessments.jpa.repositories.OASysMappingRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.QuestionGroupRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.QuestionSchemaRepository
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
@@ -32,12 +34,14 @@ class QuestionServiceTest {
   private val answerSchemaRepository: AnswerSchemaRepository = mockk()
   private val questionGroupRepository: QuestionGroupRepository = mockk()
   private val groupRepository: GroupRepository = mockk()
+  private val oasysMappingRepository: OASysMappingRepository = mockk()
   private val dependencyService: QuestionDependencyService = mockk()
   private val questionService = QuestionService(
     questionSchemaRepository,
     questionGroupRepository,
     groupRepository,
     answerSchemaRepository,
+    oasysMappingRepository,
     dependencyService
   )
 
@@ -328,5 +332,51 @@ class QuestionServiceTest {
     assertThat(summary.contentCount).isEqualTo(5L)
     assertThat(summary.groupCount).isEqualTo(2L)
     assertThat(summary.questionCount).isEqualTo(3L)
+  }
+
+  @Test
+  fun `get all questions for a section that the given question belongs to`() {
+    val questionUuid1 = UUID.randomUUID()
+    val questionUuid2 = UUID.randomUUID()
+    every { oasysMappingRepository.findAllByQuestionSchema_QuestionSchemaUuidIn(any()) } returns
+      listOf(
+        OASysMappingEntity(
+          mappingId = 1,
+          sectionCode = "section",
+          questionCode = "code",
+          questionSchema = QuestionSchemaEntity(
+            questionSchemaId = 1,
+            questionSchemaUuid = questionUuid1
+          )
+        )
+      )
+
+    every { oasysMappingRepository.findAllBySectionCodeIn(listOf("section")) } returns
+      listOf(
+        OASysMappingEntity(
+          mappingId = 1,
+          sectionCode = "section",
+          questionCode = "code",
+          questionSchema = QuestionSchemaEntity(
+            questionSchemaId = 1,
+            questionSchemaUuid = questionUuid1
+          )
+        ),
+        OASysMappingEntity(
+          mappingId = 1,
+          sectionCode = "section",
+          questionCode = "code",
+          questionSchema = QuestionSchemaEntity(
+            questionSchemaId = 2,
+            questionSchemaUuid = questionUuid2
+          )
+        )
+      )
+
+    val result = questionService.getAllSectionQuestionsForQuestions(listOf(questionUuid1))
+
+    verify(exactly = 1) { oasysMappingRepository.findAllByQuestionSchema_QuestionSchemaUuidIn(any()) }
+    assertThat(result).hasSize(2)
+    assertThat(result.map { it.questionSchemaUuid }).contains(questionUuid1, questionUuid2)
   }
 }

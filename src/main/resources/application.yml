@@ -118,7 +118,7 @@ assessment-update-api:
   base-url: http://localhost:9080
 
 community-api:
-  base-url: http://localhost:9096
+  base-url: http://localhost:9080
 
 assessment-api:
   base-url: http://localhost:9080
