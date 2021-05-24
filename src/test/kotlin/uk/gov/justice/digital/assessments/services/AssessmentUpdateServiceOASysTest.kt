@@ -217,16 +217,12 @@ class AssessmentUpdateServiceOASysTest {
     every { questionService.getAllQuestions() } returns setupQuestionCodes()
     every { assessmentUpdateRestClient.updateAssessment(oasysOffenderPk, oasysSetPk, assessmentType, any()) } returns UpdateAssessmentAnswersResponseDto()
     every { questionService.getAllSectionQuestionsForQuestions(any()) } returns QuestionSchemaEntities(questionsList = emptyList())
-    val episode = AssessmentEpisodeEntity(
-      episodeId = episodeId1,
-      assessmentType = AssessmentType.SHORT_FORM_PSR,
-      oasysSetPk = oasysSetPk
-    )
+
     val update = UpdateAssessmentEpisodeDto(
       answers = mapOf(question1Uuid to listOf("YES"))
     )
 
-    assessmentsUpdateService.updateOASysAssessment(episode, update)
+    assessmentsUpdateService.updateOASysAssessment(setupEpisode(), update)
 
     verify(exactly = 1) {
       assessmentUpdateRestClient.updateAssessment(oasysOffenderPk, oasysSetPk, assessmentType, any())
@@ -262,6 +258,13 @@ class AssessmentUpdateServiceOASysTest {
         existingQuestionUuid to AnswerEntity(listOf("free text", "fruit loops", "biscuits"))
       )
     )
+    every { assessmentService.getEpisode(episodeUuid, assessmentUuid) } returns
+      AssessmentEpisodeEntity(
+        episodeId = episodeId1,
+        assessmentType = AssessmentType.SHORT_FORM_PSR,
+        oasysSetPk = oasysSetPk,
+        assessment = assessment
+      )
     every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
     every { assessmentRepository.save(any()) } returns null // should save when errors?
     every { questionService.getAllSectionQuestionsForQuestions(any()) } returns QuestionSchemaEntities(questionsList = emptyList())
