@@ -579,3 +579,19 @@ risk_in_custody_to:,258.1-radio,a1df8a21-92d2-40c0-ac06-00eddf8c0743
 if_necessary_record_the_details_of_any_key_documents_or_reports_used_in_this_analysis,264.1-radio,1db0c653-e315-431b-84cb-a461efd00f13
 has_this_case_been_referred_to_multi-agency_public_protection_management_,265.1-radio,b1e9ed3e-edec-4c8f-8e08-3cbfe3af9dbd
 if_not_should_this_case_be_referred_to_multi-agency_public_protection_management_,268.1-radio,9cbaed61-bb23-4ac6-b31a-89b1b12c7644
+update_assessment_details,uiS5.1-presentation: link(_/addrow/children_at_risk_of_serious_harm_),b0608208-e593-4958-a903-d23b47948429
+child_at_risk_of_serious_harm:,202.1-table:children_at_risk_of_serious_harm,fcfd63c2-008c-47b8-bb6b-b73d487f15f8
+give_details_of_child_protection_conferences_child_protection_decisions_and_looked_after_children_review_dates_–_if_applicable,213.1-textarea,78d36748-657e-4d5f-a964-82bef4e5089b
+local_authority_children’s_services_key_worker_name_address_and_telephone_number_if_applicable,214.1-textarea,2d640653-96e1-4d1b-8411-2963ea2b0687
+other_agencies_and_personnel_involved_if_applicable,215.1-textarea,0ea85849-bf04-489d-a7b4-8678a09674a3
+additional_information,216.1-textarea,bf5ee0a3-4842-49c3-b4e2-bf35b75673e8
+child_at_risk_of_serious_harm:,ui202.1-presentation: heading,9d971b39-ab26-43ba-aabe-5dc9342e9f99
+child_at_risk_of_serious_harm:,uiS5.1-presentation: inset,8c5c0274-3087-4ea3-aa09-4efd88a64490
+personal_details,uiS5.2-presentation: heading,1c7dc48a-e90f-4141-829e-ff16ce8dbb20
+page_divider,uiS5.3-presentation: divider,3a0351a4-077e-4da0-b66d-bd552da6b273
+contact_details,uiS5.4-presentation: heading,4903acda-926d-4c7e-813f-7511bf5a62c4
+address_if_disclosable_,207.1-textarea,c8668b01-ad96-454f-8afd-cccf6d827d5b
+page_divider,uiS5.5-presentation: divider,d52774aa-f2cb-457b-b494-62cf68fd9850
+social_services_details,uiS5.6-presentation: heading,e874acf7-5515-48d0-9ee3-efb034b2f05b
+page_divider,uiS5.7-presentation: divider,589686ed-add7-4f36-a14d-80a4f450ae63
+child_protection_details,uiS5.8-presentation: heading,2faa8008-ecd2-4ba1-8064-ce5c3d1fa360

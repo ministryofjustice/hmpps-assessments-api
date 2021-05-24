@@ -247,6 +247,36 @@ class AssessmentUpdateServiceTest {
     }
 
     @Test
+    fun `add first row to table - current episode`() {
+      val answers = mutableMapOf(
+        question1Uuid to AnswerEntity("some free text"),
+        question2Uuid to AnswerEntity("1975-01-20T00:00:00.000Z"),
+        question3Uuid to AnswerEntity("not mapped to oasys"),
+      )
+      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity(answers)
+
+      val tableAnswers = UpdateAssessmentEpisodeDto(
+        mapOf(
+          childQuestion1 to listOf("child name"),
+          childQuestion2 to listOf("child address")
+        )
+      )
+
+      val episodeDto = assessmentUpdateService.addCurrentEpisodeTableRow(assessmentUuid, "children_at_risk", tableAnswers)
+
+      assertThat(episodeDto.answers).hasSize(5)
+      with(episodeDto.answers[childQuestion1]!!) {
+        assertThat(size).isEqualTo(1)
+        assertThat(first()).isEqualTo("child name")
+      }
+
+      with(episodeDto.answers[childQuestion2]!!) {
+        assertThat(size).isEqualTo(1)
+        assertThat(first()).isEqualTo("child address")
+      }
+    }
+
+    @Test
     fun `add second row to table`() {
       val answers = mutableMapOf(
         question1Uuid to AnswerEntity("some free text"),
@@ -420,6 +450,15 @@ class AssessmentUpdateServiceTest {
 
     @Test
     fun `fail on bad table name`() {
+      val answers = mutableMapOf(
+        question1Uuid to AnswerEntity("some free text"),
+        question2Uuid to AnswerEntity("1975-01-20T00:00:00.000Z"),
+        question3Uuid to AnswerEntity("not mapped to oasys"),
+        childQuestion1 to AnswerEntity(listOf("child name 1", "name of child 2", "child name 3")),
+        childQuestion2 to AnswerEntity(listOf("child address 1", "address of child 2", "child address 3"))
+      )
+      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity(answers)
+
       assertThatThrownBy {
         assessmentUpdateService.addEpisodeTableRow(
           assessmentUuid,

@@ -18,7 +18,7 @@ import uk.gov.justice.digital.assessments.jpa.repositories.OASysMappingRepositor
 import uk.gov.justice.digital.assessments.jpa.repositories.QuestionGroupRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.QuestionSchemaRepository
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
-import java.util.UUID
+import java.util.*
 
 @Service
 class QuestionService(
@@ -138,9 +138,18 @@ class QuestionService(
   }
 
   fun getAllGroupQuestions(groupCode: String): QuestionSchemaEntities {
-    val group = findByGroupCode(groupCode)
-    val questionsInGroup = group.contents.filter { it.question != null }.map { it.question!! }
-    return QuestionSchemaEntities(questionsInGroup)
+    val group = findByGroupCode(groupCode);
+    val allQuestions = mutableListOf<QuestionSchemaEntity>()
+
+    group.contents.forEach {
+      if (it.contentType == "question")
+        allQuestions.add(questionSchemaRepository.findByQuestionSchemaUuid(it.contentUuid)!!)
+      if (it.contentType == "group")
+        allQuestions.addAll(
+          getAllGroupQuestions(it.contentUuid.toString()))
+    }
+
+    return QuestionSchemaEntities(allQuestions)
   }
 
   fun getAllAnswers(): List<AnswerSchemaEntity> {

@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.assessments.services.dto
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import uk.gov.justice.digital.assessments.jpa.entities.AnswerEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.OASysMappingEntity
@@ -18,6 +20,8 @@ class OasysAnswers(
   }
 
   companion object {
+    val log: Logger = LoggerFactory.getLogger(this::class.java)
+
     interface MappingProvider {
       fun getAllQuestions(): QuestionSchemaEntities
       fun getTableQuestions(tableCode: String): QuestionSchemaEntities
@@ -61,7 +65,6 @@ class OasysAnswers(
       answers: Map<UUID, AnswerEntity>,
       mappingProvider: MappingProvider
     ): Pair<Set<UUID>, OasysAnswers> {
-
       val allTableQuestionIds = mutableSetOf<UUID>()
       val allTableAnswers = OasysAnswers()
       tables.forEach { table ->
@@ -87,8 +90,12 @@ class OasysAnswers(
 
       // consistency check
       val tableLength = tableAnswers.values.first().answers.size
-      if (tableAnswers.values.any { it.answers.size != tableLength })
-        throw IllegalStateException("Inconsistent table answers") // this is rubbish message
+      if (tableAnswers.values.any { it.answers.size != tableLength }) {
+        log.info("Inconsistent table size")
+        answers.forEach {
+          log.info(" ${it.key} -> ${it.value.answers.joinToString()}")
+        }
+      }
 
       // build OasysAnswers
       return Pair(
