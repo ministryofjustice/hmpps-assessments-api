@@ -15,7 +15,6 @@ import uk.gov.justice.digital.assessments.restclient.assessmentapi.OASysAssessme
 import uk.gov.justice.digital.assessments.restclient.assessmentapi.RefElementDto
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OASysErrorResponse
 import uk.gov.justice.digital.assessments.services.exceptions.ApiClientEntityNotFoundException
-import uk.gov.justice.digital.assessments.services.exceptions.ApiClientUnknownException
 
 @Component
 class AssessmentApiRestClient {
@@ -39,7 +38,7 @@ class AssessmentApiRestClient {
         handleAssessmentError(oasysSetPk, it, HttpMethod.GET, path)
       }
       .onStatus(HttpStatus::is5xxServerError) {
-        throw ApiClientUnknownException(
+        handle5xxError(
           "Failed to retrieve Oasys assessment $oasysSetPk",
           HttpMethod.GET,
           path,
@@ -75,15 +74,13 @@ class AssessmentApiRestClient {
         handle4xxError(
           it,
           HttpMethod.POST,
-          path,
-          ExternalService.ASSESSMENTS_API,
-          fieldName
+          path.plus(" for fieldName $fieldName"),
+          ExternalService.ASSESSMENTS_API
         )
       }
       .onStatus(HttpStatus::is5xxServerError) {
-        throw ApiClientUnknownException(
-          "Failed to retrieve OASys filtered reference data for $fieldName",
-          HttpMethod.POST,
+        handle5xxError(
+          "Failed to retrieve OASys filtered reference data for $fieldName", HttpMethod.POST,
           path,
           ExternalService.ASSESSMENTS_API
         )

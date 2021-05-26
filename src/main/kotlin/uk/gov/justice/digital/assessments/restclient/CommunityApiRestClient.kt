@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityConvictionDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
-import uk.gov.justice.digital.assessments.services.exceptions.ApiClientUnknownException
 
 @Component
 class CommunityApiRestClient {
@@ -32,7 +31,7 @@ class CommunityApiRestClient {
         )
       }
       .onStatus(HttpStatus::is5xxServerError) {
-        throw ApiClientUnknownException(
+        handle5xxError(
           "Failed to retrieve offender details for crn: $crn",
           HttpMethod.GET,
           path,
@@ -58,7 +57,7 @@ class CommunityApiRestClient {
         )
       }
       .onStatus(HttpStatus::is5xxServerError) {
-        throw ApiClientUnknownException(
+        handle5xxError(
           "Failed to retrieve conviction details for crn: $crn, conviction id: $convictionId",
           HttpMethod.GET,
           path,

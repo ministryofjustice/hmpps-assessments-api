@@ -86,7 +86,7 @@ class ControllerAdvice {
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   fun handle(e: ApiClientInvalidRequestException): ResponseEntity<ErrorResponse?> {
     log.error(
-      "InvalidRequestException for external client ${e.client} method ${e.method} and url ${e.url} with optional param ${e.extraParam}: {}",
+      "InvalidRequestException for external client ${e.client} method ${e.method} and url ${e.url}: {}",
       e.message
     )
     return ResponseEntity(ErrorResponse(status = 400, developerMessage = e.message), HttpStatus.BAD_REQUEST)

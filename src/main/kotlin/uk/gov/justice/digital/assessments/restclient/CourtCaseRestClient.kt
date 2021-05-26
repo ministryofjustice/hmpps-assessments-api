@@ -9,7 +9,6 @@ import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.assessments.restclient.courtcaseapi.CourtCase
-import uk.gov.justice.digital.assessments.services.exceptions.ApiClientUnknownException
 
 @Component
 class CourtCaseRestClient {
@@ -48,7 +47,7 @@ class CourtCaseRestClient {
         )
       }
       .onStatus(HttpStatus::is5xxServerError) {
-        throw ApiClientUnknownException(
+        handle5xxError(
           "Fail to retrieve court case for court: $courtCode,  caseNo: $caseNumber",
           HttpMethod.GET,
           path,

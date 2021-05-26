@@ -35,8 +35,7 @@ class ApiClientInvalidRequestException(
   msg: String,
   val method: HttpMethod,
   val url: String,
-  val client: ExternalService,
-  val extraParam: String?
+  val client: ExternalService
 ) : RuntimeException(msg)
 
 class ApiClientUnknownException(
