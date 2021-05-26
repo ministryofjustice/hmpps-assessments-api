@@ -39,7 +39,17 @@ class CommunityApiMockServer : WireMockServer(9096) {
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
             .withStatus(404)
-            .withBody("{\"status\":\"Error\",\"message\":\"Offender not found\"}")
+            .withBody("{\"status\":\"404\",\"developerMessage\":\"The offender is not found\"}")
+        )
+    )
+
+    stubFor(
+      WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/invalidBadRequest/all"))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withStatus(400)
+            .withBody("{\"status\":\"400\",\"developerMessage\":\"Invalid CRN invalidBadRequest\"}")
         )
     )
   }

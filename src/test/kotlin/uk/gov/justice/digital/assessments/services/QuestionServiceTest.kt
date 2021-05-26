@@ -274,7 +274,7 @@ class QuestionServiceTest {
     val tableRef = groupContents[1] as TableQuestionDto
     assertThat(tableRef.tableId).isEqualTo(tableGroup.groupUuid)
     assertThat(tableRef.contents).hasSize(3)
-    val tableQuestionIds = tableRef.contents.subList(0,2).map { (it as GroupQuestionDto).questionId }
+    val tableQuestionIds = tableRef.contents.subList(0, 2).map { (it as GroupQuestionDto).questionId }
     assertThat(tableQuestionIds).contains(tableSubQuestion1Id, tableSubQuestion2Id)
 
     val subGroupRef = tableRef.contents[2] as GroupWithContentsDto

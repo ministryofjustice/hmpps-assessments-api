@@ -27,27 +27,17 @@ class OffenderService(
   }
 
   fun getOffender(crn: String): OffenderDto {
-    try {
-      log.info("Requesting offender details for crn: $crn")
-      val communityOffenderDto = communityApiRestClient.getOffender(crn)
-        ?: throw EntityNotFoundException("No offender found for crn: $crn")
-      return OffenderDto.from(communityOffenderDto)
-    } catch (e: WebClientException) {
-      println(e.message)
-      throw EntityNotFoundException("No offender found for crn: $crn")
-    }
+    log.info("Requesting offender details for crn: $crn")
+    val communityOffenderDto = communityApiRestClient.getOffender(crn)
+      ?: throw EntityNotFoundException("No offender found for crn: $crn")
+    return OffenderDto.from(communityOffenderDto)
   }
 
   fun getOffence(crn: String, convictionId: Long): OffenceDto {
-    try {
-      log.info("Requesting main offence details for crn: $crn, conviction id: $convictionId")
-      val conviction = communityApiRestClient.getConviction(crn, convictionId)
-        ?: throw EntityNotFoundException("No conviction found for crn: $crn, conviction id: $convictionId")
-      return OffenceDto.from(conviction)
-    } catch (e: WebClientException) {
-      println(e.message)
-      throw EntityNotFoundException("No conviction found for crn: $crn, conviction id: $convictionId")
-    }
+    log.info("Requesting main offence details for crn: $crn, conviction id: $convictionId")
+    val conviction = communityApiRestClient.getConviction(crn, convictionId)
+      ?: throw EntityNotFoundException("No conviction found for crn: $crn, conviction id: $convictionId")
+    return OffenceDto.from(conviction)
   }
 
   fun getOffenderAddress(crn: String): Address? {

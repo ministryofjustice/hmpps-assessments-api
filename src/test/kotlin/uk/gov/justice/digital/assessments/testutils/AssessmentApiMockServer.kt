@@ -163,16 +163,16 @@ class AssessmentApiMockServer : WireMockServer(9004) {
       """.trimIndent()
 
     val getAssessmentNotFoundJson =
-      """{ "developerMessage": "Assessment not found" }""".trimIndent()
+      """{ "status": 404 , "developerMessage": "Assessment not found" }""".trimIndent()
 
     val referenceData400Error =
-      """{ "developerMessage": "Bad Request" }""".trimIndent()
+      """{ "status": 400 , "developerMessage": "Bad Request" }""".trimIndent()
 
     val referenceData401Error =
-      """{ "developerMessage": "Not Authorised" }""".trimIndent()
+      """{ "status": 401 ,"developerMessage": "Not Authorised" }""".trimIndent()
 
     val referenceData404Error =
-      """{ "developerMessage": "Not Found" }""".trimIndent()
+      """{ "status": 404 ,"developerMessage": "Not Found" }""".trimIndent()
 
     val filteredReferenceDataJson =
       """{

@@ -5,8 +5,11 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.http.HttpMethod
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.assessments.restclient.courtcaseapi.CourtCase
+import uk.gov.justice.digital.assessments.services.exceptions.ApiClientUnknownException
 
 @Component
 class CourtCaseRestClient {
@@ -36,6 +39,22 @@ class CourtCaseRestClient {
     return webClient
       .get(path)
       .retrieve()
+      .onStatus(HttpStatus::is4xxClientError) {
+        handle4xxError(
+          it,
+          HttpMethod.GET,
+          path,
+          ExternalService.COMMUNITY_API
+        )
+      }
+      .onStatus(HttpStatus::is5xxServerError) {
+        throw ApiClientUnknownException(
+          "Fail to retrieve court case for court: $courtCode,  caseNo: $caseNumber",
+          HttpMethod.GET,
+          path,
+          ExternalService.PRISONS_API
+        )
+      }
       .bodyToMono(elementClass)
       .block()
   }

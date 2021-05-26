@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.core.ParameterizedTypeReference
+import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.ClientResponse
@@ -13,10 +14,8 @@ import uk.gov.justice.digital.assessments.restclient.assessmentapi.FilteredRefer
 import uk.gov.justice.digital.assessments.restclient.assessmentapi.OASysAssessmentDto
 import uk.gov.justice.digital.assessments.restclient.assessmentapi.RefElementDto
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OASysErrorResponse
-import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
-import uk.gov.justice.digital.assessments.services.exceptions.OASysClientException
-import uk.gov.justice.digital.assessments.services.exceptions.ReferenceDataAuthorisationException
-import uk.gov.justice.digital.assessments.services.exceptions.ReferenceDataInvalidRequestException
+import uk.gov.justice.digital.assessments.services.exceptions.ApiClientEntityNotFoundException
+import uk.gov.justice.digital.assessments.services.exceptions.ApiClientUnknownException
 
 @Component
 class AssessmentApiRestClient {
@@ -32,11 +31,21 @@ class AssessmentApiRestClient {
     oasysSetPk: Long,
   ): OASysAssessmentDto? {
     log.info("Retrieving OASys Assessment $oasysSetPk")
+    val path = "/assessments/oasysSetPk/$oasysSetPk"
     return webClient
-      .get("/assessments/oasysSetPk/$oasysSetPk")
+      .get(path)
       .retrieve()
-      .onStatus(HttpStatus::is4xxClientError) { handleAssessmentError(oasysSetPk, it) }
-      .onStatus(HttpStatus::is5xxServerError) { throw OASysClientException("Failed to retrieve Oasys assessment $oasysSetPk") }
+      .onStatus(HttpStatus::is4xxClientError) {
+        handleAssessmentError(oasysSetPk, it, HttpMethod.GET, path)
+      }
+      .onStatus(HttpStatus::is5xxServerError) {
+        throw ApiClientUnknownException(
+          "Failed to retrieve Oasys assessment $oasysSetPk",
+          HttpMethod.GET,
+          path,
+          ExternalService.ASSESSMENTS_API
+        )
+      }
       .bodyToMono(OASysAssessmentDto::class.java)
       .block().also { log.info("Retrieved OASys Assessment $oasysSetPk") }
   }
@@ -53,63 +62,54 @@ class AssessmentApiRestClient {
     fieldName: String,
     parentList: Map<String, String>?
   ): Map<String, Collection<RefElementDto>>? {
+    val path = "/referencedata/filtered"
     return webClient
       .post(
-        "/referencedata/filtered",
+        path,
         FilteredReferenceDataDto(
           oasysSetPk, oasysUserCode, oasysAreaCode, offenderPk, assessmentType, sectionCode, fieldName, parentList
         )
       )
       .retrieve()
-      .onStatus(HttpStatus::is4xxClientError) { handleReferenceDataError(fieldName, it) }
-      .onStatus(HttpStatus::is5xxServerError) { throw OASysClientException("Failed to retrieve OASys filtered reference data for $fieldName") }
+      .onStatus(HttpStatus::is4xxClientError) {
+        handle4xxError(
+          it,
+          HttpMethod.POST,
+          path,
+          ExternalService.ASSESSMENTS_API,
+          fieldName
+        )
+      }
+      .onStatus(HttpStatus::is5xxServerError) {
+        throw ApiClientUnknownException(
+          "Failed to retrieve OASys filtered reference data for $fieldName",
+          HttpMethod.POST,
+          path,
+          ExternalService.ASSESSMENTS_API
+        )
+      }
       .bodyToMono(typeReference<Map<String, Collection<RefElementDto>>>())
       .block().also { log.info("Retrieved OASys filtered reference data for $fieldName") }
   }
 
   fun handleAssessmentError(
     oasysSetPk: Long?,
-    clientResponse: ClientResponse
+    clientResponse: ClientResponse,
+    method: HttpMethod,
+    url: String
   ): Mono<out Throwable?>? {
     return when (clientResponse.statusCode()) {
       HttpStatus.NOT_FOUND -> {
         AssessmentUpdateRestClient.log.error("Oasys assessment $oasysSetPk not found")
         clientResponse.bodyToMono(OASysErrorResponse::class.java)
-          .map { error -> EntityNotFoundException(error.developerMessage) }
+          .map { error ->
+            ApiClientEntityNotFoundException(
+              error.developerMessage?.let { error.developerMessage } ?: "",
+              method, url, ExternalService.ASSESSMENTS_API
+            )
+          }
       }
-      else -> handleError(clientResponse)
+      else -> handleError(clientResponse, method, url, ExternalService.ASSESSMENTS_API)
     }
-  }
-
-  fun handleReferenceDataError(
-    fieldName: String,
-    clientResponse: ClientResponse
-  ): Mono<out Throwable?>? {
-    return when (clientResponse.statusCode()) {
-      HttpStatus.BAD_REQUEST -> {
-        log.error("Bad request for reference data $fieldName")
-        clientResponse.bodyToMono(OASysErrorResponse::class.java)
-          .map { error -> ReferenceDataInvalidRequestException(error.developerMessage) }
-      }
-      HttpStatus.UNAUTHORIZED -> {
-        log.error("Unauthorised request for reference data $fieldName")
-        clientResponse.bodyToMono(OASysErrorResponse::class.java)
-          .map { error -> ReferenceDataAuthorisationException(error.developerMessage) }
-      }
-      HttpStatus.NOT_FOUND -> {
-        log.error("Reference data not found for $fieldName")
-        clientResponse.bodyToMono(OASysErrorResponse::class.java)
-          .map { error -> EntityNotFoundException(error.developerMessage) }
-      }
-      else -> handleError(clientResponse)
-    }
-  }
-
-  private fun handleError(clientResponse: ClientResponse): Mono<out Throwable?>? {
-    val httpStatus = clientResponse.statusCode()
-    log.error("Unexpected exception with status $httpStatus")
-    return clientResponse.bodyToMono(String::class.java).map { error ->
-      OASysClientException(error)
-    }.or(Mono.error(OASysClientException("Unexpected exception with no body and status $httpStatus")))
   }
 }

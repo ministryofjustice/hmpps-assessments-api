@@ -7,7 +7,6 @@ import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.OASysMappingEntity
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OasysAnswer
 import uk.gov.justice.digital.assessments.services.QuestionSchemaEntities
-import java.lang.IllegalStateException
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.UUID

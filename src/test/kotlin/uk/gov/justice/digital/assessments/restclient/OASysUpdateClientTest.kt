@@ -6,8 +6,8 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OasysAnswer
+import uk.gov.justice.digital.assessments.services.exceptions.ApiClientUnknownException
 import uk.gov.justice.digital.assessments.services.exceptions.DuplicateOffenderRecordException
-import uk.gov.justice.digital.assessments.services.exceptions.OASysClientException
 import uk.gov.justice.digital.assessments.services.exceptions.UserNotAuthorisedException
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 
@@ -51,19 +51,19 @@ class OASysUpdateClientTest : IntegrationTest() {
   @Test
   fun `create OASys Offender throws exception on server error`() {
     assertThatThrownBy { assessmentUpdateRestClient.createOasysOffender(serverErrorCrn) }
-      .isInstanceOf(OASysClientException::class.java)
+      .isInstanceOf(ApiClientUnknownException::class.java)
   }
 
   @Test
   fun `create OASys Offender throws exception on unknown client error`() {
     assertThatThrownBy { assessmentUpdateRestClient.createOasysOffender(clientErrorCrn) }
-      .isInstanceOf(OASysClientException::class.java)
+      .isInstanceOf(ApiClientUnknownException::class.java)
   }
 
   @Test
   fun `create OASys Offender throws exception on unknown client error without body`() {
     assertThatThrownBy { assessmentUpdateRestClient.createOasysOffender(clientErrorCrnNoBody) }
-      .isInstanceOf(OASysClientException::class.java)
+      .isInstanceOf(ApiClientUnknownException::class.java)
   }
 
   @Test
@@ -87,7 +87,7 @@ class OASysUpdateClientTest : IntegrationTest() {
   @Test
   fun `create OASys Assessment throws exception on server error`() {
     assertThatThrownBy { assessmentUpdateRestClient.createAssessment(serverErrorOffenderPk, assessmentType) }
-      .isInstanceOf(OASysClientException::class.java)
+      .isInstanceOf(ApiClientUnknownException::class.java)
   }
 
   @Test
@@ -108,7 +108,7 @@ class OASysUpdateClientTest : IntegrationTest() {
   @Test
   fun `update OASys Assessment throws exception on server error`() {
     assertThatThrownBy { assessmentUpdateRestClient.createAssessment(serverErrorOffenderPk, assessmentType) }
-      .isInstanceOf(OASysClientException::class.java)
+      .isInstanceOf(ApiClientUnknownException::class.java)
   }
 
   @Test
@@ -133,6 +133,6 @@ class OASysUpdateClientTest : IntegrationTest() {
   @Test
   fun `complete OASys Assessment throws exception on server error`() {
     assertThatThrownBy { assessmentUpdateRestClient.completeAssessment(serverErrorOffenderPk, oasysSetPk, assessmentType) }
-      .isInstanceOf(OASysClientException::class.java)
+      .isInstanceOf(ApiClientUnknownException::class.java)
   }
 }
