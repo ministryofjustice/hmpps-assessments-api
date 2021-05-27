@@ -186,6 +186,45 @@ class AssessmentController(val assessmentService: AssessmentService, val assessm
     )
   }
 
+  @RequestMapping(path = ["/assessments/{assessmentUuid}/episodes/{episodeUuid}/{tableName}/{index}"], method = [RequestMethod.DELETE])
+  @Operation(description = "remove a row from a table answer")
+  @ApiResponses(
+    value = [
+      ApiResponse(responseCode = "200", description = "OK"),
+      ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
+      ApiResponse(responseCode = "422", description = "The update couldn't be processed")
+    ]
+  )
+  fun deleteAssessmentEpisodeTableRow(
+    @Parameter(description = "Assessment UUID", required = true, example = "1234") @PathVariable assessmentUuid: UUID,
+    @Parameter(description = "Episode UUID", required = true) @PathVariable episodeUuid: UUID,
+    @Parameter(description = "Table Name", required = true) @PathVariable tableName: String,
+    @Parameter(description = "Row index", required = true) @PathVariable index: Int
+  ): ResponseEntity<AssessmentEpisodeDto> {
+    return updateResponse(
+      assessmentUpdateService.deleteEpisodeTableRow(assessmentUuid, episodeUuid, tableName, index)
+    )
+  }
+
+  @RequestMapping(path = ["/assessments/{assessmentUuid}/episodes/current/{tableName}/{index}"], method = [RequestMethod.DELETE])
+  @Operation(description = "removes a row in a table answer in the current episode")
+  @ApiResponses(
+    value = [
+      ApiResponse(responseCode = "200", description = "OK"),
+      ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
+      ApiResponse(responseCode = "422", description = "The update couldn't be processed")
+    ]
+  )
+  fun deleteAssessmentCurrentEpisodeTableRow(
+    @Parameter(description = "Assessment UUID", required = true, example = "1234") @PathVariable assessmentUuid: UUID,
+    @Parameter(description = "Table Name", required = true) @PathVariable tableName: String,
+    @Parameter(description = "Row index", required = true) @PathVariable index: Int
+  ): ResponseEntity<AssessmentEpisodeDto> {
+    return updateResponse(
+      assessmentUpdateService.deleteCurrentEpisodeTableRow(assessmentUuid, tableName, index)
+    )
+  }
+
   @RequestMapping(path = ["/assessments/{assessmentUuid}/episodes/current"], method = [RequestMethod.POST])
   @Operation(description = "updates the answers for the current episode")
   @ApiResponses(
