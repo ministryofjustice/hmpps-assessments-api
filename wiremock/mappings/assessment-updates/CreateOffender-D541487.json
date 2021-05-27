@@ -1,0 +1,19 @@
+{
+  "id": "3e862519-78b0-4449-b2b5-535ee1b81210",
+  "request": {
+    "method": "POST",
+    "urlPathPattern": "/offenders",
+    "bodyPatterns" : [ {
+      "equalToJson" : "{ \"crn\": \"D541487\" }",
+      "ignoreExtraElements" : true
+    } ]
+  },
+  "response": {
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "status": 200,
+    "jsonBody": { "oasysOffenderId": 1 }
+
+  }
+}

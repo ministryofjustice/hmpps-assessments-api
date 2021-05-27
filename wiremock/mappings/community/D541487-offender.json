@@ -1,0 +1,228 @@
+{
+  "id": "116fce2c-9c2d-11eb-a8b3-0242ac130003",
+  "request": {
+    "method": "GET",
+    "urlPathPattern": "/secure/offenders/crn/D541487/all"
+  },
+  "response": {
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "status": 200,
+    "jsonBody": {
+      "activeProbationManagedSentence": true,
+      "contactDetails": {
+        "addresses": [
+          {
+            "addressNumber": "string",
+            "buildingName": "string",
+            "county": "string",
+            "district": "string",
+            "from": "2021-05-12",
+            "noFixedAbode": true,
+            "notes": "string",
+            "postcode": "string",
+            "status": {
+              "code": "string",
+              "description": "string"
+            },
+            "streetName": "string",
+            "telephoneNumber": "string",
+            "to": "2021-05-12",
+            "town": "string"
+          }
+        ],
+        "allowSMS": true,
+        "emailAddresses": [
+          "string"
+        ],
+        "phoneNumbers": [
+          {
+            "number": "string",
+            "type": "MOBILE"
+          }
+        ]
+      },
+      "currentDisposal": 1,
+      "currentExclusion": true,
+      "currentRestriction": true,
+      "currentTier": "D2",
+      "dateOfBirth": "1982-10-24",
+      "exclusionMessage": "string",
+      "firstName": "John",
+      "gender": "Male",
+      "middleNames": [
+        "string"
+      ],
+      "offenderAliases": [
+        {
+          "dateOfBirth": "2021-05-12",
+          "firstName": "string",
+          "gender": "string",
+          "id": "string",
+          "middleNames": [
+            "string"
+          ],
+          "surname": "string"
+        }
+      ],
+      "offenderId": 0,
+      "offenderManagers": [
+        {
+          "active": true,
+          "allocationReason": {
+            "code": "string",
+            "description": "string"
+          },
+          "fromDate": "2021-05-12",
+          "partitionArea": "string",
+          "probationArea": {
+            "code": "N01",
+            "description": "NPS North West",
+            "institution": {
+              "code": "string",
+              "description": "string",
+              "establishmentType": {
+                "code": "string",
+                "description": "string"
+              },
+              "institutionId": 0,
+              "institutionName": "string",
+              "isEstablishment": true,
+              "isPrivate": true,
+              "nomsPrisonInstitutionCode": "string"
+            },
+            "nps": true,
+            "organisation": {
+              "code": "string",
+              "description": "string"
+            },
+            "probationAreaId": 0,
+            "teams": [
+              {
+                "borough": {
+                  "code": "string",
+                  "description": "string"
+                },
+                "code": "string",
+                "description": "string",
+                "district": {
+                  "code": "string",
+                  "description": "string"
+                },
+                "externalProvider": {
+                  "code": "string",
+                  "description": "string"
+                },
+                "isPrivate": true,
+                "localDeliveryUnit": {
+                  "code": "string",
+                  "description": "string"
+                },
+                "name": "string",
+                "providerTeamId": 0,
+                "scProvider": {
+                  "code": "string",
+                  "description": "string"
+                },
+                "teamId": 0
+              }
+            ]
+          },
+          "providerEmployee": {
+            "forenames": "Sheila Linda",
+            "surname": "Hancock"
+          },
+          "softDeleted": true,
+          "staff": {
+            "code": "AN001A",
+            "forenames": "Sheila Linda",
+            "surname": "Hancock",
+            "unallocated": true
+          },
+          "team": {
+            "borough": {
+              "code": "string",
+              "description": "string"
+            },
+            "code": "C01T04",
+            "description": "OMU A",
+            "district": {
+              "code": "string",
+              "description": "string"
+            },
+            "localDeliveryUnit": {
+              "code": "string",
+              "description": "string"
+            },
+            "teamType": {
+              "code": "string",
+              "description": "string"
+            },
+            "telephone": "OMU A"
+          },
+          "toDate": "2021-05-12",
+          "trustOfficer": {
+            "forenames": "Sheila Linda",
+            "surname": "Hancock"
+          }
+        }
+      ],
+      "offenderProfile": {
+        "disabilities": [
+          {
+            "disabilityId": 0,
+            "disabilityType": {
+              "code": "string",
+              "description": "string"
+            },
+            "endDate": "2021-05-12",
+            "notes": "string",
+            "startDate": "2021-05-12"
+          }
+        ],
+        "ethnicity": "string",
+        "immigrationStatus": "string",
+        "nationality": "string",
+        "notes": "string",
+        "offenderDetails": "string",
+        "offenderLanguages": {
+          "languageConcerns": "string",
+          "otherLanguages": [
+            "string"
+          ],
+          "primaryLanguage": "string",
+          "requiresInterpreter": true
+        },
+        "previousConviction": {
+          "convictionDate": "2021-05-12",
+          "detail": {
+            "additionalProp1": "string",
+            "additionalProp2": "string",
+            "additionalProp3": "string"
+          }
+        },
+        "religion": "string",
+        "remandStatus": "string",
+        "riskColour": "string",
+        "secondaryNationality": "string",
+        "sexualOrientation": "string"
+      },
+      "otherIds": {
+        "crn": "D541487",
+        "croNumber": "123456/04A",
+        "immigrationNumber": "A1234567",
+        "mostRecentPrisonerNumber": "G12345",
+        "niNumber": "AA112233B",
+        "nomsNumber": "A1234CR",
+        "pncNumber": "2004/0712343H"
+      },
+      "partitionArea": "National Data",
+      "previousSurname": "Davis",
+      "restrictionMessage": "string",
+      "softDeleted": true,
+      "surname": "Smith",
+      "title": "Mr"
+    }
+  }
+}
