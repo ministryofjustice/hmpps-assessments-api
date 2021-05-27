@@ -76,7 +76,7 @@ class AssessmentUpdateRestClient {
     user: String = "STUARTWHITLAM",
     area: String = "WWS",
   ): UpdateAssessmentAnswersResponseDto? {
-    log.info("Updating answers for Assessment $oasysSetPk in OASys for offender: $offenderPK, area: $area, user: $user")
+    log.info("Updating answers for Assessment $oasysSetPk in OASys for offender: $offenderPK, area: $area, user: $user, answers: $answers")
     return webClient
       .put("/assessments", UpdateAssessmentAnswersDto(oasysSetPk, offenderPK, area, user, answers, assessmentType))
       .retrieve()
