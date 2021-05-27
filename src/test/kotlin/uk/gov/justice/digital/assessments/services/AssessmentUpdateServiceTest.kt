@@ -449,6 +449,110 @@ class AssessmentUpdateServiceTest {
     }
 
     @Test
+    fun `delete first row of table`() {
+      val answers = mutableMapOf(
+        question1Uuid to AnswerEntity("some free text"),
+        question2Uuid to AnswerEntity("1975-01-20T00:00:00.000Z"),
+        question3Uuid to AnswerEntity("not mapped to oasys"),
+        childQuestion1 to AnswerEntity(listOf("child name 1", "child name 2", "child name 3")),
+        childQuestion2 to AnswerEntity(listOf("child address 1", "child address 2", "child address 3"))
+      )
+      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity(answers)
+
+      val episodeDto = assessmentUpdateService.deleteEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", 0)
+
+      assertThat(episodeDto.answers).hasSize(5)
+      with(episodeDto.answers[childQuestion1]!!) {
+        assertThat(size).isEqualTo(2)
+        assertThat(first()).isEqualTo("child name 2")
+        assertThat(last()).isEqualTo("child name 3")
+      }
+
+      with(episodeDto.answers[childQuestion2]!!) {
+        assertThat(size).isEqualTo(2)
+        assertThat(first()).isEqualTo("child address 2")
+        assertThat(last()).isEqualTo("child address 3")
+      }
+    }
+
+    @Test
+    fun `delete middle row of table`() {
+      val answers = mutableMapOf(
+        question1Uuid to AnswerEntity("some free text"),
+        question2Uuid to AnswerEntity("1975-01-20T00:00:00.000Z"),
+        question3Uuid to AnswerEntity("not mapped to oasys"),
+        childQuestion1 to AnswerEntity(listOf("child name 1", "name of child 2", "child name 3")),
+        childQuestion2 to AnswerEntity(listOf("child address 1", "address of child 2", "child address 3"))
+      )
+      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity(answers)
+
+      val episodeDto = assessmentUpdateService.deleteEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", 1)
+
+      assertThat(episodeDto.answers).hasSize(5)
+      with(episodeDto.answers[childQuestion1]!!) {
+        assertThat(size).isEqualTo(2)
+        assertThat(first()).isEqualTo("child name 1")
+        assertThat(last()).isEqualTo("child name 3")
+      }
+
+      with(episodeDto.answers[childQuestion2]!!) {
+        assertThat(size).isEqualTo(2)
+        assertThat(first()).isEqualTo("child address 1")
+        assertThat(last()).isEqualTo("child address 3")
+      }
+    }
+
+    @Test
+    fun `delete last row of table`() {
+      val answers = mutableMapOf(
+        question1Uuid to AnswerEntity("some free text"),
+        question2Uuid to AnswerEntity("1975-01-20T00:00:00.000Z"),
+        question3Uuid to AnswerEntity("not mapped to oasys"),
+        childQuestion1 to AnswerEntity(listOf("child name 1", "child name 2", "child name 3")),
+        childQuestion2 to AnswerEntity(listOf("child address 1", "child address 2", "child address 3"))
+      )
+      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity(answers)
+
+      val episodeDto = assessmentUpdateService.deleteEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", 2)
+
+      assertThat(episodeDto.answers).hasSize(5)
+      with(episodeDto.answers[childQuestion1]!!) {
+        assertThat(size).isEqualTo(2)
+        assertThat(first()).isEqualTo("child name 1")
+        assertThat(last()).isEqualTo("child name 2")
+      }
+
+      with(episodeDto.answers[childQuestion2]!!) {
+        assertThat(size).isEqualTo(2)
+        assertThat(first()).isEqualTo("child address 1")
+        assertThat(last()).isEqualTo("child address 2")
+      }
+    }
+
+    @Test
+    fun `delete only row of table`() {
+      val answers = mutableMapOf(
+        question1Uuid to AnswerEntity("some free text"),
+        question2Uuid to AnswerEntity("1975-01-20T00:00:00.000Z"),
+        question3Uuid to AnswerEntity("not mapped to oasys"),
+        childQuestion1 to AnswerEntity(listOf("child name 1")),
+        childQuestion2 to AnswerEntity(listOf("child address 1"))
+      )
+      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity(answers)
+
+      val episodeDto = assessmentUpdateService.deleteEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", 0)
+
+      assertThat(episodeDto.answers).hasSize(5)
+      with(episodeDto.answers[childQuestion1]!!) {
+        assertThat(size).isEqualTo(0)
+      }
+
+      with(episodeDto.answers[childQuestion2]!!) {
+        assertThat(size).isEqualTo(0)
+      }
+    }
+
+    @Test
     fun `fail on bad table name`() {
       val answers = mutableMapOf(
         question1Uuid to AnswerEntity("some free text"),
@@ -472,7 +576,7 @@ class AssessmentUpdateServiceTest {
     }
 
     @Test
-    fun `fail on bad index`() {
+    fun `fail update on bad index`() {
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity(mutableMapOf())
 
       for (index in listOf(-3, -1, 0, 5)) {
@@ -483,6 +587,24 @@ class AssessmentUpdateServiceTest {
             "children_at_risk",
             index,
             UpdateAssessmentEpisodeDto(emptyMap())
+          )
+        }
+          .isInstanceOf(IllegalStateException::class.java)
+          .hasMessage("Bad index $index for table children_at_risk")
+      }
+    }
+
+    @Test
+    fun `fail delete on bad index`() {
+      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity(mutableMapOf())
+
+      for (index in listOf(-3, -1, 0, 5)) {
+        assertThatThrownBy {
+          assessmentUpdateService.deleteEpisodeTableRow(
+            assessmentUuid,
+            episodeUuid,
+            "children_at_risk",
+            index
           )
         }
           .isInstanceOf(IllegalStateException::class.java)

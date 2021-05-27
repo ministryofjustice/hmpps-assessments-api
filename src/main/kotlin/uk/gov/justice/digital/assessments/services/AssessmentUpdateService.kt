@@ -123,6 +123,46 @@ class AssessmentUpdateService(
   }
 
   @Transactional
+  fun addEpisodeTableRow(
+    assessmentUuid: UUID,
+    episodeUuid: UUID,
+    tableName: String,
+    newTableRow: UpdateAssessmentEpisodeDto
+  ): AssessmentEpisodeDto {
+    return addTableRow(
+      assessmentService.getEpisode(episodeUuid, assessmentUuid),
+      tableName,
+      newTableRow
+    )
+  }
+
+  @Transactional
+  fun addCurrentEpisodeTableRow(
+    assessmentUuid: UUID,
+    tableName: String,
+    newTableRow: UpdateAssessmentEpisodeDto
+  ): AssessmentEpisodeDto {
+    return addTableRow(
+      assessmentService.getCurrentEpisode(assessmentUuid),
+      tableName,
+      newTableRow
+    )
+  }
+
+  private fun addTableRow(
+    episode: AssessmentEpisodeEntity,
+    tableName: String,
+    newTableRow: UpdateAssessmentEpisodeDto
+  ): AssessmentEpisodeDto {
+    return modifyEpisodeTable(
+      episode,
+      tableName
+    ) { existingTable ->
+      extendTableAnswers(existingTable, newTableRow.answers)
+    }
+  }
+
+  @Transactional
   fun updateEpisodeTableRow(
     assessmentUuid: UUID,
     episodeUuid: UUID,
@@ -159,59 +199,59 @@ class AssessmentUpdateService(
     index: Int,
     updatedTableRow: UpdateAssessmentEpisodeDto
   ): AssessmentEpisodeDto {
-    return modifyEpisodeTableRow(
+    return modifyEpisodeTable(
       episode,
       tableName
     ) { existingTable ->
-      if ((index < 0) || (index >= existingTable.values.first().size))
-        throw IllegalStateException("Bad index $index for table $tableName")
+      checkValidTableIndex(tableName, index, existingTable)
 
       updateTableAnswers(existingTable, index, updatedTableRow.answers)
     }
   }
 
   @Transactional
-  fun addEpisodeTableRow(
+  fun deleteEpisodeTableRow(
     assessmentUuid: UUID,
     episodeUuid: UUID,
     tableName: String,
-    newTableRow: UpdateAssessmentEpisodeDto
+    index: Int
   ): AssessmentEpisodeDto {
-    return modifyEpisodeTableRow(
+    return deleteTableRow(
       assessmentService.getEpisode(episodeUuid, assessmentUuid),
-      tableName
-    ) { existingTable ->
-      extendTableAnswers(existingTable, newTableRow.answers)
-    }
-  }
-
-  @Transactional
-  fun addCurrentEpisodeTableRow(
-    assessmentUuid: UUID,
-    tableName: String,
-    newTableRow: UpdateAssessmentEpisodeDto
-  ): AssessmentEpisodeDto {
-    return addTableRow(
-      assessmentService.getCurrentEpisode(assessmentUuid),
       tableName,
-      newTableRow
+      index
     )
   }
 
-  private fun addTableRow(
+  @Transactional
+  fun deleteCurrentEpisodeTableRow(
+    assessmentUuid: UUID,
+    tableName: String,
+    index: Int
+  ): AssessmentEpisodeDto {
+    return deleteTableRow(
+      assessmentService.getCurrentEpisode(assessmentUuid),
+      tableName,
+      index
+    )
+  }
+
+  private fun deleteTableRow(
     episode: AssessmentEpisodeEntity,
     tableName: String,
-    newTableRow: UpdateAssessmentEpisodeDto
+    index: Int
   ): AssessmentEpisodeDto {
-    return modifyEpisodeTableRow(
+    return modifyEpisodeTable(
       episode,
       tableName
     ) { existingTable ->
-      extendTableAnswers(existingTable, newTableRow.answers)
+      checkValidTableIndex(tableName, index, existingTable)
+
+      removeTableAnswers(existingTable, index)
     }
   }
 
-  private fun modifyEpisodeTableRow(
+  private fun modifyEpisodeTable(
     episode: AssessmentEpisodeEntity,
     tableName: String,
     modifyFn: (TableAnswers) -> TableAnswers
@@ -224,6 +264,11 @@ class AssessmentUpdateService(
     val updatedTable = modifyFn(existingTable)
 
     return updateEpisode(episode, UpdateAssessmentEpisodeDto(updatedTable))
+  }
+
+  private fun checkValidTableIndex(tableName: String, index: Int, table: TableAnswers) {
+    if ((index < 0) || (index >= table.values.first().size))
+      throw IllegalStateException("Bad index $index for table $tableName")
   }
 
   private fun grabExistingTableAnswers(
@@ -268,6 +313,22 @@ class AssessmentUpdateService(
       val after = answers.toList().subList(index + 1, answers.size)
       val extendedAnswer = listOf(before, updatedAnswer, after).flatten()
       updatedTable[id] = extendedAnswer
+    }
+
+    return updatedTable
+  }
+
+  private fun removeTableAnswers(
+    existingTable: TableAnswers,
+    index: Int
+  ): TableAnswers {
+    val updatedTable = mutableMapOf<UUID, Collection<String>>()
+
+    for ((id, answers) in existingTable) {
+      val before = answers.toList().subList(0, index)
+      val after = answers.toList().subList(index + 1, answers.size)
+      val trimmedAnswer = listOf(before, after).flatten()
+      updatedTable[id] = trimmedAnswer
     }
 
     return updatedTable
