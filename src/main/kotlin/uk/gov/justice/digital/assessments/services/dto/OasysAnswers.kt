@@ -12,7 +12,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.UUID
 
-class OasysAnswers(
+data class OasysAnswers(
   private val allAnswers: MutableSet<OasysAnswer> = mutableSetOf()
 ) : Set<OasysAnswer> by allAnswers {
   private fun addAll(answers: Collection<OasysAnswer>) {
