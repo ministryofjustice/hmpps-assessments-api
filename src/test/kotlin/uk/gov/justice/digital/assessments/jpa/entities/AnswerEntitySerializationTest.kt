@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
-import com.fasterxml.jackson.module.kotlin.readValue
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.DisplayName
@@ -30,6 +29,12 @@ class AnswerEntitySerializationTest {
         .setSerializationInclusion(JsonInclude.Include.NON_ABSENT)
         .registerModules(Jdk8Module(), JavaTimeModule(), KotlinModule())
     }
+
+    fun readAnswers(jsonText: String): AnswerEntity =
+      om.readValue(jsonText, AnswerEntity::class.java)
+
+    fun writeAnswers(ae: AnswerEntity): String =
+      om.writeValueAsString(ae)
   }
 
   @Nested
@@ -39,7 +44,7 @@ class AnswerEntitySerializationTest {
     fun `single value answer`() {
       val ae = AnswerEntity("Fruit")
 
-      val asString = om.writeValueAsString(ae)
+      val asString = writeAnswers(ae)
 
       assertThat(asString).isEqualTo("{\"answers\":[\"Fruit\"]}")
     }
@@ -48,9 +53,19 @@ class AnswerEntitySerializationTest {
     fun `multi-value answer`() {
       val ae = AnswerEntity(listOf("Fruit", "Vegetables"))
 
-      val asString = om.writeValueAsString(ae)
+      val asString = writeAnswers(ae)
 
       assertThat(asString).isEqualTo("{\"answers\":[\"Fruit\",\"Vegetables\"]}")
+    }
+
+
+    @Test
+    fun `compound multi-value answer`() {
+      val ae = AnswerEntity(Answer("Fruit"), Answer("Potatoes", "Carrots", "Onions"))
+
+      val asString = writeAnswers(ae)
+
+      assertThat(asString).isEqualTo("{\"answers\":[\"Fruit\",[\"Potatoes\",\"Carrots\",\"Onions\"]]}")
     }
   }
 
@@ -59,23 +74,31 @@ class AnswerEntitySerializationTest {
   inner class Deserialization {
     @Test
     fun `single value array answer`() {
-      val ae = om.readValue("{\"answers\":[\"Fruit\"]}", AnswerEntity::class.java)
+      val ae = readAnswers("{\"answers\":[\"Fruit\"]}")
 
       assertThat(ae).isEqualTo(AnswerEntity("Fruit"))
     }
 
     @Test
     fun `single value answer`() {
-      val ae = om.readValue("{\"answers\":\"Fruit\"}", AnswerEntity::class.java)
+      val ae = readAnswers("{\"answers\":\"Fruit\"}")
 
       assertThat(ae).isEqualTo(AnswerEntity("Fruit"))
     }
 
     @Test
     fun `multi-value answer`() {
-      val ae = om.readValue("{\"answers\":[\"Animal\",\"Vegetable\",\"Mineral\"]}", AnswerEntity::class.java)
+      val ae = readAnswers("{\"answers\":[\"Animal\",\"Vegetable\",\"Mineral\"]}")
 
       assertThat(ae).isEqualTo(AnswerEntity(listOf("Animal","Vegetable","Mineral")))
+    }
+
+    @Test
+    fun `compound multi-value answer`() {
+      val ae = readAnswers("{\"answers\":[\"Fruit\",[\"Potatoes\",\"Carrots\",\"Onions\"]]}")
+      val expected = AnswerEntity(Answer("Fruit"), Answer("Potatoes", "Carrots", "Onions"))
+
+      assertThat(ae).isEqualTo(expected)
     }
   }
 }
