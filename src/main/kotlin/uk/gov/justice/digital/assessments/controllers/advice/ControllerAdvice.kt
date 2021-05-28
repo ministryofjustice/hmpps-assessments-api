@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
 import uk.gov.justice.digital.assessments.api.ErrorResponse
-import uk.gov.justice.digital.assessments.services.exceptions.ApiClientAuthorisationException
-import uk.gov.justice.digital.assessments.services.exceptions.ApiClientEntityNotFoundException
-import uk.gov.justice.digital.assessments.services.exceptions.ApiClientForbiddenException
-import uk.gov.justice.digital.assessments.services.exceptions.ApiClientInvalidRequestException
-import uk.gov.justice.digital.assessments.services.exceptions.ApiClientUnknownException
+import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiAuthorisationException
+import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiEntityNotFoundException
+import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiForbiddenException
+import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiInvalidRequestException
+import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiUnknownException
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
 
@@ -68,23 +68,23 @@ class ControllerAdvice {
     return ResponseEntity(ErrorResponse(status = 400, developerMessage = e.message), HttpStatus.BAD_REQUEST)
   }
 
-  @ExceptionHandler(ApiClientEntityNotFoundException::class)
+  @ExceptionHandler(ExternalApiEntityNotFoundException::class)
   @ResponseStatus(HttpStatus.NOT_FOUND)
-  fun handle(e: ApiClientEntityNotFoundException): ResponseEntity<ErrorResponse?> {
+  fun handle(e: ExternalApiEntityNotFoundException): ResponseEntity<ErrorResponse?> {
     log.info("ApiClientEntityNotFoundException for external client ${e.client} method ${e.method} and url ${e.url}: {}", e.message)
     return ResponseEntity(ErrorResponse(status = 404, developerMessage = e.message), HttpStatus.NOT_FOUND)
   }
 
-  @ExceptionHandler(ApiClientUnknownException::class)
+  @ExceptionHandler(ExternalApiUnknownException::class)
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-  fun handle(e: ApiClientUnknownException): ResponseEntity<ErrorResponse?> {
+  fun handle(e: ExternalApiUnknownException): ResponseEntity<ErrorResponse?> {
     log.error("ExternalClientUnknownException for external client ${e.client} method ${e.method} and url ${e.url}: {}", e.message)
     return ResponseEntity(ErrorResponse(status = 500, developerMessage = e.message), HttpStatus.INTERNAL_SERVER_ERROR)
   }
 
-  @ExceptionHandler(ApiClientInvalidRequestException::class)
+  @ExceptionHandler(ExternalApiInvalidRequestException::class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
-  fun handle(e: ApiClientInvalidRequestException): ResponseEntity<ErrorResponse?> {
+  fun handle(e: ExternalApiInvalidRequestException): ResponseEntity<ErrorResponse?> {
     log.error(
       "InvalidRequestException for external client ${e.client} method ${e.method} and url ${e.url}: {}",
       e.message
@@ -92,9 +92,9 @@ class ControllerAdvice {
     return ResponseEntity(ErrorResponse(status = 400, developerMessage = e.message), HttpStatus.BAD_REQUEST)
   }
 
-  @ExceptionHandler(ApiClientAuthorisationException::class)
+  @ExceptionHandler(ExternalApiAuthorisationException::class)
   @ResponseStatus(HttpStatus.UNAUTHORIZED)
-  fun handle(e: ApiClientAuthorisationException): ResponseEntity<ErrorResponse?> {
+  fun handle(e: ExternalApiAuthorisationException): ResponseEntity<ErrorResponse?> {
     log.error(
       "ApiClientAuthorisationException for external client ${e.client} method ${e.method} and url ${e.url}: {}",
       e.message
@@ -102,9 +102,9 @@ class ControllerAdvice {
     return ResponseEntity(ErrorResponse(status = 401, developerMessage = e.message), HttpStatus.UNAUTHORIZED)
   }
 
-  @ExceptionHandler(ApiClientForbiddenException::class)
+  @ExceptionHandler(ExternalApiForbiddenException::class)
   @ResponseStatus(HttpStatus.FORBIDDEN)
-  fun handle(e: ApiClientForbiddenException): ResponseEntity<ErrorResponse?> {
+  fun handle(e: ExternalApiForbiddenException): ResponseEntity<ErrorResponse?> {
     log.error(
       "ApiClientForbiddenException for external client ${e.client} method ${e.method} and url ${e.url}: {}",
       e.message

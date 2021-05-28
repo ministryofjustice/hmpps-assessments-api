@@ -4,10 +4,10 @@ import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import uk.gov.justice.digital.assessments.services.exceptions.ApiClientAuthorisationException
-import uk.gov.justice.digital.assessments.services.exceptions.ApiClientEntityNotFoundException
-import uk.gov.justice.digital.assessments.services.exceptions.ApiClientInvalidRequestException
-import uk.gov.justice.digital.assessments.services.exceptions.ApiClientUnknownException
+import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiAuthorisationException
+import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiEntityNotFoundException
+import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiInvalidRequestException
+import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiUnknownException
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 
 class AssessmentApiTest : IntegrationTest() {
@@ -26,28 +26,28 @@ class AssessmentApiTest : IntegrationTest() {
   fun `retrieve OASys Assessment throws exception when forbidden response received`() {
     Assertions.assertThatThrownBy {
       assessmentApiRestClient.getOASysAssessment(2)
-    }.isInstanceOf(ApiClientEntityNotFoundException::class.java)
+    }.isInstanceOf(ExternalApiEntityNotFoundException::class.java)
   }
 
   @Test
   fun `retrieve OASys Assessment throws exception on server error`() {
     Assertions.assertThatThrownBy {
       assessmentApiRestClient.getOASysAssessment(3)
-    }.isInstanceOf(ApiClientUnknownException::class.java)
+    }.isInstanceOf(ExternalApiUnknownException::class.java)
   }
 
   @Test
   fun `retrieve OASys Assessment throws exception on unknown client error`() {
     Assertions.assertThatThrownBy {
       assessmentApiRestClient.getOASysAssessment(3)
-    }.isInstanceOf(ApiClientUnknownException::class.java)
+    }.isInstanceOf(ExternalApiUnknownException::class.java)
   }
 
   @Test
   fun `retrieve OASys Assessment throws exception on unknown client error without body`() {
     Assertions.assertThatThrownBy {
       assessmentApiRestClient.getOASysAssessment(3)
-    }.isInstanceOf(ApiClientUnknownException::class.java)
+    }.isInstanceOf(ExternalApiUnknownException::class.java)
   }
 
   @Test
@@ -79,7 +79,7 @@ class AssessmentApiTest : IntegrationTest() {
         "assessor_office",
         mapOf("assessor" to "OASYS_ADMIN")
       )
-    }.isInstanceOf(ApiClientUnknownException::class.java)
+    }.isInstanceOf(ExternalApiUnknownException::class.java)
   }
 
   @Test
@@ -95,7 +95,7 @@ class AssessmentApiTest : IntegrationTest() {
         "assessor_office",
         mapOf("assessor" to "OASYS_ADMIN")
       )
-    }.isInstanceOf(ApiClientInvalidRequestException::class.java)
+    }.isInstanceOf(ExternalApiInvalidRequestException::class.java)
   }
 
   @Test
@@ -111,7 +111,7 @@ class AssessmentApiTest : IntegrationTest() {
         "assessor_office",
         mapOf("assessor" to "OASYS_ADMIN")
       )
-    }.isInstanceOf(ApiClientAuthorisationException::class.java)
+    }.isInstanceOf(ExternalApiAuthorisationException::class.java)
   }
 
   @Test
@@ -127,6 +127,6 @@ class AssessmentApiTest : IntegrationTest() {
         "assessor_office",
         mapOf("assessor" to "OASYS_ADMIN")
       )
-    }.isInstanceOf(ApiClientEntityNotFoundException::class.java)
+    }.isInstanceOf(ExternalApiEntityNotFoundException::class.java)
   }
 }

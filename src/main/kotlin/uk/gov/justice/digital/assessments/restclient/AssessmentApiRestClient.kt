@@ -14,7 +14,7 @@ import uk.gov.justice.digital.assessments.restclient.assessmentapi.FilteredRefer
 import uk.gov.justice.digital.assessments.restclient.assessmentapi.OASysAssessmentDto
 import uk.gov.justice.digital.assessments.restclient.assessmentapi.RefElementDto
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OASysErrorResponse
-import uk.gov.justice.digital.assessments.services.exceptions.ApiClientEntityNotFoundException
+import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiEntityNotFoundException
 
 @Component
 class AssessmentApiRestClient {
@@ -100,7 +100,7 @@ class AssessmentApiRestClient {
         AssessmentUpdateRestClient.log.error("Oasys assessment $oasysSetPk not found")
         clientResponse.bodyToMono(OASysErrorResponse::class.java)
           .map { error ->
-            ApiClientEntityNotFoundException(
+            ExternalApiEntityNotFoundException(
               error.developerMessage?.let { error.developerMessage } ?: "",
               method, url, ExternalService.ASSESSMENTS_API
             )

@@ -10,35 +10,35 @@ class DuplicateOffenderRecordException(msg: String?) : RuntimeException(msg)
 class EntityNotFoundException(msg: String?) : RuntimeException(msg)
 
 // External Services Exceptions
-class ApiClientEntityNotFoundException(
+class ExternalApiEntityNotFoundException(
   msg: String,
   val method: HttpMethod,
   val url: String,
   val client: ExternalService
 ) : RuntimeException(msg)
 
-class ApiClientAuthorisationException(
+class ExternalApiAuthorisationException(
   msg: String,
   val method: HttpMethod,
   val url: String,
   val client: ExternalService
 ) : RuntimeException(msg)
 
-class ApiClientForbiddenException(
+class ExternalApiForbiddenException(
   msg: String,
   val method: HttpMethod,
   val url: String,
   val client: ExternalService
 ) : RuntimeException(msg)
 
-class ApiClientInvalidRequestException(
+class ExternalApiInvalidRequestException(
   msg: String,
   val method: HttpMethod,
   val url: String,
   val client: ExternalService
 ) : RuntimeException(msg)
 
-class ApiClientUnknownException(
+class ExternalApiUnknownException(
   msg: String,
   val method: HttpMethod,
   val url: String,

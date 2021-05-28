@@ -4,7 +4,11 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
-import uk.gov.justice.digital.assessments.services.exceptions.ApiClientEntityNotFoundException
+import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiAuthorisationException
+import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiEntityNotFoundException
+import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiForbiddenException
+import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiInvalidRequestException
+import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiUnknownException
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 
 class CommunityApiClientTest : IntegrationTest() {
@@ -23,8 +27,36 @@ class CommunityApiClientTest : IntegrationTest() {
 
   @Test
   fun `get Delius Offender returns not found`() {
-    assertThrows<ApiClientEntityNotFoundException> {
-      communityApiRestClient.getOffender("invalid")
+    assertThrows<ExternalApiEntityNotFoundException> {
+      communityApiRestClient.getOffender("invalidNotFound")
+    }
+  }
+
+  @Test
+  fun `get Delius Offender returns bad request`() {
+    assertThrows<ExternalApiInvalidRequestException> {
+      communityApiRestClient.getOffender("invalidBadRequest")
+    }
+  }
+
+  @Test
+  fun `get Delius Offender returns unauthorised`() {
+    assertThrows<ExternalApiAuthorisationException> {
+      communityApiRestClient.getOffender("invalidUnauthorized")
+    }
+  }
+
+  @Test
+  fun `get Delius Offender returns forbidden`() {
+    assertThrows<ExternalApiForbiddenException> {
+      communityApiRestClient.getOffender("invalidForbidden")
+    }
+  }
+
+  @Test
+  fun `get Delius Offender returns unknown exception`() {
+    assertThrows<ExternalApiUnknownException> {
+      communityApiRestClient.getOffender("invalidNotKnow")
     }
   }
 

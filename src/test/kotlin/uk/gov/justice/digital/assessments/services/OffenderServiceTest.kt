@@ -23,7 +23,7 @@ import uk.gov.justice.digital.assessments.restclient.communityapi.OffenceDetail
 import uk.gov.justice.digital.assessments.restclient.communityapi.OffenderAlias
 import uk.gov.justice.digital.assessments.restclient.courtcaseapi.CourtCase
 import uk.gov.justice.digital.assessments.restclient.courtcaseapi.DefendantAddress
-import uk.gov.justice.digital.assessments.services.exceptions.ApiClientEntityNotFoundException
+import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiEntityNotFoundException
 import java.time.LocalDate
 
 @ExtendWith(MockKExtension::class)
@@ -97,14 +97,14 @@ class OffenderServiceTest {
 
   @Test
   fun `throws exceptions when no offender exists for CRN`() {
-    every { communityApiRestClient.getOffender(crn) } throws ApiClientEntityNotFoundException(
+    every { communityApiRestClient.getOffender(crn) } throws ExternalApiEntityNotFoundException(
       "",
       HttpMethod.GET,
       "secure/offenders/crn/$crn/all",
       ExternalService.COMMUNITY_API
     )
 
-    assertThrows<ApiClientEntityNotFoundException> { offenderService.getOffenderAndOffence(crn, convictionId) }
+    assertThrows<ExternalApiEntityNotFoundException> { offenderService.getOffenderAndOffence(crn, convictionId) }
     verify(exactly = 1) { communityApiRestClient.getOffender(any()) }
   }
 

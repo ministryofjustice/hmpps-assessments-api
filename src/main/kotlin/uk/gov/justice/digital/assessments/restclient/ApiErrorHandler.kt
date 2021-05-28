@@ -6,11 +6,11 @@ import org.springframework.web.reactive.function.client.ClientResponse
 import reactor.core.publisher.Mono
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OASysErrorResponse
-import uk.gov.justice.digital.assessments.services.exceptions.ApiClientAuthorisationException
-import uk.gov.justice.digital.assessments.services.exceptions.ApiClientEntityNotFoundException
-import uk.gov.justice.digital.assessments.services.exceptions.ApiClientForbiddenException
-import uk.gov.justice.digital.assessments.services.exceptions.ApiClientInvalidRequestException
-import uk.gov.justice.digital.assessments.services.exceptions.ApiClientUnknownException
+import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiAuthorisationException
+import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiEntityNotFoundException
+import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiForbiddenException
+import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiInvalidRequestException
+import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiUnknownException
 import uk.gov.justice.digital.assessments.services.exceptions.DuplicateOffenderRecordException
 import uk.gov.justice.digital.assessments.services.exceptions.UserNotAuthorisedException
 
@@ -23,19 +23,19 @@ fun handle4xxError(
   return when (clientResponse.statusCode()) {
     HttpStatus.BAD_REQUEST -> {
       clientResponse.bodyToMono(ApiErrorResponse::class.java)
-        .map { error -> ApiClientInvalidRequestException(error.developerMessage, method, url, client) }
+        .map { error -> ExternalApiInvalidRequestException(error.developerMessage, method, url, client) }
     }
     HttpStatus.UNAUTHORIZED -> {
       clientResponse.bodyToMono(ApiErrorResponse::class.java)
-        .map { error -> ApiClientAuthorisationException(error.developerMessage, method, url, client) }
+        .map { error -> ExternalApiAuthorisationException(error.developerMessage, method, url, client) }
     }
     HttpStatus.FORBIDDEN -> {
       clientResponse.bodyToMono(ApiErrorResponse::class.java)
-        .map { error -> ApiClientForbiddenException(error.developerMessage, method, url, client) }
+        .map { error -> ExternalApiForbiddenException(error.developerMessage, method, url, client) }
     }
     HttpStatus.NOT_FOUND -> {
       clientResponse.bodyToMono(ApiErrorResponse::class.java)
-        .map { error -> ApiClientEntityNotFoundException(error.developerMessage, method, url, client) }
+        .map { error -> ExternalApiEntityNotFoundException(error.developerMessage, method, url, client) }
     }
     else -> handleError(clientResponse, method, url, client)
   }
@@ -47,7 +47,7 @@ fun handle5xxError(
   path: String,
   service: ExternalService
 ): Mono<out Throwable?>? {
-  throw ApiClientUnknownException(
+  throw ExternalApiUnknownException(
     message,
     method,
     path,
@@ -108,10 +108,10 @@ fun handleError(
 ): Mono<out Throwable?>? {
   val httpStatus = clientResponse.statusCode()
   return clientResponse.bodyToMono(String::class.java).map { error ->
-    ApiClientUnknownException(error, method, url, client)
+    ExternalApiUnknownException(error, method, url, client)
   }.or(
     Mono.error(
-      ApiClientUnknownException(
+      ExternalApiUnknownException(
         "Unexpected exception with no body and status $httpStatus",
         method,
         url,
