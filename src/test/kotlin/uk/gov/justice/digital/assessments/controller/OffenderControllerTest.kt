@@ -59,7 +59,7 @@ class OffenderControllerTest : IntegrationTest() {
 
   @Test
   fun `returns not found for invalid crn`() {
-    val invalidCrn = "invalid"
+    val invalidCrn = "invalidNotFound"
     webTestClient.get().uri("/offender/crn/$invalidCrn/conviction/$convictionId")
       .headers(setAuthorisation())
       .exchange()

@@ -197,27 +197,6 @@ class AssessmentUpdateMockServer : WireMockServer(9003) {
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
         )
     )
-
-    // stubFor(
-    //   WireMock.put(WireMock.urlEqualTo("/assessments"))
-    //     .withRequestBody(equalToJson("{ \"offenderPk\": 2, \"assessmentType\": \"SHORT_FORM_PSR\" }", true, true))
-    //     .willReturn(
-    //       WireMock.aResponse()
-    //         .withStatus(403)
-    //         .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
-    //         .withBody(createAssessmentForbiddenJson)
-    //     )
-    // )
-    //
-    // stubFor(
-    //   WireMock.put(WireMock.urlEqualTo("/assessments"))
-    //     .withRequestBody(equalToJson("{ \"offenderPk\": 4, \"assessmentType\": \"SHORT_FORM_PSR\" }", true, true))
-    //     .willReturn(
-    //       WireMock.aResponse()
-    //         .withStatus(500)
-    //         .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
-    //     )
-    // )
   }
 
   companion object {
