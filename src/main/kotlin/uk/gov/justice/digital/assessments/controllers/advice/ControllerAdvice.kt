@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
 import uk.gov.justice.digital.assessments.api.ErrorResponse
+import uk.gov.justice.digital.assessments.services.exceptions.DuplicateOffenderRecordException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiAuthorisationException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiEntityNotFoundException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiForbiddenException
@@ -18,6 +19,7 @@ import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiInvalid
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiUnknownException
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
+import uk.gov.justice.digital.assessments.services.exceptions.UserNotAuthorisedException
 
 @ControllerAdvice
 class ControllerAdvice {
@@ -26,11 +28,11 @@ class ControllerAdvice {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
   }
 
-  @ExceptionHandler(EntityNotFoundException::class)
-  @ResponseStatus(HttpStatus.NOT_FOUND)
-  fun handle(e: EntityNotFoundException): ResponseEntity<ErrorResponse?> {
-    log.info("EntityNotFoundException: {}", e.message)
-    return ResponseEntity(ErrorResponse(status = 404, developerMessage = e.message), HttpStatus.NOT_FOUND)
+  @ExceptionHandler(UserNotAuthorisedException::class)
+  @ResponseStatus(HttpStatus.UNAUTHORIZED)
+  fun handle(e: UserNotAuthorisedException): ResponseEntity<ErrorResponse?> {
+    log.error("UserNotAuthorisedException: ${e.message} with extra information ${e.extraInfoMessage}")
+    return ResponseEntity(ErrorResponse(status = 401, developerMessage = e.message), HttpStatus.UNAUTHORIZED)
   }
 
   @ExceptionHandler(UpdateClosedEpisodeException::class)
@@ -38,6 +40,20 @@ class ControllerAdvice {
   fun handle(e: UpdateClosedEpisodeException): ResponseEntity<ErrorResponse?> {
     log.info("UpdateClosedEpisodeException: {}", e.message)
     return ResponseEntity(ErrorResponse(status = 400, developerMessage = e.message), HttpStatus.BAD_REQUEST)
+  }
+
+  @ExceptionHandler(DuplicateOffenderRecordException::class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  fun handle(e: DuplicateOffenderRecordException): ResponseEntity<ErrorResponse?> {
+    log.error("DuplicateOffenderRecordException: ${e.message} with extra information ${e.extraInfoMessage}")
+    return ResponseEntity(ErrorResponse(status = 400, developerMessage = e.message), HttpStatus.BAD_REQUEST)
+  }
+
+  @ExceptionHandler(EntityNotFoundException::class)
+  @ResponseStatus(HttpStatus.NOT_FOUND)
+  fun handle(e: EntityNotFoundException): ResponseEntity<ErrorResponse?> {
+    log.info("EntityNotFoundException: {}", e.message)
+    return ResponseEntity(ErrorResponse(status = 404, developerMessage = e.message), HttpStatus.NOT_FOUND)
   }
 
   @ExceptionHandler(MethodArgumentNotValidException::class)
@@ -71,14 +87,20 @@ class ControllerAdvice {
   @ExceptionHandler(ExternalApiEntityNotFoundException::class)
   @ResponseStatus(HttpStatus.NOT_FOUND)
   fun handle(e: ExternalApiEntityNotFoundException): ResponseEntity<ErrorResponse?> {
-    log.info("ApiClientEntityNotFoundException for external client ${e.client} method ${e.method} and url ${e.url}: {}", e.message)
+    log.info(
+      "ApiClientEntityNotFoundException for external client ${e.client} method ${e.method} and url ${e.url}: {}",
+      e.message
+    )
     return ResponseEntity(ErrorResponse(status = 404, developerMessage = e.message), HttpStatus.NOT_FOUND)
   }
 
   @ExceptionHandler(ExternalApiUnknownException::class)
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   fun handle(e: ExternalApiUnknownException): ResponseEntity<ErrorResponse?> {
-    log.error("ExternalClientUnknownException for external client ${e.client} method ${e.method} and url ${e.url}: {}", e.message)
+    log.error(
+      "ExternalClientUnknownException for external client ${e.client} method ${e.method} and url ${e.url}: {}",
+      e.message
+    )
     return ResponseEntity(ErrorResponse(status = 500, developerMessage = e.message), HttpStatus.INTERNAL_SERVER_ERROR)
   }
 

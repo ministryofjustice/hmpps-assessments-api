@@ -4,9 +4,9 @@ import org.springframework.http.HttpMethod
 import uk.gov.justice.digital.assessments.restclient.ExternalService
 
 // Internal Service Exceptions
-class UserNotAuthorisedException(msg: String?) : RuntimeException(msg)
+class UserNotAuthorisedException(msg: String?, val extraInfoMessage: String?) : RuntimeException(msg)
 class UpdateClosedEpisodeException(msg: String?) : RuntimeException(msg)
-class DuplicateOffenderRecordException(msg: String?) : RuntimeException(msg)
+class DuplicateOffenderRecordException(msg: String?, val extraInfoMessage: String?) : RuntimeException(msg)
 class EntityNotFoundException(msg: String?) : RuntimeException(msg)
 
 // External Services Exceptions

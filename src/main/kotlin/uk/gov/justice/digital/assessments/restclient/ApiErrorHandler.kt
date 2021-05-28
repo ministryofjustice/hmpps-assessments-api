@@ -64,14 +64,12 @@ fun handleOffenderError(
 ): Mono<out Throwable?>? {
   return when {
     HttpStatus.CONFLICT == clientResponse.statusCode() -> {
-      AssessmentUpdateRestClient.log.error("Unable to create OASys offender. Duplicate OASys offender found for crn: $crn")
       clientResponse.bodyToMono(OASysErrorResponse::class.java)
-        .map { error -> DuplicateOffenderRecordException(error.developerMessage) }
+        .map { error -> DuplicateOffenderRecordException(error.developerMessage, "Unable to create OASys offender. Duplicate OASys offender found for crn: $crn") }
     }
     HttpStatus.FORBIDDEN == clientResponse.statusCode() -> {
-      AssessmentUpdateRestClient.log.error("Unable to create OASys offender. User $user does not have permission to create offender with crn $crn")
       clientResponse.bodyToMono(OASysErrorResponse::class.java)
-        .map { error -> UserNotAuthorisedException(error.developerMessage) }
+        .map { error -> UserNotAuthorisedException(error.developerMessage, "Unable to create OASys offender. User $user does not have permission to create offender with crn $crn") }
     }
     else -> handleError(clientResponse, method, url, ExternalService.ASSESSMENTS_API)
   }
@@ -87,14 +85,12 @@ fun handleAssessmentError(
 ): Mono<out Throwable?>? {
   return when {
     HttpStatus.CONFLICT == clientResponse.statusCode() -> {
-      AssessmentUpdateRestClient.log.error("Unable to create OASys assessment. Existing assessment found for offender $offenderPK")
       clientResponse.bodyToMono(OASysErrorResponse::class.java)
-        .map { error -> DuplicateOffenderRecordException(error.developerMessage) }
+        .map { error -> DuplicateOffenderRecordException(error.developerMessage, "Unable to create OASys assessment. Existing assessment found for offender $offenderPK") }
     }
     HttpStatus.FORBIDDEN == clientResponse.statusCode() -> {
-      AssessmentUpdateRestClient.log.error("Unable to create OASys assessment. User $user does not have permission to create assessment type: $assessmentType for offender with pk $offenderPK")
       clientResponse.bodyToMono(OASysErrorResponse::class.java)
-        .map { error -> UserNotAuthorisedException(error.developerMessage) }
+        .map { error -> UserNotAuthorisedException(error.developerMessage, "Unable to create OASys assessment. User $user does not have permission to create assessment type: $assessmentType for offender with pk $offenderPK") }
     }
     else -> handleError(clientResponse, method, url, ExternalService.ASSESSMENTS_API)
   }
