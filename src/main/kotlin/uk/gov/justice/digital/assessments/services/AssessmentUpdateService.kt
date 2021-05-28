@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.assessments.api.AssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
+import uk.gov.justice.digital.assessments.jpa.entities.Answer
 import uk.gov.justice.digital.assessments.jpa.entities.AnswerEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
@@ -16,7 +17,7 @@ import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisod
 import java.util.UUID
 import javax.transaction.Transactional
 
-typealias TableAnswers = Map<UUID, Collection<String>>
+typealias TableAnswers = Map<UUID, Collection<Answer>>
 
 @Service
 class AssessmentUpdateService(
@@ -275,7 +276,7 @@ class AssessmentUpdateService(
     episode: AssessmentEpisodeEntity,
     tableQuestions: QuestionSchemaEntities
   ): TableAnswers {
-    val existingTable = mutableMapOf<UUID, Collection<String>>()
+    val existingTable = mutableMapOf<UUID, Collection<Answer>>()
 
     for (questionUuid in tableQuestions.map { it.questionSchemaUuid }) {
       val answer = episode.answers?.get(questionUuid) ?: AnswerEntity()
@@ -289,11 +290,11 @@ class AssessmentUpdateService(
     existingTable: TableAnswers,
     newTableRow: TableAnswers
   ): TableAnswers {
-    val updatedTable = mutableMapOf<UUID, Collection<String>>()
+    val updatedTable = mutableMapOf<UUID, Collection<Answer>>()
 
     for ((id, answers) in existingTable) {
-      val newAnswer = newTableRow.getOrDefault(id, listOf(""))
-      val extendedAnswer = listOf(answers, newAnswer).flatten()
+      val newAnswer = newTableRow.getOrDefault(id, listOf(Answer("")))
+      val extendedAnswer = answers + newAnswer
       updatedTable[id] = extendedAnswer
     }
 
@@ -305,10 +306,10 @@ class AssessmentUpdateService(
     index: Int,
     updatedTableRow: TableAnswers
   ): TableAnswers {
-    val updatedTable = mutableMapOf<UUID, Collection<String>>()
+    val updatedTable = mutableMapOf<UUID, Collection<Answer>>()
 
     for ((id, answers) in existingTable) {
-      val updatedAnswer = updatedTableRow.getOrDefault(id, listOf(""))
+      val updatedAnswer = updatedTableRow.getOrDefault(id, listOf(Answer("")))
       val before = answers.toList().subList(0, index)
       val after = answers.toList().subList(index + 1, answers.size)
       val extendedAnswer = listOf(before, updatedAnswer, after).flatten()
@@ -322,7 +323,7 @@ class AssessmentUpdateService(
     existingTable: TableAnswers,
     index: Int
   ): TableAnswers {
-    val updatedTable = mutableMapOf<UUID, Collection<String>>()
+    val updatedTable = mutableMapOf<UUID, Collection<Answer>>()
 
     for ((id, answers) in existingTable) {
       val before = answers.toList().subList(0, index)

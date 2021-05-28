@@ -2,6 +2,7 @@ package uk.gov.justice.digital.assessments.services.dto
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import uk.gov.justice.digital.assessments.jpa.entities.Answer
 import uk.gov.justice.digital.assessments.jpa.entities.AnswerEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.OASysMappingEntity
@@ -106,7 +107,7 @@ data class OasysAnswers(
     private fun buildOasysAnswers(
       questions: QuestionSchemaEntities,
       answers: Map<UUID, AnswerEntity>,
-      builder: (OASysMappingEntity, Collection<String>, String?) -> List<OasysAnswer>
+      builder: (OASysMappingEntity, Collection<Answer>, String?) -> List<OasysAnswer>
     ): OasysAnswers {
       val oasysAnswers = OasysAnswers()
       answers.forEach { tableAnswer ->
@@ -123,7 +124,7 @@ data class OasysAnswers(
 
     fun mapOasysAnswers(
       oasysMapping: OASysMappingEntity,
-      answers: Collection<String>,
+      answers: Collection<Answer>,
       answerType: String?
     ): List<OasysAnswer> {
       return answers.map {
@@ -133,7 +134,7 @@ data class OasysAnswers(
 
     private fun mapOasysTableAnswers(
       oasysMapping: OASysMappingEntity,
-      answers: Collection<String>,
+      answers: Collection<Answer>,
       answerType: String?
     ): List<OasysAnswer> {
       return answers.mapIndexed { index, value ->
@@ -142,14 +143,14 @@ data class OasysAnswers(
     }
 
     private fun makeOasysAnswer(
-      value: String,
+      value: Answer,
       oasysMapping: OASysMappingEntity,
       answerType: String?,
       index: Long? = null
     ): OasysAnswer {
       val answer = when (answerType) {
-        "date" -> toOASysDate(value)
-        else -> value
+        "date" -> toOASysDate(value.toString())
+        else -> value.toString()
       }
 
       return OasysAnswer(

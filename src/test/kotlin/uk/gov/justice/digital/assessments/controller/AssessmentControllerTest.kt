@@ -14,6 +14,7 @@ import uk.gov.justice.digital.assessments.api.AssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.api.AssessmentSubjectDto
 import uk.gov.justice.digital.assessments.api.ErrorResponse
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
+import uk.gov.justice.digital.assessments.jpa.entities.Answer
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import uk.gov.justice.digital.assessments.utils.RequestData
 import java.time.LocalDateTime
@@ -89,7 +90,7 @@ class AssessmentControllerTest : IntegrationTest() {
     fun `updates episode answers`() {
       val newQuestionUUID = UUID.randomUUID()
       val updateEpisodeDto = UpdateAssessmentEpisodeDto(
-        mapOf(newQuestionUUID to listOf("new free text"))
+        mapOf(newQuestionUUID to listOf(Answer("new free text")))
       )
       val episode = webTestClient.post().uri("/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259")
         .bodyValue(updateEpisodeDto)
@@ -148,7 +149,7 @@ class AssessmentControllerTest : IntegrationTest() {
     @Test
     fun `does not update episode answers if episode is closed`() {
       val newQuestionUUID = UUID.randomUUID()
-      val updateEpisodeDto = UpdateAssessmentEpisodeDto(mapOf(newQuestionUUID to listOf("new free text")))
+      val updateEpisodeDto = UpdateAssessmentEpisodeDto(mapOf(newQuestionUUID to listOf(Answer("new free text"))))
       webTestClient.post().uri("/assessments/$assessmentUuid/episodes/d7aafe55-0cff-4f20-a57a-b66d79eb9c91")
         .bodyValue(updateEpisodeDto)
         .headers(setAuthorisation())

@@ -11,15 +11,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
-import uk.gov.justice.digital.assessments.jpa.entities.AnswerEntity
-import uk.gov.justice.digital.assessments.jpa.entities.AnswerSchemaEntity
-import uk.gov.justice.digital.assessments.jpa.entities.AnswerSchemaGroupEntity
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEntity
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
-import uk.gov.justice.digital.assessments.jpa.entities.OASysMappingEntity
-import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
-import uk.gov.justice.digital.assessments.jpa.entities.SubjectEntity
+import uk.gov.justice.digital.assessments.jpa.entities.*
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.EpisodeRepository
 import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient
@@ -78,7 +70,7 @@ class AssessmentUpdateServiceOASysTest {
       questionSchema = QuestionSchemaEntity(questionSchemaId = 1)
     )
 
-    val result = OasysAnswers.mapOasysAnswers(mapping, listOf("Free Text"), "radios")[0]
+    val result = OasysAnswers.mapOasysAnswers(mapping, listOf(Answer("Free Text")), "radios")[0]
 
     assertThat(result.answer).isEqualTo("Free Text")
     assertThat(result.logicalPage).isEqualTo(1)
@@ -98,7 +90,7 @@ class AssessmentUpdateServiceOASysTest {
       questionSchema = QuestionSchemaEntity(questionSchemaId = 1)
     )
 
-    val result = OasysAnswers.mapOasysAnswers(mapping, listOf("1975-01-20T00:00:00.000Z"), "date")[0]
+    val result = OasysAnswers.mapOasysAnswers(mapping, listOf(Answer("1975-01-20T00:00:00.000Z")), "date")[0]
 
     assertThat(result.answer).isEqualTo("20/01/1975")
     assertThat(result.logicalPage).isEqualTo(1)
@@ -242,7 +234,7 @@ class AssessmentUpdateServiceOASysTest {
     every { questionService.getAllSectionQuestionsForQuestions(any()) } returns QuestionSchemaEntities(questionsList = emptyList())
 
     val update = UpdateAssessmentEpisodeDto(
-      answers = mapOf(question1Uuid to listOf("YES"))
+      answers = mapOf(question1Uuid to listOf(Answer("YES")))
     )
 
     assessmentsUpdateService.updateOASysAssessment(setupEpisode(), update)
@@ -268,7 +260,7 @@ class AssessmentUpdateServiceOASysTest {
       oasysSetPk = oasysSetPk
     )
     val update = UpdateAssessmentEpisodeDto(
-      answers = mapOf(question1Uuid to listOf("YES"))
+      answers = mapOf(question1Uuid to listOf(Answer("YES")))
     )
 
     assessmentsUpdateService.updateOASysAssessment(episode, update)
@@ -317,7 +309,7 @@ class AssessmentUpdateServiceOASysTest {
 
     // Apply the update
     val updatedAnswers = UpdateAssessmentEpisodeDto(
-      mapOf(existingQuestionUuid to listOf("fruit loops", "custard"))
+      mapOf(existingQuestionUuid to listOf(Answer("fruit loops"), Answer("custard")))
     )
     val episodeDto = assessmentsUpdateService.updateEpisode(assessmentUuid, episodeUuid, updatedAnswers)
 
@@ -325,7 +317,7 @@ class AssessmentUpdateServiceOASysTest {
     assertThat(episodeDto.answers).hasSize(1)
     with(episodeDto.answers[existingQuestionUuid]!!) {
       assertThat(size).isEqualTo(2)
-      assertThat(this).containsAll(listOf("fruit loops", "custard"))
+      assertThat(this).containsAll(listOf(Answer("fruit loops"), Answer("custard")))
     }
 
     // But also errors!
@@ -347,7 +339,7 @@ class AssessmentUpdateServiceOASysTest {
     every { questionService.getAllQuestions() } returns setupQuestionCodes()
     every { assessmentRepository.save(any()) } returns mockk()
 
-    val update = UpdateAssessmentEpisodeDto(answers = mapOf(question1Uuid to listOf("Updated")))
+    val update = UpdateAssessmentEpisodeDto(answers = mapOf(question1Uuid to listOf(Answer("Updated"))))
     val updatedEpisode = assessmentsUpdateService.updateEpisode(assessmentUuid, episodeUuid, update)
 
     verify(exactly = 1) {
@@ -363,7 +355,10 @@ class AssessmentUpdateServiceOASysTest {
 
     with(updatedEpisode.answers) {
       assertThat(map { it.key }).containsOnlyOnce(question1Uuid, question2Uuid)
-      assertThat(flatMap { it.value }).contains("Updated", "1975-01-20T00:00:00.000Z", "not mapped to oasys")
+      assertThat(flatMap { it.value }).contains(
+        Answer("Updated"),
+        Answer("1975-01-20T00:00:00.000Z"),
+        Answer("not mapped to oasys"))
     }
   }
 

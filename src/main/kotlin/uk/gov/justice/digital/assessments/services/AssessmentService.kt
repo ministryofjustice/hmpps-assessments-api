@@ -178,7 +178,7 @@ class AssessmentService(
     val answerSchemas = question.answerSchemaEntities
     return episodeAnswer.value.answers.map { answer ->
       answerSchemas.firstOrNull { answerSchema ->
-        answerSchema.value == answer
+        answer.equals(answerSchema.value)
       } ?: throw IllegalStateException("Answer Code not found for question ${question.questionSchemaUuid} answer value $answer")
     }.toSet()
   }
