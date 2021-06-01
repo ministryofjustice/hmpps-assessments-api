@@ -15,10 +15,6 @@ import uk.gov.justice.digital.assessments.restclient.assessmentapi.OASysAssessme
 import uk.gov.justice.digital.assessments.restclient.assessmentapi.RefElementDto
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OASysErrorResponse
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiEntityNotFoundException
-import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
-import uk.gov.justice.digital.assessments.services.exceptions.OASysClientException
-import uk.gov.justice.digital.assessments.services.exceptions.ReferenceDataAuthorisationException
-import uk.gov.justice.digital.assessments.services.exceptions.ReferenceDataInvalidRequestException
 import uk.gov.justice.digital.assessments.utils.RequestData
 
 @Component
