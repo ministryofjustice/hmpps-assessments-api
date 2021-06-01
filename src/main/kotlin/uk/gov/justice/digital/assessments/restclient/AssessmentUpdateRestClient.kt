@@ -16,11 +16,6 @@ import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.CreateO
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OasysAnswer
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.UpdateAssessmentAnswersDto
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.UpdateAssessmentAnswersResponseDto
-import uk.gov.justice.digital.assessments.services.exceptions.DuplicateOffenderRecordException
-import uk.gov.justice.digital.assessments.services.exceptions.OASysClientException
-import uk.gov.justice.digital.assessments.services.exceptions.UserNotAuthorisedException
-import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.CreateAssessmentDto
-import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.CreateAssessmentResponse
 import uk.gov.justice.digital.assessments.utils.RequestData
 
 @Component
