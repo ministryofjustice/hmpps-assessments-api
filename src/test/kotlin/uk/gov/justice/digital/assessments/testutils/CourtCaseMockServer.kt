@@ -15,6 +15,16 @@ class CourtCaseMockServer : WireMockServer(9002) {
             .withBody(courtCaseJson)
         )
     )
+
+    stubFor(
+      WireMock.get(WireMock.urlEqualTo("/court/notfound/case/668911253"))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withStatus(404)
+            .withBody("{\"status\":\"404\",\"developerMessage\":\"court not found\"}")
+        )
+    )
   }
 
   companion object {

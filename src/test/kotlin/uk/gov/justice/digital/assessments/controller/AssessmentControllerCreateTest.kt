@@ -25,7 +25,6 @@ import java.util.UUID
 )
 @AutoConfigureWebTestClient(timeout = "50000")
 class AssessmentControllerCreateTest : IntegrationTest() {
-  val episodeId = "current"
 
   @Nested
   @DisplayName("creating court assessments")

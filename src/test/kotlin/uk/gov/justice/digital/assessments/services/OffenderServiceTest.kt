@@ -9,10 +9,12 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
+import org.springframework.http.HttpMethod
 import uk.gov.justice.digital.assessments.jpa.entities.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.SubjectRepository
 import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
+import uk.gov.justice.digital.assessments.restclient.ExternalService
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityConvictionDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.IDs
@@ -21,7 +23,7 @@ import uk.gov.justice.digital.assessments.restclient.communityapi.OffenceDetail
 import uk.gov.justice.digital.assessments.restclient.communityapi.OffenderAlias
 import uk.gov.justice.digital.assessments.restclient.courtcaseapi.CourtCase
 import uk.gov.justice.digital.assessments.restclient.courtcaseapi.DefendantAddress
-import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
+import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiEntityNotFoundException
 import java.time.LocalDate
 
 @ExtendWith(MockKExtension::class)
@@ -31,7 +33,8 @@ class OffenderServiceTest {
   private val communityApiRestClient: CommunityApiRestClient = mockk()
   private val courtCaseRestClient: CourtCaseRestClient = mockk()
   private val subjectRepository: SubjectRepository = mockk()
-  private val offenderService: OffenderService = OffenderService(communityApiRestClient, subjectRepository, courtCaseRestClient)
+  private val offenderService: OffenderService =
+    OffenderService(communityApiRestClient, subjectRepository, courtCaseRestClient)
 
   private val oasysOffenderPk = 101L
   private val crn = "DX12340A"
@@ -94,9 +97,14 @@ class OffenderServiceTest {
 
   @Test
   fun `throws exceptions when no offender exists for CRN`() {
-    every { communityApiRestClient.getOffender(crn) } returns null
+    every { communityApiRestClient.getOffender(crn) } throws ExternalApiEntityNotFoundException(
+      "",
+      HttpMethod.GET,
+      "secure/offenders/crn/$crn/all",
+      ExternalService.COMMUNITY_API
+    )
 
-    assertThrows<EntityNotFoundException> { offenderService.getOffenderAndOffence(crn, convictionId) }
+    assertThrows<ExternalApiEntityNotFoundException> { offenderService.getOffenderAndOffence(crn, convictionId) }
     verify(exactly = 1) { communityApiRestClient.getOffender(any()) }
   }
 
@@ -191,6 +199,7 @@ class OffenderServiceTest {
 
     verify(exactly = 1) { communityApiRestClient.getConviction(any(), any()) }
   }
+
   private fun validCourtSubject(): List<SubjectEntity> {
     return listOf(SubjectEntity(sourceId = "courtCode|caseNumber"))
   }

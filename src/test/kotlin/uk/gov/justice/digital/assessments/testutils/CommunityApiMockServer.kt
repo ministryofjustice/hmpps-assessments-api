@@ -34,12 +34,52 @@ class CommunityApiMockServer : WireMockServer(9096) {
     )
 
     stubFor(
-      WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/invalid/all"))
+      WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/invalidNotFound/all"))
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
             .withStatus(404)
-            .withBody("{\"status\":\"Error\",\"message\":\"Offender not found\"}")
+            .withBody("{\"status\":\"404\",\"developerMessage\":\"The offender is not found\"}")
+        )
+    )
+
+    stubFor(
+      WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/invalidBadRequest/all"))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withStatus(400)
+            .withBody("{\"status\":\"400\",\"developerMessage\":\"Invalid CRN invalidBadRequest\"}")
+        )
+    )
+
+    stubFor(
+      WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/invalidUnauthorized/all"))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withStatus(401)
+            .withBody("{\"status\":\"401\",\"developerMessage\":\"Not authorised\"}")
+        )
+    )
+
+    stubFor(
+      WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/invalidForbidden/all"))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withStatus(403)
+            .withBody("{\"status\":\"403\",\"developerMessage\":\"Forbidden\"}")
+        )
+    )
+
+    stubFor(
+      WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/invalidNotKnow/all"))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withStatus(422)
+            .withBody("{\"status\":\"422\",\"developerMessage\":\"unprocessable\"}")
         )
     )
   }
