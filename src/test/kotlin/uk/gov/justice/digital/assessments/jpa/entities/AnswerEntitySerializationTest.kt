@@ -58,7 +58,6 @@ class AnswerEntitySerializationTest {
       assertThat(asString).isEqualTo("{\"answers\":[\"Fruit\",\"Vegetables\"]}")
     }
 
-
     @Test
     fun `compound multi-value answer`() {
       val ae = AnswerEntity(Answer("Fruit"), Answer("Potatoes", "Carrots", "Onions"))
@@ -89,8 +88,8 @@ class AnswerEntitySerializationTest {
     @Test
     fun `multi-value answer`() {
       val ae = readAnswers("{\"answers\":[\"Animal\",\"Vegetable\",\"Mineral\"]}")
-
-      assertThat(ae).isEqualTo(AnswerEntity(listOf("Animal","Vegetable","Mineral")))
+      val expected = AnswerEntity(listOf("Animal","Vegetable","Mineral"))
+      assertThat(ae).isEqualTo(expected)
     }
 
     @Test

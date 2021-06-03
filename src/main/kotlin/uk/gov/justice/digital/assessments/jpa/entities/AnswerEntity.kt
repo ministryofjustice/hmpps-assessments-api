@@ -67,10 +67,40 @@ data class Answer(
   }
 }
 
+object AnswerEntitySerializer : StdSerializer<AnswerEntity>(AnswerEntity::class.java) {
+  override fun serialize(value: AnswerEntity?, gen: JsonGenerator?, provider: SerializerProvider?) {
+    if (value == null)
+      return
+
+    with (value.answers) {
+      gen?.writeStartObject()
+      gen?.writeFieldName("answers")
+      if(size == 1 && first().items.size != 1) {
+        gen?.writeObject(first())
+      } else {
+        gen?.writeStartArray()
+        forEach { gen?.writeObject(it) }
+        gen?.writeEndArray()
+      }
+      gen?.writeEndObject()
+    }
+  }
+}
+
+@JsonSerialize(using = AnswerEntitySerializer::class)
 data class AnswerEntity(
   var answers: Collection<Answer> = emptyList()
 ) : Serializable {
   constructor(answer: String) : this(listOf(Answer(answer)))
-  constructor(answers: List<String>) : this(answers.map { a -> Answer(a) })
+  constructor(answers: List<String>) : this(listOf(Answer(answers)))
   constructor(vararg answers: Answer) : this(listOf(*answers))
+
+  init {
+    if (answers.size > 1) {
+      val flattened = answers.map { it.items }.flatten()
+      if (flattened.size == answers.size) {
+        answers = listOf(Answer(flattened))
+      }
+    }
+  }
 }
