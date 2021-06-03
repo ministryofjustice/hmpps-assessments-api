@@ -389,8 +389,8 @@ class AssessmentSql {
   static tableSql(table, fields, data) {
     if (data.length === 0) return ''
     const insert = AssessmentSql.insertSql(table, fields)
-    const values = data.map(row => AssessmentSql.valueSql(fields, row)).join(',\n    ')
-    return `${insert}${values};\n\n`
+    const values = data.map(row => AssessmentSql.valueSql(fields, row)).join(',\n')
+    return `${insert}${values}\nON CONFLICT DO NOTHING;\n\n`
   }
 
   answerSchemaGroupSql() {
