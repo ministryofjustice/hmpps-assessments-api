@@ -127,6 +127,58 @@ class AssessmentControllerTest : IntegrationTest() {
       updateFromJSON(newQuestionUUID, answerText, jsonString)
     }
 
+    @Test
+    fun `add episode table row from JSON`() {
+      val childQuestion = UUID.fromString("23c3e984-54c7-480f-b06c-7d000e2fb87c")
+      val answerText = "child answer"
+      val jsonString = "{\"answers\":{\"${childQuestion}\":\"${answerText}\"}}"
+
+      val episode = webTestClient.post().uri("/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259/children_at_risk_of_serious_harm")
+        .contentType(MediaType.APPLICATION_JSON)
+        .bodyValue(jsonString)
+        .headers(setAuthorisation())
+        .exchange()
+        .expectStatus().isOk
+        .expectBody<AssessmentEpisodeDto>()
+        .returnResult()
+        .responseBody
+
+      assertThat(episode).isNotNull
+      assertThat(episode?.answers).containsKey(childQuestion)
+
+      val answer = episode?.answers?.get(childQuestion)!!
+      assertThat(answer.size).isEqualTo(1)
+      assertThat(answer.first()).isEqualTo(answerText)
+    }
+
+    @Test
+    fun `add episode table row with multivalue from JSON`() {
+      val childQuestion = UUID.fromString("23c3e984-54c7-480f-b06c-7d000e2fb87c")
+      val firstAnswer = "answer1"
+      val secondAnswer = "answer2"
+      val jsonString = "{\"answers\":{\"${childQuestion}\":[\"${firstAnswer}\",\"${secondAnswer}\"]}}"
+
+      val episode = webTestClient.post().uri("/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259/children_at_risk_of_serious_harm")
+        .contentType(MediaType.APPLICATION_JSON)
+        .bodyValue(jsonString)
+        .headers(setAuthorisation())
+        .exchange()
+        .expectStatus().isOk
+        .expectBody<AssessmentEpisodeDto>()
+        .returnResult()
+        .responseBody
+
+      assertThat(episode).isNotNull
+      assertThat(episode?.answers).containsKey(childQuestion)
+
+      val answer = episode?.answers?.get(childQuestion)!!
+      assertThat(answer.size).isEqualTo(1)
+      val multiValues = answer.first().items
+      assertThat(multiValues).hasSize(2)
+      assertThat(multiValues.first()).isEqualTo(firstAnswer)
+      assertThat(multiValues.first()).isEqualTo(secondAnswer)
+    }
+
     private fun updateFromJSON(questionUUID: UUID, expectedAnswer: String, jsonString: String) {
       val episode = webTestClient.post().uri("/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259")
         .contentType(MediaType.APPLICATION_JSON)

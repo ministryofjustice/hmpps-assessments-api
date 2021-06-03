@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.assessments.jpa.entities
 
+import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationContext
@@ -92,15 +93,20 @@ data class AnswerEntity(
   var answers: Collection<Answer> = emptyList()
 ) : Serializable {
   constructor(answer: String) : this(listOf(Answer(answer)))
-  constructor(answers: List<String>) : this(listOf(Answer(answers)))
+  constructor(answers: List<String>) : this(answers.map { Answer(it) })
   constructor(vararg answers: Answer) : this(listOf(*answers))
 
-  init {
-    if (answers.size > 1) {
-      val flattened = answers.map { it.items }.flatten()
-      if (flattened.size == answers.size) {
-        answers = listOf(Answer(flattened))
+  companion object {
+    @JvmStatic
+    @JsonCreator
+    fun fromJson(answers: Collection<Answer>): AnswerEntity {
+      if (answers.size > 1) {
+        val flattened = answers.map { it.items }.flatten()
+        if (flattened.size == answers.size) {
+          return AnswerEntity(flattened)
+        }
       }
+      return AnswerEntity(answers)
     }
   }
 }
