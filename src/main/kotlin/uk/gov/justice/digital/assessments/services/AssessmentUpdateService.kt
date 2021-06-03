@@ -159,7 +159,7 @@ class AssessmentUpdateService(
       episode,
       tableName
     ) { existingTable ->
-      extendTableAnswers(existingTable, newTableRow.answers)
+      extendTableAnswers(existingTable, newTableRow.coalesce().answers)
     }
   }
 
@@ -206,7 +206,7 @@ class AssessmentUpdateService(
     ) { existingTable ->
       checkValidTableIndex(tableName, index, existingTable)
 
-      updateTableAnswers(existingTable, index, updatedTableRow.answers)
+      updateTableAnswers(existingTable, index, updatedTableRow.coalesce().answers)
     }
   }
 

@@ -176,7 +176,53 @@ class AssessmentControllerTest : IntegrationTest() {
       val multiValues = answer.first().items
       assertThat(multiValues).hasSize(2)
       assertThat(multiValues.first()).isEqualTo(firstAnswer)
-      assertThat(multiValues.first()).isEqualTo(secondAnswer)
+      assertThat(multiValues.last()).isEqualTo(secondAnswer)
+    }
+
+    @Test
+    fun `add twp episode table rows with multivalue from JSON`() {
+      val childQuestion = UUID.fromString("23c3e984-54c7-480f-b06c-7d000e2fb87c")
+      val firstAnswer = "row1-answer1"
+      val secondAnswer = "row1-answer2"
+      val row1 = "{\"answers\":{\"${childQuestion}\":[\"${firstAnswer}\",\"${secondAnswer}\"]}}"
+
+      val thirdAnswer = "row2-answer1"
+      val forthAnswer = "row2-answer2"
+      val row2 = "{\"answers\":{\"${childQuestion}\":[\"${thirdAnswer}\",\"${forthAnswer}\"]}}"
+
+      webTestClient.post().uri("/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259/children_at_risk_of_serious_harm")
+        .contentType(MediaType.APPLICATION_JSON)
+        .bodyValue(row1)
+        .headers(setAuthorisation())
+        .exchange()
+        .expectStatus().isOk
+        .expectBody<AssessmentEpisodeDto>()
+
+      val episode = webTestClient.post().uri("/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259/children_at_risk_of_serious_harm")
+        .contentType(MediaType.APPLICATION_JSON)
+        .bodyValue(row2)
+        .headers(setAuthorisation())
+        .exchange()
+        .expectStatus().isOk
+        .expectBody<AssessmentEpisodeDto>()
+        .returnResult()
+        .responseBody
+
+      assertThat(episode).isNotNull
+      assertThat(episode?.answers).containsKey(childQuestion)
+
+      val answer = episode?.answers?.get(childQuestion)!!
+      assertThat(answer.size).isEqualTo(2)
+
+      val row1Values = answer.first().items
+      assertThat(row1Values).hasSize(2)
+      assertThat(row1Values.first()).isEqualTo(firstAnswer)
+      assertThat(row1Values.last()).isEqualTo(secondAnswer)
+
+      val row2Values = answer.last().items
+      assertThat(row2Values).hasSize(2)
+      assertThat(row2Values.first()).isEqualTo(thirdAnswer)
+      assertThat(row2Values.last()).isEqualTo(forthAnswer)
     }
 
     private fun updateFromJSON(questionUUID: UUID, expectedAnswer: String, jsonString: String) {
