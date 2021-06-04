@@ -177,10 +177,13 @@ class AssessmentService(
   ): Set<AnswerSchemaEntity> {
     val answerSchemas = question.answerSchemaEntities
     return episodeAnswer.value.answers.map { answer ->
-      answerSchemas.firstOrNull { answerSchema ->
-        answer.equals(answerSchema.value)
-      } ?: throw IllegalStateException("Answer Code not found for question ${question.questionSchemaUuid} answer value $answer")
-    }.toSet()
+      answer.items.map { item ->
+        answerSchemas.firstOrNull { answerSchema ->
+          item.equals(answerSchema.value)
+        }
+          ?: throw IllegalStateException("Answer Code not found for question ${question.questionSchemaUuid} answer value $item")
+      }
+    }.flatten().toSet()
   }
 
   fun getEpisode(episodeUuid: UUID, assessmentUuid: UUID): AssessmentEpisodeEntity {

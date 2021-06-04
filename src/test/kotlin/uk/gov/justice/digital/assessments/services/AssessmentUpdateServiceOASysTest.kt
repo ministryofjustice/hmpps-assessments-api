@@ -221,6 +221,38 @@ class AssessmentUpdateServiceOASysTest {
       assertThat(oasysAnswers).contains(OasysAnswer("children", 2, "childname", "name3"))
       assertThat(oasysAnswers).contains(OasysAnswer("children", 2, "childaddress", "address3"))
     }
+
+    @Test
+    fun `with multiple children with multi-value answer`() {
+      val answers = mutableMapOf(
+        question1Uuid to AnswerEntity.from("some free text"),
+        question2Uuid to AnswerEntity.from("1975-01-20T00:00:00.000Z"),
+        question3Uuid to AnswerEntity.from("not mapped to oasys"),
+        childQuestion1 to AnswerEntity.from(listOf("name1", "name2", "name3")),
+        childQuestion2 to AnswerEntity(listOf(
+          Answer(listOf("address1")),
+          Answer(listOf("address2a", "address2b")),
+          Answer(listOf("address3"))
+        ))
+      )
+
+      val episode = AssessmentEpisodeEntity(
+        answers = answers
+      )
+
+      val oasysAnswers = OasysAnswers.from(episode, testMapper)
+
+      assertThat(oasysAnswers).hasSize(9)
+      assertThat(oasysAnswers).contains(OasysAnswer("section1", 1, "name", "some free text"))
+      assertThat(oasysAnswers).contains(OasysAnswer("section1", 1, "dob", "20/01/1975"))
+      assertThat(oasysAnswers).contains(OasysAnswer("children", 0, "childname", "name1"))
+      assertThat(oasysAnswers).contains(OasysAnswer("children", 0, "childaddress", "address1"))
+      assertThat(oasysAnswers).contains(OasysAnswer("children", 1, "childname", "name2"))
+      assertThat(oasysAnswers).contains(OasysAnswer("children", 1, "childaddress", "address2a"))
+      assertThat(oasysAnswers).contains(OasysAnswer("children", 1, "childaddress", "address2b"))
+      assertThat(oasysAnswers).contains(OasysAnswer("children", 2, "childname", "name3"))
+      assertThat(oasysAnswers).contains(OasysAnswer("children", 2, "childaddress", "address3"))
+    }
   }
 
   @Test

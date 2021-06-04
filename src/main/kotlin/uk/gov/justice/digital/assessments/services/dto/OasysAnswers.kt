@@ -110,12 +110,12 @@ data class OasysAnswers(
       builder: (OASysMappingEntity, Collection<Answer>, String?) -> List<OasysAnswer>
     ): OasysAnswers {
       val oasysAnswers = OasysAnswers()
-      answers.forEach { tableAnswer ->
-        val question = questions[tableAnswer.key]
+      answers.forEach { uuid, answerEntity ->
+        val question = questions[uuid]
         // TODO: If we want to handle multiple mappings per question we will need to add assessment type to the mapping
         question?.oasysMappings?.firstOrNull()?.let { oasysMapping ->
           oasysAnswers.addAll(
-            builder(oasysMapping, tableAnswer.value.answers, question.answerType)
+            builder(oasysMapping, answerEntity.answers, question.answerType)
           )
         }
       }
@@ -127,9 +127,11 @@ data class OasysAnswers(
       answers: Collection<Answer>,
       answerType: String?
     ): List<OasysAnswer> {
-      return answers.map {
-        makeOasysAnswer(it, oasysMapping, answerType)
-      }.toList()
+      return answers.map { answer ->
+        answer.items.map { item ->
+          makeOasysAnswer(item, oasysMapping, answerType)
+        }
+      }.flatten()
     }
 
     private fun mapOasysTableAnswers(
@@ -137,20 +139,22 @@ data class OasysAnswers(
       answers: Collection<Answer>,
       answerType: String?
     ): List<OasysAnswer> {
-      return answers.mapIndexed { index, value ->
-        makeOasysAnswer(value, oasysMapping, answerType, index.toLong())
-      }.toList()
+      return answers.mapIndexed { index, answer ->
+        answer.items.map { item ->
+          makeOasysAnswer(item, oasysMapping, answerType, index.toLong())
+        }
+      }.flatten()
     }
 
     private fun makeOasysAnswer(
-      value: Answer,
+      value: String,
       oasysMapping: OASysMappingEntity,
       answerType: String?,
       index: Long? = null
     ): OasysAnswer {
       val answer = when (answerType) {
-        "date" -> toOASysDate(value.toString())
-        else -> value.toString()
+        "date" -> toOASysDate(value)
+        else -> value
       }
 
       return OasysAnswer(

@@ -15,11 +15,6 @@ data class Answer(
 
     return super.equals(other)
   }
-
-  // TODO this needs to change!
-  override fun toString(): String {
-    return items.first()
-  }
 }
 
 data class AnswerEntity(
