@@ -1,6 +1,4 @@
 package uk.gov.justice.digital.assessments.api
-
-import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.databind.SerializerProvider
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
@@ -13,30 +11,22 @@ import java.util.UUID
 data class AnswersDto(
   var answers: Collection<AnswerDto> = emptyList()
 ) {
-  companion object {
-    @JvmStatic
-    @JsonCreator
-    fun fromJson(answers: Collection<AnswerDto>): AnswersDto {
-      if (answers.size > 1) {
-        val flattened = answers.map { it.items }.flatten()
-        if (flattened.size == answers.size) {
-          return AnswersDto(listOf(AnswerDto(flattened)))
-        }
-      }
-      return AnswersDto(answers)
-    }
+  fun toAnswers(): Collection<Answer> {
+    return answers.map { Answer(it.items) }
+  }
 
+  companion object {
     fun from(answers: Map<UUID, AnswerEntity>?): Map<UUID, AnswersDto>? {
       return answers?.mapValues {
         from(it.value)
       }
     }
-
     private fun from(ae: AnswerEntity): AnswersDto {
-      return AnswersDto(from(ae.answers))
+      return from(ae.answers)
     }
-    private fun from(answer: Collection<Answer>): Collection<AnswerDto> {
-      return answer.map { AnswerDto(it.items) }
+
+    fun from(answer: Collection<Answer>): AnswersDto {
+      return AnswersDto(answer.map { AnswerDto(it.items) })
     }
   }
 }
