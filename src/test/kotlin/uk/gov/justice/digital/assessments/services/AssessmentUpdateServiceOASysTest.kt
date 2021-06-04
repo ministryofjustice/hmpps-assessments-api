@@ -10,6 +10,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import uk.gov.justice.digital.assessments.api.AnswerDto
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.jpa.entities.*
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
@@ -315,9 +316,9 @@ class AssessmentUpdateServiceOASysTest {
 
     // Updated answers in returned DTO
     assertThat(episodeDto.answers).hasSize(1)
-    with(episodeDto.answers[existingQuestionUuid]!!) {
+    with(episodeDto.answers[existingQuestionUuid]!!.answers) {
       assertThat(size).isEqualTo(2)
-      assertThat(this).containsAll(listOf(Answer("fruit loops"), Answer("custard")))
+      assertThat(this).containsAll(listOf(AnswerDto(listOf("fruit loops")), AnswerDto(listOf("custard"))))
     }
 
     // But also errors!
@@ -355,10 +356,10 @@ class AssessmentUpdateServiceOASysTest {
 
     with(updatedEpisode.answers) {
       assertThat(map { it.key }).containsOnlyOnce(question1Uuid, question2Uuid)
-      assertThat(flatMap { it.value }).contains(
-        Answer("Updated"),
-        Answer("1975-01-20T00:00:00.000Z"),
-        Answer("not mapped to oasys"))
+      assertThat(flatMap { it.value.answers }).contains(
+        AnswerDto(listOf("Updated")),
+        AnswerDto(listOf("1975-01-20T00:00:00.000Z")),
+        AnswerDto(listOf("not mapped to oasys")))
     }
   }
 

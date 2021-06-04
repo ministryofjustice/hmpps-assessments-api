@@ -8,6 +8,8 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import uk.gov.justice.digital.assessments.api.AnswerDto
+import uk.gov.justice.digital.assessments.api.AnswersDto
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.jpa.entities.*
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
@@ -17,6 +19,7 @@ import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
+import uk.gov.justice.digital.assessments.testutils.Verify
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -105,15 +108,11 @@ class AssessmentUpdateServiceTest {
       val episodeDto = assessmentUpdateService.updateEpisode(assessmentUuid, episodeUuid, updatedAnswers)
 
       assertThat(episodeDto.answers).hasSize(2)
-      with(episodeDto.answers[existingQuestionUuid]!!) {
-        assertThat(size).isEqualTo(1)
-        assertThat(first()).isEqualTo("free text")
-      }
+      Verify.answers(episodeDto.answers[existingQuestionUuid]!!,
+        "free text")
 
-      with(episodeDto.answers[newQuestionUuid]!!) {
-        assertThat(size).isEqualTo(1)
-        assertThat(first()).isEqualTo("trousers")
-      }
+      Verify.answers(episodeDto.answers[newQuestionUuid]!!,
+        "trousers")
     }
 
     @Test
@@ -133,10 +132,8 @@ class AssessmentUpdateServiceTest {
       val episodeDto = assessmentUpdateService.updateEpisode(assessmentUuid, episodeUuid, updatedAnswers)
 
       assertThat(episodeDto.answers).hasSize(1)
-      with(episodeDto.answers[existingQuestionUuid]!!) {
-        assertThat(size).isEqualTo(1)
-        assertThat(first()).isEqualTo("new free text")
-      }
+      Verify.answers(episodeDto.answers[existingQuestionUuid]!!,
+        "new free text")
     }
 
     @Test
@@ -156,12 +153,9 @@ class AssessmentUpdateServiceTest {
       val episodeDto = assessmentUpdateService.updateEpisode(assessmentUuid, episodeUuid, updatedAnswers)
 
       assertThat(episodeDto.answers).hasSize(1)
-      with(episodeDto.answers[existingQuestionUuid]!!) {
-        assertThat(size).isEqualTo(2)
-        assertThat(this).containsAll(listOf(
-          Answer("fruit loops"),
-          Answer("custard")))
-      }
+      Verify.answers(episodeDto.answers[existingQuestionUuid]!!,
+        "fruit loops",
+        "custard")
     }
 
     @Test
@@ -234,15 +228,11 @@ class AssessmentUpdateServiceTest {
       val episodeDto = assessmentUpdateService.addEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", tableAnswers)
 
       assertThat(episodeDto.answers).hasSize(5)
-      with(episodeDto.answers[childQuestion1]!!) {
-        assertThat(size).isEqualTo(1)
-        assertThat(first()).isEqualTo("child name")
-      }
+      Verify.answers(episodeDto.answers[childQuestion1]!!,
+        "child name")
 
-      with(episodeDto.answers[childQuestion2]!!) {
-        assertThat(size).isEqualTo(1)
-        assertThat(first()).isEqualTo("child address")
-      }
+      Verify.answers(episodeDto.answers[childQuestion2]!!,
+        "child address")
     }
 
     @Test
@@ -264,15 +254,11 @@ class AssessmentUpdateServiceTest {
       val episodeDto = assessmentUpdateService.addCurrentEpisodeTableRow(assessmentUuid, "children_at_risk", tableAnswers)
 
       assertThat(episodeDto.answers).hasSize(5)
-      with(episodeDto.answers[childQuestion1]!!) {
-        assertThat(size).isEqualTo(1)
-        assertThat(first()).isEqualTo("child name")
-      }
+      Verify.answers(episodeDto.answers[childQuestion1]!!,
+        "child name")
 
-      with(episodeDto.answers[childQuestion2]!!) {
-        assertThat(size).isEqualTo(1)
-        assertThat(first()).isEqualTo("child address")
-      }
+      Verify.answers(episodeDto.answers[childQuestion2]!!,
+        "child address")
     }
 
     @Test
@@ -296,17 +282,13 @@ class AssessmentUpdateServiceTest {
       val episodeDto = assessmentUpdateService.addEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", tableAnswers)
 
       assertThat(episodeDto.answers).hasSize(5)
-      with(episodeDto.answers[childQuestion1]!!) {
-        assertThat(size).isEqualTo(2)
-        assertThat(first()).isEqualTo("child name 1")
-        assertThat(last()).isEqualTo("child name 2")
-      }
+      Verify.answers(episodeDto.answers[childQuestion1]!!,
+        "child name 1",
+        "child name 2")
 
-      with(episodeDto.answers[childQuestion2]!!) {
-        assertThat(size).isEqualTo(2)
-        assertThat(first()).isEqualTo("child address 1")
-        assertThat(last()).isEqualTo("child address 2")
-      }
+      Verify.answers(episodeDto.answers[childQuestion2]!!,
+        "child address 1",
+        "child address 2")
     }
 
     @Test
@@ -330,17 +312,13 @@ class AssessmentUpdateServiceTest {
       val episodeDto = assessmentUpdateService.addEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", tableAnswers)
 
       assertThat(episodeDto.answers).hasSize(5)
-      with(episodeDto.answers[childQuestion1]!!) {
-        assertThat(size).isEqualTo(2)
-        assertThat(first()).isEqualTo("child name 1")
-        assertThat(last()).isEqualTo("child name 2")
-      }
+      Verify.answers(episodeDto.answers[childQuestion1]!!,
+        "child name 1",
+        "child name 2")
 
-      with(episodeDto.answers[childQuestion2]!!) {
-        assertThat(size).isEqualTo(2)
-        assertThat(first()).isEqualTo("child address 1")
-        assertThat(last()).isEqualTo("")
-      }
+      Verify.answers(episodeDto.answers[childQuestion2]!!,
+        "child address 1",
+        "")
     }
 
     @Test
@@ -364,17 +342,13 @@ class AssessmentUpdateServiceTest {
       val episodeDto = assessmentUpdateService.updateEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", 0, tableAnswers)
 
       assertThat(episodeDto.answers).hasSize(5)
-      with(episodeDto.answers[childQuestion1]!!) {
-        assertThat(size).isEqualTo(2)
-        assertThat(first()).isEqualTo("child name 1")
-        assertThat(last()).isEqualTo("child name 2")
-      }
+      Verify.answers(episodeDto.answers[childQuestion1]!!,
+        "child name 1",
+        "child name 2")
 
-      with(episodeDto.answers[childQuestion2]!!) {
-        assertThat(size).isEqualTo(2)
-        assertThat(first()).isEqualTo("child address 1")
-        assertThat(last()).isEqualTo("child address 2")
-      }
+      Verify.answers(episodeDto.answers[childQuestion2]!!,
+        "child address 1",
+        "child address 2")
     }
 
     @Test
@@ -398,17 +372,13 @@ class AssessmentUpdateServiceTest {
       val episodeDto = assessmentUpdateService.updateEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", 1, tableAnswers)
 
       assertThat(episodeDto.answers).hasSize(5)
-      with(episodeDto.answers[childQuestion1]!!) {
-        assertThat(size).isEqualTo(2)
-        assertThat(first()).isEqualTo("child name 1")
-        assertThat(last()).isEqualTo("child name 2")
-      }
+      Verify.answers(episodeDto.answers[childQuestion1]!!,
+        "child name 1",
+        "child name 2")
 
-      with(episodeDto.answers[childQuestion2]!!) {
-        assertThat(size).isEqualTo(2)
-        assertThat(first()).isEqualTo("child address 1")
-        assertThat(last()).isEqualTo("child address 2")
-      }
+      Verify.answers(episodeDto.answers[childQuestion2]!!,
+        "child address 1",
+        "child address 2")
     }
 
     @Test
@@ -432,19 +402,15 @@ class AssessmentUpdateServiceTest {
       val episodeDto = assessmentUpdateService.updateEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", 1, tableAnswers)
 
       assertThat(episodeDto.answers).hasSize(5)
-      with(episodeDto.answers[childQuestion1]!!) {
-        assertThat(size).isEqualTo(3)
-        assertThat(first()).isEqualTo("child name 1")
-        assertThat(toList()[1]).isEqualTo("child name 2")
-        assertThat(last()).isEqualTo("child name 3")
-      }
+      Verify.answers(episodeDto.answers[childQuestion1]!!,
+        "child name 1",
+        "child name 2",
+        "child name 3")
 
-      with(episodeDto.answers[childQuestion2]!!) {
-        assertThat(size).isEqualTo(3)
-        assertThat(first()).isEqualTo("child address 1")
-        assertThat(toList()[1]).isEqualTo("child address 2")
-        assertThat(last()).isEqualTo("child address 3")
-      }
+      Verify.answers(episodeDto.answers[childQuestion2]!!,
+        "child address 1",
+        "child address 2",
+        "child address 3")
     }
 
     @Test
@@ -461,17 +427,13 @@ class AssessmentUpdateServiceTest {
       val episodeDto = assessmentUpdateService.deleteEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", 0)
 
       assertThat(episodeDto.answers).hasSize(5)
-      with(episodeDto.answers[childQuestion1]!!) {
-        assertThat(size).isEqualTo(2)
-        assertThat(first()).isEqualTo("child name 2")
-        assertThat(last()).isEqualTo("child name 3")
-      }
+      Verify.answers(episodeDto.answers[childQuestion1]!!,
+        "child name 2",
+        "child name 3")
 
-      with(episodeDto.answers[childQuestion2]!!) {
-        assertThat(size).isEqualTo(2)
-        assertThat(first()).isEqualTo("child address 2")
-        assertThat(last()).isEqualTo("child address 3")
-      }
+      Verify.answers(episodeDto.answers[childQuestion2]!!,
+        "child address 2",
+        "child address 3")
     }
 
     @Test
@@ -488,17 +450,13 @@ class AssessmentUpdateServiceTest {
       val episodeDto = assessmentUpdateService.deleteEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", 1)
 
       assertThat(episodeDto.answers).hasSize(5)
-      with(episodeDto.answers[childQuestion1]!!) {
-        assertThat(size).isEqualTo(2)
-        assertThat(first()).isEqualTo("child name 1")
-        assertThat(last()).isEqualTo("child name 3")
-      }
+      Verify.answers(episodeDto.answers[childQuestion1]!!,
+        "child name 1",
+        "child name 3")
 
-      with(episodeDto.answers[childQuestion2]!!) {
-        assertThat(size).isEqualTo(2)
-        assertThat(first()).isEqualTo("child address 1")
-        assertThat(last()).isEqualTo("child address 3")
-      }
+      Verify.answers(episodeDto.answers[childQuestion2]!!,
+        "child address 1",
+        "child address 3")
     }
 
     @Test
@@ -515,17 +473,13 @@ class AssessmentUpdateServiceTest {
       val episodeDto = assessmentUpdateService.deleteEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", 2)
 
       assertThat(episodeDto.answers).hasSize(5)
-      with(episodeDto.answers[childQuestion1]!!) {
-        assertThat(size).isEqualTo(2)
-        assertThat(first()).isEqualTo("child name 1")
-        assertThat(last()).isEqualTo("child name 2")
-      }
+      Verify.answers(episodeDto.answers[childQuestion1]!!,
+        "child name 1",
+        "child name 2")
 
-      with(episodeDto.answers[childQuestion2]!!) {
-        assertThat(size).isEqualTo(2)
-        assertThat(first()).isEqualTo("child address 1")
-        assertThat(last()).isEqualTo("child address 2")
-      }
+      Verify.answers(episodeDto.answers[childQuestion2]!!,
+        "child address 1",
+        "child address 2")
     }
 
     @Test
@@ -542,13 +496,8 @@ class AssessmentUpdateServiceTest {
       val episodeDto = assessmentUpdateService.deleteEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", 0)
 
       assertThat(episodeDto.answers).hasSize(5)
-      with(episodeDto.answers[childQuestion1]!!) {
-        assertThat(size).isEqualTo(0)
-      }
-
-      with(episodeDto.answers[childQuestion2]!!) {
-        assertThat(size).isEqualTo(0)
-      }
+      Verify.answers(episodeDto.answers[childQuestion1]!!)
+      Verify.answers(episodeDto.answers[childQuestion2]!!)
     }
 
     @Test

@@ -17,6 +17,7 @@ import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.jpa.entities.Answer
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import uk.gov.justice.digital.assessments.utils.RequestData
+import uk.gov.justice.digital.assessments.testutils.Verify
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -104,9 +105,7 @@ class AssessmentControllerTest : IntegrationTest() {
       assertThat(episode).isNotNull
       assertThat(episode?.answers).containsKey(newQuestionUUID)
 
-      val answer = episode?.answers?.get(newQuestionUUID)!!
-      assertThat(answer.size).isEqualTo(1)
-      assertThat(answer.first()).isEqualTo("new free text")
+      Verify.answers(episode?.answers?.get(newQuestionUUID)!!, "new free text")
     }
 
     @Test
@@ -146,9 +145,7 @@ class AssessmentControllerTest : IntegrationTest() {
       assertThat(episode).isNotNull
       assertThat(episode?.answers).containsKey(childQuestion)
 
-      val answer = episode?.answers?.get(childQuestion)!!
-      assertThat(answer.size).isEqualTo(1)
-      assertThat(answer.first()).isEqualTo(answerText)
+      Verify.answers(episode?.answers?.get(childQuestion)!!, answerText)
     }
 
     @Test
@@ -171,7 +168,7 @@ class AssessmentControllerTest : IntegrationTest() {
       assertThat(episode).isNotNull
       assertThat(episode?.answers).containsKey(childQuestion)
 
-      val answer = episode?.answers?.get(childQuestion)!!
+      val answer = episode?.answers?.get(childQuestion)!!.answers
       assertThat(answer.size).isEqualTo(1)
       val multiValues = answer.first().items
       assertThat(multiValues).hasSize(2)
@@ -180,7 +177,7 @@ class AssessmentControllerTest : IntegrationTest() {
     }
 
     @Test
-    fun `add twp episode table rows with multivalue from JSON`() {
+    fun `add two episode table rows with multivalue from JSON`() {
       val childQuestion = UUID.fromString("23c3e984-54c7-480f-b06c-7d000e2fb87c")
       val firstAnswer = "row1-answer1"
       val secondAnswer = "row1-answer2"
@@ -211,7 +208,7 @@ class AssessmentControllerTest : IntegrationTest() {
       assertThat(episode).isNotNull
       assertThat(episode?.answers).containsKey(childQuestion)
 
-      val answer = episode?.answers?.get(childQuestion)!!
+      val answer = episode?.answers?.get(childQuestion)!!.answers
       assertThat(answer.size).isEqualTo(2)
 
       val row1Values = answer.first().items
@@ -239,9 +236,7 @@ class AssessmentControllerTest : IntegrationTest() {
       assertThat(episode).isNotNull
       assertThat(episode?.answers).containsKey(questionUUID)
 
-      val answer = episode?.answers?.get(questionUUID)!!
-      assertThat(answer.size).isEqualTo(1)
-      assertThat(answer.first()).isEqualTo(expectedAnswer)
+      Verify.answers(episode?.answers?.get(questionUUID)!!, expectedAnswer)
     }
 
     @Test

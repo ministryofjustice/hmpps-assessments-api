@@ -31,7 +31,7 @@ class AssessmentEpisodeDto(
   val ended: LocalDateTime? = null,
 
   @Schema(description = "Answers associated with this episode")
-  val answers: Map<UUID, Collection<Answer>> = emptyMap(),
+  val answers: Map<UUID, AnswersDto> = emptyMap(),
 
   @Schema(description = "Validation errors on this episode, indexed by question UUID")
   val errors: Map<UUID, Collection<String>>? = null,
@@ -57,7 +57,7 @@ class AssessmentEpisodeDto(
         episode.changeReason,
         episode.createdDate,
         episode.endDate,
-        AnswerDto.from(episode.answers) ?: emptyMap(),
+        AnswersDto.from(episode.answers) ?: emptyMap(),
         errors?.errors,
         errors?.pageErrors,
         errors?.assessmentErrors
