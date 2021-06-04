@@ -16,6 +16,7 @@ import uk.gov.justice.digital.assessments.utils.RequestData
 import uk.gov.justice.digital.assessments.testutils.Verify
 import java.time.LocalDateTime
 import java.util.UUID
+import kotlin.math.exp
 
 @SqlGroup(
   Sql(scripts = ["classpath:assessments/before-test.sql"], config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED)),
@@ -110,7 +111,7 @@ class AssessmentControllerTest : IntegrationTest() {
       val answerText = "one day I'll fly away"
       val jsonString = "{\"answers\":{\"${newQuestionUUID}\":[\"${answerText}\"]}}"
 
-      updateFromJSON(newQuestionUUID, answerText, jsonString)
+      updateEpisodeFromJson(newQuestionUUID, answerText, jsonString)
     }
 
     @Test
@@ -119,7 +120,7 @@ class AssessmentControllerTest : IntegrationTest() {
       val answerText = "one day I'll fly away"
       val jsonString = "{\"answers\":{\"${newQuestionUUID}\":\"${answerText}\"}}"
 
-      updateFromJSON(newQuestionUUID, answerText, jsonString)
+      updateEpisodeFromJson(newQuestionUUID, answerText, jsonString)
     }
 
     @Test
@@ -128,20 +129,9 @@ class AssessmentControllerTest : IntegrationTest() {
       val answerText = "child answer"
       val jsonString = "{\"answers\":{\"${childQuestion}\":\"${answerText}\"}}"
 
-      val episode = webTestClient.post().uri("/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259/children_at_risk_of_serious_harm")
-        .contentType(MediaType.APPLICATION_JSON)
-        .bodyValue(jsonString)
-        .headers(setAuthorisation())
-        .exchange()
-        .expectStatus().isOk
-        .expectBody<AssessmentEpisodeDto>()
-        .returnResult()
-        .responseBody
+      val episode = addTableRowFromJson(childQuestion, jsonString)
 
-      assertThat(episode).isNotNull
-      assertThat(episode?.answers).containsKey(childQuestion)
-
-      Verify.singleAnswer(episode?.answers?.get(childQuestion)!!, answerText)
+      Verify.singleAnswer(episode.answers.get(childQuestion)!!, answerText)
     }
 
     @Test
@@ -150,20 +140,12 @@ class AssessmentControllerTest : IntegrationTest() {
       val answerText = "child answer"
       val jsonString = "{\"answers\":{\"${childQuestion}\":[\"${answerText}\"]}}"
 
-      val episode = webTestClient.post().uri("/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259/children_at_risk_of_serious_harm")
-        .contentType(MediaType.APPLICATION_JSON)
-        .bodyValue(jsonString)
-        .headers(setAuthorisation())
-        .exchange()
-        .expectStatus().isOk
-        .expectBody<AssessmentEpisodeDto>()
-        .returnResult()
-        .responseBody
+      val episode = addTableRowFromJson(childQuestion, jsonString)
 
       assertThat(episode).isNotNull
-      assertThat(episode?.answers).containsKey(childQuestion)
+      assertThat(episode.answers).containsKey(childQuestion)
 
-      Verify.singleAnswer(episode?.answers?.get(childQuestion)!!, answerText)
+      Verify.singleAnswer(episode.answers.get(childQuestion)!!, answerText)
     }
 
     @Test
@@ -173,18 +155,7 @@ class AssessmentControllerTest : IntegrationTest() {
       val secondAnswer = "answer2"
       val jsonString = "{\"answers\":{\"${childQuestion}\":[\"${firstAnswer}\",\"${secondAnswer}\"]}}"
 
-      val episode = webTestClient.post().uri("/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259/children_at_risk_of_serious_harm")
-        .contentType(MediaType.APPLICATION_JSON)
-        .bodyValue(jsonString)
-        .headers(setAuthorisation())
-        .exchange()
-        .expectStatus().isOk
-        .expectBody<AssessmentEpisodeDto>()
-        .returnResult()
-        .responseBody
-
-      assertThat(episode).isNotNull
-      assertThat(episode?.answers).containsKey(childQuestion)
+      val episode = addTableRowFromJson(childQuestion, jsonString)
 
       // This looks wrong, but is down to an asymmetry in the way AnswersDto
       // serialises to Json and back. In practice, we only deserialise in tests,
@@ -206,28 +177,11 @@ class AssessmentControllerTest : IntegrationTest() {
       val forthAnswer = "row2-answer2"
       val row2 = "{\"answers\":{\"${childQuestion}\":[\"${thirdAnswer}\",\"${forthAnswer}\"]}}"
 
-      webTestClient.post().uri("/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259/children_at_risk_of_serious_harm")
-        .contentType(MediaType.APPLICATION_JSON)
-        .bodyValue(row1)
-        .headers(setAuthorisation())
-        .exchange()
-        .expectStatus().isOk
-        .expectBody<AssessmentEpisodeDto>()
+      addTableRowFromJson(childQuestion, row1)
 
-      val episode = webTestClient.post().uri("/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259/children_at_risk_of_serious_harm")
-        .contentType(MediaType.APPLICATION_JSON)
-        .bodyValue(row2)
-        .headers(setAuthorisation())
-        .exchange()
-        .expectStatus().isOk
-        .expectBody<AssessmentEpisodeDto>()
-        .returnResult()
-        .responseBody
+      val episode = addTableRowFromJson(childQuestion, row2)
 
-      assertThat(episode).isNotNull
-      assertThat(episode?.answers).containsKey(childQuestion)
-
-      val answer = episode?.answers?.get(childQuestion)!!.answers
+      val answer = episode.answers.get(childQuestion)!!.answers
       assertThat(answer.size).isEqualTo(2)
 
       val row1Values = answer.first().items
@@ -241,8 +195,28 @@ class AssessmentControllerTest : IntegrationTest() {
       assertThat(row2Values.last()).isEqualTo(forthAnswer)
     }
 
-    private fun updateFromJSON(questionUUID: UUID, expectedAnswer: String, jsonString: String) {
-      val episode = webTestClient.post().uri("/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259")
+    private fun updateEpisodeFromJson(questionUUID: UUID, expectedAnswer: String, jsonString: String) {
+      val episode = updateFromJson(
+        "/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259",
+        questionUUID,
+        jsonString)
+
+      Verify.singleAnswer(episode.answers.get(questionUUID)!!, expectedAnswer)
+    }
+
+    private fun addTableRowFromJson(questionUUID: UUID, jsonString: String) : AssessmentEpisodeDto {
+      return updateFromJson(
+        "/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259/children_at_risk_of_serious_harm",
+        questionUUID,
+        jsonString)
+    }
+
+    private fun updateFromJson(
+      endpoint: String,
+      questionUUID: UUID,
+      jsonString: String): AssessmentEpisodeDto
+    {
+      val episode = webTestClient.post().uri(endpoint)
         .contentType(MediaType.APPLICATION_JSON)
         .bodyValue(jsonString)
         .headers(setAuthorisation())
@@ -255,7 +229,7 @@ class AssessmentControllerTest : IntegrationTest() {
       assertThat(episode).isNotNull
       assertThat(episode?.answers).containsKey(questionUUID)
 
-      Verify.singleAnswer(episode?.answers?.get(questionUUID)!!, expectedAnswer)
+      return episode
     }
 
     @Test
