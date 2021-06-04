@@ -166,7 +166,7 @@ class AssessmentControllerTest : IntegrationTest() {
     }
 
     @Test
-    fun `add several episode table rows with multivalue from JSON`() {
+    fun `add several table rows from JSON`() {
       val childQuestion = UUID.fromString("23c3e984-54c7-480f-b06c-7d000e2fb87c")
       val firstAnswer = "row1-answer1"
       val secondAnswer = "row1-answer2"
@@ -196,6 +196,49 @@ class AssessmentControllerTest : IntegrationTest() {
       assertThat(row2Values).hasSize(2)
       assertThat(row2Values.first()).isEqualTo(thirdAnswer)
       assertThat(row2Values.last()).isEqualTo(forthAnswer)
+
+      val row3Values = answers[2].items
+      assertThat(row3Values).hasSize(2)
+      assertThat(row3Values.first()).isEqualTo(fifthAnswer)
+      assertThat(row3Values.last()).isEqualTo(sixthAnswer)
+    }
+
+
+    @Test
+    fun `update episode table row from JSON`() {
+      val childQuestion = UUID.fromString("23c3e984-54c7-480f-b06c-7d000e2fb87c")
+      val firstAnswer = "row1-answer1"
+      val secondAnswer = "row1-answer2"
+      val row1 = "{\"answers\":{\"${childQuestion}\":[\"${firstAnswer}\",\"${secondAnswer}\"]}}"
+
+      val thirdAnswer = "row2-answer1"
+      val forthAnswer = "row2-answer2"
+      val row2 = "{\"answers\":{\"${childQuestion}\":[\"${thirdAnswer}\",\"${forthAnswer}\"]}}"
+
+      val fifthAnswer = "row3-answer1"
+      val sixthAnswer = "row3-answer2"
+      val row3 = "{\"answers\":{\"${childQuestion}\":[\"${fifthAnswer}\",\"${sixthAnswer}\"]}}"
+
+      val thirdUpdate= "row2-updated"
+      val row2Update = "{\"answers\":{\"${childQuestion}\":\"${thirdUpdate}\"}}"
+
+      addTableRowFromJson(childQuestion, row1)
+      addTableRowFromJson(childQuestion, row2)
+      addTableRowFromJson(childQuestion, row3)
+
+      val episode = updateTableRowFromJson(childQuestion, 1, row2Update)
+
+      val answers = episode.answers.get(childQuestion)!!.answers.toList()
+      assertThat(answers.size).isEqualTo(3)
+
+      val row1Values = answers[0].items
+      assertThat(row1Values).hasSize(2)
+      assertThat(row1Values.first()).isEqualTo(firstAnswer)
+      assertThat(row1Values.last()).isEqualTo(secondAnswer)
+
+      val row2Values = answers[1].items
+      assertThat(row2Values).hasSize(1)
+      assertThat(row2Values.first()).isEqualTo(thirdUpdate)
 
       val row3Values = answers[2].items
       assertThat(row3Values).hasSize(2)
@@ -312,6 +355,14 @@ class AssessmentControllerTest : IntegrationTest() {
     private fun addTableRowFromJson(questionUUID: UUID, jsonString: String) : AssessmentEpisodeDto {
       return updateFromJson(
         "/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259/children_at_risk_of_serious_harm",
+        questionUUID,
+        jsonString)
+    }
+
+    private fun updateTableRowFromJson(questionUUID: UUID, index: Int, jsonString: String) : AssessmentEpisodeDto {
+      val endpoint = "/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259/children_at_risk_of_serious_harm/$index"
+      return updateFromJson(
+        endpoint,
         questionUUID,
         jsonString)
     }
