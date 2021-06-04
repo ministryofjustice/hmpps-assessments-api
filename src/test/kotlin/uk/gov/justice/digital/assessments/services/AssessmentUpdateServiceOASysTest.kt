@@ -105,9 +105,9 @@ class AssessmentUpdateServiceOASysTest {
   @Test
   fun `map Oasys answers from ARN questions and answers`() {
     val answers = mutableMapOf(
-      question1Uuid to AnswerEntity("some free text"),
-      question2Uuid to AnswerEntity("1975-01-20T00:00:00.000Z"),
-      question3Uuid to AnswerEntity("not mapped to oasys")
+      question1Uuid to AnswerEntity.from("some free text"),
+      question2Uuid to AnswerEntity.from("1975-01-20T00:00:00.000Z"),
+      question3Uuid to AnswerEntity.from("not mapped to oasys")
     )
     val episode = AssessmentEpisodeEntity(
       answers = answers
@@ -176,11 +176,11 @@ class AssessmentUpdateServiceOASysTest {
     @Test
     fun `with one child`() {
       val answers = mutableMapOf(
-        question1Uuid to AnswerEntity("some free text"),
-        question2Uuid to AnswerEntity("1975-01-20T00:00:00.000Z"),
-        question3Uuid to AnswerEntity("not mapped to oasys"),
-        childQuestion1 to AnswerEntity("child name"),
-        childQuestion2 to AnswerEntity("child address")
+        question1Uuid to AnswerEntity.from("some free text"),
+        question2Uuid to AnswerEntity.from("1975-01-20T00:00:00.000Z"),
+        question3Uuid to AnswerEntity.from("not mapped to oasys"),
+        childQuestion1 to AnswerEntity.from("child name"),
+        childQuestion2 to AnswerEntity.from("child address")
       )
 
       val episode = AssessmentEpisodeEntity(
@@ -198,11 +198,11 @@ class AssessmentUpdateServiceOASysTest {
     @Test
     fun `with multiple children`() {
       val answers = mutableMapOf(
-        question1Uuid to AnswerEntity("some free text"),
-        question2Uuid to AnswerEntity("1975-01-20T00:00:00.000Z"),
-        question3Uuid to AnswerEntity("not mapped to oasys"),
-        childQuestion1 to AnswerEntity(listOf("name1", "name2", "name3")),
-        childQuestion2 to AnswerEntity(listOf("address1", "", "address3"))
+        question1Uuid to AnswerEntity.from("some free text"),
+        question2Uuid to AnswerEntity.from("1975-01-20T00:00:00.000Z"),
+        question3Uuid to AnswerEntity.from("not mapped to oasys"),
+        childQuestion1 to AnswerEntity.from(listOf("name1", "name2", "name3")),
+        childQuestion2 to AnswerEntity.from(listOf("address1", "", "address3"))
       )
 
       val episode = AssessmentEpisodeEntity(
@@ -276,7 +276,7 @@ class AssessmentUpdateServiceOASysTest {
 
     val assessment = assessmentEntityWithOasysOffender(
       mutableMapOf(
-        existingQuestionUuid to AnswerEntity(listOf("free text", "fruit loops", "biscuits"))
+        existingQuestionUuid to AnswerEntity.from(listOf("free text", "fruit loops", "biscuits"))
       )
     )
     every { assessmentService.getEpisode(episodeUuid, assessmentUuid) } returns
@@ -462,9 +462,9 @@ class AssessmentUpdateServiceOASysTest {
 
   private fun setupEpisode(): AssessmentEpisodeEntity {
     val answers = mutableMapOf(
-      question1Uuid to AnswerEntity("some free text"),
-      question2Uuid to AnswerEntity("1975-01-20T00:00:00.000Z"),
-      question3Uuid to AnswerEntity("not mapped to oasys")
+      question1Uuid to AnswerEntity.from("some free text"),
+      question2Uuid to AnswerEntity.from("1975-01-20T00:00:00.000Z"),
+      question3Uuid to AnswerEntity.from("not mapped to oasys")
     )
     return AssessmentEpisodeEntity(
       episodeId = episodeId1,

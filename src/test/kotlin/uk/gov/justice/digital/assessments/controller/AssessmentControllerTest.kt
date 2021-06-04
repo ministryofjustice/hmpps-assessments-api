@@ -145,6 +145,28 @@ class AssessmentControllerTest : IntegrationTest() {
     }
 
     @Test
+    fun `add episode table row from JSON, single value array`() {
+      val childQuestion = UUID.fromString("23c3e984-54c7-480f-b06c-7d000e2fb87c")
+      val answerText = "child answer"
+      val jsonString = "{\"answers\":{\"${childQuestion}\":[\"${answerText}\"]}}"
+
+      val episode = webTestClient.post().uri("/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259/children_at_risk_of_serious_harm")
+        .contentType(MediaType.APPLICATION_JSON)
+        .bodyValue(jsonString)
+        .headers(setAuthorisation())
+        .exchange()
+        .expectStatus().isOk
+        .expectBody<AssessmentEpisodeDto>()
+        .returnResult()
+        .responseBody
+
+      assertThat(episode).isNotNull
+      assertThat(episode?.answers).containsKey(childQuestion)
+
+      Verify.singleAnswer(episode?.answers?.get(childQuestion)!!, answerText)
+    }
+
+    @Test
     fun `add episode table row with multivalue from JSON`() {
       val childQuestion = UUID.fromString("23c3e984-54c7-480f-b06c-7d000e2fb87c")
       val firstAnswer = "answer1"
@@ -164,12 +186,13 @@ class AssessmentControllerTest : IntegrationTest() {
       assertThat(episode).isNotNull
       assertThat(episode?.answers).containsKey(childQuestion)
 
+      // This looks wrong, but is down to an asymmetry in the way AnswersDto
+      // serialises to Json and back. In practice, we only deserialise in tests,
+      // so this shouldn't be problem
       val answer = episode?.answers?.get(childQuestion)!!.answers
-      assertThat(answer.size).isEqualTo(1)
-      val multiValues = answer.first().items
-      assertThat(multiValues).hasSize(2)
-      assertThat(multiValues.first()).isEqualTo(firstAnswer)
-      assertThat(multiValues.last()).isEqualTo(secondAnswer)
+      assertThat(answer.size).isEqualTo(2)
+      assertThat(answer.first().items).isEqualTo(listOf(firstAnswer))
+      assertThat(answer.last().items).isEqualTo(listOf(secondAnswer))
     }
 
     @Test
