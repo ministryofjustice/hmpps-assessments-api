@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import uk.gov.justice.digital.assessments.api.AnswerDto
+import uk.gov.justice.digital.assessments.api.AnswersDto
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.jpa.entities.*
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
@@ -20,6 +21,7 @@ import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OasysAn
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.UpdateAssessmentAnswersResponseDto
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.ValidationErrorDto
 import uk.gov.justice.digital.assessments.services.dto.OasysAnswers
+import uk.gov.justice.digital.assessments.testutils.Verify
 import java.util.UUID
 
 @ExtendWith(MockKExtension::class)
@@ -234,9 +236,7 @@ class AssessmentUpdateServiceOASysTest {
     } returns UpdateAssessmentAnswersResponseDto()
     every { questionService.getAllSectionQuestionsForQuestions(any()) } returns QuestionSchemaEntities(questionsList = emptyList())
 
-    val update = UpdateAssessmentEpisodeDto(
-      answers = mapOf(question1Uuid to listOf(Answer("YES")))
-    )
+    val update = mapOf(question1Uuid to makeAnswersDto("YES"))
 
     assessmentsUpdateService.updateOASysAssessment(setupEpisode(), update)
 
@@ -260,9 +260,7 @@ class AssessmentUpdateServiceOASysTest {
     val episode = AssessmentEpisodeEntity(
       oasysSetPk = oasysSetPk
     )
-    val update = UpdateAssessmentEpisodeDto(
-      answers = mapOf(question1Uuid to listOf(Answer("YES")))
-    )
+    val update = mapOf(question1Uuid to makeAnswersDto("YES"))
 
     assessmentsUpdateService.updateOASysAssessment(episode, update)
 
@@ -310,16 +308,15 @@ class AssessmentUpdateServiceOASysTest {
 
     // Apply the update
     val updatedAnswers = UpdateAssessmentEpisodeDto(
-      mapOf(existingQuestionUuid to listOf(Answer("fruit loops"), Answer("custard")))
+      mapOf(existingQuestionUuid to listOf("fruit loops", "custard"))
     )
     val episodeDto = assessmentsUpdateService.updateEpisode(assessmentUuid, episodeUuid, updatedAnswers)
 
     // Updated answers in returned DTO
     assertThat(episodeDto.answers).hasSize(1)
-    with(episodeDto.answers[existingQuestionUuid]!!.answers) {
-      assertThat(size).isEqualTo(2)
-      assertThat(this).containsAll(listOf(AnswerDto(listOf("fruit loops")), AnswerDto(listOf("custard"))))
-    }
+    Verify.singleAnswer(episodeDto.answers[existingQuestionUuid]!!,
+      "fruit loops",
+      "custard")
 
     // But also errors!
     assertThat(episodeDto.errors).hasSize(1)
@@ -340,7 +337,7 @@ class AssessmentUpdateServiceOASysTest {
     every { questionService.getAllQuestions() } returns setupQuestionCodes()
     every { assessmentRepository.save(any()) } returns mockk()
 
-    val update = UpdateAssessmentEpisodeDto(answers = mapOf(question1Uuid to listOf(Answer("Updated"))))
+    val update = UpdateAssessmentEpisodeDto(answers = mapOf(question1Uuid to listOf("Updated")))
     val updatedEpisode = assessmentsUpdateService.updateEpisode(assessmentUuid, episodeUuid, update)
 
     verify(exactly = 1) {
@@ -457,6 +454,10 @@ class AssessmentUpdateServiceOASysTest {
     )
 
     return assessment
+  }
+
+  fun makeAnswersDto(vararg ans: String): AnswersDto {
+    return AnswersDto(listOf(AnswerDto(listOf(*ans))))
   }
 
   private fun setupEpisode(): AssessmentEpisodeEntity {

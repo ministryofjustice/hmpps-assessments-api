@@ -10,11 +10,7 @@ import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.context.jdbc.SqlConfig
 import org.springframework.test.context.jdbc.SqlGroup
 import org.springframework.test.web.reactive.server.expectBody
-import uk.gov.justice.digital.assessments.api.AssessmentEpisodeDto
-import uk.gov.justice.digital.assessments.api.AssessmentSubjectDto
-import uk.gov.justice.digital.assessments.api.ErrorResponse
-import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
-import uk.gov.justice.digital.assessments.jpa.entities.Answer
+import uk.gov.justice.digital.assessments.api.*
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import uk.gov.justice.digital.assessments.utils.RequestData
 import uk.gov.justice.digital.assessments.testutils.Verify
@@ -91,7 +87,7 @@ class AssessmentControllerTest : IntegrationTest() {
     fun `updates episode answers`() {
       val newQuestionUUID = UUID.randomUUID()
       val updateEpisodeDto = UpdateAssessmentEpisodeDto(
-        mapOf(newQuestionUUID to listOf(Answer("new free text")))
+        mapOf(newQuestionUUID to listOf("new free text"))
       )
       val episode = webTestClient.post().uri("/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259")
         .bodyValue(updateEpisodeDto)
@@ -105,7 +101,7 @@ class AssessmentControllerTest : IntegrationTest() {
       assertThat(episode).isNotNull
       assertThat(episode?.answers).containsKey(newQuestionUUID)
 
-      Verify.answers(episode?.answers?.get(newQuestionUUID)!!, "new free text")
+      Verify.singleAnswer(episode?.answers?.get(newQuestionUUID)!!, "new free text")
     }
 
     @Test
@@ -145,7 +141,7 @@ class AssessmentControllerTest : IntegrationTest() {
       assertThat(episode).isNotNull
       assertThat(episode?.answers).containsKey(childQuestion)
 
-      Verify.answers(episode?.answers?.get(childQuestion)!!, answerText)
+      Verify.singleAnswer(episode?.answers?.get(childQuestion)!!, answerText)
     }
 
     @Test
@@ -236,13 +232,15 @@ class AssessmentControllerTest : IntegrationTest() {
       assertThat(episode).isNotNull
       assertThat(episode?.answers).containsKey(questionUUID)
 
-      Verify.answers(episode?.answers?.get(questionUUID)!!, expectedAnswer)
+      Verify.singleAnswer(episode?.answers?.get(questionUUID)!!, expectedAnswer)
     }
 
     @Test
     fun `does not update episode answers if episode is closed`() {
       val newQuestionUUID = UUID.randomUUID()
-      val updateEpisodeDto = UpdateAssessmentEpisodeDto(mapOf(newQuestionUUID to listOf(Answer("new free text"))))
+      val updateEpisodeDto = UpdateAssessmentEpisodeDto(
+        mapOf(newQuestionUUID to listOf("new free text"))
+      )
       webTestClient.post().uri("/assessments/$assessmentUuid/episodes/d7aafe55-0cff-4f20-a57a-b66d79eb9c91")
         .bodyValue(updateEpisodeDto)
         .headers(setAuthorisation())

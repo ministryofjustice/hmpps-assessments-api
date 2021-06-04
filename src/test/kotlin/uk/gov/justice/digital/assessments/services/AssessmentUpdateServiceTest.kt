@@ -8,8 +8,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import uk.gov.justice.digital.assessments.api.AnswerDto
-import uk.gov.justice.digital.assessments.api.AnswersDto
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.jpa.entities.*
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
@@ -99,7 +97,7 @@ class AssessmentUpdateServiceTest {
 
       val newQuestionUuid = UUID.randomUUID()
       val updatedAnswers = UpdateAssessmentEpisodeDto(
-        mapOf(newQuestionUuid to listOf(Answer("trousers")))
+        mapOf(newQuestionUuid to listOf("trousers"))
       )
 
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
@@ -108,10 +106,10 @@ class AssessmentUpdateServiceTest {
       val episodeDto = assessmentUpdateService.updateEpisode(assessmentUuid, episodeUuid, updatedAnswers)
 
       assertThat(episodeDto.answers).hasSize(2)
-      Verify.answers(episodeDto.answers[existingQuestionUuid]!!,
+      Verify.singleAnswer(episodeDto.answers[existingQuestionUuid]!!,
         "free text")
 
-      Verify.answers(episodeDto.answers[newQuestionUuid]!!,
+      Verify.singleAnswer(episodeDto.answers[newQuestionUuid]!!,
         "trousers")
     }
 
@@ -123,7 +121,7 @@ class AssessmentUpdateServiceTest {
       val assessment = assessmentEntity(answers)
 
       val updatedAnswers = UpdateAssessmentEpisodeDto(
-        mapOf(existingQuestionUuid to listOf(Answer("new free text")))
+        mapOf(existingQuestionUuid to listOf("new free text"))
       )
 
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
@@ -132,7 +130,7 @@ class AssessmentUpdateServiceTest {
       val episodeDto = assessmentUpdateService.updateEpisode(assessmentUuid, episodeUuid, updatedAnswers)
 
       assertThat(episodeDto.answers).hasSize(1)
-      Verify.answers(episodeDto.answers[existingQuestionUuid]!!,
+      Verify.singleAnswer(episodeDto.answers[existingQuestionUuid]!!,
         "new free text")
     }
 
@@ -144,7 +142,7 @@ class AssessmentUpdateServiceTest {
       val assessment = assessmentEntity(answers)
 
       val updatedAnswers = UpdateAssessmentEpisodeDto(
-        mapOf(existingQuestionUuid to listOf(Answer("fruit loops"), Answer("custard")))
+        mapOf(existingQuestionUuid to listOf("fruit loops", "custard"))
       )
 
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
@@ -153,7 +151,7 @@ class AssessmentUpdateServiceTest {
       val episodeDto = assessmentUpdateService.updateEpisode(assessmentUuid, episodeUuid, updatedAnswers)
 
       assertThat(episodeDto.answers).hasSize(1)
-      Verify.answers(episodeDto.answers[existingQuestionUuid]!!,
+      Verify.singleAnswer(episodeDto.answers[existingQuestionUuid]!!,
         "fruit loops",
         "custard")
     }
@@ -220,18 +218,18 @@ class AssessmentUpdateServiceTest {
 
       val tableAnswers = UpdateAssessmentEpisodeDto(
         mapOf(
-          childQuestion1 to listOf(Answer("child name")),
-          childQuestion2 to listOf(Answer("child address"))
+          childQuestion1 to listOf("child name"),
+          childQuestion2 to listOf("child address")
         )
       )
 
       val episodeDto = assessmentUpdateService.addEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", tableAnswers)
 
       assertThat(episodeDto.answers).hasSize(5)
-      Verify.answers(episodeDto.answers[childQuestion1]!!,
+      Verify.singleAnswer(episodeDto.answers[childQuestion1]!!,
         "child name")
 
-      Verify.answers(episodeDto.answers[childQuestion2]!!,
+      Verify.singleAnswer(episodeDto.answers[childQuestion2]!!,
         "child address")
     }
 
@@ -246,18 +244,18 @@ class AssessmentUpdateServiceTest {
 
       val tableAnswers = UpdateAssessmentEpisodeDto(
         mapOf(
-          childQuestion1 to listOf(Answer("child name")),
-          childQuestion2 to listOf(Answer("child address"))
+          childQuestion1 to listOf("child name"),
+          childQuestion2 to listOf("child address")
         )
       )
 
       val episodeDto = assessmentUpdateService.addCurrentEpisodeTableRow(assessmentUuid, "children_at_risk", tableAnswers)
 
       assertThat(episodeDto.answers).hasSize(5)
-      Verify.answers(episodeDto.answers[childQuestion1]!!,
+      Verify.multiAnswers(episodeDto.answers[childQuestion1]!!,
         "child name")
 
-      Verify.answers(episodeDto.answers[childQuestion2]!!,
+      Verify.multiAnswers(episodeDto.answers[childQuestion2]!!,
         "child address")
     }
 
@@ -274,19 +272,19 @@ class AssessmentUpdateServiceTest {
 
       val tableAnswers = UpdateAssessmentEpisodeDto(
         mapOf(
-          childQuestion1 to listOf(Answer("child name 2")),
-          childQuestion2 to listOf(Answer("child address 2"))
+          childQuestion1 to listOf("child name 2"),
+          childQuestion2 to listOf("child address 2")
         )
       )
 
       val episodeDto = assessmentUpdateService.addEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", tableAnswers)
 
       assertThat(episodeDto.answers).hasSize(5)
-      Verify.answers(episodeDto.answers[childQuestion1]!!,
+      Verify.multiAnswers(episodeDto.answers[childQuestion1]!!,
         "child name 1",
         "child name 2")
 
-      Verify.answers(episodeDto.answers[childQuestion2]!!,
+      Verify.multiAnswers(episodeDto.answers[childQuestion2]!!,
         "child address 1",
         "child address 2")
     }
@@ -305,18 +303,18 @@ class AssessmentUpdateServiceTest {
 
       val tableAnswers = UpdateAssessmentEpisodeDto(
         mapOf(
-          childQuestion1 to listOf(Answer("child name 2"))
+          childQuestion1 to listOf("child name 2")
         )
       )
 
       val episodeDto = assessmentUpdateService.addEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", tableAnswers)
 
       assertThat(episodeDto.answers).hasSize(5)
-      Verify.answers(episodeDto.answers[childQuestion1]!!,
+      Verify.multiAnswers(episodeDto.answers[childQuestion1]!!,
         "child name 1",
         "child name 2")
 
-      Verify.answers(episodeDto.answers[childQuestion2]!!,
+      Verify.multiAnswers(episodeDto.answers[childQuestion2]!!,
         "child address 1",
         "")
     }
@@ -334,19 +332,19 @@ class AssessmentUpdateServiceTest {
 
       val tableAnswers = UpdateAssessmentEpisodeDto(
         mapOf(
-          childQuestion1 to listOf(Answer("child name 1")),
-          childQuestion2 to listOf(Answer("child address 1"))
+          childQuestion1 to listOf("child name 1"),
+          childQuestion2 to listOf("child address 1")
         )
       )
 
       val episodeDto = assessmentUpdateService.updateEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", 0, tableAnswers)
 
       assertThat(episodeDto.answers).hasSize(5)
-      Verify.answers(episodeDto.answers[childQuestion1]!!,
+      Verify.multiAnswers(episodeDto.answers[childQuestion1]!!,
         "child name 1",
         "child name 2")
 
-      Verify.answers(episodeDto.answers[childQuestion2]!!,
+      Verify.multiAnswers(episodeDto.answers[childQuestion2]!!,
         "child address 1",
         "child address 2")
     }
@@ -364,19 +362,19 @@ class AssessmentUpdateServiceTest {
 
       val tableAnswers = UpdateAssessmentEpisodeDto(
         mapOf(
-          childQuestion1 to listOf(Answer("child name 2")),
-          childQuestion2 to listOf(Answer("child address 2"))
+          childQuestion1 to listOf("child name 2"),
+          childQuestion2 to listOf("child address 2")
         )
       )
 
       val episodeDto = assessmentUpdateService.updateEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", 1, tableAnswers)
 
       assertThat(episodeDto.answers).hasSize(5)
-      Verify.answers(episodeDto.answers[childQuestion1]!!,
+      Verify.multiAnswers(episodeDto.answers[childQuestion1]!!,
         "child name 1",
         "child name 2")
 
-      Verify.answers(episodeDto.answers[childQuestion2]!!,
+      Verify.multiAnswers(episodeDto.answers[childQuestion2]!!,
         "child address 1",
         "child address 2")
     }
@@ -394,20 +392,20 @@ class AssessmentUpdateServiceTest {
 
       val tableAnswers = UpdateAssessmentEpisodeDto(
         mapOf(
-          childQuestion1 to listOf(Answer("child name 2")),
-          childQuestion2 to listOf(Answer("child address 2"))
+          childQuestion1 to listOf("child name 2"),
+          childQuestion2 to listOf("child address 2")
         )
       )
 
       val episodeDto = assessmentUpdateService.updateEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", 1, tableAnswers)
 
       assertThat(episodeDto.answers).hasSize(5)
-      Verify.answers(episodeDto.answers[childQuestion1]!!,
+      Verify.multiAnswers(episodeDto.answers[childQuestion1]!!,
         "child name 1",
         "child name 2",
         "child name 3")
 
-      Verify.answers(episodeDto.answers[childQuestion2]!!,
+      Verify.multiAnswers(episodeDto.answers[childQuestion2]!!,
         "child address 1",
         "child address 2",
         "child address 3")
@@ -427,11 +425,11 @@ class AssessmentUpdateServiceTest {
       val episodeDto = assessmentUpdateService.deleteEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", 0)
 
       assertThat(episodeDto.answers).hasSize(5)
-      Verify.answers(episodeDto.answers[childQuestion1]!!,
+      Verify.multiAnswers(episodeDto.answers[childQuestion1]!!,
         "child name 2",
         "child name 3")
 
-      Verify.answers(episodeDto.answers[childQuestion2]!!,
+      Verify.multiAnswers(episodeDto.answers[childQuestion2]!!,
         "child address 2",
         "child address 3")
     }
@@ -450,11 +448,11 @@ class AssessmentUpdateServiceTest {
       val episodeDto = assessmentUpdateService.deleteEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", 1)
 
       assertThat(episodeDto.answers).hasSize(5)
-      Verify.answers(episodeDto.answers[childQuestion1]!!,
+      Verify.multiAnswers(episodeDto.answers[childQuestion1]!!,
         "child name 1",
         "child name 3")
 
-      Verify.answers(episodeDto.answers[childQuestion2]!!,
+      Verify.multiAnswers(episodeDto.answers[childQuestion2]!!,
         "child address 1",
         "child address 3")
     }
@@ -473,11 +471,11 @@ class AssessmentUpdateServiceTest {
       val episodeDto = assessmentUpdateService.deleteEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", 2)
 
       assertThat(episodeDto.answers).hasSize(5)
-      Verify.answers(episodeDto.answers[childQuestion1]!!,
+      Verify.multiAnswers(episodeDto.answers[childQuestion1]!!,
         "child name 1",
         "child name 2")
 
-      Verify.answers(episodeDto.answers[childQuestion2]!!,
+      Verify.multiAnswers(episodeDto.answers[childQuestion2]!!,
         "child address 1",
         "child address 2")
     }
@@ -496,8 +494,8 @@ class AssessmentUpdateServiceTest {
       val episodeDto = assessmentUpdateService.deleteEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", 0)
 
       assertThat(episodeDto.answers).hasSize(5)
-      Verify.answers(episodeDto.answers[childQuestion1]!!)
-      Verify.answers(episodeDto.answers[childQuestion2]!!)
+      Verify.emptyAnswer(episodeDto.answers[childQuestion1]!!)
+      Verify.emptyAnswer(episodeDto.answers[childQuestion2]!!)
     }
 
     @Test

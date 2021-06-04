@@ -6,14 +6,21 @@ import uk.gov.justice.digital.assessments.api.AnswersDto
 
 class Verify {
   companion object {
-    fun answers(questionAnswer: AnswersDto, vararg expected: String) {
-      val answers = questionAnswer.answers.toList()
-      Assertions.assertThat(answers.size).isEqualTo(expected.size)
-      expected.forEachIndexed { index, s ->
-        val expectedAnswer = AnswerDto(listOf(s))
-        Assertions.assertThat(answers[index]).isEqualTo(expectedAnswer)
-      }
+    fun emptyAnswer(questionAnswer: AnswersDto) {
+      val answers = questionAnswer.answers
+      Assertions.assertThat(answers.size).isEqualTo(0)
     }
-
+    fun singleAnswer(questionAnswer: AnswersDto, vararg expected: String) {
+      val answers = questionAnswer.answers
+      Assertions.assertThat(answers.size).isEqualTo(1)
+      val expectedAnswer = AnswerDto(expected.toList())
+      Assertions.assertThat(answers.first()).isEqualTo(expectedAnswer)
+    }
+    fun multiAnswers(questionAnswer: AnswersDto, vararg expected: String) {
+      val answers = questionAnswer.answers
+      Assertions.assertThat(answers.size).isEqualTo(expected.size)
+      val expectedAnswers = expected.map { AnswerDto(listOf(it)) }
+      Assertions.assertThat(answers).isEqualTo(expectedAnswers)
+    }
   }
 }
