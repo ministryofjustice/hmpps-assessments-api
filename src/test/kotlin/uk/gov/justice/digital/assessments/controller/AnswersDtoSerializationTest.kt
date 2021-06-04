@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.assessments.jpa.entities
+package uk.gov.justice.digital.assessments.controller
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.DeserializationFeature
@@ -12,9 +12,12 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import uk.gov.justice.digital.assessments.api.AnswerDto
+import uk.gov.justice.digital.assessments.api.AnswersDto
+import uk.gov.justice.digital.assessments.jpa.entities.AnswerEntity
 
-@DisplayName("Answer Entity Serialization Tests")
-class AnswerEntitySerializationTest {
+@DisplayName("AnswersDto Serialization Tests")
+class AnswersDtoSerializationTest {
   companion object {
     lateinit var om: ObjectMapper
 
@@ -33,7 +36,7 @@ class AnswerEntitySerializationTest {
     fun readAnswers(jsonText: String): AnswerEntity =
       om.readValue(jsonText, AnswerEntity::class.java)
 
-    fun writeAnswers(ae: AnswerEntity): String =
+    fun writeAnswers(ae: AnswersDto): String =
       om.writeValueAsString(ae)
   }
 
@@ -42,7 +45,7 @@ class AnswerEntitySerializationTest {
   inner class Serialization {
     @Test
     fun `single value answer`() {
-      val ae = AnswerEntity("Fruit")
+      val ae = AnswersDto(listOf(AnswerDto(listOf("Fruit"))))
 
       val asString = writeAnswers(ae)
 
@@ -51,7 +54,7 @@ class AnswerEntitySerializationTest {
 
     @Test
     fun `multi-value answer`() {
-      val ae = AnswerEntity(listOf("Fruit", "Vegetables"))
+      val ae = AnswersDto(listOf(AnswerDto(listOf("Fruit", "Vegetables"))))
 
       val asString = writeAnswers(ae)
 
@@ -60,44 +63,13 @@ class AnswerEntitySerializationTest {
 
     @Test
     fun `compound multi-value answer`() {
-      val ae = AnswerEntity(Answer("Fruit"), Answer("Potatoes", "Carrots", "Onions"))
+      val ae = AnswersDto(listOf(
+        AnswerDto(listOf("Fruit")),
+        AnswerDto(listOf("Potatoes", "Carrots", "Onions"))))
 
       val asString = writeAnswers(ae)
 
       assertThat(asString).isEqualTo("{\"answers\":[\"Fruit\",[\"Potatoes\",\"Carrots\",\"Onions\"]]}")
-    }
-  }
-
-  @Nested
-  @DisplayName("Deserialize")
-  inner class Deserialization {
-    @Test
-    fun `single value array answer`() {
-      val ae = readAnswers("{\"answers\":[\"Fruit\"]}")
-
-      assertThat(ae).isEqualTo(AnswerEntity("Fruit"))
-    }
-
-    @Test
-    fun `single value answer`() {
-      val ae = readAnswers("{\"answers\":\"Fruit\"}")
-
-      assertThat(ae).isEqualTo(AnswerEntity("Fruit"))
-    }
-
-    @Test
-    fun `multi-value answer`() {
-      val ae = readAnswers("{\"answers\":[\"Animal\",\"Vegetable\",\"Mineral\"]}")
-      val expected = AnswerEntity(listOf("Animal","Vegetable","Mineral"))
-      assertThat(ae).isEqualTo(expected)
-    }
-
-    @Test
-    fun `compound multi-value answer`() {
-      val ae = readAnswers("{\"answers\":[\"Fruit\",[\"Potatoes\",\"Carrots\",\"Onions\"]]}")
-      val expected = AnswerEntity(Answer("Fruit"), Answer("Potatoes", "Carrots", "Onions"))
-
-      assertThat(ae).isEqualTo(expected)
     }
   }
 }
