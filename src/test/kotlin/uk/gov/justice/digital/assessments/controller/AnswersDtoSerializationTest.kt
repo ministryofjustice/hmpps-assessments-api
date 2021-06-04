@@ -33,43 +33,84 @@ class AnswersDtoSerializationTest {
         .registerModules(Jdk8Module(), JavaTimeModule(), KotlinModule())
     }
 
-    fun readAnswers(jsonText: String): AnswerEntity =
-      om.readValue(jsonText, AnswerEntity::class.java)
-
     fun writeAnswers(ae: AnswersDto): String =
       om.writeValueAsString(ae)
   }
 
+  @Test
+  fun `single value answer`() {
+    val dto = AnswersDto(listOf(AnswerDto(listOf("Fruit"))))
+
+    assertJsonIs(dto,
+      "{\"answers\":[\"Fruit\"]}")
+  }
+
+  @Test
+  fun `multi-value answer`() {
+    val dto = AnswersDto(listOf(AnswerDto(listOf("Fruit", "Vegetables"))))
+
+    assertJsonIs(dto,
+      "{\"answers\":[\"Fruit\",\"Vegetables\"]}")
+  }
+
   @Nested
-  @DisplayName("Serialize")
-  inner class Serialization {
+  @DisplayName("Supporting table rows - multivalue answer structure is preserved")
+  inner class TableRow {
     @Test
-    fun `single value answer`() {
-      val ae = AnswersDto(listOf(AnswerDto(listOf("Fruit"))))
+    fun `two single value answers`() {
+      val dto = AnswersDto(listOf(
+        AnswerDto(listOf("Fruit")),
+        AnswerDto(listOf("Vegetables"))))
 
-      val asString = writeAnswers(ae)
-
-      assertThat(asString).isEqualTo("{\"answers\":[\"Fruit\"]}")
+      assertJsonIs(dto,
+        "{\"answers\":[[\"Fruit\"],[\"Vegetables\"]]}")
     }
 
     @Test
-    fun `multi-value answer`() {
-      val ae = AnswersDto(listOf(AnswerDto(listOf("Fruit", "Vegetables"))))
-
-      val asString = writeAnswers(ae)
-
-      assertThat(asString).isEqualTo("{\"answers\":[\"Fruit\",\"Vegetables\"]}")
-    }
-
-    @Test
-    fun `compound multi-value answer`() {
-      val ae = AnswersDto(listOf(
+    fun `compound multi-value answer 1`() {
+      val dto = AnswersDto(listOf(
         AnswerDto(listOf("Fruit")),
         AnswerDto(listOf("Potatoes", "Carrots", "Onions"))))
 
-      val asString = writeAnswers(ae)
-
-      assertThat(asString).isEqualTo("{\"answers\":[\"Fruit\",[\"Potatoes\",\"Carrots\",\"Onions\"]]}")
+      assertJsonIs(dto,
+        "{\"answers\":[[\"Fruit\"],[\"Potatoes\",\"Carrots\",\"Onions\"]]}")
     }
+
+    @Test
+    fun `compound multi-value answer 2`() {
+      val dto = AnswersDto(listOf(
+        AnswerDto(listOf("Potatoes", "Carrots", "Onions")),
+        AnswerDto(listOf("Fruit"))))
+
+      assertJsonIs(dto,
+        "{\"answers\":[[\"Potatoes\",\"Carrots\",\"Onions\"],[\"Fruit\"]]}")
+    }
+
+    @Test
+    fun `compound multi-value answer 3`() {
+      val dto = AnswersDto(listOf(
+        AnswerDto(listOf("Bananas")),
+        AnswerDto(listOf("Potatoes", "Carrots", "Onions")),
+        AnswerDto(listOf("Fruit"))))
+
+      assertJsonIs(dto,
+        "{\"answers\":[[\"Bananas\"],[\"Potatoes\",\"Carrots\",\"Onions\"],[\"Fruit\"]]}")
+    }
+
+    @Test
+    fun `compound multi-value answer 4`() {
+      val dto = AnswersDto(listOf(
+        AnswerDto(listOf("Bananas", "Apples")),
+        AnswerDto(listOf("Potatoes", "Carrots", "Onions"))))
+
+      assertJsonIs(dto,
+        "{\"answers\":[[\"Bananas\",\"Apples\"],[\"Potatoes\",\"Carrots\",\"Onions\"]]}")
+    }
+  }
+
+  private fun assertJsonIs(dto: AnswersDto, expected: String) {
+    val jsonString = writeAnswers(dto)
+
+    assertThat(jsonString).isEqualTo(expected)
   }
 }

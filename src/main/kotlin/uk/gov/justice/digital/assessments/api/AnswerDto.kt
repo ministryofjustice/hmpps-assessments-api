@@ -16,13 +16,9 @@ object AnswerDtoSerializer : StdSerializer<AnswerDto>(AnswerDto::class.java) {
       return
 
     with (value.items) {
-      if(size == 1) {
-        gen?.writeString(first())
-      } else {
-        gen?.writeStartArray()
-        forEach { gen?.writeString(it) }
-        gen?.writeEndArray()
-      }
+      gen?.writeStartArray()
+      forEach { gen?.writeString(it) }
+      gen?.writeEndArray()
     }
   }
 }
