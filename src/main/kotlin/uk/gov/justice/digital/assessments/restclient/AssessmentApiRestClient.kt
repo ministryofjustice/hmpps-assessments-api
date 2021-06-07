@@ -15,6 +15,7 @@ import uk.gov.justice.digital.assessments.restclient.assessmentapi.OASysAssessme
 import uk.gov.justice.digital.assessments.restclient.assessmentapi.RefElementDto
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OASysErrorResponse
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiEntityNotFoundException
+import uk.gov.justice.digital.assessments.utils.RequestData
 
 @Component
 class AssessmentApiRestClient {
@@ -54,7 +55,6 @@ class AssessmentApiRestClient {
   fun getFilteredReferenceData(
     oasysSetPk: Long,
     oasysUserCode: String = "STUARTWHITLAM",
-    oasysAreaCode: String = "WWS",
     offenderPk: Long?,
     assessmentType: String,
     sectionCode: String,
@@ -66,7 +66,7 @@ class AssessmentApiRestClient {
       .post(
         path,
         FilteredReferenceDataDto(
-          oasysSetPk, oasysUserCode, oasysAreaCode, offenderPk, assessmentType, sectionCode, fieldName, parentList
+          oasysSetPk, oasysUserCode, RequestData.getAreaCode(), offenderPk, assessmentType, sectionCode, fieldName, parentList
         )
       )
       .retrieve()

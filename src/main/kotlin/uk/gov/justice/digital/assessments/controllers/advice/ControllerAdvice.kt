@@ -19,6 +19,7 @@ import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiInvalid
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiUnknownException
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
+import uk.gov.justice.digital.assessments.utils.RequestData
 import uk.gov.justice.digital.assessments.services.exceptions.UserNotAuthorisedException
 
 @ControllerAdvice
@@ -122,6 +123,13 @@ class ControllerAdvice {
       e.message
     )
     return ResponseEntity(ErrorResponse(status = 401, developerMessage = e.message), HttpStatus.UNAUTHORIZED)
+  }
+
+  @ExceptionHandler(RequestData.Companion.UserAreaHeaderIsMandatoryException::class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  fun handle(e: RequestData.Companion.UserAreaHeaderIsMandatoryException): ResponseEntity<ErrorResponse?> {
+    log.info("UserAreaHeaderIsMandatoryException: {}", e.message)
+    return ResponseEntity(ErrorResponse(status = 400, developerMessage = e.message), HttpStatus.BAD_REQUEST)
   }
 
   @ExceptionHandler(ExternalApiForbiddenException::class)

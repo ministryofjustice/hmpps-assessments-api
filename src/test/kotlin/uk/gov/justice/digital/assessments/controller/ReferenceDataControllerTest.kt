@@ -14,11 +14,19 @@ import uk.gov.justice.digital.assessments.api.ErrorResponse
 import uk.gov.justice.digital.assessments.api.FilteredReferenceDataRequest
 import uk.gov.justice.digital.assessments.restclient.assessmentapi.RefElementDto
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
+import uk.gov.justice.digital.assessments.utils.RequestData
 import java.util.UUID
 
 @SqlGroup(
-  Sql(scripts = ["classpath:filteredReferenceData/before-test.sql"], config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED)),
-  Sql(scripts = ["classpath:filteredReferenceData/after-test.sql"], config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED), executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+  Sql(
+    scripts = ["classpath:filteredReferenceData/before-test.sql"],
+    config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED)
+  ),
+  Sql(
+    scripts = ["classpath:filteredReferenceData/after-test.sql"],
+    config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED),
+    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
+  )
 )
 @AutoConfigureWebTestClient(timeout = "50000")
 class ReferenceDataControllerTest : IntegrationTest() {
@@ -40,6 +48,28 @@ class ReferenceDataControllerTest : IntegrationTest() {
     }
 
     @Test
+    fun `should return bad request when no user area header is set`() {
+      val currentEpisode = fetchCurrentEpisode(validAssessmentUuid.toString())
+      webTestClient.post().uri("/referencedata/filtered")
+        .bodyValue(
+          FilteredReferenceDataRequest(
+            validAssessmentUuid,
+            currentEpisode.episodeUuid!!,
+            validQuestionUuid,
+            mapOf(validParentQuestionUuid to "test")
+          )
+        )
+        .headers(setAuthorisation())
+        .exchange()
+        .expectStatus().isBadRequest
+        .expectBody<ErrorResponse>()
+        .consumeWith {
+          assertThat(it.responseBody?.status).isEqualTo(400)
+          assertThat(it.responseBody?.developerMessage).isEqualTo("Area Code Header is mandatory")
+        }
+    }
+
+    @Test
     fun `returns filtered reference data`() {
       val currentEpisode = fetchCurrentEpisode(validAssessmentUuid.toString())
       val response = webTestClient.post().uri("/referencedata/filtered")
@@ -51,6 +81,7 @@ class ReferenceDataControllerTest : IntegrationTest() {
             mapOf(validParentQuestionUuid to "test")
           )
         )
+        .header(RequestData.USER_AREA_HEADER_NAME, "WWS")
         .headers(setAuthorisation())
         .exchange()
         .expectStatus().isOk
@@ -114,6 +145,7 @@ class ReferenceDataControllerTest : IntegrationTest() {
             mapOf(validParentQuestionUuid to "test")
           )
         )
+        .header(RequestData.USER_AREA_HEADER_NAME, "WWS")
         .headers(setAuthorisation())
         .exchange()
         .expectStatus().isNotFound
@@ -135,6 +167,7 @@ class ReferenceDataControllerTest : IntegrationTest() {
             mapOf(validParentQuestionUuid to "test")
           )
         )
+        .header(RequestData.USER_AREA_HEADER_NAME, "WWS")
         .headers(setAuthorisation())
         .exchange()
         .expectStatus().isUnauthorized
@@ -156,6 +189,7 @@ class ReferenceDataControllerTest : IntegrationTest() {
             mapOf(validParentQuestionUuid to "test")
           )
         )
+        .header(RequestData.USER_AREA_HEADER_NAME, "WWS")
         .headers(setAuthorisation())
         .exchange()
         .expectStatus().isBadRequest
@@ -177,6 +211,7 @@ class ReferenceDataControllerTest : IntegrationTest() {
             mapOf(validParentQuestionUuid to "test")
           )
         )
+        .header(RequestData.USER_AREA_HEADER_NAME, "WWS")
         .headers(setAuthorisation())
         .exchange()
         .expectStatus().is5xxServerError

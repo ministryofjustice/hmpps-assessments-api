@@ -69,7 +69,14 @@ class AssessmentUpdateServiceOASysTest {
 
   @Test
   fun `map Oasys answer from free text answer`() {
-    val mapping = OASysMappingEntity(sectionCode = "1", questionCode = "R1.3", logicalPage = 1, fixed_field = false, mappingId = 1, questionSchema = QuestionSchemaEntity(questionSchemaId = 1))
+    val mapping = OASysMappingEntity(
+      sectionCode = "1",
+      questionCode = "R1.3",
+      logicalPage = 1,
+      fixed_field = false,
+      mappingId = 1,
+      questionSchema = QuestionSchemaEntity(questionSchemaId = 1)
+    )
 
     val result = OasysAnswers.mapOasysAnswers(mapping, listOf("Free Text"), "radios")[0]
 
@@ -82,7 +89,14 @@ class AssessmentUpdateServiceOASysTest {
 
   @Test
   fun `map Oasys answer with correct date format`() {
-    val mapping = OASysMappingEntity(sectionCode = "1", questionCode = "R1.3", logicalPage = 1, fixed_field = false, mappingId = 1, questionSchema = QuestionSchemaEntity(questionSchemaId = 1))
+    val mapping = OASysMappingEntity(
+      sectionCode = "1",
+      questionCode = "R1.3",
+      logicalPage = 1,
+      fixed_field = false,
+      mappingId = 1,
+      questionSchema = QuestionSchemaEntity(questionSchemaId = 1)
+    )
 
     val result = OasysAnswers.mapOasysAnswers(mapping, listOf("1975-01-20T00:00:00.000Z"), "date")[0]
 
@@ -133,8 +147,10 @@ class AssessmentUpdateServiceOASysTest {
     private val childQuestion1 = UUID.randomUUID()
     private val childQuestion2 = UUID.randomUUID()
 
-    private val childNameQuestion = makeQuestion(10, childQuestion1, "Name", "freetext", null, "children", null, "childname")
-    private val childAddressQuestion = makeQuestion(11, childQuestion2, "Address", "freetext", null, "children", null, "childaddress")
+    private val childNameQuestion =
+      makeQuestion(10, childQuestion1, "Name", "freetext", null, "children", null, "childname")
+    private val childAddressQuestion =
+      makeQuestion(11, childQuestion2, "Address", "freetext", null, "children", null, "childaddress")
 
     val allQuestions = QuestionSchemaEntities(
       listOf(
@@ -215,7 +231,14 @@ class AssessmentUpdateServiceOASysTest {
   @Test
   fun `update OASys if OASysSet stored against episode`() {
     every { questionService.getAllQuestions() } returns setupQuestionCodes()
-    every { assessmentUpdateRestClient.updateAssessment(oasysOffenderPk, oasysSetPk, assessmentType, any()) } returns UpdateAssessmentAnswersResponseDto()
+    every {
+      assessmentUpdateRestClient.updateAssessment(
+        oasysOffenderPk,
+        oasysSetPk,
+        assessmentType,
+        any()
+      )
+    } returns UpdateAssessmentAnswersResponseDto()
     every { questionService.getAllSectionQuestionsForQuestions(any()) } returns QuestionSchemaEntities(questionsList = emptyList())
 
     val update = UpdateAssessmentEpisodeDto(
@@ -232,7 +255,14 @@ class AssessmentUpdateServiceOASysTest {
   @Test
   fun `don't update OASys if no OASysSet stored against episode`() {
     every { questionService.getAllQuestions() } returns setupQuestionCodes()
-    every { assessmentUpdateRestClient.updateAssessment(oasysOffenderPk, oasysSetPk, assessmentType, any()) } returns UpdateAssessmentAnswersResponseDto()
+    every {
+      assessmentUpdateRestClient.updateAssessment(
+        oasysOffenderPk,
+        oasysSetPk,
+        assessmentType,
+        any()
+      )
+    } returns UpdateAssessmentAnswersResponseDto()
 
     val episode = AssessmentEpisodeEntity(
       oasysSetPk = oasysSetPk
@@ -282,7 +312,7 @@ class AssessmentUpdateServiceOASysTest {
         )
       )
     )
-    every { assessmentUpdateRestClient.updateAssessment(any(), any(), any(), any(), any(), any()) } returns oasysError
+    every { assessmentUpdateRestClient.updateAssessment(any(), any(), any(), any(), any()) } returns oasysError
     // Christ, what a lot of set up
 
     // Apply the update
@@ -340,9 +370,12 @@ class AssessmentUpdateServiceOASysTest {
   private fun setupQuestionCodes(): QuestionSchemaEntities {
     val dummy = AnswerSchemaGroupEntity(answerSchemaId = 99)
 
-    val yes = AnswerSchemaEntity(answerSchemaId = 1, answerSchemaUuid = answer1Uuid, value = "YES", answerSchemaGroup = dummy)
-    val maybe = AnswerSchemaEntity(answerSchemaId = 2, answerSchemaUuid = answer2Uuid, value = "MAYBE", answerSchemaGroup = dummy)
-    val no = AnswerSchemaEntity(answerSchemaId = 3, answerSchemaUuid = answer3Uuid, value = "NO", answerSchemaGroup = dummy)
+    val yes =
+      AnswerSchemaEntity(answerSchemaId = 1, answerSchemaUuid = answer1Uuid, value = "YES", answerSchemaGroup = dummy)
+    val maybe =
+      AnswerSchemaEntity(answerSchemaId = 2, answerSchemaUuid = answer2Uuid, value = "MAYBE", answerSchemaGroup = dummy)
+    val no =
+      AnswerSchemaEntity(answerSchemaId = 3, answerSchemaUuid = answer3Uuid, value = "NO", answerSchemaGroup = dummy)
 
     val group1 = AnswerSchemaGroupEntity(answerSchemaId = 1, answerSchemaEntities = listOf(yes))
     val group2 = AnswerSchemaGroupEntity(answerSchemaId = 2, answerSchemaEntities = listOf(maybe, no))
