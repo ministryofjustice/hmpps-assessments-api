@@ -35,6 +35,7 @@ class JwtAuthHelper {
   ): String {
     val claims = HashMap<String, Any>()
     claims["user_name"] = subject
+    claims["user_id"] = "1"
     claims["client_id"] = "offender-assessment-api"
     if (!roles.isNullOrEmpty()) claims["authorities"] = roles
     if (!scope.isNullOrEmpty()) claims["scope"] = scope
