@@ -7,14 +7,15 @@ orbs:
 jobs:
   validate:
     executor: hmpps/java
-    docker:
-      - image: circleci/redis:buster
     steps:
       - checkout
       - restore_cache:
           keys:
             - gradle-{{ checksum "build.gradle.kts" }}
             - gradle-
+      - run:
+          command: docker run -p6379:6379 --env ALLOW_EMPTY_PASSWORD=yes redis
+          background: true
       - run:
           command: ./gradlew test
       - save_cache:
