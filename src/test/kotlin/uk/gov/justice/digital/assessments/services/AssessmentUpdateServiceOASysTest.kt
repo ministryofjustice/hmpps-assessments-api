@@ -312,7 +312,7 @@ class AssessmentUpdateServiceOASysTest {
         )
       )
     )
-    every { assessmentUpdateRestClient.updateAssessment(any(), any(), any(), any(), any()) } returns oasysError
+    every { assessmentUpdateRestClient.updateAssessment(any(), any(), any(), any()) } returns oasysError
     // Christ, what a lot of set up
 
     // Apply the update

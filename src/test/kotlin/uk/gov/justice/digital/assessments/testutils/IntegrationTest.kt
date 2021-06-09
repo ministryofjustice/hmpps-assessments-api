@@ -1,10 +1,12 @@
 package uk.gov.justice.digital.assessments.testutils
 
 import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.http.HttpHeaders
 import org.springframework.security.authentication.TestingAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
@@ -12,6 +14,7 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.WebTestClient
 import uk.gov.justice.digital.assessments.HmppsAssessmentApiApplication
 import uk.gov.justice.digital.assessments.JwtAuthHelper
+import uk.gov.justice.digital.assessments.redis.entities.UserDetails
 import uk.gov.justice.digital.assessments.utils.RequestData
 import java.time.Duration
 
@@ -25,6 +28,9 @@ abstract class IntegrationTest {
 
   @Autowired
   internal lateinit var webTestClient: WebTestClient
+
+  @Autowired
+  internal lateinit var redisTemplate: RedisTemplate<String, UserDetails>
 
   @Autowired
   internal lateinit var jwtHelper: JwtAuthHelper
@@ -62,6 +68,7 @@ abstract class IntegrationTest {
 
   @BeforeEach
   fun resetStubs() {
+    redisTemplate?.opsForValue()?.set("user:1", UserDetails("STUARTWHITLAM"))
     courtCaseMockServer.resetAll()
     courtCaseMockServer.stubCourtCase()
     assessmentUpdateMockServer.stubCreateOffender()
@@ -69,6 +76,11 @@ abstract class IntegrationTest {
     communityApiMockServer.stubGetOffender()
     communityApiMockServer.stubGetConvictions()
     assessmentApiMockServer.stubGetAssessment()
+  }
+
+  @AfterEach
+  fun resetRedis() {
+    redisTemplate?.delete(redisTemplate?.keys("*"))
   }
 
   internal fun setAuthorisation(

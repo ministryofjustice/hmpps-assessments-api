@@ -11,6 +11,7 @@ import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiEntityN
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiInvalidRequestException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiUnknownException
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
+import uk.gov.justice.digital.assessments.utils.RequestData
 import uk.gov.justice.digital.assessments.utils.RequestData.Companion.USER_AREA_HEADER
 
 class AssessmentApiTest : IntegrationTest() {
@@ -22,6 +23,7 @@ class AssessmentApiTest : IntegrationTest() {
   @BeforeEach
   fun setup() {
     MDC.put(USER_AREA_HEADER, "WWS")
+    MDC.put(RequestData.USER_ID_HEADER, "1")
   }
 
   @Test
@@ -64,7 +66,6 @@ class AssessmentApiTest : IntegrationTest() {
     val returnedReferenceData =
       assessmentApiRestClient.getFilteredReferenceData(
         1,
-        "TEST_USER",
         123456,
         "SHORT_FORM_PSR",
         "RSR",
@@ -79,7 +80,6 @@ class AssessmentApiTest : IntegrationTest() {
     Assertions.assertThatThrownBy {
       assessmentApiRestClient.getFilteredReferenceData(
         2,
-        "TEST_USER",
         123456,
         "SHORT_FORM_PSR",
         "RSR",
@@ -94,7 +94,6 @@ class AssessmentApiTest : IntegrationTest() {
     Assertions.assertThatThrownBy {
       assessmentApiRestClient.getFilteredReferenceData(
         3,
-        "TEST_USER",
         123456,
         "SHORT_FORM_PSR",
         "RSR",
@@ -109,7 +108,6 @@ class AssessmentApiTest : IntegrationTest() {
     Assertions.assertThatThrownBy {
       assessmentApiRestClient.getFilteredReferenceData(
         4,
-        "TEST_USER",
         123456,
         "SHORT_FORM_PSR",
         "RSR",
@@ -124,7 +122,6 @@ class AssessmentApiTest : IntegrationTest() {
     Assertions.assertThatThrownBy {
       assessmentApiRestClient.getFilteredReferenceData(
         5,
-        "TEST_USER",
         123456,
         "SHORT_FORM_PSR",
         "RSR",

@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory
 import org.slf4j.MDC
 import org.springframework.web.servlet.HandlerInterceptor
 import uk.gov.justice.digital.assessments.config.AuthAwareAuthenticationToken
+import uk.gov.justice.digital.assessments.services.exceptions.UserAreaHeaderIsMandatoryException
+import uk.gov.justice.digital.assessments.services.exceptions.UserIdIsMandatoryException
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -80,6 +82,9 @@ class RequestData(excludeUris: String?) : HandlerInterceptor {
     fun getAreaCode(): String {
       return MDC.get(USER_AREA_HEADER) ?: throw UserAreaHeaderIsMandatoryException("Area Code Header is mandatory")
     }
-    class UserAreaHeaderIsMandatoryException(msg: String?) : RuntimeException(msg)
+
+    fun getUserId(): String {
+      return MDC.get(USER_ID_HEADER) ?: throw UserIdIsMandatoryException("User Id is mandatory to access this method")
+    }
   }
 }

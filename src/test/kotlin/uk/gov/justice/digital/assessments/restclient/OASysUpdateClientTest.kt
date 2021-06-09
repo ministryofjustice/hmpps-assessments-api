@@ -35,6 +35,7 @@ class OASysUpdateClientTest : IntegrationTest() {
   @BeforeEach
   fun setup() {
     MDC.put(RequestData.USER_AREA_HEADER, "WWS")
+    MDC.put(RequestData.USER_ID_HEADER, "1")
   }
 
   @Test
