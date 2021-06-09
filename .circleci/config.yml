@@ -7,6 +7,8 @@ orbs:
 jobs:
   validate:
     executor: hmpps/java
+    docker:
+      - image: circleci/redis:buster
     steps:
       - checkout
       - restore_cache:
