@@ -18,7 +18,6 @@ class PingControllerTest : IntegrationTest() {
   @Test
   fun `ping integration`() {
     webTestClient.get().uri("ping")
-      .headers(setAuthorisation(roles = listOf("ROLE_OASYS_READ_ONLY")))
       .exchange()
       .expectStatus().isOk
       .expectBody<String>()

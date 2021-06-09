@@ -4,6 +4,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.slf4j.MDC
 import org.springframework.web.servlet.HandlerInterceptor
+import uk.gov.justice.digital.assessments.config.AuthAwareAuthenticationToken
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -19,6 +20,7 @@ class RequestData(excludeUris: String?) : HandlerInterceptor {
   override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
     request.setAttribute("startTime", LocalDateTime.now().toString())
     MDC.clear()
+    MDC.put(USER_NAME_HEADER, initialiseUserName(request))
     MDC.put(USER_ID_HEADER, initialiseUserId(request))
     MDC.put(USER_AREA_HEADER, request.getHeader(USER_AREA_HEADER_NAME))
 
@@ -31,7 +33,12 @@ class RequestData(excludeUris: String?) : HandlerInterceptor {
     return true
   }
 
-  override fun afterCompletion(request: HttpServletRequest, response: HttpServletResponse, handler: Any, ex: Exception?) {
+  override fun afterCompletion(
+    request: HttpServletRequest,
+    response: HttpServletResponse,
+    handler: Any,
+    ex: Exception?
+  ) {
 
     val status = response.status
     val start = LocalDateTime.parse(
@@ -48,8 +55,14 @@ class RequestData(excludeUris: String?) : HandlerInterceptor {
     MDC.clear()
   }
 
+  private fun initialiseUserName(request: HttpServletRequest): String? {
+    val userName: String? = if (request.userPrincipal != null) request.userPrincipal.name else null
+    return if (userName.isNullOrEmpty()) null else userName
+  }
+
   private fun initialiseUserId(request: HttpServletRequest): String? {
-    val userId: String? = if (request.userPrincipal != null) request.userPrincipal.name else null
+    val userId: String? =
+      if (request.userPrincipal != null) (request.userPrincipal as AuthAwareAuthenticationToken).principal.userId else null
     return if (userId.isNullOrEmpty()) null else userId
   }
 
@@ -58,6 +71,7 @@ class RequestData(excludeUris: String?) : HandlerInterceptor {
     const val SKIP_LOGGING = "skipLogging"
     const val REQUEST_DURATION = "duration"
     const val RESPONSE_STATUS = "status"
+    const val USER_NAME_HEADER = "userName"
     const val USER_ID_HEADER = "userId"
     const val USER_AREA_HEADER = "userArea"
     const val USER_AREA_HEADER_NAME = "x-user-area"
