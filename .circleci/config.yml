@@ -34,6 +34,7 @@ workflows:
   version: 2
   build-test-and-deploy:
     jobs:
+      - build:
       - validate:
           filters:
             tags:
