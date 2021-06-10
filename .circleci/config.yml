@@ -8,9 +8,9 @@ jobs:
   build:
     docker:
       - image: circleci/redis:latest
-          environment:
-            REDIS_HOST: redis
-            REDIS_PORT: 6379
+        environment:
+          REDIS_HOST: redis
+          REDIS_PORT: 6379
     steps:
       - checkout
       - restore_cache:
