@@ -11,6 +11,8 @@ jobs:
         environment:
           REDIS_HOST: redis
           REDIS_PORT: 6379
+  validate:
+    executor: hmpps/java
     steps:
       - checkout
       - restore_cache:
@@ -53,6 +55,7 @@ workflows:
               only:
                 - main
           requires:
+            - build
             - validate
             - helm_lint
             - build_docker
