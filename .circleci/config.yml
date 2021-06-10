@@ -4,9 +4,20 @@ orbs:
   owasp: entur/owasp@0.0.10
   hmpps: ministryofjustice/hmpps@3.0.0
 
+executors:
+  java:
+    docker:
+      - image: circleci/openjdk:11-jdk
+        environment:
+          _JAVA_OPTIONS: -Xmx256m -XX:ParallelGCThreads=2 -XX:ConcGCThreads=2 -XX:ParallelGCThreads=2 -Djava.util.concurrent.ForkJoinPool.common.parallelism=2 -Dorg.gradle.daemon=false -Dorg.gradle.jvmargs=-XX:+UseContainerSupport
+      - image: circleci/redis:latest
+        environment:
+          ALLOW_EMPTY_PASSWORD=yes
+    working_directory: ~/app
+
 jobs:
   validate:
-    executor: hmpps/java
+    executor: java
     steps:
       - checkout
       - restore_cache:
