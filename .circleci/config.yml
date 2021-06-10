@@ -5,7 +5,7 @@ orbs:
   hmpps: ministryofjustice/hmpps@3.0.0
 
 jobs:
-  buid:
+  build:
     docker:
       - image: circleci/redis::6.2.3-alpine
   validate:
