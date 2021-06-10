@@ -5,11 +5,10 @@ orbs:
   hmpps: ministryofjustice/hmpps@3.0.0
 
 jobs:
-  build:
-    docker:
-      - image: circleci/redis::6.2.3-alpine
   validate:
     executor: hmpps/java
+    docker:
+      - image: circleci/redis::6.2.3-alpine
     steps:
       - checkout
       - restore_cache:
