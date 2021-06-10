@@ -7,10 +7,13 @@ orbs:
 jobs:
   validate:
     executor: hmpps/java
+    working_directory: ~/app
     docker:
-      - image: circleci/redis::6.2.3-alpine
+      - image: circleci/redis:buster
     steps:
       - checkout
+      - attach_workspace:
+          at: ~/app
       - restore_cache:
           keys:
             - gradle-{{ checksum "build.gradle.kts" }}
