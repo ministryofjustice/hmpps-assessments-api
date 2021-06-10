@@ -54,6 +54,14 @@ spring:
     properties:
       hibernate:
         show_sql: false
+  redis:
+    host: localhost
+    port: 6379
+    password:
+    ssl: false
+    cache:
+      timeout-days: 30
+    client-name: hmpps-assessments-api
 
 server:
   port: 8080
