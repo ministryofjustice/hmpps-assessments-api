@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.ClientResponse
 import reactor.core.publisher.Mono
+import uk.gov.justice.digital.assessments.redis.UserDetailsRedisRepository
 import uk.gov.justice.digital.assessments.restclient.assessmentapi.FilteredReferenceDataDto
 import uk.gov.justice.digital.assessments.restclient.assessmentapi.OASysAssessmentDto
 import uk.gov.justice.digital.assessments.restclient.assessmentapi.RefElementDto
@@ -22,6 +23,9 @@ class AssessmentApiRestClient {
   @Autowired
   @Qualifier("assessmentApiWebClient")
   internal lateinit var webClient: AuthenticatingRestClient
+
+  @Autowired
+  internal lateinit var userDetailsRedisRepository: UserDetailsRedisRepository
 
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
@@ -54,13 +58,13 @@ class AssessmentApiRestClient {
 
   fun getFilteredReferenceData(
     oasysSetPk: Long,
-    oasysUserCode: String = "STUARTWHITLAM",
     offenderPk: Long?,
     assessmentType: String,
     sectionCode: String,
     fieldName: String,
     parentList: Map<String, String>?
   ): Map<String, Collection<RefElementDto>>? {
+    val oasysUserCode = userDetailsRedisRepository.findByUserId(RequestData.getUserId()).oasysUserCode
     val path = "/referencedata/filtered"
     return webClient
       .post(

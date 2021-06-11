@@ -25,6 +25,8 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-webflux")
   implementation("org.springframework.boot:spring-boot-starter-cache")
   implementation("org.springframework.security:spring-security-oauth2-client")
+  implementation("org.springframework.data:spring-data-redis:2.5.1")
+  implementation("redis.clients:jedis:3.6.0")
   implementation("org.jetbrains.kotlin:kotlin-reflect")
   implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
   implementation("javax.xml.bind:jaxb-api:2.4.0-b180830.0359")

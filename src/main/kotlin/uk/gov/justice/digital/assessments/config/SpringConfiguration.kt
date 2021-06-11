@@ -8,11 +8,19 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.cache.annotation.EnableCaching
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration
+import org.springframework.data.redis.connection.jedis.JedisClientConfiguration
+import org.springframework.data.redis.connection.jedis.JedisConnectionFactory
+import org.springframework.data.redis.core.RedisTemplate
+import org.springframework.data.redis.serializer.GenericToStringSerializer
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
+import uk.gov.justice.digital.assessments.redis.entities.UserDetails
 import uk.gov.justice.digital.assessments.utils.RequestData
 
 @Configuration
@@ -20,6 +28,21 @@ class SpringConfiguration : WebMvcConfigurer {
 
   @Value("\${logging.uris.exclude.regex}")
   private val excludedLogUrls: String? = null
+
+  @Value("\${spring.redis.host}")
+  private val server: String = ""
+
+  @Value("\${spring.redis.port}")
+  private val port: Int = 6379
+
+  @Value("\${spring.redis.password}")
+  private val password: String = ""
+
+  @Value("\${spring.redis.ssl}")
+  private val ssl: Boolean = false
+
+  @Value("\${spring.redis.client-name}")
+  private val clientName: String = ""
 
   @Bean(name = ["globalObjectMapper"])
   @Primary
@@ -36,6 +59,31 @@ class SpringConfiguration : WebMvcConfigurer {
   @Bean
   fun createRequestData(): RequestData {
     return RequestData(excludedLogUrls)
+  }
+
+  @Bean
+  fun redisConnectionFactory(): JedisConnectionFactory {
+    val redisStandaloneConfiguration = RedisStandaloneConfiguration(server, port)
+    redisStandaloneConfiguration.setPassword(password);
+
+    val jedisClientConfigurationBuilder = JedisClientConfiguration.builder();
+    if (ssl) {
+      jedisClientConfigurationBuilder.useSsl()
+    }
+    jedisClientConfigurationBuilder.usePooling()
+    jedisClientConfigurationBuilder.clientName(clientName)
+    return JedisConnectionFactory(redisStandaloneConfiguration, jedisClientConfigurationBuilder.build())
+  }
+
+  @Bean
+  fun redisTemplate(): RedisTemplate<String, UserDetails>? {
+    val template = RedisTemplate<String, UserDetails>()
+    template.connectionFactory = redisConnectionFactory()
+    template.keySerializer = GenericToStringSerializer(String::class.java)
+    val jackson2JsonRedisSerializer = Jackson2JsonRedisSerializer(UserDetails::class.java)
+    jackson2JsonRedisSerializer.setObjectMapper(objectMapper())
+    template.valueSerializer = jackson2JsonRedisSerializer
+    return template
   }
 
   override fun addInterceptors(registry: InterceptorRegistry) {

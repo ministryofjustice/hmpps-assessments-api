@@ -1,14 +1,14 @@
 version: "3"
 services:
   oauth:
-    image: quay.io/hmpps/nomis-oauth2-server:latest
+    image: quay.io/hmpps/hmpps-auth:latest
     networks:
       - hmpps
     container_name: oauth
     ports:
       - "9090:9090"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9090/auth/health"]
+      test: [ "CMD", "curl", "-f", "http://localhost:9090/auth/health" ]
     environment:
       - SERVER_PORT=9090
       - SPRING_PROFILES_ACTIVE=dev
@@ -25,6 +25,13 @@ services:
       POSTGRES_PASSWORD: dev
     tmpfs:
       - /var/lib/postgresql
+
+  redis:
+    image: "redis:6.2.3-alpine"
+    networks:
+      - hmpps
+    ports:
+      - "6379:6379"
 
   wiremock:
     image: rodolpheche/wiremock
