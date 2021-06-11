@@ -2,7 +2,6 @@ package uk.gov.justice.digital.assessments.services.dto
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import uk.gov.justice.digital.assessments.jpa.entities.Answer
 import uk.gov.justice.digital.assessments.jpa.entities.AnswerEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.OASysMappingEntity
@@ -107,15 +106,15 @@ data class OasysAnswers(
     private fun buildOasysAnswers(
       questions: QuestionSchemaEntities,
       answers: Map<UUID, AnswerEntity>,
-      builder: (OASysMappingEntity, Collection<Answer>, String?) -> List<OasysAnswer>
+      builder: (OASysMappingEntity, Collection<String>, String?) -> List<OasysAnswer>
     ): OasysAnswers {
       val oasysAnswers = OasysAnswers()
-      answers.forEach { uuid, answerEntity ->
-        val question = questions[uuid]
+      answers.forEach { tableAnswer ->
+        val question = questions[tableAnswer.key]
         // TODO: If we want to handle multiple mappings per question we will need to add assessment type to the mapping
         question?.oasysMappings?.firstOrNull()?.let { oasysMapping ->
           oasysAnswers.addAll(
-            builder(oasysMapping, answerEntity.answers, question.answerType)
+            builder(oasysMapping, tableAnswer.value.answers, question.answerType)
           )
         }
       }
@@ -124,26 +123,22 @@ data class OasysAnswers(
 
     fun mapOasysAnswers(
       oasysMapping: OASysMappingEntity,
-      answers: Collection<Answer>,
+      answers: Collection<String>,
       answerType: String?
     ): List<OasysAnswer> {
-      return answers.map { answer ->
-        answer.items.map { item ->
-          makeOasysAnswer(item, oasysMapping, answerType)
-        }
-      }.flatten()
+      return answers.map {
+        makeOasysAnswer(it, oasysMapping, answerType)
+      }.toList()
     }
 
     private fun mapOasysTableAnswers(
       oasysMapping: OASysMappingEntity,
-      answers: Collection<Answer>,
+      answers: Collection<String>,
       answerType: String?
     ): List<OasysAnswer> {
-      return answers.mapIndexed { index, answer ->
-        answer.items.map { item ->
-          makeOasysAnswer(item, oasysMapping, answerType, index.toLong())
-        }
-      }.flatten()
+      return answers.mapIndexed { index, value ->
+        makeOasysAnswer(value, oasysMapping, answerType, index.toLong())
+      }.toList()
     }
 
     private fun makeOasysAnswer(

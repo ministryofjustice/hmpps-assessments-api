@@ -10,10 +10,12 @@ import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.context.jdbc.SqlConfig
 import org.springframework.test.context.jdbc.SqlGroup
 import org.springframework.test.web.reactive.server.expectBody
-import uk.gov.justice.digital.assessments.api.*
+import uk.gov.justice.digital.assessments.api.AssessmentEpisodeDto
+import uk.gov.justice.digital.assessments.api.AssessmentSubjectDto
+import uk.gov.justice.digital.assessments.api.ErrorResponse
+import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import uk.gov.justice.digital.assessments.utils.RequestData
-import uk.gov.justice.digital.assessments.testutils.Verify
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -101,7 +103,9 @@ class AssessmentControllerTest : IntegrationTest() {
       assertThat(episode).isNotNull
       assertThat(episode?.answers).containsKey(newQuestionUUID)
 
-      Verify.singleAnswer(episode?.answers?.get(newQuestionUUID)!!, "new free text")
+      val answer = episode?.answers?.get(newQuestionUUID)!!
+      assertThat(answer.size).isEqualTo(1)
+      assertThat(answer.first()).isEqualTo("new free text")
     }
 
     @Test
@@ -110,7 +114,7 @@ class AssessmentControllerTest : IntegrationTest() {
       val answerText = "one day I'll fly away"
       val jsonString = "{\"answers\":{\"${newQuestionUUID}\":[\"${answerText}\"]}}"
 
-      updateEpisodeFromJson(newQuestionUUID, answerText, jsonString)
+      updateFromJSON(newQuestionUUID, answerText, jsonString)
     }
 
     @Test
@@ -119,275 +123,11 @@ class AssessmentControllerTest : IntegrationTest() {
       val answerText = "one day I'll fly away"
       val jsonString = "{\"answers\":{\"${newQuestionUUID}\":\"${answerText}\"}}"
 
-      updateEpisodeFromJson(newQuestionUUID, answerText, jsonString)
+      updateFromJSON(newQuestionUUID, answerText, jsonString)
     }
 
-    @Test
-    fun `add episode table row from JSON`() {
-      val childQuestion = UUID.fromString("23c3e984-54c7-480f-b06c-7d000e2fb87c")
-      val answerText = "child answer"
-      val jsonString = "{\"answers\":{\"${childQuestion}\":\"${answerText}\"}}"
-
-      val episode = addTableRowFromJson(childQuestion, jsonString)
-
-      Verify.singleAnswer(episode.answers.get(childQuestion)!!, answerText)
-    }
-
-    @Test
-    fun `add episode table row from JSON, single value array`() {
-      val childQuestion = UUID.fromString("23c3e984-54c7-480f-b06c-7d000e2fb87c")
-      val answerText = "child answer"
-      val jsonString = "{\"answers\":{\"${childQuestion}\":[\"${answerText}\"]}}"
-
-      val episode = addTableRowFromJson(childQuestion, jsonString)
-
-      assertThat(episode).isNotNull
-      assertThat(episode.answers).containsKey(childQuestion)
-
-      Verify.singleAnswer(episode.answers.get(childQuestion)!!, answerText)
-    }
-
-    @Test
-    fun `add episode table row with multivalue from JSON`() {
-      val childQuestion = UUID.fromString("23c3e984-54c7-480f-b06c-7d000e2fb87c")
-      val firstAnswer = "answer1"
-      val secondAnswer = "answer2"
-      val jsonString = "{\"answers\":{\"${childQuestion}\":[\"${firstAnswer}\",\"${secondAnswer}\"]}}"
-
-      val episode = addTableRowFromJson(childQuestion, jsonString)
-
-      // This looks wrong, but is down to an asymmetry in the way AnswersDto
-      // serialises to Json and back. In practice, we only deserialise in tests,
-      // so this shouldn't be problem
-      val answer = episode.answers.get(childQuestion)!!.answers
-      assertThat(answer.size).isEqualTo(2)
-      assertThat(answer.first().items).isEqualTo(listOf(firstAnswer))
-      assertThat(answer.last().items).isEqualTo(listOf(secondAnswer))
-    }
-
-    @Test
-    fun `add several table rows from JSON`() {
-      val childQuestion = UUID.fromString("23c3e984-54c7-480f-b06c-7d000e2fb87c")
-      val firstAnswer = "row1-answer1"
-      val secondAnswer = "row1-answer2"
-      val row1 = "{\"answers\":{\"${childQuestion}\":[\"${firstAnswer}\",\"${secondAnswer}\"]}}"
-
-      val thirdAnswer = "row2-answer1"
-      val forthAnswer = "row2-answer2"
-      val row2 = "{\"answers\":{\"${childQuestion}\":[\"${thirdAnswer}\",\"${forthAnswer}\"]}}"
-
-      val fifthAnswer = "row3-answer1"
-      val sixthAnswer = "row3-answer2"
-      val row3 = "{\"answers\":{\"${childQuestion}\":[\"${fifthAnswer}\",\"${sixthAnswer}\"]}}"
-
-      addTableRowFromJson(childQuestion, row1)
-      addTableRowFromJson(childQuestion, row2)
-      val episode = addTableRowFromJson(childQuestion, row3)
-
-      val answers = episode.answers.get(childQuestion)!!.answers.toList()
-      assertThat(answers.size).isEqualTo(3)
-
-      val row1Values = answers[0].items
-      assertThat(row1Values).hasSize(2)
-      assertThat(row1Values.first()).isEqualTo(firstAnswer)
-      assertThat(row1Values.last()).isEqualTo(secondAnswer)
-
-      val row2Values = answers[1].items
-      assertThat(row2Values).hasSize(2)
-      assertThat(row2Values.first()).isEqualTo(thirdAnswer)
-      assertThat(row2Values.last()).isEqualTo(forthAnswer)
-
-      val row3Values = answers[2].items
-      assertThat(row3Values).hasSize(2)
-      assertThat(row3Values.first()).isEqualTo(fifthAnswer)
-      assertThat(row3Values.last()).isEqualTo(sixthAnswer)
-    }
-
-
-    @Test
-    fun `update episode table row from JSON`() {
-      val childQuestion = UUID.fromString("23c3e984-54c7-480f-b06c-7d000e2fb87c")
-      val firstAnswer = "row1-answer1"
-      val secondAnswer = "row1-answer2"
-      val row1 = "{\"answers\":{\"${childQuestion}\":[\"${firstAnswer}\",\"${secondAnswer}\"]}}"
-
-      val thirdAnswer = "row2-answer1"
-      val forthAnswer = "row2-answer2"
-      val row2 = "{\"answers\":{\"${childQuestion}\":[\"${thirdAnswer}\",\"${forthAnswer}\"]}}"
-
-      val fifthAnswer = "row3-answer1"
-      val sixthAnswer = "row3-answer2"
-      val row3 = "{\"answers\":{\"${childQuestion}\":[\"${fifthAnswer}\",\"${sixthAnswer}\"]}}"
-
-      val thirdUpdate= "row2-updated"
-      val row2Update = "{\"answers\":{\"${childQuestion}\":\"${thirdUpdate}\"}}"
-
-      addTableRowFromJson(childQuestion, row1)
-      addTableRowFromJson(childQuestion, row2)
-      addTableRowFromJson(childQuestion, row3)
-
-      val episode = updateTableRowFromJson(childQuestion, 1, row2Update)
-
-      val answers = episode.answers.get(childQuestion)!!.answers.toList()
-      assertThat(answers.size).isEqualTo(3)
-
-      val row1Values = answers[0].items
-      assertThat(row1Values).hasSize(2)
-      assertThat(row1Values.first()).isEqualTo(firstAnswer)
-      assertThat(row1Values.last()).isEqualTo(secondAnswer)
-
-      val row2Values = answers[1].items
-      assertThat(row2Values).hasSize(1)
-      assertThat(row2Values.first()).isEqualTo(thirdUpdate)
-
-      val row3Values = answers[2].items
-      assertThat(row3Values).hasSize(2)
-      assertThat(row3Values.first()).isEqualTo(fifthAnswer)
-      assertThat(row3Values.last()).isEqualTo(sixthAnswer)
-    }
-
-    @Test
-    fun `remove first of three table rows`() {
-      val childQuestion = UUID.fromString("23c3e984-54c7-480f-b06c-7d000e2fb87c")
-      val firstAnswer = "row1-answer1"
-      val secondAnswer = "row1-answer2"
-      val row1 = "{\"answers\":{\"${childQuestion}\":[\"${firstAnswer}\",\"${secondAnswer}\"]}}"
-
-      val thirdAnswer = "row2-answer1"
-      val forthAnswer = "row2-answer2"
-      val row2 = "{\"answers\":{\"${childQuestion}\":[\"${thirdAnswer}\",\"${forthAnswer}\"]}}"
-
-      val fifthAnswer = "row3-answer1"
-      val sixthAnswer = "row3-answer2"
-      val row3 = "{\"answers\":{\"${childQuestion}\":[\"${fifthAnswer}\",\"${sixthAnswer}\"]}}"
-
-      addTableRowFromJson(childQuestion, row1)
-      addTableRowFromJson(childQuestion, row2)
-      addTableRowFromJson(childQuestion, row3)
-
-      val episode = deleteTableRow(0)
-
-      val answers = episode.answers.get(childQuestion)!!.answers.toList()
-      assertThat(answers.size).isEqualTo(2)
-
-      val row2Values = answers[0].items
-      assertThat(row2Values).hasSize(2)
-      assertThat(row2Values.first()).isEqualTo(thirdAnswer)
-      assertThat(row2Values.last()).isEqualTo(forthAnswer)
-
-      val row3Values = answers[1].items
-      assertThat(row3Values).hasSize(2)
-      assertThat(row3Values.first()).isEqualTo(fifthAnswer)
-      assertThat(row3Values.last()).isEqualTo(sixthAnswer)
-    }
-
-    @Test
-    fun `remove second of three table rows`() {
-      val childQuestion = UUID.fromString("23c3e984-54c7-480f-b06c-7d000e2fb87c")
-      val firstAnswer = "row1-answer1"
-      val secondAnswer = "row1-answer2"
-      val row1 = "{\"answers\":{\"${childQuestion}\":[\"${firstAnswer}\",\"${secondAnswer}\"]}}"
-
-      val thirdAnswer = "row2-answer1"
-      val forthAnswer = "row2-answer2"
-      val row2 = "{\"answers\":{\"${childQuestion}\":[\"${thirdAnswer}\",\"${forthAnswer}\"]}}"
-
-      val fifthAnswer = "row3-answer1"
-      val sixthAnswer = "row3-answer2"
-      val row3 = "{\"answers\":{\"${childQuestion}\":[\"${fifthAnswer}\",\"${sixthAnswer}\"]}}"
-
-      addTableRowFromJson(childQuestion, row1)
-      addTableRowFromJson(childQuestion, row2)
-      addTableRowFromJson(childQuestion, row3)
-
-      val episode = deleteTableRow(1)
-
-      val answers = episode.answers.get(childQuestion)!!.answers.toList()
-      assertThat(answers.size).isEqualTo(2)
-
-      val row1Values = answers[0].items
-      assertThat(row1Values).hasSize(2)
-      assertThat(row1Values.first()).isEqualTo(firstAnswer)
-      assertThat(row1Values.last()).isEqualTo(secondAnswer)
-
-      val row3Values = answers[1].items
-      assertThat(row3Values).hasSize(2)
-      assertThat(row3Values.first()).isEqualTo(fifthAnswer)
-      assertThat(row3Values.last()).isEqualTo(sixthAnswer)
-    }
-
-    @Test
-    fun `remove all three table rows`() {
-      val childQuestion = UUID.fromString("23c3e984-54c7-480f-b06c-7d000e2fb87c")
-      val firstAnswer = "row1-answer1"
-      val secondAnswer = "row1-answer2"
-      val row1 = "{\"answers\":{\"${childQuestion}\":[\"${firstAnswer}\",\"${secondAnswer}\"]}}"
-
-      val thirdAnswer = "row2-answer1"
-      val forthAnswer = "row2-answer2"
-      val row2 = "{\"answers\":{\"${childQuestion}\":[\"${thirdAnswer}\",\"${forthAnswer}\"]}}"
-
-      val fifthAnswer = "row3-answer1"
-      val sixthAnswer = "row3-answer2"
-      val row3 = "{\"answers\":{\"${childQuestion}\":[\"${fifthAnswer}\",\"${sixthAnswer}\"]}}"
-
-      addTableRowFromJson(childQuestion, row1)
-      addTableRowFromJson(childQuestion, row2)
-      addTableRowFromJson(childQuestion, row3)
-
-      deleteTableRow(2)
-      deleteTableRow(1)
-      val episode = deleteTableRow(0)
-
-      val answers = episode.answers.get(childQuestion)!!.answers.toList()
-      assertThat(answers.size).isEqualTo(0)
-    }
-
-    private fun updateEpisodeFromJson(questionUUID: UUID, expectedAnswer: String, jsonString: String) {
-      val episode = updateFromJson(
-        "/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259",
-        questionUUID,
-        jsonString)
-
-      Verify.singleAnswer(episode.answers.get(questionUUID)!!, expectedAnswer)
-    }
-
-    private fun addTableRowFromJson(questionUUID: UUID, jsonString: String) : AssessmentEpisodeDto {
-      return updateFromJson(
-        "/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259/children_at_risk_of_serious_harm",
-        questionUUID,
-        jsonString)
-    }
-
-    private fun updateTableRowFromJson(questionUUID: UUID, index: Int, jsonString: String) : AssessmentEpisodeDto {
-      val endpoint = "/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259/children_at_risk_of_serious_harm/$index"
-      return updateFromJson(
-        endpoint,
-        questionUUID,
-        jsonString)
-    }
-
-    private fun deleteTableRow(index: Int) : AssessmentEpisodeDto {
-      val endpoint = "/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259/children_at_risk_of_serious_harm/$index"
-      val episode = webTestClient.delete().uri(endpoint)
-        .headers(setAuthorisation())
-        .exchange()
-        .expectStatus().isOk
-        .expectBody<AssessmentEpisodeDto>()
-        .returnResult()
-        .responseBody
-
-      assertThat(episode).isNotNull
-
-      return episode
-    }
-
-    private fun updateFromJson(
-      endpoint: String,
-      questionUUID: UUID,
-      jsonString: String): AssessmentEpisodeDto
-    {
-      val episode = webTestClient.post().uri(endpoint)
+    private fun updateFromJSON(questionUUID: UUID, expectedAnswer: String, jsonString: String) {
+      val episode = webTestClient.post().uri("/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259")
         .contentType(MediaType.APPLICATION_JSON)
         .bodyValue(jsonString)
         .headers(setAuthorisation())
@@ -400,15 +140,15 @@ class AssessmentControllerTest : IntegrationTest() {
       assertThat(episode).isNotNull
       assertThat(episode?.answers).containsKey(questionUUID)
 
-      return episode
+      val answer = episode?.answers?.get(questionUUID)!!
+      assertThat(answer.size).isEqualTo(1)
+      assertThat(answer.first()).isEqualTo(expectedAnswer)
     }
 
     @Test
     fun `does not update episode answers if episode is closed`() {
       val newQuestionUUID = UUID.randomUUID()
-      val updateEpisodeDto = UpdateAssessmentEpisodeDto(
-        mapOf(newQuestionUUID to listOf("new free text"))
-      )
+      val updateEpisodeDto = UpdateAssessmentEpisodeDto(mapOf(newQuestionUUID to listOf("new free text")))
       webTestClient.post().uri("/assessments/$assessmentUuid/episodes/d7aafe55-0cff-4f20-a57a-b66d79eb9c91")
         .bodyValue(updateEpisodeDto)
         .headers(setAuthorisation())
