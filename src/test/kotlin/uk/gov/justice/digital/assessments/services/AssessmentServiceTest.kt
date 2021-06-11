@@ -154,11 +154,11 @@ class AssessmentServiceTest {
         episodes = mutableListOf(
           AssessmentEpisodeEntity(
             episodeId = episodeId1,
-            answers = mutableMapOf(question1Uuid to AnswerEntity.from("YES"))
+            answers = mutableMapOf(question1Uuid to AnswerEntity("YES"))
           ),
           AssessmentEpisodeEntity(
             episodeId = episodeId2,
-            answers = mutableMapOf(question2Uuid to AnswerEntity.from("NO"))
+            answers = mutableMapOf(question2Uuid to AnswerEntity("NO"))
           )
         )
       )
@@ -183,21 +183,21 @@ class AssessmentServiceTest {
             episodeId = episodeId1,
             endDate = LocalDateTime.of(2020, 10, 1, 9, 0, 0),
             answers = mutableMapOf(
-              question1Uuid to AnswerEntity.from("YES")
+              question1Uuid to AnswerEntity("YES")
             )
           ),
           AssessmentEpisodeEntity(
             episodeId = episodeId3,
             endDate = LocalDateTime.of(2020, 10, 2, 10, 0, 0),
             answers = mutableMapOf(
-              question2Uuid to AnswerEntity.from("MAYBE")
+              question2Uuid to AnswerEntity("MAYBE")
             )
           ),
           AssessmentEpisodeEntity(
             episodeId = episodeId2,
             endDate = LocalDateTime.of(2020, 10, 2, 9, 0, 0),
             answers = mutableMapOf(
-              question2Uuid to AnswerEntity.from("NO")
+              question2Uuid to AnswerEntity("NO")
             )
           ),
         )
@@ -219,21 +219,21 @@ class AssessmentServiceTest {
             episodeId = episodeId1,
             endDate = LocalDateTime.of(2020, 10, 1, 9, 0, 0),
             answers = mutableMapOf(
-              question1Uuid to AnswerEntity.from("YES")
+              question1Uuid to AnswerEntity("YES")
             )
           ),
           AssessmentEpisodeEntity(
             episodeId = episodeId3,
             endDate = null,
             answers = mutableMapOf(
-              question2Uuid to AnswerEntity.from("NO")
+              question2Uuid to AnswerEntity("NO")
             )
           ),
           AssessmentEpisodeEntity(
             episodeId = episodeId2,
             endDate = LocalDateTime.of(2020, 10, 2, 9, 0, 0),
             answers = mutableMapOf(
-              question2Uuid to AnswerEntity.from("MAYBE")
+              question2Uuid to AnswerEntity("MAYBE")
             )
           ),
         )
@@ -256,8 +256,8 @@ class AssessmentServiceTest {
           AssessmentEpisodeEntity(
             episodeId = episodeId1,
             answers = mutableMapOf(
-              question1Uuid to AnswerEntity.from("YES"),
-              question3Uuid to AnswerEntity.from("free text")
+              question1Uuid to AnswerEntity("YES"),
+              question3Uuid to AnswerEntity("free text")
             )
           )
         )
@@ -287,7 +287,7 @@ class AssessmentServiceTest {
           AssessmentEpisodeEntity(
             episodeId = episodeId1,
             answers = mutableMapOf(
-              question2Uuid to AnswerEntity.from("YES")
+              question2Uuid to AnswerEntity("YES")
             )
           )
         )
@@ -311,7 +311,7 @@ class AssessmentServiceTest {
           AssessmentEpisodeEntity(
             episodeId = episodeId1,
             answers = mutableMapOf(
-              question1Uuid to AnswerEntity.from("NO")
+              question1Uuid to AnswerEntity("NO")
             )
           )
         )

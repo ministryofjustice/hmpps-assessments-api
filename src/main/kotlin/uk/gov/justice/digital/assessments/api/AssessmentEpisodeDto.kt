@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.assessments.api
 
 import io.swagger.v3.oas.annotations.media.Schema
-import uk.gov.justice.digital.assessments.jpa.entities.Answer
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.services.dto.AssessmentEpisodeUpdateErrors
 import java.time.LocalDateTime
@@ -31,7 +30,7 @@ class AssessmentEpisodeDto(
   val ended: LocalDateTime? = null,
 
   @Schema(description = "Answers associated with this episode")
-  val answers: Map<UUID, AnswersDto> = emptyMap(),
+  val answers: Map<UUID, Collection<String>> = emptyMap(),
 
   @Schema(description = "Validation errors on this episode, indexed by question UUID")
   val errors: Map<UUID, Collection<String>>? = null,
@@ -57,7 +56,7 @@ class AssessmentEpisodeDto(
         episode.changeReason,
         episode.createdDate,
         episode.endDate,
-        AnswersDto.from(episode.answers) ?: emptyMap(),
+        AnswerDto.from(episode.answers) ?: emptyMap(),
         errors?.errors,
         errors?.pageErrors,
         errors?.assessmentErrors
