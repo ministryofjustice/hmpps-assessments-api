@@ -109,19 +109,19 @@ env:
   - name: APPLICATIONINSIGHTS_CONNECTION_STRING
     value: "InstrumentationKey=$(APPINSIGHTS_INSTRUMENTATIONKEY)"
 
-  - name: REDIS_HOST
+  - name: SPRING_REDIS_HOST
     valueFrom:
       secretKeyRef:
         name: {{ .Values.redis.secret }}
         key: primary_endpoint_address
 
-  - name: REDIS_PASSWORD
+  - name: SPRING_REDIS_PASSWORD
     valueFrom:
       secretKeyRef:
         name: {{ .Values.redis.secret }}
         key: auth_token
 
-  - name: REDIS_SSL
+  - name: SPRING_REDIS_SSL
     value: {{ .Values.redis.tlsEnabled | quote }}
 
 {{- end -}}
