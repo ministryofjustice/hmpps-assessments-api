@@ -121,7 +121,7 @@ env:
         name: {{ .Values.redis.secret }}
         key: auth_token
 
-  - name: REDIS_TLS_ENABLED
+  - name: REDIS_SSL
     value: {{ .Values.redis.tlsEnabled | quote }}
 
 {{- end -}}
