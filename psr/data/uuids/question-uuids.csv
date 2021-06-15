@@ -409,18 +409,8 @@ any_other_current_offence_which_is_as_serious_eg_blackmail_harassment_stalking_c
 personal_details,ui3.1-presentation: heading-personal_details,0524eb01-8c14-45cd-8fb4-8183eba11a12
 child_at_risk_of_serious_harm:,		-freetext,f9a22a7d-12c0-44d0-89a9-33722801b3ac
 book_number,289.1-freetext-book_number,65a621e0-3e4d-40cb-bca0-1f8bb8e8fba9
-child_at_risk_of_serious_harm:,		-table,23829fbc-ca3e-4189-b58b-7890782f453e
 child_at_risk_of_serious_harm:,		-table:children_at_risk_of_serious_harm,bc5776e9-6356-4899-b3cf-da95fc497538
 child_at_risk_of_serious_harm:,202.1-freetext,b9ed154e-5b4e-43af-a405-2ae0f22f2ac6
-name,203.1-freetext,23c3e984-54c7-480f-b06c-7d000e2fb87c
-age_,204.1-numeric,263c9dde-4290-4bf9-a596-f470b68da524
-date_of_birth,205.1-date,41677239-234c-4653-ac98-4e2e002948cc
-gender,206.1-radio,61857dff-dfd8-4b92-a8c7-1ddfc4cebc45
-address_if_disclosable_,207.1-freetext,c4a648af-8a53-452d-b575-35697932531e
-currently_registered_with_social_services,208.1-radio,ecb880ef-02c7-4ffc-8726-7e0f60f1191c
-previously_registered_with_social_services,209.1-radio,775cd8bf-fe1b-4625-9937-ae8a238a8402
-current_category_of_child_protection_registration_ie_neglect_physical_sexual_or_emotional_,210.1-checkbox,ad56e86d-56df-4c1a-974f-81454e941be0
-previous_category_of_child_protection_registration_ie_neglect_physical_sexual_or_emotional_,211.1-checkbox,b0a4f119-6226-452b-a145-1f822d5737fe
 source,298.1-radio,d6b01281-165f-4dc8-b5bc-ad8e9aa89788
 murder_attempted_murder_threat_or_conspiracy_to_murder_manslaughter_-_current,130.1-radio,0941c5b2-f42d-4120-ad79-44954674fe00
 murder_attempted_murder_threat_or_conspiracy_to_murder_manslaughter_-_previous,130.1-radio-murder_attempted_murder_threat_or_conspiracy_to_murder_manslaughter_-_previous,5ad9eb7d-d707-4b02-8ccd-cd38152a0a21
@@ -579,19 +569,52 @@ risk_in_custody_to:,258.1-radio,a1df8a21-92d2-40c0-ac06-00eddf8c0743
 if_necessary_record_the_details_of_any_key_documents_or_reports_used_in_this_analysis,264.1-radio,1db0c653-e315-431b-84cb-a461efd00f13
 has_this_case_been_referred_to_multi-agency_public_protection_management_,265.1-radio,b1e9ed3e-edec-4c8f-8e08-3cbfe3af9dbd
 if_not_should_this_case_be_referred_to_multi-agency_public_protection_management_,268.1-radio,9cbaed61-bb23-4ac6-b31a-89b1b12c7644
-update_assessment_details,uiS5.1-presentation: link(_/addrow/children_at_risk_of_serious_harm_),b0608208-e593-4958-a903-d23b47948429
 child_at_risk_of_serious_harm:,202.1-table:children_at_risk_of_serious_harm,fcfd63c2-008c-47b8-bb6b-b73d487f15f8
 give_details_of_child_protection_conferences_child_protection_decisions_and_looked_after_children_review_dates_–_if_applicable,213.1-textarea,78d36748-657e-4d5f-a964-82bef4e5089b
 local_authority_children’s_services_key_worker_name_address_and_telephone_number_if_applicable,214.1-textarea,2d640653-96e1-4d1b-8411-2963ea2b0687
 other_agencies_and_personnel_involved_if_applicable,215.1-textarea,0ea85849-bf04-489d-a7b4-8678a09674a3
 additional_information,216.1-textarea,bf5ee0a3-4842-49c3-b4e2-bf35b75673e8
 child_at_risk_of_serious_harm:,ui202.1-presentation: heading,9d971b39-ab26-43ba-aabe-5dc9342e9f99
-child_at_risk_of_serious_harm:,uiS5.1-presentation: inset,8c5c0274-3087-4ea3-aa09-4efd88a64490
-personal_details,uiS5.2-presentation: heading,1c7dc48a-e90f-4141-829e-ff16ce8dbb20
-page_divider,uiS5.3-presentation: divider,3a0351a4-077e-4da0-b66d-bd552da6b273
-contact_details,uiS5.4-presentation: heading,4903acda-926d-4c7e-813f-7511bf5a62c4
-address_if_disclosable_,207.1-textarea,c8668b01-ad96-454f-8afd-cccf6d827d5b
-page_divider,uiS5.5-presentation: divider,d52774aa-f2cb-457b-b494-62cf68fd9850
-social_services_details,uiS5.6-presentation: heading,e874acf7-5515-48d0-9ee3-efb034b2f05b
-page_divider,uiS5.7-presentation: divider,589686ed-add7-4f36-a14d-80a4f450ae63
-child_protection_details,uiS5.8-presentation: heading,2faa8008-ecd2-4ba1-8064-ce5c3d1fa360
+address_line_2,14.2-freetext,e19cecb4-bf44-43a4-a3a6-b68aa96c7e54
+address_line_3,14.3-freetext,92065d69-6580-42f6-b8a1-f8fcf871ebbf
+address_line_4,14.4-freetext,64e91a18-56d3-41e5-9649-45dd49da4ea4
+address_line_5,14.5-freetext,9c2e4168-3857-44c9-8014-ed5853ec22d2
+address_line_6,14.6-freetext,c877d284-b36e-4c64-bf05-b393eb8e7bf7
+post_code,14.7-freetext,de86e634-a2bf-4245-9053-f1ba6865069e
+date_of_first_sanction,293.1-numeric,5ca86a06-5472-4861-bd6a-a011780db49a
+age_at_first_sanction,291.2-numeric,63099aab-f852-4dd9-9179-16ee2218d0c6
+murder_attempted_murder_threat_or_conspiracy_to_murder_manslaughter,130.2-radio,9ab01c27-3c08-494c-9622-335cc7958f2a
+wounding_gbh_sections_18_20_offences_against_the_person_act_1861_,131.2-radio,d882dbed-7bdb-4f35-9040-006e6663837b
+any_sexual_offence_against_a_child_ren,132.2-radio,5d55aea3-a116-49b9-9040-bffd79f85067
+rape_or_serious_sexual_offence_against_an_adult,133.2-radio,ee7ea934-4ba6-4d3b-b7f1-85a8bfbb88be
+any_other_offence_against_a_child_see_revised_appendix_1_,134.2-radio,dbc6305c-9f58-4198-b7bc-b2136a49aa3d
+aggravated_burglary,135.2-radio,a772bfc7-9cb4-4387-bf71-d1e5f7e6240a
+arson,136.2-radio,7ab2c629-542b-405a-a34d-ff1bd8abfd3f
+criminal_damage_with_intent_to_endanger_life,137.2-radio,720d0327-5b57-48f6-aa18-38f7d4d55cad
+kidnapping_false_imprisonment,138.2-radio,e8fc25c0-257c-495d-9ee0-63963192304d
+possession_of_a_firearm_with_intent_to_endanger_life_or_resist_arrest,139.2-radio,7fddaaba-96c4-4654-889d-8f7e1d525890
+racially_motivated_racially_aggravated_offence,140.2-radio,8186dc93-a751-43d2-9a1b-11688667c603
+robbery,141.2-radio,cb919819-981a-4722-ba94-91c560842e1d
+any_other_offence_involving_possession_and_or_use_of_weapons,142.2-radio,eaee4c3d-83b8-4ece-a3bd-24452174cdb0
+give_details,295.1-freetext,8d717993-3e89-43b2-ac78-b739dccbf643
+give_details,296.1-freetext,8a4ca38f-0381-4654-97d4-dea93376ee14
+give_details,297.1-freetext,d1a1222c-4fc8-4e93-a0e0-b2d4413fc8d5
+update_assessment_details,uiS5.1-presentation: buttonlink(_<base>/addrow/children_at_risk_of_serious_harm_),7048019f-d8f1-48e8-bcc6-656b8a99f9fd
+book_number_,289.2-freetext,eb3305e6-1857-46ff-b97d-57898ea6cc5b
+personal_details,uiS5.2-presentation: heading_large,1ed5bd12-b3fa-4e8e-9ade-302a7d9b331e
+contact_details,uiS5.4-presentation: heading_large,1e774cb1-285b-40fd-8c3b-ddff8eaf45d6
+social_services_details,uiS5.6-presentation: heading_large,073d4e8b-5eff-4690-9890-7f9fb4b0d146
+child_protection_details,uiS5.8-presentation: heading_large,1be1c40e-07d4-4842-8447-6cd2bfffa3bd
+child_at_risk_of_serious_harm:,uiS5.1-presentation: inset,c993ef11-7b97-4dd6-a811-455ce9d675b9
+name,203.1-freetext,0e9ac8f9-7df4-43de-9a7f-756f3fc0e5b3
+age,204.1-numeric,1e053af6-247e-4f7f-934b-ab419c208067
+date_of_birth,205.1-date,43451da5-5587-404f-8e9e-a238177bdfcb
+gender,206.1-radio,9aebb4d0-f17a-4e86-a765-8f2a40b69dfb
+page_divider,uiS5.3-presentation: divider,caf15de3-7f1a-4ba4-b4b4-0b1856ae88bc
+address_if_disclosable_,207.1-textarea,194f2f7e-61f0-458b-babd-91cea23e80af
+page_divider,uiS5.5-presentation: divider,a4ab05a3-8a18-49f1-a51e-50f310699768
+currently_registered_with_social_services,208.1-radio,454c634e-61c2-48ae-9cd1-b0c09a7e392e
+previously_registered_with_social_services,209.1-radio,90b22f9a-d2ef-435a-89f2-318b98e1a72a
+page_divider,uiS5.7-presentation: divider,f822b029-5907-4789-93e0-e52aac2acfac
+current_category_of_child_protection_registration_ie_neglect_physical_sexual_or_emotional_,210.1-checkbox,32be7f8b-5973-48c4-9640-0fbd292f6ff8
+previous_category_of_child_protection_registration_ie_neglect_physical_sexual_or_emotional_,211.1-checkbox,070232a5-c01e-452f-a554-2898f0674a45
