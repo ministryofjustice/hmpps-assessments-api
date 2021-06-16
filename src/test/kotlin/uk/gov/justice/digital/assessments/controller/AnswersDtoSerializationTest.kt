@@ -42,7 +42,7 @@ class AnswersDtoSerializationTest {
 
     assertJsonIs(
       dto,
-      "{\"answers\":[\"Fruit\"]}"
+      "[\"Fruit\"]"
     )
   }
 
@@ -52,7 +52,7 @@ class AnswersDtoSerializationTest {
 
     assertJsonIs(
       dto,
-      "{\"answers\":[\"Fruit\",\"Vegetables\"]}"
+      "[\"Fruit\",\"Vegetables\"]"
     )
   }
 
@@ -70,7 +70,7 @@ class AnswersDtoSerializationTest {
 
       assertJsonIs(
         dto,
-        "{\"answers\":[[\"Fruit\"],[\"Vegetables\"]]}"
+        "[[\"Fruit\"],[\"Vegetables\"]]"
       )
     }
 
@@ -85,7 +85,7 @@ class AnswersDtoSerializationTest {
 
       assertJsonIs(
         dto,
-        "{\"answers\":[[\"Fruit\"],[\"Potatoes\",\"Carrots\",\"Onions\"]]}"
+        "[[\"Fruit\"],[\"Potatoes\",\"Carrots\",\"Onions\"]]"
       )
     }
 
@@ -100,7 +100,7 @@ class AnswersDtoSerializationTest {
 
       assertJsonIs(
         dto,
-        "{\"answers\":[[\"Potatoes\",\"Carrots\",\"Onions\"],[\"Fruit\"]]}"
+        "[[\"Potatoes\",\"Carrots\",\"Onions\"],[\"Fruit\"]]"
       )
     }
 
@@ -116,7 +116,7 @@ class AnswersDtoSerializationTest {
 
       assertJsonIs(
         dto,
-        "{\"answers\":[[\"Bananas\"],[\"Potatoes\",\"Carrots\",\"Onions\"],[\"Fruit\"]]}"
+        "[[\"Bananas\"],[\"Potatoes\",\"Carrots\",\"Onions\"],[\"Fruit\"]]"
       )
     }
 
@@ -131,7 +131,7 @@ class AnswersDtoSerializationTest {
 
       assertJsonIs(
         dto,
-        "{\"answers\":[[\"Bananas\",\"Apples\"],[\"Potatoes\",\"Carrots\",\"Onions\"]]}"
+        "[[\"Bananas\",\"Apples\"],[\"Potatoes\",\"Carrots\",\"Onions\"]]"
       )
     }
   }
