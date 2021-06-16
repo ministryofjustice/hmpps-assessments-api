@@ -36,10 +36,10 @@ object AnswersDtoSerializer : StdSerializer<AnswersDto>(AnswersDto::class.java) 
     if (value == null)
       return
 
-    with (value.answers) {
+    with(value.answers) {
       gen?.writeStartObject()
       gen?.writeFieldName("answers")
-      if(size == 1) {
+      if (size == 1) {
         gen?.writeObject(first())
       } else {
         gen?.writeStartArray()

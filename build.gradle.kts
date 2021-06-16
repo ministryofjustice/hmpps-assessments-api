@@ -1,8 +1,8 @@
 
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "3.1.6"
-  kotlin("plugin.spring") version "1.4.30"
-  kotlin("plugin.jpa") version "1.4.30"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "3.3.0"
+  kotlin("plugin.spring") version "1.5.10"
+  kotlin("plugin.jpa") version "1.5.10"
 }
 
 allOpen {
@@ -27,21 +27,12 @@ dependencies {
   implementation("org.springframework.security:spring-security-oauth2-client")
   implementation("org.springframework.data:spring-data-redis:2.5.1")
   implementation("redis.clients:jedis:3.6.0")
-  implementation("org.jetbrains.kotlin:kotlin-reflect")
-  implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-  implementation("javax.xml.bind:jaxb-api:2.4.0-b180830.0359")
-  implementation("javax.activation:activation:1.1.1")
-  implementation("com.sun.xml.bind:jaxb-impl:3.0.0")
-  implementation("com.sun.xml.bind:jaxb-core:3.0.0")
-  implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.3")
-  implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.12.3")
   implementation("org.springdoc:springdoc-openapi-ui:1.5.8")
   implementation("org.springdoc:springdoc-openapi-data-rest:1.5.8")
   implementation("org.springdoc:springdoc-openapi-kotlin:1.5.8")
   implementation("commons-io:commons-io:2.8.0")
   implementation("com.zaxxer:HikariCP:4.0.3")
   implementation("com.vladmihalcea:hibernate-types-52:2.10.4")
-
   implementation("com.beust:klaxon:5.5")
   implementation("com.google.code.gson:gson:2.8.6")
   implementation("com.google.guava:guava:30.1.1-jre")

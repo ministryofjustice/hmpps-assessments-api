@@ -6,12 +6,12 @@ import org.springframework.web.reactive.function.client.ClientResponse
 import reactor.core.publisher.Mono
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OASysErrorResponse
+import uk.gov.justice.digital.assessments.services.exceptions.DuplicateOffenderRecordException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiAuthorisationException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiEntityNotFoundException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiForbiddenException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiInvalidRequestException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiUnknownException
-import uk.gov.justice.digital.assessments.services.exceptions.DuplicateOffenderRecordException
 import uk.gov.justice.digital.assessments.services.exceptions.UserNotAuthorisedException
 
 fun handle4xxError(

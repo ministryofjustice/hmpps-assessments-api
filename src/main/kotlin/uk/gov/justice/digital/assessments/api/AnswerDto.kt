@@ -15,7 +15,7 @@ object AnswerDtoSerializer : StdSerializer<AnswerDto>(AnswerDto::class.java) {
     if (value == null)
       return
 
-    with (value.items) {
+    with(value.items) {
       gen?.writeStartArray()
       forEach { gen?.writeString(it) }
       gen?.writeEndArray()
@@ -45,4 +45,3 @@ object AnswerDtoDeserializer : StdDeserializer<AnswerDto>(AnswerDto::class.java)
 data class AnswerDto(
   val items: Collection<String>
 )
-

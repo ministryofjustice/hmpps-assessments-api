@@ -12,16 +12,15 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
 import uk.gov.justice.digital.assessments.api.ErrorResponse
 import uk.gov.justice.digital.assessments.services.exceptions.DuplicateOffenderRecordException
+import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiAuthorisationException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiEntityNotFoundException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiForbiddenException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiInvalidRequestException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiUnknownException
-import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
 import uk.gov.justice.digital.assessments.services.exceptions.UserAreaHeaderIsMandatoryException
 import uk.gov.justice.digital.assessments.services.exceptions.UserIdIsMandatoryException
-import uk.gov.justice.digital.assessments.utils.RequestData
 import uk.gov.justice.digital.assessments.services.exceptions.UserNotAuthorisedException
 
 @ControllerAdvice

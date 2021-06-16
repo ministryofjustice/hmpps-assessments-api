@@ -9,7 +9,10 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
-import uk.gov.justice.digital.assessments.jpa.entities.*
+import uk.gov.justice.digital.assessments.jpa.entities.AnswerEntity
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEntity
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
+import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.EpisodeRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.SubjectRepository
@@ -106,11 +109,15 @@ class AssessmentUpdateServiceTest {
       val episodeDto = assessmentUpdateService.updateEpisode(assessmentUuid, episodeUuid, updatedAnswers)
 
       assertThat(episodeDto.answers).hasSize(2)
-      Verify.singleAnswer(episodeDto.answers[existingQuestionUuid]!!,
-        "free text")
+      Verify.singleAnswer(
+        episodeDto.answers[existingQuestionUuid]!!,
+        "free text"
+      )
 
-      Verify.singleAnswer(episodeDto.answers[newQuestionUuid]!!,
-        "trousers")
+      Verify.singleAnswer(
+        episodeDto.answers[newQuestionUuid]!!,
+        "trousers"
+      )
     }
 
     @Test
@@ -130,8 +137,10 @@ class AssessmentUpdateServiceTest {
       val episodeDto = assessmentUpdateService.updateEpisode(assessmentUuid, episodeUuid, updatedAnswers)
 
       assertThat(episodeDto.answers).hasSize(1)
-      Verify.singleAnswer(episodeDto.answers[existingQuestionUuid]!!,
-        "new free text")
+      Verify.singleAnswer(
+        episodeDto.answers[existingQuestionUuid]!!,
+        "new free text"
+      )
     }
 
     @Test
@@ -151,9 +160,11 @@ class AssessmentUpdateServiceTest {
       val episodeDto = assessmentUpdateService.updateEpisode(assessmentUuid, episodeUuid, updatedAnswers)
 
       assertThat(episodeDto.answers).hasSize(1)
-      Verify.singleAnswer(episodeDto.answers[existingQuestionUuid]!!,
+      Verify.singleAnswer(
+        episodeDto.answers[existingQuestionUuid]!!,
         "fruit loops",
-        "custard")
+        "custard"
+      )
     }
 
     @Test
@@ -226,11 +237,15 @@ class AssessmentUpdateServiceTest {
       val episodeDto = assessmentUpdateService.addEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", tableAnswers)
 
       assertThat(episodeDto.answers).hasSize(5)
-      Verify.singleAnswer(episodeDto.answers[childQuestion1]!!,
-        "child name")
+      Verify.singleAnswer(
+        episodeDto.answers[childQuestion1]!!,
+        "child name"
+      )
 
-      Verify.singleAnswer(episodeDto.answers[childQuestion2]!!,
-        "child address")
+      Verify.singleAnswer(
+        episodeDto.answers[childQuestion2]!!,
+        "child address"
+      )
     }
 
     @Test
@@ -252,11 +267,15 @@ class AssessmentUpdateServiceTest {
       val episodeDto = assessmentUpdateService.addCurrentEpisodeTableRow(assessmentUuid, "children_at_risk", tableAnswers)
 
       assertThat(episodeDto.answers).hasSize(5)
-      Verify.multiAnswers(episodeDto.answers[childQuestion1]!!,
-        "child name")
+      Verify.multiAnswers(
+        episodeDto.answers[childQuestion1]!!,
+        "child name"
+      )
 
-      Verify.multiAnswers(episodeDto.answers[childQuestion2]!!,
-        "child address")
+      Verify.multiAnswers(
+        episodeDto.answers[childQuestion2]!!,
+        "child address"
+      )
     }
 
     @Test
@@ -280,13 +299,17 @@ class AssessmentUpdateServiceTest {
       val episodeDto = assessmentUpdateService.addEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", tableAnswers)
 
       assertThat(episodeDto.answers).hasSize(5)
-      Verify.multiAnswers(episodeDto.answers[childQuestion1]!!,
+      Verify.multiAnswers(
+        episodeDto.answers[childQuestion1]!!,
         "child name 1",
-        "child name 2")
+        "child name 2"
+      )
 
-      Verify.multiAnswers(episodeDto.answers[childQuestion2]!!,
+      Verify.multiAnswers(
+        episodeDto.answers[childQuestion2]!!,
         "child address 1",
-        "child address 2")
+        "child address 2"
+      )
     }
 
     @Test
@@ -310,13 +333,17 @@ class AssessmentUpdateServiceTest {
       val episodeDto = assessmentUpdateService.addEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", tableAnswers)
 
       assertThat(episodeDto.answers).hasSize(5)
-      Verify.multiAnswers(episodeDto.answers[childQuestion1]!!,
+      Verify.multiAnswers(
+        episodeDto.answers[childQuestion1]!!,
         "child name 1",
-        "child name 2")
+        "child name 2"
+      )
 
-      Verify.multiAnswers(episodeDto.answers[childQuestion2]!!,
+      Verify.multiAnswers(
+        episodeDto.answers[childQuestion2]!!,
         "child address 1",
-        "")
+        ""
+      )
     }
 
     @Test
@@ -340,13 +367,17 @@ class AssessmentUpdateServiceTest {
       val episodeDto = assessmentUpdateService.updateEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", 0, tableAnswers)
 
       assertThat(episodeDto.answers).hasSize(5)
-      Verify.multiAnswers(episodeDto.answers[childQuestion1]!!,
+      Verify.multiAnswers(
+        episodeDto.answers[childQuestion1]!!,
         "child name 1",
-        "child name 2")
+        "child name 2"
+      )
 
-      Verify.multiAnswers(episodeDto.answers[childQuestion2]!!,
+      Verify.multiAnswers(
+        episodeDto.answers[childQuestion2]!!,
         "child address 1",
-        "child address 2")
+        "child address 2"
+      )
     }
 
     @Test
@@ -370,13 +401,17 @@ class AssessmentUpdateServiceTest {
       val episodeDto = assessmentUpdateService.updateEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", 1, tableAnswers)
 
       assertThat(episodeDto.answers).hasSize(5)
-      Verify.multiAnswers(episodeDto.answers[childQuestion1]!!,
+      Verify.multiAnswers(
+        episodeDto.answers[childQuestion1]!!,
         "child name 1",
-        "child name 2")
+        "child name 2"
+      )
 
-      Verify.multiAnswers(episodeDto.answers[childQuestion2]!!,
+      Verify.multiAnswers(
+        episodeDto.answers[childQuestion2]!!,
         "child address 1",
-        "child address 2")
+        "child address 2"
+      )
     }
 
     @Test
@@ -400,15 +435,19 @@ class AssessmentUpdateServiceTest {
       val episodeDto = assessmentUpdateService.updateEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", 1, tableAnswers)
 
       assertThat(episodeDto.answers).hasSize(5)
-      Verify.multiAnswers(episodeDto.answers[childQuestion1]!!,
+      Verify.multiAnswers(
+        episodeDto.answers[childQuestion1]!!,
         "child name 1",
         "child name 2",
-        "child name 3")
+        "child name 3"
+      )
 
-      Verify.multiAnswers(episodeDto.answers[childQuestion2]!!,
+      Verify.multiAnswers(
+        episodeDto.answers[childQuestion2]!!,
         "child address 1",
         "child address 2",
-        "child address 3")
+        "child address 3"
+      )
     }
 
     @Test
@@ -425,13 +464,17 @@ class AssessmentUpdateServiceTest {
       val episodeDto = assessmentUpdateService.deleteEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", 0)
 
       assertThat(episodeDto.answers).hasSize(5)
-      Verify.multiAnswers(episodeDto.answers[childQuestion1]!!,
+      Verify.multiAnswers(
+        episodeDto.answers[childQuestion1]!!,
         "child name 2",
-        "child name 3")
+        "child name 3"
+      )
 
-      Verify.multiAnswers(episodeDto.answers[childQuestion2]!!,
+      Verify.multiAnswers(
+        episodeDto.answers[childQuestion2]!!,
         "child address 2",
-        "child address 3")
+        "child address 3"
+      )
     }
 
     @Test
@@ -448,13 +491,17 @@ class AssessmentUpdateServiceTest {
       val episodeDto = assessmentUpdateService.deleteEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", 1)
 
       assertThat(episodeDto.answers).hasSize(5)
-      Verify.multiAnswers(episodeDto.answers[childQuestion1]!!,
+      Verify.multiAnswers(
+        episodeDto.answers[childQuestion1]!!,
         "child name 1",
-        "child name 3")
+        "child name 3"
+      )
 
-      Verify.multiAnswers(episodeDto.answers[childQuestion2]!!,
+      Verify.multiAnswers(
+        episodeDto.answers[childQuestion2]!!,
         "child address 1",
-        "child address 3")
+        "child address 3"
+      )
     }
 
     @Test
@@ -471,13 +518,17 @@ class AssessmentUpdateServiceTest {
       val episodeDto = assessmentUpdateService.deleteEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", 2)
 
       assertThat(episodeDto.answers).hasSize(5)
-      Verify.multiAnswers(episodeDto.answers[childQuestion1]!!,
+      Verify.multiAnswers(
+        episodeDto.answers[childQuestion1]!!,
         "child name 1",
-        "child name 2")
+        "child name 2"
+      )
 
-      Verify.multiAnswers(episodeDto.answers[childQuestion2]!!,
+      Verify.multiAnswers(
+        episodeDto.answers[childQuestion2]!!,
         "child address 1",
-        "child address 2")
+        "child address 2"
+      )
     }
 
     @Test
