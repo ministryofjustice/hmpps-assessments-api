@@ -10,10 +10,13 @@ import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.context.jdbc.SqlConfig
 import org.springframework.test.context.jdbc.SqlGroup
 import org.springframework.test.web.reactive.server.expectBody
-import uk.gov.justice.digital.assessments.api.*
+import uk.gov.justice.digital.assessments.api.AssessmentEpisodeDto
+import uk.gov.justice.digital.assessments.api.AssessmentSubjectDto
+import uk.gov.justice.digital.assessments.api.ErrorResponse
+import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
-import uk.gov.justice.digital.assessments.utils.RequestData
 import uk.gov.justice.digital.assessments.testutils.Verify
+import uk.gov.justice.digital.assessments.utils.RequestData
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -203,7 +206,6 @@ class AssessmentControllerTest : IntegrationTest() {
       assertThat(row3Values.last()).isEqualTo(sixthAnswer)
     }
 
-
     @Test
     fun `update episode table row from JSON`() {
       val childQuestion = UUID.fromString("23c3e984-54c7-480f-b06c-7d000e2fb87c")
@@ -219,7 +221,7 @@ class AssessmentControllerTest : IntegrationTest() {
       val sixthAnswer = "row3-answer2"
       val row3 = "{\"answers\":{\"${childQuestion}\":[\"${fifthAnswer}\",\"${sixthAnswer}\"]}}"
 
-      val thirdUpdate= "row2-updated"
+      val thirdUpdate = "row2-updated"
       val row2Update = "{\"answers\":{\"${childQuestion}\":\"${thirdUpdate}\"}}"
 
       addTableRowFromJson(childQuestion, row1)
@@ -347,27 +349,30 @@ class AssessmentControllerTest : IntegrationTest() {
       val episode = updateFromJson(
         "/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259",
         questionUUID,
-        jsonString)
+        jsonString
+      )
 
       Verify.singleAnswer(episode.answers.get(questionUUID)!!, expectedAnswer)
     }
 
-    private fun addTableRowFromJson(questionUUID: UUID, jsonString: String) : AssessmentEpisodeDto {
+    private fun addTableRowFromJson(questionUUID: UUID, jsonString: String): AssessmentEpisodeDto {
       return updateFromJson(
         "/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259/children_at_risk_of_serious_harm",
         questionUUID,
-        jsonString)
+        jsonString
+      )
     }
 
-    private fun updateTableRowFromJson(questionUUID: UUID, index: Int, jsonString: String) : AssessmentEpisodeDto {
+    private fun updateTableRowFromJson(questionUUID: UUID, index: Int, jsonString: String): AssessmentEpisodeDto {
       val endpoint = "/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259/children_at_risk_of_serious_harm/$index"
       return updateFromJson(
         endpoint,
         questionUUID,
-        jsonString)
+        jsonString
+      )
     }
 
-    private fun deleteTableRow(index: Int) : AssessmentEpisodeDto {
+    private fun deleteTableRow(index: Int): AssessmentEpisodeDto {
       val endpoint = "/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259/children_at_risk_of_serious_harm/$index"
       val episode = webTestClient.delete().uri(endpoint)
         .headers(setAuthorisation())
@@ -385,8 +390,8 @@ class AssessmentControllerTest : IntegrationTest() {
     private fun updateFromJson(
       endpoint: String,
       questionUUID: UUID,
-      jsonString: String): AssessmentEpisodeDto
-    {
+      jsonString: String
+    ): AssessmentEpisodeDto {
       val episode = webTestClient.post().uri(endpoint)
         .contentType(MediaType.APPLICATION_JSON)
         .bodyValue(jsonString)

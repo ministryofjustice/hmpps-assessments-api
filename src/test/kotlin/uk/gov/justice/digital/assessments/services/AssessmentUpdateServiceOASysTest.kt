@@ -13,7 +13,16 @@ import org.junit.jupiter.api.extension.ExtendWith
 import uk.gov.justice.digital.assessments.api.AnswerDto
 import uk.gov.justice.digital.assessments.api.AnswersDto
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
-import uk.gov.justice.digital.assessments.jpa.entities.*
+import uk.gov.justice.digital.assessments.jpa.entities.Answer
+import uk.gov.justice.digital.assessments.jpa.entities.AnswerEntity
+import uk.gov.justice.digital.assessments.jpa.entities.AnswerSchemaEntity
+import uk.gov.justice.digital.assessments.jpa.entities.AnswerSchemaGroupEntity
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEntity
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
+import uk.gov.justice.digital.assessments.jpa.entities.OASysMappingEntity
+import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
+import uk.gov.justice.digital.assessments.jpa.entities.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.EpisodeRepository
 import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient
@@ -229,11 +238,13 @@ class AssessmentUpdateServiceOASysTest {
         question2Uuid to AnswerEntity.from("1975-01-20T00:00:00.000Z"),
         question3Uuid to AnswerEntity.from("not mapped to oasys"),
         childQuestion1 to AnswerEntity.from(listOf("name1", "name2", "name3")),
-        childQuestion2 to AnswerEntity(listOf(
-          Answer(listOf("address1")),
-          Answer(listOf("address2a", "address2b")),
-          Answer(listOf("address3"))
-        ))
+        childQuestion2 to AnswerEntity(
+          listOf(
+            Answer(listOf("address1")),
+            Answer(listOf("address2a", "address2b")),
+            Answer(listOf("address3"))
+          )
+        )
       )
 
       val episode = AssessmentEpisodeEntity(
@@ -346,9 +357,11 @@ class AssessmentUpdateServiceOASysTest {
 
     // Updated answers in returned DTO
     assertThat(episodeDto.answers).hasSize(1)
-    Verify.singleAnswer(episodeDto.answers[existingQuestionUuid]!!,
+    Verify.singleAnswer(
+      episodeDto.answers[existingQuestionUuid]!!,
       "fruit loops",
-      "custard")
+      "custard"
+    )
 
     // But also errors!
     assertThat(episodeDto.errors).hasSize(1)
@@ -388,7 +401,8 @@ class AssessmentUpdateServiceOASysTest {
       assertThat(flatMap { it.value.answers }).contains(
         AnswerDto(listOf("Updated")),
         AnswerDto(listOf("1975-01-20T00:00:00.000Z")),
-        AnswerDto(listOf("not mapped to oasys")))
+        AnswerDto(listOf("not mapped to oasys"))
+      )
     }
   }
 

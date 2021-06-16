@@ -15,7 +15,6 @@ import org.springframework.test.web.reactive.server.WebTestClient
 import uk.gov.justice.digital.assessments.HmppsAssessmentApiApplication
 import uk.gov.justice.digital.assessments.JwtAuthHelper
 import uk.gov.justice.digital.assessments.redis.entities.UserDetails
-import uk.gov.justice.digital.assessments.utils.RequestData
 import java.time.Duration
 
 @Suppress("SpringJavaInjectionPointsAutowiringInspection")
@@ -95,5 +94,4 @@ abstract class IntegrationTest {
     )
     return { it.set(HttpHeaders.AUTHORIZATION, "Bearer $token") }
   }
-
 }

@@ -24,6 +24,7 @@ class CourtCaseClientTest : IntegrationTest() {
   @Test
   fun `pull court case data returns not found`() {
     assertThrows<ExternalApiEntityNotFoundException> {
-      courtCaseClient.getCourtCase("notfound", caseNumber)    }
+      courtCaseClient.getCourtCase("notfound", caseNumber)
+    }
   }
 }

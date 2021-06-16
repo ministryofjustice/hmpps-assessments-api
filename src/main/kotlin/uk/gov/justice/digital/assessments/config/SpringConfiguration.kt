@@ -8,7 +8,6 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.cache.annotation.EnableCaching
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
@@ -64,9 +63,9 @@ class SpringConfiguration : WebMvcConfigurer {
   @Bean
   fun redisConnectionFactory(): JedisConnectionFactory {
     val redisStandaloneConfiguration = RedisStandaloneConfiguration(server, port)
-    redisStandaloneConfiguration.setPassword(password);
+    redisStandaloneConfiguration.setPassword(password)
 
-    val jedisClientConfigurationBuilder = JedisClientConfiguration.builder();
+    val jedisClientConfigurationBuilder = JedisClientConfiguration.builder()
     if (ssl) {
       jedisClientConfigurationBuilder.useSsl()
     }

@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.assessments.api.AnswerDto
 import uk.gov.justice.digital.assessments.api.AnswersDto
-import uk.gov.justice.digital.assessments.jpa.entities.AnswerEntity
 
 @DisplayName("AnswersDto Serialization Tests")
 class AnswersDtoSerializationTest {
@@ -41,16 +40,20 @@ class AnswersDtoSerializationTest {
   fun `single value answer`() {
     val dto = AnswersDto(listOf(AnswerDto(listOf("Fruit"))))
 
-    assertJsonIs(dto,
-      "{\"answers\":[\"Fruit\"]}")
+    assertJsonIs(
+      dto,
+      "{\"answers\":[\"Fruit\"]}"
+    )
   }
 
   @Test
   fun `multi-value answer`() {
     val dto = AnswersDto(listOf(AnswerDto(listOf("Fruit", "Vegetables"))))
 
-    assertJsonIs(dto,
-      "{\"answers\":[\"Fruit\",\"Vegetables\"]}")
+    assertJsonIs(
+      dto,
+      "{\"answers\":[\"Fruit\",\"Vegetables\"]}"
+    )
   }
 
   @Nested
@@ -58,53 +61,78 @@ class AnswersDtoSerializationTest {
   inner class TableRow {
     @Test
     fun `two single value answers`() {
-      val dto = AnswersDto(listOf(
-        AnswerDto(listOf("Fruit")),
-        AnswerDto(listOf("Vegetables"))))
+      val dto = AnswersDto(
+        listOf(
+          AnswerDto(listOf("Fruit")),
+          AnswerDto(listOf("Vegetables"))
+        )
+      )
 
-      assertJsonIs(dto,
-        "{\"answers\":[[\"Fruit\"],[\"Vegetables\"]]}")
+      assertJsonIs(
+        dto,
+        "{\"answers\":[[\"Fruit\"],[\"Vegetables\"]]}"
+      )
     }
 
     @Test
     fun `compound multi-value answer 1`() {
-      val dto = AnswersDto(listOf(
-        AnswerDto(listOf("Fruit")),
-        AnswerDto(listOf("Potatoes", "Carrots", "Onions"))))
+      val dto = AnswersDto(
+        listOf(
+          AnswerDto(listOf("Fruit")),
+          AnswerDto(listOf("Potatoes", "Carrots", "Onions"))
+        )
+      )
 
-      assertJsonIs(dto,
-        "{\"answers\":[[\"Fruit\"],[\"Potatoes\",\"Carrots\",\"Onions\"]]}")
+      assertJsonIs(
+        dto,
+        "{\"answers\":[[\"Fruit\"],[\"Potatoes\",\"Carrots\",\"Onions\"]]}"
+      )
     }
 
     @Test
     fun `compound multi-value answer 2`() {
-      val dto = AnswersDto(listOf(
-        AnswerDto(listOf("Potatoes", "Carrots", "Onions")),
-        AnswerDto(listOf("Fruit"))))
+      val dto = AnswersDto(
+        listOf(
+          AnswerDto(listOf("Potatoes", "Carrots", "Onions")),
+          AnswerDto(listOf("Fruit"))
+        )
+      )
 
-      assertJsonIs(dto,
-        "{\"answers\":[[\"Potatoes\",\"Carrots\",\"Onions\"],[\"Fruit\"]]}")
+      assertJsonIs(
+        dto,
+        "{\"answers\":[[\"Potatoes\",\"Carrots\",\"Onions\"],[\"Fruit\"]]}"
+      )
     }
 
     @Test
     fun `compound multi-value answer 3`() {
-      val dto = AnswersDto(listOf(
-        AnswerDto(listOf("Bananas")),
-        AnswerDto(listOf("Potatoes", "Carrots", "Onions")),
-        AnswerDto(listOf("Fruit"))))
+      val dto = AnswersDto(
+        listOf(
+          AnswerDto(listOf("Bananas")),
+          AnswerDto(listOf("Potatoes", "Carrots", "Onions")),
+          AnswerDto(listOf("Fruit"))
+        )
+      )
 
-      assertJsonIs(dto,
-        "{\"answers\":[[\"Bananas\"],[\"Potatoes\",\"Carrots\",\"Onions\"],[\"Fruit\"]]}")
+      assertJsonIs(
+        dto,
+        "{\"answers\":[[\"Bananas\"],[\"Potatoes\",\"Carrots\",\"Onions\"],[\"Fruit\"]]}"
+      )
     }
 
     @Test
     fun `compound multi-value answer 4`() {
-      val dto = AnswersDto(listOf(
-        AnswerDto(listOf("Bananas", "Apples")),
-        AnswerDto(listOf("Potatoes", "Carrots", "Onions"))))
+      val dto = AnswersDto(
+        listOf(
+          AnswerDto(listOf("Bananas", "Apples")),
+          AnswerDto(listOf("Potatoes", "Carrots", "Onions"))
+        )
+      )
 
-      assertJsonIs(dto,
-        "{\"answers\":[[\"Bananas\",\"Apples\"],[\"Potatoes\",\"Carrots\",\"Onions\"]]}")
+      assertJsonIs(
+        dto,
+        "{\"answers\":[[\"Bananas\",\"Apples\"],[\"Potatoes\",\"Carrots\",\"Onions\"]]}"
+      )
     }
   }
 

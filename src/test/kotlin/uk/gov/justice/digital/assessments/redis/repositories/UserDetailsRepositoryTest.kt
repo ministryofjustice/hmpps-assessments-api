@@ -19,6 +19,5 @@ class UserDetailsRepositoryTest(@Autowired val userDetailsRepository: UserDetail
     assertThat(userDetails.oasysUserCode).isEqualTo("SUPPORT1")
 
     redisTemplate?.delete(redisTemplate?.keys("*"))
-
   }
 }
