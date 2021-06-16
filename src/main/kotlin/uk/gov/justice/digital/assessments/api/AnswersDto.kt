@@ -1,13 +1,21 @@
 package uk.gov.justice.digital.assessments.api
 import com.fasterxml.jackson.core.JsonGenerator
+import com.fasterxml.jackson.core.JsonParser
+import com.fasterxml.jackson.databind.DeserializationContext
+import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.SerializerProvider
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import com.fasterxml.jackson.databind.annotation.JsonNaming
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.ser.std.StdSerializer
 import uk.gov.justice.digital.assessments.jpa.entities.Answer
 import uk.gov.justice.digital.assessments.jpa.entities.AnswerEntity
+import java.lang.IllegalStateException
 import java.util.UUID
 
 @JsonSerialize(using = AnswersDtoSerializer::class)
+@JsonDeserialize(using = AnswersDtoDeserializer::class)
 data class AnswersDto(
   var answers: Collection<AnswerDto> = emptyList()
 ) {
@@ -37,8 +45,6 @@ object AnswersDtoSerializer : StdSerializer<AnswersDto>(AnswersDto::class.java) 
       return
 
     with(value.answers) {
-      gen?.writeStartObject()
-      gen?.writeFieldName("answers")
       if (size == 1) {
         gen?.writeObject(first())
       } else {
@@ -46,7 +52,35 @@ object AnswersDtoSerializer : StdSerializer<AnswersDto>(AnswersDto::class.java) 
         forEach { gen?.writeObject(it) }
         gen?.writeEndArray()
       }
-      gen?.writeEndObject()
     }
+  }
+}
+
+object AnswersDtoDeserializer : StdDeserializer<AnswersDto>(AnswersDto::class.java) {
+  override fun deserialize(p: JsonParser, ctxt: DeserializationContext): AnswersDto {
+    val node = ctxt.readTree(p)
+
+    if (node.isTextual) {
+      val item = ctxt.readValue(p, String::class.java)
+      return AnswersDto(listOf(AnswerDto(listOf(item))))
+    }
+    if (node.isArray) {
+      val answers = node.elements().asSequence().map { deserialiseAnswerDto(it) }.toList()
+      return AnswersDto(answers)
+    }
+
+    throw IllegalStateException("Expected a string or array of strings to deserialise an Answer, but type was ${node.nodeType}")
+  }
+
+  fun deserialiseAnswerDto(node: JsonNode): AnswerDto {
+    if (node.isTextual) {
+      return AnswerDto(listOf(node.asText()))
+    }
+    if (node.isArray) {
+      val items = node.elements().asSequence().map { it.asText() }.toList()
+      return AnswerDto(items)
+    }
+
+    throw IllegalStateException("Expected a string or array of strings to deserialise an Answer, but type was ${node.nodeType}")
   }
 }
