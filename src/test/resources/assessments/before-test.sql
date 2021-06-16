@@ -3,6 +3,15 @@
 delete from assessed_episode where true;
 delete from subject where true;
 delete from assessment where true;
+DELETE FROM oasys_question_mapping WHERE true;
+DELETE FROM answer_schema WHERE true;
+DELETE FROM oasys_reference_data_target_mapping WHERE true;
+DELETE FROM question_schema WHERE true;
+DELETE FROM answer_schema_group WHERE true;
+DELETE FROM question_group WHERE true;
+DELETE FROM grouping WHERE true;
+DELETE FROM question_dependency WHERE true;
+
 
 /* Assessment with Episodes */
 insert into assessment  (assessment_id, assessment_uuid, created_date) values
