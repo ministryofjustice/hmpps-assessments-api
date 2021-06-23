@@ -18,6 +18,7 @@ import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiEntityN
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiForbiddenException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiInvalidRequestException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiUnknownException
+import uk.gov.justice.digital.assessments.services.exceptions.OASysUserPermissionException
 import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
 import uk.gov.justice.digital.assessments.services.exceptions.UserAreaHeaderIsMandatoryException
 import uk.gov.justice.digital.assessments.services.exceptions.UserIdIsMandatoryException
@@ -37,6 +38,13 @@ class ControllerAdvice {
     return ResponseEntity(ErrorResponse(status = 401, developerMessage = e.message), HttpStatus.UNAUTHORIZED)
   }
 
+  @ExceptionHandler(OASysUserPermissionException::class)
+  @ResponseStatus(HttpStatus.UNAUTHORIZED)
+  fun handle(e: OASysUserPermissionException): ResponseEntity<ErrorResponse?> {
+    log.error("OASysUserPermissionException: ${e.message} with extra information ${e.extraInfoMessage}")
+    return ResponseEntity(ErrorResponse(status = 401, developerMessage = e.message, reason = e.reason.toString()), HttpStatus.UNAUTHORIZED)
+  }
+
   @ExceptionHandler(UpdateClosedEpisodeException::class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   fun handle(e: UpdateClosedEpisodeException): ResponseEntity<ErrorResponse?> {
@@ -48,7 +56,7 @@ class ControllerAdvice {
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   fun handle(e: DuplicateOffenderRecordException): ResponseEntity<ErrorResponse?> {
     log.error("DuplicateOffenderRecordException: ${e.message} with extra information ${e.extraInfoMessage}")
-    return ResponseEntity(ErrorResponse(status = 400, developerMessage = e.message), HttpStatus.BAD_REQUEST)
+    return ResponseEntity(ErrorResponse(status = 400, developerMessage = e.message, reason = e.reason.toString()), HttpStatus.BAD_REQUEST)
   }
 
   @ExceptionHandler(EntityNotFoundException::class)
