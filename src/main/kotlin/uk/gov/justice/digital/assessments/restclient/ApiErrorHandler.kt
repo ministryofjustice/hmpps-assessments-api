@@ -70,7 +70,7 @@ fun handleOffenderError(
     }
     HttpStatus.FORBIDDEN == clientResponse.statusCode() -> {
       clientResponse.bodyToMono(OASysErrorResponse::class.java)
-        .map { error -> UserNotAuthorisedException(error.developerMessage, "Unable to create OASys offender. User $user does not have permission to create offender with crn $crn") }
+        .map { error -> OASysUserPermissionException(error.developerMessage, "Unable to create OASys offender. User $user does not have permission to create offender with crn $crn") }
     }
     else -> handleError(clientResponse, method, url, ExternalService.ASSESSMENTS_API)
   }

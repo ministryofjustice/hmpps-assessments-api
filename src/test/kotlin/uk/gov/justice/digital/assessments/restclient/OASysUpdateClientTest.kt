@@ -10,7 +10,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OasysAnswer
 import uk.gov.justice.digital.assessments.services.exceptions.DuplicateOffenderRecordException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiUnknownException
-import uk.gov.justice.digital.assessments.services.exceptions.UserNotAuthorisedException
+import uk.gov.justice.digital.assessments.services.exceptions.OASysUserPermissionException
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import uk.gov.justice.digital.assessments.utils.RequestData
 
@@ -48,7 +48,7 @@ class OASysUpdateClientTest : IntegrationTest() {
   fun `create OASys Offender throws exception when forbidden response received`() {
     assertThatThrownBy {
       assessmentUpdateRestClient.createOasysOffender(forbiddenCrn)
-    }.isInstanceOf(UserNotAuthorisedException::class.java)
+    }.isInstanceOf(OASysUserPermissionException::class.java)
   }
 
   @Test
@@ -84,7 +84,7 @@ class OASysUpdateClientTest : IntegrationTest() {
   @Test
   fun `create OASys Assessment throws exception when forbidden response received`() {
     assertThatThrownBy { assessmentUpdateRestClient.createAssessment(forbiddenOffenderPk, assessmentType) }
-      .isInstanceOf(UserNotAuthorisedException::class.java)
+      .isInstanceOf(OASysUserPermissionException::class.java)
   }
 
   @Test
@@ -111,7 +111,7 @@ class OASysUpdateClientTest : IntegrationTest() {
   @Test
   fun `update OASys Assessment throws exception when forbidden response received`() {
     assertThatThrownBy { assessmentUpdateRestClient.createAssessment(forbiddenOffenderPk, assessmentType) }
-      .isInstanceOf(UserNotAuthorisedException::class.java)
+      .isInstanceOf(OASysUserPermissionException::class.java)
   }
 
   @Test
@@ -136,7 +136,7 @@ class OASysUpdateClientTest : IntegrationTest() {
   @Test
   fun `complete OASys Assessment throws exception when forbidden response received`() {
     assertThatThrownBy { assessmentUpdateRestClient.completeAssessment(forbiddenOffenderPk, oasysSetPk, assessmentType) }
-      .isInstanceOf(UserNotAuthorisedException::class.java)
+      .isInstanceOf(OASysUserPermissionException::class.java)
   }
 
   @Test
