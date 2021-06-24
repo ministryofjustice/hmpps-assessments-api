@@ -57,30 +57,37 @@ class AssessmentUpdateRestClient {
       }
   }
 
+  data class OffenderContext (
+    val offenderPK: Long,
+    val surname: String? = null,
+    val firstname: String? = null,
+    val pncNumber: String? = null,
+  )
+
   fun createAssessment(
-    offenderPK: Long,
+    offender: OffenderContext,
     assessmentType: AssessmentType,
   ): Long? {
     val area = RequestData.getAreaCode()
     val oasysUserCode = userDetailsRedisRepository.findByUserId(RequestData.getUserId()).oasysUserCode
-    log.info("Creating Assessment of type $assessmentType in OASys for offender: $offenderPK, area: $area, user: $oasysUserCode")
+    log.info("Creating Assessment of type $assessmentType in OASys for offender: ${offender.offenderPK}, area: $area, user: $oasysUserCode")
     val path = "/assessments"
     return webClient
-      .post(path, CreateAssessmentDto(offenderPK, area, oasysUserCode, assessmentType))
+      .post(path, CreateAssessmentDto(offender.offenderPK, area, oasysUserCode, assessmentType))
       .retrieve()
       .onStatus(HttpStatus::is4xxClientError) {
         handleAssessmentError(
-          offenderPK,
+          offender,
           oasysUserCode,
           assessmentType,
           it,
           HttpMethod.PUT,
-          path
+          path,
         )
       }
       .onStatus(HttpStatus::is5xxServerError) {
         handle5xxError(
-          "Failed to create assessment for offender $offenderPK in OASYs",
+          "Failed to create assessment for offender ${offender.offenderPK} in OASYs",
           HttpMethod.POST,
           path,
           ExternalService.ASSESSMENTS_UPDATE
@@ -88,7 +95,7 @@ class AssessmentUpdateRestClient {
       }
       .bodyToMono(CreateAssessmentResponse::class.java)
       .block()?.oasysSetPk.also {
-        log.info("Created Assessment of type $assessmentType in OASys for offender: $offenderPK, area: $area, user: $oasysUserCode")
+        log.info("Created Assessment of type $assessmentType in OASys for offender: ${offender.offenderPK}, area: $area, user: $oasysUserCode")
       }
   }
 
@@ -107,7 +114,7 @@ class AssessmentUpdateRestClient {
       .retrieve()
       .onStatus(HttpStatus::is4xxClientError) {
         handleAssessmentError(
-          offenderPK,
+          OffenderContext(offenderPK),
           oasysUserCode,
           assessmentType,
           it,
@@ -146,7 +153,7 @@ class AssessmentUpdateRestClient {
       )
       .retrieve()
       .onStatus(HttpStatus::is4xxClientError) {
-        handleAssessmentError(offenderPK, oasysUserCode, assessmentType, it, HttpMethod.PUT, path)
+        handleAssessmentError(OffenderContext(offenderPK), oasysUserCode, assessmentType, it, HttpMethod.PUT, path)
       }
       .onStatus(HttpStatus::is5xxServerError) {
         handle5xxError(

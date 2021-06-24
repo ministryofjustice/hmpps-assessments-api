@@ -20,6 +20,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.SubjectRepository
 import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient
+import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient.OffenderContext
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import uk.gov.justice.digital.assessments.restclient.courtcaseapi.CourtCase
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
@@ -132,7 +133,13 @@ class AssessmentService(
     }
     val offender = offenderService.getOffender(crn)
     val oasysOffenderPk = assessmentUpdateRestClient.createOasysOffender(crn = crn, deliusEvent = eventId)
-    val oasysSetPK = oasysOffenderPk?.let { assessmentUpdateRestClient.createAssessment(it, assessmentType) }
+    val oasysSetPK = oasysOffenderPk?.let { assessmentUpdateRestClient.createAssessment(
+      OffenderContext(
+        it,
+        offender.surname,
+        offender.firstName,
+        offender.pncNumber,
+      ), assessmentType) }
     return createDeliusAssessmentWithPrepopulatedEpisode(
       crn,
       offender,
@@ -159,7 +166,16 @@ class AssessmentService(
       ?: throw EntityNotFoundException("No court case found for $courtCode, $caseNumber")
 
     val oasysOffenderPk = courtCase.crn?.let { assessmentUpdateRestClient.createOasysOffender(crn = it) }
-    val oasysSetPK = oasysOffenderPk?.let { assessmentUpdateRestClient.createAssessment(it, assessmentType) }
+    val oasysSetPK = oasysOffenderPk?.let {
+      val offender = offenderService.getOffender(courtCase.crn!!)
+      assessmentUpdateRestClient.createAssessment(
+        OffenderContext(
+          it,
+          offender.surname,
+          offender.firstName,
+          offender.pncNumber,
+        ), assessmentType)
+    }
     return createCourtAssessmentWithPrepopulatedEpisode(
       sourceId,
       courtCase,

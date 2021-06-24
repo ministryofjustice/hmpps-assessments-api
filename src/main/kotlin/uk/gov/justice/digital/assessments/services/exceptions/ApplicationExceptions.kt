@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.assessments.services.exceptions
 
 import org.springframework.http.HttpMethod
+import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient.OffenderContext
 import uk.gov.justice.digital.assessments.restclient.ExternalService
 import uk.gov.justice.digital.assessments.services.exceptions.ExceptionReason.DUPLICATE_OFFENDER_RECORD
 import uk.gov.justice.digital.assessments.services.exceptions.ExceptionReason.OASYS_PERMISSION
@@ -26,7 +27,8 @@ class OASysUserPermissionException(
 class DuplicateOffenderRecordException(
   msg: String?,
   val extraInfoMessage: String?,
-  val reason: ExceptionReason = DUPLICATE_OFFENDER_RECORD
+  val reason: ExceptionReason = DUPLICATE_OFFENDER_RECORD,
+  val offenderContext: OffenderContext?,
 ) : RuntimeException(msg)
 
 // External Services Exceptions
