@@ -13,7 +13,6 @@ import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiForbidd
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiInvalidRequestException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiUnknownException
 import uk.gov.justice.digital.assessments.services.exceptions.OASysUserPermissionException
-import uk.gov.justice.digital.assessments.services.exceptions.UserNotAuthorisedException
 
 fun handle4xxError(
   clientResponse: ClientResponse,
