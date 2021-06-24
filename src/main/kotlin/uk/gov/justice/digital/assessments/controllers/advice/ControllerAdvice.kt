@@ -32,17 +32,17 @@ class ControllerAdvice {
   }
 
   @ExceptionHandler(UserNotAuthorisedException::class)
-  @ResponseStatus(HttpStatus.UNAUTHORIZED)
+  @ResponseStatus(HttpStatus.FORBIDDEN)
   fun handle(e: UserNotAuthorisedException): ResponseEntity<ErrorResponse?> {
     log.error("UserNotAuthorisedException: ${e.message} with extra information ${e.extraInfoMessage}")
-    return ResponseEntity(ErrorResponse(status = 401, developerMessage = e.message), HttpStatus.UNAUTHORIZED)
+    return ResponseEntity(ErrorResponse(status = 403, developerMessage = e.message), HttpStatus.FORBIDDEN)
   }
 
   @ExceptionHandler(OASysUserPermissionException::class)
-  @ResponseStatus(HttpStatus.UNAUTHORIZED)
+  @ResponseStatus(HttpStatus.FORBIDDEN)
   fun handle(e: OASysUserPermissionException): ResponseEntity<ErrorResponse?> {
     log.error("OASysUserPermissionException: ${e.message} with extra information ${e.extraInfoMessage}")
-    return ResponseEntity(ErrorResponse(status = 401, developerMessage = e.message, reason = e.reason.toString()), HttpStatus.UNAUTHORIZED)
+    return ResponseEntity(ErrorResponse(status = 403, developerMessage = e.message, reason = e.reason.toString()), HttpStatus.FORBIDDEN)
   }
 
   @ExceptionHandler(UpdateClosedEpisodeException::class)
