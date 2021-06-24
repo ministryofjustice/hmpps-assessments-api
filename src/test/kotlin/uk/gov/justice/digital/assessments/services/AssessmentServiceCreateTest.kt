@@ -18,7 +18,6 @@ import uk.gov.justice.digital.assessments.jpa.entities.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.SubjectRepository
 import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient
-import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient.OffenderContext
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import uk.gov.justice.digital.assessments.restclient.courtcaseapi.CourtCase
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
@@ -50,7 +49,6 @@ class AssessmentServiceCreateTest {
   private val assessmentType = AssessmentType.SHORT_FORM_PSR
 
   private val oasysOffenderPk = 1L
-  private val oasysOffender = OffenderContext(oasysOffenderPk)
   private val crn = "X12345"
   private val oasysSetPk = 1L
 
@@ -68,7 +66,7 @@ class AssessmentServiceCreateTest {
       every { subjectRepository.findBySourceAndSourceIdAndCrn(deliusSource, eventId.toString(), crn) } returns null
       every { offenderService.getOffender("X12345") } returns OffenderDto()
       every { assessmentUpdateRestClient.createOasysOffender(crn = crn, deliusEvent = eventId) } returns oasysOffenderPk
-      every { assessmentUpdateRestClient.createAssessment(oasysOffender, assessmentType) } returns oasysSetPk
+      every { assessmentUpdateRestClient.createAssessment(oasysOffenderPk, assessmentType) } returns oasysSetPk
       every { episodeService.prepopulate(any()) } returnsArgument 0
       every { assessmentRepository.save(any()) } returns AssessmentEntity(assessmentId = assessmentId)
 
@@ -158,9 +156,8 @@ class AssessmentServiceCreateTest {
       } returns null
       every { assessmentRepository.save(any()) } returns AssessmentEntity(assessmentId = assessmentId)
       every { courtCaseRestClient.getCourtCase(courtCode, caseNumber) } returns CourtCase(crn = crn)
-      every { offenderService.getOffender("X12345") } returns OffenderDto()
       every { assessmentUpdateRestClient.createOasysOffender(crn) } returns oasysOffenderPk
-      every { assessmentUpdateRestClient.createAssessment(oasysOffender, assessmentType) } returns oasysSetPk
+      every { assessmentUpdateRestClient.createAssessment(oasysOffenderPk, assessmentType) } returns oasysSetPk
       every { episodeService.prepopulate(any()) } returnsArgument 0
 
       assessmentsService.createNewAssessment(

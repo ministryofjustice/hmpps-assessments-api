@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
 import uk.gov.justice.digital.assessments.api.ErrorResponse
-import uk.gov.justice.digital.assessments.api.ErrorResponseOffender
 import uk.gov.justice.digital.assessments.services.exceptions.DuplicateOffenderRecordException
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiAuthorisationException
@@ -57,18 +56,7 @@ class ControllerAdvice {
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   fun handle(e: DuplicateOffenderRecordException): ResponseEntity<ErrorResponse?> {
     log.error("DuplicateOffenderRecordException: ${e.message} with extra information ${e.extraInfoMessage}")
-    return ResponseEntity(
-      ErrorResponse(
-        status = 400,
-        developerMessage = e.message,
-        reason = e.reason.toString(),
-        offenderContext = e.offenderContext?.let {
-          ErrorResponseOffender(
-            name = listOfNotNull(it.firstname, it.surname).joinToString(" "),
-            pnc = it.pncNumber)
-        }
-      ),
-      HttpStatus.BAD_REQUEST)
+    return ResponseEntity(ErrorResponse(status = 400, developerMessage = e.message, reason = e.reason.toString()), HttpStatus.BAD_REQUEST)
   }
 
   @ExceptionHandler(EntityNotFoundException::class)

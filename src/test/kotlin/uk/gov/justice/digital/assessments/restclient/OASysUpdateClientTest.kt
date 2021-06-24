@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test
 import org.slf4j.MDC
 import org.springframework.beans.factory.annotation.Autowired
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
-import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient.OffenderContext
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OasysAnswer
 import uk.gov.justice.digital.assessments.services.exceptions.DuplicateOffenderRecordException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiUnknownException
@@ -29,13 +28,9 @@ class OASysUpdateClientTest : IntegrationTest() {
   val clientErrorCrn = "DX12340E"
   val clientErrorCrnNoBody = "DX12340F"
   val forbiddenOffenderPk = 2L
+  val duplicateOffenderPk = 3L
   val serverErrorOffenderPk = 4L
   val validationErrorOffenderPk = 5L
-
-  val offenderContext = OffenderContext(1L)
-  val forbiddenOffender = OffenderContext(2L)
-  val duplicateOffender = OffenderContext(3L)
-  val serverErrorOffender = OffenderContext(4L)
 
   @BeforeEach
   fun setup() {
@@ -82,25 +77,25 @@ class OASysUpdateClientTest : IntegrationTest() {
 
   @Test
   fun `create OASys Assessment`() {
-    val returnAssessmentPk = assessmentUpdateRestClient.createAssessment(offenderContext, assessmentType)
+    val returnAssessmentPk = assessmentUpdateRestClient.createAssessment(offenderPk, assessmentType)
     assertThat(returnAssessmentPk).isEqualTo(1)
   }
 
   @Test
   fun `create OASys Assessment throws exception when forbidden response received`() {
-    assertThatThrownBy { assessmentUpdateRestClient.createAssessment(forbiddenOffender, assessmentType) }
+    assertThatThrownBy { assessmentUpdateRestClient.createAssessment(forbiddenOffenderPk, assessmentType) }
       .isInstanceOf(OASysUserPermissionException::class.java)
   }
 
   @Test
   fun `create OASys Assessment throws exception when duplicate error response received`() {
-    assertThatThrownBy { assessmentUpdateRestClient.createAssessment(duplicateOffender, assessmentType) }
+    assertThatThrownBy { assessmentUpdateRestClient.createAssessment(duplicateOffenderPk, assessmentType) }
       .isInstanceOf(DuplicateOffenderRecordException::class.java)
   }
 
   @Test
   fun `create OASys Assessment throws exception on server error`() {
-    assertThatThrownBy { assessmentUpdateRestClient.createAssessment(serverErrorOffender, assessmentType) }
+    assertThatThrownBy { assessmentUpdateRestClient.createAssessment(serverErrorOffenderPk, assessmentType) }
       .isInstanceOf(ExternalApiUnknownException::class.java)
   }
 
@@ -115,13 +110,13 @@ class OASysUpdateClientTest : IntegrationTest() {
 
   @Test
   fun `update OASys Assessment throws exception when forbidden response received`() {
-    assertThatThrownBy { assessmentUpdateRestClient.createAssessment(forbiddenOffender, assessmentType) }
+    assertThatThrownBy { assessmentUpdateRestClient.createAssessment(forbiddenOffenderPk, assessmentType) }
       .isInstanceOf(OASysUserPermissionException::class.java)
   }
 
   @Test
   fun `update OASys Assessment throws exception on server error`() {
-    assertThatThrownBy { assessmentUpdateRestClient.createAssessment(serverErrorOffender, assessmentType) }
+    assertThatThrownBy { assessmentUpdateRestClient.createAssessment(serverErrorOffenderPk, assessmentType) }
       .isInstanceOf(ExternalApiUnknownException::class.java)
   }
 
