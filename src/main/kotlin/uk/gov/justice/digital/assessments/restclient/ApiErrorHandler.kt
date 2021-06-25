@@ -12,7 +12,7 @@ import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiEntityN
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiForbiddenException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiInvalidRequestException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiUnknownException
-import uk.gov.justice.digital.assessments.services.exceptions.UserNotAuthorisedException
+import uk.gov.justice.digital.assessments.services.exceptions.OASysUserPermissionException
 
 fun handle4xxError(
   clientResponse: ClientResponse,
@@ -69,7 +69,7 @@ fun handleOffenderError(
     }
     HttpStatus.FORBIDDEN == clientResponse.statusCode() -> {
       clientResponse.bodyToMono(OASysErrorResponse::class.java)
-        .map { error -> UserNotAuthorisedException(error.developerMessage, "Unable to create OASys offender. User $user does not have permission to create offender with crn $crn") }
+        .map { error -> OASysUserPermissionException(error.developerMessage, "Unable to create OASys offender. User $user does not have permission to create offender with crn $crn") }
     }
     else -> handleError(clientResponse, method, url, ExternalService.ASSESSMENTS_API)
   }
@@ -90,7 +90,7 @@ fun handleAssessmentError(
     }
     HttpStatus.FORBIDDEN == clientResponse.statusCode() -> {
       clientResponse.bodyToMono(OASysErrorResponse::class.java)
-        .map { error -> UserNotAuthorisedException(error.developerMessage, "Unable to create OASys assessment. User $user does not have permission to create assessment type: $assessmentType for offender with pk $offenderPK") }
+        .map { error -> OASysUserPermissionException(error.developerMessage, "Unable to create OASys assessment. User $user does not have permission to create assessment type: $assessmentType for offender with pk $offenderPK") }
     }
     else -> handleError(clientResponse, method, url, ExternalService.ASSESSMENTS_API)
   }

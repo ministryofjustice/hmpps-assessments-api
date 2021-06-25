@@ -18,6 +18,7 @@ import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiEntityN
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiForbiddenException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiInvalidRequestException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiUnknownException
+import uk.gov.justice.digital.assessments.services.exceptions.OASysUserPermissionException
 import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
 import uk.gov.justice.digital.assessments.services.exceptions.UserAreaHeaderIsMandatoryException
 import uk.gov.justice.digital.assessments.services.exceptions.UserIdIsMandatoryException
@@ -31,10 +32,17 @@ class ControllerAdvice {
   }
 
   @ExceptionHandler(UserNotAuthorisedException::class)
-  @ResponseStatus(HttpStatus.UNAUTHORIZED)
+  @ResponseStatus(HttpStatus.FORBIDDEN)
   fun handle(e: UserNotAuthorisedException): ResponseEntity<ErrorResponse?> {
     log.error("UserNotAuthorisedException: ${e.message} with extra information ${e.extraInfoMessage}")
-    return ResponseEntity(ErrorResponse(status = 401, developerMessage = e.message), HttpStatus.UNAUTHORIZED)
+    return ResponseEntity(ErrorResponse(status = 403, developerMessage = e.message), HttpStatus.FORBIDDEN)
+  }
+
+  @ExceptionHandler(OASysUserPermissionException::class)
+  @ResponseStatus(HttpStatus.FORBIDDEN)
+  fun handle(e: OASysUserPermissionException): ResponseEntity<ErrorResponse?> {
+    log.error("OASysUserPermissionException: ${e.message} with extra information ${e.extraInfoMessage}")
+    return ResponseEntity(ErrorResponse(status = 403, developerMessage = e.message, reason = e.reason.toString()), HttpStatus.FORBIDDEN)
   }
 
   @ExceptionHandler(UpdateClosedEpisodeException::class)
@@ -48,7 +56,7 @@ class ControllerAdvice {
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   fun handle(e: DuplicateOffenderRecordException): ResponseEntity<ErrorResponse?> {
     log.error("DuplicateOffenderRecordException: ${e.message} with extra information ${e.extraInfoMessage}")
-    return ResponseEntity(ErrorResponse(status = 400, developerMessage = e.message), HttpStatus.BAD_REQUEST)
+    return ResponseEntity(ErrorResponse(status = 400, developerMessage = e.message, reason = e.reason.toString()), HttpStatus.BAD_REQUEST)
   }
 
   @ExceptionHandler(EntityNotFoundException::class)
