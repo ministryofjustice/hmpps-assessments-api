@@ -2,13 +2,18 @@ package uk.gov.justice.digital.assessments.restclient
 
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.slf4j.MDC
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpMethod
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OasysAnswer
 import uk.gov.justice.digital.assessments.services.exceptions.DuplicateOffenderRecordException
+import uk.gov.justice.digital.assessments.services.exceptions.ExceptionReason
+import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiForbiddenException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiUnknownException
 import uk.gov.justice.digital.assessments.services.exceptions.OASysUserPermissionException
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
@@ -82,6 +87,26 @@ class OASysUpdateClientTest : IntegrationTest() {
   }
 
   @Test
+  fun `create OASys Assessment is Forbidden when OFF_ASSESSMENT_CREATE is not authorised`() {
+    val exception =
+      assertThrows<ExternalApiForbiddenException> {
+        assessmentUpdateRestClient.createAssessment(
+          7276800,
+          assessmentType
+        )
+      }
+    assertEquals(exception.message, "One of the permissions is Unauthorized")
+    assertEquals(exception.method, HttpMethod.POST)
+    assertEquals(exception.url, "/authorisation/permissions")
+    assertEquals(exception.client, ExternalService.ASSESSMENTS_API)
+    assertEquals(
+      exception.moreInfo,
+      "STUART WHITLAM in Warwickshire is currently doing an assessment on this offender, created on 12/04/2021."
+    )
+    assertEquals(exception.reason, ExceptionReason.OASYS_PERMISSION)
+  }
+
+  @Test
   fun `create OASys Assessment throws exception when forbidden response received`() {
     assertThatThrownBy { assessmentUpdateRestClient.createAssessment(forbiddenOffenderPk, assessmentType) }
       .isInstanceOf(OASysUserPermissionException::class.java)
@@ -128,20 +153,33 @@ class OASysUpdateClientTest : IntegrationTest() {
 
   @Test
   fun `complete OASys Assessment with validation errors`() {
-    val returnAssessment = assessmentUpdateRestClient.completeAssessment(validationErrorOffenderPk, oasysSetPk, assessmentType)
+    val returnAssessment =
+      assessmentUpdateRestClient.completeAssessment(validationErrorOffenderPk, oasysSetPk, assessmentType)
     assertThat(returnAssessment?.oasysSetPk).isEqualTo(1)
     assertThat(returnAssessment?.validationErrorDtos).hasSize(1)
   }
 
   @Test
   fun `complete OASys Assessment throws exception when forbidden response received`() {
-    assertThatThrownBy { assessmentUpdateRestClient.completeAssessment(forbiddenOffenderPk, oasysSetPk, assessmentType) }
+    assertThatThrownBy {
+      assessmentUpdateRestClient.completeAssessment(
+        forbiddenOffenderPk,
+        oasysSetPk,
+        assessmentType
+      )
+    }
       .isInstanceOf(OASysUserPermissionException::class.java)
   }
 
   @Test
   fun `complete OASys Assessment throws exception on server error`() {
-    assertThatThrownBy { assessmentUpdateRestClient.completeAssessment(serverErrorOffenderPk, oasysSetPk, assessmentType) }
+    assertThatThrownBy {
+      assessmentUpdateRestClient.completeAssessment(
+        serverErrorOffenderPk,
+        oasysSetPk,
+        assessmentType
+      )
+    }
       .isInstanceOf(ExternalApiUnknownException::class.java)
   }
 }

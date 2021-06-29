@@ -6,6 +6,8 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.slf4j.MDC
 import org.springframework.beans.factory.annotation.Autowired
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
+import uk.gov.justice.digital.assessments.restclient.assessmentapi.Roles
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiAuthorisationException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiEntityNotFoundException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiInvalidRequestException
@@ -58,6 +60,16 @@ class AssessmentApiTest : IntegrationTest() {
     Assertions.assertThatThrownBy {
       assessmentApiRestClient.getOASysAssessment(3)
     }.isInstanceOf(ExternalApiUnknownException::class.java)
+  }
+
+  @Test
+  fun `retrieve OASys Rbac Permissions for create offender assessment missing offenderPk throws exception`() {
+    Assertions.assertThatThrownBy {
+      assessmentApiRestClient.getOASysRBACPermissions(
+        roleChecks = setOf(Roles.OFF_ASSESSMENT_CREATE),
+        assessmentType = AssessmentType.SHORT_FORM_PSR
+      )
+    }.isInstanceOf(ExternalApiInvalidRequestException::class.java)
   }
 
   @Test

@@ -2,7 +2,6 @@ package uk.gov.justice.digital.assessments.api
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import io.swagger.v3.oas.annotations.media.Schema
-import uk.gov.justice.digital.assessments.services.exceptions.ExceptionReason
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 data class ErrorResponse(

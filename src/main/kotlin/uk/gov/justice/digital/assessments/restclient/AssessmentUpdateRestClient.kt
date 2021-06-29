@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.redis.UserDetailsRedisRepository
+import uk.gov.justice.digital.assessments.restclient.assessmentapi.Authorized
+import uk.gov.justice.digital.assessments.restclient.assessmentapi.Roles
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.CompleteAssessmentDto
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.CreateAssessmentDto
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.CreateAssessmentResponse
@@ -37,7 +39,7 @@ class AssessmentUpdateRestClient {
     deliusEvent: Long? = 123456
   ): Long? {
     val area = RequestData.getAreaCode()
-    val oasysUserCode = userDetailsRedisRepository.findByUserId(RequestData.getUserId()).oasysUserCode
+    val oasysUserCode = "STUARTWHITLAM"
     log.info("Creating offender in OASys for crn: $crn, area: $area, user: $oasysUserCode, delius event: $deliusEvent")
     val path = "/offenders"
     return webClient
@@ -57,6 +59,7 @@ class AssessmentUpdateRestClient {
       }
   }
 
+  @Authorized(roleChecks = [Roles.OFF_ASSESSMENT_CREATE])
   fun createAssessment(
     offenderPK: Long,
     assessmentType: AssessmentType,
