@@ -39,7 +39,7 @@ class AssessmentUpdateRestClient {
     deliusEvent: Long? = 123456
   ): Long? {
     val area = RequestData.getAreaCode()
-    val oasysUserCode = "STUARTWHITLAM"
+    val oasysUserCode = userDetailsRedisRepository.findByUserId(RequestData.getUserId()).oasysUserCode
     log.info("Creating offender in OASys for crn: $crn, area: $area, user: $oasysUserCode, delius event: $deliusEvent")
     val path = "/offenders"
     return webClient
