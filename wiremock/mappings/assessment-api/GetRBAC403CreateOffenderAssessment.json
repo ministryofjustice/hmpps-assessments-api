@@ -1,0 +1,32 @@
+{
+  "id": "4e842519-78b0-4449-b2b5-535ee1b81213",
+  "request": {
+    "method": "POST",
+    "urlPathPattern": "/authorisation/permissions",
+    "bodyPatterns" : [ {
+      "equalToJson" : "{\"userCode\": \"STUARTWHITLAM\", \"roleChecks\" : [\"OFF_ASSESSMENT_CREATE\"],\"area\":\"WWS\", \"offenderPk\": 7276800, \"oasysSetPk\" : null, \"assessmentType\": \"SHORT_FORM_PSR\", \"roleNames\" : [ ]}",
+      "ignoreExtraElements" : true
+    } ]
+  },
+  "response": {
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "status": 403,
+    "jsonBody": {
+      "status": 403,
+      "developerMessage": "One of the permissions is Unauthorized",
+      "payload": {
+        "userCode": "STUARTWHITLAM",
+        "offenderPk": 7276800,
+        "permissions": [
+          {
+            "checkCode": "OFF_ASSESSMENT_CREATE",
+            "authorised": false,
+            "returnMessage": "STUART WHITLAM in Warwickshire is currently doing an assessment on this offender, created on 21/04/2021."
+          }
+        ]
+      }
+    }
+  }
+}

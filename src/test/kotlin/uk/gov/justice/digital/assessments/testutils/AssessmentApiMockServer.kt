@@ -108,6 +108,102 @@ class AssessmentApiMockServer : WireMockServer(9004) {
             .withBody(referenceData404Error)
         )
     )
+
+    stubRBACPermissionsForCreateOffenderAssessment(1)
+    stubRBACPermissionsForCreateOffenderAssessment(2)
+    stubRBACPermissionsForCreateOffenderAssessment(3)
+    stubRBACUnauthorisedPermissionsForCreateOffenderAssessment(7276800)
+    stubRBACBadRequestPermissionsForCreateOffenderAssessment()
+  }
+
+  private fun stubRBACBadRequestPermissionsForCreateOffenderAssessment() {
+    stubFor(
+      WireMock.post(WireMock.urlEqualTo("/authorisation/permissions"))
+        .withRequestBody(
+          WireMock.equalToJson(
+            "{\"userCode\": \"STUARTWHITLAM\", \"roleChecks\" : [\"OFF_ASSESSMENT_CREATE\"],\"area\":\"WWS\", \"offenderPk\": null, \"oasysSetPk\" : null, \"assessmentType\": \"SHORT_FORM_PSR\", \"roleNames\" : [ ]}}",
+            true,
+            true
+          )
+        )
+        .willReturn(
+          WireMock.aResponse()
+            .withStatus(400)
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withBody(
+              "{" +
+                "    \"status\": 400," +
+                "    \"developerMessage\": \"Role checks [OFF_ASSESSMENT_CREATE], require parameter offenderPk\"" +
+                "  }"
+            )
+        )
+    )
+  }
+
+  private fun stubRBACPermissionsForCreateOffenderAssessment(offenderPk: Long) {
+    stubFor(
+      WireMock.post(WireMock.urlEqualTo("/authorisation/permissions"))
+        .withRequestBody(
+          WireMock.equalToJson(
+            "{\"userCode\": \"STUARTWHITLAM\", \"roleChecks\" : [\"OFF_ASSESSMENT_CREATE\"],\"area\":\"WWS\", \"offenderPk\": $offenderPk, \"oasysSetPk\" : null, \"assessmentType\": \"SHORT_FORM_PSR\", \"roleNames\" : [ ]}}",
+            true,
+            true
+          )
+        )
+        .willReturn(
+          WireMock.aResponse()
+            .withStatus(200)
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withBody(
+              "" +
+                "{" +
+                "    \"userCode\": \"STUARTWHITLAM\"," +
+                "    \"offenderPk\": $offenderPk," +
+                "    \"permissions\": [" +
+                "        {" +
+                "            \"checkCode\": \"OFF_ASSESSMENT_CREATE\"," +
+                "            \"authorised\": true" +
+                "        }" +
+                "    ]" +
+                "}"
+            )
+        )
+    )
+  }
+
+  private fun stubRBACUnauthorisedPermissionsForCreateOffenderAssessment(offenderPk: Long) {
+    stubFor(
+      WireMock.post(WireMock.urlEqualTo("/authorisation/permissions"))
+        .withRequestBody(
+          WireMock.equalToJson(
+            "{\"userCode\": \"STUARTWHITLAM\", \"roleChecks\" : [\"OFF_ASSESSMENT_CREATE\"],\"area\":\"WWS\", \"offenderPk\": $offenderPk, \"oasysSetPk\" : null, \"assessmentType\": \"SHORT_FORM_PSR\", \"roleNames\" : [ ]}}",
+            true,
+            true
+          )
+        )
+        .willReturn(
+          WireMock.aResponse()
+            .withStatus(403)
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withBody(
+              "{" +
+                "    \"status\": 403," +
+                "    \"developerMessage\": \"One of the permissions is Unauthorized\"," +
+                "    \"payload\": {" +
+                "        \"userCode\": \"STUARTWHITLAM\"," +
+                "        \"offenderPk\": $offenderPk," +
+                "        \"permissions\": [" +
+                "            {" +
+                "                \"checkCode\": \"OFF_ASSESSMENT_CREATE\"," +
+                "                \"authorised\": false," +
+                "                \"returnMessage\": \"STUART WHITLAM in Warwickshire is currently doing an assessment on this offender, created on 12/04/2021.\"" +
+                "            }" +
+                "        ]" +
+                "    }" +
+                "}"
+            )
+        )
+    )
   }
 
   companion object {

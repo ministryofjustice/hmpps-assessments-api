@@ -18,8 +18,9 @@ class UserAreaHeaderIsMandatoryException(msg: String?) : RuntimeException(msg)
 class UserIdIsMandatoryException(msg: String?) : RuntimeException(msg)
 
 class OASysUserPermissionException(
-  msg: String?, val extraInfoMessage:
-  String?,
+  msg: String?,
+  val extraInfoMessage:
+    String?,
   val reason: ExceptionReason = OASYS_PERMISSION
 ) : RuntimeException(msg)
 
@@ -48,7 +49,9 @@ class ExternalApiForbiddenException(
   msg: String,
   val method: HttpMethod,
   val url: String,
-  val client: ExternalService
+  val client: ExternalService,
+  val moreInfo: String? = null,
+  val reason: ExceptionReason? = null
 ) : RuntimeException(msg)
 
 class ExternalApiInvalidRequestException(

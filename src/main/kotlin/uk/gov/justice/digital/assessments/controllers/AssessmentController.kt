@@ -22,7 +22,10 @@ import uk.gov.justice.digital.assessments.services.AssessmentUpdateService
 import java.util.UUID
 
 @RestController
-class AssessmentController(val assessmentService: AssessmentService, val assessmentUpdateService: AssessmentUpdateService) {
+class AssessmentController(
+  val assessmentService: AssessmentService,
+  val assessmentUpdateService: AssessmentUpdateService
+) {
 
   @RequestMapping(path = ["/assessments"], method = [RequestMethod.POST])
   @Operation(description = "Creates a new assessment")
@@ -44,7 +47,12 @@ class AssessmentController(val assessmentService: AssessmentService, val assessm
       ApiResponse(responseCode = "200", description = "OK")
     ]
   )
-  fun getAssessmentSubject(@Parameter(description = "Assessment UUID", required = true) @PathVariable assessmentUuid: UUID): AssessmentSubjectDto {
+  fun getAssessmentSubject(
+    @Parameter(
+      description = "Assessment UUID",
+      required = true
+    ) @PathVariable assessmentUuid: UUID
+  ): AssessmentSubjectDto {
     return assessmentService.getAssessmentSubject(assessmentUuid)
   }
 
@@ -58,9 +66,16 @@ class AssessmentController(val assessmentService: AssessmentService, val assessm
   )
   fun createNewAssessmentEpisode(
     @Parameter(description = "Assessment UUID", required = true, example = "1234") @PathVariable assessmentUuid: UUID,
-    @Parameter(description = "Reason for the new Episode of Change", required = true) @RequestBody createAssessmentEpisodeDto: CreateAssessmentEpisodeDto
+    @Parameter(
+      description = "Reason for the new Episode of Change",
+      required = true
+    ) @RequestBody createAssessmentEpisodeDto: CreateAssessmentEpisodeDto
   ): AssessmentEpisodeDto? {
-    return assessmentService.createNewEpisode(assessmentUuid, createAssessmentEpisodeDto.changeReason, createAssessmentEpisodeDto.assessmentType)
+    return assessmentService.createNewEpisode(
+      assessmentUuid,
+      createAssessmentEpisodeDto.changeReason,
+      createAssessmentEpisodeDto.assessmentType
+    )
   }
 
   @RequestMapping(path = ["/assessments/{assessmentUuid}/episodes"], method = [RequestMethod.GET])
@@ -71,7 +86,13 @@ class AssessmentController(val assessmentService: AssessmentService, val assessm
       ApiResponse(responseCode = "200", description = "OK")
     ]
   )
-  fun getAllEpisodesForAssessment(@Parameter(description = "Assessment UUID", required = true, example = "1234") @PathVariable assessmentUuid: UUID): Collection<AssessmentEpisodeDto>? {
+  fun getAllEpisodesForAssessment(
+    @Parameter(
+      description = "Assessment UUID",
+      required = true,
+      example = "1234"
+    ) @PathVariable assessmentUuid: UUID
+  ): Collection<AssessmentEpisodeDto>? {
     return assessmentService.getAssessmentEpisodes(assessmentUuid)
   }
 
@@ -83,7 +104,13 @@ class AssessmentController(val assessmentService: AssessmentService, val assessm
       ApiResponse(responseCode = "200", description = "OK")
     ]
   )
-  fun getCurrentEpisodeForAssessment(@Parameter(description = "Assessment ID", required = true, example = "1234") @PathVariable assessmentUuid: UUID): AssessmentEpisodeDto {
+  fun getCurrentEpisodeForAssessment(
+    @Parameter(
+      description = "Assessment ID",
+      required = true,
+      example = "1234"
+    ) @PathVariable assessmentUuid: UUID
+  ): AssessmentEpisodeDto {
     return assessmentService.getCurrentAssessmentEpisode(assessmentUuid)
   }
 
@@ -106,7 +133,10 @@ class AssessmentController(val assessmentService: AssessmentService, val assessm
     )
   }
 
-  @RequestMapping(path = ["/assessments/{assessmentUuid}/episodes/{episodeUuid}/{tableName}"], method = [RequestMethod.POST])
+  @RequestMapping(
+    path = ["/assessments/{assessmentUuid}/episodes/{episodeUuid}/{tableName}"],
+    method = [RequestMethod.POST]
+  )
   @Operation(description = "adds a row to a table answer")
   @ApiResponses(
     value = [
@@ -145,7 +175,10 @@ class AssessmentController(val assessmentService: AssessmentService, val assessm
     )
   }
 
-  @RequestMapping(path = ["/assessments/{assessmentUuid}/episodes/{episodeUuid}/{tableName}/{index}"], method = [RequestMethod.POST])
+  @RequestMapping(
+    path = ["/assessments/{assessmentUuid}/episodes/{episodeUuid}/{tableName}/{index}"],
+    method = [RequestMethod.POST]
+  )
   @Operation(description = "update a row in a table answer")
   @ApiResponses(
     value = [
@@ -166,7 +199,10 @@ class AssessmentController(val assessmentService: AssessmentService, val assessm
     )
   }
 
-  @RequestMapping(path = ["/assessments/{assessmentUuid}/episodes/current/{tableName}/{index}"], method = [RequestMethod.POST])
+  @RequestMapping(
+    path = ["/assessments/{assessmentUuid}/episodes/current/{tableName}/{index}"],
+    method = [RequestMethod.POST]
+  )
   @Operation(description = "updates a row in a table answer")
   @ApiResponses(
     value = [
@@ -186,7 +222,10 @@ class AssessmentController(val assessmentService: AssessmentService, val assessm
     )
   }
 
-  @RequestMapping(path = ["/assessments/{assessmentUuid}/episodes/{episodeUuid}/{tableName}/{index}"], method = [RequestMethod.DELETE])
+  @RequestMapping(
+    path = ["/assessments/{assessmentUuid}/episodes/{episodeUuid}/{tableName}/{index}"],
+    method = [RequestMethod.DELETE]
+  )
   @Operation(description = "remove a row from a table answer")
   @ApiResponses(
     value = [
@@ -206,7 +245,10 @@ class AssessmentController(val assessmentService: AssessmentService, val assessm
     )
   }
 
-  @RequestMapping(path = ["/assessments/{assessmentUuid}/episodes/current/{tableName}/{index}"], method = [RequestMethod.DELETE])
+  @RequestMapping(
+    path = ["/assessments/{assessmentUuid}/episodes/current/{tableName}/{index}"],
+    method = [RequestMethod.DELETE]
+  )
   @Operation(description = "removes a row in a table answer in the current episode")
   @ApiResponses(
     value = [

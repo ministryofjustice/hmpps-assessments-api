@@ -42,7 +42,10 @@ class ControllerAdvice {
   @ResponseStatus(HttpStatus.FORBIDDEN)
   fun handle(e: OASysUserPermissionException): ResponseEntity<ErrorResponse?> {
     log.error("OASysUserPermissionException: ${e.message} with extra information ${e.extraInfoMessage}")
-    return ResponseEntity(ErrorResponse(status = 403, developerMessage = e.message, reason = e.reason.toString()), HttpStatus.FORBIDDEN)
+    return ResponseEntity(
+      ErrorResponse(status = 403, developerMessage = e.message, reason = e.reason.toString()),
+      HttpStatus.FORBIDDEN
+    )
   }
 
   @ExceptionHandler(UpdateClosedEpisodeException::class)
@@ -56,7 +59,10 @@ class ControllerAdvice {
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   fun handle(e: DuplicateOffenderRecordException): ResponseEntity<ErrorResponse?> {
     log.error("DuplicateOffenderRecordException: ${e.message} with extra information ${e.extraInfoMessage}")
-    return ResponseEntity(ErrorResponse(status = 400, developerMessage = e.message, reason = e.reason.toString()), HttpStatus.BAD_REQUEST)
+    return ResponseEntity(
+      ErrorResponse(status = 400, developerMessage = e.message, reason = e.reason.toString()),
+      HttpStatus.BAD_REQUEST
+    )
   }
 
   @ExceptionHandler(EntityNotFoundException::class)
@@ -145,7 +151,7 @@ class ControllerAdvice {
   @ResponseStatus(HttpStatus.FORBIDDEN)
   fun handle(e: UserIdIsMandatoryException): ResponseEntity<ErrorResponse?> {
     log.info("UserIdIsMandatoryException: {}", e.message)
-    return ResponseEntity(ErrorResponse(status = 401, developerMessage = e.message), HttpStatus.FORBIDDEN)
+    return ResponseEntity(ErrorResponse(status = 403, developerMessage = e.message), HttpStatus.FORBIDDEN)
   }
 
   @ExceptionHandler(ExternalApiForbiddenException::class)
@@ -155,7 +161,15 @@ class ControllerAdvice {
       "ApiClientForbiddenException for external client ${e.client} method ${e.method} and url ${e.url}: {}",
       e.message
     )
-    return ResponseEntity(ErrorResponse(status = 401, developerMessage = e.message), HttpStatus.FORBIDDEN)
+    return ResponseEntity(
+      ErrorResponse(
+        status = 403,
+        developerMessage = e.message,
+        moreInfo = e.moreInfo,
+        reason = e.reason.toString()
+      ),
+      HttpStatus.FORBIDDEN
+    )
   }
 
   @ExceptionHandler(Exception::class)
