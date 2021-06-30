@@ -6,7 +6,7 @@ import org.slf4j.MDC
 import org.springframework.web.servlet.HandlerInterceptor
 import uk.gov.justice.digital.assessments.config.AuthAwareAuthenticationToken
 import uk.gov.justice.digital.assessments.services.exceptions.UserAreaHeaderIsMandatoryException
-import uk.gov.justice.digital.assessments.services.exceptions.UserIdIsMandatoryException
+import uk.gov.justice.digital.assessments.services.exceptions.UserIsMandatoryException
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -84,7 +84,11 @@ class RequestData(excludeUris: String?) : HandlerInterceptor {
     }
 
     fun getUserId(): String {
-      return MDC.get(USER_ID_HEADER) ?: throw UserIdIsMandatoryException("User Id is mandatory to access this method")
+      return MDC.get(USER_ID_HEADER) ?: throw UserIsMandatoryException("User Id is mandatory to access this method")
+    }
+
+    fun getUserName(): String {
+      return MDC.get(USER_NAME_HEADER) ?: throw UserIsMandatoryException("User Name is mandatory to access this method")
     }
   }
 }

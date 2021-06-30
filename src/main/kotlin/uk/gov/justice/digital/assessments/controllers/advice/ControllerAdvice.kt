@@ -21,7 +21,7 @@ import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiUnknown
 import uk.gov.justice.digital.assessments.services.exceptions.OASysUserPermissionException
 import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
 import uk.gov.justice.digital.assessments.services.exceptions.UserAreaHeaderIsMandatoryException
-import uk.gov.justice.digital.assessments.services.exceptions.UserIdIsMandatoryException
+import uk.gov.justice.digital.assessments.services.exceptions.UserIsMandatoryException
 import uk.gov.justice.digital.assessments.services.exceptions.UserNotAuthorisedException
 
 @ControllerAdvice
@@ -147,9 +147,9 @@ class ControllerAdvice {
     return ResponseEntity(ErrorResponse(status = 400, developerMessage = e.message), HttpStatus.BAD_REQUEST)
   }
 
-  @ExceptionHandler(UserIdIsMandatoryException::class)
+  @ExceptionHandler(UserIsMandatoryException::class)
   @ResponseStatus(HttpStatus.FORBIDDEN)
-  fun handle(e: UserIdIsMandatoryException): ResponseEntity<ErrorResponse?> {
+  fun handle(e: UserIsMandatoryException): ResponseEntity<ErrorResponse?> {
     log.info("UserIdIsMandatoryException: {}", e.message)
     return ResponseEntity(ErrorResponse(status = 403, developerMessage = e.message), HttpStatus.FORBIDDEN)
   }

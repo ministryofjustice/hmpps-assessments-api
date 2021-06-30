@@ -2,9 +2,12 @@ package uk.gov.justice.digital.assessments.jpa.entities
 
 import io.mockk.junit5.MockKExtension
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.slf4j.MDC
+import uk.gov.justice.digital.assessments.utils.RequestData
 import java.time.LocalDateTime
 
 @ExtendWith(MockKExtension::class)
@@ -14,6 +17,12 @@ class AssessmentEntityTest {
   private val assessmentID: Long = 1L
   private val episodeId: Long = 1L
   private val assessmentType = AssessmentType.SHORT_FORM_PSR
+
+  @BeforeEach
+  fun setup() {
+    MDC.put(RequestData.USER_NAME_HEADER, "User name")
+  }
+
   @Test
   fun `should create new episode if none exist`() {
     val assessment = AssessmentEntity(assessmentId = assessmentID)
