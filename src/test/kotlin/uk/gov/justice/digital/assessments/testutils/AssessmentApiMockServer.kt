@@ -112,6 +112,8 @@ class AssessmentApiMockServer : WireMockServer(9004) {
 
     stubRBACPermissionsForOffender(1, null, Roles.OFF_ASSESSMENT_CREATE.name)
     stubRBACPermissionsForOffender(1, 1, Roles.ASSESSMENT_EDIT.name)
+    stubRBACPermissionsForOffender(5, 1, Roles.ASSESSMENT_EDIT.name)
+    stubRBACPermissionsForOffender(2, 1, Roles.ASSESSMENT_EDIT.name)
     stubRBACPermissionsForOffender(2, null, Roles.OFF_ASSESSMENT_CREATE.name)
     stubRBACPermissionsForOffender(3, null, Roles.OFF_ASSESSMENT_CREATE.name)
     stubRBACUnauthorisedPermissionsForOffender(7276800, null, Roles.OFF_ASSESSMENT_CREATE.name)
