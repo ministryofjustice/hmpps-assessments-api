@@ -129,8 +129,29 @@ class OASysUpdateClientTest : IntegrationTest() {
     val answers = setOf(
       OasysAnswer("ROSH", 1, "R1.3", "YES", false)
     )
-    val returnAssessment = assessmentUpdateRestClient.updateAssessment(offenderPk, oasysSetPk, assessmentType, answers)
+    val returnAssessment = assessmentUpdateRestClient.updateAssessment(offenderPk, assessmentType, oasysSetPk, answers)
     assertThat(returnAssessment?.oasysSetPk).isEqualTo(1)
+  }
+
+  @Test
+  fun `update OASys Assessment for user that doesn't have Rbac permission ASSESSMENT_EDIT throws ExternalApiForbiddenException`() {
+    val answers = setOf(
+      OasysAnswer("ROSH", 1, "R1.3", "YES", false)
+    )
+
+    val exception =
+      assertThrows<ExternalApiForbiddenException> {
+        assessmentUpdateRestClient.updateAssessment(7276800, assessmentType, oasysSetPk, answers)
+      }
+    assertEquals(exception.message, "One of the permissions is Unauthorized")
+    assertEquals(exception.method, HttpMethod.POST)
+    assertEquals(exception.url, "/authorisation/permissions")
+    assertEquals(exception.client, ExternalService.ASSESSMENTS_API)
+    assertEquals(
+      exception.moreInfo,
+      "STUART WHITLAM in Warwickshire is currently doing an assessment on this offender, created on 12/04/2021."
+    )
+    assertEquals(exception.reason, ExceptionReason.OASYS_PERMISSION)
   }
 
   @Test

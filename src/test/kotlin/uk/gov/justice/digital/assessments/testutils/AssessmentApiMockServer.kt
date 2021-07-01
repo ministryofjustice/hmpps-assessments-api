@@ -4,6 +4,7 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.http.HttpHeader
 import com.github.tomakehurst.wiremock.http.HttpHeaders
+import uk.gov.justice.digital.assessments.restclient.assessmentapi.Roles
 
 class AssessmentApiMockServer : WireMockServer(9004) {
   fun stubGetAssessment() {
@@ -109,10 +110,12 @@ class AssessmentApiMockServer : WireMockServer(9004) {
         )
     )
 
-    stubRBACPermissionsForCreateOffenderAssessment(1)
-    stubRBACPermissionsForCreateOffenderAssessment(2)
-    stubRBACPermissionsForCreateOffenderAssessment(3)
-    stubRBACUnauthorisedPermissionsForCreateOffenderAssessment(7276800)
+    stubRBACPermissionsForOffender(1, null, Roles.OFF_ASSESSMENT_CREATE.name)
+    stubRBACPermissionsForOffender(1, 1, Roles.ASSESSMENT_EDIT.name)
+    stubRBACPermissionsForOffender(2, null, Roles.OFF_ASSESSMENT_CREATE.name)
+    stubRBACPermissionsForOffender(3, null, Roles.OFF_ASSESSMENT_CREATE.name)
+    stubRBACUnauthorisedPermissionsForOffender(7276800, null, Roles.OFF_ASSESSMENT_CREATE.name)
+    stubRBACUnauthorisedPermissionsForOffender(7276800, 1, Roles.ASSESSMENT_EDIT.name)
     stubRBACBadRequestPermissionsForCreateOffenderAssessment()
   }
 
@@ -140,12 +143,12 @@ class AssessmentApiMockServer : WireMockServer(9004) {
     )
   }
 
-  private fun stubRBACPermissionsForCreateOffenderAssessment(offenderPk: Long) {
+  private fun stubRBACPermissionsForOffender(offenderPk: Long, oasysSetPk: Long?, permission: String) {
     stubFor(
       WireMock.post(WireMock.urlEqualTo("/authorisation/permissions"))
         .withRequestBody(
           WireMock.equalToJson(
-            "{\"userCode\": \"STUARTWHITLAM\", \"roleChecks\" : [\"OFF_ASSESSMENT_CREATE\"],\"area\":\"WWS\", \"offenderPk\": $offenderPk, \"oasysSetPk\" : null, \"assessmentType\": \"SHORT_FORM_PSR\", \"roleNames\" : [ ]}}",
+            "{\"userCode\": \"STUARTWHITLAM\", \"roleChecks\" : [\"$permission\"],\"area\":\"WWS\", \"offenderPk\": $offenderPk, \"oasysSetPk\" : $oasysSetPk, \"assessmentType\": \"SHORT_FORM_PSR\", \"roleNames\" : [ ]}}",
             true,
             true
           )
@@ -161,7 +164,7 @@ class AssessmentApiMockServer : WireMockServer(9004) {
                 "    \"offenderPk\": $offenderPk," +
                 "    \"permissions\": [" +
                 "        {" +
-                "            \"checkCode\": \"OFF_ASSESSMENT_CREATE\"," +
+                "            \"checkCode\": \"$permission\"," +
                 "            \"authorised\": true" +
                 "        }" +
                 "    ]" +
@@ -171,12 +174,12 @@ class AssessmentApiMockServer : WireMockServer(9004) {
     )
   }
 
-  private fun stubRBACUnauthorisedPermissionsForCreateOffenderAssessment(offenderPk: Long) {
+  private fun stubRBACUnauthorisedPermissionsForOffender(offenderPk: Long, oasysSetPk: Long?, permission: String) {
     stubFor(
       WireMock.post(WireMock.urlEqualTo("/authorisation/permissions"))
         .withRequestBody(
           WireMock.equalToJson(
-            "{\"userCode\": \"STUARTWHITLAM\", \"roleChecks\" : [\"OFF_ASSESSMENT_CREATE\"],\"area\":\"WWS\", \"offenderPk\": $offenderPk, \"oasysSetPk\" : null, \"assessmentType\": \"SHORT_FORM_PSR\", \"roleNames\" : [ ]}}",
+            "{\"userCode\": \"STUARTWHITLAM\", \"roleChecks\" : [\"$permission\"],\"area\":\"WWS\", \"offenderPk\": $offenderPk, \"oasysSetPk\" : $oasysSetPk, \"assessmentType\": \"SHORT_FORM_PSR\", \"roleNames\" : [ ]}}",
             true,
             true
           )
@@ -194,7 +197,7 @@ class AssessmentApiMockServer : WireMockServer(9004) {
                 "        \"offenderPk\": $offenderPk," +
                 "        \"permissions\": [" +
                 "            {" +
-                "                \"checkCode\": \"OFF_ASSESSMENT_CREATE\"," +
+                "                \"checkCode\": \"$permission\"," +
                 "                \"authorised\": false," +
                 "                \"returnMessage\": \"STUART WHITLAM in Warwickshire is currently doing an assessment on this offender, created on 12/04/2021.\"" +
                 "            }" +
