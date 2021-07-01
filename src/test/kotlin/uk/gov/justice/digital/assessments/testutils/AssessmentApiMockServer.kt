@@ -4,6 +4,7 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.http.HttpHeader
 import com.github.tomakehurst.wiremock.http.HttpHeaders
+import uk.gov.justice.digital.assessments.restclient.assessmentapi.RoleNames
 import uk.gov.justice.digital.assessments.restclient.assessmentapi.Roles
 
 class AssessmentApiMockServer : WireMockServer(9004) {
@@ -110,14 +111,15 @@ class AssessmentApiMockServer : WireMockServer(9004) {
         )
     )
 
-    stubRBACPermissionsForOffender(1, null, Roles.OFF_ASSESSMENT_CREATE.name)
-    stubRBACPermissionsForOffender(1, 1, Roles.ASSESSMENT_EDIT.name)
-    stubRBACPermissionsForOffender(5, 1, Roles.ASSESSMENT_EDIT.name)
-    stubRBACPermissionsForOffender(2, 1, Roles.ASSESSMENT_EDIT.name)
-    stubRBACPermissionsForOffender(2, null, Roles.OFF_ASSESSMENT_CREATE.name)
-    stubRBACPermissionsForOffender(3, null, Roles.OFF_ASSESSMENT_CREATE.name)
-    stubRBACUnauthorisedPermissionsForOffender(7276800, null, Roles.OFF_ASSESSMENT_CREATE.name)
-    stubRBACUnauthorisedPermissionsForOffender(7276800, 1, Roles.ASSESSMENT_EDIT.name)
+    stubRBACPermissions(offenderPk = 1, permission = Roles.OFF_ASSESSMENT_CREATE.name)
+    stubRBACPermissions(permission = Roles.RBAC_OTHER.name, roleName = RoleNames.CREATE_OFFENDER.name)
+    stubRBACPermissions(offenderPk = 1, oasysSetPk = 1, permission = Roles.ASSESSMENT_EDIT.name)
+    stubRBACPermissions(offenderPk = 5, oasysSetPk = 1, permission = Roles.ASSESSMENT_EDIT.name)
+    stubRBACPermissions(offenderPk = 2, oasysSetPk = 1, permission = Roles.ASSESSMENT_EDIT.name)
+    stubRBACPermissions(offenderPk = 2, permission = Roles.OFF_ASSESSMENT_CREATE.name)
+    stubRBACPermissions(3, permission = Roles.OFF_ASSESSMENT_CREATE.name)
+    stubRBACUnauthorisedPermissions(offenderPk = 7276800, permission = Roles.OFF_ASSESSMENT_CREATE.name)
+    stubRBACUnauthorisedPermissions(offenderPk = 7276800, oasysSetPk = 1, permission = Roles.ASSESSMENT_EDIT.name)
     stubRBACBadRequestPermissionsForCreateOffenderAssessment()
   }
 
@@ -145,12 +147,18 @@ class AssessmentApiMockServer : WireMockServer(9004) {
     )
   }
 
-  private fun stubRBACPermissionsForOffender(offenderPk: Long, oasysSetPk: Long?, permission: String) {
+  private fun stubRBACPermissions(
+    offenderPk: Long? = null,
+    oasysSetPk: Long? = null,
+    permission: String,
+    roleName: String? = null
+  ) {
+    val roleNameString = if (roleName != null) "\"$roleName\"" else ""
     stubFor(
       WireMock.post(WireMock.urlEqualTo("/authorisation/permissions"))
         .withRequestBody(
           WireMock.equalToJson(
-            "{\"userCode\": \"STUARTWHITLAM\", \"roleChecks\" : [\"$permission\"],\"area\":\"WWS\", \"offenderPk\": $offenderPk, \"oasysSetPk\" : $oasysSetPk, \"assessmentType\": \"SHORT_FORM_PSR\", \"roleNames\" : [ ]}}",
+            "{\"userCode\": \"STUARTWHITLAM\", \"roleChecks\" : [\"$permission\"],\"area\":\"WWS\", \"offenderPk\": $offenderPk, \"oasysSetPk\" : $oasysSetPk, \"assessmentType\": \"SHORT_FORM_PSR\", \"roleNames\" : [ $roleNameString ]}}",
             true,
             true
           )
@@ -176,12 +184,14 @@ class AssessmentApiMockServer : WireMockServer(9004) {
     )
   }
 
-  private fun stubRBACUnauthorisedPermissionsForOffender(offenderPk: Long, oasysSetPk: Long?, permission: String) {
+  fun stubRBACUnauthorisedPermissions(offenderPk: Long? = null, oasysSetPk: Long? = null, permission: String, roleName: String? = null) {
+    val roleNameString = if (roleName != null) "\"$roleName\"" else ""
+
     stubFor(
       WireMock.post(WireMock.urlEqualTo("/authorisation/permissions"))
         .withRequestBody(
           WireMock.equalToJson(
-            "{\"userCode\": \"STUARTWHITLAM\", \"roleChecks\" : [\"$permission\"],\"area\":\"WWS\", \"offenderPk\": $offenderPk, \"oasysSetPk\" : $oasysSetPk, \"assessmentType\": \"SHORT_FORM_PSR\", \"roleNames\" : [ ]}}",
+            "{\"userCode\": \"STUARTWHITLAM\", \"roleChecks\" : [\"$permission\"],\"area\":\"WWS\", \"offenderPk\": $offenderPk, \"oasysSetPk\" : $oasysSetPk, \"assessmentType\": \"SHORT_FORM_PSR\", \"roleNames\" : [ $roleNameString ]}}",
             true,
             true
           )

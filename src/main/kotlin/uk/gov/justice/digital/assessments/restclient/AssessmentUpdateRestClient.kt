@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.redis.UserDetailsRedisRepository
 import uk.gov.justice.digital.assessments.restclient.assessmentapi.Authorized
+import uk.gov.justice.digital.assessments.restclient.assessmentapi.RoleNames
 import uk.gov.justice.digital.assessments.restclient.assessmentapi.Roles
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.CompleteAssessmentDto
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.CreateAssessmentDto
@@ -34,6 +35,7 @@ class AssessmentUpdateRestClient {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
   }
 
+  @Authorized(roleChecks = [Roles.RBAC_OTHER], roleNames = [RoleNames.CREATE_OFFENDER])
   fun createOasysOffender(
     crn: String,
     deliusEvent: Long? = 123456
