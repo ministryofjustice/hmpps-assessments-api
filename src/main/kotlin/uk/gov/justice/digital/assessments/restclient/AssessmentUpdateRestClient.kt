@@ -95,10 +95,11 @@ class AssessmentUpdateRestClient {
       }
   }
 
+  @Authorized(roleChecks = [Roles.ASSESSMENT_EDIT])
   fun updateAssessment(
     offenderPK: Long,
-    oasysSetPk: Long,
     assessmentType: AssessmentType,
+    oasysSetPk: Long,
     answers: Set<OasysAnswer>,
   ): UpdateAssessmentAnswersResponseDto? {
     val area = RequestData.getAreaCode()

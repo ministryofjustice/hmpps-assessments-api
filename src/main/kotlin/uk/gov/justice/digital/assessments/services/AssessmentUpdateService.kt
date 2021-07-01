@@ -30,8 +30,6 @@ class AssessmentUpdateService(
 ) {
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
-    const val courtSource = "COURT"
-    const val deliusSource = "DELIUS"
   }
 
   @Transactional
@@ -109,8 +107,8 @@ class AssessmentUpdateService(
 
     val oasysUpdateResult = assessmentUpdateRestClient.updateAssessment(
       offenderPk,
-      episode.oasysSetPk!!,
       episode.assessmentType!!,
+      episode.oasysSetPk!!,
       oasysAnswers
     )
     log.info("Updated OASys assessment oasysSet ${episode.oasysSetPk} ${if (oasysUpdateResult?.validationErrorDtos?.isNotEmpty() == true) "with errors" else "successfully"}")
