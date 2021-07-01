@@ -359,7 +359,11 @@ class AssessmentUpdateService(
     offenderPk: Long,
     episode: AssessmentEpisodeEntity,
   ): AssessmentEpisodeUpdateErrors? {
-    val oasysUpdateResult = assessmentUpdateRestClient.completeAssessment(offenderPk, episode.oasysSetPk!!, episode.assessmentType!!)
+    val oasysUpdateResult = assessmentUpdateRestClient.completeAssessment(
+      offenderPk,
+      episode.assessmentType!!,
+      episode.oasysSetPk!!
+    )
     if (oasysUpdateResult?.validationErrorDtos?.isNotEmpty() == true) {
       log.info("Could not complete OASys assessment oasysSet ${episode.oasysSetPk} with errors")
     } else log.info("Completed OASys assessment oasysSet $episode.oasysSetPk successfully")

@@ -168,14 +168,31 @@ class OASysUpdateClientTest : IntegrationTest() {
 
   @Test
   fun `complete OASys Assessment`() {
-    val returnAssessment = assessmentUpdateRestClient.completeAssessment(offenderPk, oasysSetPk, assessmentType)
+    val returnAssessment = assessmentUpdateRestClient.completeAssessment(offenderPk, assessmentType, oasysSetPk)
     assertThat(returnAssessment?.oasysSetPk).isEqualTo(1)
+  }
+
+  @Test
+  fun `complete OASys Assessment for user that doesn't have Rbac permission ASSESSMENT_EDIT throws ExternalApiForbiddenException`() {
+    val exception =
+      assertThrows<ExternalApiForbiddenException> {
+        assessmentUpdateRestClient.completeAssessment(7276800, assessmentType, oasysSetPk)
+      }
+    assertEquals(exception.message, "One of the permissions is Unauthorized")
+    assertEquals(exception.method, HttpMethod.POST)
+    assertEquals(exception.url, "/authorisation/permissions")
+    assertEquals(exception.client, ExternalService.ASSESSMENTS_API)
+    assertEquals(
+      exception.moreInfo,
+      "STUART WHITLAM in Warwickshire is currently doing an assessment on this offender, created on 12/04/2021."
+    )
+    assertEquals(exception.reason, ExceptionReason.OASYS_PERMISSION)
   }
 
   @Test
   fun `complete OASys Assessment with validation errors`() {
     val returnAssessment =
-      assessmentUpdateRestClient.completeAssessment(validationErrorOffenderPk, oasysSetPk, assessmentType)
+      assessmentUpdateRestClient.completeAssessment(validationErrorOffenderPk, assessmentType, oasysSetPk)
     assertThat(returnAssessment?.oasysSetPk).isEqualTo(1)
     assertThat(returnAssessment?.validationErrorDtos).hasSize(1)
   }
@@ -185,8 +202,8 @@ class OASysUpdateClientTest : IntegrationTest() {
     assertThatThrownBy {
       assessmentUpdateRestClient.completeAssessment(
         forbiddenOffenderPk,
-        oasysSetPk,
-        assessmentType
+        assessmentType,
+        oasysSetPk
       )
     }
       .isInstanceOf(OASysUserPermissionException::class.java)
@@ -197,8 +214,8 @@ class OASysUpdateClientTest : IntegrationTest() {
     assertThatThrownBy {
       assessmentUpdateRestClient.completeAssessment(
         serverErrorOffenderPk,
-        oasysSetPk,
-        assessmentType
+        assessmentType,
+        oasysSetPk
       )
     }
       .isInstanceOf(ExternalApiUnknownException::class.java)
