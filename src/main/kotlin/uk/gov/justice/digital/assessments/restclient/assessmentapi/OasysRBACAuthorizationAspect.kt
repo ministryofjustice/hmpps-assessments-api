@@ -22,7 +22,8 @@ class OasysRBACAuthorizationAspect(val assessmentApiRestClient: AssessmentApiRes
       roleChecks = authorized.roleChecks.toSet(),
       offenderPk = if (signature.parameterNames.contains("offenderPK")) joinPoint.args[0] as Long? else null,
       assessmentType = if (signature.parameterNames.contains("assessmentType")) joinPoint.args[1] as AssessmentType else AssessmentType.SHORT_FORM_PSR,
-      oasysSetPk = if (signature.parameterNames.contains("oasysSetPk")) joinPoint.args[2] as Long? else null
+      oasysSetPk = if (signature.parameterNames.contains("oasysSetPk")) joinPoint.args[2] as Long? else null,
+      roleNames = authorized.roleNames.toSet()
     )
   }
 }
