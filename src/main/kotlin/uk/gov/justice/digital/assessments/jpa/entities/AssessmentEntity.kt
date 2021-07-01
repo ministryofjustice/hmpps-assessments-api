@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.assessments.jpa.entities
 
+import uk.gov.justice.digital.assessments.utils.RequestData
 import java.io.Serializable
 import java.lang.IllegalStateException
 import java.time.LocalDateTime
@@ -46,7 +47,6 @@ class AssessmentEntity(
 
   fun newEpisode(
     changeReason: String,
-    user: String? = "anonymous",
     oasysSetPk: Long? = null,
     assessmentType: AssessmentType
   ): AssessmentEpisodeEntity {
@@ -58,7 +58,7 @@ class AssessmentEntity(
       assessment = this,
       createdDate = LocalDateTime.now(),
       changeReason = changeReason,
-      userId = user,
+      userId = RequestData.getUserName(),
       oasysSetPk = oasysSetPk,
       assessmentType = assessmentType
     )

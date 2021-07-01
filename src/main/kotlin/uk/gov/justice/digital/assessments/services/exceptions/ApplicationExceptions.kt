@@ -15,7 +15,7 @@ class UserNotAuthorisedException(msg: String?, val extraInfoMessage: String?) : 
 class UpdateClosedEpisodeException(msg: String?) : RuntimeException(msg)
 class EntityNotFoundException(msg: String?) : RuntimeException(msg)
 class UserAreaHeaderIsMandatoryException(msg: String?) : RuntimeException(msg)
-class UserIdIsMandatoryException(msg: String?) : RuntimeException(msg)
+class UserIsMandatoryException(msg: String?) : RuntimeException(msg)
 
 class OASysUserPermissionException(
   msg: String?,

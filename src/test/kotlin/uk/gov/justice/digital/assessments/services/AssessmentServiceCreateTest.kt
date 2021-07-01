@@ -5,11 +5,13 @@ import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
+import org.slf4j.MDC
 import uk.gov.justice.digital.assessments.api.CreateAssessmentDto
 import uk.gov.justice.digital.assessments.api.OffenderDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEntity
@@ -21,6 +23,7 @@ import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import uk.gov.justice.digital.assessments.restclient.courtcaseapi.CourtCase
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
+import uk.gov.justice.digital.assessments.utils.RequestData
 import java.util.UUID
 
 @ExtendWith(MockKExtension::class)
@@ -57,6 +60,11 @@ class AssessmentServiceCreateTest {
 
   private val deliusSource = "DELIUS"
   private val eventId = 1L
+
+  @BeforeEach
+  fun setup() {
+    MDC.put(RequestData.USER_NAME_HEADER, "User name")
+  }
 
   @Nested
   @DisplayName("creating assessments from Delius")
@@ -146,6 +154,12 @@ class AssessmentServiceCreateTest {
   @Nested
   @DisplayName("creating assessments from court")
   inner class CreatingCourtAssessments {
+
+    @BeforeEach
+    fun setup() {
+      MDC.put(RequestData.USER_NAME_HEADER, "User name")
+    }
+
     @Test
     fun `create new assessment from court`() {
       every {
