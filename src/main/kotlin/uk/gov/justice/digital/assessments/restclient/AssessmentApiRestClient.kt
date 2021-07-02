@@ -12,6 +12,7 @@ import org.springframework.web.reactive.function.client.ClientResponse
 import reactor.core.publisher.Mono
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.redis.UserDetailsRedisRepository
+import uk.gov.justice.digital.assessments.restclient.assessmentapi.Authorized
 import uk.gov.justice.digital.assessments.restclient.assessmentapi.FilteredReferenceDataDto
 import uk.gov.justice.digital.assessments.restclient.assessmentapi.OASysAssessmentDto
 import uk.gov.justice.digital.assessments.restclient.assessmentapi.OASysRBACErrorResponse
@@ -40,11 +41,14 @@ class AssessmentApiRestClient {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
   }
 
+  @Authorized(roleChecks = [Roles.ASSESSMENT_READ])
   fun getOASysAssessment(
+    offenderPK: Long,
+    assessmentType: AssessmentType,
     oasysSetPk: Long,
   ): OASysAssessmentDto? {
     log.info("Retrieving OASys Assessment $oasysSetPk")
-    val path = "/assessments/oasysSetPk/$oasysSetPk"
+    val path = "/assessments/oasysSetId/$oasysSetPk"
     return webClient
       .get(path)
       .retrieve()

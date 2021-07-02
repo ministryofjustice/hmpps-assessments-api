@@ -11,7 +11,7 @@ class AssessmentApiMockServer : WireMockServer(9004) {
   fun stubGetAssessment() {
 
     stubFor(
-      WireMock.get(WireMock.urlEqualTo("/assessments/oasysSetPk/1"))
+      WireMock.get(WireMock.urlEqualTo("/assessments/oasysSetId/1"))
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
@@ -20,7 +20,7 @@ class AssessmentApiMockServer : WireMockServer(9004) {
     )
 
     stubFor(
-      WireMock.get(WireMock.urlEqualTo("/assessments/oasysSetPk/2"))
+      WireMock.get(WireMock.urlEqualTo("/assessments/oasysSetId/2"))
         .willReturn(
           WireMock.aResponse()
             .withBody(getAssessmentNotFoundJson)
@@ -30,7 +30,7 @@ class AssessmentApiMockServer : WireMockServer(9004) {
     )
 
     stubFor(
-      WireMock.get(WireMock.urlEqualTo("/assessments/oasysSetPk/3"))
+      WireMock.get(WireMock.urlEqualTo("/assessments/oasysSetId/3"))
         .willReturn(
           WireMock.aResponse()
             .withStatus(500)
@@ -39,7 +39,7 @@ class AssessmentApiMockServer : WireMockServer(9004) {
     )
 
     stubFor(
-      WireMock.get(WireMock.urlEqualTo("/assessments/oasysSetPk/4"))
+      WireMock.get(WireMock.urlEqualTo("/assessments/oasysSetId/4"))
         .willReturn(
           WireMock.aResponse()
             .withBody("ERROR")
@@ -49,7 +49,7 @@ class AssessmentApiMockServer : WireMockServer(9004) {
     )
 
     stubFor(
-      WireMock.get(WireMock.urlEqualTo("/assessments/oasysSetPk/5"))
+      WireMock.get(WireMock.urlEqualTo("/assessments/oasysSetId/5"))
         .willReturn(
           WireMock.aResponse()
             .withStatus(400)
@@ -112,6 +112,8 @@ class AssessmentApiMockServer : WireMockServer(9004) {
     )
 
     stubRBACPermissions(offenderPk = 1, permission = Roles.OFF_ASSESSMENT_CREATE.name)
+    stubRBACPermissions(offenderPk = 1, oasysSetPk = 1, permission = Roles.ASSESSMENT_READ.name)
+    stubRBACPermissions(offenderPk = 1, oasysSetPk = 2, permission = Roles.ASSESSMENT_READ.name)
     stubRBACPermissions(permission = Roles.RBAC_OTHER.name, roleName = RoleNames.CREATE_OFFENDER.name)
     stubRBACPermissions(offenderPk = 1, oasysSetPk = 1, permission = Roles.ASSESSMENT_EDIT.name)
     stubRBACPermissions(offenderPk = 5, oasysSetPk = 1, permission = Roles.ASSESSMENT_EDIT.name)
