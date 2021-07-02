@@ -4,12 +4,16 @@ import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.slf4j.MDC
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpMethod
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.restclient.assessmentapi.Roles
+import uk.gov.justice.digital.assessments.services.exceptions.ExceptionReason
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiAuthorisationException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiEntityNotFoundException
+import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiForbiddenException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiInvalidRequestException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiUnknownException
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
@@ -21,6 +25,7 @@ class AssessmentApiTest : IntegrationTest() {
   internal lateinit var assessmentApiRestClient: AssessmentApiRestClient
 
   val oasysSetPk = 1L
+  val offenderPk = 1L
 
   @BeforeEach
   fun setup() {
@@ -30,35 +35,54 @@ class AssessmentApiTest : IntegrationTest() {
 
   @Test
   fun `retrieve OASys Assessment`() {
-    val returnedAssessment = assessmentApiRestClient.getOASysAssessment(oasysSetPk)
+    val returnedAssessment = assessmentApiRestClient.getOASysAssessment(offenderPk, AssessmentType.SHORT_FORM_PSR, oasysSetPk)
     assertThat(returnedAssessment?.assessmentId).isEqualTo(1)
+  }
+
+  @Test
+  fun `retrieve OASys Assessment is Forbidden when ASSESSMENT_READ is not authorised`() {
+    assessmentApiMockServer.stubRBACUnauthorisedPermissions(offenderPk = 7800, oasysSetPk = 123, permission = Roles.ASSESSMENT_READ.name)
+
+    val exception =
+      assertThrows<ExternalApiForbiddenException> {
+        assessmentApiRestClient.getOASysAssessment(7800, AssessmentType.SHORT_FORM_PSR, 123)
+      }
+    org.junit.jupiter.api.Assertions.assertEquals(exception.message, "One of the permissions is Unauthorized")
+    org.junit.jupiter.api.Assertions.assertEquals(exception.method, HttpMethod.POST)
+    org.junit.jupiter.api.Assertions.assertEquals(exception.url, "/authorisation/permissions")
+    org.junit.jupiter.api.Assertions.assertEquals(exception.client, ExternalService.ASSESSMENTS_API)
+    org.junit.jupiter.api.Assertions.assertEquals(
+      exception.moreInfo,
+      "STUART WHITLAM in Warwickshire is currently doing an assessment on this offender, created on 12/04/2021."
+    )
+    org.junit.jupiter.api.Assertions.assertEquals(exception.reason, ExceptionReason.OASYS_PERMISSION)
   }
 
   @Test
   fun `retrieve OASys Assessment throws exception when forbidden response received`() {
     Assertions.assertThatThrownBy {
-      assessmentApiRestClient.getOASysAssessment(2)
+      assessmentApiRestClient.getOASysAssessment(offenderPk, AssessmentType.SHORT_FORM_PSR, 2)
     }.isInstanceOf(ExternalApiEntityNotFoundException::class.java)
   }
 
   @Test
   fun `retrieve OASys Assessment throws exception on server error`() {
     Assertions.assertThatThrownBy {
-      assessmentApiRestClient.getOASysAssessment(3)
+      assessmentApiRestClient.getOASysAssessment(offenderPk, AssessmentType.SHORT_FORM_PSR, 3)
     }.isInstanceOf(ExternalApiUnknownException::class.java)
   }
 
   @Test
   fun `retrieve OASys Assessment throws exception on unknown client error`() {
     Assertions.assertThatThrownBy {
-      assessmentApiRestClient.getOASysAssessment(3)
+      assessmentApiRestClient.getOASysAssessment(offenderPk, AssessmentType.SHORT_FORM_PSR, 3)
     }.isInstanceOf(ExternalApiUnknownException::class.java)
   }
 
   @Test
   fun `retrieve OASys Assessment throws exception on unknown client error without body`() {
     Assertions.assertThatThrownBy {
-      assessmentApiRestClient.getOASysAssessment(3)
+      assessmentApiRestClient.getOASysAssessment(offenderPk, AssessmentType.SHORT_FORM_PSR, 3)
     }.isInstanceOf(ExternalApiUnknownException::class.java)
   }
 
