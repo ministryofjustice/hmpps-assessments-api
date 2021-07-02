@@ -48,7 +48,7 @@ class AssessmentApiRestClient {
     oasysSetPk: Long,
   ): OASysAssessmentDto? {
     log.info("Retrieving OASys Assessment $oasysSetPk")
-    val path = "/assessments/oasysSetPk/$oasysSetPk"
+    val path = "/assessments/oasysSetId/$oasysSetPk"
     return webClient
       .get(path)
       .retrieve()
