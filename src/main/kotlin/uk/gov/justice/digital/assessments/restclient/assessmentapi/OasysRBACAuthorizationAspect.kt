@@ -5,7 +5,7 @@ import org.aspectj.lang.annotation.Aspect
 import org.aspectj.lang.annotation.Before
 import org.aspectj.lang.reflect.MethodSignature
 import org.springframework.stereotype.Component
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
+import uk.gov.justice.digital.assessments.jpa.entities.OasysAssessmentType
 import uk.gov.justice.digital.assessments.restclient.AssessmentApiRestClient
 import java.lang.reflect.Method
 
@@ -21,7 +21,7 @@ class OasysRBACAuthorizationAspect(val assessmentApiRestClient: AssessmentApiRes
     assessmentApiRestClient.getOASysRBACPermissions(
       roleChecks = authorized.roleChecks.toSet(),
       offenderPk = if (signature.parameterNames.contains("offenderPK")) joinPoint.args[0] as Long? else null,
-      assessmentType = if (signature.parameterNames.contains("assessmentType")) joinPoint.args[1] as AssessmentType else AssessmentType.SHORT_FORM_PSR,
+      oasysAssessmentType = if (signature.parameterNames.contains("oasysAssessmentType")) joinPoint.args[1] as OasysAssessmentType else null,
       oasysSetPk = if (signature.parameterNames.contains("oasysSetPk")) joinPoint.args[2] as Long? else null,
       roleNames = authorized.roleNames.toSet()
     )
