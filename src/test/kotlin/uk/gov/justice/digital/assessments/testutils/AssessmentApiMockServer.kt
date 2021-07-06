@@ -4,6 +4,7 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.http.HttpHeader
 import com.github.tomakehurst.wiremock.http.HttpHeaders
+import uk.gov.justice.digital.assessments.jpa.entities.OasysAssessmentType
 import uk.gov.justice.digital.assessments.restclient.assessmentapi.RoleNames
 import uk.gov.justice.digital.assessments.restclient.assessmentapi.Roles
 
@@ -114,7 +115,11 @@ class AssessmentApiMockServer : WireMockServer(9004) {
     stubRBACPermissions(offenderPk = 1, permission = Roles.OFF_ASSESSMENT_CREATE.name)
     stubRBACPermissions(offenderPk = 1, oasysSetPk = 1, permission = Roles.ASSESSMENT_READ.name)
     stubRBACPermissions(offenderPk = 1, oasysSetPk = 2, permission = Roles.ASSESSMENT_READ.name)
-    stubRBACPermissions(permission = Roles.RBAC_OTHER.name, roleName = RoleNames.CREATE_OFFENDER.name)
+    stubRBACPermissions(
+      permission = Roles.RBAC_OTHER.name,
+      roleName = RoleNames.CREATE_OFFENDER.name,
+      assessmentType = null
+    )
     stubRBACPermissions(offenderPk = 1, oasysSetPk = 1, permission = Roles.ASSESSMENT_EDIT.name)
     stubRBACPermissions(offenderPk = 5, oasysSetPk = 1, permission = Roles.ASSESSMENT_EDIT.name)
     stubRBACPermissions(offenderPk = 2, oasysSetPk = 1, permission = Roles.ASSESSMENT_EDIT.name)
@@ -153,14 +158,17 @@ class AssessmentApiMockServer : WireMockServer(9004) {
     offenderPk: Long? = null,
     oasysSetPk: Long? = null,
     permission: String,
-    roleName: String? = null
+    roleName: String? = null,
+    assessmentType: OasysAssessmentType? = OasysAssessmentType.SHORT_FORM_PSR
   ) {
     val roleNameString = if (roleName != null) "\"$roleName\"" else ""
+    val assessmentTypeString = if (assessmentType != null) "\"$assessmentType\"" else null
+
     stubFor(
       WireMock.post(WireMock.urlEqualTo("/authorisation/permissions"))
         .withRequestBody(
           WireMock.equalToJson(
-            "{\"userCode\": \"STUARTWHITLAM\", \"roleChecks\" : [\"$permission\"],\"area\":\"WWS\", \"offenderPk\": $offenderPk, \"oasysSetPk\" : $oasysSetPk, \"assessmentType\": \"SHORT_FORM_PSR\", \"roleNames\" : [ $roleNameString ]}}",
+            "{\"userCode\": \"STUARTWHITLAM\", \"roleChecks\" : [\"$permission\"],\"area\":\"WWS\", \"offenderPk\": $offenderPk, \"oasysSetPk\" : $oasysSetPk, \"assessmentType\": $assessmentTypeString, \"roleNames\" : [ $roleNameString ]}}",
             true,
             true
           )
@@ -186,14 +194,21 @@ class AssessmentApiMockServer : WireMockServer(9004) {
     )
   }
 
-  fun stubRBACUnauthorisedPermissions(offenderPk: Long? = null, oasysSetPk: Long? = null, permission: String, roleName: String? = null) {
+  fun stubRBACUnauthorisedPermissions(
+    offenderPk: Long? = null,
+    oasysSetPk: Long? = null,
+    permission: String,
+    roleName: String? = null,
+    assessmentType: OasysAssessmentType? = OasysAssessmentType.SHORT_FORM_PSR
+  ) {
     val roleNameString = if (roleName != null) "\"$roleName\"" else ""
+    val assessmentTypeString = if (assessmentType != null) "\"$assessmentType\"" else null
 
     stubFor(
       WireMock.post(WireMock.urlEqualTo("/authorisation/permissions"))
         .withRequestBody(
           WireMock.equalToJson(
-            "{\"userCode\": \"STUARTWHITLAM\", \"roleChecks\" : [\"$permission\"],\"area\":\"WWS\", \"offenderPk\": $offenderPk, \"oasysSetPk\" : $oasysSetPk, \"assessmentType\": \"SHORT_FORM_PSR\", \"roleNames\" : [ $roleNameString ]}}",
+            "{\"userCode\": \"STUARTWHITLAM\", \"roleChecks\" : [\"$permission\"],\"area\":\"WWS\", \"offenderPk\": $offenderPk, \"oasysSetPk\" : $oasysSetPk, \"assessmentType\": $assessmentTypeString, \"roleNames\" : [ $roleNameString ]}}",
             true,
             true
           )

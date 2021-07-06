@@ -7,6 +7,6 @@ class CompleteAssessmentDto(
   val offenderPk: Long,
   val areaCode: String,
   val oasysUserCode: String,
-  val oasysAssessmentType: OasysAssessmentType,
+  val assessmentType: OasysAssessmentType,
   val ignoreWarnings: Boolean
 )

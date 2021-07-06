@@ -53,7 +53,11 @@ class OASysUpdateClientTest : IntegrationTest() {
 
   @Test
   fun `create OASys Offender is Forbidden when RBAC_OTHER with CREATE_OFFENDER is not authorised`() {
-    assessmentApiMockServer.stubRBACUnauthorisedPermissions(permission = Roles.RBAC_OTHER.name, roleName = RoleNames.CREATE_OFFENDER.name)
+    assessmentApiMockServer.stubRBACUnauthorisedPermissions(
+      permission = Roles.RBAC_OTHER.name,
+      roleName = RoleNames.CREATE_OFFENDER.name,
+      assessmentType = null
+    )
 
     val exception =
       assertThrows<ExternalApiForbiddenException> {

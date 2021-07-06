@@ -6,7 +6,7 @@ class CreateAssessmentDto(
   val offenderPk: Long,
   val areaCode: String,
   val oasysUserCode: String,
-  val oasysAssessmentType: OasysAssessmentType,
+  val assessmentType: OasysAssessmentType,
   val teamCode: String? = null,
   val assessorCode: String? = null
 )

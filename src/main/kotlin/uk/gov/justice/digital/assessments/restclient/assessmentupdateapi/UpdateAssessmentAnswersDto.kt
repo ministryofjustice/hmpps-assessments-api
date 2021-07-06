@@ -8,5 +8,5 @@ data class UpdateAssessmentAnswersDto(
   val areaCode: String,
   val oasysUserCode: String,
   val answers: Set<OasysAnswer>? = emptySet(),
-  val oasysAssessmentType: OasysAssessmentType,
+  val assessmentType: OasysAssessmentType,
 )
