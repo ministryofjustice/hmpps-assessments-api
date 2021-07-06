@@ -1,5 +1,5 @@
 package uk.gov.justice.digital.assessments.jpa.entities
 
-enum class AssessmentType {
+enum class OasysAssessmentType {
   SHORT_FORM_PSR
 }

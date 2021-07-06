@@ -9,7 +9,7 @@ import org.junit.jupiter.api.assertThrows
 import org.slf4j.MDC
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpMethod
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
+import uk.gov.justice.digital.assessments.jpa.entities.OasysAssessmentType
 import uk.gov.justice.digital.assessments.restclient.assessmentapi.RoleNames
 import uk.gov.justice.digital.assessments.restclient.assessmentapi.Roles
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OasysAnswer
@@ -28,7 +28,7 @@ class OASysUpdateClientTest : IntegrationTest() {
   val crn = "DX12340A"
   val offenderPk = 1L
   val oasysSetPk = 1L
-  val assessmentType = AssessmentType.SHORT_FORM_PSR
+  val assessmentType = OasysAssessmentType.SHORT_FORM_PSR
   val forbiddenCrn = "DX12340B"
   val duplicateCrn = "DX12340C"
   val serverErrorCrn = "DX12340D"

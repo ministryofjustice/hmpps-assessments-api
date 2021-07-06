@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
+import uk.gov.justice.digital.assessments.jpa.entities.OasysAssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.OASysMappingEntity
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
@@ -27,7 +27,7 @@ private val oaSysMappingRepository: OASysMappingRepository = mockk()
 private val referenceDataService = ReferenceDataService(assessmentApiRestClient, assessmentRepository, oaSysMappingRepository)
 
 private val episodeUuid = UUID.randomUUID()
-private val episode = AssessmentEpisodeEntity(episodeUuid = episodeUuid, oasysSetPk = 123456, assessmentType = AssessmentType.SHORT_FORM_PSR)
+private val episode = AssessmentEpisodeEntity(episodeUuid = episodeUuid, oasysSetPk = 123456, oasysAssessmentType = OasysAssessmentType.SHORT_FORM_PSR)
 private val assessment = AssessmentEntity(episodes = mutableListOf(episode))
 private val referenceDataElement = RefElementDto("code", "short description", "long description")
 private val referenceData = mapOf("some_field" to listOf(referenceDataElement))

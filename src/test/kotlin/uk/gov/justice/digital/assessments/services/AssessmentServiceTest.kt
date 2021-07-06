@@ -14,7 +14,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.AnswerSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AnswerSchemaGroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
+import uk.gov.justice.digital.assessments.jpa.entities.OasysAssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.SubjectRepository
@@ -47,7 +47,7 @@ class AssessmentServiceTest {
 
   private val assessmentUuid = UUID.randomUUID()
   private val assessmentId = 1L
-  private val assessmentType = AssessmentType.SHORT_FORM_PSR
+  private val assessmentType = OasysAssessmentType.SHORT_FORM_PSR
 
   private val episodeId1 = 1L
   private val episodeId2 = 2L
@@ -68,7 +68,7 @@ class AssessmentServiceTest {
       val assessment: AssessmentEntity = mockk()
       every { assessment.assessmentUuid } returns assessmentUuid
       every { assessment.assessmentId } returns 0
-      every { assessment.newEpisode("Change of Circs", assessmentType = assessmentType) } returns AssessmentEpisodeEntity(episodeId = episodeId1, assessment = assessment)
+      every { assessment.newEpisode("Change of Circs", oasysAssessmentType = assessmentType) } returns AssessmentEpisodeEntity(episodeId = episodeId1, assessment = assessment)
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
       every { episodeService.prepopulate(any()) } returnsArgument 0
 

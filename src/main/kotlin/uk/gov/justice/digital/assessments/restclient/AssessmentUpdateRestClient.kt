@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
+import uk.gov.justice.digital.assessments.jpa.entities.OasysAssessmentType
 import uk.gov.justice.digital.assessments.redis.UserDetailsRedisRepository
 import uk.gov.justice.digital.assessments.restclient.assessmentapi.Authorized
 import uk.gov.justice.digital.assessments.restclient.assessmentapi.RoleNames
@@ -64,20 +64,20 @@ class AssessmentUpdateRestClient {
   @Authorized(roleChecks = [Roles.OFF_ASSESSMENT_CREATE])
   fun createAssessment(
     offenderPK: Long,
-    assessmentType: AssessmentType,
+    oasysAssessmentType: OasysAssessmentType,
   ): Long? {
     val area = RequestData.getAreaCode()
     val oasysUserCode = userDetailsRedisRepository.findByUserId(RequestData.getUserId()).oasysUserCode
-    log.info("Creating Assessment of type $assessmentType in OASys for offender: $offenderPK, area: $area, user: $oasysUserCode")
+    log.info("Creating Assessment of type $oasysAssessmentType in OASys for offender: $offenderPK, area: $area, user: $oasysUserCode")
     val path = "/assessments"
     return webClient
-      .post(path, CreateAssessmentDto(offenderPK, area, oasysUserCode, assessmentType))
+      .post(path, CreateAssessmentDto(offenderPK, area, oasysUserCode, oasysAssessmentType))
       .retrieve()
       .onStatus(HttpStatus::is4xxClientError) {
         handleAssessmentError(
           offenderPK,
           oasysUserCode,
-          assessmentType,
+          oasysAssessmentType,
           it,
           HttpMethod.PUT,
           path
@@ -93,14 +93,14 @@ class AssessmentUpdateRestClient {
       }
       .bodyToMono(CreateAssessmentResponse::class.java)
       .block()?.oasysSetPk.also {
-        log.info("Created Assessment of type $assessmentType in OASys for offender: $offenderPK, area: $area, user: $oasysUserCode")
+        log.info("Created Assessment of type $oasysAssessmentType in OASys for offender: $offenderPK, area: $area, user: $oasysUserCode")
       }
   }
 
   @Authorized(roleChecks = [Roles.ASSESSMENT_EDIT])
   fun updateAssessment(
     offenderPK: Long,
-    assessmentType: AssessmentType,
+    oasysAssessmentType: OasysAssessmentType,
     oasysSetPk: Long,
     answers: Set<OasysAnswer>,
   ): UpdateAssessmentAnswersResponseDto? {
@@ -109,13 +109,13 @@ class AssessmentUpdateRestClient {
     log.info("Updating answers for Assessment $oasysSetPk in OASys for offender: $offenderPK, area: $area, user: $oasysUserCode, answers: $answers")
     val path = "/assessments"
     return webClient
-      .put(path, UpdateAssessmentAnswersDto(oasysSetPk, offenderPK, area, oasysUserCode, answers, assessmentType))
+      .put(path, UpdateAssessmentAnswersDto(oasysSetPk, offenderPK, area, oasysUserCode, answers, oasysAssessmentType))
       .retrieve()
       .onStatus(HttpStatus::is4xxClientError) {
         handleAssessmentError(
           offenderPK,
           oasysUserCode,
-          assessmentType,
+          oasysAssessmentType,
           it,
           HttpMethod.PUT,
           path
@@ -138,7 +138,7 @@ class AssessmentUpdateRestClient {
   @Authorized(roleChecks = [Roles.ASSESSMENT_EDIT])
   fun completeAssessment(
     offenderPK: Long,
-    assessmentType: AssessmentType,
+    oasysAssessmentType: OasysAssessmentType,
     oasysSetPk: Long,
     ignoreWarnings: Boolean = true,
   ): UpdateAssessmentAnswersResponseDto? {
@@ -149,11 +149,11 @@ class AssessmentUpdateRestClient {
     return webClient
       .put(
         path,
-        CompleteAssessmentDto(oasysSetPk, offenderPK, area, oasysUserCode, assessmentType, ignoreWarnings)
+        CompleteAssessmentDto(oasysSetPk, offenderPK, area, oasysUserCode, oasysAssessmentType, ignoreWarnings)
       )
       .retrieve()
       .onStatus(HttpStatus::is4xxClientError) {
-        handleAssessmentError(offenderPK, oasysUserCode, assessmentType, it, HttpMethod.PUT, path)
+        handleAssessmentError(offenderPK, oasysUserCode, oasysAssessmentType, it, HttpMethod.PUT, path)
       }
       .onStatus(HttpStatus::is5xxServerError) {
         handle5xxError(

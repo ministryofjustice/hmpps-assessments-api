@@ -48,7 +48,7 @@ class AssessmentEntity(
   fun newEpisode(
     changeReason: String,
     oasysSetPk: Long? = null,
-    assessmentType: AssessmentType
+    oasysAssessmentType: OasysAssessmentType
   ): AssessmentEpisodeEntity {
     val currentEpisode = getCurrentEpisode()
     if (currentEpisode != null) {
@@ -60,7 +60,7 @@ class AssessmentEntity(
       changeReason = changeReason,
       userId = RequestData.getUserName(),
       oasysSetPk = oasysSetPk,
-      assessmentType = assessmentType
+      oasysAssessmentType = oasysAssessmentType
     )
     episodes.add(newEpisode)
     return newEpisode

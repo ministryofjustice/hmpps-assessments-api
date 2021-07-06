@@ -15,7 +15,7 @@ import uk.gov.justice.digital.assessments.api.AssessmentSubjectDto
 import uk.gov.justice.digital.assessments.api.CreateAssessmentDto
 import uk.gov.justice.digital.assessments.api.CreateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.api.ErrorResponse
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
+import uk.gov.justice.digital.assessments.jpa.entities.OasysAssessmentType
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import uk.gov.justice.digital.assessments.utils.RequestData
 import java.time.LocalDateTime
@@ -53,7 +53,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
           CreateAssessmentDto(
             courtCode = "SHF06",
             caseNumber = "668911253",
-            assessmentType = AssessmentType.SHORT_FORM_PSR
+            oasysAssessmentType = OasysAssessmentType.SHORT_FORM_PSR
           )
         )
         .headers(setAuthorisation())
@@ -118,7 +118,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
           CreateAssessmentDto(
             crn = crn,
             deliusEventId = eventID,
-            assessmentType = AssessmentType.SHORT_FORM_PSR
+            oasysAssessmentType = OasysAssessmentType.SHORT_FORM_PSR
           )
         )
         .headers(setAuthorisation())
@@ -159,7 +159,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
     @Test
     fun `creates new episode on existing assessment`() {
       val episode = webTestClient.post().uri("/assessments/f9a07b3f-91b7-45a7-a5ca-2d98cf1147d8/episodes")
-        .bodyValue(CreateAssessmentEpisodeDto("Change of Circs", AssessmentType.SHORT_FORM_PSR))
+        .bodyValue(CreateAssessmentEpisodeDto("Change of Circs", OasysAssessmentType.SHORT_FORM_PSR))
         .headers(setAuthorisation())
         .exchange()
         .expectStatus().isOk
@@ -178,7 +178,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       CreateAssessmentDto(
         crn = crn,
         deliusEventId = deliusId,
-        assessmentType = AssessmentType.SHORT_FORM_PSR
+        oasysAssessmentType = OasysAssessmentType.SHORT_FORM_PSR
       )
     )
   }
@@ -201,7 +201,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       CreateAssessmentDto(
         courtCode = courtCode,
         caseNumber = caseNumber,
-        assessmentType = AssessmentType.SHORT_FORM_PSR
+        oasysAssessmentType = OasysAssessmentType.SHORT_FORM_PSR
       )
     )
   }

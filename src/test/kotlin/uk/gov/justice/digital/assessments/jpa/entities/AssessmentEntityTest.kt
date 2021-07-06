@@ -16,7 +16,7 @@ class AssessmentEntityTest {
 
   private val assessmentID: Long = 1L
   private val episodeId: Long = 1L
-  private val assessmentType = AssessmentType.SHORT_FORM_PSR
+  private val assessmentType = OasysAssessmentType.SHORT_FORM_PSR
 
   @BeforeEach
   fun setup() {
@@ -27,7 +27,7 @@ class AssessmentEntityTest {
   fun `should create new episode if none exist`() {
     val assessment = AssessmentEntity(assessmentId = assessmentID)
     assertThat(assessment.episodes).hasSize(0)
-    val newEpisode = assessment.newEpisode("Change of Circs", assessmentType = assessmentType)
+    val newEpisode = assessment.newEpisode("Change of Circs", oasysAssessmentType = assessmentType)
     assertThat(newEpisode.episodeId).isNull()
     assertThat(newEpisode.changeReason).isEqualTo("Change of Circs")
     assertThat(assessment.episodes).hasSize(1)
@@ -37,7 +37,7 @@ class AssessmentEntityTest {
   fun `should return existing episode if exists`() {
     val assessment = AssessmentEntity(assessmentId = assessmentID, episodes = mutableListOf(AssessmentEpisodeEntity(episodeId = episodeId, changeReason = "Change of Circs")))
     assertThat(assessment.episodes).hasSize(1)
-    val newEpisode = assessment.newEpisode("Another change of Circs", assessmentType = assessmentType)
+    val newEpisode = assessment.newEpisode("Another change of Circs", oasysAssessmentType = assessmentType)
     assertThat(newEpisode.episodeId).isEqualTo(episodeId)
     assertThat(newEpisode.changeReason).isEqualTo("Change of Circs")
     assertThat(assessment.episodes).hasSize(1)

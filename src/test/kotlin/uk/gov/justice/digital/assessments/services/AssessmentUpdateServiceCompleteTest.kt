@@ -11,7 +11,7 @@ import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
+import uk.gov.justice.digital.assessments.jpa.entities.OasysAssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.EpisodeRepository
@@ -60,7 +60,7 @@ class AssessmentUpdateServiceCompleteTest {
     every { assessmentRepository.findByAssessmentUuid(any()) } returns assessment
     every { episodeRepository.save(any()) } returns assessment.episodes[0]
     every {
-      assessmentUpdateRestClient.completeAssessment(9999, AssessmentType.SHORT_FORM_PSR, 7777)
+      assessmentUpdateRestClient.completeAssessment(9999, OasysAssessmentType.SHORT_FORM_PSR, 7777)
     } returns UpdateAssessmentAnswersResponseDto(7777)
 
     val episode = assessmentUpdateService.closeCurrentEpisode(UUID.fromString("7b4de6d5-4488-4c29-a909-7d3fdf15393d"))
@@ -85,7 +85,7 @@ class AssessmentUpdateServiceCompleteTest {
     every { assessmentRepository.findByAssessmentUuid(any()) } returns assessment
     every { episodeRepository.save(any()) } returns assessment.episodes[0]
     every {
-      assessmentUpdateRestClient.completeAssessment(9999, AssessmentType.SHORT_FORM_PSR, 7777)
+      assessmentUpdateRestClient.completeAssessment(9999, OasysAssessmentType.SHORT_FORM_PSR, 7777)
     } returns oasysAssessmentError()
 
     val episode = assessmentUpdateService.closeCurrentEpisode(UUID.fromString("7b4de6d5-4488-4c29-a909-7d3fdf15393d"))
@@ -109,7 +109,7 @@ class AssessmentUpdateServiceCompleteTest {
         episodeUuid = UUID.fromString("669cdd10-1061-42ec-90d4-e34baab19566"),
         episodeId = 1234,
         assessment = assessment,
-        assessmentType = AssessmentType.SHORT_FORM_PSR,
+        oasysAssessmentType = OasysAssessmentType.SHORT_FORM_PSR,
         changeReason = "Change of Circs 2",
         oasysSetPk = 7777,
       )

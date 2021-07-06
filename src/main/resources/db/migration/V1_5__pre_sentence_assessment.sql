@@ -1,3 +1,7 @@
+INSERT INTO assessment_schema (assessment_schema_id, assessment_schema_uuid, assessment_schema_code, oasys_assessment_type, oasys_create_assessment_at, assessment_name)
+VALUES
+(0, '51c2e87e-a540-4027-8f5a-e6c80511332f', 'ROSH', 'SHORT_FORM_PSR', 'START', 'Pre-Sentence Assessment');
+
 INSERT INTO answer_schema_group (answer_schema_group_uuid, answer_schema_group_code, group_start, group_end)
 VALUES ('887f4528-06d1-4247-8bc3-5e679222baa6', 'yes-no', '2020-11-30 14:50:00', null),
 ('701e4016-3447-40d2-a9fb-cc5e7490fe70', 'selectananswer-tbc', '2020-11-30 14:50:00', null),

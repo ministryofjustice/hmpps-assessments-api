@@ -91,8 +91,8 @@ class AssessmentUpdateService(
     updatedEpisodeAnswers: Map<UUID, AnswersDto>
   ): AssessmentEpisodeUpdateErrors? {
     val offenderPk = episode.assessment?.subject?.oasysOffenderPk
-    if (episode.assessmentType == null || episode.oasysSetPk == null || offenderPk == null) {
-      log.info("Unable to update OASys Assessment with keys type: ${episode.assessmentType} oasysSet: ${episode.oasysSetPk} offenderPk: $offenderPk")
+    if (episode.oasysAssessmentType == null || episode.oasysSetPk == null || offenderPk == null) {
+      log.info("Unable to update OASys Assessment with keys type: ${episode.oasysAssessmentType} oasysSet: ${episode.oasysSetPk} offenderPk: $offenderPk")
       return null
     }
 
@@ -107,7 +107,7 @@ class AssessmentUpdateService(
 
     val oasysUpdateResult = assessmentUpdateRestClient.updateAssessment(
       offenderPk,
-      episode.assessmentType!!,
+      episode.oasysAssessmentType!!,
       episode.oasysSetPk!!,
       oasysAnswers
     )
@@ -340,8 +340,8 @@ class AssessmentUpdateService(
   ): AssessmentEpisodeDto {
     val episode = assessmentService.getCurrentEpisode(assessmentUuid)
     val offenderPk: Long? = episode.assessment?.subject?.oasysOffenderPk
-    if (episode.assessmentType == null || episode.oasysSetPk == null || offenderPk == null) {
-      log.info("Unable to complete OASys Assessment with keys type: ${episode.assessmentType} oasysSet: ${episode.oasysSetPk} offenderPk: $offenderPk")
+    if (episode.oasysAssessmentType == null || episode.oasysSetPk == null || offenderPk == null) {
+      log.info("Unable to complete OASys Assessment with keys type: ${episode.oasysAssessmentType} oasysSet: ${episode.oasysSetPk} offenderPk: $offenderPk")
       return AssessmentEpisodeDto.from(episode, null)
     }
     val oasysResult = completeOASysAssessment(offenderPk, episode)
@@ -361,7 +361,7 @@ class AssessmentUpdateService(
   ): AssessmentEpisodeUpdateErrors? {
     val oasysUpdateResult = assessmentUpdateRestClient.completeAssessment(
       offenderPk,
-      episode.assessmentType!!,
+      episode.oasysAssessmentType!!,
       episode.oasysSetPk!!
     )
     if (oasysUpdateResult?.validationErrorDtos?.isNotEmpty() == true) {

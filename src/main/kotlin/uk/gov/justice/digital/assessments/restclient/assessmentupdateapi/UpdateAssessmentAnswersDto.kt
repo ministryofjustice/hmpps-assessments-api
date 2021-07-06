@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.assessments.restclient.assessmentupdateapi
 
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
+import uk.gov.justice.digital.assessments.jpa.entities.OasysAssessmentType
 
 data class UpdateAssessmentAnswersDto(
   val oasysSetPk: Long,
@@ -8,5 +8,5 @@ data class UpdateAssessmentAnswersDto(
   val areaCode: String,
   val oasysUserCode: String,
   val answers: Set<OasysAnswer>? = emptySet(),
-  val assessmentType: AssessmentType,
+  val oasysAssessmentType: OasysAssessmentType,
 )

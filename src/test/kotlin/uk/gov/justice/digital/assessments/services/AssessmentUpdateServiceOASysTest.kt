@@ -19,7 +19,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.AnswerSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AnswerSchemaGroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
+import uk.gov.justice.digital.assessments.jpa.entities.OasysAssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.OASysMappingEntity
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.SubjectEntity
@@ -52,7 +52,7 @@ class AssessmentUpdateServiceOASysTest {
 
   private val assessmentUuid = UUID.randomUUID()
   private val assessmentId = 1L
-  private val assessmentType = AssessmentType.SHORT_FORM_PSR
+  private val assessmentType = OasysAssessmentType.SHORT_FORM_PSR
 
   private val oasysOffenderPk = 1L
   private val oasysSetPk = 1L
@@ -325,7 +325,7 @@ class AssessmentUpdateServiceOASysTest {
     every { assessmentService.getEpisode(episodeUuid, assessmentUuid) } returns
       AssessmentEpisodeEntity(
         episodeId = episodeId1,
-        assessmentType = AssessmentType.SHORT_FORM_PSR,
+        oasysAssessmentType = OasysAssessmentType.SHORT_FORM_PSR,
         oasysSetPk = oasysSetPk,
         assessment = assessment
       )
@@ -499,7 +499,7 @@ class AssessmentUpdateServiceOASysTest {
         episodeUuid = episodeUuid,
         episodeId = episodeId2,
         assessment = assessment,
-        assessmentType = AssessmentType.SHORT_FORM_PSR,
+        oasysAssessmentType = OasysAssessmentType.SHORT_FORM_PSR,
         changeReason = "Change of Circs 2",
         oasysSetPk = 7777,
         answers = answers
@@ -521,7 +521,7 @@ class AssessmentUpdateServiceOASysTest {
     )
     return AssessmentEpisodeEntity(
       episodeId = episodeId1,
-      assessmentType = AssessmentType.SHORT_FORM_PSR,
+      oasysAssessmentType = OasysAssessmentType.SHORT_FORM_PSR,
       oasysSetPk = oasysSetPk,
       answers = answers,
       assessment = AssessmentEntity(
