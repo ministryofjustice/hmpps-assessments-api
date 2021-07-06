@@ -1,3 +1,14 @@
+
+CREATE TABLE IF NOT EXISTS assessment_schema
+(
+    assessment_schema_id                SERIAL      PRIMARY KEY,
+    assessment_schema_uuid              UUID        NOT NULL unique,
+    assessment_schema_code              TEXT        NOT NULL,
+    oasys_assessment_type               TEXT,
+    oasys_create_assessment_at          TEXT,
+    assessment_name                     TEXT
+);
+
 CREATE TABLE IF NOT EXISTS answer_schema_group
 (
     answer_schema_group_id        SERIAL      PRIMARY KEY,
@@ -69,6 +80,15 @@ CREATE TABLE IF NOT EXISTS grouping
     help_text   TEXT,
     group_start TIMESTAMP   NOT NULL,
     group_end   TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS assessment_schema_groups
+(
+    assessment_schema_group_id  SERIAL      PRIMARY KEY,
+    assessment_schema_uuid      UUID        NOT NULL,
+    group_uuid                  UUID        NOT NULL,
+    FOREIGN KEY (assessment_schema_uuid) REFERENCES assessment_schema (assessment_schema_uuid),
+    FOREIGN KEY (group_uuid) REFERENCES grouping (group_uuid)
 );
 
 CREATE TABLE IF NOT EXISTS question_group
