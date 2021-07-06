@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.assessments.api
 
 import io.swagger.v3.oas.annotations.media.Schema
-import uk.gov.justice.digital.assessments.jpa.entities.OasysAssessmentType
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 
 data class CreateAssessmentDto(
   @Schema(description = "Delius Event ID", example = "1234")
@@ -16,8 +16,8 @@ data class CreateAssessmentDto(
   @Schema(description = "Case Number", example = "1234567890")
   val caseNumber: String? = null,
 
-  @Schema(description = "Assessment Type", example = "SHORT_FORM_PSR")
-  val oasysAssessmentType: OasysAssessmentType = OasysAssessmentType.SHORT_FORM_PSR
+  @Schema(description = "Assessment Schema Code", example = "ROSH")
+  val assessmentSchemaCode: AssessmentSchemaCode = AssessmentSchemaCode.ROSH
 
 ) {
   fun isDelius() = (deliusEventId != null && crn != null)

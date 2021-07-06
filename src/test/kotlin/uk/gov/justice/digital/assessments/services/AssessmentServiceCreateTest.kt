@@ -15,6 +15,7 @@ import org.slf4j.MDC
 import uk.gov.justice.digital.assessments.api.CreateAssessmentDto
 import uk.gov.justice.digital.assessments.api.OffenderDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEntity
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.OasysAssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
@@ -36,6 +37,7 @@ class AssessmentServiceCreateTest {
   private val episodeService: EpisodeService = mockk()
   private val offenderService: OffenderService = mockk()
   private val assessmentUpdateRestClient: AssessmentUpdateRestClient = mockk()
+  private val assessmentSchemaService: AssessmentSchemaService = mockk()
 
   private val assessmentsService = AssessmentService(
     assessmentRepository,
@@ -44,12 +46,14 @@ class AssessmentServiceCreateTest {
     episodeService,
     courtCaseRestClient,
     assessmentUpdateRestClient,
-    offenderService
+    offenderService,
+    assessmentSchemaService
   )
 
   private val assessmentUuid = UUID.randomUUID()
   private val assessmentId = 1L
   private val assessmentType = OasysAssessmentType.SHORT_FORM_PSR
+  private val assessmentSchemaCode = AssessmentSchemaCode.ROSH
 
   private val oasysOffenderPk = 1L
   private val crn = "X12345"
@@ -64,6 +68,7 @@ class AssessmentServiceCreateTest {
   @BeforeEach
   fun setup() {
     MDC.put(RequestData.USER_NAME_HEADER, "User name")
+    every { assessmentSchemaService.toOasysAssessmentType(AssessmentSchemaCode.ROSH) } returns OasysAssessmentType.SHORT_FORM_PSR
   }
 
   @Nested
@@ -82,7 +87,7 @@ class AssessmentServiceCreateTest {
         CreateAssessmentDto(
           deliusEventId = eventId,
           crn = crn,
-          oasysAssessmentType = assessmentType
+          assessmentSchemaCode = assessmentSchemaCode
         )
       )
       verify(exactly = 1) { assessmentRepository.save(any()) }
@@ -98,7 +103,7 @@ class AssessmentServiceCreateTest {
           CreateAssessmentDto(
             deliusEventId = eventId,
             crn = crn,
-            oasysAssessmentType = assessmentType
+            assessmentSchemaCode = assessmentSchemaCode
           )
         )
       assertThat(assessmentDto.assessmentUuid).isEqualTo(assessmentUuid)
@@ -112,7 +117,7 @@ class AssessmentServiceCreateTest {
           CreateAssessmentDto(
             deliusEventId = eventId,
             crn = null,
-            oasysAssessmentType = assessmentType
+            assessmentSchemaCode = assessmentSchemaCode
           )
         )
       }
@@ -126,7 +131,7 @@ class AssessmentServiceCreateTest {
           CreateAssessmentDto(
             deliusEventId = null,
             crn = crn,
-            oasysAssessmentType = assessmentType
+            assessmentSchemaCode = assessmentSchemaCode
           )
         )
       }
@@ -143,7 +148,7 @@ class AssessmentServiceCreateTest {
           CreateAssessmentDto(
             deliusEventId = eventId,
             crn = crn,
-            oasysAssessmentType = assessmentType
+            assessmentSchemaCode = assessmentSchemaCode
           )
         )
       }
@@ -178,7 +183,7 @@ class AssessmentServiceCreateTest {
         CreateAssessmentDto(
           courtCode = courtCode,
           caseNumber = caseNumber,
-          oasysAssessmentType = assessmentType
+          assessmentSchemaCode = assessmentSchemaCode
         )
       )
 
@@ -199,7 +204,7 @@ class AssessmentServiceCreateTest {
         CreateAssessmentDto(
           courtCode = courtCode,
           caseNumber = caseNumber,
-          oasysAssessmentType = OasysAssessmentType.SHORT_FORM_PSR
+          assessmentSchemaCode = assessmentSchemaCode
         )
       )
 

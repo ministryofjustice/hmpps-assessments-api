@@ -43,7 +43,7 @@ class ReferenceDataService(
       assessmentClient.getFilteredReferenceData(
         oasysSetPk = episode.oasysSetPk!!,
         offenderPk = assessment.subject?.oasysOffenderPk,
-        oasysAssessmentType = episode.oasysAssessmentType.toString(),
+        oasysAssessmentType = episode.assessmentSchemaCode.toString(),
         sectionCode = questionSchema.sectionCode,
         fieldName = questionSchema.questionCode,
         parentList = mappedParentFields
