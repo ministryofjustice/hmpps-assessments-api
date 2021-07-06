@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.assessments.restclient.assessmentapi
 
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
+import uk.gov.justice.digital.assessments.jpa.entities.OasysAssessmentType
 
 data class OASysRBACPermissionsDto(
   val userCode: String,
@@ -8,7 +8,7 @@ data class OASysRBACPermissionsDto(
   val area: String,
   val offenderPk: Long? = null,
   val oasysSetPk: Long? = null,
-  val assessmentType: AssessmentType? = null,
+  val oasysAssessmentType: OasysAssessmentType? = null,
   val roleNames: Set<RoleNames>? = emptySet()
 )
 
