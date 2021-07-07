@@ -103,3 +103,13 @@ CREATE TABLE IF NOT EXISTS question_group
     CONSTRAINT check_content_type CHECK (content_type = 'question' OR content_type = 'group'),
     FOREIGN KEY (group_uuid) REFERENCES grouping (group_uuid)
 );
+
+CREATE TABLE IF NOT EXISTS predictor_mapping
+(
+    predictor_mapping_id    SERIAL      PRIMARY KEY,
+    question_schema_uuid    UUID        NOT NULL,
+    predictor_type          TEXT        NOT NULL,
+    onnx_field_name         TEXT,
+    required                BOOLEAN     NOT NULL,
+    FOREIGN KEY (question_schema_uuid) REFERENCES question_schema (question_schema_uuid)
+);
