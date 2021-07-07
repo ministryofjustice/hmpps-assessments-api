@@ -6,5 +6,6 @@ delete from assessment where true;
 delete from question_group where true;
 delete from oasys_question_mapping where true;
 delete from oasys_reference_data_target_mapping where true;
+DELETE FROM assessment_schema_groups WHERE true;
 delete from grouping where true;
 delete from question_schema where true;
