@@ -217,8 +217,8 @@ class AssessmentUpdateServiceTest {
     @BeforeEach
     fun setup() {
       every { assessmentRepository.save(any()) } returns null
-      every { questionService.getAllGroupQuestions("children_at_risk") } returns childTableQuestions
-      every { questionService.getAllGroupQuestions("nonsense_table") } returns QuestionSchemaEntities(emptyList())
+      every { questionService.getAllGroupQuestionsByGroupCode("children_at_risk") } returns childTableQuestions
+      every { questionService.getAllGroupQuestionsByGroupCode("nonsense_table") } returns QuestionSchemaEntities(emptyList())
     }
 
     @Test

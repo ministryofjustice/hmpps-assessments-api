@@ -104,7 +104,7 @@ class AssessmentUpdateService(
           questionService.getAllSectionQuestionsForQuestions(updatedEpisodeAnswers.keys.toList())
 
         override fun getTableQuestions(tableCode: String): QuestionSchemaEntities =
-          questionService.getAllGroupQuestions(tableCode)
+          questionService.getAllGroupQuestionsByGroupCode(tableCode)
       }
     )
 
@@ -259,7 +259,7 @@ class AssessmentUpdateService(
     tableName: String,
     modifyFn: (TableAnswers) -> Map<UUID, AnswersDto>
   ): AssessmentEpisodeDto {
-    val tableQuestions = questionService.getAllGroupQuestions(tableName)
+    val tableQuestions = questionService.getAllGroupQuestionsByGroupCode(tableName)
     if (tableQuestions.isEmpty())
       throw IllegalStateException("No questions found for table $tableName")
 

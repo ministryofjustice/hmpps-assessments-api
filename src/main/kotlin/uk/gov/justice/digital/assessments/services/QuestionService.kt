@@ -137,8 +137,11 @@ class QuestionService(
     return QuestionSchemaEntities(questionSchemaRepository.findAll())
   }
 
-  fun getAllGroupQuestions(groupCode: String): QuestionSchemaEntities {
-    val group = findByGroupCode(groupCode)
+  fun getAllGroupQuestionsByGroupCode(groupCode: String): QuestionSchemaEntities {
+    return getAllGroupQuestions(findByGroupCode(groupCode))
+  }
+
+  private fun getAllGroupQuestions(group: GroupEntity): QuestionSchemaEntities {
     val allQuestions = mutableListOf<QuestionSchemaEntity>()
 
     group.contents.forEach {
@@ -146,7 +149,7 @@ class QuestionService(
         allQuestions.add(questionSchemaRepository.findByQuestionSchemaUuid(it.contentUuid)!!)
       if (it.contentType == "group")
         allQuestions.addAll(
-          getAllGroupQuestions(it.contentUuid.toString())
+          getAllGroupQuestions(findByGroupUuid(it.contentUuid))
         )
     }
 
@@ -158,21 +161,12 @@ class QuestionService(
   }
 
   private fun findByGroupCode(groupCode: String): GroupEntity {
-    return groupRepository.findByGroupCode(groupCode)
-      ?: findByGroupUuid(groupCode)
+    return groupRepository.findByGroupCode(groupCode) ?: throw EntityNotFoundException("Group not found: $groupCode")
   }
-  private fun findByGroupUuid(uuidStr: String): GroupEntity {
-    val groupUuid = codeToUuid(uuidStr)
-    return findByGroupUuid(groupUuid)
-  }
+
   private fun findByGroupUuid(uuid: UUID): GroupEntity {
     return groupRepository.findByGroupUuid(uuid)
       ?: throw EntityNotFoundException("Group not found: $uuid")
-  }
-  private fun codeToUuid(code: String): UUID {
-    try { return UUID.fromString(code) } catch (e: IllegalArgumentException) {
-      throw EntityNotFoundException("Group not found: $code")
-    }
   }
 
   fun getAllSectionQuestionsForQuestions(questions: List<UUID>): QuestionSchemaEntities {
@@ -217,6 +211,7 @@ class QuestionSchemaEntities(
       return sections[sectionCode]!!
     }
   }
+
   private class LogicalPage {
     private val logicalPages: MutableMap<Long?, QuestionCode> = mutableMapOf()
 
@@ -228,6 +223,7 @@ class QuestionSchemaEntities(
       return logicalPages[logicalPage]!!
     }
   }
+
   private class QuestionCode {
     private val questionCodes: MutableMap<String?, Questions> = mutableMapOf()
 
@@ -239,6 +235,7 @@ class QuestionSchemaEntities(
       return questionCodes[questionCode]!!
     }
   }
+
   private class Questions(
     private val questions: MutableList<QuestionSchemaEntity> = mutableListOf()
   ) : List<QuestionSchemaEntity> by questions {

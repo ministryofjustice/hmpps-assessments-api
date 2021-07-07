@@ -52,8 +52,8 @@ class QuestionControllerTest : IntegrationTest() {
   }
 
   @Test
-  fun `get all reference questions and answers for group by uuid`() {
-    val questionsGroup = webTestClient.get().uri("/questions/$groupUuid")
+  fun `get all reference questions and answers for group by group code`() {
+    val questionsGroup = webTestClient.get().uri("/questions/Group code")
       .headers(setAuthorisation())
       .exchange()
       .expectStatus().isOk
@@ -131,7 +131,7 @@ class QuestionControllerTest : IntegrationTest() {
 
   @Test
   fun `section for top-level group by uuid`() {
-    val assessmentGroup = webTestClient.get().uri("/questions/$assessmentGroupUuid/summary")
+    val assessmentGroup = webTestClient.get().uri("/questions/assessment/summary")
       .headers(setAuthorisation())
       .exchange()
       .expectStatus().isOk
