@@ -26,7 +26,8 @@ class AssessmentUpdateService(
   private val episodeRepository: EpisodeRepository,
   private val questionService: QuestionService,
   private val assessmentUpdateRestClient: AssessmentUpdateRestClient,
-  private val assessmentService: AssessmentService
+  private val assessmentService: AssessmentService,
+  private val assessmentSchemaService: AssessmentSchemaService
 ) {
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
@@ -91,23 +92,25 @@ class AssessmentUpdateService(
     updatedEpisodeAnswers: Map<UUID, AnswersDto>
   ): AssessmentEpisodeUpdateErrors? {
     val offenderPk = episode.assessment?.subject?.oasysOffenderPk
-    if (episode.assessmentType == null || episode.oasysSetPk == null || offenderPk == null) {
-      log.info("Unable to update OASys Assessment with keys type: ${episode.assessmentType} oasysSet: ${episode.oasysSetPk} offenderPk: $offenderPk")
+    if (episode.assessmentSchemaCode == null || episode.oasysSetPk == null || offenderPk == null) {
+      log.info("Unable to update OASys Assessment with keys type: ${episode.assessmentSchemaCode} oasysSet: ${episode.oasysSetPk} offenderPk: $offenderPk")
       return null
     }
 
     val oasysAnswers = OasysAnswers.from(
       episode,
       object : OasysAnswers.Companion.MappingProvider {
-        override fun getAllQuestions(): QuestionSchemaEntities = questionService.getAllSectionQuestionsForQuestions(updatedEpisodeAnswers.keys.toList())
+        override fun getAllQuestions(): QuestionSchemaEntities =
+          questionService.getAllSectionQuestionsForQuestions(updatedEpisodeAnswers.keys.toList())
+
         override fun getTableQuestions(tableCode: String): QuestionSchemaEntities =
-          questionService.getAllGroupQuestions(tableCode)
+          questionService.getAllGroupQuestionsByGroupCode(tableCode)
       }
     )
 
     val oasysUpdateResult = assessmentUpdateRestClient.updateAssessment(
       offenderPk,
-      episode.assessmentType!!,
+      assessmentSchemaService.toOasysAssessmentType(episode.assessmentSchemaCode),
       episode.oasysSetPk!!,
       oasysAnswers
     )
@@ -256,7 +259,7 @@ class AssessmentUpdateService(
     tableName: String,
     modifyFn: (TableAnswers) -> Map<UUID, AnswersDto>
   ): AssessmentEpisodeDto {
-    val tableQuestions = questionService.getAllGroupQuestions(tableName)
+    val tableQuestions = questionService.getAllGroupQuestionsByGroupCode(tableName)
     if (tableQuestions.isEmpty())
       throw IllegalStateException("No questions found for table $tableName")
 
@@ -340,8 +343,8 @@ class AssessmentUpdateService(
   ): AssessmentEpisodeDto {
     val episode = assessmentService.getCurrentEpisode(assessmentUuid)
     val offenderPk: Long? = episode.assessment?.subject?.oasysOffenderPk
-    if (episode.assessmentType == null || episode.oasysSetPk == null || offenderPk == null) {
-      log.info("Unable to complete OASys Assessment with keys type: ${episode.assessmentType} oasysSet: ${episode.oasysSetPk} offenderPk: $offenderPk")
+    if (episode.assessmentSchemaCode == null || episode.oasysSetPk == null || offenderPk == null) {
+      log.info("Unable to complete OASys Assessment with keys type: ${episode.assessmentSchemaCode} oasysSet: ${episode.oasysSetPk} offenderPk: $offenderPk")
       return AssessmentEpisodeDto.from(episode, null)
     }
     val oasysResult = completeOASysAssessment(offenderPk, episode)
@@ -361,7 +364,7 @@ class AssessmentUpdateService(
   ): AssessmentEpisodeUpdateErrors? {
     val oasysUpdateResult = assessmentUpdateRestClient.completeAssessment(
       offenderPk,
-      episode.assessmentType!!,
+      assessmentSchemaService.toOasysAssessmentType(episode.assessmentSchemaCode),
       episode.oasysSetPk!!
     )
     if (oasysUpdateResult?.validationErrorDtos?.isNotEmpty() == true) {

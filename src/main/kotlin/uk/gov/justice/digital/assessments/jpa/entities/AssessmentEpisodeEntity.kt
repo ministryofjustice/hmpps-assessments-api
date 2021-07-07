@@ -38,9 +38,9 @@ class AssessmentEpisodeEntity(
   @JoinColumn(name = "ASSESSMENT_UUID", referencedColumnName = "ASSESSMENT_UUID")
   val assessment: AssessmentEntity? = null,
 
-  @Column(name = "ASSESSMENT_TYPE")
+  @Column(name = "ASSESSMENT_SCHEMA_CODE")
   @Enumerated(EnumType.STRING)
-  val assessmentType: AssessmentType? = null,
+  val assessmentSchemaCode: AssessmentSchemaCode? = null,
 
   @Column(name = "OASYS_SET_PK")
   val oasysSetPk: Long? = null,

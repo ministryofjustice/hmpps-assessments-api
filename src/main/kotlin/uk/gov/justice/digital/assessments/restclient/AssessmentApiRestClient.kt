@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.ClientResponse
 import reactor.core.publisher.Mono
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
+import uk.gov.justice.digital.assessments.jpa.entities.OasysAssessmentType
 import uk.gov.justice.digital.assessments.redis.UserDetailsRedisRepository
 import uk.gov.justice.digital.assessments.restclient.assessmentapi.Authorized
 import uk.gov.justice.digital.assessments.restclient.assessmentapi.FilteredReferenceDataDto
@@ -44,7 +44,7 @@ class AssessmentApiRestClient {
   @Authorized(roleChecks = [Roles.ASSESSMENT_READ])
   fun getOASysAssessment(
     offenderPK: Long,
-    assessmentType: AssessmentType,
+    oasysAssessmentType: OasysAssessmentType,
     oasysSetPk: Long,
   ): OASysAssessmentDto? {
     log.info("Retrieving OASys Assessment $oasysSetPk")
@@ -72,7 +72,7 @@ class AssessmentApiRestClient {
   fun getFilteredReferenceData(
     oasysSetPk: Long,
     offenderPk: Long?,
-    assessmentType: String,
+    oasysAssessmentType: String,
     sectionCode: String,
     fieldName: String,
     parentList: Map<String, String>?
@@ -87,7 +87,7 @@ class AssessmentApiRestClient {
           oasysUserCode,
           RequestData.getAreaCode(),
           offenderPk,
-          assessmentType,
+          oasysAssessmentType,
           sectionCode,
           fieldName,
           parentList
@@ -117,13 +117,13 @@ class AssessmentApiRestClient {
     roleChecks: Set<Roles>,
     offenderPk: Long? = null,
     oasysSetPk: Long? = null,
-    assessmentType: AssessmentType? = null,
+    oasysAssessmentType: OasysAssessmentType? = null,
     roleNames: Set<RoleNames>? = emptySet()
   ): RBACPermissionsPayload? {
     val area = RequestData.getAreaCode()
     val oasysUserCode = userDetailsRedisRepository.findByUserId(RequestData.getUserId()).oasysUserCode
 
-    log.info("Retrieving OASys RBAC permissions for oasys user $oasysUserCode, area $area, offender $offenderPk, assessment $oasysSetPk and assessment type $assessmentType")
+    log.info("Retrieving OASys RBAC permissions for oasys user $oasysUserCode, area $area, offender $offenderPk, assessment $oasysSetPk and assessment type $oasysAssessmentType")
     val path = "/authorisation/permissions"
     val permissionsDto = OASysRBACPermissionsDto(
       oasysUserCode,
@@ -131,7 +131,7 @@ class AssessmentApiRestClient {
       area,
       offenderPk,
       oasysSetPk,
-      assessmentType,
+      oasysAssessmentType,
       roleNames
     )
     return webClient
@@ -145,14 +145,14 @@ class AssessmentApiRestClient {
       }
       .onStatus(HttpStatus::is5xxServerError) {
         handle5xxError(
-          "Failed to retrieve OASys RBAC permissions for oasys user $oasysUserCode, area $area, offender $offenderPk, assessment $oasysSetPk and assessment type $assessmentType",
+          "Failed to retrieve OASys RBAC permissions for oasys user $oasysUserCode, area $area, offender $offenderPk, assessment $oasysSetPk and assessment type $oasysAssessmentType",
           HttpMethod.GET,
           path,
           ExternalService.ASSESSMENTS_API
         )
       }
       .bodyToMono(RBACPermissionsPayload::class.java)
-      .block().also { log.info("Retrieved OASys RBAC permissions for oasys user $oasysUserCode, area $area, offender $offenderPk, assessment $oasysSetPk and assessment type $assessmentType") }
+      .block().also { log.info("Retrieved OASys RBAC permissions for oasys user $oasysUserCode, area $area, offender $offenderPk, assessment $oasysSetPk and assessment type $oasysAssessmentType") }
   }
 
   private fun handlePermissionsError(

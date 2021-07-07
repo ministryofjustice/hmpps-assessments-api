@@ -74,7 +74,7 @@ class AssessmentController(
     return assessmentService.createNewEpisode(
       assessmentUuid,
       createAssessmentEpisodeDto.changeReason,
-      createAssessmentEpisodeDto.assessmentType
+      createAssessmentEpisodeDto.assessmentSchemaCode
     )
   }
 

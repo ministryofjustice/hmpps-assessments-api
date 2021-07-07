@@ -4,7 +4,7 @@ import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.web.reactive.function.client.ClientResponse
 import reactor.core.publisher.Mono
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
+import uk.gov.justice.digital.assessments.jpa.entities.OasysAssessmentType
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OASysErrorResponse
 import uk.gov.justice.digital.assessments.services.exceptions.DuplicateOffenderRecordException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiAuthorisationException
@@ -78,7 +78,7 @@ fun handleOffenderError(
 fun handleAssessmentError(
   offenderPK: Long?,
   user: String?,
-  assessmentType: AssessmentType,
+  oasysAssessmentType: OasysAssessmentType,
   clientResponse: ClientResponse,
   method: HttpMethod,
   url: String
@@ -90,7 +90,7 @@ fun handleAssessmentError(
     }
     HttpStatus.FORBIDDEN == clientResponse.statusCode() -> {
       clientResponse.bodyToMono(OASysErrorResponse::class.java)
-        .map { error -> OASysUserPermissionException(error.developerMessage, "Unable to create OASys assessment. User $user does not have permission to create assessment type: $assessmentType for offender with pk $offenderPK") }
+        .map { error -> OASysUserPermissionException(error.developerMessage, "Unable to create OASys assessment. User $user does not have permission to create assessment type: $oasysAssessmentType for offender with pk $offenderPK") }
     }
     else -> handleError(clientResponse, method, url, ExternalService.ASSESSMENTS_API)
   }

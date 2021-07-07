@@ -9,6 +9,7 @@ DELETE FROM oasys_reference_data_target_mapping WHERE true;
 DELETE FROM question_schema WHERE true;
 DELETE FROM answer_schema_group WHERE true;
 DELETE FROM question_group WHERE true;
+DELETE FROM assessment_schema_groups WHERE true;
 DELETE FROM grouping WHERE true;
 DELETE FROM question_dependency WHERE true;
 
@@ -40,10 +41,10 @@ insert into subject (subject_id, subject_uuid, source, source_id, name, oasys_of
 (4, '1146f644-dfb9-4e6d-9446-1be089538480', 'COURT', 'courtCode|caseNumber3', 'John Smith', 12345, 'dummy-pnc', 'dummy-crn', '1928-08-01', '2019-11-14 08:30', '6082265e-885d-4526-b713-77e59b70691e'),
 (5, 'f6023241-ba22-47e4-bc7d-f7adfde4276c', 'COURT', 'courtCode|caseNumber3', 'John Smith', 5, 'dummy-pnc', 'dummy-crn', '1928-08-01', '2019-11-14 08:30', 'aa47e6c4-e41f-467c-95e7-fcf5ffd422f5');
 
-insert into assessed_episode  (episode_id, episode_uuid, user_id, assessment_type, oasys_set_pk, created_date, end_date, change_reason, assessment_uuid, answers) values
-(3, '163cf020-ff53-4dc6-a15c-e93e8537d347', 'USER1', 'SHORT_FORM_PSR', 1, '2019-11-14 09:00', null, 'More Change of Circs', 'e399ed1b-0e77-4c68-8bbc-d2f0befece84', '{}'),
-(4, '461994f9-86b9-4177-8412-de8dbb18415b', 'USER1', 'SHORT_FORM_PSR', 5678, '2019-11-14 09:00', '2019-11-14 12:00', 'More Change of Circs', '6082265e-885d-4526-b713-77e59b70691e', '{}'),
-(5, '4f99ea18-6559-460e-9693-68f0f5e5bebc', 'USER1', 'SHORT_FORM_PSR', 1, '2019-11-14 09:00', null, 'More Change of Circs', 'aa47e6c4-e41f-467c-95e7-fcf5ffd422f5', '{}');
+insert into assessed_episode  (episode_id, episode_uuid, user_id, assessment_schema_code, oasys_set_pk, created_date, end_date, change_reason, assessment_uuid, answers) values
+(3, '163cf020-ff53-4dc6-a15c-e93e8537d347', 'USER1', 'ROSH', 1, '2019-11-14 09:00', null, 'More Change of Circs', 'e399ed1b-0e77-4c68-8bbc-d2f0befece84', '{}'),
+(4, '461994f9-86b9-4177-8412-de8dbb18415b', 'USER1', 'ROSH', 5678, '2019-11-14 09:00', '2019-11-14 12:00', 'More Change of Circs', '6082265e-885d-4526-b713-77e59b70691e', '{}'),
+(5, '4f99ea18-6559-460e-9693-68f0f5e5bebc', 'USER1', 'ROSH', 1, '2019-11-14 09:00', null, 'More Change of Circs', 'aa47e6c4-e41f-467c-95e7-fcf5ffd422f5', '{}');
 
 /* Existing Delius Subject */
 insert into subject (subject_id, subject_uuid, source, source_id, name, pnc, crn, date_of_birth, created_date, assessment_uuid) values

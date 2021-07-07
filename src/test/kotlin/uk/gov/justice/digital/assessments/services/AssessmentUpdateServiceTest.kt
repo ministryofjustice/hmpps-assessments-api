@@ -33,6 +33,7 @@ class AssessmentUpdateServiceTest {
   private val courtCaseRestClient: CourtCaseRestClient = mockk()
   private val episodeService: EpisodeService = mockk()
   private val offenderService: OffenderService = mockk()
+  private val assessmentSchemaService: AssessmentSchemaService = mockk()
 
   private val assessmentService = AssessmentService(
     assessmentRepository,
@@ -41,14 +42,16 @@ class AssessmentUpdateServiceTest {
     episodeService,
     courtCaseRestClient,
     assessmentUpdateRestClient,
-    offenderService
+    offenderService,
+    assessmentSchemaService
   )
   private val assessmentUpdateService = AssessmentUpdateService(
     assessmentRepository,
     episodeRepository,
     questionService,
     assessmentUpdateRestClient,
-    assessmentService
+    assessmentService,
+    assessmentSchemaService
   )
 
   private val assessmentUuid = UUID.randomUUID()
@@ -214,8 +217,8 @@ class AssessmentUpdateServiceTest {
     @BeforeEach
     fun setup() {
       every { assessmentRepository.save(any()) } returns null
-      every { questionService.getAllGroupQuestions("children_at_risk") } returns childTableQuestions
-      every { questionService.getAllGroupQuestions("nonsense_table") } returns QuestionSchemaEntities(emptyList())
+      every { questionService.getAllGroupQuestionsByGroupCode("children_at_risk") } returns childTableQuestions
+      every { questionService.getAllGroupQuestionsByGroupCode("nonsense_table") } returns QuestionSchemaEntities(emptyList())
     }
 
     @Test

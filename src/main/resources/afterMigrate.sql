@@ -182,7 +182,7 @@ INSERT INTO assessment (assessment_uuid, created_date, completed_date )
 VALUES ('e69a61ff-7395-4a12-b434-b1aa6478aded', '2019-11-14 08:11:53.177108', null)
 ON CONFLICT DO NOTHING;
 
-INSERT INTO assessed_episode (episode_uuid, user_id, created_date, end_date, change_reason, assessment_type, assessment_uuid, answers  )
+INSERT INTO assessed_episode (episode_uuid, user_id, created_date, end_date, change_reason, oasys_assessment_type, assessment_uuid, answers  )
 VALUES ('4511a3f6-7f51-4b96-b603-4e75eac0c839', 'employee1', '2019-11-14 08:11:53.177108', null, 'new episode', 'SHORT_FORM_PSR', 'e69a61ff-7395-4a12-b434-b1aa6478aded',
         '{ "11111111-1111-1111-1111-111111111111": {
             "freeTextAnswer": "some free text",

@@ -6,6 +6,7 @@ import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -19,8 +20,9 @@ import uk.gov.justice.digital.assessments.jpa.entities.AnswerSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AnswerSchemaGroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.OASysMappingEntity
+import uk.gov.justice.digital.assessments.jpa.entities.OasysAssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
@@ -41,18 +43,20 @@ class AssessmentUpdateServiceOASysTest {
   private val questionService: QuestionService = mockk()
   private val assessmentUpdateRestClient: AssessmentUpdateRestClient = mockk()
   private val assessmentService: AssessmentService = mockk()
+  private val assessmentSchemaService: AssessmentSchemaService = mockk()
 
   private val assessmentsUpdateService = AssessmentUpdateService(
     assessmentRepository,
     episodeRepository,
     questionService,
     assessmentUpdateRestClient,
-    assessmentService
+    assessmentService,
+    assessmentSchemaService
   )
 
   private val assessmentUuid = UUID.randomUUID()
   private val assessmentId = 1L
-  private val assessmentType = AssessmentType.SHORT_FORM_PSR
+  private val assessmentType = OasysAssessmentType.SHORT_FORM_PSR
 
   private val oasysOffenderPk = 1L
   private val oasysSetPk = 1L
@@ -70,6 +74,11 @@ class AssessmentUpdateServiceOASysTest {
   private val answer1Uuid = UUID.randomUUID()
   private val answer2Uuid = UUID.randomUUID()
   private val answer3Uuid = UUID.randomUUID()
+
+  @BeforeEach
+  fun setup() {
+    every { assessmentSchemaService.toOasysAssessmentType(AssessmentSchemaCode.ROSH) } returns OasysAssessmentType.SHORT_FORM_PSR
+  }
 
   @Test
   fun `map Oasys answer from free text answer`() {
@@ -325,7 +334,7 @@ class AssessmentUpdateServiceOASysTest {
     every { assessmentService.getEpisode(episodeUuid, assessmentUuid) } returns
       AssessmentEpisodeEntity(
         episodeId = episodeId1,
-        assessmentType = AssessmentType.SHORT_FORM_PSR,
+        assessmentSchemaCode = AssessmentSchemaCode.ROSH,
         oasysSetPk = oasysSetPk,
         assessment = assessment
       )
@@ -499,7 +508,7 @@ class AssessmentUpdateServiceOASysTest {
         episodeUuid = episodeUuid,
         episodeId = episodeId2,
         assessment = assessment,
-        assessmentType = AssessmentType.SHORT_FORM_PSR,
+        assessmentSchemaCode = AssessmentSchemaCode.ROSH,
         changeReason = "Change of Circs 2",
         oasysSetPk = 7777,
         answers = answers
@@ -521,7 +530,7 @@ class AssessmentUpdateServiceOASysTest {
     )
     return AssessmentEpisodeEntity(
       episodeId = episodeId1,
-      assessmentType = AssessmentType.SHORT_FORM_PSR,
+      assessmentSchemaCode = AssessmentSchemaCode.ROSH,
       oasysSetPk = oasysSetPk,
       answers = answers,
       assessment = AssessmentEntity(

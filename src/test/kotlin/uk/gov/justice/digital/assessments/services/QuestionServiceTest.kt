@@ -297,12 +297,12 @@ class QuestionServiceTest {
     every { questionSchemaRepository.findByQuestionSchemaUuid(tableSubQuestion4Id) } returns tableSubQuestion4
     every { dependencyService.dependencies() } returns QuestionDependencies(emptyList())
 
-    val subTableQuestions = questionService.getAllGroupQuestions("childrenSubGroup")
+    val subTableQuestions = questionService.getAllGroupQuestionsByGroupCode("childrenSubGroup")
     assertThat(subTableQuestions).hasSize(2)
     val subTableQuestionIds = subTableQuestions.map { it.questionSchemaUuid }
     assertThat(subTableQuestionIds).contains(tableSubQuestion3Id, tableSubQuestion4Id)
 
-    val tableQuestions = questionService.getAllGroupQuestions("children")
+    val tableQuestions = questionService.getAllGroupQuestionsByGroupCode("children")
     assertThat(tableQuestions).hasSize(4)
     val tableQuestionIds = tableQuestions.map { it.questionSchemaUuid }
     assertThat(tableQuestionIds).contains(tableSubQuestion1Id, tableSubQuestion2Id, tableSubQuestion3Id, tableSubQuestion4Id)

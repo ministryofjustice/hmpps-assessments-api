@@ -4,7 +4,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -25,7 +25,7 @@ class AssessmentEpisodeDtoTest {
       assessmentId,
       UUID.randomUUID(),
       assessmentEntity,
-      AssessmentType.SHORT_FORM_PSR,
+      AssessmentSchemaCode.ROSH,
       1L,
       "USER",
       LocalDateTime.of(2019, 8, 1, 8, 0),
