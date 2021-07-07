@@ -72,12 +72,12 @@ CREATE TABLE IF NOT EXISTS oasys_reference_data_target_mapping
 CREATE TABLE IF NOT EXISTS grouping
 (
     group_id    SERIAL PRIMARY KEY,
-    group_uuid  UUID      NOT NULL unique,
-    group_code  TEXT      NOT NULL,
-    heading     TEXT      NOT NULL,
+    group_uuid  UUID         NOT NULL unique,
+    group_code  VARCHAR(255) NOT NULL unique,
+    heading     TEXT         NOT NULL,
     subheading  TEXT,
     help_text   TEXT,
-    group_start TIMESTAMP NOT NULL,
+    group_start TIMESTAMP    NOT NULL,
     group_end   TIMESTAMP
 );
 
