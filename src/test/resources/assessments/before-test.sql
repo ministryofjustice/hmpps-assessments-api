@@ -10,6 +10,7 @@ DELETE FROM question_schema WHERE true;
 DELETE FROM answer_schema_group WHERE true;
 DELETE FROM question_group WHERE true;
 DELETE FROM assessment_schema_groups WHERE true;
+DELETE FROM assessment_schema WHERE true;
 DELETE FROM grouping WHERE true;
 DELETE FROM question_dependency WHERE true;
 
@@ -58,3 +59,20 @@ VALUES ('23c3e984-54c7-480f-b06c-7d000e2fb87c', '203.1', 'child_at_risk_pivot.na
 
 INSERT INTO question_group (question_group_uuid, content_uuid, content_type, group_uuid, display_order, mandatory, validation, read_only)
 VALUES ('c093a4ea-46a2-4b98-89cc-6bacaad4d401', '23c3e984-54c7-480f-b06c-7d000e2fb87c', 'question', 'fb777be0-a183-4c83-8209-e7871df9c547', 3, true, '{"mandatory":{"errorMessage":"Enter name","errorSummary":"Enter name"}}', false);
+
+INSERT INTO assessment_schema (assessment_schema_id, assessment_schema_uuid, assessment_schema_code, oasys_assessment_type, oasys_create_assessment_at, assessment_name)
+VALUES
+(0, 'c3a6beac-37c0-46b6-b4b3-62086b624675', 'ROSH', 'SHORT_FORM_PSR', 'START', 'Rosh Assessment')
+ON CONFLICT DO NOTHING;
+INSERT INTO assessment_schema (assessment_schema_id, assessment_schema_uuid, assessment_schema_code, oasys_assessment_type, oasys_create_assessment_at, assessment_name)
+VALUES
+(1, 'c4a6beac-37c0-46b6-b4b3-62086b624675', 'RSR_ONLY', 'SOMETHING_IN_OASYS', 'START', 'Another Assessment type')
+ON CONFLICT DO NOTHING;
+
+INSERT INTO assessment_schema_groups(assessment_schema_group_id, assessment_schema_uuid, group_uuid)
+VALUES (0, 'c3a6beac-37c0-46b6-b4b3-62086b624675', 'fb777be0-a183-4c83-8209-e7871df9c547')
+ON CONFLICT DO NOTHING;
+
+INSERT INTO assessment_schema_groups(assessment_schema_group_id, assessment_schema_uuid, group_uuid)
+VALUES (1, 'c4a6beac-37c0-46b6-b4b3-62086b624675', 'fb777be0-a183-4c83-8209-e7871df9c547')
+ON CONFLICT DO NOTHING;
