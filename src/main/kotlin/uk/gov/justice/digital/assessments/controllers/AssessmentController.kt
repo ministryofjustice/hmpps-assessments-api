@@ -16,7 +16,11 @@ import uk.gov.justice.digital.assessments.api.AssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.api.AssessmentSubjectDto
 import uk.gov.justice.digital.assessments.api.CreateAssessmentDto
 import uk.gov.justice.digital.assessments.api.CreateAssessmentEpisodeDto
+import uk.gov.justice.digital.assessments.api.GroupSectionsDto
+import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.services.AssessmentSchemaService
 import uk.gov.justice.digital.assessments.services.AssessmentService
 import uk.gov.justice.digital.assessments.services.AssessmentUpdateService
 import java.util.UUID
@@ -24,7 +28,8 @@ import java.util.UUID
 @RestController
 class AssessmentController(
   val assessmentService: AssessmentService,
-  val assessmentUpdateService: AssessmentUpdateService
+  val assessmentUpdateService: AssessmentUpdateService,
+  val assessmentSchemaService: AssessmentSchemaService
 ) {
 
   @RequestMapping(path = ["/assessments"], method = [RequestMethod.POST])
@@ -300,6 +305,42 @@ class AssessmentController(
     return updateResponse(
       assessmentUpdateService.closeCurrentEpisode(assessmentUuid)
     )
+  }
+
+  @RequestMapping(path = ["/assessments/schema/{assessmentSchemaCode}"], method = [RequestMethod.GET])
+  @Operation(description = "Gets an assessment schema with all questions in the assessment schema group")
+  @ApiResponses(
+    value = [
+      ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
+      ApiResponse(responseCode = "200", description = "OK")
+    ]
+  )
+  fun getAssessmentSchema(
+    @Parameter(
+      description = "Assessment Schema Code",
+      required = true,
+      example = "ROSH"
+    ) @PathVariable assessmentSchemaCode: AssessmentSchemaCode
+  ): GroupWithContentsDto {
+    return assessmentSchemaService.getAssessmentSchema(assessmentSchemaCode)
+  }
+
+  @RequestMapping(path = ["/assessments/schema/{assessmentSchemaCode}/summary"], method = [RequestMethod.GET])
+  @Operation(description = "Gets Summary information for an assessment schema")
+  @ApiResponses(
+    value = [
+      ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
+      ApiResponse(responseCode = "200", description = "OK")
+    ]
+  )
+  fun getAssessmentSchemaSummary(
+    @Parameter(
+      description = "Assessment Schema Code",
+      required = true,
+      example = "ROSH"
+    ) @PathVariable assessmentSchemaCode: AssessmentSchemaCode
+  ): GroupSectionsDto {
+    return assessmentSchemaService.getAssessmentSchemaSummary(assessmentSchemaCode)
   }
 
   private fun updateResponse(
