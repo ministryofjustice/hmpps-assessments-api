@@ -61,7 +61,9 @@ class AssessmentUpdateRestClient {
       }
   }
 
-  @Authorized(roleChecks = [Roles.OFF_ASSESSMENT_CREATE])
+  // @Authorized(roleChecks = [Roles.OFF_ASSESSMENT_CREATE])
+  // There is a bug on the RBAC rules for create assessment
+  // uncomment out when https://dsdmoj.atlassian.net/browse/ARN-531 has been fixed
   fun createAssessment(
     offenderPK: Long,
     oasysAssessmentType: OasysAssessmentType,
