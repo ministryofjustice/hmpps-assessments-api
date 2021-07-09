@@ -8,5 +8,6 @@ DELETE FROM answer_schema_group WHERE true;
 
 DELETE FROM question_group WHERE true;
 DELETE FROM assessment_schema_groups WHERE true;
+DELETE FROM assessment_schema WHERE true;
 DELETE FROM grouping WHERE true;
 DELETE FROM question_dependency WHERE true;

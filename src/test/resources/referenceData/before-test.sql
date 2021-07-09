@@ -7,6 +7,7 @@ DELETE FROM answer_schema_group WHERE true;
 
 DELETE FROM question_group WHERE true;
 DELETE FROM assessment_schema_groups WHERE true;
+DELETE FROM assessment_schema WHERE true;
 DELETE FROM grouping WHERE true;
 DELETE FROM question_dependency WHERE true;
 
@@ -52,3 +53,21 @@ VALUES ('11111111-1111-1111-1111-111111111113', '11111111-1111-1111-1111-1111111
        ('11111111-1111-1111-1111-111111111118', '11111111-1111-1111-1111-111111111116', 'N', '2020-1-14 09:00', true),
        ('11111111-1111-1111-1111-111111111119', '11111111-1111-1111-1111-111111111116', 'Y', '2020-1-14 09:00', false),
        ('1948af63-07f2-4a8c-9e4c-0ec347bd6ba8', 'fd412ca8-d361-47ab-a189-7acb8ae0675b', 'true', '2020-1-14 09:00', true);
+
+
+INSERT INTO assessment_schema (assessment_schema_id, assessment_schema_uuid, assessment_schema_code, oasys_assessment_type, oasys_create_assessment_at, assessment_name)
+VALUES
+(0, 'c3a6beac-37c0-46b6-b4b3-62086b624675', 'ROSH', 'SHORT_FORM_PSR', 'START', 'Rosh Assessment')
+ON CONFLICT DO NOTHING;
+INSERT INTO assessment_schema (assessment_schema_id, assessment_schema_uuid, assessment_schema_code, oasys_assessment_type, oasys_create_assessment_at, assessment_name)
+VALUES
+(1, 'c4a6beac-37c0-46b6-b4b3-62086b624675', 'RSR_ONLY', 'SOMETHING_IN_OASYS', 'START', 'Another Assessment type')
+ON CONFLICT DO NOTHING;
+
+INSERT INTO assessment_schema_groups(assessment_schema_group_id, assessment_schema_uuid, group_uuid)
+VALUES (0, 'c3a6beac-37c0-46b6-b4b3-62086b624675', 'e353f3df-113d-401c-a3c0-14239fc17cf9')
+ON CONFLICT DO NOTHING;
+
+INSERT INTO assessment_schema_groups(assessment_schema_group_id, assessment_schema_uuid, group_uuid)
+VALUES (1, 'c4a6beac-37c0-46b6-b4b3-62086b624675', 'e964d699-cf96-4abd-af0e-ddf1f6687a46')
+ON CONFLICT DO NOTHING;
