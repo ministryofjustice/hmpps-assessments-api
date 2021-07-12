@@ -16,9 +16,6 @@ data class QuestionSchemaDto(
   @Schema(description = "Question Code", example = "RSR_23")
   val questionCode: String? = null,
 
-  @Schema(description = "OASys Question Code", example = "RSR_23")
-  val oasysQuestionCode: String? = null,
-
   @Schema(description = "Question Start Date", example = "2020-01-02T16:00:00")
   val questionStart: LocalDateTime? = null,
 
@@ -56,7 +53,6 @@ data class QuestionSchemaDto(
         questionSchema?.questionSchemaId,
         questionSchema?.questionSchemaUuid,
         questionSchema?.questionCode,
-        questionSchema?.oasysQuestionCode,
         questionSchema?.questionStartDate,
         questionSchema?.questionEndDate,
         questionSchema?.answerType,
