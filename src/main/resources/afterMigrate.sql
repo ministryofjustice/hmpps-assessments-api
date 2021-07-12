@@ -27,14 +27,14 @@ VALUES  ('44444444-4444-4444-4444-444444444444', 'SR15.1.2.1','44444444-4444-444
 ON CONFLICT DO NOTHING;
 
 
-INSERT INTO question_schema (question_schema_uuid, question_code, oasys_question_code, question_start, question_end, answer_type, answer_schema_group_uuid, question_text, question_help_text)
-VALUES  ('11111111-1111-1111-1111-111111111111', 'SR15.1.1', 'SR15.1', '2019-11-14 08:11:53.177108', null, 'scale',
+INSERT INTO question_schema (question_schema_uuid, question_code, question_start, question_end, answer_type, answer_schema_group_uuid, question_text, question_help_text)
+VALUES  ('11111111-1111-1111-1111-111111111111', 'SR15.1.1', '2019-11-14 08:11:53.177108', null, 'scale',
          null, 'Rating', null),
-('11111111-1111-1111-1111-111111111112', 'SR15.1.2', 'SR15.2', '2019-11-14 08:11:53.177108', null, 'y/n', '44444444-4444-4444-5555-444444444444',  'Critical', null),
-('11111111-1111-1111-1111-111111111113', 'SR15.1.3', 'SR15.3', '2019-11-14 08:11:53.177108', null, 'freetext', null, 'Comment', null),
-('11111111-1111-1111-1111-111111111114', 'SR18.1.1', 'SR15.1', '2019-11-14 08:11:53.177108', null, 'scale', null, 'Rating', null),
-('11111111-1111-1111-1111-111111111115', 'SR18.1.2', 'SR15.2', '2019-11-14 08:11:53.177108', null, 'y/n', '44444444-4444-4444-5555-444444444444', 'Critical', null),
-('11111111-1111-1111-1111-111111111116', 'SR18.1.3', 'SR15.3', '2019-11-14 08:11:53.177108', null, 'freetext', null, 'Comment', null)
+('11111111-1111-1111-1111-111111111112', 'SR15.1.2', '2019-11-14 08:11:53.177108', null, 'y/n', '44444444-4444-4444-5555-444444444444',  'Critical', null),
+('11111111-1111-1111-1111-111111111113', 'SR15.1.3', '2019-11-14 08:11:53.177108', null, 'freetext', null, 'Comment', null),
+('11111111-1111-1111-1111-111111111114', 'SR18.1.1', '2019-11-14 08:11:53.177108', null, 'scale', null, 'Rating', null),
+('11111111-1111-1111-1111-111111111115', 'SR18.1.2', '2019-11-14 08:11:53.177108', null, 'y/n', '44444444-4444-4444-5555-444444444444', 'Critical', null),
+('11111111-1111-1111-1111-111111111116', 'SR18.1.3', '2019-11-14 08:11:53.177108', null, 'freetext', null, 'Comment', null)
 ON CONFLICT DO NOTHING;
 
 INSERT INTO grouping (group_uuid, group_code, heading, subheading, help_text, group_start, group_end)
@@ -52,48 +52,48 @@ VALUES  ('33333333-3333-3333-3333-333333333331', '11111111-1111-1111-1111-111111
 ('33333333-3333-3333-3333-333333333336', '11111111-1111-1111-1111-111111111116', 'question','22222222-2222-2222-2222-222222222223', 6, true, null, false)
 ON CONFLICT DO NOTHING;
 
-INSERT INTO question_schema (question_schema_uuid, question_code, oasys_question_code, question_start, question_end, answer_type, answer_schema_group_uuid, question_text, question_help_text)
-VALUES  ('11111111-1111-1111-1111-111111111201', 'surname', 'CI1', '2019-11-14 08:11:53.177108', null, 'freetext', null, 'Surname', null),
-('11111111-1111-1111-1111-111111111202', 'forename', 'CI2', '2019-11-14 08:11:53.177108', null, 'freetext', null, 'Forename', null),
-('11111111-1111-1111-1111-111111111203', 's_alias', 'CI3', '2019-11-14 08:11:53.177108', null, 'freetext', null, 'Surname Aliases', null),
-('11111111-1111-1111-1111-111111111204', 'f_alias', 'CI4', '2019-11-14 08:11:53.177108', null, 'freetext', null, 'Forename Aliases', null),
-('11111111-1111-1111-1111-111111111205', 'dob', 'CI5', '2019-11-14 08:11:53.177108', null, 'freetext', null, 'Date of Birth', null),
-('11111111-1111-1111-1111-111111111206', 'dob_alias', 'CI6', '2019-11-14 08:11:53.177108', null, 'freetext', null, 'Date of Birth (Aliases)', null),
-('11111111-1111-1111-1111-111111111207', 'gender', 'CI7', '2019-11-14 08:11:53.177108', null, 'freetext', null, 'Gender', null),
-('11111111-1111-1111-1111-111111111208', 'religion', 'CI8', '2019-11-14 08:11:53.177108', null, 'freetext', null, 'Religion', null)
+INSERT INTO question_schema (question_schema_uuid, question_code, question_start, question_end, answer_type, answer_schema_group_uuid, question_text, question_help_text)
+VALUES  ('11111111-1111-1111-1111-111111111201', 'surname', '2019-11-14 08:11:53.177108', null, 'freetext', null, 'Surname', null),
+('11111111-1111-1111-1111-111111111202', 'forename', '2019-11-14 08:11:53.177108', null, 'freetext', null, 'Forename', null),
+('11111111-1111-1111-1111-111111111203', 's_alias', '2019-11-14 08:11:53.177108', null, 'freetext', null, 'Surname Aliases', null),
+('11111111-1111-1111-1111-111111111204', 'f_alias', '2019-11-14 08:11:53.177108', null, 'freetext', null, 'Forename Aliases', null),
+('11111111-1111-1111-1111-111111111205', 'dob', '2019-11-14 08:11:53.177108', null, 'freetext', null, 'Date of Birth', null),
+('11111111-1111-1111-1111-111111111206', 'dob_alias', '2019-11-14 08:11:53.177108', null, 'freetext', null, 'Date of Birth (Aliases)', null),
+('11111111-1111-1111-1111-111111111207', 'gender', '2019-11-14 08:11:53.177108', null, 'freetext', null, 'Gender', null),
+('11111111-1111-1111-1111-111111111208', 'religion', '2019-11-14 08:11:53.177108', null, 'freetext', null, 'Religion', null)
 ON CONFLICT DO NOTHING;
 
 -- Layer 3 Accommodation
-INSERT INTO question_schema (question_schema_uuid, question_code, oasys_question_code, question_start, question_end, answer_type, answer_schema_group_uuid, question_text, question_help_text)
-VALUES ('11111111-1111-1111-1111-111111111231', 'no_fixed_abode', '3.3', '2019-11-14 08:11:53.177108', null, 'radio', '44444444-4444-4444-5555-444444444444', 'Currently of no fixed abode or in transient accommodation', null),
-('11111111-1111-1111-1111-111111111232', 'accom_suitability', '3.4', '2019-11-14 08:11:53.177108', null, 'radio', '44444444-4444-4444-5555-444444444445', 'Suitability of accommodation', null),
-('11111111-1111-1111-1111-111111111233', 'accom_permanence', '3.5', '2019-11-14 08:11:53.177108', null, 'radio', '44444444-4444-4444-5555-444444444445', 'Permanence of accommodation', null),
-('11111111-1111-1111-1111-111111111234', 'accom_location', '3.6', '2019-11-14 08:11:53.177108', null, 'radio', '44444444-4444-4444-5555-444444444445', 'Suitability of location of accommodation', null),
-('11111111-1111-1111-1111-111111111235', 'accom_issues', '3.97', '2019-11-14 08:11:53.177108', null, 'textarea', null, 'Identify accommodation issues contributing to risk of offending and harm. Please include any positive factors', null),
-('11111111-1111-1111-1111-111111111236', 'accom_rosha', '3.98', '2019-11-14 08:11:53.177108', null, 'radio', '44444444-4444-4444-5555-444444444444', 'Accommodation issues linked to risk of serious harm, risks to the individual & other risks', null),
-('11111111-1111-1111-1111-111111111237', 'accom_offending', '3.99', '2019-11-14 08:11:53.177108', null, 'radio', '44444444-4444-4444-5555-444444444444', 'Accommodation issues linked to offending behaviour', null),
-('11111111-1111-1111-1111-111111111238', 'accom_lowscore', null, '2019-11-14 08:11:53.177108', null, 'radio', '44444444-4444-4444-5555-444444444444', 'Low scoring area need attention', null)
+INSERT INTO question_schema (question_schema_uuid, question_code, question_start, question_end, answer_type, answer_schema_group_uuid, question_text, question_help_text)
+VALUES ('11111111-1111-1111-1111-111111111231', 'no_fixed_abode', '2019-11-14 08:11:53.177108', null, 'radio', '44444444-4444-4444-5555-444444444444', 'Currently of no fixed abode or in transient accommodation', null),
+('11111111-1111-1111-1111-111111111232', 'accom_suitability', '2019-11-14 08:11:53.177108', null, 'radio', '44444444-4444-4444-5555-444444444445', 'Suitability of accommodation', null),
+('11111111-1111-1111-1111-111111111233', 'accom_permanence', '2019-11-14 08:11:53.177108', null, 'radio', '44444444-4444-4444-5555-444444444445', 'Permanence of accommodation', null),
+('11111111-1111-1111-1111-111111111234', 'accom_location', '2019-11-14 08:11:53.177108', null, 'radio', '44444444-4444-4444-5555-444444444445', 'Suitability of location of accommodation', null),
+('11111111-1111-1111-1111-111111111235', 'accom_issues', '2019-11-14 08:11:53.177108', null, 'textarea', null, 'Identify accommodation issues contributing to risk of offending and harm. Please include any positive factors', null),
+('11111111-1111-1111-1111-111111111236', 'accom_rosha', '2019-11-14 08:11:53.177108', null, 'radio', '44444444-4444-4444-5555-444444444444', 'Accommodation issues linked to risk of serious harm, risks to the individual & other risks', null),
+('11111111-1111-1111-1111-111111111237', 'accom_offending', '2019-11-14 08:11:53.177108', null, 'radio', '44444444-4444-4444-5555-444444444444', 'Accommodation issues linked to offending behaviour', null),
+('11111111-1111-1111-1111-111111111238', 'accom_lowscore', '2019-11-14 08:11:53.177108', null, 'radio', '44444444-4444-4444-5555-444444444444', 'Low scoring area need attention', null)
 ON CONFLICT DO NOTHING;
 
 -- Layer 3 Employment
-INSERT INTO question_schema (question_schema_uuid, question_code, oasys_question_code, question_start, question_end, answer_type, answer_schema_group_uuid, question_text, question_help_text)
+INSERT INTO question_schema (question_schema_uuid, question_code, question_start, question_end, answer_type, answer_schema_group_uuid, question_text, question_help_text)
 VALUES
-('11111111-1111-1111-1111-111111111240', 'employment', '4.2', '2019-11-14 08:11:53.177108', null, 'radio', '44444444-4444-4444-5555-444444444446', 'Is the person unemployed, or will be unemployed on release?', null),
-('11111111-1111-1111-1111-111111111241', 'em_history', '4.3', '2019-11-14 08:11:53.177108', null, 'radio', '44444444-4444-4444-5555-444444444445', 'Employment history', null),
-('11111111-1111-1111-1111-111111111242', 'em_skills', '4.4', '2019-11-14 08:11:53.177108', null, 'radio', '44444444-4444-4444-5555-444444444445', 'Work related skills', null),
-('11111111-1111-1111-1111-111111111243', 'em_attitude', '4.5', '2019-11-14 08:11:53.177108', null, 'radio', '44444444-4444-4444-5555-444444444445', 'Attitudes to employment', null),
-('11111111-1111-1111-1111-111111111244', 'em_school', '4.6', '2019-11-14 08:11:53.177108', null, 'radio', '44444444-4444-4444-5555-444444444445', 'School attendance', null),
-('11111111-1111-1111-1111-111111111245', 'em_problems', '4.7', '2019-11-14 08:11:53.177108', null, 'radio', '44444444-4444-4444-5555-444444444445', 'Has problems with reading, writing, or numeracy', null),
-('11111111-1111-1111-1111-111111111246', 'em_issues', '4.94', '2019-11-14 08:11:53.177108', null, 'textarea', null, 'Identify education, training, and employability issues contributing to risks of offending and harm. Please include any positive factors', null),
-('11111111-1111-1111-1111-111111111247', 'em_rosha', '4.96', '2019-11-14 08:11:53.177108', null, 'radio', '44444444-4444-4444-5555-444444444444', 'Education/training/employability issues linked to risk of serious harm, risks to the individual & other risks', null),
-('11111111-1111-1111-1111-111111111248', 'em_offending', '4.98', '2019-11-14 08:11:53.177108', null, 'radio', '44444444-4444-4444-5555-444444444444', 'Education/training/employability issues linked to offending behaviour', null),
-('11111111-1111-1111-1111-111111111249', 'em_edu_attitude', '4.10', '2019-11-14 08:11:53.177108', null, 'radio', '44444444-4444-4444-5555-444444444445', 'Attitude to education / training (optional)', null),
-('11111111-1111-1111-1111-111111111250', 'em_issues_areas', '4.7.1', '2019-11-14 08:11:53.177108', null, 'checkbox', null, 'Indicate problem areas', 'More than one can be selected '),
-('11111111-1111-1111-1111-111111111251', 'em_difficulties', '4.8', '2019-11-14 08:11:53.177108', null, 'radio', '44444444-4444-4444-5555-444444444444', 'Has learning difficulties (optional)', null),
-('11111111-1111-1111-1111-111111111252', 'em_qualifications', '4.9', '2019-11-14 08:11:53.177108', null, 'radio', '44444444-4444-4444-5555-444444444448', 'Any educational or formal professional / vocational qualifications  (optional)', null),
-('11111111-1111-1111-1111-111111111253', 'em_basic_skills', '4.91', '2019-11-14 08:11:53.177108', null, 'textarea', null, 'Enter Basic Skills scores where available', null),
-('11111111-1111-1111-1111-111111111254', 'em_initial_skills', '4.92', '2019-11-14 08:11:53.177108', null, 'radio', '44444444-4444-4444-5555-444444444444', 'Enter Initial Skills Checker Score', 'Skills Checker tool'),
-('11111111-1111-1111-1111-111111111255', 'em_lowscore', null, '2019-11-14 08:11:53.177108', null, 'radio', '44444444-4444-4444-5555-444444444444', 'Low scoring area need attention', null)
+('11111111-1111-1111-1111-111111111240', 'employment', '2019-11-14 08:11:53.177108', null, 'radio', '44444444-4444-4444-5555-444444444446', 'Is the person unemployed, or will be unemployed on release?', null),
+('11111111-1111-1111-1111-111111111241', 'em_history', '2019-11-14 08:11:53.177108', null, 'radio', '44444444-4444-4444-5555-444444444445', 'Employment history', null),
+('11111111-1111-1111-1111-111111111242', 'em_skills', '2019-11-14 08:11:53.177108', null, 'radio', '44444444-4444-4444-5555-444444444445', 'Work related skills', null),
+('11111111-1111-1111-1111-111111111243', 'em_attitude', '2019-11-14 08:11:53.177108', null, 'radio', '44444444-4444-4444-5555-444444444445', 'Attitudes to employment', null),
+('11111111-1111-1111-1111-111111111244', 'em_school', '2019-11-14 08:11:53.177108', null, 'radio', '44444444-4444-4444-5555-444444444445', 'School attendance', null),
+('11111111-1111-1111-1111-111111111245', 'em_problems', '2019-11-14 08:11:53.177108', null, 'radio', '44444444-4444-4444-5555-444444444445', 'Has problems with reading, writing, or numeracy', null),
+('11111111-1111-1111-1111-111111111246', 'em_issues', '2019-11-14 08:11:53.177108', null, 'textarea', null, 'Identify education, training, and employability issues contributing to risks of offending and harm. Please include any positive factors', null),
+('11111111-1111-1111-1111-111111111247', 'em_rosha', '2019-11-14 08:11:53.177108', null, 'radio', '44444444-4444-4444-5555-444444444444', 'Education/training/employability issues linked to risk of serious harm, risks to the individual & other risks', null),
+('11111111-1111-1111-1111-111111111248', 'em_offending', '2019-11-14 08:11:53.177108', null, 'radio', '44444444-4444-4444-5555-444444444444', 'Education/training/employability issues linked to offending behaviour', null),
+('11111111-1111-1111-1111-111111111249', 'em_edu_attitude', '2019-11-14 08:11:53.177108', null, 'radio', '44444444-4444-4444-5555-444444444445', 'Attitude to education / training (optional)', null),
+('11111111-1111-1111-1111-111111111250', 'em_issues_areas', '2019-11-14 08:11:53.177108', null, 'checkbox', null, 'Indicate problem areas', 'More than one can be selected '),
+('11111111-1111-1111-1111-111111111251', 'em_difficulties', '2019-11-14 08:11:53.177108', null, 'radio', '44444444-4444-4444-5555-444444444444', 'Has learning difficulties (optional)', null),
+('11111111-1111-1111-1111-111111111252', 'em_qualifications', '2019-11-14 08:11:53.177108', null, 'radio', '44444444-4444-4444-5555-444444444448', 'Any educational or formal professional / vocational qualifications  (optional)', null),
+('11111111-1111-1111-1111-111111111253', 'em_basic_skills', '2019-11-14 08:11:53.177108', null, 'textarea', null, 'Enter Basic Skills scores where available', null),
+('11111111-1111-1111-1111-111111111254', 'em_initial_skills', '2019-11-14 08:11:53.177108', null, 'radio', '44444444-4444-4444-5555-444444444444', 'Enter Initial Skills Checker Score', 'Skills Checker tool'),
+('11111111-1111-1111-1111-111111111255', 'em_lowscore', '2019-11-14 08:11:53.177108', null, 'radio', '44444444-4444-4444-5555-444444444444', 'Low scoring area need attention', null)
 ON CONFLICT DO NOTHING;
 
 INSERT INTO grouping (group_uuid, group_code, heading, subheading, help_text, group_start, group_end)
