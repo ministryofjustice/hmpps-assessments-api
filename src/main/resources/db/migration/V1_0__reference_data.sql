@@ -35,7 +35,6 @@ CREATE TABLE IF NOT EXISTS question_schema
     question_schema_id       SERIAL PRIMARY KEY,
     question_schema_uuid     UUID      NOT NULL unique,
     question_code            TEXT      NOT NULL,
-    oasys_question_code      TEXT,
     external_source          TEXT,
     question_start           TIMESTAMP NOT NULL,
     question_end             TIMESTAMP,

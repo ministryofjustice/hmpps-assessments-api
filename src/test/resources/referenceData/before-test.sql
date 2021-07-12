@@ -18,12 +18,12 @@ INSERT INTO answer_schema (answer_schema_id, answer_schema_uuid, answer_schema_c
 VALUES (0, '464e25da-f843-43b6-8223-4af415abda0c', 'RSR_01a','f756f79d-dfad-49f9-a1b9-964a41cf660d', '2019-11-14 08:11:53.177108', null, 'true', 'Yes'),
        (1, '0a428566-6393-462f-addb-50feaaf75d57', 'RSR_01b','f756f79d-dfad-49f9-a1b9-964a41cf660d', '2019-11-14 08:11:53.177108', null, 'false', 'No');
 
-INSERT INTO question_schema (question_schema_id, question_schema_uuid, question_code, oasys_question_code, question_start, question_end, answer_type, answer_schema_group_uuid, question_text, question_help_text)
-VALUES (0, 'fd412ca8-d361-47ab-a189-7acb8ae0675b', 'RSR_01', 'RSR_01', '2019-11-14 08:11:53.177108', null, 'radio', 'f756f79d-dfad-49f9-a1b9-964a41cf660d', 'Question text', 'Help text'),
-       (1, '1948af63-07f2-4a8c-9e4c-0ec347bd6ba8', 'RSR_01_conditional', 'RSR_01_conditional', '2019-11-14 08:11:53.177108', null, 'freetext', null, 'Question text', 'Help text'),
-       (2, 'a5830801-533c-4b9e-bab1-03272718d6dc', 'OASys_mapped', 'ignored', '2019-11-14 08:11:53.177108', null, 'freetext', null, 'Question text', 'Help text'),
-       (3, 'a8e303f5-5f88-4343-94d1-a369ca1f86cb', 'OASys_mapped_to_fixed', 'ignored', '2019-11-14 08:11:53.177108', null, 'freetext', null, 'Question text', 'Help text'),
-       (4, 'b9dd3680-c4d6-403e-8f27-8d65481cbf44', 'RSR_02', 'RSR_02', '2019-11-14 08:11:53.177108', null, 'freetext', null, 'Question text', 'Help text');
+INSERT INTO question_schema (question_schema_id, question_schema_uuid, question_code, question_start, question_end, answer_type, answer_schema_group_uuid, question_text, question_help_text)
+VALUES (0, 'fd412ca8-d361-47ab-a189-7acb8ae0675b', 'RSR_01', '2019-11-14 08:11:53.177108', null, 'radio', 'f756f79d-dfad-49f9-a1b9-964a41cf660d', 'Question text', 'Help text'),
+       (1, '1948af63-07f2-4a8c-9e4c-0ec347bd6ba8', 'RSR_01_conditional', '2019-11-14 08:11:53.177108', null, 'freetext', null, 'Question text', 'Help text'),
+       (2, 'a5830801-533c-4b9e-bab1-03272718d6dc', 'OASys_mapped', '2019-11-14 08:11:53.177108', null, 'freetext', null, 'Question text', 'Help text'),
+       (3, 'a8e303f5-5f88-4343-94d1-a369ca1f86cb', 'OASys_mapped_to_fixed', '2019-11-14 08:11:53.177108', null, 'freetext', null, 'Question text', 'Help text'),
+       (4, 'b9dd3680-c4d6-403e-8f27-8d65481cbf44', 'RSR_02', '2019-11-14 08:11:53.177108', null, 'freetext', null, 'Question text', 'Help text');
 
 INSERT INTO oasys_question_mapping(mapping_id, mapping_uuid, question_schema_uuid, ref_section_code, logical_page, ref_question_code)
 VALUES (99, '204b461b-90af-4e11-b57f-7ccb07b67059', 'a5830801-533c-4b9e-bab1-03272718d6dc', 'RSR', '1', 'RSR_02');

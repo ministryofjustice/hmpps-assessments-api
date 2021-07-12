@@ -22,24 +22,24 @@ VALUES ('3c7eb3ac-53a7-4f61-a81f-38e8068b372c', 'psr_children_at_risk', 'psr_chi
 ON CONFLICT DO NOTHING;
 
 
-INSERT INTO question_schema (question_schema_uuid, question_code, oasys_question_code, question_start, question_end, answer_type, answer_schema_group_uuid, question_text, question_help_text, external_source, reference_data_category)
-VALUES ('c993ef11-7b97-4dd6-a811-455ce9d675b9', 'uiS5.1', 'HEADING', '2020-11-30 14:50:00', null, 'presentation: inset', null, 'Consider carefully whether this information can be recorded safely.', null, null, null),
-('1ed5bd12-b3fa-4e8e-9ade-302a7d9b331e', 'uiS5.2', null, '2020-11-30 14:50:00', null, 'presentation: heading_large', null, 'Personal details', null, null, null),
-('0e9ac8f9-7df4-43de-9a7f-756f3fc0e5b3', '203.1', 'child_at_risk_pivot.name_of_child', '2020-11-30 14:50:00', null, 'freetext', null, 'Name', null, null, null),
-('1e053af6-247e-4f7f-934b-ab419c208067', '204.1', 'child_at_risk_pivot.age_of_child', '2020-11-30 14:50:00', null, 'numeric', null, 'Age', 'Enter an age in years from 0 to 17', null, null),
-('43451da5-5587-404f-8e9e-a238177bdfcb', '205.1', 'child_at_risk_pivot.date_of_birth', '2020-11-30 14:50:00', null, 'date', null, 'Date of Birth', null, null, null),
-('9aebb4d0-f17a-4e86-a765-8f2a40b69dfb', '206.1', 'child_at_risk_pivot.gender_ELM', '2020-11-30 14:50:00', null, 'radio', '8ad6d0ab-bb5e-4ead-8596-f670aa3aa55b', 'Gender', null, null, null),
-('caf15de3-7f1a-4ba4-b4b4-0b1856ae88bc', 'uiS5.3', null, '2020-11-30 14:50:00', null, 'presentation: divider', null, null, null, null, null),
-('1e774cb1-285b-40fd-8c3b-ddff8eaf45d6', 'uiS5.4', null, '2020-11-30 14:50:00', null, 'presentation: heading_large', null, 'Contact details', null, null, null),
-('194f2f7e-61f0-458b-babd-91cea23e80af', '207.1', 'child_at_risk_pivot.address_of_child', '2020-11-30 14:50:00', null, 'textarea', null, 'Address (if disclosable)', null, null, null),
-('a4ab05a3-8a18-49f1-a51e-50f310699768', 'uiS5.5', null, '2020-11-30 14:50:00', null, 'presentation: divider', null, null, null, null, null),
-('073d4e8b-5eff-4690-9890-7f9fb4b0d146', 'uiS5.6', null, '2020-11-30 14:50:00', null, 'presentation: heading_large', null, 'Social services details', null, null, null),
-('454c634e-61c2-48ae-9cd1-b0c09a7e392e', '208.1', 'child_at_risk_pivot.curreg_sclsrvs_ind', '2020-11-30 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Currently Registered with Social Services', null, null, null),
-('90b22f9a-d2ef-435a-89f2-318b98e1a72a', '209.1', 'child_at_risk_pivot.evr_prv_social_srv_ind', '2020-11-30 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Previously Registered with Social Services', null, null, null),
-('f822b029-5907-4789-93e0-e52aac2acfac', 'uiS5.7', null, '2020-11-30 14:50:00', null, 'presentation: divider', null, null, null, null, null),
-('1be1c40e-07d4-4842-8447-6cd2bfffa3bd', 'uiS5.8', null, '2020-11-30 14:50:00', null, 'presentation: heading_large', null, 'Child protection details', null, null, null),
-('32be7f8b-5973-48c4-9640-0fbd292f6ff8', '210.1', 'child_at_risk_reg_pivot_pivot.catg_cpr_ELM for current_previous_ELM = ‘Current’', '2020-11-30 14:50:00', null, 'checkbox', '7f0dfd25-4ea5-4ade-ad51-4cb1ac1966d9', 'Current category of child protection registration', null, null, null),
-('070232a5-c01e-452f-a554-2898f0674a45', '211.1', 'child_at_risk_reg_pivot_pivot.catg_cpr_ELM for current_previous_ELM = ‘Current’', '2020-11-30 14:50:00', null, 'checkbox', '7f0dfd25-4ea5-4ade-ad51-4cb1ac1966d9', 'Previous category of child protection registration', null, null, null)
+INSERT INTO question_schema (question_schema_uuid, question_code, question_start, question_end, answer_type, answer_schema_group_uuid, question_text, question_help_text, external_source, reference_data_category)
+VALUES ('c993ef11-7b97-4dd6-a811-455ce9d675b9', 'uiS5.1', '2020-11-30 14:50:00', null, 'presentation: inset', null, 'Consider carefully whether this information can be recorded safely.', null, null, null),
+('1ed5bd12-b3fa-4e8e-9ade-302a7d9b331e', 'uiS5.2', '2020-11-30 14:50:00', null, 'presentation: heading_large', null, 'Personal details', null, null, null),
+('0e9ac8f9-7df4-43de-9a7f-756f3fc0e5b3', '203.1', '2020-11-30 14:50:00', null, 'freetext', null, 'Name', null, null, null),
+('1e053af6-247e-4f7f-934b-ab419c208067', '204.1', '2020-11-30 14:50:00', null, 'numeric', null, 'Age', 'Enter an age in years from 0 to 17', null, null),
+('43451da5-5587-404f-8e9e-a238177bdfcb', '205.1', '2020-11-30 14:50:00', null, 'date', null, 'Date of Birth', null, null, null),
+('9aebb4d0-f17a-4e86-a765-8f2a40b69dfb', '206.1', '2020-11-30 14:50:00', null, 'radio', '8ad6d0ab-bb5e-4ead-8596-f670aa3aa55b', 'Gender', null, null, null),
+('caf15de3-7f1a-4ba4-b4b4-0b1856ae88bc', 'uiS5.3', '2020-11-30 14:50:00', null, 'presentation: divider', null, null, null, null, null),
+('1e774cb1-285b-40fd-8c3b-ddff8eaf45d6', 'uiS5.4', '2020-11-30 14:50:00', null, 'presentation: heading_large', null, 'Contact details', null, null, null),
+('194f2f7e-61f0-458b-babd-91cea23e80af', '207.1', '2020-11-30 14:50:00', null, 'textarea', null, 'Address (if disclosable)', null, null, null),
+('a4ab05a3-8a18-49f1-a51e-50f310699768', 'uiS5.5', '2020-11-30 14:50:00', null, 'presentation: divider', null, null, null, null, null),
+('073d4e8b-5eff-4690-9890-7f9fb4b0d146', 'uiS5.6', '2020-11-30 14:50:00', null, 'presentation: heading_large', null, 'Social services details', null, null, null),
+('454c634e-61c2-48ae-9cd1-b0c09a7e392e', '208.1', '2020-11-30 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Currently Registered with Social Services', null, null, null),
+('90b22f9a-d2ef-435a-89f2-318b98e1a72a', '209.1', '2020-11-30 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Previously Registered with Social Services', null, null, null),
+('f822b029-5907-4789-93e0-e52aac2acfac', 'uiS5.7', '2020-11-30 14:50:00', null, 'presentation: divider', null, null, null, null, null),
+('1be1c40e-07d4-4842-8447-6cd2bfffa3bd', 'uiS5.8', '2020-11-30 14:50:00', null, 'presentation: heading_large', null, 'Child protection details', null, null, null),
+('32be7f8b-5973-48c4-9640-0fbd292f6ff8', '210.1', '2020-11-30 14:50:00', null, 'checkbox', '7f0dfd25-4ea5-4ade-ad51-4cb1ac1966d9', 'Current category of child protection registration', null, null, null),
+('070232a5-c01e-452f-a554-2898f0674a45', '211.1', '2020-11-30 14:50:00', null, 'checkbox', '7f0dfd25-4ea5-4ade-ad51-4cb1ac1966d9', 'Previous category of child protection registration', null, null, null)
 ON CONFLICT DO NOTHING;
 
 

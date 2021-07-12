@@ -29,9 +29,6 @@ class QuestionSchemaEntity(
   @Column(name = "question_code")
   val questionCode: String? = null,
 
-  @Column(name = "OASYS_question_code")
-  val oasysQuestionCode: String? = null,
-
   @Column(name = "external_source")
   val externalSource: String? = null,
 

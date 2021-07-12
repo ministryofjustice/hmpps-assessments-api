@@ -185,7 +185,6 @@ class AssessmentSql {
     const question = {
       question_schema_uuid: question_schema_uuid,
       question_code: question_code,
-      oasys_question_code: oasys_question_code,
       answer_type: answer_type,
       answer_schema_group_uuid: answer_schema_group_uuid,
       question_text: question_text,
@@ -424,7 +423,7 @@ class AssessmentSql {
   questionsSql() {
     return AssessmentSql.tableSql(
       'question_schema',
-      ['question_schema_uuid', 'question_code', 'oasys_question_code', 'question_start', 'question_end', 'answer_type', 'answer_schema_group_uuid', 'question_text', 'question_help_text', 'external_source', 'reference_data_category'],
+      ['question_schema_uuid', 'question_code', 'question_start', 'question_end', 'answer_type', 'answer_schema_group_uuid', 'question_text', 'question_help_text', 'external_source', 'reference_data_category'],
       this.questions
     )
   }
