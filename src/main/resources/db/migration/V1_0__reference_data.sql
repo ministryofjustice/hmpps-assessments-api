@@ -107,9 +107,20 @@ CREATE TABLE IF NOT EXISTS question_group
 CREATE TABLE IF NOT EXISTS predictor_mapping
 (
     predictor_mapping_id    SERIAL      PRIMARY KEY,
+    predictor_mapping_uuid  UUID        NOT NULL unique,
     question_schema_uuid    UUID        NOT NULL,
     predictor_type          TEXT        NOT NULL,
     onnx_field_name         TEXT,
     required                BOOLEAN     NOT NULL,
     FOREIGN KEY (question_schema_uuid) REFERENCES question_schema (question_schema_uuid)
+);
+
+CREATE TABLE IF NOT EXISTS assessment_predictor
+(
+    id                      SERIAL      PRIMARY KEY,
+    assessment_schema_uuid  UUID        NOT NULL,
+    predictor_mapping_uuid  UUID        NOT NULL,
+    CONSTRAINT assessment_predictor_unique UNIQUE (assessment_schema_uuid, predictor_mapping_uuid),
+    FOREIGN KEY (assessment_schema_uuid) REFERENCES assessment_schema (assessment_schema_uuid),
+    FOREIGN KEY (predictor_mapping_uuid) REFERENCES predictor_mapping (predictor_mapping_uuid)
 );
