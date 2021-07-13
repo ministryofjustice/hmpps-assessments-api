@@ -602,7 +602,7 @@ ON CONFLICT DO NOTHING;
 
 
 INSERT INTO question_dependency (subject_question_uuid, trigger_question_uuid, trigger_answer_value, dependency_start, display_inline)
-VALUES ('58d3efd1-65a1-439b-952f-b2826ffa5e71', '58d3efd1-65a1-439b-952f-b2826ffa5e71', 'YES', '2020-11-30 14:50:00', false),
+VALUES
 ('3662710d-ce3e-4e45-bce3-caa4155872aa', '58d3efd1-65a1-439b-952f-b2826ffa5e71', 'YES', '2020-11-30 14:50:00', false),
 ('a00223d0-1c20-43b5-8076-8a292ca25773', '58d3efd1-65a1-439b-952f-b2826ffa5e71', 'YES', '2020-11-30 14:50:00', false),
 ('fc45b061-a4a6-44c3-937c-2949069e0926', '58d3efd1-65a1-439b-952f-b2826ffa5e71', 'YES', '2020-11-30 14:50:00', false),
