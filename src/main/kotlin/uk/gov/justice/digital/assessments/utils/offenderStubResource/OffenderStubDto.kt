@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.assessments.utils
+package uk.gov.justice.digital.assessments.utils.offenderStubResource
 
 data class OffenderStubDto(
   val crn: String?,
