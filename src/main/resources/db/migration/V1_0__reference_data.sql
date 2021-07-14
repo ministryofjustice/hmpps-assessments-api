@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS assessment_schema
 (
     assessment_schema_id       SERIAL PRIMARY KEY,
     assessment_schema_uuid     UUID        NOT NULL unique,
-    assessment_schema_code     TEXT        NOT NULL,
+    assessment_schema_code     TEXT        NOT NULL unique,
     oasys_assessment_type      VARCHAR(50) NULL,
     oasys_create_assessment_at TEXT,
     assessment_name            TEXT
@@ -104,23 +104,22 @@ CREATE TABLE IF NOT EXISTS question_group
     FOREIGN KEY (group_uuid) REFERENCES grouping (group_uuid)
 );
 
-CREATE TABLE IF NOT EXISTS predictor_mapping
+CREATE TABLE IF NOT EXISTS predictor_assessments
+(
+    id                      SERIAL  PRIMARY KEY,
+    predictor_type          TEXT    NOT NULL,
+    assessment_schema_code  TEXT    NOT NULL,
+    FOREIGN KEY (assessment_schema_code) REFERENCES assessment_schema (assessment_schema_code),
+    CONSTRAINT predictor_assessments_unique UNIQUE (predictor_type, assessment_schema_code)
+);
+
+CREATE TABLE IF NOT EXISTS predictor_field_mapping
 (
     predictor_mapping_id    SERIAL      PRIMARY KEY,
     predictor_mapping_uuid  UUID        NOT NULL unique,
     question_schema_uuid    UUID        NOT NULL,
     predictor_type          TEXT        NOT NULL,
-    onnx_field_name         TEXT,
+    predictor_field_name    TEXT,
     required                BOOLEAN     NOT NULL,
     FOREIGN KEY (question_schema_uuid) REFERENCES question_schema (question_schema_uuid)
-);
-
-CREATE TABLE IF NOT EXISTS assessment_predictor
-(
-    id                      SERIAL      PRIMARY KEY,
-    assessment_schema_uuid  UUID        NOT NULL,
-    predictor_mapping_uuid  UUID        NOT NULL,
-    CONSTRAINT assessment_predictor_unique UNIQUE (assessment_schema_uuid, predictor_mapping_uuid),
-    FOREIGN KEY (assessment_schema_uuid) REFERENCES assessment_schema (assessment_schema_uuid),
-    FOREIGN KEY (predictor_mapping_uuid) REFERENCES predictor_mapping (predictor_mapping_uuid)
 );
