@@ -27,7 +27,6 @@ import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiEntityN
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiForbiddenException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiInvalidRequestException
 import uk.gov.justice.digital.assessments.utils.RequestData
-import uk.gov.justice.digital.assessments.utils.OffenderStubDto
 
 @Component
 class AssessmentApiRestClient {
@@ -212,22 +211,5 @@ class AssessmentApiRestClient {
       }
       else -> handleError(clientResponse, method, url, ExternalService.ASSESSMENTS_API)
     }
-  }
-
-  fun getOffenderStubs(): List<OffenderStubDto>? {
-    var url = "/offender/stub"
-    return webClient
-      .get(url)
-      .retrieve()
-      .onStatus(HttpStatus::is5xxServerError) {
-        handle5xxError(
-        "Failed to retrieve OASys offender stubs",
-          HttpMethod.POST,
-        url,
-        ExternalService.ASSESSMENTS_API
-      )}
-      .bodyToMono(object: ParameterizedTypeReference<List<OffenderStubDto>>() {})
-      .block()
-      .also { log.info("Retrieved offender stubs") }
   }
 }

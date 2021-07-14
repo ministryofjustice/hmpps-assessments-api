@@ -20,7 +20,7 @@ import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.CreateO
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OasysAnswer
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.UpdateAssessmentAnswersDto
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.UpdateAssessmentAnswersResponseDto
-import uk.gov.justice.digital.assessments.utils.OffenderStubDto
+import uk.gov.justice.digital.assessments.utils.offenderStubResource.OffenderStubDto
 import uk.gov.justice.digital.assessments.utils.RequestData
 
 @Component
@@ -180,32 +180,5 @@ class AssessmentUpdateRestClient {
       }
       .bodyToMono(UpdateAssessmentAnswersResponseDto::class.java)
       .block()
-  }
-
-  fun createOasysOffenderStub(offenderStubDto: OffenderStubDto
-  ): Long? {
-    log.info("Creating offender stub in OASys for crn: ${offenderStubDto.crn}")
-    val path = "/offender/stub"
-    return webClient
-      .post(path, offenderStubDto)
-      .retrieve()
-      .onStatus(HttpStatus::is4xxClientError) {
-        handle4xxError(
-          it,
-          HttpMethod.POST, path,
-          ExternalService.ASSESSMENTS_UPDATE
-        )
-      }
-      .onStatus(HttpStatus::is5xxServerError) {
-        handle5xxError(
-          "Failed to create offender stub ${offenderStubDto.crn} in OASYs",
-          HttpMethod.POST, path,
-          ExternalService.ASSESSMENTS_UPDATE
-        )
-      }
-      .bodyToMono(Long::class.java)
-      .block()?.also {
-        log.info("Created offender stub in OASys for crn: ${offenderStubDto.crn}")
-      }
   }
 }
