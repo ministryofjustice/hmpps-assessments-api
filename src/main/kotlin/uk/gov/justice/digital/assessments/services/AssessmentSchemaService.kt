@@ -5,6 +5,7 @@ import uk.gov.justice.digital.assessments.api.GroupSectionsDto
 import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.OasysAssessmentType
+import uk.gov.justice.digital.assessments.jpa.entities.Predictor
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentSchemaRepository
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import uk.gov.justice.digital.assessments.services.exceptions.OasysAssessmentTypeMappingMissing
@@ -14,6 +15,10 @@ class AssessmentSchemaService(
   private val assessmentSchemaRepository: AssessmentSchemaRepository,
   private val questionService: QuestionService
 ) {
+
+  fun getPredictorsForAssessment(assessmentSchemaCode: AssessmentSchemaCode?) : List<Predictor> {
+    return assessmentSchemaRepository.findByAssessmentSchemaCode(assessmentSchemaCode!!)?.predictors.orEmpty().toList()
+  }
 
   fun getAssessmentSchema(assessmentSchemaCode: AssessmentSchemaCode?): GroupWithContentsDto {
     val assessmentSchemaGroupUuid =

@@ -9,6 +9,7 @@ import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.jpa.entities.Answer
 import uk.gov.justice.digital.assessments.jpa.entities.AnswerEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
+import uk.gov.justice.digital.assessments.jpa.entities.PredictorFieldMapping
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.EpisodeRepository
 import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient
@@ -27,7 +28,8 @@ class AssessmentUpdateService(
   private val questionService: QuestionService,
   private val assessmentUpdateRestClient: AssessmentUpdateRestClient,
   private val assessmentService: AssessmentService,
-  private val assessmentSchemaService: AssessmentSchemaService
+  private val assessmentSchemaService: AssessmentSchemaService,
+  private val predictorService: PredictorService,
 ) {
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
@@ -67,7 +69,14 @@ class AssessmentUpdateService(
     assessmentRepository.save(episode.assessment)
     log.info("Saved episode ${episode.episodeUuid} for assessment ${episode.assessment?.assessmentUuid}")
 
-    return AssessmentEpisodeDto.from(episode, oasysResult)
+    val updatedEpisode = AssessmentEpisodeDto.from(episode, oasysResult)
+
+    val predictorResults = episode.assessmentSchemaCode?.let {
+      predictorService.getPredictorResults(it, updatedEpisode.answers)
+    }
+
+    // Add to AssessmentEpisodeDTO or create wrapping DTO?
+    return updatedEpisode
   }
 
   fun AssessmentEpisodeEntity.updateEpisodeAnswers(
