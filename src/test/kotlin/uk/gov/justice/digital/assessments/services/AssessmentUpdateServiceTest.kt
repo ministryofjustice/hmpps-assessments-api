@@ -34,6 +34,7 @@ class AssessmentUpdateServiceTest {
   private val episodeService: EpisodeService = mockk()
   private val offenderService: OffenderService = mockk()
   private val assessmentSchemaService: AssessmentSchemaService = mockk()
+  private val predictorService: PredictorService = mockk()
 
   private val assessmentService = AssessmentService(
     assessmentRepository,
@@ -43,7 +44,7 @@ class AssessmentUpdateServiceTest {
     courtCaseRestClient,
     assessmentUpdateRestClient,
     offenderService,
-    assessmentSchemaService
+    assessmentSchemaService,
   )
   private val assessmentUpdateService = AssessmentUpdateService(
     assessmentRepository,
@@ -51,7 +52,8 @@ class AssessmentUpdateServiceTest {
     questionService,
     assessmentUpdateRestClient,
     assessmentService,
-    assessmentSchemaService
+    assessmentSchemaService,
+    predictorService,
   )
 
   private val assessmentUuid = UUID.randomUUID()

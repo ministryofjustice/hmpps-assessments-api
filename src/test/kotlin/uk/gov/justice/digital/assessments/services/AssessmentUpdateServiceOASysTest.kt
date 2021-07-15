@@ -44,6 +44,7 @@ class AssessmentUpdateServiceOASysTest {
   private val assessmentUpdateRestClient: AssessmentUpdateRestClient = mockk()
   private val assessmentService: AssessmentService = mockk()
   private val assessmentSchemaService: AssessmentSchemaService = mockk()
+  private val predictorService: PredictorService = mockk()
 
   private val assessmentsUpdateService = AssessmentUpdateService(
     assessmentRepository,
@@ -51,7 +52,8 @@ class AssessmentUpdateServiceOASysTest {
     questionService,
     assessmentUpdateRestClient,
     assessmentService,
-    assessmentSchemaService
+    assessmentSchemaService,
+    predictorService,
   )
 
   private val assessmentUuid = UUID.randomUUID()
@@ -356,6 +358,7 @@ class AssessmentUpdateServiceOASysTest {
       )
     )
     every { assessmentUpdateRestClient.updateAssessment(any(), any(), any(), any()) } returns oasysError
+    every { predictorService.getPredictorResults(any(), any()) } returns emptyList()
     // Christ, what a lot of set up
 
     // Apply the update
@@ -397,6 +400,7 @@ class AssessmentUpdateServiceOASysTest {
     } returns UpdateAssessmentAnswersResponseDto()
     every { questionService.getAllQuestions() } returns setupQuestionCodes()
     every { assessmentRepository.save(any()) } returns mockk()
+    every { predictorService.getPredictorResults(any(), any()) } returns emptyList()
 
     val update = UpdateAssessmentEpisodeDto(answers = mapOf(question1Uuid to listOf("Updated")))
     val updatedEpisode = assessmentsUpdateService.updateEpisode(assessmentUuid, episodeUuid, update)
