@@ -10,6 +10,7 @@ import javax.persistence.GenerationType
 import javax.persistence.Id
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
+import javax.persistence.OneToMany
 import javax.persistence.Table
 
 @Entity
@@ -38,4 +39,8 @@ class AssessmentSchemaEntity(
 
   @Column(name = "ASSESSMENT_NAME")
   val assessmentName: String? = null,
+
+  @OneToMany
+  @JoinColumn(name = "assessment_schema_code", referencedColumnName = "assessment_schema_code")
+  val predictorFields: Collection<Predictor> = emptyList(),
 ) : Serializable

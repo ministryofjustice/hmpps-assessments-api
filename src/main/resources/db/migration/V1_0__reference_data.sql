@@ -1,8 +1,8 @@
 CREATE TABLE IF NOT EXISTS assessment_schema
 (
     assessment_schema_id       SERIAL PRIMARY KEY,
-    assessment_schema_uuid     UUID        NOT NULL unique,
-    assessment_schema_code     TEXT        NOT NULL,
+    assessment_schema_uuid     UUID        NOT NULL UNIQUE,
+    assessment_schema_code     VARCHAR(50) NOT NULL UNIQUE,
     oasys_assessment_type      VARCHAR(50) NULL,
     oasys_create_assessment_at TEXT,
     assessment_name            TEXT
@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS assessment_schema
 CREATE TABLE IF NOT EXISTS answer_schema_group
 (
     answer_schema_group_id   SERIAL PRIMARY KEY,
-    answer_schema_group_uuid UUID      NOT NULL unique,
+    answer_schema_group_uuid UUID      NOT NULL UNIQUE,
     answer_schema_group_code TEXT      NOT NULL,
     group_start              TIMESTAMP NOT NULL,
     group_end                TIMESTAMP
@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS answer_schema_group
 CREATE TABLE IF NOT EXISTS answer_schema
 (
     answer_schema_id         SERIAL PRIMARY KEY,
-    answer_schema_uuid       UUID      NOT NULL unique,
+    answer_schema_uuid       UUID      NOT NULL UNIQUE,
     answer_schema_code       TEXT      NOT NULL,
     answer_schema_group_uuid UUID      NOT NULL,
     answer_start             TIMESTAMP NOT NULL,
@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS answer_schema
 CREATE TABLE IF NOT EXISTS question_schema
 (
     question_schema_id       SERIAL PRIMARY KEY,
-    question_schema_uuid     UUID      NOT NULL unique,
+    question_schema_uuid     UUID      NOT NULL UNIQUE,
     question_code            TEXT      NOT NULL,
     external_source          TEXT,
     question_start           TIMESTAMP NOT NULL,
@@ -49,8 +49,8 @@ CREATE TABLE IF NOT EXISTS question_schema
 CREATE TABLE IF NOT EXISTS oasys_question_mapping
 (
     mapping_id           SERIAL PRIMARY KEY,
-    mapping_uuid         UUID NOT NULL unique,
-    question_schema_uuid UUID NOT NULL unique,
+    mapping_uuid         UUID NOT NULL UNIQUE,
+    question_schema_uuid UUID NOT NULL UNIQUE,
     ref_section_code     TEXT NOT NULL,
     logical_page         INTEGER,
     ref_question_code    TEXT NOT NULL,
@@ -71,8 +71,8 @@ CREATE TABLE IF NOT EXISTS oasys_reference_data_target_mapping
 CREATE TABLE IF NOT EXISTS grouping
 (
     group_id    SERIAL PRIMARY KEY,
-    group_uuid  UUID         NOT NULL unique,
-    group_code  VARCHAR(255) NOT NULL unique,
+    group_uuid  UUID         NOT NULL UNIQUE,
+    group_code  VARCHAR(255) NOT NULL UNIQUE,
     heading     TEXT         NOT NULL,
     subheading  TEXT,
     help_text   TEXT,
@@ -92,7 +92,7 @@ CREATE TABLE IF NOT EXISTS assessment_schema_groups
 CREATE TABLE IF NOT EXISTS question_group
 (
     question_group_id   SERIAL PRIMARY KEY,
-    question_group_uuid UUID    NOT NULL unique,
+    question_group_uuid UUID    NOT NULL UNIQUE,
     group_uuid          UUID    NOT NULL,
     content_uuid        UUID    NOT NULL,
     content_type        TEXT    NOT NULL,
@@ -102,4 +102,24 @@ CREATE TABLE IF NOT EXISTS question_group
     read_only           BOOLEAN NOT NULL,
     CONSTRAINT check_content_type CHECK (content_type = 'question' OR content_type = 'group'),
     FOREIGN KEY (group_uuid) REFERENCES grouping (group_uuid)
+);
+
+CREATE TABLE IF NOT EXISTS assessment_predictors
+(
+    id                      SERIAL          PRIMARY KEY,
+    predictor_type          VARCHAR(50)     NOT NULL,
+    assessment_schema_code  VARCHAR(50)     NOT NULL,
+    FOREIGN KEY (assessment_schema_code) REFERENCES assessment_schema (assessment_schema_code),
+    CONSTRAINT assessment_predictors_unique UNIQUE (predictor_type, assessment_schema_code)
+);
+
+CREATE TABLE IF NOT EXISTS predictor_field_mapping
+(
+    predictor_mapping_id    SERIAL      PRIMARY KEY,
+    predictor_mapping_uuid  UUID        NOT NULL UNIQUE,
+    question_schema_uuid    UUID        NOT NULL,
+    predictor_type          VARCHAR(50) NOT NULL,
+    predictor_field_name    TEXT,
+    required                BOOLEAN     NOT NULL,
+    FOREIGN KEY (question_schema_uuid) REFERENCES question_schema (question_schema_uuid)
 );
