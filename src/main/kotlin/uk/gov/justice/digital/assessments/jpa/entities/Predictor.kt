@@ -13,7 +13,7 @@ import javax.persistence.OneToMany
 import javax.persistence.Table
 
 @Entity
-@Table(name = "predictor_assessments")
+@Table(name = "assessment_predictors")
 class Predictor(
   @Id
   @Column(name = "id")

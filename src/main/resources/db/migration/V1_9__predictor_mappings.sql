@@ -1,4 +1,4 @@
-INSERT INTO predictor_assessments (assessment_schema_code, predictor_type) VALUES
+INSERT INTO assessment_predictors (assessment_schema_code, predictor_type) VALUES
 ('RSR_ONLY', 'RSR')
 ON CONFLICT DO NOTHING;
 

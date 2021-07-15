@@ -10,5 +10,5 @@ DELETE FROM assessment_schema_groups WHERE true;
 DELETE FROM assessment_schema WHERE true;
 DELETE FROM grouping WHERE true;
 DELETE FROM predictor_field_mapping WHERE true;
-DELETE FROM predictor_assessments WHERE true;
+DELETE FROM assessment_predictors WHERE true;
 DELETE FROM question_schema WHERE true;

@@ -104,13 +104,13 @@ CREATE TABLE IF NOT EXISTS question_group
     FOREIGN KEY (group_uuid) REFERENCES grouping (group_uuid)
 );
 
-CREATE TABLE IF NOT EXISTS predictor_assessments
+CREATE TABLE IF NOT EXISTS assessment_predictors
 (
     id                      SERIAL          PRIMARY KEY,
     predictor_type          VARCHAR(50)     NOT NULL,
     assessment_schema_code  VARCHAR(50)     NOT NULL,
     FOREIGN KEY (assessment_schema_code) REFERENCES assessment_schema (assessment_schema_code),
-    CONSTRAINT predictor_assessments_unique UNIQUE (predictor_type, assessment_schema_code)
+    CONSTRAINT assessment_predictors_unique UNIQUE (predictor_type, assessment_schema_code)
 );
 
 CREATE TABLE IF NOT EXISTS predictor_field_mapping
