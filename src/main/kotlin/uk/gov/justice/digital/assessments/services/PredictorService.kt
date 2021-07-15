@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.assessments.api.AnswerDto
 import uk.gov.justice.digital.assessments.api.AnswersDto
+import uk.gov.justice.digital.assessments.api.PredictorScoreDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.PredictorFieldMapping
 import java.util.UUID
@@ -20,20 +21,16 @@ class PredictorService(
   fun getPredictorResults(
     assessmentSchemaCode: AssessmentSchemaCode,
     episodeAnswers: Map<UUID, AnswersDto>,
-  ): List<Int> {
+  ): List<PredictorScoreDto> {
     val predictors = assessmentSchemaService.getPredictorsForAssessment(assessmentSchemaCode)
+
     log.info("Found ${predictors.size} predictors for assessment type $assessmentSchemaCode")
 
-    return predictors.map {
-      val predictorFields = it.predictorFields.toList()
-      val extractedAnswers = extractAnswers(it.predictorFields.toList(), episodeAnswers)
-      if (predictorFields.isNotEmpty() && predictorFields.size == extractedAnswers.size) {
-        // Request predictor score and return PredictorResult
-        1
-      } else {
-        // Return PredictorResult as N/A
-        0
-      }
+    return predictors.map { predictor ->
+      val predictorFields = predictor.fields.toList()
+      val extractedAnswers = extractAnswers(predictorFields, episodeAnswers)
+      if (predictorFields.isNotEmpty() && predictorFields.size == extractedAnswers.size)
+        PredictorScoreDto(predictor.type, 1234) else PredictorScoreDto.conditionsNotMet(predictor.type)
     }
   }
 
@@ -42,11 +39,11 @@ class PredictorService(
     answers: Map<UUID, AnswersDto>
   ): Map<UUID, Collection<AnswerDto>> {
     return predictorFields
-      .map { it.questionSchema.questionSchemaUuid }
+      .map { predictorField -> predictorField.questionSchema.questionSchemaUuid }
       .associate { questionSchemaUuid ->
         val questionAnswer = answers[questionSchemaUuid]
         (questionSchemaUuid to questionAnswer?.answers.orEmpty())
       }
-      .filterValues { it.isNotEmpty() }
+      .filterValues { extractedAnswer -> extractedAnswer.isNotEmpty() }
   }
 }
