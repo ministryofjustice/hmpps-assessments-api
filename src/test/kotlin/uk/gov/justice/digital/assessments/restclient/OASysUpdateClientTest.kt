@@ -112,6 +112,12 @@ class OASysUpdateClientTest : IntegrationTest() {
   }
 
   @Test
+  fun `Trying to create OASys Assessment that should not be created in Oasys returns null`() {
+    val returnAssessmentPk = assessmentUpdateRestClient.createAssessment(offenderPk, OasysAssessmentType.SOMETHING_IN_OASYS)
+    assertThat(returnAssessmentPk).isNull()
+  }
+
+  @Test
   fun `create OASys Assessment is Forbidden when OFF_ASSESSMENT_CREATE is not authorised`() {
     val exception =
       assertThrows<ExternalApiForbiddenException> {

@@ -8,5 +8,5 @@ data class CreateAssessmentEpisodeDto(
   val changeReason: String,
 
   @Schema(description = "Assessment Schema Code", example = "ROSH")
-  val assessmentSchemaCode: AssessmentSchemaCode = AssessmentSchemaCode.ROSH
+  val assessmentSchemaCode: AssessmentSchemaCode
 )
