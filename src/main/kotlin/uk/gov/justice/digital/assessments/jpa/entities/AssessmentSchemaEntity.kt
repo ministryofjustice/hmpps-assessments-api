@@ -42,5 +42,5 @@ class AssessmentSchemaEntity(
 
   @OneToMany
   @JoinColumn(name = "assessment_schema_code", referencedColumnName = "assessment_schema_code")
-  val predictorFields: Collection<Predictor> = emptyList(),
+  val predictors: Collection<Predictor> = emptyList(),
 ) : Serializable
