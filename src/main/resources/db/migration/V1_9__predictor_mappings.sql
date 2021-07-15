@@ -1,5 +1,5 @@
 INSERT INTO assessment_predictors (assessment_schema_code, predictor_type) VALUES
-('RSR_ONLY', 'RSR')
+('RSR', 'RSR')
 ON CONFLICT DO NOTHING;
 
 -- TODO: add actual mappings

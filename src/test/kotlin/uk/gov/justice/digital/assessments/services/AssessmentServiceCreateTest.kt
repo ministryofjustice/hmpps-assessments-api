@@ -78,8 +78,10 @@ class AssessmentServiceCreateTest {
     fun `create new offender with new assessment from delius event id and crn`() {
       every { subjectRepository.findBySourceAndSourceIdAndCrn(deliusSource, eventId.toString(), crn) } returns null
       every { offenderService.getOffender("X12345") } returns OffenderDto()
-      every { assessmentUpdateRestClient.createOasysOffender(crn = crn, deliusEvent = eventId) } returns oasysOffenderPk
-      every { assessmentUpdateRestClient.createAssessment(oasysOffenderPk, assessmentType) } returns oasysSetPk
+      every { assessmentUpdateRestClient.pushToOasys(crn, eventId, assessmentSchemaCode) } returns Pair(
+        oasysOffenderPk,
+        oasysSetPk
+      )
       every { episodeService.prepopulate(any()) } returnsArgument 0
       every { assessmentRepository.save(any()) } returns AssessmentEntity(assessmentId = assessmentId)
 
@@ -175,8 +177,13 @@ class AssessmentServiceCreateTest {
       } returns null
       every { assessmentRepository.save(any()) } returns AssessmentEntity(assessmentId = assessmentId)
       every { courtCaseRestClient.getCourtCase(courtCode, caseNumber) } returns CourtCase(crn = crn)
-      every { assessmentUpdateRestClient.createOasysOffender(crn) } returns oasysOffenderPk
-      every { assessmentUpdateRestClient.createAssessment(oasysOffenderPk, assessmentType) } returns oasysSetPk
+      every {
+        assessmentUpdateRestClient.pushToOasys(
+          crn = crn,
+          assessmentSchemaCode = assessmentSchemaCode
+        )
+      } returns Pair(oasysOffenderPk, oasysSetPk)
+
       every { episodeService.prepopulate(any()) } returnsArgument 0
 
       assessmentsService.createNewAssessment(
