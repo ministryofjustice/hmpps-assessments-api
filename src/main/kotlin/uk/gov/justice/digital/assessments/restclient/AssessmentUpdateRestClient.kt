@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.OasysAssessmentType
 import uk.gov.justice.digital.assessments.redis.UserDetailsRedisRepository
 import uk.gov.justice.digital.assessments.restclient.assessmentapi.Authorized
@@ -20,6 +21,7 @@ import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.CreateO
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OasysAnswer
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.UpdateAssessmentAnswersDto
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.UpdateAssessmentAnswersResponseDto
+import uk.gov.justice.digital.assessments.services.AssessmentSchemaService
 import uk.gov.justice.digital.assessments.utils.RequestData
 
 @Component
@@ -31,10 +33,32 @@ class AssessmentUpdateRestClient {
   @Autowired
   internal lateinit var userDetailsRedisRepository: UserDetailsRedisRepository
 
+  @Autowired
+  internal lateinit var assessmentSchemaService: AssessmentSchemaService
+
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
   }
 
+  /*
+  * Use this method to conditionally Push Offenders and Assessments to Oasys depending on the Assessment Schema Code
+  * DO NOT CHANGE THIS METHOD SIGNATURE as it does work with PushToOasysAspect to decide for which assessments
+  * we push data into Oasys
+  * */
+  fun pushToOasys(
+    crn: String?,
+    deliusEventId: Long? = null,
+    assessmentSchemaCode: AssessmentSchemaCode?
+  ): Pair<Long?, Long?> {
+    val oasysOffenderPk = crn?.let { createOasysOffender(crn = crn, deliusEvent = deliusEventId) }
+    val oasysAssessmentType = assessmentSchemaService.toOasysAssessmentType(assessmentSchemaCode)
+    val oasysSetPK = oasysOffenderPk?.let { createAssessment(it, oasysAssessmentType) }
+    return Pair(oasysOffenderPk, oasysSetPK)
+  }
+
+  /*
+  * Use this method only if you want to force Creating Offender in Oasys
+  * */
   @Authorized(roleChecks = [Roles.RBAC_OTHER], roleNames = [RoleNames.CREATE_OFFENDER])
   fun createOasysOffender(
     crn: String,
@@ -61,6 +85,9 @@ class AssessmentUpdateRestClient {
       }
   }
 
+  /*
+  * Use this method only if you want to force Creating Assessment in Oasys
+  * */
   @Authorized(roleChecks = [Roles.OFF_ASSESSMENT_CREATE])
   fun createAssessment(
     offenderPK: Long,

@@ -17,7 +17,7 @@ data class CreateAssessmentDto(
   val caseNumber: String? = null,
 
   @Schema(description = "Assessment Schema Code", example = "ROSH")
-  val assessmentSchemaCode: AssessmentSchemaCode = AssessmentSchemaCode.ROSH
+  val assessmentSchemaCode: AssessmentSchemaCode
 
 ) {
   fun isDelius() = (deliusEventId != null && crn != null)

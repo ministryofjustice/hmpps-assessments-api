@@ -9,6 +9,7 @@ import org.junit.jupiter.api.assertThrows
 import org.slf4j.MDC
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpMethod
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.OasysAssessmentType
 import uk.gov.justice.digital.assessments.restclient.assessmentapi.RoleNames
 import uk.gov.justice.digital.assessments.restclient.assessmentapi.Roles
@@ -109,6 +110,13 @@ class OASysUpdateClientTest : IntegrationTest() {
   fun `create OASys Assessment`() {
     val returnAssessmentPk = assessmentUpdateRestClient.createAssessment(offenderPk, assessmentType)
     assertThat(returnAssessmentPk).isEqualTo(1)
+  }
+
+  @Test
+  fun `Trying to push to OASys Assessment that should not be pushed into Oasys returns null`() {
+    val returnAssessmentPk =
+      assessmentUpdateRestClient.pushToOasys(crn = crn, assessmentSchemaCode = AssessmentSchemaCode.RSR)
+    assertThat(returnAssessmentPk).isEqualTo(Pair(null, null))
   }
 
   @Test

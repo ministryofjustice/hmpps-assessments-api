@@ -21,5 +21,5 @@ insert into subject (subject_id, subject_uuid, source, source_id, name, pnc, crn
 ON CONFLICT DO NOTHING;
 
 INSERT INTO assessed_episode (episode_id, episode_uuid, user_id, created_date, end_date, change_reason, assessment_schema_code, assessment_uuid, answers  )
-VALUES (2, '90f2b674-ae1c-488d-8b85-0251708ef6b6', 'AALONSO', '2019-11-14 08:11:53.177108', null, 'new episode', 'RSR_ONLY', '6f3f2c4a-38ac-49ce-b790-70bc170fe553','{}')
+VALUES (2, '90f2b674-ae1c-488d-8b85-0251708ef6b6', 'AALONSO', '2019-11-14 08:11:53.177108', null, 'new episode', 'RSR', '6f3f2c4a-38ac-49ce-b790-70bc170fe553','{}')
 ON CONFLICT DO NOTHING;

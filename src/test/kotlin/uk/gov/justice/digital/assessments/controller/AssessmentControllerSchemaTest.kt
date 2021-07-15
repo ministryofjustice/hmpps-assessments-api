@@ -61,7 +61,7 @@ class AssessmentControllerSchemaTest : IntegrationTest() {
 
   @Test
   fun `section for top-level group for an assessment by assessment schema code`() {
-    val assessmentGroup = webTestClient.get().uri("/assessments/schema/RSR_ONLY/summary")
+    val assessmentGroup = webTestClient.get().uri("/assessments/schema/RSR/summary")
       .headers(setAuthorisation())
       .exchange()
       .expectStatus().isOk

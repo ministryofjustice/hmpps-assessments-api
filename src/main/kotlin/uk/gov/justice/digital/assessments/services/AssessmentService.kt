@@ -130,7 +130,11 @@ class AssessmentService(
     return answers
   }
 
-  private fun createFromDelius(eventId: Long?, crn: String?, assessmentSchemaCode: AssessmentSchemaCode?): AssessmentDto {
+  private fun createFromDelius(
+    eventId: Long?,
+    crn: String?,
+    assessmentSchemaCode: AssessmentSchemaCode?
+  ): AssessmentDto {
     if (eventId == null || crn.isNullOrEmpty() || assessmentSchemaCode == null) {
       throw IllegalStateException("Unable to create OASys Assessment with assessment type: $assessmentSchemaCode, eventId: $eventId, crn: $crn")
     }
@@ -140,9 +144,11 @@ class AssessmentService(
       return AssessmentDto.from(existingSubject.assessment)
     }
     val offender = offenderService.getOffender(crn)
-    val oasysOffenderPk = assessmentUpdateRestClient.createOasysOffender(crn = crn, deliusEvent = eventId)
-    val oasysAssessmentType = assessmentSchemaService.toOasysAssessmentType(assessmentSchemaCode)
-    val oasysSetPK = oasysOffenderPk?.let { assessmentUpdateRestClient.createAssessment(it, oasysAssessmentType) }
+    val (oasysOffenderPk, oasysSetPK) = assessmentUpdateRestClient.pushToOasys(
+      crn = crn,
+      deliusEventId = eventId,
+      assessmentSchemaCode = assessmentSchemaCode
+    )
     return createDeliusAssessmentWithPrepopulatedEpisode(
       crn,
       offender,
@@ -168,9 +174,11 @@ class AssessmentService(
     val courtCase = courtCaseClient.getCourtCase(courtCode, caseNumber)
       ?: throw EntityNotFoundException("No court case found for $courtCode, $caseNumber")
 
-    val oasysOffenderPk = courtCase.crn?.let { assessmentUpdateRestClient.createOasysOffender(crn = it) }
-    val oasysAssessmentType = assessmentSchemaService.toOasysAssessmentType(assessmentSchemaCode)
-    val oasysSetPK = oasysOffenderPk?.let { assessmentUpdateRestClient.createAssessment(it, oasysAssessmentType) }
+    val (oasysOffenderPk, oasysSetPK) = assessmentUpdateRestClient.pushToOasys(
+      crn = courtCase.crn,
+      assessmentSchemaCode = assessmentSchemaCode
+    )
+
     return createCourtAssessmentWithPrepopulatedEpisode(
       sourceId,
       courtCase,

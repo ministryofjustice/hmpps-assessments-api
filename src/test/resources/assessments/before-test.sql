@@ -68,7 +68,7 @@ VALUES
 ON CONFLICT DO NOTHING;
 INSERT INTO assessment_schema (assessment_schema_id, assessment_schema_uuid, assessment_schema_code, oasys_assessment_type, oasys_create_assessment_at, assessment_name)
 VALUES
-(1, 'c4a6beac-37c0-46b6-b4b3-62086b624675', 'RSR_ONLY', 'SOMETHING_IN_OASYS', 'START', 'Another Assessment type')
+(1, 'c4a6beac-37c0-46b6-b4b3-62086b624675', 'RSR', 'SOMETHING_IN_OASYS', 'START', 'Another Assessment type')
 ON CONFLICT DO NOTHING;
 
 INSERT INTO assessment_schema_groups(assessment_schema_group_id, assessment_schema_uuid, group_uuid)
