@@ -1,12 +1,14 @@
 -- noinspection SqlResolveForFile
 
-delete from assessed_episode where true;
-delete from subject where true;
-delete from assessment where true;
-delete from question_group where true;
-delete from oasys_question_mapping where true;
-delete from oasys_reference_data_target_mapping where true;
+DELETE FROM assessed_episode WHERE true;
+DELETE FROM subject WHERE true;
+DELETE FROM assessment WHERE true;
+DELETE FROM question_group WHERE true;
+DELETE FROM oasys_question_mapping WHERE true;
+DELETE FROM oasys_reference_data_target_mapping WHERE true;
 DELETE FROM assessment_schema_groups WHERE true;
 DELETE FROM assessment_schema WHERE true;
-delete from grouping where true;
-delete from question_schema where true;
+DELETE FROM grouping WHERE true;
+DELETE FROM predictor_field_mapping WHERE true;
+DELETE FROM predictor_assessments WHERE true;
+DELETE FROM question_schema WHERE true;
