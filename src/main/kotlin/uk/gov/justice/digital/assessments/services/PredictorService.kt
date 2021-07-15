@@ -42,6 +42,6 @@ class PredictorService(
       total, field -> if (answers[field.questionSchema.questionSchemaUuid] != null) total + 1 else total
     }
 
-    return numberOfAnsweredPredictorFields == predictorFields.size
+    return predictorFields.isNotEmpty() && numberOfAnsweredPredictorFields == predictorFields.size
   }
 }
