@@ -120,6 +120,20 @@ class OASysUpdateClientTest : IntegrationTest() {
   }
 
   @Test
+  fun `Trying to push to OASys Assessment update that should not be pushed into Oasys returns null`() {
+    val updateAssessmentResponse =
+      assessmentUpdateRestClient.pushUpdateToOasys(assessmentSchemaCode = AssessmentSchemaCode.RSR)
+    assertThat(updateAssessmentResponse).isEqualTo(null)
+  }
+
+  @Test
+  fun `Trying to push to OASys Assessment completion that should not be pushed into Oasys returns null`() {
+    val updateAssessmentResponse =
+      assessmentUpdateRestClient.pushCompleteToOasys(assessmentSchemaCode = AssessmentSchemaCode.RSR)
+    assertThat(updateAssessmentResponse).isEqualTo(null)
+  }
+
+  @Test
   fun `create OASys Assessment is Forbidden when OFF_ASSESSMENT_CREATE is not authorised`() {
     val exception =
       assertThrows<ExternalApiForbiddenException> {

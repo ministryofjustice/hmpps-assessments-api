@@ -130,16 +130,16 @@ class AssessmentUpdateRestClient {
   * we push updated data into Oasys
   * */
   fun pushUpdateToOasys(
-    offenderPK: Long,
-    oasysSetPk: Long,
+    offenderPK: Long? = null,
+    oasysSetPk: Long? = null,
     assessmentSchemaCode: AssessmentSchemaCode?,
-    answers: Set<OasysAnswer>,
+    answers: Set<OasysAnswer> = emptySet(),
   ): UpdateAssessmentAnswersResponseDto? {
     val oasysAssessmentType = assessmentSchemaService.toOasysAssessmentType(assessmentSchemaCode)
     return updateAssessment(
-      offenderPK,
+      offenderPK!!,
       oasysAssessmentType,
-      oasysSetPk,
+      oasysSetPk!!,
       answers
     )
   }
@@ -192,16 +192,16 @@ class AssessmentUpdateRestClient {
  * we push a completed status and data into Oasys
  * */
   fun pushCompleteToOasys(
-    offenderPK: Long,
-    oasysSetPk: Long,
+    offenderPK: Long? = null,
+    oasysSetPk: Long? = null,
     assessmentSchemaCode: AssessmentSchemaCode?,
     ignoreWarnings: Boolean = true
   ): UpdateAssessmentAnswersResponseDto? {
     val oasysAssessmentType = assessmentSchemaService.toOasysAssessmentType(assessmentSchemaCode)
     return completeAssessment(
-      offenderPK,
+      offenderPK!!,
       oasysAssessmentType,
-      oasysSetPk,
+      oasysSetPk!!,
       ignoreWarnings
     )
   }
