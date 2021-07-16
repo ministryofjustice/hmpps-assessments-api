@@ -55,7 +55,7 @@ class PredictorService(
   ) : PredictorScoreDto {
     log.info("Stubbed call to get Predictor Score")
     return PredictorScoreDto(
-      predictor = predictorType,
+      type = predictorType,
       score = 1234
     )
   }

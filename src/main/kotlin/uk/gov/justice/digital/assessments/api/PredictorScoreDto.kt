@@ -11,10 +11,10 @@ enum class PredictorResultStatus {
 
 class PredictorScoreDto(
   @Schema(description = "Predictor type", example = "RSR")
-  val predictor: PredictorType,
+  val type: PredictorType,
 
   @Schema(description = "Predictor result status", example = "COMPLETE")
-  val predictorResultStatus: PredictorResultStatus = PredictorResultStatus.DETERMINED,
+  val status: PredictorResultStatus = PredictorResultStatus.DETERMINED,
 
   @Schema(description = "Predictor score", example = "1")
   val score: Number? = null,
@@ -22,8 +22,8 @@ class PredictorScoreDto(
   companion object {
     fun incomplete(predictor: PredictorType): PredictorScoreDto {
       return PredictorScoreDto(
-        predictor = predictor,
-        predictorResultStatus = PredictorResultStatus.UNDETERMINED
+        type = predictor,
+        status = PredictorResultStatus.UNDETERMINED
       )
     }
   }

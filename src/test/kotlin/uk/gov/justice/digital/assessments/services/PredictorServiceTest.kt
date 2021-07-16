@@ -58,8 +58,8 @@ class PredictorServiceTest {
       val results = predictorService.getPredictorResults(RSR_ONLY, answers)
 
       assertThat(results).hasSize(1)
-      assertThat(results.first().predictor).isEqualTo(RSR)
-      assertThat(results.first().predictorResultStatus).isEqualTo(DETERMINED)
+      assertThat(results.first().type).isEqualTo(RSR)
+      assertThat(results.first().status).isEqualTo(DETERMINED)
       assertThat(results.first().score).isEqualTo(1234)
     }
 
@@ -70,8 +70,8 @@ class PredictorServiceTest {
       val results = predictorService.getPredictorResults(RSR_ONLY, emptyMap())
 
       assertThat(results).hasSize(1)
-      assertThat(results.first().predictor).isEqualTo(RSR)
-      assertThat(results.first().predictorResultStatus).isEqualTo(UNDETERMINED)
+      assertThat(results.first().type).isEqualTo(RSR)
+      assertThat(results.first().status).isEqualTo(UNDETERMINED)
       assertThat(results.first().score).isNull()
     }
   }
