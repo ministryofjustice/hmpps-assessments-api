@@ -9,7 +9,6 @@ import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.jpa.entities.Answer
 import uk.gov.justice.digital.assessments.jpa.entities.AnswerEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
-import uk.gov.justice.digital.assessments.jpa.entities.PredictorFieldMapping
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.EpisodeRepository
 import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient
@@ -74,6 +73,8 @@ class AssessmentUpdateService(
     val predictorResults = episode.assessmentSchemaCode?.let {
       predictorService.getPredictorResults(it, updatedEpisode.answers)
     }
+
+    updatedEpisode.predictors.addAll(predictorResults.orEmpty())
 
     // Add to AssessmentEpisodeDTO or create wrapping DTO?
     return updatedEpisode

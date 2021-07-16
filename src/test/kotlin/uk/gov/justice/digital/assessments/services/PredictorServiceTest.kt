@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.assessments.api.AnswerDto
 import uk.gov.justice.digital.assessments.api.AnswersDto
+import uk.gov.justice.digital.assessments.api.PredictorResultStatus.DETERMINED
+import uk.gov.justice.digital.assessments.api.PredictorResultStatus.UNDETERMINED
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode.RSR_ONLY
 import uk.gov.justice.digital.assessments.jpa.entities.Predictor
 import uk.gov.justice.digital.assessments.jpa.entities.PredictorFieldMapping
@@ -57,6 +59,7 @@ class PredictorServiceTest {
 
       assertThat(results).hasSize(1)
       assertThat(results.first().predictor).isEqualTo(RSR)
+      assertThat(results.first().predictorResultStatus).isEqualTo(DETERMINED)
       assertThat(results.first().score).isEqualTo(1234)
     }
 
@@ -68,6 +71,7 @@ class PredictorServiceTest {
 
       assertThat(results).hasSize(1)
       assertThat(results.first().predictor).isEqualTo(RSR)
+      assertThat(results.first().predictorResultStatus).isEqualTo(UNDETERMINED)
       assertThat(results.first().score).isNull()
     }
   }

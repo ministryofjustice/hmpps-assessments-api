@@ -35,8 +35,14 @@ class AssessmentEpisodeDto(
   @Schema(description = "Validation errors on this episode, indexed by question UUID")
   val errors: Map<UUID, Collection<String>>? = null,
 
+  @Schema(description = "Validation level errors")
   val pageErrors: Collection<String>? = null,
-  val assessmentErrors: Collection<String>? = null
+
+  @Schema(description = "OASys assessment errors")
+  val assessmentErrors: Collection<String>? = null,
+
+  @Schema(description = "Results of predictors")
+  val predictors: MutableCollection<PredictorScoreDto> = mutableListOf(),
 ) {
   companion object {
 
