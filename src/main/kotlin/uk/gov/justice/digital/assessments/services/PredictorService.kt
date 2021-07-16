@@ -54,6 +54,9 @@ class PredictorService(
     answers: Map<String, AnswersDto>,
   ) : PredictorScoreDto {
     log.info("Stubbed call to get Predictor Score")
-    return PredictorScoreDto(predictorType, 1234)
+    return PredictorScoreDto(
+      predictor = predictorType,
+      score = 1234
+    )
   }
 }
