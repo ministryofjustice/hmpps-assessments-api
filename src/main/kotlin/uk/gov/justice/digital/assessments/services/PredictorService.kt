@@ -37,12 +37,12 @@ class PredictorService(
   private fun extractAnswers(
     predictorFields: List<PredictorFieldMapping>,
     answers: Map<UUID, AnswersDto>
-  ): Map<UUID, Collection<AnswerDto>> {
+  ): Map<String, Collection<AnswerDto>> {
     return predictorFields
-      .map { predictorField -> predictorField.questionSchema.questionSchemaUuid }
-      .associate { questionSchemaUuid ->
-        val questionAnswer = answers[questionSchemaUuid]
-        (questionSchemaUuid to questionAnswer?.answers.orEmpty())
+      .associate { predictorField ->
+        val questionUuid = predictorField.questionSchema.questionSchemaUuid
+        val questionAnswer = answers[questionUuid]
+        (predictorField.predictorFieldName to questionAnswer?.answers.orEmpty())
       }
       .filterValues { extractedAnswer -> extractedAnswer.isNotEmpty() }
   }
