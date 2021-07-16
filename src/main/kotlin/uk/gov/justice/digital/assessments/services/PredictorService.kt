@@ -46,7 +46,7 @@ class PredictorService(
       }
       .filterValues { it != null  }
       .mapValues { it.value as AnswersDto }
-      // ☝️ The compiler needs help here to infer the returned type 🤔
+      // The compiler needs help here to infer the returned type 🤔
   }
 
   private fun fetchResults(

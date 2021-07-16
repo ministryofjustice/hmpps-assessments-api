@@ -76,7 +76,6 @@ class AssessmentUpdateService(
 
     updatedEpisode.predictors.addAll(predictorResults.orEmpty())
 
-    // Add to AssessmentEpisodeDTO or create wrapping DTO?
     return updatedEpisode
   }
 
