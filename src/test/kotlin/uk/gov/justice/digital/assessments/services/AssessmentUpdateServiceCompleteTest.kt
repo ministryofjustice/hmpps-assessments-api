@@ -76,8 +76,7 @@ class AssessmentUpdateServiceCompleteTest {
     val episode = assessmentUpdateService.closeEpisode(assessment.episodes.first())
 
     verify(exactly = 0) { episodeRepository.save(any()) }
-    verify(exactly = 1) {
-      assessmentUpdateRestClient.completeAssessment(9999, OasysAssessmentType.SHORT_FORM_PSR, 7777)
+    verify(exactly = 1) {  assessmentUpdateRestClient.completeAssessment(9999, OasysAssessmentType.SHORT_FORM_PSR, 7777)
     }
     assertThat(episode.ended).isNull()
   }
