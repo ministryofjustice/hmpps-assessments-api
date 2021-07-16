@@ -56,8 +56,7 @@ class AssessmentUpdateServiceCompleteTest {
     episodeRepository,
     questionService,
     assessmentUpdateRestClient,
-    assessmentService,
-    assessmentSchemaService,
+    assessmentService
     predictorService,
   )
 
@@ -72,13 +71,13 @@ class AssessmentUpdateServiceCompleteTest {
     every { assessmentRepository.findByAssessmentUuid(any()) } returns assessment
     every { episodeRepository.save(any()) } returns assessment.episodes[0]
     every {
-      assessmentUpdateRestClient.completeAssessment(9999, OasysAssessmentType.SHORT_FORM_PSR, 7777)
+      assessmentUpdateRestClient.pushCompleteToOasys(9999, 7777, AssessmentSchemaCode.ROSH)
     } returns UpdateAssessmentAnswersResponseDto(7777)
 
     val episode = assessmentUpdateService.closeCurrentEpisode(UUID.fromString("7b4de6d5-4488-4c29-a909-7d3fdf15393d"))
 
     verify(exactly = 1) { episodeRepository.save(any()) }
-    verify(exactly = 1) { assessmentUpdateRestClient.completeAssessment(any(), any(), any(), any()) }
+    verify(exactly = 1) { assessmentUpdateRestClient.pushCompleteToOasys(9999, 7777, AssessmentSchemaCode.ROSH) }
     assertThat(episode.ended).isEqualToIgnoringMinutes(LocalDateTime.now())
   }
 
@@ -97,13 +96,13 @@ class AssessmentUpdateServiceCompleteTest {
     every { assessmentRepository.findByAssessmentUuid(any()) } returns assessment
     every { episodeRepository.save(any()) } returns assessment.episodes[0]
     every {
-      assessmentUpdateRestClient.completeAssessment(9999, OasysAssessmentType.SHORT_FORM_PSR, 7777)
+      assessmentUpdateRestClient.pushCompleteToOasys(9999, 7777, AssessmentSchemaCode.ROSH)
     } returns oasysAssessmentError()
 
     val episode = assessmentUpdateService.closeCurrentEpisode(UUID.fromString("7b4de6d5-4488-4c29-a909-7d3fdf15393d"))
 
     verify(exactly = 0) { episodeRepository.save(any()) }
-    verify(exactly = 1) { assessmentUpdateRestClient.completeAssessment(any(), any(), any(), any()) }
+    verify(exactly = 1) {  assessmentUpdateRestClient.pushCompleteToOasys(9999, 7777, AssessmentSchemaCode.ROSH) }
     assertThat(episode.ended).isNull()
   }
 

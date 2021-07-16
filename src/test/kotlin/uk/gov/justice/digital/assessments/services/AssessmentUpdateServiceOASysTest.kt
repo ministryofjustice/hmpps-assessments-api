@@ -43,7 +43,6 @@ class AssessmentUpdateServiceOASysTest {
   private val questionService: QuestionService = mockk()
   private val assessmentUpdateRestClient: AssessmentUpdateRestClient = mockk()
   private val assessmentService: AssessmentService = mockk()
-  private val assessmentSchemaService: AssessmentSchemaService = mockk()
   private val predictorService: PredictorService = mockk()
 
   private val assessmentsUpdateService = AssessmentUpdateService(
@@ -52,13 +51,12 @@ class AssessmentUpdateServiceOASysTest {
     questionService,
     assessmentUpdateRestClient,
     assessmentService,
-    assessmentSchemaService,
     predictorService,
   )
 
   private val assessmentUuid = UUID.randomUUID()
   private val assessmentId = 1L
-  private val assessmentType = OasysAssessmentType.SHORT_FORM_PSR
+  private val assessmentSchemaCode = AssessmentSchemaCode.ROSH
 
   private val oasysOffenderPk = 1L
   private val oasysSetPk = 1L
@@ -76,11 +74,6 @@ class AssessmentUpdateServiceOASysTest {
   private val answer1Uuid = UUID.randomUUID()
   private val answer2Uuid = UUID.randomUUID()
   private val answer3Uuid = UUID.randomUUID()
-
-  @BeforeEach
-  fun setup() {
-    every { assessmentSchemaService.toOasysAssessmentType(AssessmentSchemaCode.ROSH) } returns OasysAssessmentType.SHORT_FORM_PSR
-  }
 
   @Test
   fun `map Oasys answer from free text answer`() {
@@ -281,10 +274,10 @@ class AssessmentUpdateServiceOASysTest {
   fun `update OASys if OASysSet stored against episode`() {
     every { questionService.getAllQuestions() } returns setupQuestionCodes()
     every {
-      assessmentUpdateRestClient.updateAssessment(
+      assessmentUpdateRestClient.pushUpdateToOasys(
         oasysOffenderPk,
-        assessmentType,
         oasysSetPk,
+        assessmentSchemaCode,
         any()
       )
     } returns UpdateAssessmentAnswersResponseDto()
@@ -295,7 +288,12 @@ class AssessmentUpdateServiceOASysTest {
     assessmentsUpdateService.updateOASysAssessment(setupEpisode(), update)
 
     verify(exactly = 1) {
-      assessmentUpdateRestClient.updateAssessment(oasysOffenderPk, assessmentType, oasysSetPk, any())
+      assessmentUpdateRestClient.pushUpdateToOasys(
+        oasysOffenderPk,
+        oasysSetPk,
+        assessmentSchemaCode,
+        any()
+      )
     }
   }
 
@@ -303,10 +301,10 @@ class AssessmentUpdateServiceOASysTest {
   fun `don't update OASys if no OASysSet stored against episode`() {
     every { questionService.getAllQuestions() } returns setupQuestionCodes()
     every {
-      assessmentUpdateRestClient.updateAssessment(
+      assessmentUpdateRestClient.pushUpdateToOasys(
         oasysOffenderPk,
-        assessmentType,
         oasysSetPk,
+        assessmentSchemaCode,
         any()
       )
     } returns UpdateAssessmentAnswersResponseDto()
@@ -319,7 +317,12 @@ class AssessmentUpdateServiceOASysTest {
     assessmentsUpdateService.updateOASysAssessment(episode, update)
 
     verify(exactly = 0) {
-      assessmentUpdateRestClient.updateAssessment(oasysOffenderPk, assessmentType, oasysSetPk, any())
+      assessmentUpdateRestClient.pushUpdateToOasys(
+        oasysOffenderPk,
+        oasysSetPk,
+        assessmentSchemaCode,
+        any()
+      )
     }
   }
 
@@ -359,7 +362,7 @@ class AssessmentUpdateServiceOASysTest {
         )
       )
     )
-    every { assessmentUpdateRestClient.updateAssessment(any(), any(), any(), any()) } returns oasysError
+    every { assessmentUpdateRestClient.pushUpdateToOasys(any(), any(), any(), any()) } returns oasysError
     every { predictorService.getPredictorResults(AssessmentSchemaCode.ROSH, assessmentEpisode) } returns emptyList()
     // Christ, what a lot of set up
 
@@ -395,10 +398,10 @@ class AssessmentUpdateServiceOASysTest {
     val oasysAnswersSlot = slot<Set<OasysAnswer>>()
 
     every {
-      assessmentUpdateRestClient.updateAssessment(
+      assessmentUpdateRestClient.pushUpdateToOasys(
         oasysOffenderPk,
-        assessmentType,
         oasysSetPk,
+        assessmentSchemaCode,
         capture(oasysAnswersSlot)
       )
     } returns UpdateAssessmentAnswersResponseDto()
@@ -410,7 +413,12 @@ class AssessmentUpdateServiceOASysTest {
     val updatedEpisode = assessmentsUpdateService.updateEpisode(assessmentUuid, episodeUuid, update)
 
     verify(exactly = 1) {
-      assessmentUpdateRestClient.updateAssessment(oasysOffenderPk, assessmentType, oasysSetPk, any())
+      assessmentUpdateRestClient.pushUpdateToOasys(
+        oasysOffenderPk,
+        oasysSetPk,
+        assessmentSchemaCode,
+        any()
+      )
     }
     with(oasysAnswersSlot.captured) {
       assertThat(map { it.questionCode }).containsOnly("oasysQ1", "oasysQ2")

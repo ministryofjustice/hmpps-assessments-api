@@ -52,7 +52,6 @@ class AssessmentUpdateServiceTest {
     questionService,
     assessmentUpdateRestClient,
     assessmentService,
-    assessmentSchemaService,
     predictorService,
   )
 
