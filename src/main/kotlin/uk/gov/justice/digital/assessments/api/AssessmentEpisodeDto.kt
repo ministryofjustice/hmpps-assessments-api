@@ -42,7 +42,7 @@ class AssessmentEpisodeDto(
   val assessmentErrors: Collection<String>? = null,
 
   @Schema(description = "Results of predictors")
-  val predictors: MutableCollection<PredictorScoreDto> = mutableListOf(),
+  val predictors: Collection<PredictorScoreDto>,
 ) {
   companion object {
 
@@ -53,6 +53,7 @@ class AssessmentEpisodeDto(
     fun from(
       episode: AssessmentEpisodeEntity,
       errors: AssessmentEpisodeUpdateErrors? = null,
+      predictors: Collection<PredictorScoreDto> = emptyList(),
     ): AssessmentEpisodeDto {
       return AssessmentEpisodeDto(
         episode.episodeId,
@@ -65,7 +66,8 @@ class AssessmentEpisodeDto(
         AnswersDto.from(episode.answers) ?: emptyMap(),
         errors?.errors,
         errors?.pageErrors,
-        errors?.assessmentErrors
+        errors?.assessmentErrors,
+        predictors,
       )
     }
   }

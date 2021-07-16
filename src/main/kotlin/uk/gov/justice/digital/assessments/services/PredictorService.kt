@@ -5,6 +5,9 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.assessments.api.AnswersDto
 import uk.gov.justice.digital.assessments.api.PredictorScoreDto
+import uk.gov.justice.digital.assessments.jpa.entities.Answer
+import uk.gov.justice.digital.assessments.jpa.entities.AnswerEntity
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.PredictorFieldMapping
 import uk.gov.justice.digital.assessments.jpa.entities.PredictorType
@@ -20,15 +23,15 @@ class PredictorService(
 
   fun getPredictorResults(
     assessmentSchemaCode: AssessmentSchemaCode,
-    episodeAnswers: Map<UUID, AnswersDto>,
+    episode: AssessmentEpisodeEntity,
   ): List<PredictorScoreDto> {
     val predictors = assessmentSchemaService.getPredictorsForAssessment(assessmentSchemaCode)
 
-    log.info("Found ${predictors.size} predictors for assessment type $assessmentSchemaCode")
+    log.info("Found ${predictors.size} predictors for episode ${episode.episodeUuid} with assessment type $assessmentSchemaCode")
 
     return predictors.map { predictor ->
       val predictorFields = predictor.fields.toList()
-      val extractedAnswers = extractAnswers(predictorFields, episodeAnswers)
+      val extractedAnswers = extractAnswers(predictorFields, episode.answers.orEmpty())
       if (predictorFields.isNotEmpty() && predictorFields.size == extractedAnswers.size)
         fetchResults(predictor.type, extractedAnswers) else PredictorScoreDto.incomplete(predictor.type)
     }
@@ -36,17 +39,18 @@ class PredictorService(
 
   private fun extractAnswers(
     predictorFields: List<PredictorFieldMapping>,
-    answers: Map<UUID, AnswersDto>
+    answers: Map<UUID, AnswerEntity>
   ): Map<String, AnswersDto> {
     return predictorFields
       .associate { predictorField ->
         val questionUuid = predictorField.questionSchema.questionSchemaUuid
         val questionAnswer = answers[questionUuid]
-        (predictorField.predictorFieldName to questionAnswer)
+        predictorField.predictorFieldName to questionAnswer?.answers
       }
-      .filterValues { it != null  }
-      .mapValues { it.value as AnswersDto }
-      // The compiler needs help here to infer the returned type 🤔
+      .filterValues { it != null && it.isNotEmpty() }
+      .mapValues {
+        AnswersDto.from(it.value as Collection<Answer>)
+      }
   }
 
   private fun fetchResults(

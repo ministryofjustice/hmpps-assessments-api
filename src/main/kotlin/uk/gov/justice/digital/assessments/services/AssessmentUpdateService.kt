@@ -68,15 +68,11 @@ class AssessmentUpdateService(
     assessmentRepository.save(episode.assessment)
     log.info("Saved episode ${episode.episodeUuid} for assessment ${episode.assessment?.assessmentUuid}")
 
-    val updatedEpisode = AssessmentEpisodeDto.from(episode, oasysResult)
-
     val predictorResults = episode.assessmentSchemaCode?.let {
-      predictorService.getPredictorResults(it, updatedEpisode.answers)
+      predictorService.getPredictorResults(it, episode)
     }
 
-    updatedEpisode.predictors.addAll(predictorResults.orEmpty())
-
-    return updatedEpisode
+    return AssessmentEpisodeDto.from(episode, oasysResult, predictorResults.orEmpty())
   }
 
   fun AssessmentEpisodeEntity.updateEpisodeAnswers(

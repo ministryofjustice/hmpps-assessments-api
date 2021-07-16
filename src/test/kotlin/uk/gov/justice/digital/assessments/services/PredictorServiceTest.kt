@@ -6,10 +6,11 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import uk.gov.justice.digital.assessments.api.AnswerDto
-import uk.gov.justice.digital.assessments.api.AnswersDto
 import uk.gov.justice.digital.assessments.api.PredictorResultStatus.DETERMINED
 import uk.gov.justice.digital.assessments.api.PredictorResultStatus.UNDETERMINED
+import uk.gov.justice.digital.assessments.jpa.entities.Answer
+import uk.gov.justice.digital.assessments.jpa.entities.AnswerEntity
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode.RSR_ONLY
 import uk.gov.justice.digital.assessments.jpa.entities.Predictor
 import uk.gov.justice.digital.assessments.jpa.entities.PredictorFieldMapping
@@ -42,10 +43,21 @@ class PredictorServiceTest {
     )
   ))
 
-  private val answers = mapOf(
-    testQuestion.questionSchemaUuid to AnswersDto(
-      listOf(AnswerDto(items = listOf("TEST_VALUE")))
+  private val answers = mutableMapOf(
+    testQuestion.questionSchemaUuid to AnswerEntity(
+      listOf(Answer(items = listOf("TEST_VALUE")))
     )
+  )
+
+  private val assessmentEpisode = AssessmentEpisodeEntity(
+    episodeId = 1,
+    episodeUuid = UUID.randomUUID(),
+    answers = answers,
+  )
+
+  private val assessmentEpisodeNoAnswers = AssessmentEpisodeEntity(
+    episodeId = 2,
+    episodeUuid = UUID.randomUUID(),
   )
 
   @Nested
@@ -55,7 +67,7 @@ class PredictorServiceTest {
     fun `returns predictor scores for the assessment code`() {
       every { assessmentSchemaService.getPredictorsForAssessment(RSR_ONLY) } returns predictors
 
-      val results = predictorService.getPredictorResults(RSR_ONLY, answers)
+      val results = predictorService.getPredictorResults(RSR_ONLY, assessmentEpisode)
 
       assertThat(results).hasSize(1)
       assertThat(results.first().type).isEqualTo(RSR)
@@ -67,7 +79,7 @@ class PredictorServiceTest {
     fun `does not return a score when predictor conditions are not met`() {
       every { assessmentSchemaService.getPredictorsForAssessment(RSR_ONLY) } returns predictors
 
-      val results = predictorService.getPredictorResults(RSR_ONLY, emptyMap())
+      val results = predictorService.getPredictorResults(RSR_ONLY, assessmentEpisodeNoAnswers)
 
       assertThat(results).hasSize(1)
       assertThat(results.first().type).isEqualTo(RSR)

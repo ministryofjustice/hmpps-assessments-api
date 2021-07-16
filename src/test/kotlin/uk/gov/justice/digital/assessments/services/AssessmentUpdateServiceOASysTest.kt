@@ -333,13 +333,15 @@ class AssessmentUpdateServiceOASysTest {
         existingQuestionUuid to AnswerEntity.from(listOf("free text", "fruit loops", "biscuits"))
       )
     )
-    every { assessmentService.getEpisode(episodeUuid, assessmentUuid) } returns
-      AssessmentEpisodeEntity(
-        episodeId = episodeId1,
-        assessmentSchemaCode = AssessmentSchemaCode.ROSH,
-        oasysSetPk = oasysSetPk,
-        assessment = assessment
-      )
+
+    val assessmentEpisode = AssessmentEpisodeEntity(
+      episodeId = episodeId1,
+      assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+      oasysSetPk = oasysSetPk,
+      assessment = assessment
+    )
+
+    every { assessmentService.getEpisode(episodeUuid, assessmentUuid) } returns assessmentEpisode
     every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
     every { assessmentRepository.save(any()) } returns null // should save when errors?
     every { questionService.getAllSectionQuestionsForQuestions(any()) } returns QuestionSchemaEntities(questionsList = emptyList())
@@ -358,7 +360,7 @@ class AssessmentUpdateServiceOASysTest {
       )
     )
     every { assessmentUpdateRestClient.updateAssessment(any(), any(), any(), any()) } returns oasysError
-    every { predictorService.getPredictorResults(any(), any()) } returns emptyList()
+    every { predictorService.getPredictorResults(AssessmentSchemaCode.ROSH, assessmentEpisode) } returns emptyList()
     // Christ, what a lot of set up
 
     // Apply the update
@@ -385,11 +387,13 @@ class AssessmentUpdateServiceOASysTest {
 
   @Test
   fun `update episode sends only updated sections to oasys`() {
-
-    every { assessmentService.getEpisode(episodeUuid, assessmentUuid) } returns setupEpisode()
+    val assessmentEpisode = setupEpisode()
+    every { assessmentService.getEpisode(episodeUuid, assessmentUuid) } returns assessmentEpisode
 
     every { questionService.getAllSectionQuestionsForQuestions(listOf(question1Uuid)) } returns setupSectionQuestionCodes()
+
     val oasysAnswersSlot = slot<Set<OasysAnswer>>()
+
     every {
       assessmentUpdateRestClient.updateAssessment(
         oasysOffenderPk,
@@ -400,7 +404,7 @@ class AssessmentUpdateServiceOASysTest {
     } returns UpdateAssessmentAnswersResponseDto()
     every { questionService.getAllQuestions() } returns setupQuestionCodes()
     every { assessmentRepository.save(any()) } returns mockk()
-    every { predictorService.getPredictorResults(any(), any()) } returns emptyList()
+    every { predictorService.getPredictorResults(AssessmentSchemaCode.ROSH, assessmentEpisode) } returns emptyList()
 
     val update = UpdateAssessmentEpisodeDto(answers = mapOf(question1Uuid to listOf("Updated")))
     val updatedEpisode = assessmentsUpdateService.updateEpisode(assessmentUuid, episodeUuid, update)
