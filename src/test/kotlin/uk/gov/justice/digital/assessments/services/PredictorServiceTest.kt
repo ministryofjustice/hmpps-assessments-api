@@ -11,10 +11,10 @@ import uk.gov.justice.digital.assessments.api.PredictorResultStatus.UNDETERMINED
 import uk.gov.justice.digital.assessments.jpa.entities.Answer
 import uk.gov.justice.digital.assessments.jpa.entities.AnswerEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode.RSR_ONLY
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.Predictor
 import uk.gov.justice.digital.assessments.jpa.entities.PredictorFieldMapping
-import uk.gov.justice.digital.assessments.jpa.entities.PredictorType.RSR
+import uk.gov.justice.digital.assessments.jpa.entities.PredictorType
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
 import java.util.*
 
@@ -30,14 +30,14 @@ class PredictorServiceTest {
 
   private val predictors = listOf(Predictor(
     1,
-    RSR_ONLY,
-    RSR,
+    AssessmentSchemaCode.RSR,
+    PredictorType.RSR,
     listOf(
       PredictorFieldMapping(
         1,
         UUID.randomUUID(),
         testQuestion,
-        RSR,
+        PredictorType.RSR,
         "predictor_field_name"
       )
     )
@@ -65,24 +65,24 @@ class PredictorServiceTest {
   inner class GetPredictorResults {
     @Test
     fun `returns predictor scores for the assessment code`() {
-      every { assessmentSchemaService.getPredictorsForAssessment(RSR_ONLY) } returns predictors
+      every { assessmentSchemaService.getPredictorsForAssessment(AssessmentSchemaCode.RSR) } returns predictors
 
-      val results = predictorService.getPredictorResults(RSR_ONLY, assessmentEpisode)
+      val results = predictorService.getPredictorResults(AssessmentSchemaCode.RSR, assessmentEpisode)
 
       assertThat(results).hasSize(1)
-      assertThat(results.first().type).isEqualTo(RSR)
+      assertThat(results.first().type).isEqualTo(PredictorType.RSR)
       assertThat(results.first().status).isEqualTo(DETERMINED)
       assertThat(results.first().score).isEqualTo(1234)
     }
 
     @Test
     fun `does not return a score when predictor conditions are not met`() {
-      every { assessmentSchemaService.getPredictorsForAssessment(RSR_ONLY) } returns predictors
+      every { assessmentSchemaService.getPredictorsForAssessment(AssessmentSchemaCode.RSR) } returns predictors
 
-      val results = predictorService.getPredictorResults(RSR_ONLY, assessmentEpisodeNoAnswers)
+      val results = predictorService.getPredictorResults(AssessmentSchemaCode.RSR, assessmentEpisodeNoAnswers)
 
       assertThat(results).hasSize(1)
-      assertThat(results.first().type).isEqualTo(RSR)
+      assertThat(results.first().type).isEqualTo(PredictorType.RSR)
       assertThat(results.first().status).isEqualTo(UNDETERMINED)
       assertThat(results.first().score).isNull()
     }
