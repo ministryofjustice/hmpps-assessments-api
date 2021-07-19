@@ -36,7 +36,7 @@ class AssessmentServiceCreateTest {
   private val courtCaseRestClient: CourtCaseRestClient = mockk()
   private val episodeService: EpisodeService = mockk()
   private val offenderService: OffenderService = mockk()
-  private val assessmentUpdateRestClient: AssessmentUpdateRestClient = mockk()
+  private val assessmentUpdateService: AssessmentUpdateService = mockk()
   private val assessmentSchemaService: AssessmentSchemaService = mockk()
 
   private val assessmentsService = AssessmentService(
@@ -45,7 +45,7 @@ class AssessmentServiceCreateTest {
     questionService,
     episodeService,
     courtCaseRestClient,
-    assessmentUpdateRestClient,
+    assessmentUpdateService,
     offenderService
   )
 
@@ -76,7 +76,7 @@ class AssessmentServiceCreateTest {
     fun `create new offender with new assessment from delius event id and crn`() {
       every { subjectRepository.findBySourceAndSourceIdAndCrn(deliusSource, eventId.toString(), crn) } returns null
       every { offenderService.getOffender("X12345") } returns OffenderDto()
-      every { assessmentUpdateRestClient.pushToOasys(crn, eventId, assessmentSchemaCode) } returns Pair(
+      every {  assessmentUpdateService.createOasysAssessment(crn, eventId, assessmentSchemaCode) } returns Pair(
         oasysOffenderPk,
         oasysSetPk
       )
@@ -176,7 +176,7 @@ class AssessmentServiceCreateTest {
       every { assessmentRepository.save(any()) } returns AssessmentEntity(assessmentId = assessmentId)
       every { courtCaseRestClient.getCourtCase(courtCode, caseNumber) } returns CourtCase(crn = crn)
       every {
-        assessmentUpdateRestClient.pushToOasys(
+        assessmentUpdateService.createOasysAssessment(
           crn = crn,
           assessmentSchemaCode = assessmentSchemaCode
         )
