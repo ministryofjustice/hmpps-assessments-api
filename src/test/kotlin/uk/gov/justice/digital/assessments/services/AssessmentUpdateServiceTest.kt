@@ -81,7 +81,7 @@ class AssessmentUpdateServiceTest {
 
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
 
-      assertThatThrownBy { assessmentUpdateService.updateEpisode(updatedAnswers) }
+      assertThatThrownBy { assessmentUpdateService.updateEpisode(assessment.episodes.first(), updatedAnswers) }
         .isInstanceOf(EntityNotFoundException::class.java)
         .hasMessage("No Episode $episodeUuid for $assessmentUuid")
     }
@@ -183,7 +183,8 @@ class AssessmentUpdateServiceTest {
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
 
       assertThatThrownBy {
-        assessmentUpdateService.updateEpisode(assessment.episodes.first(),
+        assessmentUpdateService.updateEpisode(
+          assessment.episodes.first(),
           UpdateAssessmentEpisodeDto(answers = emptyMap()),
         )
       }

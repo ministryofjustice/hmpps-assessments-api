@@ -66,9 +66,10 @@ class AssessmentUpdateServiceCompleteTest {
 
   @Test
   fun `close episode for assessment with no episodes throws exception`() {
-    every { assessmentRepository.findByAssessmentUuid(any()) } returns assessmentWithNoEpisodeEntity()
+    val assessmentEntity = assessmentWithNoEpisodeEntity()
+    every { assessmentRepository.findByAssessmentUuid(any()) } returns assessmentEntity
 
-    assertThrows<EntityNotFoundException> { assessmentUpdateService.closeEpisode(UUID.fromString("7b4de6d5-4488-4c29-a909-7d3fdf15393d")) }
+    assertThrows<EntityNotFoundException> { assessmentUpdateService.closeEpisode(assessmentEntity.episodes.first()) }
     verify(exactly = 0) { episodeRepository.save(any()) }
     verify(exactly = 0) { assessmentUpdateRestClient.completeAssessment(any(), any(), any(), any()) }
   }
@@ -85,7 +86,8 @@ class AssessmentUpdateServiceCompleteTest {
     val episode = assessmentUpdateService.closeEpisode(assessment.episodes.first())
 
     verify(exactly = 0) { episodeRepository.save(any()) }
-    verify(exactly = 1) { assessmentUpdateRestClient.completeAssessment(9999, OasysAssessmentType.SHORT_FORM_PSR, 7777)
+    verify(exactly = 1) {
+      assessmentUpdateRestClient.completeAssessment(9999, OasysAssessmentType.SHORT_FORM_PSR, 7777)
     }
     assertThat(episode.ended).isNull()
   }
