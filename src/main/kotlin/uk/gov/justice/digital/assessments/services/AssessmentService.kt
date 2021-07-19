@@ -35,8 +35,7 @@ class AssessmentService(
   private val episodeService: EpisodeService,
   private val courtCaseClient: CourtCaseRestClient,
   private val assessmentUpdateRestClient: AssessmentUpdateRestClient,
-  private val offenderService: OffenderService,
-  private val assessmentSchemaService: AssessmentSchemaService
+  private val offenderService: OffenderService
 ) {
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
