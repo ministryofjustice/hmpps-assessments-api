@@ -55,7 +55,7 @@ class AssessmentUpdateServiceCompleteTest {
     episodeRepository,
     questionService,
     assessmentUpdateRestClient,
-    assessmentService
+    assessmentService,
     predictorService
   )
 
@@ -101,7 +101,7 @@ class AssessmentUpdateServiceCompleteTest {
     val episode = assessmentUpdateService.closeCurrentEpisode(UUID.fromString("7b4de6d5-4488-4c29-a909-7d3fdf15393d"))
 
     verify(exactly = 0) { episodeRepository.save(any()) }
-    verify(exactly = 1) {  assessmentUpdateRestClient.pushCompleteToOasys(9999, 7777, AssessmentSchemaCode.ROSH) }
+    verify(exactly = 1) { assessmentUpdateRestClient.pushCompleteToOasys(9999, 7777, AssessmentSchemaCode.ROSH) }
     assertThat(episode.ended).isNull()
   }
 
