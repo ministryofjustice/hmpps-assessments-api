@@ -8,7 +8,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import org.slf4j.MDC
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.jpa.entities.AnswerEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEntity
@@ -21,7 +20,6 @@ import uk.gov.justice.digital.assessments.jpa.repositories.EpisodeRepository
 import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient
 import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
 import uk.gov.justice.digital.assessments.testutils.Verify
-import uk.gov.justice.digital.assessments.utils.RequestData
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -65,6 +63,29 @@ class AssessmentUpdateServiceTest {
   @Nested
   @DisplayName("update episode")
   inner class UpdateAnswers {
+    @Test
+    fun `update episode throws exception if episode does not exist`() {
+
+      val assessment = AssessmentEntity(
+        assessmentId = assessmentId,
+        episodes = mutableListOf(
+          AssessmentEpisodeEntity(
+            episodeUuid = UUID.randomUUID(),
+            episodeId = episodeId2,
+            changeReason = "Change of Circs 2"
+          )
+        )
+      )
+
+      val updatedAnswers = UpdateAssessmentEpisodeDto(mapOf())
+
+      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
+
+      assertThatThrownBy { assessmentUpdateService.updateEpisode(updatedAnswers) }
+        .isInstanceOf(EntityNotFoundException::class.java)
+        .hasMessage("No Episode $episodeUuid for $assessmentUuid")
+    }
+
     @Test
     fun `add new answers to existing question for an episode`() {
       val answers = mutableMapOf(
@@ -162,8 +183,7 @@ class AssessmentUpdateServiceTest {
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
 
       assertThatThrownBy {
-        assessmentUpdateService.updateEpisode(
-          assessment.episodes.first(),
+        assessmentUpdateService.updateEpisode(assessment.episodes.first(),
           UpdateAssessmentEpisodeDto(answers = emptyMap()),
         )
       }
