@@ -35,8 +35,14 @@ class AssessmentEpisodeDto(
   @Schema(description = "Validation errors on this episode, indexed by question UUID")
   val errors: Map<UUID, Collection<String>>? = null,
 
+  @Schema(description = "Validation level errors")
   val pageErrors: Collection<String>? = null,
-  val assessmentErrors: Collection<String>? = null
+
+  @Schema(description = "OASys assessment errors")
+  val assessmentErrors: Collection<String>? = null,
+
+  @Schema(description = "Results of predictors")
+  val predictors: Collection<PredictorScoreDto>,
 ) {
   companion object {
 
@@ -47,6 +53,7 @@ class AssessmentEpisodeDto(
     fun from(
       episode: AssessmentEpisodeEntity,
       errors: AssessmentEpisodeUpdateErrors? = null,
+      predictors: Collection<PredictorScoreDto> = emptyList(),
     ): AssessmentEpisodeDto {
       return AssessmentEpisodeDto(
         episode.episodeId,
@@ -59,7 +66,8 @@ class AssessmentEpisodeDto(
         AnswersDto.from(episode.answers) ?: emptyMap(),
         errors?.errors,
         errors?.pageErrors,
-        errors?.assessmentErrors
+        errors?.assessmentErrors,
+        predictors,
       )
     }
   }

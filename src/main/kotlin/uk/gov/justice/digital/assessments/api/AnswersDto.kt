@@ -28,6 +28,7 @@ data class AnswersDto(
         from(it.value)
       }
     }
+
     private fun from(ae: AnswerEntity): AnswersDto {
       return from(ae.answers)
     }

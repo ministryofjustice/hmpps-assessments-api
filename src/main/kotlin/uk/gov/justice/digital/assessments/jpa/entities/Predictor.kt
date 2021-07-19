@@ -26,9 +26,9 @@ class Predictor(
 
   @Column(name = "predictor_type")
   @Enumerated(EnumType.STRING)
-  val predictorType: PredictorType,
+  val type: PredictorType,
 
   @OneToMany
   @JoinColumn(name = "predictor_type", referencedColumnName = "predictor_type")
-  val predictorFields: Collection<PredictorFieldMapping> = emptyList(),
+  val fields: Collection<PredictorFieldMapping> = emptyList(),
 ) : Serializable

@@ -38,6 +38,7 @@ class AssessmentUpdateServiceCompleteTest {
   private val episodeService: EpisodeService = mockk()
   private val offenderService: OffenderService = mockk()
   private val assessmentSchemaService: AssessmentSchemaService = mockk()
+  private val predictorService: PredictorService = mockk()
 
   private val assessmentService = AssessmentService(
     assessmentRepository,
@@ -47,7 +48,7 @@ class AssessmentUpdateServiceCompleteTest {
     courtCaseRestClient,
     assessmentUpdateRestClient,
     offenderService,
-    assessmentSchemaService
+    assessmentSchemaService,
   )
 
   private val assessmentUpdateService = AssessmentUpdateService(
@@ -56,7 +57,8 @@ class AssessmentUpdateServiceCompleteTest {
     questionService,
     assessmentUpdateRestClient,
     assessmentService,
-    assessmentSchemaService
+    assessmentSchemaService,
+    predictorService,
   )
 
   @BeforeEach

@@ -27,7 +27,8 @@ class AssessmentUpdateService(
   private val questionService: QuestionService,
   private val assessmentUpdateRestClient: AssessmentUpdateRestClient,
   private val assessmentService: AssessmentService,
-  private val assessmentSchemaService: AssessmentSchemaService
+  private val assessmentSchemaService: AssessmentSchemaService,
+  private val predictorService: PredictorService,
 ) {
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
@@ -67,7 +68,11 @@ class AssessmentUpdateService(
     assessmentRepository.save(episode.assessment)
     log.info("Saved episode ${episode.episodeUuid} for assessment ${episode.assessment?.assessmentUuid}")
 
-    return AssessmentEpisodeDto.from(episode, oasysResult)
+    val predictorResults = episode.assessmentSchemaCode?.let {
+      predictorService.getPredictorResults(it, episode)
+    }
+
+    return AssessmentEpisodeDto.from(episode, oasysResult, predictorResults.orEmpty())
   }
 
   fun AssessmentEpisodeEntity.updateEpisodeAnswers(
