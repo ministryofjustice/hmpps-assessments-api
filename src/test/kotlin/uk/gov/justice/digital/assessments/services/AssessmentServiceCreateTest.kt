@@ -46,13 +46,11 @@ class AssessmentServiceCreateTest {
     episodeService,
     courtCaseRestClient,
     assessmentUpdateRestClient,
-    offenderService,
-    assessmentSchemaService
+    offenderService
   )
 
   private val assessmentUuid = UUID.randomUUID()
   private val assessmentId = 1L
-  private val assessmentType = OasysAssessmentType.SHORT_FORM_PSR
   private val assessmentSchemaCode = AssessmentSchemaCode.ROSH
 
   private val oasysOffenderPk = 1L

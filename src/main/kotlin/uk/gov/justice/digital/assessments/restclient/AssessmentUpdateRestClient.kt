@@ -124,6 +124,30 @@ class AssessmentUpdateRestClient {
       }
   }
 
+  /*
+  * Use this method to conditionally Push Updates to Assessments in Oasys depending on the Assessment Schema Code
+  * DO NOT CHANGE THIS METHOD SIGNATURE as it does work with PushToOasysAspect to decide for which assessments
+  * we push updated data into Oasys
+  * */
+  fun pushUpdateToOasys(
+    offenderPK: Long? = null,
+    oasysSetPk: Long? = null,
+    assessmentSchemaCode: AssessmentSchemaCode?,
+    answers: Set<OasysAnswer> = emptySet(),
+  ): UpdateAssessmentAnswersResponseDto? {
+    val oasysAssessmentType = assessmentSchemaService.toOasysAssessmentType(assessmentSchemaCode)
+    return updateAssessment(
+      offenderPK!!,
+      oasysAssessmentType,
+      oasysSetPk!!,
+      answers
+    )
+  }
+
+  /*
+  * Use this method only if you want to force Updating Assessment in Oasys
+  * Note that the assessment should have been created previously in Oasys.
+  * */
   @Authorized(roleChecks = [Roles.ASSESSMENT_EDIT])
   fun updateAssessment(
     offenderPK: Long,
@@ -162,6 +186,30 @@ class AssessmentUpdateRestClient {
       }
   }
 
+  /*
+ * Use this method to conditionally Push Completing an Assessments to Oasys depending on the Assessment Schema Code
+ * DO NOT CHANGE THIS METHOD SIGNATURE as it does work with PushToOasysAspect to decide for which assessments
+ * we push a completed status and data into Oasys
+ * */
+  fun pushCompleteToOasys(
+    offenderPK: Long? = null,
+    oasysSetPk: Long? = null,
+    assessmentSchemaCode: AssessmentSchemaCode?,
+    ignoreWarnings: Boolean = true
+  ): UpdateAssessmentAnswersResponseDto? {
+    val oasysAssessmentType = assessmentSchemaService.toOasysAssessmentType(assessmentSchemaCode)
+    return completeAssessment(
+      offenderPK!!,
+      oasysAssessmentType,
+      oasysSetPk!!,
+      ignoreWarnings
+    )
+  }
+
+  /*
+  * Use this method only if you want to force Completing an Assessment in Oasys.
+  * Note that the assessment should have been created previously in Oasys.
+  * */
   @Authorized(roleChecks = [Roles.ASSESSMENT_EDIT])
   fun completeAssessment(
     offenderPK: Long,

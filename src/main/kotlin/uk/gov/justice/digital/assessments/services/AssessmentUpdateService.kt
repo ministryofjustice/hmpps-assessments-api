@@ -27,9 +27,8 @@ class AssessmentUpdateService(
   private val questionService: QuestionService,
   private val assessmentUpdateRestClient: AssessmentUpdateRestClient,
   private val assessmentService: AssessmentService,
-  private val assessmentSchemaService: AssessmentSchemaService,
   private val predictorService: PredictorService,
-) {
+  ) {
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
   }
@@ -113,10 +112,10 @@ class AssessmentUpdateService(
       }
     )
 
-    val oasysUpdateResult = assessmentUpdateRestClient.updateAssessment(
+    val oasysUpdateResult = assessmentUpdateRestClient.pushUpdateToOasys(
       offenderPk,
-      assessmentSchemaService.toOasysAssessmentType(episode.assessmentSchemaCode),
       episode.oasysSetPk!!,
+      episode.assessmentSchemaCode,
       oasysAnswers
     )
     log.info("Updated OASys assessment oasysSet ${episode.oasysSetPk} ${if (oasysUpdateResult?.validationErrorDtos?.isNotEmpty() == true) "with errors" else "successfully"}")
@@ -367,11 +366,8 @@ class AssessmentUpdateService(
     offenderPk: Long,
     episode: AssessmentEpisodeEntity,
   ): AssessmentEpisodeUpdateErrors? {
-    val oasysUpdateResult = assessmentUpdateRestClient.completeAssessment(
-      offenderPk,
-      assessmentSchemaService.toOasysAssessmentType(episode.assessmentSchemaCode),
-      episode.oasysSetPk!!
-    )
+    val oasysUpdateResult =
+      assessmentUpdateRestClient.pushCompleteToOasys(offenderPk, episode.oasysSetPk!!, episode.assessmentSchemaCode)
     if (oasysUpdateResult?.validationErrorDtos?.isNotEmpty() == true) {
       log.info("Could not complete OASys assessment oasysSet ${episode.oasysSetPk} with errors")
     } else log.info("Completed OASys assessment oasysSet $episode.oasysSetPk successfully")
