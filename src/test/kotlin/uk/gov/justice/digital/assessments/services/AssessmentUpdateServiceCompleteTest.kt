@@ -57,7 +57,7 @@ class AssessmentUpdateServiceCompleteTest {
     questionService,
     assessmentUpdateRestClient,
     assessmentService,
-    predictorService,
+    predictorService
   )
 
   @BeforeEach
