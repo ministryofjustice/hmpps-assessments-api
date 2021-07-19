@@ -131,13 +131,12 @@ class AssessmentUpdateService(
 
   @Transactional
   fun addEpisodeTableRow(
-    assessmentUuid: UUID,
-    episodeUuid: UUID,
+    episode: AssessmentEpisodeEntity,
     tableName: String,
     newTableRow: UpdateAssessmentEpisodeDto
   ): AssessmentEpisodeDto {
     return addTableRow(
-      assessmentService.getEpisode(episodeUuid, assessmentUuid),
+      episode,
       tableName,
       newTableRow
     )
@@ -145,12 +144,12 @@ class AssessmentUpdateService(
 
   @Transactional
   fun addCurrentEpisodeTableRow(
-    assessmentUuid: UUID,
+    episode: AssessmentEpisodeEntity,
     tableName: String,
     newTableRow: UpdateAssessmentEpisodeDto
   ): AssessmentEpisodeDto {
     return addTableRow(
-      assessmentService.getCurrentEpisode(assessmentUuid),
+      episode,
       tableName,
       newTableRow
     )
@@ -171,14 +170,13 @@ class AssessmentUpdateService(
 
   @Transactional
   fun updateEpisodeTableRow(
-    assessmentUuid: UUID,
-    episodeUuid: UUID,
+    episode: AssessmentEpisodeEntity,
     tableName: String,
     index: Int,
     updatedTableRow: UpdateAssessmentEpisodeDto
   ): AssessmentEpisodeDto {
     return updateTableRow(
-      assessmentService.getEpisode(episodeUuid, assessmentUuid),
+      episode,
       tableName,
       index,
       updatedTableRow
@@ -187,13 +185,13 @@ class AssessmentUpdateService(
 
   @Transactional
   fun updateCurrentEpisodeTableRow(
-    assessmentUuid: UUID,
+    episode: AssessmentEpisodeEntity,
     tableName: String,
     index: Int,
     updatedTableRow: UpdateAssessmentEpisodeDto
   ): AssessmentEpisodeDto {
     return updateTableRow(
-      assessmentService.getCurrentEpisode(assessmentUuid),
+      episode,
       tableName,
       index,
       updatedTableRow
@@ -218,13 +216,12 @@ class AssessmentUpdateService(
 
   @Transactional
   fun deleteEpisodeTableRow(
-    assessmentUuid: UUID,
-    episodeUuid: UUID,
+    episode: AssessmentEpisodeEntity,
     tableName: String,
     index: Int
   ): AssessmentEpisodeDto {
     return deleteTableRow(
-      assessmentService.getEpisode(episodeUuid, assessmentUuid),
+      episode,
       tableName,
       index
     )
@@ -232,12 +229,12 @@ class AssessmentUpdateService(
 
   @Transactional
   fun deleteCurrentEpisodeTableRow(
-    assessmentUuid: UUID,
+    episode: AssessmentEpisodeEntity,
     tableName: String,
     index: Int
   ): AssessmentEpisodeDto {
     return deleteTableRow(
-      assessmentService.getCurrentEpisode(assessmentUuid),
+      episode,
       tableName,
       index
     )
@@ -342,10 +339,9 @@ class AssessmentUpdateService(
   }
 
   @Transactional
-  fun closeCurrentEpisode(
-    assessmentUuid: UUID
+  fun closeEpisode(
+    episode: AssessmentEpisodeEntity
   ): AssessmentEpisodeDto {
-    val episode = assessmentService.getCurrentEpisode(assessmentUuid)
     val offenderPk: Long? = episode.assessment?.subject?.oasysOffenderPk
     if (episode.assessmentSchemaCode == null || episode.oasysSetPk == null || offenderPk == null) {
       log.info("Unable to complete OASys Assessment with keys type: ${episode.assessmentSchemaCode} oasysSet: ${episode.oasysSetPk} offenderPk: $offenderPk")

@@ -73,7 +73,7 @@ class AssessmentUpdateServiceCompleteTest {
       assessmentUpdateRestClient.completeAssessment(9999, OasysAssessmentType.SHORT_FORM_PSR, 7777)
     } returns UpdateAssessmentAnswersResponseDto(7777)
 
-    val episode = assessmentUpdateService.closeCurrentEpisode(UUID.fromString("7b4de6d5-4488-4c29-a909-7d3fdf15393d"))
+    val episode = assessmentUpdateService.closeEpisode(UUID.fromString("7b4de6d5-4488-4c29-a909-7d3fdf15393d"))
 
     verify(exactly = 1) { episodeRepository.save(any()) }
     verify(exactly = 1) {
@@ -86,7 +86,7 @@ class AssessmentUpdateServiceCompleteTest {
   fun `close episode for assessment with no episodes throws exception`() {
     every { assessmentRepository.findByAssessmentUuid(any()) } returns assessmentWithNoEpisodeEntity()
 
-    assertThrows<EntityNotFoundException> { assessmentUpdateService.closeCurrentEpisode(UUID.fromString("7b4de6d5-4488-4c29-a909-7d3fdf15393d")) }
+    assertThrows<EntityNotFoundException> { assessmentUpdateService.closeEpisode(UUID.fromString("7b4de6d5-4488-4c29-a909-7d3fdf15393d")) }
     verify(exactly = 0) { episodeRepository.save(any()) }
     verify(exactly = 0) { assessmentUpdateRestClient.completeAssessment(any(), any(), any(), any()) }
   }
@@ -100,7 +100,7 @@ class AssessmentUpdateServiceCompleteTest {
       assessmentUpdateRestClient.pushCompleteToOasys(9999, 7777, AssessmentSchemaCode.ROSH)
     } returns oasysAssessmentError()
 
-    val episode = assessmentUpdateService.closeCurrentEpisode(UUID.fromString("7b4de6d5-4488-4c29-a909-7d3fdf15393d"))
+    val episode = assessmentUpdateService.closeEpisode(UUID.fromString("7b4de6d5-4488-4c29-a909-7d3fdf15393d"))
 
     verify(exactly = 0) { episodeRepository.save(any()) }
     verify(exactly = 1) { assessmentUpdateRestClient.pushCompleteToOasys(9999, 7777, AssessmentSchemaCode.ROSH) }

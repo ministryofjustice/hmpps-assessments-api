@@ -155,8 +155,9 @@ class AssessmentController(
     @Parameter(description = "Table Name", required = true) @PathVariable tableName: String,
     @Parameter(description = "New Row", required = true) @RequestBody episodeAnswers: UpdateAssessmentEpisodeDto
   ): ResponseEntity<AssessmentEpisodeDto> {
+    val episode = assessmentService.getEpisode(episodeUuid, assessmentUuid)
     return updateResponse(
-      assessmentUpdateService.addEpisodeTableRow(assessmentUuid, episodeUuid, tableName, episodeAnswers)
+      assessmentUpdateService.addEpisodeTableRow(episode, tableName, episodeAnswers)
     )
   }
 
@@ -174,9 +175,8 @@ class AssessmentController(
     @Parameter(description = "Table Name", required = true) @PathVariable tableName: String,
     @Parameter(description = "New Row", required = true) @RequestBody episodeAnswers: UpdateAssessmentEpisodeDto
   ): ResponseEntity<AssessmentEpisodeDto> {
-    return updateResponse(
-      assessmentUpdateService.addCurrentEpisodeTableRow(assessmentUuid, tableName, episodeAnswers)
-    )
+    val currentEpisode = assessmentService.getCurrentEpisode(assessmentUuid)
+    return updateResponse(assessmentUpdateService.addCurrentEpisodeTableRow(currentEpisode, tableName, episodeAnswers))
   }
 
   @RequestMapping(
@@ -198,9 +198,8 @@ class AssessmentController(
     @Parameter(description = "Row index", required = true) @PathVariable index: Int,
     @Parameter(description = "Updated Row", required = true) @RequestBody episodeAnswers: UpdateAssessmentEpisodeDto
   ): ResponseEntity<AssessmentEpisodeDto> {
-    return updateResponse(
-      assessmentUpdateService.updateEpisodeTableRow(assessmentUuid, episodeUuid, tableName, index, episodeAnswers)
-    )
+    val episode = assessmentService.getEpisode(episodeUuid, assessmentUuid)
+    return updateResponse(assessmentUpdateService.updateEpisodeTableRow(episode, tableName, index, episodeAnswers))
   }
 
   @RequestMapping(
@@ -221,8 +220,9 @@ class AssessmentController(
     @Parameter(description = "Row index", required = true) @PathVariable index: Int,
     @Parameter(description = "Updated Row", required = true) @RequestBody episodeAnswers: UpdateAssessmentEpisodeDto
   ): ResponseEntity<AssessmentEpisodeDto> {
+    val currentEpisode = assessmentService.getCurrentEpisode(assessmentUuid)
     return updateResponse(
-      assessmentUpdateService.updateCurrentEpisodeTableRow(assessmentUuid, tableName, index, episodeAnswers)
+      assessmentUpdateService.updateCurrentEpisodeTableRow(currentEpisode, tableName, index, episodeAnswers)
     )
   }
 
@@ -244,8 +244,9 @@ class AssessmentController(
     @Parameter(description = "Table Name", required = true) @PathVariable tableName: String,
     @Parameter(description = "Row index", required = true) @PathVariable index: Int
   ): ResponseEntity<AssessmentEpisodeDto> {
+    val episode = assessmentService.getEpisode(episodeUuid, assessmentUuid)
     return updateResponse(
-      assessmentUpdateService.deleteEpisodeTableRow(assessmentUuid, episodeUuid, tableName, index)
+      assessmentUpdateService.deleteEpisodeTableRow(episode, tableName, index)
     )
   }
 
@@ -266,8 +267,9 @@ class AssessmentController(
     @Parameter(description = "Table Name", required = true) @PathVariable tableName: String,
     @Parameter(description = "Row index", required = true) @PathVariable index: Int
   ): ResponseEntity<AssessmentEpisodeDto> {
+    val currentEpisode = assessmentService.getCurrentEpisode(assessmentUuid)
     return updateResponse(
-      assessmentUpdateService.deleteCurrentEpisodeTableRow(assessmentUuid, tableName, index)
+      assessmentUpdateService.deleteCurrentEpisodeTableRow(currentEpisode, tableName, index)
     )
   }
 
@@ -302,9 +304,8 @@ class AssessmentController(
   fun completeAssessmentEpisode(
     @Parameter(description = "Assessment UUID", required = true, example = "1234") @PathVariable assessmentUuid: UUID,
   ): ResponseEntity<AssessmentEpisodeDto> {
-    return updateResponse(
-      assessmentUpdateService.closeCurrentEpisode(assessmentUuid)
-    )
+    val currentEpisode = assessmentService.getCurrentEpisode(assessmentUuid)
+    return updateResponse(assessmentUpdateService.closeEpisode(currentEpisode))
   }
 
   @RequestMapping(path = ["/assessments/schema/{assessmentSchemaCode}"], method = [RequestMethod.GET])

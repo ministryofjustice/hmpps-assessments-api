@@ -38,15 +38,6 @@ class AssessmentUpdateServiceTest {
   private val predictorService: PredictorService = mockk()
   private val assessmentSchemaService: AssessmentSchemaService = mockk()
 
-  private val assessmentService = AssessmentService(
-    assessmentRepository,
-    subjectRepository,
-    questionService,
-    episodeService,
-    courtCaseRestClient,
-    assessmentUpdateRestClient,
-    offenderService
-  )
   private val assessmentUpdateService = AssessmentUpdateService(
     assessmentRepository,
     episodeRepository,
@@ -236,7 +227,8 @@ class AssessmentUpdateServiceTest {
         question2Uuid to AnswerEntity.from("1975-01-20T00:00:00.000Z"),
         question3Uuid to AnswerEntity.from("not mapped to oasys"),
       )
-      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity(answers)
+      val assessmentEntity = assessmentEntity(answers)
+      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity
 
       val tableAnswers = UpdateAssessmentEpisodeDto(
         mapOf(
@@ -246,7 +238,7 @@ class AssessmentUpdateServiceTest {
       )
 
       val episodeDto =
-        assessmentUpdateService.addEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", tableAnswers)
+        assessmentUpdateService.addEpisodeTableRow(assessmentEntity.episodes.first(), "children_at_risk", tableAnswers)
 
       assertThat(episodeDto.answers).hasSize(5)
       Verify.singleAnswer(
@@ -300,7 +292,8 @@ class AssessmentUpdateServiceTest {
         childQuestion1 to AnswerEntity.from("child name 1"),
         childQuestion2 to AnswerEntity.from("child address 1")
       )
-      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity(answers)
+      val assessmentEntity = assessmentEntity(answers)
+      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity
 
       val tableAnswers = UpdateAssessmentEpisodeDto(
         mapOf(
@@ -310,7 +303,7 @@ class AssessmentUpdateServiceTest {
       )
 
       val episodeDto =
-        assessmentUpdateService.addEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", tableAnswers)
+        assessmentUpdateService.addEpisodeTableRow(assessmentEntity.episodes.first(), "children_at_risk", tableAnswers)
 
       assertThat(episodeDto.answers).hasSize(5)
       Verify.multiAnswers(
@@ -336,7 +329,8 @@ class AssessmentUpdateServiceTest {
         childQuestion2 to AnswerEntity.from("child address 1")
       )
 
-      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity(answers)
+      val assessmentEntity = assessmentEntity(answers)
+      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity
 
       val tableAnswers = UpdateAssessmentEpisodeDto(
         mapOf(
@@ -345,7 +339,7 @@ class AssessmentUpdateServiceTest {
       )
 
       val episodeDto =
-        assessmentUpdateService.addEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", tableAnswers)
+        assessmentUpdateService.addEpisodeTableRow(assessmentEntity.episodes.first(), "children_at_risk", tableAnswers)
 
       assertThat(episodeDto.answers).hasSize(5)
       Verify.multiAnswers(
@@ -576,12 +570,12 @@ class AssessmentUpdateServiceTest {
         childQuestion1 to AnswerEntity.from(listOf("child name 1", "name of child 2", "child name 3")),
         childQuestion2 to AnswerEntity.from(listOf("child address 1", "address of child 2", "child address 3"))
       )
-      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity(answers)
+      val assessmentEntity = assessmentEntity(answers)
+      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity
 
       assertThatThrownBy {
         assessmentUpdateService.addEpisodeTableRow(
-          assessmentUuid,
-          episodeUuid,
+          assessmentEntity.episodes.first(),
           "nonsense_table",
           UpdateAssessmentEpisodeDto(emptyMap())
         )
