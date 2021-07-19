@@ -8,10 +8,13 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.slf4j.MDC
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.jpa.entities.AnswerEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.jpa.entities.OasysAssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.EpisodeRepository
@@ -21,6 +24,7 @@ import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
 import uk.gov.justice.digital.assessments.testutils.Verify
+import uk.gov.justice.digital.assessments.utils.RequestData
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -34,6 +38,7 @@ class AssessmentUpdateServiceTest {
   private val episodeService: EpisodeService = mockk()
   private val offenderService: OffenderService = mockk()
   private val predictorService: PredictorService = mockk()
+  private val assessmentSchemaService: AssessmentSchemaService = mockk()
 
   private val assessmentService = AssessmentService(
     assessmentRepository,
@@ -51,6 +56,7 @@ class AssessmentUpdateServiceTest {
     assessmentUpdateRestClient,
     assessmentService,
     predictorService,
+    assessmentSchemaService
   )
 
   private val assessmentUuid = UUID.randomUUID()
@@ -66,6 +72,12 @@ class AssessmentUpdateServiceTest {
   private val question3Uuid = UUID.randomUUID()
   private val childQuestion1 = UUID.randomUUID()
   private val childQuestion2 = UUID.randomUUID()
+
+  @BeforeEach
+  fun setup() {
+    every { assessmentSchemaService.toOasysAssessmentType(AssessmentSchemaCode.ROSH) } returns OasysAssessmentType.SHORT_FORM_PSR
+    every { assessmentSchemaService.toOasysAssessmentType(AssessmentSchemaCode.RSR) } returns OasysAssessmentType.SOMETHING_IN_OASYS
+  }
 
   @Nested
   @DisplayName("update episode")

@@ -8,6 +8,7 @@ import org.aspectj.lang.reflect.MethodSignature
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.UpdateAssessmentAnswersResponseDto
 
@@ -18,7 +19,7 @@ class PushToOasysAspect() {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
   }
 
-  @Around("execution(* uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient.pushToOasys(..))")
+  @Around("execution(* uk.gov.justice.digital.assessments.services.createOasysAssessment(..))")
   @Throws(Throwable::class)
   fun aroundPushToOasysMethods(joinPoint: ProceedingJoinPoint): Pair<Long?, Long?> {
     val signature: MethodSignature = joinPoint.signature as MethodSignature
@@ -34,11 +35,11 @@ class PushToOasysAspect() {
     return Pair(null, null)
   }
 
-  @Pointcut("execution(* uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient.pushUpdateToOasys(..))")
+  @Pointcut("execution(* uk.gov.justice.digital.assessments.services.updateOASysAssessment(..)")
   fun pushUpdateToOasysPointcut() {
   }
 
-  @Pointcut("execution(* uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient.pushCompleteToOasys(..))")
+  @Pointcut("execution(* uk.gov.justice.digital.assessments.services.completeOASysAssessment(..)")
   fun pushCompleteToOasysPointcut() {
   }
 
@@ -46,15 +47,16 @@ class PushToOasysAspect() {
   @Throws(Throwable::class)
   fun aroundPushUpdateToOasysMethods(joinPoint: ProceedingJoinPoint): UpdateAssessmentAnswersResponseDto? {
     val signature: MethodSignature = joinPoint.signature as MethodSignature
-    val assessmentSchemaCode =
-      if (signature.parameterNames.contains("assessmentSchemaCode")) joinPoint.args[2] as AssessmentSchemaCode else null
+    val assessmentEpisode =
+      if (signature.parameterNames.contains("episode")) joinPoint.args[1] as AssessmentEpisodeEntity else null
 
-    log.info("Trying to  ${joinPoint.signature.name} for assessmentSchemaCode $assessmentSchemaCode")
+    val assessmentSchemaCode = assessmentEpisode?.assessmentSchemaCode
+    log.info("Trying to ${joinPoint.signature.name} for assessment episode ${assessmentEpisode?.episodeUuid} with assessmentSchemaCode $assessmentSchemaCode")
     if (shouldPushToOasys(assessmentSchemaCode)) {
-      log.info("${joinPoint.signature.name} for assessmentSchemaCode $assessmentSchemaCode")
+      log.info("${joinPoint.signature.name} assessment episode ${assessmentEpisode?.episodeUuid} with assessmentSchemaCode $assessmentSchemaCode")
       return joinPoint.proceed() as UpdateAssessmentAnswersResponseDto?
     }
-    log.info("Assessment Update for $assessmentSchemaCode not pushed to Oasys")
+    log.info("${joinPoint.signature.name} assessment episode ${assessmentEpisode?.episodeUuid} with assessmentSchemaCode $assessmentSchemaCode not pushed to Oasys")
     return null
   }
 

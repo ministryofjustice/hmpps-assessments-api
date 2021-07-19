@@ -2,6 +2,7 @@ package uk.gov.justice.digital.assessments.services
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.assessments.api.AnswersDto
 import uk.gov.justice.digital.assessments.api.AssessmentEpisodeDto
@@ -9,6 +10,7 @@ import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.jpa.entities.Answer
 import uk.gov.justice.digital.assessments.jpa.entities.AnswerEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.EpisodeRepository
 import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient
@@ -28,7 +30,8 @@ class AssessmentUpdateService(
   private val assessmentUpdateRestClient: AssessmentUpdateRestClient,
   private val assessmentService: AssessmentService,
   private val predictorService: PredictorService,
-  ) {
+  private val assessmentSchemaService: AssessmentSchemaService
+) {
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
   }
@@ -112,10 +115,12 @@ class AssessmentUpdateService(
       }
     )
 
-    val oasysUpdateResult = assessmentUpdateRestClient.pushUpdateToOasys(
+    val oasysAssessmentType = assessmentSchemaService.toOasysAssessmentType(episode.assessmentSchemaCode)
+
+    val oasysUpdateResult = assessmentUpdateRestClient.updateAssessment(
       offenderPk,
+      oasysAssessmentType,
       episode.oasysSetPk!!,
-      episode.assessmentSchemaCode,
       oasysAnswers
     )
     log.info("Updated OASys assessment oasysSet ${episode.oasysSetPk} ${if (oasysUpdateResult?.validationErrorDtos?.isNotEmpty() == true) "with errors" else "successfully"}")
@@ -366,8 +371,9 @@ class AssessmentUpdateService(
     offenderPk: Long,
     episode: AssessmentEpisodeEntity,
   ): AssessmentEpisodeUpdateErrors? {
+    val oasysAssessmentType = assessmentSchemaService.toOasysAssessmentType(episode.assessmentSchemaCode)
     val oasysUpdateResult =
-      assessmentUpdateRestClient.pushCompleteToOasys(offenderPk, episode.oasysSetPk!!, episode.assessmentSchemaCode)
+      assessmentUpdateRestClient.completeAssessment(offenderPk, oasysAssessmentType, episode.oasysSetPk!!)
     if (oasysUpdateResult?.validationErrorDtos?.isNotEmpty() == true) {
       log.info("Could not complete OASys assessment oasysSet ${episode.oasysSetPk} with errors")
     } else log.info("Completed OASys assessment oasysSet $episode.oasysSetPk successfully")
@@ -376,5 +382,17 @@ class AssessmentUpdateService(
       log.info("Error ${it.sectionCode}.${it.logicalPage}.${it.questionCode}: ${it.message}")
     }
     return AssessmentEpisodeUpdateErrors.mapOasysErrors(episode, null, oasysUpdateResult)
+  }
+
+  fun createOasysAssessment(
+    crn: String?,
+    deliusEventId: Long? = null,
+    assessmentSchemaCode: AssessmentSchemaCode?
+  ): Pair<Long?, Long?> {
+    val oasysOffenderPk =
+      crn?.let { assessmentUpdateRestClient.createOasysOffender(crn = crn, deliusEvent = deliusEventId) }
+    val oasysAssessmentType = assessmentSchemaService.toOasysAssessmentType(assessmentSchemaCode)
+    val oasysSetPK = oasysOffenderPk?.let { assessmentUpdateRestClient.createAssessment(it, oasysAssessmentType) }
+    return Pair(oasysOffenderPk, oasysSetPK)
   }
 }

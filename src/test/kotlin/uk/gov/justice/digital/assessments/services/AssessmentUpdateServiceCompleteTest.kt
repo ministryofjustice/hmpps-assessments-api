@@ -70,13 +70,15 @@ class AssessmentUpdateServiceCompleteTest {
     every { assessmentRepository.findByAssessmentUuid(any()) } returns assessment
     every { episodeRepository.save(any()) } returns assessment.episodes[0]
     every {
-      assessmentUpdateRestClient.pushCompleteToOasys(9999, 7777, AssessmentSchemaCode.ROSH)
+      assessmentUpdateRestClient.completeAssessment(9999, OasysAssessmentType.SHORT_FORM_PSR, 7777)
     } returns UpdateAssessmentAnswersResponseDto(7777)
 
     val episode = assessmentUpdateService.closeCurrentEpisode(UUID.fromString("7b4de6d5-4488-4c29-a909-7d3fdf15393d"))
 
     verify(exactly = 1) { episodeRepository.save(any()) }
-    verify(exactly = 1) { assessmentUpdateRestClient.pushCompleteToOasys(9999, 7777, AssessmentSchemaCode.ROSH) }
+    verify(exactly = 1) {
+      assessmentUpdateRestClient.completeAssessment(9999, OasysAssessmentType.SHORT_FORM_PSR, 7777)
+    }
     assertThat(episode.ended).isEqualToIgnoringMinutes(LocalDateTime.now())
   }
 
