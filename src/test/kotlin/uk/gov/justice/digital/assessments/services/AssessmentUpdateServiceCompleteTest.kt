@@ -48,7 +48,6 @@ class AssessmentUpdateServiceCompleteTest {
     courtCaseRestClient,
     assessmentUpdateRestClient,
     offenderService,
-    assessmentSchemaService,
   )
 
   private val assessmentUpdateService = AssessmentUpdateService(
