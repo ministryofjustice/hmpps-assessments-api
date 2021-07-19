@@ -32,7 +32,6 @@ class AssessmentUpdateServiceCompleteTest {
   private val assessmentSchemaService: AssessmentSchemaService = mockk()
   private val predictorService: PredictorService = mockk()
 
-
   private val assessmentUpdateService = AssessmentUpdateService(
     assessmentRepository,
     episodeRepository,
