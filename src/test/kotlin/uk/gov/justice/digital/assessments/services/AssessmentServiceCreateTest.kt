@@ -75,7 +75,7 @@ class AssessmentServiceCreateTest {
     fun `create new offender with new assessment from delius event id and crn`() {
       every { subjectRepository.findBySourceAndSourceIdAndCrn(deliusSource, eventId.toString(), crn) } returns null
       every { offenderService.getOffender("X12345") } returns OffenderDto()
-      every {  assessmentUpdateService.createOasysAssessment(crn, eventId, assessmentSchemaCode) } returns Pair(
+      every { assessmentUpdateService.createOasysAssessment(crn, eventId, assessmentSchemaCode) } returns Pair(
         oasysOffenderPk,
         oasysSetPk
       )

@@ -65,16 +65,6 @@ class AssessmentUpdateServiceCompleteTest {
   }
 
   @Test
-  fun `close episode for assessment with no episodes throws exception`() {
-    val assessmentEntity = assessmentWithNoEpisodeEntity()
-    every { assessmentRepository.findByAssessmentUuid(any()) } returns assessmentEntity
-
-    assertThrows<EntityNotFoundException> { assessmentUpdateService.closeEpisode(assessmentEntity.episodes.first()) }
-    verify(exactly = 0) { episodeRepository.save(any()) }
-    verify(exactly = 0) { assessmentUpdateRestClient.completeAssessment(any(), any(), any(), any()) }
-  }
-
-  @Test
   fun `close episode with oasys errors does not close episode`() {
     val assessment = assessmentEntity()
     every { assessmentRepository.findByAssessmentUuid(any()) } returns assessment

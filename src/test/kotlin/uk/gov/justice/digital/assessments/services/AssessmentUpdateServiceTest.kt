@@ -64,29 +64,6 @@ class AssessmentUpdateServiceTest {
   @DisplayName("update episode")
   inner class UpdateAnswers {
     @Test
-    fun `update episode throws exception if episode does not exist`() {
-
-      val assessment = AssessmentEntity(
-        assessmentId = assessmentId,
-        episodes = mutableListOf(
-          AssessmentEpisodeEntity(
-            episodeUuid = UUID.randomUUID(),
-            episodeId = episodeId2,
-            changeReason = "Change of Circs 2"
-          )
-        )
-      )
-
-      val updatedAnswers = UpdateAssessmentEpisodeDto(mapOf())
-
-      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
-
-      assertThatThrownBy { assessmentUpdateService.updateEpisode(assessment.episodes.first(), updatedAnswers) }
-        .isInstanceOf(EntityNotFoundException::class.java)
-        .hasMessage("No Episode $episodeUuid for $assessmentUuid")
-    }
-
-    @Test
     fun `add new answers to existing question for an episode`() {
       val answers = mutableMapOf(
         existingQuestionUuid to AnswerEntity.from("free text")
