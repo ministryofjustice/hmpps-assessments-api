@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.assessments.restclient.assessmentapi
+package uk.gov.justice.digital.assessments.services
 
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation.Around
@@ -19,7 +19,7 @@ class PushToOasysAspect() {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
   }
 
-  @Around("execution(* uk.gov.justice.digital.assessments.services.createOasysAssessment(..))")
+  @Around("execution(* uk.gov.justice.digital.assessments.services.AssessmentUpdateService.createOasysAssessment(..))")
   @Throws(Throwable::class)
   fun aroundPushToOasysMethods(joinPoint: ProceedingJoinPoint): Pair<Long?, Long?> {
     val signature: MethodSignature = joinPoint.signature as MethodSignature
@@ -35,11 +35,11 @@ class PushToOasysAspect() {
     return Pair(null, null)
   }
 
-  @Pointcut("execution(* uk.gov.justice.digital.assessments.services.updateOASysAssessment(..)")
+  @Pointcut("execution(* uk.gov.justice.digital.assessments.services.AssessmentUpdateService.updateOASysAssessment(..))")
   fun pushUpdateToOasysPointcut() {
   }
 
-  @Pointcut("execution(* uk.gov.justice.digital.assessments.services.completeOASysAssessment(..)")
+  @Pointcut("execution(* uk.gov.justice.digital.assessments.services.AssessmentUpdateService.completeOASysAssessment(..))")
   fun pushCompleteToOasysPointcut() {
   }
 
@@ -48,7 +48,7 @@ class PushToOasysAspect() {
   fun aroundPushUpdateToOasysMethods(joinPoint: ProceedingJoinPoint): UpdateAssessmentAnswersResponseDto? {
     val signature: MethodSignature = joinPoint.signature as MethodSignature
     val assessmentEpisode =
-      if (signature.parameterNames.contains("episode")) joinPoint.args[1] as AssessmentEpisodeEntity else null
+      if (signature.parameterNames.contains("episode")) joinPoint.args[0] as AssessmentEpisodeEntity else null
 
     val assessmentSchemaCode = assessmentEpisode?.assessmentSchemaCode
     log.info("Trying to ${joinPoint.signature.name} for assessment episode ${assessmentEpisode?.episodeUuid} with assessmentSchemaCode $assessmentSchemaCode")

@@ -42,7 +42,6 @@ class AssessmentUpdateServiceOASysTest {
   private val episodeRepository: EpisodeRepository = mockk()
   private val questionService: QuestionService = mockk()
   private val assessmentUpdateRestClient: AssessmentUpdateRestClient = mockk()
-  private val assessmentService: AssessmentService = mockk()
   private val predictorService: PredictorService = mockk()
   private val assessmentSchemaService: AssessmentSchemaService = mockk()
 
@@ -57,7 +56,6 @@ class AssessmentUpdateServiceOASysTest {
 
   private val assessmentUuid = UUID.randomUUID()
   private val assessmentId = 1L
-  private val assessmentSchemaCode = AssessmentSchemaCode.ROSH
   private val oasysAssessmentType = OasysAssessmentType.SHORT_FORM_PSR
 
   private val oasysOffenderPk = 1L

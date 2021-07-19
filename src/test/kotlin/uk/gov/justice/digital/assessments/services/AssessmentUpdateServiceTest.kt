@@ -31,10 +31,6 @@ class AssessmentUpdateServiceTest {
   private val episodeRepository: EpisodeRepository = mockk()
   private val questionService: QuestionService = mockk()
   private val assessmentUpdateRestClient: AssessmentUpdateRestClient = mockk()
-  private val subjectRepository: SubjectRepository = mockk()
-  private val courtCaseRestClient: CourtCaseRestClient = mockk()
-  private val episodeService: EpisodeService = mockk()
-  private val offenderService: OffenderService = mockk()
   private val predictorService: PredictorService = mockk()
   private val assessmentSchemaService: AssessmentSchemaService = mockk()
 
@@ -88,7 +84,7 @@ class AssessmentUpdateServiceTest {
 
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
 
-      assertThatThrownBy { assessmentUpdateService.updateEpisode(updatedAnswers) }
+      assertThatThrownBy { assessmentUpdateService.updateEpisode(assessment.episodes.first(), updatedAnswers) }
         .isInstanceOf(EntityNotFoundException::class.java)
         .hasMessage("No Episode $episodeUuid for $assessmentUuid")
     }
@@ -190,7 +186,8 @@ class AssessmentUpdateServiceTest {
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
 
       assertThatThrownBy {
-        assessmentUpdateService.updateEpisode(assessment.episodes.first(),
+        assessmentUpdateService.updateEpisode(
+          assessment.episodes.first(),
           UpdateAssessmentEpisodeDto(answers = emptyMap()),
         )
       }
@@ -259,7 +256,8 @@ class AssessmentUpdateServiceTest {
         question2Uuid to AnswerEntity.from("1975-01-20T00:00:00.000Z"),
         question3Uuid to AnswerEntity.from("not mapped to oasys"),
       )
-      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity(answers)
+      val assessmentEntity = assessmentEntity(answers)
+      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity
 
       val tableAnswers = UpdateAssessmentEpisodeDto(
         mapOf(
@@ -269,7 +267,11 @@ class AssessmentUpdateServiceTest {
       )
 
       val episodeDto =
-        assessmentUpdateService.addCurrentEpisodeTableRow(assessmentUuid, "children_at_risk", tableAnswers)
+        assessmentUpdateService.addCurrentEpisodeTableRow(
+          assessmentEntity.episodes.first(),
+          "children_at_risk",
+          tableAnswers
+        )
 
       assertThat(episodeDto.answers).hasSize(5)
       Verify.multiAnswers(
@@ -364,7 +366,8 @@ class AssessmentUpdateServiceTest {
         childQuestion1 to AnswerEntity.from(listOf("name of child 1", "child name 2")),
         childQuestion2 to AnswerEntity.from(listOf("address of child 1", "child address 2"))
       )
-      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity(answers)
+      val assessmentEntity = assessmentEntity(answers)
+      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity
 
       val tableAnswers = UpdateAssessmentEpisodeDto(
         mapOf(
@@ -374,7 +377,12 @@ class AssessmentUpdateServiceTest {
       )
 
       val episodeDto =
-        assessmentUpdateService.updateEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", 0, tableAnswers)
+        assessmentUpdateService.updateEpisodeTableRow(
+          assessmentEntity.episodes.first(),
+          "children_at_risk",
+          0,
+          tableAnswers
+        )
 
       assertThat(episodeDto.answers).hasSize(5)
       Verify.multiAnswers(
@@ -399,7 +407,8 @@ class AssessmentUpdateServiceTest {
         childQuestion1 to AnswerEntity.from(listOf("child name 1", "name of child 2")),
         childQuestion2 to AnswerEntity.from(listOf("child address 1", ""))
       )
-      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity(answers)
+      val assessmentEntity = assessmentEntity(answers)
+      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity
 
       val tableAnswers = UpdateAssessmentEpisodeDto(
         mapOf(
@@ -409,7 +418,12 @@ class AssessmentUpdateServiceTest {
       )
 
       val episodeDto =
-        assessmentUpdateService.updateEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", 1, tableAnswers)
+        assessmentUpdateService.updateEpisodeTableRow(
+          assessmentEntity.episodes.first(),
+          "children_at_risk",
+          1,
+          tableAnswers
+        )
 
       assertThat(episodeDto.answers).hasSize(5)
       Verify.multiAnswers(
@@ -434,7 +448,8 @@ class AssessmentUpdateServiceTest {
         childQuestion1 to AnswerEntity.from(listOf("child name 1", "name of child 2", "child name 3")),
         childQuestion2 to AnswerEntity.from(listOf("child address 1", "address of child 2", "child address 3"))
       )
-      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity(answers)
+      val assessmentEntity = assessmentEntity(answers)
+      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity
 
       val tableAnswers = UpdateAssessmentEpisodeDto(
         mapOf(
@@ -444,7 +459,12 @@ class AssessmentUpdateServiceTest {
       )
 
       val episodeDto =
-        assessmentUpdateService.updateEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", 1, tableAnswers)
+        assessmentUpdateService.updateEpisodeTableRow(
+          assessmentEntity.episodes.first(),
+          "children_at_risk",
+          1,
+          tableAnswers
+        )
 
       assertThat(episodeDto.answers).hasSize(5)
       Verify.multiAnswers(
@@ -471,9 +491,11 @@ class AssessmentUpdateServiceTest {
         childQuestion1 to AnswerEntity.from(listOf("child name 1", "child name 2", "child name 3")),
         childQuestion2 to AnswerEntity.from(listOf("child address 1", "child address 2", "child address 3"))
       )
-      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity(answers)
+      val assessmentEntity = assessmentEntity(answers)
+      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity
 
-      val episodeDto = assessmentUpdateService.deleteEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", 0)
+      val episodeDto =
+        assessmentUpdateService.deleteEpisodeTableRow(assessmentEntity.episodes.first(), "children_at_risk", 0)
 
       assertThat(episodeDto.answers).hasSize(5)
       Verify.multiAnswers(
@@ -498,9 +520,11 @@ class AssessmentUpdateServiceTest {
         childQuestion1 to AnswerEntity.from(listOf("child name 1", "name of child 2", "child name 3")),
         childQuestion2 to AnswerEntity.from(listOf("child address 1", "address of child 2", "child address 3"))
       )
-      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity(answers)
+      val assessmentEntity = assessmentEntity(answers)
+      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity
 
-      val episodeDto = assessmentUpdateService.deleteEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", 1)
+      val episodeDto =
+        assessmentUpdateService.deleteEpisodeTableRow(assessmentEntity.episodes.first(), "children_at_risk", 1)
 
       assertThat(episodeDto.answers).hasSize(5)
       Verify.multiAnswers(
@@ -525,9 +549,11 @@ class AssessmentUpdateServiceTest {
         childQuestion1 to AnswerEntity.from(listOf("child name 1", "child name 2", "child name 3")),
         childQuestion2 to AnswerEntity.from(listOf("child address 1", "child address 2", "child address 3"))
       )
-      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity(answers)
+      val assessmentEntity = assessmentEntity(answers)
+      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity
 
-      val episodeDto = assessmentUpdateService.deleteEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", 2)
+      val episodeDto =
+        assessmentUpdateService.deleteEpisodeTableRow(assessmentEntity.episodes.first(), "children_at_risk", 2)
 
       assertThat(episodeDto.answers).hasSize(5)
       Verify.multiAnswers(
@@ -552,9 +578,11 @@ class AssessmentUpdateServiceTest {
         childQuestion1 to AnswerEntity.from(listOf("child name 1")),
         childQuestion2 to AnswerEntity.from(listOf("child address 1"))
       )
-      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity(answers)
+      val assessmentEntity = assessmentEntity(answers)
+      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity
 
-      val episodeDto = assessmentUpdateService.deleteEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", 0)
+      val episodeDto =
+        assessmentUpdateService.deleteEpisodeTableRow(assessmentEntity.episodes.first(), "children_at_risk", 0)
 
       assertThat(episodeDto.answers).hasSize(5)
       Verify.emptyAnswer(episodeDto.answers[childQuestion1]!!)
@@ -586,13 +614,13 @@ class AssessmentUpdateServiceTest {
 
     @Test
     fun `fail update on bad index`() {
-      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity(mutableMapOf())
+      val assessmentEntity = assessmentEntity(mutableMapOf())
+      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity
 
       for (index in listOf(-3, -1, 0, 5)) {
         assertThatThrownBy {
           assessmentUpdateService.updateEpisodeTableRow(
-            assessmentUuid,
-            episodeUuid,
+            assessmentEntity.episodes.first(),
             "children_at_risk",
             index,
             UpdateAssessmentEpisodeDto(emptyMap())
@@ -605,13 +633,13 @@ class AssessmentUpdateServiceTest {
 
     @Test
     fun `fail delete on bad index`() {
-      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity(mutableMapOf())
+      val assessmentEntity = assessmentEntity(mutableMapOf())
+      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity
 
       for (index in listOf(-3, -1, 0, 5)) {
         assertThatThrownBy {
           assessmentUpdateService.deleteEpisodeTableRow(
-            assessmentUuid,
-            episodeUuid,
+            assessmentEntity.episodes.first(),
             "children_at_risk",
             index
           )

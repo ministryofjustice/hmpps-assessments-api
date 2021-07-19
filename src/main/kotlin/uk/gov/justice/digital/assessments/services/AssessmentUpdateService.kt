@@ -347,7 +347,7 @@ class AssessmentUpdateService(
       log.info("Unable to complete OASys Assessment with keys type: ${episode.assessmentSchemaCode} oasysSet: ${episode.oasysSetPk} offenderPk: $offenderPk")
       return AssessmentEpisodeDto.from(episode, null)
     }
-    val oasysResult = completeOASysAssessment(offenderPk, episode)
+    val oasysResult = completeOASysAssessment(episode, offenderPk)
     if (oasysResult?.hasErrors() == true) {
       log.info("Unable to close episode ${episode.episodeUuid} for assessment ${episode.assessment?.assessmentUuid} with OASys restclient")
     } else {
@@ -359,12 +359,12 @@ class AssessmentUpdateService(
   }
 
   fun completeOASysAssessment(
-    offenderPk: Long,
     episode: AssessmentEpisodeEntity,
+    offenderPk: Long?,
   ): AssessmentEpisodeUpdateErrors? {
     val oasysAssessmentType = assessmentSchemaService.toOasysAssessmentType(episode.assessmentSchemaCode)
     val oasysUpdateResult =
-      assessmentUpdateRestClient.completeAssessment(offenderPk, oasysAssessmentType, episode.oasysSetPk!!)
+      assessmentUpdateRestClient.completeAssessment(offenderPk!!, oasysAssessmentType, episode.oasysSetPk!!)
     if (oasysUpdateResult?.validationErrorDtos?.isNotEmpty() == true) {
       log.info("Could not complete OASys assessment oasysSet ${episode.oasysSetPk} with errors")
     } else log.info("Completed OASys assessment oasysSet $episode.oasysSetPk successfully")
