@@ -75,7 +75,6 @@ class AssessmentUpdateServiceOASysTest {
   private val answer2Uuid = UUID.randomUUID()
   private val answer3Uuid = UUID.randomUUID()
 
-
   @BeforeEach
   fun setup() {
     every { assessmentSchemaService.toOasysAssessmentType(AssessmentSchemaCode.ROSH) } returns OasysAssessmentType.SHORT_FORM_PSR
@@ -368,12 +367,14 @@ class AssessmentUpdateServiceOASysTest {
         )
       )
     )
-    every { assessmentUpdateRestClient.updateAssessment(
-      oasysOffenderPk,
-      oasysAssessmentType,
-      oasysSetPk,
-      any()
-    ) } returns oasysError
+    every {
+      assessmentUpdateRestClient.updateAssessment(
+        any(),
+        oasysAssessmentType,
+        oasysSetPk,
+        any()
+      )
+    } returns oasysError
     every { predictorService.getPredictorResults(AssessmentSchemaCode.ROSH, assessmentEpisode) } returns emptyList()
     // Christ, what a lot of set up
 
@@ -412,7 +413,7 @@ class AssessmentUpdateServiceOASysTest {
         oasysOffenderPk,
         oasysAssessmentType,
         oasysSetPk,
-        any()
+        capture(oasysAnswersSlot)
       )
     } returns UpdateAssessmentAnswersResponseDto()
     every { questionService.getAllQuestions() } returns setupQuestionCodes()
@@ -473,9 +474,12 @@ class AssessmentUpdateServiceOASysTest {
   private fun setupSectionQuestionCodes(): QuestionSchemaEntities {
     val dummy = AnswerSchemaGroupEntity(answerSchemaId = 99)
 
-    val yes = AnswerSchemaEntity(answerSchemaId = 1, answerSchemaUuid = answer1Uuid, value = "YES", answerSchemaGroup = dummy)
-    val maybe = AnswerSchemaEntity(answerSchemaId = 2, answerSchemaUuid = answer2Uuid, value = "MAYBE", answerSchemaGroup = dummy)
-    val no = AnswerSchemaEntity(answerSchemaId = 3, answerSchemaUuid = answer3Uuid, value = "NO", answerSchemaGroup = dummy)
+    val yes =
+      AnswerSchemaEntity(answerSchemaId = 1, answerSchemaUuid = answer1Uuid, value = "YES", answerSchemaGroup = dummy)
+    val maybe =
+      AnswerSchemaEntity(answerSchemaId = 2, answerSchemaUuid = answer2Uuid, value = "MAYBE", answerSchemaGroup = dummy)
+    val no =
+      AnswerSchemaEntity(answerSchemaId = 3, answerSchemaUuid = answer3Uuid, value = "NO", answerSchemaGroup = dummy)
 
     val group1 = AnswerSchemaGroupEntity(answerSchemaId = 1, answerSchemaEntities = listOf(yes))
     val group2 = AnswerSchemaGroupEntity(answerSchemaId = 2, answerSchemaEntities = listOf(maybe, no))

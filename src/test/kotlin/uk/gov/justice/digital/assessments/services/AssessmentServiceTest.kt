@@ -68,7 +68,12 @@ class AssessmentServiceTest {
       val assessment: AssessmentEntity = mockk()
       every { assessment.assessmentUuid } returns assessmentUuid
       every { assessment.assessmentId } returns 0
-      every { assessment.newEpisode("Change of Circs", assessmentSchemaCode = assessmentSchemaCode) } returns AssessmentEpisodeEntity(episodeId = episodeId1, assessment = assessment)
+      every {
+        assessment.newEpisode(
+          "Change of Circs",
+          assessmentSchemaCode = assessmentSchemaCode
+        )
+      } returns AssessmentEpisodeEntity(episodeId = episodeId1, assessment = assessment)
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
       every { episodeService.prepopulate(any()) } returnsArgument 0
 
@@ -109,7 +114,11 @@ class AssessmentServiceTest {
       val assessment = AssessmentEntity(
         assessmentId = assessmentId,
         episodes = mutableListOf(
-          AssessmentEpisodeEntity(episodeId = episodeId1, changeReason = "Change of Circs 1", endDate = LocalDateTime.now().minusDays(1)),
+          AssessmentEpisodeEntity(
+            episodeId = episodeId1,
+            changeReason = "Change of Circs 1",
+            endDate = LocalDateTime.now().minusDays(1)
+          ),
           AssessmentEpisodeEntity(episodeId = episodeId2, changeReason = "Change of Circs 2")
         )
       )
@@ -275,7 +284,11 @@ class AssessmentServiceTest {
     fun `throw exception when question code lookup fails`() {
       every { questionService.getAllQuestions() } returns QuestionSchemaEntities(
         listOf(
-          QuestionSchemaEntity(questionSchemaId = 2, questionSchemaUuid = question2Uuid, answerSchemaGroup = AnswerSchemaGroupEntity(1))
+          QuestionSchemaEntity(
+            questionSchemaId = 2,
+            questionSchemaUuid = question2Uuid,
+            answerSchemaGroup = AnswerSchemaGroupEntity(1)
+          )
         )
       )
 
@@ -326,17 +339,30 @@ class AssessmentServiceTest {
   private fun setupQuestionCodes() {
     val dummy = AnswerSchemaGroupEntity(answerSchemaId = 99)
 
-    val yes = AnswerSchemaEntity(answerSchemaId = 1, answerSchemaUuid = answer1Uuid, value = "YES", answerSchemaGroup = dummy)
-    val maybe = AnswerSchemaEntity(answerSchemaId = 2, answerSchemaUuid = answer2Uuid, value = "MAYBE", answerSchemaGroup = dummy)
-    val no = AnswerSchemaEntity(answerSchemaId = 3, answerSchemaUuid = answer3Uuid, value = "NO", answerSchemaGroup = dummy)
+    val yes =
+      AnswerSchemaEntity(answerSchemaId = 1, answerSchemaUuid = answer1Uuid, value = "YES", answerSchemaGroup = dummy)
+    val maybe =
+      AnswerSchemaEntity(answerSchemaId = 2, answerSchemaUuid = answer2Uuid, value = "MAYBE", answerSchemaGroup = dummy)
+    val no =
+      AnswerSchemaEntity(answerSchemaId = 3, answerSchemaUuid = answer3Uuid, value = "NO", answerSchemaGroup = dummy)
 
     val group1 = AnswerSchemaGroupEntity(answerSchemaId = 1, answerSchemaEntities = listOf(yes))
     val group2 = AnswerSchemaGroupEntity(answerSchemaId = 2, answerSchemaEntities = listOf(maybe, no))
 
     every { questionService.getAllQuestions() } returns QuestionSchemaEntities(
       listOf(
-        QuestionSchemaEntity(questionSchemaId = 1, questionSchemaUuid = question1Uuid, questionCode = "Q1", answerSchemaGroup = group1),
-        QuestionSchemaEntity(questionSchemaId = 2, questionSchemaUuid = question2Uuid, questionCode = "Q2", answerSchemaGroup = group2),
+        QuestionSchemaEntity(
+          questionSchemaId = 1,
+          questionSchemaUuid = question1Uuid,
+          questionCode = "Q1",
+          answerSchemaGroup = group1
+        ),
+        QuestionSchemaEntity(
+          questionSchemaId = 2,
+          questionSchemaUuid = question2Uuid,
+          questionCode = "Q2",
+          answerSchemaGroup = group2
+        ),
         QuestionSchemaEntity(questionSchemaId = 3, questionSchemaUuid = question3Uuid)
       )
     )

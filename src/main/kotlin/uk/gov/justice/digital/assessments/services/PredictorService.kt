@@ -56,7 +56,7 @@ class PredictorService(
   private fun fetchResults(
     predictorType: PredictorType,
     answers: Map<String, AnswersDto>,
-  ) : PredictorScoreDto {
+  ): PredictorScoreDto {
     log.info("Stubbed call to get Predictor Score")
     return PredictorScoreDto(
       type = predictorType,

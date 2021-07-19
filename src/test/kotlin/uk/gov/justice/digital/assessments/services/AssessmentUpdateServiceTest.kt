@@ -17,10 +17,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.OasysAssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.EpisodeRepository
-import uk.gov.justice.digital.assessments.jpa.repositories.SubjectRepository
 import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient
-import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
-import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
 import uk.gov.justice.digital.assessments.testutils.Verify
 import java.time.LocalDateTime
@@ -66,29 +63,6 @@ class AssessmentUpdateServiceTest {
   @Nested
   @DisplayName("update episode")
   inner class UpdateAnswers {
-    @Test
-    fun `update episode throws exception if episode does not exist`() {
-
-      val assessment = AssessmentEntity(
-        assessmentId = assessmentId,
-        episodes = mutableListOf(
-          AssessmentEpisodeEntity(
-            episodeUuid = UUID.randomUUID(),
-            episodeId = episodeId2,
-            changeReason = "Change of Circs 2"
-          )
-        )
-      )
-
-      val updatedAnswers = UpdateAssessmentEpisodeDto(mapOf())
-
-      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
-
-      assertThatThrownBy { assessmentUpdateService.updateEpisode(assessment.episodes.first(), updatedAnswers) }
-        .isInstanceOf(EntityNotFoundException::class.java)
-        .hasMessage("No Episode $episodeUuid for $assessmentUuid")
-    }
-
     @Test
     fun `add new answers to existing question for an episode`() {
       val answers = mutableMapOf(
