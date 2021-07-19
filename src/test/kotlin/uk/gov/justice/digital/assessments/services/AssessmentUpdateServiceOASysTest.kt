@@ -51,7 +51,6 @@ class AssessmentUpdateServiceOASysTest {
     episodeRepository,
     questionService,
     assessmentUpdateRestClient,
-    assessmentService,
     predictorService,
     assessmentSchemaService
   )
@@ -354,7 +353,6 @@ class AssessmentUpdateServiceOASysTest {
       assessment = assessment
     )
 
-    every { assessmentService.getEpisode(episodeUuid, assessmentUuid) } returns assessmentEpisode
     every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
     every { assessmentRepository.save(any()) } returns null // should save when errors?
     every { questionService.getAllSectionQuestionsForQuestions(any()) } returns QuestionSchemaEntities(questionsList = emptyList())
@@ -385,7 +383,7 @@ class AssessmentUpdateServiceOASysTest {
     val updatedAnswers = UpdateAssessmentEpisodeDto(
       mapOf(existingQuestionUuid to listOf("fruit loops", "custard"))
     )
-    val episodeDto = assessmentsUpdateService.updateEpisode(assessmentUuid, episodeUuid, updatedAnswers)
+    val episodeDto = assessmentsUpdateService.updateEpisode(assessmentEpisode, updatedAnswers)
 
     // Updated answers in returned DTO
     assertThat(episodeDto.answers).hasSize(1)
@@ -406,7 +404,6 @@ class AssessmentUpdateServiceOASysTest {
   @Test
   fun `update episode sends only updated sections to oasys`() {
     val assessmentEpisode = setupEpisode()
-    every { assessmentService.getEpisode(episodeUuid, assessmentUuid) } returns assessmentEpisode
 
     every { questionService.getAllSectionQuestionsForQuestions(listOf(question1Uuid)) } returns setupSectionQuestionCodes()
 
@@ -425,7 +422,7 @@ class AssessmentUpdateServiceOASysTest {
     every { predictorService.getPredictorResults(AssessmentSchemaCode.ROSH, assessmentEpisode) } returns emptyList()
 
     val update = UpdateAssessmentEpisodeDto(answers = mapOf(question1Uuid to listOf("Updated")))
-    val updatedEpisode = assessmentsUpdateService.updateEpisode(assessmentUuid, episodeUuid, update)
+    val updatedEpisode = assessmentsUpdateService.updateEpisode(assessmentEpisode, update)
 
     verify(exactly = 1) {
       assessmentUpdateRestClient.updateAssessment(

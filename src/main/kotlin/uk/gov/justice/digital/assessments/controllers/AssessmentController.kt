@@ -133,9 +133,8 @@ class AssessmentController(
     @Parameter(description = "Episode UUID", required = true) @PathVariable episodeUuid: UUID,
     @Parameter(description = "Episode Answers", required = true) @RequestBody episodeAnswers: UpdateAssessmentEpisodeDto
   ): ResponseEntity<AssessmentEpisodeDto> {
-    return updateResponse(
-      assessmentUpdateService.updateEpisode(assessmentUuid, episodeUuid, episodeAnswers)
-    )
+    val episode = assessmentService.getEpisode(episodeUuid, assessmentUuid)
+    return updateResponse(assessmentUpdateService.updateEpisode(episode, episodeAnswers))
   }
 
   @RequestMapping(
@@ -285,8 +284,9 @@ class AssessmentController(
     @Parameter(description = "Assessment UUID", required = true, example = "1234") @PathVariable assessmentUuid: UUID,
     @Parameter(description = "Episode Answers", required = true) @RequestBody episodeAnswers: UpdateAssessmentEpisodeDto
   ): ResponseEntity<AssessmentEpisodeDto> {
+    val currentEpisode = assessmentService.getCurrentEpisode(assessmentUuid)
     return updateResponse(
-      assessmentUpdateService.updateCurrentEpisode(assessmentUuid, episodeAnswers)
+      assessmentUpdateService.updateCurrentEpisode(currentEpisode, episodeAnswers)
     )
   }
 

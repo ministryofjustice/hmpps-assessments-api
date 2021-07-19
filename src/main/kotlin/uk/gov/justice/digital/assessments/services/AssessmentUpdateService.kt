@@ -2,7 +2,6 @@ package uk.gov.justice.digital.assessments.services
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.assessments.api.AnswersDto
 import uk.gov.justice.digital.assessments.api.AssessmentEpisodeDto
@@ -28,7 +27,6 @@ class AssessmentUpdateService(
   private val episodeRepository: EpisodeRepository,
   private val questionService: QuestionService,
   private val assessmentUpdateRestClient: AssessmentUpdateRestClient,
-  private val assessmentService: AssessmentService,
   private val predictorService: PredictorService,
   private val assessmentSchemaService: AssessmentSchemaService
 ) {
@@ -38,20 +36,17 @@ class AssessmentUpdateService(
 
   @Transactional
   fun updateEpisode(
-    assessmentUuid: UUID,
-    episodeUuid: UUID,
+    episode: AssessmentEpisodeEntity,
     updatedEpisodeAnswers: UpdateAssessmentEpisodeDto
   ): AssessmentEpisodeDto {
-    val episode = assessmentService.getEpisode(episodeUuid, assessmentUuid)
     return updateEpisode(episode, updatedEpisodeAnswers.asAnswersDtos())
   }
 
   @Transactional
   fun updateCurrentEpisode(
-    assessmentUuid: UUID,
+    episode: AssessmentEpisodeEntity,
     updatedEpisodeAnswers: UpdateAssessmentEpisodeDto
   ): AssessmentEpisodeDto {
-    val episode = assessmentService.getCurrentEpisode(assessmentUuid)
     return updateEpisode(episode, updatedEpisodeAnswers.asAnswersDtos())
   }
 

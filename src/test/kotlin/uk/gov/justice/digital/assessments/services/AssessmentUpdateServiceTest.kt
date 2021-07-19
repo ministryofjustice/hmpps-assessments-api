@@ -8,7 +8,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import org.slf4j.MDC
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.jpa.entities.AnswerEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEntity
@@ -24,7 +23,6 @@ import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
 import uk.gov.justice.digital.assessments.testutils.Verify
-import uk.gov.justice.digital.assessments.utils.RequestData
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -54,7 +52,6 @@ class AssessmentUpdateServiceTest {
     episodeRepository,
     questionService,
     assessmentUpdateRestClient,
-    assessmentService,
     predictorService,
     assessmentSchemaService
   )
@@ -100,7 +97,7 @@ class AssessmentUpdateServiceTest {
 
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
 
-      assertThatThrownBy { assessmentUpdateService.updateEpisode(assessmentUuid, episodeUuid, updatedAnswers) }
+      assertThatThrownBy { assessmentUpdateService.updateEpisode(updatedAnswers) }
         .isInstanceOf(EntityNotFoundException::class.java)
         .hasMessage("No Episode $episodeUuid for $assessmentUuid")
     }
@@ -120,7 +117,7 @@ class AssessmentUpdateServiceTest {
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
       every { assessmentRepository.save(any()) } returns null
 
-      val episodeDto = assessmentUpdateService.updateEpisode(assessmentUuid, episodeUuid, updatedAnswers)
+      val episodeDto = assessmentUpdateService.updateEpisode(assessment.episodes.first(), updatedAnswers)
 
       assertThat(episodeDto.answers).hasSize(2)
       Verify.singleAnswer(
@@ -148,7 +145,7 @@ class AssessmentUpdateServiceTest {
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
       every { assessmentRepository.save(any()) } returns null
 
-      val episodeDto = assessmentUpdateService.updateEpisode(assessmentUuid, episodeUuid, updatedAnswers)
+      val episodeDto = assessmentUpdateService.updateEpisode(assessment.episodes.first(), updatedAnswers)
 
       assertThat(episodeDto.answers).hasSize(1)
       Verify.singleAnswer(
@@ -171,7 +168,7 @@ class AssessmentUpdateServiceTest {
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
       every { assessmentRepository.save(any()) } returns null
 
-      val episodeDto = assessmentUpdateService.updateEpisode(assessmentUuid, episodeUuid, updatedAnswers)
+      val episodeDto = assessmentUpdateService.updateEpisode(assessment.episodes.first(), updatedAnswers)
 
       assertThat(episodeDto.answers).hasSize(1)
       Verify.singleAnswer(
@@ -202,10 +199,8 @@ class AssessmentUpdateServiceTest {
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
 
       assertThatThrownBy {
-        assessmentUpdateService.updateEpisode(
-          assessmentUuid,
-          episodeUuid,
-          UpdateAssessmentEpisodeDto(answers = emptyMap())
+        assessmentUpdateService.updateEpisode(assessment.episodes.first(),
+          UpdateAssessmentEpisodeDto(answers = emptyMap()),
         )
       }
         .isInstanceOf(UpdateClosedEpisodeException::class.java)
@@ -229,7 +224,9 @@ class AssessmentUpdateServiceTest {
     fun setup() {
       every { assessmentRepository.save(any()) } returns null
       every { questionService.getAllGroupQuestionsByGroupCode("children_at_risk") } returns childTableQuestions
-      every { questionService.getAllGroupQuestionsByGroupCode("nonsense_table") } returns QuestionSchemaEntities(emptyList())
+      every { questionService.getAllGroupQuestionsByGroupCode("nonsense_table") } returns QuestionSchemaEntities(
+        emptyList()
+      )
     }
 
     @Test
@@ -248,7 +245,8 @@ class AssessmentUpdateServiceTest {
         )
       )
 
-      val episodeDto = assessmentUpdateService.addEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", tableAnswers)
+      val episodeDto =
+        assessmentUpdateService.addEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", tableAnswers)
 
       assertThat(episodeDto.answers).hasSize(5)
       Verify.singleAnswer(
@@ -278,7 +276,8 @@ class AssessmentUpdateServiceTest {
         )
       )
 
-      val episodeDto = assessmentUpdateService.addCurrentEpisodeTableRow(assessmentUuid, "children_at_risk", tableAnswers)
+      val episodeDto =
+        assessmentUpdateService.addCurrentEpisodeTableRow(assessmentUuid, "children_at_risk", tableAnswers)
 
       assertThat(episodeDto.answers).hasSize(5)
       Verify.multiAnswers(
@@ -310,7 +309,8 @@ class AssessmentUpdateServiceTest {
         )
       )
 
-      val episodeDto = assessmentUpdateService.addEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", tableAnswers)
+      val episodeDto =
+        assessmentUpdateService.addEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", tableAnswers)
 
       assertThat(episodeDto.answers).hasSize(5)
       Verify.multiAnswers(
@@ -344,7 +344,8 @@ class AssessmentUpdateServiceTest {
         )
       )
 
-      val episodeDto = assessmentUpdateService.addEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", tableAnswers)
+      val episodeDto =
+        assessmentUpdateService.addEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", tableAnswers)
 
       assertThat(episodeDto.answers).hasSize(5)
       Verify.multiAnswers(
@@ -378,7 +379,8 @@ class AssessmentUpdateServiceTest {
         )
       )
 
-      val episodeDto = assessmentUpdateService.updateEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", 0, tableAnswers)
+      val episodeDto =
+        assessmentUpdateService.updateEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", 0, tableAnswers)
 
       assertThat(episodeDto.answers).hasSize(5)
       Verify.multiAnswers(
@@ -412,7 +414,8 @@ class AssessmentUpdateServiceTest {
         )
       )
 
-      val episodeDto = assessmentUpdateService.updateEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", 1, tableAnswers)
+      val episodeDto =
+        assessmentUpdateService.updateEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", 1, tableAnswers)
 
       assertThat(episodeDto.answers).hasSize(5)
       Verify.multiAnswers(
@@ -446,7 +449,8 @@ class AssessmentUpdateServiceTest {
         )
       )
 
-      val episodeDto = assessmentUpdateService.updateEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", 1, tableAnswers)
+      val episodeDto =
+        assessmentUpdateService.updateEpisodeTableRow(assessmentUuid, episodeUuid, "children_at_risk", 1, tableAnswers)
 
       assertThat(episodeDto.answers).hasSize(5)
       Verify.multiAnswers(
