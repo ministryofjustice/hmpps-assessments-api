@@ -57,7 +57,6 @@ class AssessmentUpdateServiceOASysTest {
   private val assessmentUuid = UUID.randomUUID()
   private val assessmentId = 1L
   private val oasysAssessmentType = OasysAssessmentType.SHORT_FORM_PSR
-
   private val oasysOffenderPk = 1L
   private val oasysSetPk = 1L
 

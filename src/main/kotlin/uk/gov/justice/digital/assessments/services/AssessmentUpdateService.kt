@@ -2,6 +2,7 @@ package uk.gov.justice.digital.assessments.services
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.assessments.api.AnswersDto
 import uk.gov.justice.digital.assessments.api.AssessmentEpisodeDto
@@ -364,7 +365,7 @@ class AssessmentUpdateService(
   ): AssessmentEpisodeUpdateErrors? {
     val oasysAssessmentType = assessmentSchemaService.toOasysAssessmentType(episode.assessmentSchemaCode)
     val oasysUpdateResult =
-      assessmentUpdateRestClient.completeAssessment(offenderPk!!, oasysAssessmentType, episode.oasysSetPk!!)
+      assessmentUpdateRestClient.completeAssessment(offenderPk!!, oasysAssessmentType, oasysAssessmentType, episode.oasysSetPk!!)
     if (oasysUpdateResult?.validationErrorDtos?.isNotEmpty() == true) {
       log.info("Could not complete OASys assessment oasysSet ${episode.oasysSetPk} with errors")
     } else log.info("Completed OASys assessment oasysSet $episode.oasysSetPk successfully")
