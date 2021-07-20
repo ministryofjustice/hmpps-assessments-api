@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.UpdateAssessmentAnswersResponseDto
+import uk.gov.justice.digital.assessments.services.dto.AssessmentEpisodeUpdateErrors
 
 @Aspect
 @Component
@@ -19,7 +20,7 @@ class PushToOasysAspect() {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
   }
 
-  @Around("execution(* uk.gov.justice.digital.assessments.services.AssessmentUpdateService.createOasysAssessment(..))")
+  @Around("execution(* uk.gov.justice.digital.assessments.services.OasysAssessmentUpdateService.createOasysAssessment(..))")
   @Throws(Throwable::class)
   fun aroundPushToOasysMethods(joinPoint: ProceedingJoinPoint): Pair<Long?, Long?> {
     val signature: MethodSignature = joinPoint.signature as MethodSignature
@@ -45,7 +46,7 @@ class PushToOasysAspect() {
 
   @Around("pushUpdateToOasysPointcut() || pushCompleteToOasysPointcut()")
   @Throws(Throwable::class)
-  fun aroundPushUpdateToOasysMethods(joinPoint: ProceedingJoinPoint): UpdateAssessmentAnswersResponseDto? {
+  fun aroundPushUpdateToOasysMethods(joinPoint: ProceedingJoinPoint): Any? {
     val signature: MethodSignature = joinPoint.signature as MethodSignature
     val assessmentEpisode =
       if (signature.parameterNames.contains("episode")) joinPoint.args[0] as AssessmentEpisodeEntity else null
@@ -54,7 +55,7 @@ class PushToOasysAspect() {
     log.info("Trying to ${joinPoint.signature.name} for assessment episode ${assessmentEpisode?.episodeUuid} with assessmentSchemaCode $assessmentSchemaCode")
     if (shouldPushToOasys(assessmentSchemaCode)) {
       log.info("${joinPoint.signature.name} assessment episode ${assessmentEpisode?.episodeUuid} with assessmentSchemaCode $assessmentSchemaCode")
-      return joinPoint.proceed() as UpdateAssessmentAnswersResponseDto?
+      return joinPoint.proceed()
     }
     log.info("${joinPoint.signature.name} assessment episode ${assessmentEpisode?.episodeUuid} with assessmentSchemaCode $assessmentSchemaCode not pushed to Oasys")
     return null

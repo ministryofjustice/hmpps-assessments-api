@@ -113,6 +113,7 @@ class AssessmentApiMockServer : WireMockServer(9004) {
     )
 
     stubRBACPermissions(offenderPk = 1, permission = Roles.OFF_ASSESSMENT_CREATE.name)
+    stubRBACPermissions(offenderPk = 1, permission = Roles.OFF_ASSESSMENT_CREATE.name, assessmentType = OasysAssessmentType.SOMETHING_IN_OASYS)
     stubRBACPermissions(offenderPk = 1, oasysSetPk = 1, permission = Roles.ASSESSMENT_READ.name)
     stubRBACPermissions(offenderPk = 1, oasysSetPk = 2, permission = Roles.ASSESSMENT_READ.name)
     stubRBACPermissions(
