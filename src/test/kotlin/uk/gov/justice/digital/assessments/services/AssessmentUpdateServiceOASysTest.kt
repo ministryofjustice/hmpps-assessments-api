@@ -305,7 +305,7 @@ class AssessmentUpdateServiceOASysTest {
         any()
       )
     } returns AssessmentEpisodeUpdateErrors(
-      answerErrors = mutableMapOf(UUID.randomUUID() to mutableListOf("error"))
+      answerErrors = mutableMapOf(existingQuestionUuid to mutableListOf("NO"))
     )
     every { assessmentRepository.save(any()) } returns null // should save when errors?
     every { questionService.getAllSectionQuestionsForQuestions(any()) } returns QuestionSchemaEntities(questionsList = emptyList())
