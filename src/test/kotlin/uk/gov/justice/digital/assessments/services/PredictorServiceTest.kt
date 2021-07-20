@@ -16,7 +16,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.Predictor
 import uk.gov.justice.digital.assessments.jpa.entities.PredictorFieldMapping
 import uk.gov.justice.digital.assessments.jpa.entities.PredictorType
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
-import java.util.*
+import java.util.UUID
 
 class PredictorServiceTest {
   private val assessmentSchemaService: AssessmentSchemaService = mockk()
@@ -28,20 +28,22 @@ class PredictorServiceTest {
     questionSchemaUuid = UUID.randomUUID(),
   )
 
-  private val predictors = listOf(Predictor(
-    1,
-    AssessmentSchemaCode.RSR,
-    PredictorType.RSR,
-    listOf(
-      PredictorFieldMapping(
-        1,
-        UUID.randomUUID(),
-        testQuestion,
-        PredictorType.RSR,
-        "predictor_field_name"
+  private val predictors = listOf(
+    Predictor(
+      1,
+      AssessmentSchemaCode.RSR,
+      PredictorType.RSR,
+      listOf(
+        PredictorFieldMapping(
+          1,
+          UUID.randomUUID(),
+          testQuestion,
+          PredictorType.RSR,
+          "predictor_field_name"
+        )
       )
     )
-  ))
+  )
 
   private val answers = mutableMapOf(
     testQuestion.questionSchemaUuid to AnswerEntity(

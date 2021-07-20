@@ -19,7 +19,6 @@ import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.SubjectRepository
-import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import uk.gov.justice.digital.assessments.restclient.courtcaseapi.CourtCase
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
@@ -34,7 +33,7 @@ class AssessmentService(
   private val questionService: QuestionService,
   private val episodeService: EpisodeService,
   private val courtCaseClient: CourtCaseRestClient,
-  private val assessmentUpdateRestClient: AssessmentUpdateRestClient,
+  private val assessmentUpdateService: AssessmentUpdateService,
   private val offenderService: OffenderService
 ) {
   companion object {
@@ -143,7 +142,7 @@ class AssessmentService(
       return AssessmentDto.from(existingSubject.assessment)
     }
     val offender = offenderService.getOffender(crn)
-    val (oasysOffenderPk, oasysSetPK) = assessmentUpdateRestClient.pushToOasys(
+    val (oasysOffenderPk, oasysSetPK) = assessmentUpdateService.createOasysAssessment(
       crn = crn,
       deliusEventId = eventId,
       assessmentSchemaCode = assessmentSchemaCode
@@ -173,7 +172,7 @@ class AssessmentService(
     val courtCase = courtCaseClient.getCourtCase(courtCode, caseNumber)
       ?: throw EntityNotFoundException("No court case found for $courtCode, $caseNumber")
 
-    val (oasysOffenderPk, oasysSetPK) = assessmentUpdateRestClient.pushToOasys(
+    val (oasysOffenderPk, oasysSetPK) = assessmentUpdateService.createOasysAssessment(
       crn = courtCase.crn,
       assessmentSchemaCode = assessmentSchemaCode
     )

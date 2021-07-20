@@ -9,6 +9,7 @@ import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.jpa.entities.Answer
 import uk.gov.justice.digital.assessments.jpa.entities.AnswerEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.EpisodeRepository
 import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient
@@ -26,29 +27,26 @@ class AssessmentUpdateService(
   private val episodeRepository: EpisodeRepository,
   private val questionService: QuestionService,
   private val assessmentUpdateRestClient: AssessmentUpdateRestClient,
-  private val assessmentService: AssessmentService,
   private val predictorService: PredictorService,
-  ) {
+  private val assessmentSchemaService: AssessmentSchemaService
+) {
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
   }
 
   @Transactional
   fun updateEpisode(
-    assessmentUuid: UUID,
-    episodeUuid: UUID,
+    episode: AssessmentEpisodeEntity,
     updatedEpisodeAnswers: UpdateAssessmentEpisodeDto
   ): AssessmentEpisodeDto {
-    val episode = assessmentService.getEpisode(episodeUuid, assessmentUuid)
     return updateEpisode(episode, updatedEpisodeAnswers.asAnswersDtos())
   }
 
   @Transactional
   fun updateCurrentEpisode(
-    assessmentUuid: UUID,
+    episode: AssessmentEpisodeEntity,
     updatedEpisodeAnswers: UpdateAssessmentEpisodeDto
   ): AssessmentEpisodeDto {
-    val episode = assessmentService.getCurrentEpisode(assessmentUuid)
     return updateEpisode(episode, updatedEpisodeAnswers.asAnswersDtos())
   }
 
@@ -112,10 +110,12 @@ class AssessmentUpdateService(
       }
     )
 
-    val oasysUpdateResult = assessmentUpdateRestClient.pushUpdateToOasys(
+    val oasysAssessmentType = assessmentSchemaService.toOasysAssessmentType(episode.assessmentSchemaCode)
+
+    val oasysUpdateResult = assessmentUpdateRestClient.updateAssessment(
       offenderPk,
+      oasysAssessmentType,
       episode.oasysSetPk!!,
-      episode.assessmentSchemaCode,
       oasysAnswers
     )
     log.info("Updated OASys assessment oasysSet ${episode.oasysSetPk} ${if (oasysUpdateResult?.validationErrorDtos?.isNotEmpty() == true) "with errors" else "successfully"}")
@@ -131,13 +131,12 @@ class AssessmentUpdateService(
 
   @Transactional
   fun addEpisodeTableRow(
-    assessmentUuid: UUID,
-    episodeUuid: UUID,
+    episode: AssessmentEpisodeEntity,
     tableName: String,
     newTableRow: UpdateAssessmentEpisodeDto
   ): AssessmentEpisodeDto {
     return addTableRow(
-      assessmentService.getEpisode(episodeUuid, assessmentUuid),
+      episode,
       tableName,
       newTableRow
     )
@@ -145,12 +144,12 @@ class AssessmentUpdateService(
 
   @Transactional
   fun addCurrentEpisodeTableRow(
-    assessmentUuid: UUID,
+    episode: AssessmentEpisodeEntity,
     tableName: String,
     newTableRow: UpdateAssessmentEpisodeDto
   ): AssessmentEpisodeDto {
     return addTableRow(
-      assessmentService.getCurrentEpisode(assessmentUuid),
+      episode,
       tableName,
       newTableRow
     )
@@ -171,14 +170,13 @@ class AssessmentUpdateService(
 
   @Transactional
   fun updateEpisodeTableRow(
-    assessmentUuid: UUID,
-    episodeUuid: UUID,
+    episode: AssessmentEpisodeEntity,
     tableName: String,
     index: Int,
     updatedTableRow: UpdateAssessmentEpisodeDto
   ): AssessmentEpisodeDto {
     return updateTableRow(
-      assessmentService.getEpisode(episodeUuid, assessmentUuid),
+      episode,
       tableName,
       index,
       updatedTableRow
@@ -187,13 +185,13 @@ class AssessmentUpdateService(
 
   @Transactional
   fun updateCurrentEpisodeTableRow(
-    assessmentUuid: UUID,
+    episode: AssessmentEpisodeEntity,
     tableName: String,
     index: Int,
     updatedTableRow: UpdateAssessmentEpisodeDto
   ): AssessmentEpisodeDto {
     return updateTableRow(
-      assessmentService.getCurrentEpisode(assessmentUuid),
+      episode,
       tableName,
       index,
       updatedTableRow
@@ -218,13 +216,12 @@ class AssessmentUpdateService(
 
   @Transactional
   fun deleteEpisodeTableRow(
-    assessmentUuid: UUID,
-    episodeUuid: UUID,
+    episode: AssessmentEpisodeEntity,
     tableName: String,
     index: Int
   ): AssessmentEpisodeDto {
     return deleteTableRow(
-      assessmentService.getEpisode(episodeUuid, assessmentUuid),
+      episode,
       tableName,
       index
     )
@@ -232,12 +229,12 @@ class AssessmentUpdateService(
 
   @Transactional
   fun deleteCurrentEpisodeTableRow(
-    assessmentUuid: UUID,
+    episode: AssessmentEpisodeEntity,
     tableName: String,
     index: Int
   ): AssessmentEpisodeDto {
     return deleteTableRow(
-      assessmentService.getCurrentEpisode(assessmentUuid),
+      episode,
       tableName,
       index
     )
@@ -342,16 +339,15 @@ class AssessmentUpdateService(
   }
 
   @Transactional
-  fun closeCurrentEpisode(
-    assessmentUuid: UUID
+  fun closeEpisode(
+    episode: AssessmentEpisodeEntity
   ): AssessmentEpisodeDto {
-    val episode = assessmentService.getCurrentEpisode(assessmentUuid)
     val offenderPk: Long? = episode.assessment?.subject?.oasysOffenderPk
     if (episode.assessmentSchemaCode == null || episode.oasysSetPk == null || offenderPk == null) {
       log.info("Unable to complete OASys Assessment with keys type: ${episode.assessmentSchemaCode} oasysSet: ${episode.oasysSetPk} offenderPk: $offenderPk")
       return AssessmentEpisodeDto.from(episode, null)
     }
-    val oasysResult = completeOASysAssessment(offenderPk, episode)
+    val oasysResult = completeOASysAssessment(episode, offenderPk)
     if (oasysResult?.hasErrors() == true) {
       log.info("Unable to close episode ${episode.episodeUuid} for assessment ${episode.assessment?.assessmentUuid} with OASys restclient")
     } else {
@@ -363,11 +359,12 @@ class AssessmentUpdateService(
   }
 
   fun completeOASysAssessment(
-    offenderPk: Long,
     episode: AssessmentEpisodeEntity,
+    offenderPk: Long?,
   ): AssessmentEpisodeUpdateErrors? {
+    val oasysAssessmentType = assessmentSchemaService.toOasysAssessmentType(episode.assessmentSchemaCode)
     val oasysUpdateResult =
-      assessmentUpdateRestClient.pushCompleteToOasys(offenderPk, episode.oasysSetPk!!, episode.assessmentSchemaCode)
+      assessmentUpdateRestClient.completeAssessment(offenderPk!!, oasysAssessmentType, episode.oasysSetPk!!)
     if (oasysUpdateResult?.validationErrorDtos?.isNotEmpty() == true) {
       log.info("Could not complete OASys assessment oasysSet ${episode.oasysSetPk} with errors")
     } else log.info("Completed OASys assessment oasysSet $episode.oasysSetPk successfully")
@@ -376,5 +373,17 @@ class AssessmentUpdateService(
       log.info("Error ${it.sectionCode}.${it.logicalPage}.${it.questionCode}: ${it.message}")
     }
     return AssessmentEpisodeUpdateErrors.mapOasysErrors(episode, null, oasysUpdateResult)
+  }
+
+  fun createOasysAssessment(
+    crn: String?,
+    deliusEventId: Long? = null,
+    assessmentSchemaCode: AssessmentSchemaCode?
+  ): Pair<Long?, Long?> {
+    val oasysOffenderPk =
+      crn?.let { assessmentUpdateRestClient.createOasysOffender(crn = crn, deliusEvent = deliusEventId) }
+    val oasysAssessmentType = assessmentSchemaService.toOasysAssessmentType(assessmentSchemaCode)
+    val oasysSetPK = oasysOffenderPk?.let { assessmentUpdateRestClient.createAssessment(it, oasysAssessmentType) }
+    return Pair(oasysOffenderPk, oasysSetPK)
   }
 }

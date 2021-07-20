@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.OasysAssessmentType
 import uk.gov.justice.digital.assessments.redis.UserDetailsRedisRepository
 import uk.gov.justice.digital.assessments.restclient.assessmentapi.Authorized
@@ -21,7 +20,6 @@ import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.CreateO
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OasysAnswer
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.UpdateAssessmentAnswersDto
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.UpdateAssessmentAnswersResponseDto
-import uk.gov.justice.digital.assessments.services.AssessmentSchemaService
 import uk.gov.justice.digital.assessments.utils.RequestData
 
 @Component
@@ -33,27 +31,8 @@ class AssessmentUpdateRestClient {
   @Autowired
   internal lateinit var userDetailsRedisRepository: UserDetailsRedisRepository
 
-  @Autowired
-  internal lateinit var assessmentSchemaService: AssessmentSchemaService
-
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
-  }
-
-  /*
-  * Use this method to conditionally Push Offenders and Assessments to Oasys depending on the Assessment Schema Code
-  * DO NOT CHANGE THIS METHOD SIGNATURE as it does work with PushToOasysAspect to decide for which assessments
-  * we push data into Oasys
-  * */
-  fun pushToOasys(
-    crn: String?,
-    deliusEventId: Long? = null,
-    assessmentSchemaCode: AssessmentSchemaCode?
-  ): Pair<Long?, Long?> {
-    val oasysOffenderPk = crn?.let { createOasysOffender(crn = crn, deliusEvent = deliusEventId) }
-    val oasysAssessmentType = assessmentSchemaService.toOasysAssessmentType(assessmentSchemaCode)
-    val oasysSetPK = oasysOffenderPk?.let { createAssessment(it, oasysAssessmentType) }
-    return Pair(oasysOffenderPk, oasysSetPK)
   }
 
   /*
@@ -125,26 +104,6 @@ class AssessmentUpdateRestClient {
   }
 
   /*
-  * Use this method to conditionally Push Updates to Assessments in Oasys depending on the Assessment Schema Code
-  * DO NOT CHANGE THIS METHOD SIGNATURE as it does work with PushToOasysAspect to decide for which assessments
-  * we push updated data into Oasys
-  * */
-  fun pushUpdateToOasys(
-    offenderPK: Long? = null,
-    oasysSetPk: Long? = null,
-    assessmentSchemaCode: AssessmentSchemaCode?,
-    answers: Set<OasysAnswer> = emptySet(),
-  ): UpdateAssessmentAnswersResponseDto? {
-    val oasysAssessmentType = assessmentSchemaService.toOasysAssessmentType(assessmentSchemaCode)
-    return updateAssessment(
-      offenderPK!!,
-      oasysAssessmentType,
-      oasysSetPk!!,
-      answers
-    )
-  }
-
-  /*
   * Use this method only if you want to force Updating Assessment in Oasys
   * Note that the assessment should have been created previously in Oasys.
   * */
@@ -184,26 +143,6 @@ class AssessmentUpdateRestClient {
       .block().also {
         log.info("Updated answers for Assessment $oasysSetPk in OASys for offender: $offenderPK, area: $area, user: $oasysUserCode")
       }
-  }
-
-  /*
- * Use this method to conditionally Push Completing an Assessments to Oasys depending on the Assessment Schema Code
- * DO NOT CHANGE THIS METHOD SIGNATURE as it does work with PushToOasysAspect to decide for which assessments
- * we push a completed status and data into Oasys
- * */
-  fun pushCompleteToOasys(
-    offenderPK: Long? = null,
-    oasysSetPk: Long? = null,
-    assessmentSchemaCode: AssessmentSchemaCode?,
-    ignoreWarnings: Boolean = true
-  ): UpdateAssessmentAnswersResponseDto? {
-    val oasysAssessmentType = assessmentSchemaService.toOasysAssessmentType(assessmentSchemaCode)
-    return completeAssessment(
-      offenderPK!!,
-      oasysAssessmentType,
-      oasysSetPk!!,
-      ignoreWarnings
-    )
   }
 
   /*

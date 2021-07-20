@@ -42,21 +42,21 @@ class AssessmentUpdateServiceOASysTest {
   private val episodeRepository: EpisodeRepository = mockk()
   private val questionService: QuestionService = mockk()
   private val assessmentUpdateRestClient: AssessmentUpdateRestClient = mockk()
-  private val assessmentService: AssessmentService = mockk()
   private val predictorService: PredictorService = mockk()
+  private val assessmentSchemaService: AssessmentSchemaService = mockk()
 
   private val assessmentsUpdateService = AssessmentUpdateService(
     assessmentRepository,
     episodeRepository,
     questionService,
     assessmentUpdateRestClient,
-    assessmentService,
     predictorService,
+    assessmentSchemaService
   )
 
   private val assessmentUuid = UUID.randomUUID()
   private val assessmentId = 1L
-  private val assessmentSchemaCode = AssessmentSchemaCode.ROSH
+  private val oasysAssessmentType = OasysAssessmentType.SHORT_FORM_PSR
 
   private val oasysOffenderPk = 1L
   private val oasysSetPk = 1L
@@ -74,6 +74,12 @@ class AssessmentUpdateServiceOASysTest {
   private val answer1Uuid = UUID.randomUUID()
   private val answer2Uuid = UUID.randomUUID()
   private val answer3Uuid = UUID.randomUUID()
+
+  @BeforeEach
+  fun setup() {
+    every { assessmentSchemaService.toOasysAssessmentType(AssessmentSchemaCode.ROSH) } returns OasysAssessmentType.SHORT_FORM_PSR
+    every { assessmentSchemaService.toOasysAssessmentType(AssessmentSchemaCode.RSR) } returns OasysAssessmentType.SOMETHING_IN_OASYS
+  }
 
   @Test
   fun `map Oasys answer from free text answer`() {
@@ -274,10 +280,10 @@ class AssessmentUpdateServiceOASysTest {
   fun `update OASys if OASysSet stored against episode`() {
     every { questionService.getAllQuestions() } returns setupQuestionCodes()
     every {
-      assessmentUpdateRestClient.pushUpdateToOasys(
+      assessmentUpdateRestClient.updateAssessment(
         oasysOffenderPk,
+        oasysAssessmentType,
         oasysSetPk,
-        assessmentSchemaCode,
         any()
       )
     } returns UpdateAssessmentAnswersResponseDto()
@@ -288,10 +294,10 @@ class AssessmentUpdateServiceOASysTest {
     assessmentsUpdateService.updateOASysAssessment(setupEpisode(), update)
 
     verify(exactly = 1) {
-      assessmentUpdateRestClient.pushUpdateToOasys(
+      assessmentUpdateRestClient.updateAssessment(
         oasysOffenderPk,
+        oasysAssessmentType,
         oasysSetPk,
-        assessmentSchemaCode,
         any()
       )
     }
@@ -301,10 +307,10 @@ class AssessmentUpdateServiceOASysTest {
   fun `don't update OASys if no OASysSet stored against episode`() {
     every { questionService.getAllQuestions() } returns setupQuestionCodes()
     every {
-      assessmentUpdateRestClient.pushUpdateToOasys(
+      assessmentUpdateRestClient.updateAssessment(
         oasysOffenderPk,
+        oasysAssessmentType,
         oasysSetPk,
-        assessmentSchemaCode,
         any()
       )
     } returns UpdateAssessmentAnswersResponseDto()
@@ -317,10 +323,10 @@ class AssessmentUpdateServiceOASysTest {
     assessmentsUpdateService.updateOASysAssessment(episode, update)
 
     verify(exactly = 0) {
-      assessmentUpdateRestClient.pushUpdateToOasys(
+      assessmentUpdateRestClient.updateAssessment(
         oasysOffenderPk,
+        oasysAssessmentType,
         oasysSetPk,
-        assessmentSchemaCode,
         any()
       )
     }
@@ -344,7 +350,6 @@ class AssessmentUpdateServiceOASysTest {
       assessment = assessment
     )
 
-    every { assessmentService.getEpisode(episodeUuid, assessmentUuid) } returns assessmentEpisode
     every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
     every { assessmentRepository.save(any()) } returns null // should save when errors?
     every { questionService.getAllSectionQuestionsForQuestions(any()) } returns QuestionSchemaEntities(questionsList = emptyList())
@@ -362,7 +367,14 @@ class AssessmentUpdateServiceOASysTest {
         )
       )
     )
-    every { assessmentUpdateRestClient.pushUpdateToOasys(any(), any(), any(), any()) } returns oasysError
+    every {
+      assessmentUpdateRestClient.updateAssessment(
+        any(),
+        oasysAssessmentType,
+        oasysSetPk,
+        any()
+      )
+    } returns oasysError
     every { predictorService.getPredictorResults(AssessmentSchemaCode.ROSH, assessmentEpisode) } returns emptyList()
     // Christ, what a lot of set up
 
@@ -370,7 +382,7 @@ class AssessmentUpdateServiceOASysTest {
     val updatedAnswers = UpdateAssessmentEpisodeDto(
       mapOf(existingQuestionUuid to listOf("fruit loops", "custard"))
     )
-    val episodeDto = assessmentsUpdateService.updateEpisode(assessmentUuid, episodeUuid, updatedAnswers)
+    val episodeDto = assessmentsUpdateService.updateEpisode(assessmentEpisode, updatedAnswers)
 
     // Updated answers in returned DTO
     assertThat(episodeDto.answers).hasSize(1)
@@ -391,17 +403,16 @@ class AssessmentUpdateServiceOASysTest {
   @Test
   fun `update episode sends only updated sections to oasys`() {
     val assessmentEpisode = setupEpisode()
-    every { assessmentService.getEpisode(episodeUuid, assessmentUuid) } returns assessmentEpisode
 
     every { questionService.getAllSectionQuestionsForQuestions(listOf(question1Uuid)) } returns setupSectionQuestionCodes()
 
     val oasysAnswersSlot = slot<Set<OasysAnswer>>()
 
     every {
-      assessmentUpdateRestClient.pushUpdateToOasys(
+      assessmentUpdateRestClient.updateAssessment(
         oasysOffenderPk,
+        oasysAssessmentType,
         oasysSetPk,
-        assessmentSchemaCode,
         capture(oasysAnswersSlot)
       )
     } returns UpdateAssessmentAnswersResponseDto()
@@ -410,13 +421,13 @@ class AssessmentUpdateServiceOASysTest {
     every { predictorService.getPredictorResults(AssessmentSchemaCode.ROSH, assessmentEpisode) } returns emptyList()
 
     val update = UpdateAssessmentEpisodeDto(answers = mapOf(question1Uuid to listOf("Updated")))
-    val updatedEpisode = assessmentsUpdateService.updateEpisode(assessmentUuid, episodeUuid, update)
+    val updatedEpisode = assessmentsUpdateService.updateEpisode(assessmentEpisode, update)
 
     verify(exactly = 1) {
-      assessmentUpdateRestClient.pushUpdateToOasys(
+      assessmentUpdateRestClient.updateAssessment(
         oasysOffenderPk,
+        oasysAssessmentType,
         oasysSetPk,
-        assessmentSchemaCode,
         any()
       )
     }
@@ -463,9 +474,12 @@ class AssessmentUpdateServiceOASysTest {
   private fun setupSectionQuestionCodes(): QuestionSchemaEntities {
     val dummy = AnswerSchemaGroupEntity(answerSchemaId = 99)
 
-    val yes = AnswerSchemaEntity(answerSchemaId = 1, answerSchemaUuid = answer1Uuid, value = "YES", answerSchemaGroup = dummy)
-    val maybe = AnswerSchemaEntity(answerSchemaId = 2, answerSchemaUuid = answer2Uuid, value = "MAYBE", answerSchemaGroup = dummy)
-    val no = AnswerSchemaEntity(answerSchemaId = 3, answerSchemaUuid = answer3Uuid, value = "NO", answerSchemaGroup = dummy)
+    val yes =
+      AnswerSchemaEntity(answerSchemaId = 1, answerSchemaUuid = answer1Uuid, value = "YES", answerSchemaGroup = dummy)
+    val maybe =
+      AnswerSchemaEntity(answerSchemaId = 2, answerSchemaUuid = answer2Uuid, value = "MAYBE", answerSchemaGroup = dummy)
+    val no =
+      AnswerSchemaEntity(answerSchemaId = 3, answerSchemaUuid = answer3Uuid, value = "NO", answerSchemaGroup = dummy)
 
     val group1 = AnswerSchemaGroupEntity(answerSchemaId = 1, answerSchemaEntities = listOf(yes))
     val group2 = AnswerSchemaGroupEntity(answerSchemaId = 2, answerSchemaEntities = listOf(maybe, no))

@@ -16,7 +16,7 @@ class AssessmentSchemaService(
   private val questionService: QuestionService
 ) {
 
-  fun getPredictorsForAssessment(assessmentSchemaCode: AssessmentSchemaCode?) : List<Predictor> {
+  fun getPredictorsForAssessment(assessmentSchemaCode: AssessmentSchemaCode?): List<Predictor> {
     return assessmentSchemaRepository.findByAssessmentSchemaCode(assessmentSchemaCode!!)?.predictors.orEmpty().toList()
   }
 
