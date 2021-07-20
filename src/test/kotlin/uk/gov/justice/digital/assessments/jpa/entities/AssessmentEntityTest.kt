@@ -35,7 +35,16 @@ class AssessmentEntityTest {
 
   @Test
   fun `should return existing episode if exists`() {
-    val assessment = AssessmentEntity(assessmentId = assessmentID, episodes = mutableListOf(AssessmentEpisodeEntity(episodeId = episodeId, changeReason = "Change of Circs")))
+    val assessment = AssessmentEntity(
+      assessmentId = assessmentID,
+      episodes = mutableListOf(
+        AssessmentEpisodeEntity(
+          episodeId = episodeId,
+          changeReason = "Change of Circs",
+          createdDate = LocalDateTime.now()
+        )
+      )
+    )
     assertThat(assessment.episodes).hasSize(1)
     val newEpisode = assessment.newEpisode("Another change of Circs", assessmentSchemaCode = assessmentSchemaCode)
     assertThat(newEpisode.episodeId).isEqualTo(episodeId)
@@ -45,7 +54,16 @@ class AssessmentEntityTest {
 
   @Test
   fun `should return latest episode if one exists`() {
-    val assessment = AssessmentEntity(assessmentId = assessmentID, episodes = mutableListOf(AssessmentEpisodeEntity(episodeId = episodeId, changeReason = "Change of Circs")))
+    val assessment = AssessmentEntity(
+      assessmentId = assessmentID,
+      episodes = mutableListOf(
+        AssessmentEpisodeEntity(
+          episodeId = episodeId,
+          changeReason = "Change of Circs",
+          createdDate = LocalDateTime.now()
+        )
+      )
+    )
     val episode = assessment.getCurrentEpisode()
     assertThat(episode?.episodeId).isEqualTo(episodeId)
     assertThat(episode?.changeReason).isEqualTo("Change of Circs")
@@ -53,7 +71,17 @@ class AssessmentEntityTest {
 
   @Test
   fun `should return null if no current episode`() {
-    val assessment = AssessmentEntity(assessmentId = assessmentID, episodes = mutableListOf(AssessmentEpisodeEntity(episodeId = episodeId, changeReason = "Change of Circs", endDate = LocalDateTime.now().minusDays(1))))
+    val assessment = AssessmentEntity(
+      assessmentId = assessmentID,
+      episodes = mutableListOf(
+        AssessmentEpisodeEntity(
+          episodeId = episodeId,
+          changeReason = "Change of Circs",
+          createdDate = LocalDateTime.now(),
+          endDate = LocalDateTime.now().minusDays(1)
+        )
+      )
+    )
     val episode = assessment.getCurrentEpisode()
     assertThat(episode).isNull()
   }

@@ -35,11 +35,11 @@ class PushToOasysAspect() {
     return Pair(null, null)
   }
 
-  @Pointcut("execution(* uk.gov.justice.digital.assessments.services.AssessmentUpdateService.updateOASysAssessment(..))")
+  @Pointcut("execution(* uk.gov.justice.digital.assessments.services.OasysAssessmentUpdateService.updateOASysAssessment(..))")
   fun pushUpdateToOasysPointcut() {
   }
 
-  @Pointcut("execution(* uk.gov.justice.digital.assessments.services.AssessmentUpdateService.completeOASysAssessment(..))")
+  @Pointcut("execution(* uk.gov.justice.digital.assessments.services.OasysAssessmentUpdateService.completeOASysAssessment(..))")
   fun pushCompleteToOasysPointcut() {
   }
 

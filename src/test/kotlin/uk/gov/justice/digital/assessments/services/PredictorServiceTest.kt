@@ -16,6 +16,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.Predictor
 import uk.gov.justice.digital.assessments.jpa.entities.PredictorFieldMapping
 import uk.gov.justice.digital.assessments.jpa.entities.PredictorType
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
+import java.time.LocalDateTime
 import java.util.UUID
 
 class PredictorServiceTest {
@@ -55,11 +56,13 @@ class PredictorServiceTest {
     episodeId = 1,
     episodeUuid = UUID.randomUUID(),
     answers = answers,
+    createdDate = LocalDateTime.now(),
   )
 
   private val assessmentEpisodeNoAnswers = AssessmentEpisodeEntity(
     episodeId = 2,
     episodeUuid = UUID.randomUUID(),
+    createdDate = LocalDateTime.now(),
   )
 
   @Nested

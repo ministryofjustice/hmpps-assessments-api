@@ -31,14 +31,14 @@ class AssessmentUpdateServiceCompleteTest {
   private val assessmentUpdateRestClient: AssessmentUpdateRestClient = mockk()
   private val assessmentSchemaService: AssessmentSchemaService = mockk()
   private val predictorService: PredictorService = mockk()
+  private val oasysAssessmentUpdateService: OasysAssessmentUpdateService = mockk()
 
   private val assessmentUpdateService = AssessmentUpdateService(
     assessmentRepository,
     episodeRepository,
     questionService,
-    assessmentUpdateRestClient,
     predictorService,
-    assessmentSchemaService
+    oasysAssessmentUpdateService
   )
 
   @BeforeEach
@@ -99,6 +99,7 @@ class AssessmentUpdateServiceCompleteTest {
         assessmentSchemaCode = AssessmentSchemaCode.ROSH,
         changeReason = "Change of Circs 2",
         oasysSetPk = 7777,
+        createdDate = LocalDateTime.now(),
       )
     )
     return assessment

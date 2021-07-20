@@ -33,7 +33,7 @@ class AssessmentService(
   private val questionService: QuestionService,
   private val episodeService: EpisodeService,
   private val courtCaseClient: CourtCaseRestClient,
-  private val assessmentUpdateService: AssessmentUpdateService,
+  private val oasysAssessmentUpdateService: OasysAssessmentUpdateService,
   private val offenderService: OffenderService
 ) {
   companion object {
@@ -142,7 +142,7 @@ class AssessmentService(
       return AssessmentDto.from(existingSubject.assessment)
     }
     val offender = offenderService.getOffender(crn)
-    val (oasysOffenderPk, oasysSetPK) = assessmentUpdateService.createOasysAssessment(
+    val (oasysOffenderPk, oasysSetPK) = oasysAssessmentUpdateService.createOasysAssessment(
       crn = crn,
       deliusEventId = eventId,
       assessmentSchemaCode = assessmentSchemaCode
@@ -172,7 +172,7 @@ class AssessmentService(
     val courtCase = courtCaseClient.getCourtCase(courtCode, caseNumber)
       ?: throw EntityNotFoundException("No court case found for $courtCode, $caseNumber")
 
-    val (oasysOffenderPk, oasysSetPK) = assessmentUpdateService.createOasysAssessment(
+    val (oasysOffenderPk, oasysSetPK) = oasysAssessmentUpdateService.createOasysAssessment(
       crn = courtCase.crn,
       assessmentSchemaCode = assessmentSchemaCode
     )

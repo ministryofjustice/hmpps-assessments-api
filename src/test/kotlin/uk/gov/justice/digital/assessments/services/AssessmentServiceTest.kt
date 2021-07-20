@@ -32,7 +32,7 @@ class AssessmentServiceTest {
   private val courtCaseRestClient: CourtCaseRestClient = mockk()
   private val episodeService: EpisodeService = mockk()
   private val offenderService: OffenderService = mockk()
-  private val assessmentUpdateService: AssessmentUpdateService = mockk()
+  private val oasysAssessmentUpdateService: OasysAssessmentUpdateService = mockk()
 
   private val assessmentsService = AssessmentService(
     assessmentRepository,
@@ -40,7 +40,7 @@ class AssessmentServiceTest {
     questionService,
     episodeService,
     courtCaseRestClient,
-    assessmentUpdateService,
+    oasysAssessmentUpdateService,
     offenderService
   )
 
@@ -72,7 +72,9 @@ class AssessmentServiceTest {
           "Change of Circs",
           assessmentSchemaCode = assessmentSchemaCode
         )
-      } returns AssessmentEpisodeEntity(episodeId = episodeId1, assessment = assessment)
+      } returns AssessmentEpisodeEntity(
+        episodeId = episodeId1, assessment = assessment, createdDate = LocalDateTime.now(),
+      )
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
       every { episodeService.prepopulate(any()) } returnsArgument 0
 
@@ -87,8 +89,12 @@ class AssessmentServiceTest {
       val assessment = AssessmentEntity(
         assessmentId = assessmentId,
         episodes = mutableListOf(
-          AssessmentEpisodeEntity(episodeId = episodeId1, changeReason = "Change of Circs 1"),
-          AssessmentEpisodeEntity(episodeId = episodeId2, changeReason = "Change of Circs 2")
+          AssessmentEpisodeEntity(
+            episodeId = episodeId1, changeReason = "Change of Circs 1", createdDate = LocalDateTime.now(),
+          ),
+          AssessmentEpisodeEntity(
+            episodeId = episodeId2, changeReason = "Change of Circs 2", createdDate = LocalDateTime.now(),
+          )
         )
       )
 
@@ -116,9 +122,12 @@ class AssessmentServiceTest {
           AssessmentEpisodeEntity(
             episodeId = episodeId1,
             changeReason = "Change of Circs 1",
+            createdDate = LocalDateTime.now(),
             endDate = LocalDateTime.now().minusDays(1)
           ),
-          AssessmentEpisodeEntity(episodeId = episodeId2, changeReason = "Change of Circs 2")
+          AssessmentEpisodeEntity(
+            episodeId = episodeId2, changeReason = "Change of Circs 2", createdDate = LocalDateTime.now(),
+          )
         )
       )
 
@@ -162,11 +171,13 @@ class AssessmentServiceTest {
         episodes = mutableListOf(
           AssessmentEpisodeEntity(
             episodeId = episodeId1,
-            answers = mutableMapOf(question1Uuid to AnswerEntity.from("YES"))
+            answers = mutableMapOf(question1Uuid to AnswerEntity.from("YES")),
+            createdDate = LocalDateTime.now(),
           ),
           AssessmentEpisodeEntity(
             episodeId = episodeId2,
-            answers = mutableMapOf(question2Uuid to AnswerEntity.from("NO"))
+            answers = mutableMapOf(question2Uuid to AnswerEntity.from("NO")),
+            createdDate = LocalDateTime.now(),
           )
         )
       )
@@ -192,21 +203,24 @@ class AssessmentServiceTest {
             endDate = LocalDateTime.of(2020, 10, 1, 9, 0, 0),
             answers = mutableMapOf(
               question1Uuid to AnswerEntity.from("YES")
-            )
+            ),
+            createdDate = LocalDateTime.now(),
           ),
           AssessmentEpisodeEntity(
             episodeId = episodeId3,
             endDate = LocalDateTime.of(2020, 10, 2, 10, 0, 0),
             answers = mutableMapOf(
               question2Uuid to AnswerEntity.from("MAYBE")
-            )
+            ),
+            createdDate = LocalDateTime.now(),
           ),
           AssessmentEpisodeEntity(
             episodeId = episodeId2,
             endDate = LocalDateTime.of(2020, 10, 2, 9, 0, 0),
             answers = mutableMapOf(
               question2Uuid to AnswerEntity.from("NO")
-            )
+            ),
+            createdDate = LocalDateTime.now(),
           ),
         )
       )
@@ -228,21 +242,24 @@ class AssessmentServiceTest {
             endDate = LocalDateTime.of(2020, 10, 1, 9, 0, 0),
             answers = mutableMapOf(
               question1Uuid to AnswerEntity.from("YES")
-            )
+            ),
+            createdDate = LocalDateTime.now(),
           ),
           AssessmentEpisodeEntity(
             episodeId = episodeId3,
             endDate = null,
             answers = mutableMapOf(
               question2Uuid to AnswerEntity.from("NO")
-            )
+            ),
+            createdDate = LocalDateTime.now(),
           ),
           AssessmentEpisodeEntity(
             episodeId = episodeId2,
             endDate = LocalDateTime.of(2020, 10, 2, 9, 0, 0),
             answers = mutableMapOf(
               question2Uuid to AnswerEntity.from("MAYBE")
-            )
+            ),
+            createdDate = LocalDateTime.now(),
           ),
         )
       )
@@ -266,7 +283,8 @@ class AssessmentServiceTest {
             answers = mutableMapOf(
               question1Uuid to AnswerEntity.from("YES"),
               question3Uuid to AnswerEntity.from("free text")
-            )
+            ),
+            createdDate = LocalDateTime.now(),
           )
         )
       )
@@ -300,7 +318,8 @@ class AssessmentServiceTest {
             episodeId = episodeId1,
             answers = mutableMapOf(
               question2Uuid to AnswerEntity.from("YES")
-            )
+            ),
+            createdDate = LocalDateTime.now(),
           )
         )
       )
@@ -324,7 +343,8 @@ class AssessmentServiceTest {
             episodeId = episodeId1,
             answers = mutableMapOf(
               question1Uuid to AnswerEntity.from("NO")
-            )
+            ),
+            createdDate = LocalDateTime.now(),
           )
         )
       )
