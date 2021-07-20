@@ -45,7 +45,7 @@ class AssessmentUpdateServiceITTest() : IntegrationTest() {
       AssessmentEpisodeDto.from(
         assessment.episodes.first(),
         null,
-        listOf(PredictorScoreDto(type = PredictorType.RSR, status = PredictorResultStatus.UNDETERMINED, score = null))
+       emptyList()
       )
     )
   }
