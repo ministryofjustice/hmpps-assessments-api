@@ -14,9 +14,10 @@ class AnswersDtoTest {
     """.trimIndent()
 
     val deserialized = ObjectMapper().readValue(testAnswers, AnswersDto::class.java)
-    assertThat(deserialized.answers.size).isEqualTo(1)
-    assertThat(deserialized.answers.first().items.size).isEqualTo(1)
-    assertThat(deserialized.answers.first().items.first()).isEqualTo("TEST_ANSWER")
+    with (deserialized.answers) {
+      assertThat(size).isEqualTo(1)
+      assertThat(first().items).isEqualTo(listOf("TEST_ANSWER"))
+    }
   }
 
   @Test
@@ -28,9 +29,20 @@ class AnswersDtoTest {
     """.trimIndent()
 
     val deserialized = ObjectMapper().readValue(testAnswers, AnswersDto::class.java)
-    assertThat(deserialized.answers.size).isEqualTo(1)
-    assertThat(deserialized.answers.first().items.size).isEqualTo(1)
-    assertThat(deserialized.answers.first().items.first()).isEqualTo("TEST_ANSWER")
+    with (deserialized.answers) {
+      assertThat(size).isEqualTo(1)
+      assertThat(first().items).isEqualTo(listOf("TEST_ANSWER"))
+    }
+  }
+
+  @Test
+  fun `handles and empty list`() {
+    val testAnswers = """
+      []
+    """.trimIndent()
+
+    val deserialized = ObjectMapper().readValue(testAnswers, AnswersDto::class.java)
+    assertThat(deserialized.answers.size).isEqualTo(0)
   }
 
   @Test
@@ -42,8 +54,10 @@ class AnswersDtoTest {
     """.trimIndent()
 
     val deserialized = ObjectMapper().readValue(testAnswers, AnswersDto::class.java)
-    assertThat(deserialized.answers.size).isEqualTo(1)
-    assertThat(deserialized.answers.first().items.size).isEqualTo(0)
+    with (deserialized.answers) {
+      assertThat(size).isEqualTo(1)
+      assertThat(first().items).isEqualTo(emptyList<AnswerDto>())
+    }
   }
 
   @Test
@@ -55,7 +69,24 @@ class AnswersDtoTest {
     """.trimIndent()
 
     val deserialized = ObjectMapper().readValue(testAnswers, AnswersDto::class.java)
-    assertThat(deserialized.answers.size).isEqualTo(1)
-    assertThat(deserialized.answers.first().items.size).isEqualTo(0)
+    with (deserialized.answers) {
+      assertThat(size).isEqualTo(1)
+      assertThat(first().items).isEqualTo(emptyList<AnswerDto>())
+    }
+  }
+
+  @Test
+  fun `filters out empty answers when passed an empty list`() {
+    val testAnswers = """
+      [
+        []
+      ]
+    """.trimIndent()
+
+    val deserialized = ObjectMapper().readValue(testAnswers, AnswersDto::class.java)
+    with (deserialized.answers) {
+      assertThat(size).isEqualTo(1)
+      assertThat(first().items).isEqualTo(emptyList<AnswerDto>())
+    }
   }
 }
