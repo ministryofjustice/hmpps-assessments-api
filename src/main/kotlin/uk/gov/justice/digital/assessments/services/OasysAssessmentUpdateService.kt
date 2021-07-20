@@ -4,20 +4,12 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.assessments.api.AnswersDto
-import uk.gov.justice.digital.assessments.api.AssessmentEpisodeDto
-import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
-import uk.gov.justice.digital.assessments.jpa.entities.Answer
-import uk.gov.justice.digital.assessments.jpa.entities.AnswerEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
-import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
-import uk.gov.justice.digital.assessments.jpa.repositories.EpisodeRepository
 import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient
 import uk.gov.justice.digital.assessments.services.dto.AssessmentEpisodeUpdateErrors
 import uk.gov.justice.digital.assessments.services.dto.OasysAnswers
-import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
 import java.util.UUID
-import javax.transaction.Transactional
 
 @Service
 class OasysAssessmentUpdateService(

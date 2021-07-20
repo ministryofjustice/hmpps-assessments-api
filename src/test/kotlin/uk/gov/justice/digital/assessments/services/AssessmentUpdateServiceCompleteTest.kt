@@ -69,14 +69,16 @@ class AssessmentUpdateServiceCompleteTest {
     every { assessmentRepository.findByAssessmentUuid(any()) } returns assessment
     every { episodeRepository.save(any()) } returns assessment.episodes[0]
     every {
-      oasysAssessmentUpdateService.completeOASysAssessment(assessment.episodes.first(),9999)
-    } returns AssessmentEpisodeUpdateErrors()
+      oasysAssessmentUpdateService.completeOASysAssessment(assessment.episodes.first(), 9999)
+    } returns AssessmentEpisodeUpdateErrors(
+      answerErrors = mutableMapOf(UUID.randomUUID() to mutableListOf("error"))
+    )
 
     val episode = assessmentUpdateService.closeEpisode(assessment.episodes.first())
 
     verify(exactly = 0) { episodeRepository.save(any()) }
     verify(exactly = 1) {
-      oasysAssessmentUpdateService.completeOASysAssessment(assessment.episodes.first(),9999)
+      oasysAssessmentUpdateService.completeOASysAssessment(assessment.episodes.first(), 9999)
     }
     assertThat(episode.ended).isNull()
   }
