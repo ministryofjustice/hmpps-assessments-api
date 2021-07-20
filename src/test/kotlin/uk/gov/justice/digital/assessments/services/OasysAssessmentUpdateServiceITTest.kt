@@ -7,6 +7,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
+import java.time.LocalDateTime
 import java.util.UUID
 
 class OasysAssessmentUpdateServiceITTest() : IntegrationTest() {
@@ -49,8 +50,9 @@ class OasysAssessmentUpdateServiceITTest() : IntegrationTest() {
         episodeId = episodeId2,
         changeReason = "Change of Circs 2",
         assessmentSchemaCode = AssessmentSchemaCode.RSR,
-        answers = mutableMapOf()
-      )
+        answers = mutableMapOf(),
+        createdDate = LocalDateTime.now(),
+        )
     )
   )
 }

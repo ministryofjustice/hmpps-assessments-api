@@ -28,7 +28,7 @@ class AssessmentEntity(
   val assessmentUuid: UUID = UUID.randomUUID(),
 
   @Column(name = "CREATED_DATE")
-  val createdDate: LocalDateTime? = null,
+  val createdDate: LocalDateTime = LocalDateTime.now(),
 
   @Column(name = "COMPLETED_DATE")
   var completedDate: LocalDateTime? = null,

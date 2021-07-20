@@ -49,7 +49,7 @@ class AssessmentEpisodeEntity(
   val userId: String? = null,
 
   @Column(name = "CREATED_DATE")
-  val createdDate: LocalDateTime,
+  val createdDate: LocalDateTime = LocalDateTime.now(),
 
   @Column(name = "END_DATE")
   var endDate: LocalDateTime? = null,
