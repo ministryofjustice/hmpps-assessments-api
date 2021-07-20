@@ -3,7 +3,6 @@ package uk.gov.justice.digital.assessments.services
 import io.mockk.every
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
-import io.mockk.slot
 import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
@@ -357,42 +356,26 @@ class AssessmentUpdateServiceOASysTest {
   }
 
   @Test
-  fun `update episode sends only updated sections to oasys`() {
+  fun `update episode calls updateOASysAssessment with the updated answers`() {
     val assessmentEpisode = setupEpisode()
 
     every { questionService.getAllSectionQuestionsForQuestions(listOf(question1Uuid)) } returns setupSectionQuestionCodes()
 
-    val oasysAnswersSlot = slot<Set<OasysAnswer>>()
-
+    val update = UpdateAssessmentEpisodeDto(answers = mapOf(question1Uuid to listOf("Updated")))
     every {
-      assessmentUpdateRestClient.updateAssessment(
-        oasysOffenderPk,
-        oasysAssessmentType,
-        oasysSetPk,
-        capture(oasysAnswersSlot)
-      )
-    } returns UpdateAssessmentAnswersResponseDto()
+      oasysAssessmentUpdateService.updateOASysAssessment(assessmentEpisode, update.asAnswersDtos())
+    } returns AssessmentEpisodeUpdateErrors()
     every { questionService.getAllQuestions() } returns setupQuestionCodes()
     every { assessmentRepository.save(any()) } returns mockk()
     every { predictorService.getPredictorResults(AssessmentSchemaCode.ROSH, assessmentEpisode) } returns emptyList()
 
-    val update = UpdateAssessmentEpisodeDto(answers = mapOf(question1Uuid to listOf("Updated")))
     val updatedEpisode = assessmentsUpdateService.updateEpisode(assessmentEpisode, update)
 
     verify(exactly = 1) {
-      assessmentUpdateRestClient.updateAssessment(
-        oasysOffenderPk,
-        oasysAssessmentType,
-        oasysSetPk,
-        any()
+      oasysAssessmentUpdateService.updateOASysAssessment(
+        assessmentEpisode,
+        update.asAnswersDtos()
       )
-    }
-    with(oasysAnswersSlot.captured) {
-      assertThat(map { it.questionCode }).containsOnly("oasysQ1", "oasysQ2")
-      assertThat(map { it.sectionCode }).containsOnly("section1")
-      assertThat(first { it.questionCode == "oasysQ1" }.answer).isEqualTo("Updated")
-      assertThat(first { it.questionCode == "oasysQ2" }.answer).isEqualTo("1975-01-20T00:00:00.000Z")
-      assertThat(map { it.answer }).doesNotContain("not mapped to oasys")
     }
 
     with(updatedEpisode.answers) {

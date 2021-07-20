@@ -312,5 +312,4 @@ class AssessmentUpdateService(
     }
     return AssessmentEpisodeDto.from(episode, oasysResult)
   }
-
 }

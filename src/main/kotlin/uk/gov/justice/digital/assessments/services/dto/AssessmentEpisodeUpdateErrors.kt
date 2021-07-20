@@ -34,9 +34,9 @@ class AssessmentEpisodeUpdateErrors(
       episode: AssessmentEpisodeEntity,
       questions: QuestionSchemaEntities?,
       oasysUpdateResult: UpdateAssessmentAnswersResponseDto?
-    ): AssessmentEpisodeUpdateErrors? {
+    ): AssessmentEpisodeUpdateErrors {
       if (oasysUpdateResult == null || oasysUpdateResult.validationErrorDtos.isEmpty())
-        return null
+        return AssessmentEpisodeUpdateErrors()
 
       val updateErrors = AssessmentEpisodeUpdateErrors()
       if (questions != null) {

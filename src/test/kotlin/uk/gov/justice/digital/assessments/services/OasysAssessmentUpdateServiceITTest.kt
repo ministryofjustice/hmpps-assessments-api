@@ -29,7 +29,10 @@ class OasysAssessmentUpdateServiceITTest() : IntegrationTest() {
   @Test
   fun `Trying to push to Create OASys Assessment that should not be pushed into Oasys returns null`() {
     val returnAssessmentPk =
-      oasysAssessmentUpdateService.createOasysAssessment(crn = "DX12340A", assessmentSchemaCode = AssessmentSchemaCode.RSR)
+      oasysAssessmentUpdateService.createOasysAssessment(
+        crn = "DX12340A",
+        assessmentSchemaCode = AssessmentSchemaCode.RSR
+      )
     assertThat(returnAssessmentPk).isEqualTo(Pair(null, null))
   }
 
@@ -61,7 +64,7 @@ class OasysAssessmentUpdateServiceITTest() : IntegrationTest() {
         assessmentSchemaCode = AssessmentSchemaCode.RSR,
         answers = mutableMapOf(),
         createdDate = LocalDateTime.now(),
-        )
+      )
     )
   )
 }

@@ -24,11 +24,11 @@ class OasysAssessmentUpdateService(
   fun updateOASysAssessment(
     episode: AssessmentEpisodeEntity,
     updatedEpisodeAnswers: Map<UUID, AnswersDto>
-  ): AssessmentEpisodeUpdateErrors? {
+  ): AssessmentEpisodeUpdateErrors {
     val offenderPk = episode.assessment?.subject?.oasysOffenderPk
     if (episode.assessmentSchemaCode == null || episode.oasysSetPk == null || offenderPk == null) {
       log.info("Unable to update OASys Assessment with keys type: ${episode.assessmentSchemaCode} oasysSet: ${episode.oasysSetPk} offenderPk: $offenderPk")
-      return null
+      return AssessmentEpisodeUpdateErrors()
     }
 
     val oasysAnswers = OasysAnswers.from(

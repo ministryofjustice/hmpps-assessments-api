@@ -3,33 +3,32 @@ package uk.gov.justice.digital.assessments.services
 import io.mockk.every
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
+import io.mockk.slot
 import io.mockk.verify
-import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEntity
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
-import uk.gov.justice.digital.assessments.testutils.IntegrationTest
-import java.util.UUID
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import uk.gov.justice.digital.assessments.api.AnswerDto
 import uk.gov.justice.digital.assessments.api.AnswersDto
+import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.jpa.entities.AnswerEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AnswerSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AnswerSchemaGroupEntity
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEntity
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.OASysMappingEntity
 import uk.gov.justice.digital.assessments.jpa.entities.OasysAssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.SubjectEntity
-import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
-import uk.gov.justice.digital.assessments.jpa.repositories.SubjectRepository
 import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient
-import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
+import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OasysAnswer
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.UpdateAssessmentAnswersResponseDto
 import java.time.LocalDateTime
+import java.util.UUID
 
 @ExtendWith(MockKExtension::class)
 @DisplayName("Oasys Assessment Update Service Tests")
@@ -117,6 +116,65 @@ class OasysAssessmentUpdateServiceTest() {
     }
   }
 
+  @Test
+  fun `update episode sends only updated sections to oasys`() {
+    val assessmentEpisode = setupEpisode()
+
+    every { questionService.getAllSectionQuestionsForQuestions(listOf(question1Uuid)) } returns setupSectionQuestionCodes()
+
+    val update = UpdateAssessmentEpisodeDto(answers = mapOf(question1Uuid to listOf("Updated")))
+    val oasysAnswersSlot = slot<Set<OasysAnswer>>()
+    every {
+      assessmentUpdateRestClient.updateAssessment(
+        oasysOffenderPk,
+        oasysAssessmentType,
+        oasysSetPk,
+        capture(oasysAnswersSlot)
+      )
+    } returns UpdateAssessmentAnswersResponseDto()
+    every { questionService.getAllQuestions() } returns setupQuestionCodes()
+
+    val updateErrors = oasysAssessmentUpdateService.updateOASysAssessment(assessmentEpisode, update.asAnswersDtos())
+
+    verify(exactly = 1) {
+      assessmentUpdateRestClient.updateAssessment(
+        oasysOffenderPk,
+        oasysAssessmentType,
+        oasysSetPk,
+        any()
+      )
+    }
+    with(oasysAnswersSlot.captured) {
+      assertThat(map { it.questionCode }).containsOnly("oasysQ1", "oasysQ2")
+      assertThat(map { it.sectionCode }).containsOnly("section1")
+      assertThat(first { it.questionCode == "oasysQ1" }.answer).isEqualTo("some free text")
+      assertThat(first { it.questionCode == "oasysQ2" }.answer).isEqualTo("1975-01-20T00:00:00.000Z")
+      assertThat(map { it.answer }).doesNotContain("not mapped to oasys")
+    }
+    assertFalse(updateErrors.hasErrors()!!)
+  }
+
+  private fun setupSectionQuestionCodes(): QuestionSchemaEntities {
+    val dummy = AnswerSchemaGroupEntity(answerSchemaId = 99)
+
+    val yes =
+      AnswerSchemaEntity(answerSchemaId = 1, answerSchemaUuid = answer1Uuid, value = "YES", answerSchemaGroup = dummy)
+    val maybe =
+      AnswerSchemaEntity(answerSchemaId = 2, answerSchemaUuid = answer2Uuid, value = "MAYBE", answerSchemaGroup = dummy)
+    val no =
+      AnswerSchemaEntity(answerSchemaId = 3, answerSchemaUuid = answer3Uuid, value = "NO", answerSchemaGroup = dummy)
+
+    val group1 = AnswerSchemaGroupEntity(answerSchemaId = 1, answerSchemaEntities = listOf(yes))
+    val group2 = AnswerSchemaGroupEntity(answerSchemaId = 2, answerSchemaEntities = listOf(maybe, no))
+
+    return QuestionSchemaEntities(
+      listOf(
+        makeQuestion(1, question1Uuid, "Q1", "checkbox", group1, "section1", 1, "oasysQ1"),
+        makeQuestion(2, question2Uuid, "Q2", "radio", group2, "section1", 1, "oasysQ2")
+      )
+    )
+  }
+
   fun makeAnswersDto(vararg ans: String): AnswersDto {
     return AnswersDto(listOf(AnswerDto(listOf(*ans))))
   }
@@ -197,5 +255,4 @@ class OasysAssessmentUpdateServiceTest() {
       )
     return question
   }
-
 }

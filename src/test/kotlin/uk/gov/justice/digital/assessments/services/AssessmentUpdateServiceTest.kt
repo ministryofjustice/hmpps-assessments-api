@@ -221,7 +221,6 @@ class AssessmentUpdateServiceTest {
         )
       } returns AssessmentEpisodeUpdateErrors()
 
-
       val tableAnswers = UpdateAssessmentEpisodeDto(
         mapOf(
           childQuestion1 to listOf("child name"),
@@ -258,7 +257,6 @@ class AssessmentUpdateServiceTest {
           any()
         )
       } returns AssessmentEpisodeUpdateErrors()
-
 
       val tableAnswers = UpdateAssessmentEpisodeDto(
         mapOf(
@@ -345,7 +343,6 @@ class AssessmentUpdateServiceTest {
         )
       } returns AssessmentEpisodeUpdateErrors()
 
-
       val tableAnswers = UpdateAssessmentEpisodeDto(
         mapOf(
           childQuestion1 to listOf("child name 2")
@@ -431,7 +428,6 @@ class AssessmentUpdateServiceTest {
           any()
         )
       } returns AssessmentEpisodeUpdateErrors()
-
 
       val tableAnswers = UpdateAssessmentEpisodeDto(
         mapOf(
@@ -527,7 +523,6 @@ class AssessmentUpdateServiceTest {
         )
       } returns AssessmentEpisodeUpdateErrors()
 
-
       val episodeDto =
         assessmentUpdateService.deleteEpisodeTableRow(assessmentEntity.episodes.first(), "children_at_risk", 0)
 
@@ -561,7 +556,6 @@ class AssessmentUpdateServiceTest {
           any()
         )
       } returns AssessmentEpisodeUpdateErrors()
-
 
       val episodeDto =
         assessmentUpdateService.deleteEpisodeTableRow(assessmentEntity.episodes.first(), "children_at_risk", 1)
@@ -631,7 +625,6 @@ class AssessmentUpdateServiceTest {
           any()
         )
       } returns AssessmentEpisodeUpdateErrors()
-
 
       val episodeDto =
         assessmentUpdateService.deleteEpisodeTableRow(assessmentEntity.episodes.first(), "children_at_risk", 0)

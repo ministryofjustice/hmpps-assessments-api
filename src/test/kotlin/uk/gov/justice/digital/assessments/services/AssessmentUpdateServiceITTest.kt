@@ -1,19 +1,16 @@
 package uk.gov.justice.digital.assessments.services
 
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import uk.gov.justice.digital.assessments.api.AssessmentEpisodeDto
+import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
-import java.util.UUID
-import org.assertj.core.api.Assertions.assertThat
-import uk.gov.justice.digital.assessments.api.AssessmentEpisodeDto
-import uk.gov.justice.digital.assessments.api.PredictorResultStatus
-import uk.gov.justice.digital.assessments.api.PredictorScoreDto
-import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
-import uk.gov.justice.digital.assessments.jpa.entities.PredictorType
 import java.time.LocalDateTime
+import java.util.UUID
 
 class AssessmentUpdateServiceITTest() : IntegrationTest() {
   @Autowired
@@ -45,7 +42,7 @@ class AssessmentUpdateServiceITTest() : IntegrationTest() {
       AssessmentEpisodeDto.from(
         assessment.episodes.first(),
         null,
-       emptyList()
+        emptyList()
       )
     )
   }
