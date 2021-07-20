@@ -62,7 +62,8 @@ object AnswersDtoDeserializer : StdDeserializer<AnswersDto>(AnswersDto::class.ja
 
     if (node.isTextual) {
       val item = ctxt.readValue(p, String::class.java)
-      return AnswersDto(listOf(AnswerDto(listOf(item))))
+      val items = deserialiseTextualAnswer(item)
+      return AnswersDto(listOf(AnswerDto(items)))
     }
     if (node.isArray) {
       val answers = node.elements().asSequence().map { deserialiseAnswerDto(it) }.toList()
@@ -72,15 +73,21 @@ object AnswersDtoDeserializer : StdDeserializer<AnswersDto>(AnswersDto::class.ja
     throw IllegalStateException("Expected a string or array of strings to deserialise an Answer, but type was ${node.nodeType}")
   }
 
-  fun deserialiseAnswerDto(node: JsonNode): AnswerDto {
+  private fun deserialiseAnswerDto(node: JsonNode): AnswerDto {
     if (node.isTextual) {
-      return AnswerDto(listOf(node.asText()))
+      val item = node.asText()
+      val items = deserialiseTextualAnswer(item)
+      return AnswerDto(items)
     }
     if (node.isArray) {
-      val items = node.elements().asSequence().map { it.asText() }.toList()
+      val items = node.elements().asSequence().map { it.asText() }.filter { it.isNotBlank()}.toList()
       return AnswerDto(items)
     }
 
     throw IllegalStateException("Expected a string or array of strings to deserialise an Answer, but type was ${node.nodeType}")
+  }
+
+  private fun deserialiseTextualAnswer(s: String) :  List<String> {
+    return if (s.isNotBlank()) listOf(s) else emptyList()
   }
 }
