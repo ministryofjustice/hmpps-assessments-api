@@ -30,6 +30,7 @@ import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OasysAnswer
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.UpdateAssessmentAnswersResponseDto
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.ValidationErrorDto
+import uk.gov.justice.digital.assessments.services.dto.AssessmentEpisodeUpdateErrors
 import uk.gov.justice.digital.assessments.services.dto.OasysAnswers
 import uk.gov.justice.digital.assessments.testutils.Verify
 import java.time.LocalDateTime
@@ -298,7 +299,14 @@ class AssessmentUpdateServiceOASysTest {
       assessment = assessment
     )
 
-    every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
+    every {
+      oasysAssessmentUpdateService.updateOASysAssessment(
+        assessmentEpisode,
+        any()
+      )
+    } returns AssessmentEpisodeUpdateErrors(
+      answerErrors = mutableMapOf(UUID.randomUUID() to mutableListOf("error"))
+    )
     every { assessmentRepository.save(any()) } returns null // should save when errors?
     every { questionService.getAllSectionQuestionsForQuestions(any()) } returns QuestionSchemaEntities(questionsList = emptyList())
 
