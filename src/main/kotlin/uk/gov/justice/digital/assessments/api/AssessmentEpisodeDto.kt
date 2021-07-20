@@ -6,7 +6,7 @@ import uk.gov.justice.digital.assessments.services.dto.AssessmentEpisodeUpdateEr
 import java.time.LocalDateTime
 import java.util.UUID
 
-class AssessmentEpisodeDto(
+data class AssessmentEpisodeDto(
 
   @Schema(description = "Episode primary key", example = "1234")
   val episodeId: Long? = null,

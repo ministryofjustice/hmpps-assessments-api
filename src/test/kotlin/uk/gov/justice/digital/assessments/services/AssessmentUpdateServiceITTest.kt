@@ -8,7 +8,11 @@ import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import java.util.UUID
 import org.assertj.core.api.Assertions.assertThat
+import uk.gov.justice.digital.assessments.api.AssessmentEpisodeDto
+import uk.gov.justice.digital.assessments.api.PredictorResultStatus
+import uk.gov.justice.digital.assessments.api.PredictorScoreDto
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
+import uk.gov.justice.digital.assessments.jpa.entities.PredictorType
 import java.time.LocalDateTime
 
 class AssessmentUpdateServiceITTest() : IntegrationTest() {
@@ -23,7 +27,13 @@ class AssessmentUpdateServiceITTest() : IntegrationTest() {
     val assessment = rsrAssessment()
     val updateAssessmentResponse =
       assessmentUpdateService.updateEpisode(assessment.episodes.first(), UpdateAssessmentEpisodeDto(mutableMapOf()))
-    assertThat(updateAssessmentResponse).isEqualTo(null)
+    assertThat(updateAssessmentResponse).isEqualTo(
+      AssessmentEpisodeDto.from(
+        assessment.episodes.first(),
+        null,
+        listOf(PredictorScoreDto(type = PredictorType.RSR, status = PredictorResultStatus.UNDETERMINED, score = null))
+      )
+    )
   }
 
   @Test
@@ -31,7 +41,13 @@ class AssessmentUpdateServiceITTest() : IntegrationTest() {
     val assessment = rsrAssessment()
     val updateAssessmentResponse =
       assessmentUpdateService.closeEpisode(assessment.episodes.first())
-    assertThat(updateAssessmentResponse).isEqualTo(null)
+    assertThat(updateAssessmentResponse).isEqualTo(
+      AssessmentEpisodeDto.from(
+        assessment.episodes.first(),
+        null,
+        listOf(PredictorScoreDto(type = PredictorType.RSR, status = PredictorResultStatus.UNDETERMINED, score = null))
+      )
+    )
   }
 
   private fun rsrAssessment() = AssessmentEntity(
