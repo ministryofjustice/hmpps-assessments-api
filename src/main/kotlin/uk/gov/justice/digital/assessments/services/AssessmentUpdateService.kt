@@ -298,10 +298,6 @@ class AssessmentUpdateService(
     episode: AssessmentEpisodeEntity
   ): AssessmentEpisodeDto {
     val offenderPk: Long? = episode.assessment?.subject?.oasysOffenderPk
-    if (episode.assessmentSchemaCode == null || episode.oasysSetPk == null || offenderPk == null) {
-      log.info("Unable to complete OASys Assessment with keys type: ${episode.assessmentSchemaCode} oasysSet: ${episode.oasysSetPk} offenderPk: $offenderPk")
-      return AssessmentEpisodeDto.from(episode, null)
-    }
     val oasysResult = oasysAssessmentUpdateService.completeOASysAssessment(episode, offenderPk)
     if (oasysResult?.hasErrors() == true) {
       log.info("Unable to close episode ${episode.episodeUuid} for assessment ${episode.assessment?.assessmentUuid} with OASys restclient")
