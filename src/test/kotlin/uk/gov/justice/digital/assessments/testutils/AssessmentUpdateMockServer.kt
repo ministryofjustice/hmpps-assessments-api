@@ -147,6 +147,28 @@ class AssessmentUpdateMockServer : WireMockServer(9003) {
         )
     )
 
+    stubFor(
+      WireMock.put(WireMock.urlEqualTo("/assessments"))
+        .withRequestBody(
+          equalToJson(
+            "{\n" +
+              "    \"offenderPk\": 1,\n" +
+              "    \"areaCode\": \"WWS\",\n" +
+              "    \"oasysUserCode\": \"STUARTWHITLAM\",\n" +
+              "    \"assessmentType\": \"SHORT_FORM_PSR\",\n" +
+              "    \"oasysSetPk\": 1,\n" +
+              "    \"answers\": []\n" +
+              "}",
+            true,
+            true
+          )
+        )
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withBody(updateAssessmentJson)
+        )
+    )
     // complete assessment successfully
     stubFor(
       WireMock.put(WireMock.urlEqualTo("/assessments/complete"))

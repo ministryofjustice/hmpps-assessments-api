@@ -10,6 +10,7 @@ import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient
 import uk.gov.justice.digital.assessments.services.dto.AssessmentEpisodeUpdateErrors
 import uk.gov.justice.digital.assessments.services.dto.OasysAnswers
 import java.util.UUID
+import javax.transaction.Transactional
 
 @Service
 class OasysAssessmentUpdateService(
@@ -21,14 +22,17 @@ class OasysAssessmentUpdateService(
     val log: Logger = LoggerFactory.getLogger(this::class.java)
   }
 
+  @Transactional
   fun updateOASysAssessment(
     episode: AssessmentEpisodeEntity,
     updatedEpisodeAnswers: Map<UUID, AnswersDto>
   ): AssessmentEpisodeUpdateErrors {
     val offenderPk = episode.assessment?.subject?.oasysOffenderPk
     if (episode.assessmentSchemaCode == null || episode.oasysSetPk == null || offenderPk == null) {
-      log.info("Unable to update OASys Assessment with keys type: ${episode.assessmentSchemaCode} oasysSet: ${episode.oasysSetPk} offenderPk: $offenderPk")
-      return AssessmentEpisodeUpdateErrors()
+      val errorMessage =
+        "Unable to update OASys Assessment with keys type: ${episode.assessmentSchemaCode} oasysSet: ${episode.oasysSetPk} offenderPk: $offenderPk, values cant be null"
+      log.error(errorMessage)
+      return AssessmentEpisodeUpdateErrors(errorsInAssessment = mutableListOf("$errorMessage"))
     }
 
     val oasysAnswers = OasysAnswers.from(
@@ -65,6 +69,12 @@ class OasysAssessmentUpdateService(
     episode: AssessmentEpisodeEntity,
     offenderPk: Long?,
   ): AssessmentEpisodeUpdateErrors? {
+    if (episode.assessmentSchemaCode == null || episode.oasysSetPk == null || offenderPk == null) {
+      val errorMessage =
+        "Unable to complete OASys Assessment with keys type: ${episode.assessmentSchemaCode} oasysSet: ${episode.oasysSetPk} offenderPk: $offenderPk, values cant be null"
+      log.error(errorMessage)
+      return AssessmentEpisodeUpdateErrors(errorsInAssessment = mutableListOf(errorMessage))
+    }
     val oasysAssessmentType = assessmentSchemaService.toOasysAssessmentType(episode.assessmentSchemaCode)
     val oasysUpdateResult =
       assessmentUpdateRestClient.completeAssessment(offenderPk!!, oasysAssessmentType, episode.oasysSetPk!!)
