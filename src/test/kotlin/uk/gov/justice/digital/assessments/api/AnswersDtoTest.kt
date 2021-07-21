@@ -14,7 +14,7 @@ class AnswersDtoTest {
     """.trimIndent()
 
     val deserialized = ObjectMapper().readValue(testAnswers, AnswersDto::class.java)
-    with (deserialized.answers) {
+    with(deserialized.answers) {
       assertThat(size).isEqualTo(1)
       assertThat(first().items).isEqualTo(listOf("TEST_ANSWER"))
     }
@@ -29,7 +29,7 @@ class AnswersDtoTest {
     """.trimIndent()
 
     val deserialized = ObjectMapper().readValue(testAnswers, AnswersDto::class.java)
-    with (deserialized.answers) {
+    with(deserialized.answers) {
       assertThat(size).isEqualTo(1)
       assertThat(first().items).isEqualTo(listOf("TEST_ANSWER"))
     }
@@ -54,7 +54,7 @@ class AnswersDtoTest {
     """.trimIndent()
 
     val deserialized = ObjectMapper().readValue(testAnswers, AnswersDto::class.java)
-    with (deserialized.answers) {
+    with(deserialized.answers) {
       assertThat(size).isEqualTo(1)
       assertThat(first().items).isEqualTo(emptyList<AnswerDto>())
     }
@@ -69,7 +69,7 @@ class AnswersDtoTest {
     """.trimIndent()
 
     val deserialized = ObjectMapper().readValue(testAnswers, AnswersDto::class.java)
-    with (deserialized.answers) {
+    with(deserialized.answers) {
       assertThat(size).isEqualTo(1)
       assertThat(first().items).isEqualTo(emptyList<AnswerDto>())
     }
@@ -84,7 +84,7 @@ class AnswersDtoTest {
     """.trimIndent()
 
     val deserialized = ObjectMapper().readValue(testAnswers, AnswersDto::class.java)
-    with (deserialized.answers) {
+    with(deserialized.answers) {
       assertThat(size).isEqualTo(1)
       assertThat(first().items).isEqualTo(emptyList<AnswerDto>())
     }

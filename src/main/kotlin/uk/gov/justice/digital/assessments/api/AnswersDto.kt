@@ -1,4 +1,5 @@
 package uk.gov.justice.digital.assessments.api
+
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationContext
@@ -80,14 +81,14 @@ object AnswersDtoDeserializer : StdDeserializer<AnswersDto>(AnswersDto::class.ja
       return AnswerDto(items)
     }
     if (node.isArray) {
-      val items = node.elements().asSequence().map { it.asText() }.filter { it.isNotBlank()}.toList()
+      val items = node.elements().asSequence().map { it.asText() }.filter { it.isNotBlank() }.toList()
       return AnswerDto(items)
     }
 
     throw IllegalStateException("Expected a string or array of strings to deserialise an Answer, but type was ${node.nodeType}")
   }
 
-  private fun deserialiseTextualAnswer(s: String) :  List<String> {
+  private fun deserialiseTextualAnswer(s: String): List<String> {
     return if (s.isNotBlank()) listOf(s) else emptyList()
   }
 }

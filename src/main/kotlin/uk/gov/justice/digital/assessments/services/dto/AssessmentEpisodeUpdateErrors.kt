@@ -5,7 +5,7 @@ import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.UpdateA
 import uk.gov.justice.digital.assessments.services.QuestionSchemaEntities
 import java.util.UUID
 
-class AssessmentEpisodeUpdateErrors(
+data class AssessmentEpisodeUpdateErrors(
   private val answerErrors: MutableMap<UUID, MutableCollection<String>> = mutableMapOf(),
   private val errorsOnPage: MutableList<String> = mutableListOf(),
   private val errorsInAssessment: MutableList<String> = mutableListOf(),
@@ -34,9 +34,9 @@ class AssessmentEpisodeUpdateErrors(
       episode: AssessmentEpisodeEntity,
       questions: QuestionSchemaEntities?,
       oasysUpdateResult: UpdateAssessmentAnswersResponseDto?
-    ): AssessmentEpisodeUpdateErrors? {
+    ): AssessmentEpisodeUpdateErrors {
       if (oasysUpdateResult == null || oasysUpdateResult.validationErrorDtos.isEmpty())
-        return null
+        return AssessmentEpisodeUpdateErrors()
 
       val updateErrors = AssessmentEpisodeUpdateErrors()
       if (questions != null) {

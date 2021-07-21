@@ -9,7 +9,7 @@ enum class PredictorResultStatus {
   FAILED,
 }
 
-class PredictorScoreDto(
+data class PredictorScoreDto(
   @Schema(description = "Predictor type", example = "RSR")
   val type: PredictorType,
 

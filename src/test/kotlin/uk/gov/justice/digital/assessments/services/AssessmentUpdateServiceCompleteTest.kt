@@ -16,9 +16,9 @@ import uk.gov.justice.digital.assessments.jpa.entities.OasysAssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.EpisodeRepository
-import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.UpdateAssessmentAnswersResponseDto
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.ValidationErrorDto
+import uk.gov.justice.digital.assessments.services.dto.AssessmentEpisodeUpdateErrors
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -28,17 +28,16 @@ class AssessmentUpdateServiceCompleteTest {
   private val assessmentRepository: AssessmentRepository = mockk()
   private val episodeRepository: EpisodeRepository = mockk()
   private val questionService: QuestionService = mockk()
-  private val assessmentUpdateRestClient: AssessmentUpdateRestClient = mockk()
   private val assessmentSchemaService: AssessmentSchemaService = mockk()
   private val predictorService: PredictorService = mockk()
+  private val oasysAssessmentUpdateService: OasysAssessmentUpdateService = mockk()
 
   private val assessmentUpdateService = AssessmentUpdateService(
     assessmentRepository,
     episodeRepository,
     questionService,
-    assessmentUpdateRestClient,
     predictorService,
-    assessmentSchemaService
+    oasysAssessmentUpdateService
   )
 
   @BeforeEach
@@ -52,14 +51,14 @@ class AssessmentUpdateServiceCompleteTest {
     every { assessmentRepository.findByAssessmentUuid(any()) } returns assessment
     every { episodeRepository.save(any()) } returns assessment.episodes[0]
     every {
-      assessmentUpdateRestClient.completeAssessment(9999, OasysAssessmentType.SHORT_FORM_PSR, 7777)
-    } returns UpdateAssessmentAnswersResponseDto(7777)
+      oasysAssessmentUpdateService.completeOASysAssessment(assessment.episodes.first(), 9999)
+    } returns AssessmentEpisodeUpdateErrors()
 
     val episode = assessmentUpdateService.closeEpisode(assessment.episodes.first())
 
     verify(exactly = 1) { episodeRepository.save(any()) }
     verify(exactly = 1) {
-      assessmentUpdateRestClient.completeAssessment(9999, OasysAssessmentType.SHORT_FORM_PSR, 7777)
+      oasysAssessmentUpdateService.completeOASysAssessment(assessment.episodes.first(), 9999)
     }
     assertThat(episode.ended).isEqualToIgnoringMinutes(LocalDateTime.now())
   }
@@ -70,14 +69,16 @@ class AssessmentUpdateServiceCompleteTest {
     every { assessmentRepository.findByAssessmentUuid(any()) } returns assessment
     every { episodeRepository.save(any()) } returns assessment.episodes[0]
     every {
-      assessmentUpdateRestClient.completeAssessment(9999, OasysAssessmentType.SHORT_FORM_PSR, 7777)
-    } returns oasysAssessmentError()
+      oasysAssessmentUpdateService.completeOASysAssessment(assessment.episodes.first(), 9999)
+    } returns AssessmentEpisodeUpdateErrors(
+      answerErrors = mutableMapOf(UUID.randomUUID() to mutableListOf("error"))
+    )
 
     val episode = assessmentUpdateService.closeEpisode(assessment.episodes.first())
 
     verify(exactly = 0) { episodeRepository.save(any()) }
     verify(exactly = 1) {
-      assessmentUpdateRestClient.completeAssessment(9999, OasysAssessmentType.SHORT_FORM_PSR, 7777)
+      oasysAssessmentUpdateService.completeOASysAssessment(assessment.episodes.first(), 9999)
     }
     assertThat(episode.ended).isNull()
   }
@@ -99,6 +100,7 @@ class AssessmentUpdateServiceCompleteTest {
         assessmentSchemaCode = AssessmentSchemaCode.ROSH,
         changeReason = "Change of Circs 2",
         oasysSetPk = 7777,
+        createdDate = LocalDateTime.now(),
       )
     )
     return assessment

@@ -17,7 +17,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.OasysAssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.EpisodeRepository
-import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient
+import uk.gov.justice.digital.assessments.services.dto.AssessmentEpisodeUpdateErrors
 import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
 import uk.gov.justice.digital.assessments.testutils.Verify
 import java.time.LocalDateTime
@@ -27,17 +27,16 @@ class AssessmentUpdateServiceTest {
   private val assessmentRepository: AssessmentRepository = mockk()
   private val episodeRepository: EpisodeRepository = mockk()
   private val questionService: QuestionService = mockk()
-  private val assessmentUpdateRestClient: AssessmentUpdateRestClient = mockk()
   private val predictorService: PredictorService = mockk()
   private val assessmentSchemaService: AssessmentSchemaService = mockk()
+  private val oasysAssessmentUpdateService: OasysAssessmentUpdateService = mockk()
 
   private val assessmentUpdateService = AssessmentUpdateService(
     assessmentRepository,
     episodeRepository,
     questionService,
-    assessmentUpdateRestClient,
     predictorService,
-    assessmentSchemaService
+    oasysAssessmentUpdateService
   )
 
   private val assessmentUuid = UUID.randomUUID()
@@ -75,7 +74,12 @@ class AssessmentUpdateServiceTest {
         mapOf(newQuestionUuid to listOf("trousers"))
       )
 
-      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
+      every {
+        oasysAssessmentUpdateService.updateOASysAssessment(
+          assessment.episodes.first(),
+          updatedAnswers.asAnswersDtos()
+        )
+      } returns AssessmentEpisodeUpdateErrors()
       every { assessmentRepository.save(any()) } returns null
 
       val episodeDto = assessmentUpdateService.updateEpisode(assessment.episodes.first(), updatedAnswers)
@@ -103,7 +107,12 @@ class AssessmentUpdateServiceTest {
         mapOf(existingQuestionUuid to listOf("new free text"))
       )
 
-      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
+      every {
+        oasysAssessmentUpdateService.updateOASysAssessment(
+          assessment.episodes.first(),
+          updatedAnswers.asAnswersDtos()
+        )
+      } returns AssessmentEpisodeUpdateErrors()
       every { assessmentRepository.save(any()) } returns null
 
       val episodeDto = assessmentUpdateService.updateEpisode(assessment.episodes.first(), updatedAnswers)
@@ -126,7 +135,12 @@ class AssessmentUpdateServiceTest {
         mapOf(existingQuestionUuid to listOf("fruit loops", "custard"))
       )
 
-      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
+      every {
+        oasysAssessmentUpdateService.updateOASysAssessment(
+          assessment.episodes.first(),
+          updatedAnswers.asAnswersDtos()
+        )
+      } returns AssessmentEpisodeUpdateErrors()
       every { assessmentRepository.save(any()) } returns null
 
       val episodeDto = assessmentUpdateService.updateEpisode(assessment.episodes.first(), updatedAnswers)
@@ -152,7 +166,8 @@ class AssessmentUpdateServiceTest {
             answers = mutableMapOf(
               existingQuestionUuid to AnswerEntity.from("free text")
             ),
-            assessment = AssessmentEntity(assessmentUuid = assessmentUuid)
+            assessment = AssessmentEntity(assessmentUuid = assessmentUuid),
+            createdDate = LocalDateTime.now(),
           )
         )
       )
@@ -199,7 +214,12 @@ class AssessmentUpdateServiceTest {
         question3Uuid to AnswerEntity.from("not mapped to oasys"),
       )
       val assessmentEntity = assessmentEntity(answers)
-      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity
+      every {
+        oasysAssessmentUpdateService.updateOASysAssessment(
+          assessmentEntity.episodes.first(),
+          any()
+        )
+      } returns AssessmentEpisodeUpdateErrors()
 
       val tableAnswers = UpdateAssessmentEpisodeDto(
         mapOf(
@@ -231,7 +251,12 @@ class AssessmentUpdateServiceTest {
         question3Uuid to AnswerEntity.from("not mapped to oasys"),
       )
       val assessmentEntity = assessmentEntity(answers)
-      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity
+      every {
+        oasysAssessmentUpdateService.updateOASysAssessment(
+          assessmentEntity.episodes.first(),
+          any()
+        )
+      } returns AssessmentEpisodeUpdateErrors()
 
       val tableAnswers = UpdateAssessmentEpisodeDto(
         mapOf(
@@ -269,7 +294,12 @@ class AssessmentUpdateServiceTest {
         childQuestion2 to AnswerEntity.from("child address 1")
       )
       val assessmentEntity = assessmentEntity(answers)
-      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity
+      every {
+        oasysAssessmentUpdateService.updateOASysAssessment(
+          assessmentEntity.episodes.first(),
+          any()
+        )
+      } returns AssessmentEpisodeUpdateErrors()
 
       val tableAnswers = UpdateAssessmentEpisodeDto(
         mapOf(
@@ -306,7 +336,12 @@ class AssessmentUpdateServiceTest {
       )
 
       val assessmentEntity = assessmentEntity(answers)
-      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity
+      every {
+        oasysAssessmentUpdateService.updateOASysAssessment(
+          assessmentEntity.episodes.first(),
+          any()
+        )
+      } returns AssessmentEpisodeUpdateErrors()
 
       val tableAnswers = UpdateAssessmentEpisodeDto(
         mapOf(
@@ -341,7 +376,12 @@ class AssessmentUpdateServiceTest {
         childQuestion2 to AnswerEntity.from(listOf("address of child 1", "child address 2"))
       )
       val assessmentEntity = assessmentEntity(answers)
-      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity
+      every {
+        oasysAssessmentUpdateService.updateOASysAssessment(
+          assessmentEntity.episodes.first(),
+          any()
+        )
+      } returns AssessmentEpisodeUpdateErrors()
 
       val tableAnswers = UpdateAssessmentEpisodeDto(
         mapOf(
@@ -382,7 +422,12 @@ class AssessmentUpdateServiceTest {
         childQuestion2 to AnswerEntity.from(listOf("child address 1", ""))
       )
       val assessmentEntity = assessmentEntity(answers)
-      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity
+      every {
+        oasysAssessmentUpdateService.updateOASysAssessment(
+          assessmentEntity.episodes.first(),
+          any()
+        )
+      } returns AssessmentEpisodeUpdateErrors()
 
       val tableAnswers = UpdateAssessmentEpisodeDto(
         mapOf(
@@ -423,7 +468,12 @@ class AssessmentUpdateServiceTest {
         childQuestion2 to AnswerEntity.from(listOf("child address 1", "address of child 2", "child address 3"))
       )
       val assessmentEntity = assessmentEntity(answers)
-      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity
+      every {
+        oasysAssessmentUpdateService.updateOASysAssessment(
+          assessmentEntity.episodes.first(),
+          any()
+        )
+      } returns AssessmentEpisodeUpdateErrors()
 
       val tableAnswers = UpdateAssessmentEpisodeDto(
         mapOf(
@@ -466,7 +516,12 @@ class AssessmentUpdateServiceTest {
         childQuestion2 to AnswerEntity.from(listOf("child address 1", "child address 2", "child address 3"))
       )
       val assessmentEntity = assessmentEntity(answers)
-      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity
+      every {
+        oasysAssessmentUpdateService.updateOASysAssessment(
+          assessmentEntity.episodes.first(),
+          any()
+        )
+      } returns AssessmentEpisodeUpdateErrors()
 
       val episodeDto =
         assessmentUpdateService.deleteEpisodeTableRow(assessmentEntity.episodes.first(), "children_at_risk", 0)
@@ -495,7 +550,12 @@ class AssessmentUpdateServiceTest {
         childQuestion2 to AnswerEntity.from(listOf("child address 1", "address of child 2", "child address 3"))
       )
       val assessmentEntity = assessmentEntity(answers)
-      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity
+      every {
+        oasysAssessmentUpdateService.updateOASysAssessment(
+          assessmentEntity.episodes.first(),
+          any()
+        )
+      } returns AssessmentEpisodeUpdateErrors()
 
       val episodeDto =
         assessmentUpdateService.deleteEpisodeTableRow(assessmentEntity.episodes.first(), "children_at_risk", 1)
@@ -523,8 +583,14 @@ class AssessmentUpdateServiceTest {
         childQuestion1 to AnswerEntity.from(listOf("child name 1", "child name 2", "child name 3")),
         childQuestion2 to AnswerEntity.from(listOf("child address 1", "child address 2", "child address 3"))
       )
+
       val assessmentEntity = assessmentEntity(answers)
-      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity
+      every {
+        oasysAssessmentUpdateService.updateOASysAssessment(
+          assessmentEntity.episodes.first(),
+          any()
+        )
+      } returns AssessmentEpisodeUpdateErrors()
 
       val episodeDto =
         assessmentUpdateService.deleteEpisodeTableRow(assessmentEntity.episodes.first(), "children_at_risk", 2)
@@ -553,7 +619,12 @@ class AssessmentUpdateServiceTest {
         childQuestion2 to AnswerEntity.from(listOf("child address 1"))
       )
       val assessmentEntity = assessmentEntity(answers)
-      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity
+      every {
+        oasysAssessmentUpdateService.updateOASysAssessment(
+          assessmentEntity.episodes.first(),
+          any()
+        )
+      } returns AssessmentEpisodeUpdateErrors()
 
       val episodeDto =
         assessmentUpdateService.deleteEpisodeTableRow(assessmentEntity.episodes.first(), "children_at_risk", 0)
@@ -632,8 +703,9 @@ class AssessmentUpdateServiceTest {
           episodeUuid = episodeUuid,
           episodeId = episodeId2,
           changeReason = "Change of Circs 2",
-          answers = answers
-        )
+          answers = answers,
+          createdDate = LocalDateTime.now(),
+        ),
       )
     )
   }

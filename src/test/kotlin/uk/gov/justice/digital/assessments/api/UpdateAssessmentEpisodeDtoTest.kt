@@ -22,7 +22,7 @@ class UpdateAssessmentEpisodeDtoTest {
     val deserialized = ObjectMapper().readValue(testAnswers, UpdateAssessmentEpisodeDto::class.java)
     val transformed = deserialized.asAnswersDtos()
     val answersDto: AnswersDto? = transformed[UUID.fromString("00000000-0000-0000-0000-000000000000")]
-    with (answersDto?.answers!!) {
+    with(answersDto?.answers!!) {
       assertThat(size).isEqualTo(1)
       assertThat(first().items).isEqualTo(listOf("FOO", "BAR"))
     }
@@ -41,7 +41,7 @@ class UpdateAssessmentEpisodeDtoTest {
     val deserialized = ObjectMapper().readValue(testAnswers, UpdateAssessmentEpisodeDto::class.java)
     val transformed = deserialized.asAnswersDtos()
     val answersDto: AnswersDto? = transformed[UUID.fromString("00000000-0000-0000-0000-000000000000")]
-    with (answersDto?.answers!!) {
+    with(answersDto?.answers!!) {
       assertThat(size).isEqualTo(1)
       assertThat(first().items).isEqualTo(emptyList<AnswerDto>())
     }
@@ -62,10 +62,9 @@ class UpdateAssessmentEpisodeDtoTest {
     val deserialized = ObjectMapper().readValue(testAnswers, UpdateAssessmentEpisodeDto::class.java)
     val transformed = deserialized.asAnswersDtos()
     val answersDto: AnswersDto? = transformed[UUID.fromString("00000000-0000-0000-0000-000000000000")]
-    with (answersDto?.answers!!) {
+    with(answersDto?.answers!!) {
       assertThat(size).isEqualTo(1)
       assertThat(first().items).isEqualTo(emptyList<AnswerDto>())
     }
   }
 }
-

@@ -18,6 +18,7 @@ import uk.gov.justice.digital.assessments.jpa.repositories.OASysMappingRepositor
 import uk.gov.justice.digital.assessments.restclient.AssessmentApiRestClient
 import uk.gov.justice.digital.assessments.restclient.assessmentapi.RefElementDto
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
+import java.time.LocalDateTime
 import java.util.UUID
 
 private val assessmentApiRestClient: AssessmentApiRestClient = mockk()
@@ -31,7 +32,8 @@ private val episodeUuid = UUID.randomUUID()
 private val episode = AssessmentEpisodeEntity(
   episodeUuid = episodeUuid,
   oasysSetPk = 123456,
-  assessmentSchemaCode = AssessmentSchemaCode.ROSH
+  assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+  createdDate = LocalDateTime.now(),
 )
 private val assessment = AssessmentEntity(episodes = mutableListOf(episode))
 private val referenceDataElement = RefElementDto("code", "short description", "long description")
