@@ -8,6 +8,7 @@ import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import java.time.LocalDateTime
 import java.util.UUID
@@ -15,6 +16,10 @@ import java.util.UUID
 class AssessmentUpdateServiceITTest() : IntegrationTest() {
   @Autowired
   internal lateinit var assessmentUpdateService: AssessmentUpdateService
+
+  @Autowired
+  internal lateinit var assessmentRepository: AssessmentRepository
+
   private val assessmentId = 1L
   private val episodeId2 = 2L
   private val episodeUuid = UUID.randomUUID()
@@ -47,18 +52,24 @@ class AssessmentUpdateServiceITTest() : IntegrationTest() {
     )
   }
 
-  private fun rsrAssessment() = AssessmentEntity(
-    assessmentId = assessmentId,
-    episodes = mutableListOf(
-      AssessmentEpisodeEntity(
-        episodeUuid = episodeUuid,
-        assessment = AssessmentEntity(),
-        episodeId = episodeId2,
-        changeReason = "Change of Circs 2",
-        assessmentSchemaCode = AssessmentSchemaCode.RSR,
-        answers = mutableMapOf(),
-        createdDate = LocalDateTime.now(),
+  private fun rsrAssessment(): AssessmentEntity {
+    val assessment = AssessmentEntity()
+    assessmentRepository.save(assessment)
+    return AssessmentEntity(
+      assessmentId = assessmentId,
+      episodes = mutableListOf(
+        AssessmentEpisodeEntity(
+          episodeUuid = episodeUuid,
+          assessment = assessment,
+          episodeId = episodeId2,
+          changeReason = "Change of Circs 2",
+          assessmentSchemaCode = AssessmentSchemaCode.RSR,
+          answers = mutableMapOf(),
+          createdDate = LocalDateTime.now(),
+          userId = "AALON"
+        )
       )
     )
-  )
+  }
 }
+
