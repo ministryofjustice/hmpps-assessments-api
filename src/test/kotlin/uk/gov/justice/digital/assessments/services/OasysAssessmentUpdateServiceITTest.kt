@@ -61,7 +61,8 @@ class OasysAssessmentUpdateServiceITTest() : IntegrationTest() {
         crn = "DX12340A",
         assessmentSchemaCode = AssessmentSchemaCode.ROSH
       )
-    assertThat(returnAssessmentPk).isEqualTo(Pair(1, 1))
+    assertThat(returnAssessmentPk.first).isEqualTo(1L)
+    assertThat(returnAssessmentPk.second).isEqualTo(1L)
   }
 
   @Test
