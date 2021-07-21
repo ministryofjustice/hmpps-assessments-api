@@ -10,6 +10,7 @@ import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient
 import uk.gov.justice.digital.assessments.services.dto.AssessmentEpisodeUpdateErrors
 import uk.gov.justice.digital.assessments.services.dto.OasysAnswers
 import java.util.UUID
+import javax.transaction.Transactional
 
 @Service
 class OasysAssessmentUpdateService(
@@ -21,6 +22,7 @@ class OasysAssessmentUpdateService(
     val log: Logger = LoggerFactory.getLogger(this::class.java)
   }
 
+  @Transactional
   fun updateOASysAssessment(
     episode: AssessmentEpisodeEntity,
     updatedEpisodeAnswers: Map<UUID, AnswersDto>
