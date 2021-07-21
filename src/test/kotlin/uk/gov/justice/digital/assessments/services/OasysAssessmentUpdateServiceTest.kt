@@ -27,6 +27,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.SubjectEntity
 import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OasysAnswer
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.UpdateAssessmentAnswersResponseDto
+import uk.gov.justice.digital.assessments.services.dto.AssessmentEpisodeUpdateErrors
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -152,6 +153,25 @@ class OasysAssessmentUpdateServiceTest() {
       assertThat(map { it.answer }).doesNotContain("not mapped to oasys")
     }
     assertFalse(updateErrors.hasErrors()!!)
+  }
+
+  @Test
+  fun `Update oasys assessment returns errors when offender null`() {
+    val assessmentEpisode = AssessmentEpisodeEntity(episodeId = 128)
+    val update = UpdateAssessmentEpisodeDto(answers = mapOf(question1Uuid to listOf("Updated")))
+    val updateAssessmentResponse =
+      oasysAssessmentUpdateService.updateOASysAssessment(assessmentEpisode, update.asAnswersDtos())
+
+    assertThat(updateAssessmentResponse).isEqualTo(AssessmentEpisodeUpdateErrors(errorsInAssessment = mutableListOf("Unable to update OASys Assessment with keys type: null oasysSet: null offenderPk: null, values cant be null")))
+  }
+
+  @Test
+  fun `Complete oasys assessment returns errors when offender null`() {
+    val assessmentEpisode = AssessmentEpisodeEntity(episodeId = 128)
+    val completeAssessmentResponse =
+      oasysAssessmentUpdateService.completeOASysAssessment(assessmentEpisode, null)
+
+    assertThat(completeAssessmentResponse).isEqualTo(AssessmentEpisodeUpdateErrors(errorsInAssessment = mutableListOf("Unable to complete OASys Assessment with keys type: null oasysSet: null offenderPk: null, values cant be null")))
   }
 
   private fun setupSectionQuestionCodes(): QuestionSchemaEntities {

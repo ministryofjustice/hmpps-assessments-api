@@ -11,6 +11,7 @@ import org.springframework.test.context.jdbc.SqlGroup
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.jpa.entities.SubjectEntity
 import uk.gov.justice.digital.assessments.services.dto.AssessmentEpisodeUpdateErrors
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import uk.gov.justice.digital.assessments.utils.RequestData
@@ -104,7 +105,7 @@ class OasysAssessmentUpdateServiceITTest() : IntegrationTest() {
     episodes = mutableListOf(
       AssessmentEpisodeEntity(
         episodeUuid = episodeUuid,
-        assessment = AssessmentEntity(),
+        assessment = AssessmentEntity(subject_ = mutableListOf(SubjectEntity(oasysOffenderPk = 1L))),
         episodeId = episodeId2,
         changeReason = "Change of Circs 2",
         oasysSetPk = 1L,
@@ -114,6 +115,7 @@ class OasysAssessmentUpdateServiceITTest() : IntegrationTest() {
       )
     )
   )
+
   private fun rsrAssessment() = AssessmentEntity(
     assessmentId = assessmentId,
     episodes = mutableListOf(
