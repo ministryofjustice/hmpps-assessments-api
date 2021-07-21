@@ -5,6 +5,9 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.slf4j.MDC
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.test.context.jdbc.Sql
+import org.springframework.test.context.jdbc.SqlConfig
+import org.springframework.test.context.jdbc.SqlGroup
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
@@ -14,6 +17,17 @@ import uk.gov.justice.digital.assessments.utils.RequestData
 import java.time.LocalDateTime
 import java.util.UUID
 
+@SqlGroup(
+  Sql(
+    scripts = ["classpath:referenceData/before-test.sql"],
+    config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED)
+  ),
+  Sql(
+    scripts = ["classpath:referenceData/after-test.sql"],
+    config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED),
+    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
+  )
+)
 class OasysAssessmentUpdateServiceITTest() : IntegrationTest() {
   @Autowired
   internal lateinit var oasysAssessmentUpdateService: OasysAssessmentUpdateService
