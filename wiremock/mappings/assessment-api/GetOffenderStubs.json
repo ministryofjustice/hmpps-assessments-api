@@ -1,0 +1,46 @@
+{
+  "id": "3e862519-78b0-4449-b2b5-535ee1b81213",
+  "request": {
+    "method": "GET",
+    "urlPathPattern": "/offender/stub"
+  },
+  "response": {
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "status": 200,
+    "jsonBody": {
+      "content":
+        {
+          "offenderId": 2500000501,
+          "crn": "D001022"
+        },
+      ,
+      "pageable": {
+        "sort": {
+          "sorted": true,
+          "unsorted": false,
+          "empty": false
+        },
+        "offset": 0,
+        "pageNumber": 0,
+        "pageSize": 1,
+        "paged": true,
+        "unpaged": false
+      },
+      "totalPages": 339667,
+      "totalElements": 339667,
+      "last": false,
+      "sort": {
+        "sorted": true,
+        "unsorted": false,
+        "empty": false
+      },
+      "first": true,
+      "number": 0,
+      "size": 1,
+      "numberOfElements": 1,
+      "empty": false
+    }
+  }
+}

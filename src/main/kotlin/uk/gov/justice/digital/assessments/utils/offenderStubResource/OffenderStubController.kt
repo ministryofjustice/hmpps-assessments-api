@@ -3,6 +3,7 @@ package uk.gov.justice.digital.assessments.utils.offenderStubResource
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RestController
@@ -18,7 +19,7 @@ class OffenderStubController(val offenderStubService: OffenderStubService) {
       ApiResponse(responseCode = "200", description = "OK")
     ]
   )
-  fun createNewStub():Any? {
-    return offenderStubService.createStub()
+  fun createNewStub(@RequestBody offenderStubDto: OffenderStubDto):String {
+    return offenderStubService.createStub(offenderStubDto)
   }
 }
