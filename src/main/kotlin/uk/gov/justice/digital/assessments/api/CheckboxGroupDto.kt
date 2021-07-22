@@ -9,25 +9,25 @@ data class CheckboxGroupDto(
   @Schema(description = "Checkbox Group Identifier", example = "<uuid>")
   val checkboxGroupId: UUID,
 
-  @Schema(description = "Table Code", example = "table-code-name")
+  @Schema(description = "Checkbox Code", example = "Checkbox-code-name")
   val checkboxGroupCode: String,
 
-  @Schema(description = "Table Title", example = "Table of children")
+  @Schema(description = "Checkbox Title", example = "Checkbox of children")
   val title: String? = null,
 
-  @Schema(description = "Table Subheading", example = "Some group subheading")
+  @Schema(description = "Checkbox Subheading", example = "Some group subheading")
   val subheading: String? = null,
 
-  @Schema(description = "Table Help-text", example = "Some group help text")
+  @Schema(description = "Checkbox Help-text", example = "Some group help text")
   val helpText: String? = null,
 
-  @Schema(description = "Display Order for Table", example = "1")
+  @Schema(description = "Display Order for Checkbox", example = "1")
   val displayOrder: Int? = 0,
 
-  @Schema(description = "Table is Required", example = "true")
+  @Schema(description = "Checkbox is Required", example = "true")
   val mandatory: Boolean? = null,
 
-  @Schema(description = "Question Validation for Table", example = "to-do")
+  @Schema(description = "Question Validation for Checkbox", example = "to-do")
   val validation: String? = null,
 
   @Schema(description = "Questions and Groups")
