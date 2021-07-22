@@ -51,6 +51,7 @@ class PredictorService(
       .mapValues {
         AnswersDto.from(it.value as Collection<Answer>)
       }
+      .filterValues { answersDto -> answersDto.answers.flatMap { answerDto -> answerDto.items }.isNotEmpty() }
   }
 
   private fun fetchResults(
