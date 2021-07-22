@@ -11,6 +11,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
 )
 @JsonSubTypes(
   Type(value = GroupQuestionDto::class, name = "question"),
-  Type(value = GroupWithContentsDto::class, name = "group")
+  Type(value = GroupWithContentsDto::class, name = "group"),
+  Type(value = TableQuestionDto::class, name = "tableGroup"),
+  Type(value = CheckboxGroupDto::class, name = "checkboxGroup")
 )
 interface GroupContentDto
