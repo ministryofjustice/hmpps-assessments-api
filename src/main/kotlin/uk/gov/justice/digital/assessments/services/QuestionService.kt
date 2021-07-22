@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.assessments.services
 
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.assessments.api.CheckboxGroupDto
 import uk.gov.justice.digital.assessments.api.GroupContentDto
 import uk.gov.justice.digital.assessments.api.GroupQuestionDto
 import uk.gov.justice.digital.assessments.api.GroupSectionsDto
@@ -66,14 +67,6 @@ class QuestionService(
     return expandGroupContents(group, parentGroup, dependencies, GroupWithContentsDto::from) as GroupWithContentsDto
   }
 
-  private fun getTableGroupContents(
-    group: GroupEntity,
-    parentGroup: QuestionGroupEntity?,
-    dependencies: QuestionDependencies
-  ): TableQuestionDto {
-    return expandGroupContents(group, parentGroup, dependencies, TableQuestionDto::from) as TableQuestionDto
-  }
-
   private fun expandGroupContents(
     group: GroupEntity,
     parentGroup: QuestionGroupEntity?,
@@ -100,8 +93,10 @@ class QuestionService(
   ): GroupContentDto {
     val questionEntity = questionSchemaRepository.findByQuestionSchemaUuid(question.contentUuid)
       ?: throw EntityNotFoundException("Could not get question ${question.contentUuid}")
-    if (questionEntity.answerType?.startsWith("table:") == true)
+    if (answerTypeHasPrefix(questionEntity, "table:"))
       return tableGroupQuestion(questionEntity, dependencies)
+    if (answerTypeHasPrefix(questionEntity, "inline-checkboxes:"))
+      return checkboxesGroupQuestion(questionEntity, dependencies)
     return GroupQuestionDto.from(
       questionEntity,
       question,
@@ -109,16 +104,33 @@ class QuestionService(
     )
   }
 
+  private fun answerTypeHasPrefix(questionEntity: QuestionSchemaEntity, prefix: String) =
+    questionEntity.answerType?.startsWith(prefix) == true
+
   private fun tableGroupQuestion(
     questionEntity: QuestionSchemaEntity,
     dependencies: QuestionDependencies
   ): TableQuestionDto {
-    val tableName = questionEntity.answerType?.split(":")?.get(1)
-      ?: throw EntityNotFoundException("Could not get table name for question ${questionEntity.questionCode}")
-    val tableGroup = groupRepository.findByGroupCode(tableName)
-      ?: throw EntityNotFoundException("Could not find group $tableName for question ${questionEntity.questionCode}")
-    return getTableGroupContents(tableGroup, null, dependencies)
+    val group = findGroup(questionEntity)
+    return expandGroupContents(group, null, dependencies, TableQuestionDto::from) as TableQuestionDto  }
+
+  private fun checkboxesGroupQuestion(
+    questionEntity: QuestionSchemaEntity,
+    dependencies: QuestionDependencies
+  ): CheckboxGroupDto {
+    val group = findGroup(questionEntity)
+    return expandGroupContents(group, null, dependencies, CheckboxGroupDto::from) as CheckboxGroupDto
   }
+
+  private fun findGroup(
+    questionEntity: QuestionSchemaEntity
+  ): GroupEntity {
+    val groupName = questionEntity.answerType?.split(":")?.get(1)
+      ?: throw EntityNotFoundException("Could not get group name for question ${questionEntity.questionCode}")
+    return groupRepository.findByGroupCode(groupName)
+      ?: throw EntityNotFoundException("Could not find group $groupName for question ${questionEntity.questionCode}")
+  }
+
 
   private fun fetchGroupSections(
     group: GroupEntity,
