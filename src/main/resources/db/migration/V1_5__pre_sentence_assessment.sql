@@ -601,12 +601,12 @@ ON CONFLICT DO NOTHING;
 
 INSERT INTO question_dependency (subject_question_uuid, trigger_question_uuid, trigger_answer_value, dependency_start, display_inline)
 VALUES
-('3662710d-ce3e-4e45-bce3-caa4155872aa', '58d3efd1-65a1-439b-952f-b2826ffa5e71', 'YES', '2020-11-30 14:50:00', false),
-('a00223d0-1c20-43b5-8076-8a292ca25773', '58d3efd1-65a1-439b-952f-b2826ffa5e71', 'YES', '2020-11-30 14:50:00', false),
-('fc45b061-a4a6-44c3-937c-2949069e0926', '58d3efd1-65a1-439b-952f-b2826ffa5e71', 'YES', '2020-11-30 14:50:00', false),
-('ed495c57-21f3-4388-87e6-57017a6999b1', '58d3efd1-65a1-439b-952f-b2826ffa5e71', 'YES', '2020-11-30 14:50:00', false),
-('00a559e4-32d5-4ae7-aa21-247068a639ad', '58d3efd1-65a1-439b-952f-b2826ffa5e71', 'YES', '2020-11-30 14:50:00', false),
-('1b6c8f79-0fd9-45d4-ba50-309c3ccfdb2d', '58d3efd1-65a1-439b-952f-b2826ffa5e71', 'YES', '2020-11-30 14:50:00', false),
+('3662710d-ce3e-4e45-bce3-caa4155872aa', '58d3efd1-65a1-439b-952f-b2826ffa5e71', 'YES', '2020-11-30 14:50:00', true),
+('a00223d0-1c20-43b5-8076-8a292ca25773', '58d3efd1-65a1-439b-952f-b2826ffa5e71', 'YES', '2020-11-30 14:50:00', true),
+('fc45b061-a4a6-44c3-937c-2949069e0926', '58d3efd1-65a1-439b-952f-b2826ffa5e71', 'YES', '2020-11-30 14:50:00', true),
+('ed495c57-21f3-4388-87e6-57017a6999b1', '58d3efd1-65a1-439b-952f-b2826ffa5e71', 'YES', '2020-11-30 14:50:00', true),
+('00a559e4-32d5-4ae7-aa21-247068a639ad', '58d3efd1-65a1-439b-952f-b2826ffa5e71', 'YES', '2020-11-30 14:50:00', true),
+('1b6c8f79-0fd9-45d4-ba50-309c3ccfdb2d', '58d3efd1-65a1-439b-952f-b2826ffa5e71', 'YES', '2020-11-30 14:50:00', true),
 ('bd629547-eab9-46d5-910d-2416b431950f', '420c2ffe-8f2c-49b3-a523-674af3197b9e', 'YES', '2020-11-30 14:50:00', false),
 ('ed0e988a-38a4-4f9f-9691-08fb695cbed9', '420c2ffe-8f2c-49b3-a523-674af3197b9e', 'YES', '2020-11-30 14:50:00', false),
 ('3211a668-8878-4e88-8457-8250bfe65aea', '420c2ffe-8f2c-49b3-a523-674af3197b9e', 'YES', '2020-11-30 14:50:00', false),
