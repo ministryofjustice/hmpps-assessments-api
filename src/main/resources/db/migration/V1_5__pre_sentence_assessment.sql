@@ -645,7 +645,8 @@ VALUES
 ('8040cc23-0ffd-4425-b0fb-1b5ee34834a4', '569dcb48-7d70-4d52-adce-a80f00b8dc91', 'Y', '2020-11-30 14:50:00', true),
 ('ad6cdfee-6ed6-43a0-9dae-d108b62e4ae6', 'e84fc24d-798b-4e5b-9142-46b9bebc6bdb', 'Y', '2020-11-30 14:50:00', true),
 ('ebc8e739-627f-48de-b864-3ba001fe09d9', '1ff5bd0f-c500-47d5-8f13-0d29d46e7c56', 'Y', '2020-11-30 14:50:00', true),
-('00c3001c-a5fe-434a-9d83-629cc097ea07', 'c5f95ef6-70f9-460a-86cb-93d404489c0a', 'Y', '2020-11-30 14:50:00', true)
+('00c3001c-a5fe-434a-9d83-629cc097ea07', 'c5f95ef6-70f9-460a-86cb-93d404489c0a', 'Y', '2020-11-30 14:50:00', true),
+('86ee742c-4bfb-4e29-afca-04ad35a3abda', '3662710d-ce3e-4e45-bce3-caa4155872aa', 'YES', '2020-11-30 14:50:00', true)
 ON CONFLICT DO NOTHING;
 
 
