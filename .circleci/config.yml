@@ -21,7 +21,10 @@ executors:
 
 jobs:
   validate:
-    executor: java
+    executor:
+      name: hmpps/java
+    environment:
+      _JAVA_OPTIONS: -Xmx256m -XX:ParallelGCThreads=2 -XX:ConcGCThreads=2 -XX:ParallelGCThreads=2 -Djava.util.concurrent.ForkJoinPool.common.parallelism=2 -Dorg.gradle.daemon=false -Dorg.gradle.jvmargs=-XX:+UseContainerSupport
     steps:
       - checkout
       - restore_cache:
