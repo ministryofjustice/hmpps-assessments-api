@@ -93,26 +93,25 @@ class QuestionService(
   ): GroupContentDto {
     val questionEntity = questionSchemaRepository.findByQuestionSchemaUuid(question.contentUuid)
       ?: throw EntityNotFoundException("Could not get question ${question.contentUuid}")
-    if (answerTypeHasPrefix(questionEntity, "table:"))
-      return tableGroupQuestion(questionEntity, dependencies)
-    if (answerTypeHasPrefix(questionEntity, "inline-checkboxes:"))
-      return checkboxesGroupQuestion(questionEntity, dependencies)
-    return GroupQuestionDto.from(
-      questionEntity,
-      question,
-      dependencies
-    )
-  }
 
-  private fun answerTypeHasPrefix(questionEntity: QuestionSchemaEntity, prefix: String) =
-    questionEntity.answerType?.startsWith(prefix) == true
+    return when (questionEntity.answerType?.split(":")?.get(0)) {
+      "table" -> tableGroupQuestion(questionEntity, dependencies)
+      "inline-checkboxes" -> checkboxesGroupQuestion(questionEntity, dependencies)
+      else -> GroupQuestionDto.from(
+        questionEntity,
+        question,
+        dependencies
+      )
+    }
+  }
 
   private fun tableGroupQuestion(
     questionEntity: QuestionSchemaEntity,
     dependencies: QuestionDependencies
   ): TableQuestionDto {
     val group = findGroup(questionEntity)
-    return expandGroupContents(group, null, dependencies, TableQuestionDto::from) as TableQuestionDto  }
+    return expandGroupContents(group, null, dependencies, TableQuestionDto::from) as TableQuestionDto
+  }
 
   private fun checkboxesGroupQuestion(
     questionEntity: QuestionSchemaEntity,
