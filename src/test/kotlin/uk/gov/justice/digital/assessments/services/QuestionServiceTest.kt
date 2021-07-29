@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import uk.gov.justice.digital.assessments.api.CheckboxGroupDto
 import uk.gov.justice.digital.assessments.api.GroupQuestionDto
 import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
 import uk.gov.justice.digital.assessments.api.QuestionSchemaDto
@@ -112,6 +113,34 @@ class QuestionServiceTest {
     questionSchemaUuid = tableSubQuestion4Id
   )
 
+  private val groupWithCheckboxUuid = UUID.randomUUID()
+  private val groupWithCheckboxContents = mutableListOf<QuestionGroupEntity>()
+  private val groupWithCheckbox = GroupEntity(
+    groupId = 10,
+    groupUuid = groupWithCheckboxUuid,
+    groupCode = "group with checkboxes",
+    contents = groupWithCheckboxContents
+  )
+  private val checkboxQuestionUuid = UUID.randomUUID()
+  private val checkboxQuestion = QuestionSchemaEntity(
+    questionSchemaId = 2L,
+    questionSchemaUuid = checkboxQuestionUuid,
+    answerType = "inline-checkboxes:previous_offences"
+  )
+  private val checkboxGroupContents = mutableListOf<QuestionGroupEntity>()
+  val checkboxGroupUuid1 = UUID.randomUUID()
+  private val checkboxGroup = GroupEntity(
+    groupId = 11,
+    groupUuid = checkboxGroupUuid1,
+    groupCode = "previous_offences",
+    contents = checkboxGroupContents
+  )
+  private val checkboxSubQuestion1Id = UUID.randomUUID()
+  private val checkboxSubQuestion1 = QuestionSchemaEntity(
+    questionSchemaId = 17,
+    questionSchemaUuid = checkboxSubQuestion1Id
+  )
+
   @BeforeEach
   fun setup() {
     contents.add(
@@ -209,6 +238,30 @@ class QuestionServiceTest {
         nestedGroup = tableSubGroup
       )
     )
+
+    groupWithCheckboxContents.add(
+      QuestionGroupEntity(
+        questionGroupId = 104,
+        group = groupWithCheckbox,
+        contentUuid = checkboxQuestionUuid,
+        contentType = "question",
+        displayOrder = 1,
+        question = checkboxQuestion,
+        nestedGroup = null,
+        readOnly = false
+      )
+    )
+    checkboxGroupContents.add(
+      QuestionGroupEntity(
+        questionGroupId = 105,
+        group = checkboxGroup,
+        contentUuid = checkboxSubQuestion1Id,
+        contentType = "question",
+        displayOrder = 1,
+        question = checkboxSubQuestion1,
+        nestedGroup = null
+      )
+    )
   }
 
   @Test
@@ -221,7 +274,13 @@ class QuestionServiceTest {
     val questionSchemaDto = questionService.getQuestionSchema(questionUuid)
 
     verify(exactly = 1) { questionSchemaRepository.findByQuestionSchemaUuid(questionUuid) }
-    assertThat(questionSchemaDto).isEqualTo(QuestionSchemaDto(questionSchemaId = questionId, questionSchemaUuid = questionUuid, answerSchemas = emptySet()))
+    assertThat(questionSchemaDto).isEqualTo(
+      QuestionSchemaDto(
+        questionSchemaId = questionId,
+        questionSchemaUuid = questionUuid,
+        answerSchemas = emptySet()
+      )
+    )
   }
 
   @Test
@@ -284,6 +343,28 @@ class QuestionServiceTest {
   }
 
   @Test
+  fun `get group contents with inline-checkboxes`() {
+    every { groupRepository.findByGroupUuid(groupWithCheckboxUuid) } returns groupWithCheckbox
+    every { groupRepository.findByGroupCode("previous_offences") } returns checkboxGroup
+    every { questionSchemaRepository.findByQuestionSchemaUuid(checkboxQuestionUuid) } returns checkboxQuestion
+    every { questionSchemaRepository.findByQuestionSchemaUuid(checkboxSubQuestion1Id) } returns checkboxSubQuestion1
+    every { dependencyService.dependencies() } returns QuestionDependencies(emptyList())
+
+    val groupQuestions = questionService.getGroupContents(groupWithCheckboxUuid)
+
+    assertThat(groupQuestions.groupId).isEqualTo(groupWithCheckboxUuid)
+    val groupContents = groupQuestions.contents
+    assertThat(groupContents).hasSize(1)
+
+    val checkboxRef = groupContents[0] as CheckboxGroupDto
+    assertThat(checkboxRef.checkboxGroupId).isEqualTo(checkboxGroupUuid1)
+    assertThat(checkboxRef.contents).hasSize(1)
+
+    val questionIds = checkboxRef.contents.map { (it as GroupQuestionDto).questionId }
+    assertThat(questionIds).containsOnly(checkboxSubQuestion1Id)
+  }
+
+  @Test
   fun `all questions in a group`() {
     every { groupRepository.findByGroupCode("children") } returns tableGroup
     every { groupRepository.findByGroupCode("childrenSubGroup") } returns tableSubGroup
@@ -305,7 +386,12 @@ class QuestionServiceTest {
     val tableQuestions = questionService.getAllGroupQuestionsByGroupCode("children")
     assertThat(tableQuestions).hasSize(4)
     val tableQuestionIds = tableQuestions.map { it.questionSchemaUuid }
-    assertThat(tableQuestionIds).contains(tableSubQuestion1Id, tableSubQuestion2Id, tableSubQuestion3Id, tableSubQuestion4Id)
+    assertThat(tableQuestionIds).contains(
+      tableSubQuestion1Id,
+      tableSubQuestion2Id,
+      tableSubQuestion3Id,
+      tableSubQuestion4Id
+    )
   }
 
   @Test
