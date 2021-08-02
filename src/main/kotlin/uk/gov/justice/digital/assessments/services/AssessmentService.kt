@@ -278,6 +278,7 @@ class AssessmentService(
     )
     assessment.addSubject(subject)
     createPrepopulatedEpisode(assessment, "", oasysSetPK, assessmentSchemaCode)
+    log.info("About to save assessment: $assessment")
     val newAssessment = AssessmentDto.from(assessmentRepository.save(assessment))
     log.info("New assessment ${assessment.assessmentUuid} created for Delius event ID: $eventId, CRN: $crn")
     return newAssessment
@@ -291,7 +292,7 @@ class AssessmentService(
   ): AssessmentEpisodeEntity {
     val episode = assessment.newEpisode(reason, oasysSetPk = oasysSetPK, assessmentSchemaCode = assessmentSchemaCode)
     episodeService.prepopulate(episode)
-    log.info("New episode created for assessment ${assessment.assessmentUuid}")
+    log.info("New episode episode with id:${episode.episodeId} and uuid:${episode.episodeUuid} created for assessment ${assessment.assessmentUuid}")
     return episode
   }
 
