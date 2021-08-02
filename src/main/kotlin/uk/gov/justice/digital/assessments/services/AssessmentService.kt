@@ -42,6 +42,7 @@ class AssessmentService(
     const val deliusSource = "DELIUS"
   }
 
+  @Transactional
   fun createNewAssessment(newAssessment: CreateAssessmentDto): AssessmentDto {
     if (newAssessment.isDelius()) {
       return createFromDelius(newAssessment.deliusEventId, newAssessment.crn, newAssessment.assessmentSchemaCode)
