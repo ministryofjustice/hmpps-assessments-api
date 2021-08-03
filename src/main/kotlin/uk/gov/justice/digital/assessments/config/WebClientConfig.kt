@@ -27,6 +27,9 @@ class WebClientConfig {
   @Value("\${assessment-api.base-url}")
   private lateinit var assessmentApiBaseUrl: String
 
+  @Value("\${assess-risks-and-needs-api.base-url}")
+  private lateinit var assessRisksAndNeedsBaseUrl: String
+
   @Value("\${community-api.base-url}")
   private lateinit var communityApiBaseUrl: String
 
@@ -68,6 +71,15 @@ class WebClientConfig {
     return AuthenticatingRestClient(
       webClientFactory(assessmentApiBaseUrl, authorizedClientManager, bufferByteSize),
       "assessment-api-client",
+      disableAuthentication
+    )
+  }
+
+  @Bean
+  fun assessRisksAndNeedsApiWebClient(authorizedClientManager: OAuth2AuthorizedClientManager): AuthenticatingRestClient {
+    return AuthenticatingRestClient(
+      webClientFactory(assessRisksAndNeedsBaseUrl, authorizedClientManager, bufferByteSize),
+      "assess-risks-and-needs-api-client",
       disableAuthentication
     )
   }

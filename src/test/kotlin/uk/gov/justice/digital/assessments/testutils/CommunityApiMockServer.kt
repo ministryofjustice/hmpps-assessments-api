@@ -7,7 +7,6 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.http.HttpHeader
 import com.github.tomakehurst.wiremock.http.HttpHeaders
-import org.springframework.stereotype.Component
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityConvictionDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.IDs
@@ -16,10 +15,9 @@ import uk.gov.justice.digital.assessments.restclient.communityapi.OffenceDetail
 import uk.gov.justice.digital.assessments.restclient.communityapi.OffenderAlias
 import java.time.LocalDate
 
-@Component
 class CommunityApiMockServer : WireMockServer(9096) {
 
-  val objectMapper: ObjectMapper = jacksonObjectMapper().registerModules(JavaTimeModule())
+  private val objectMapper: ObjectMapper = jacksonObjectMapper().registerModules(JavaTimeModule())
 
   fun stubGetOffender() {
     val crn = "DX12340A"

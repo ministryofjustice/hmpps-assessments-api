@@ -8,7 +8,7 @@ import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundExce
 @Repository
 class UserDetailsRedisRepository(val redisTemplate: RedisTemplate<String, UserDetails>) : UserDetailsRepository {
   override fun findByUserId(userId: String): UserDetails {
-    val userDetails = redisTemplate?.opsForValue()?.get("user:$userId")
+    val userDetails = redisTemplate.opsForValue().get("user:$userId")
     return userDetails ?: throw EntityNotFoundException("User Details not found in Redis cache for userId:$userId")
   }
 }

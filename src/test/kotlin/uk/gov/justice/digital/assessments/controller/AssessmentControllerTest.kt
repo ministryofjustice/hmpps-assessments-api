@@ -448,8 +448,8 @@ class AssessmentControllerTest : IntegrationTest() {
         .expectBody<AssessmentEpisodeDto>()
         .returnResult()
         .responseBody
-      assertThat(assessmentEpisode.assessmentUuid).isEqualTo(assessmentUuid)
-      assertThat(assessmentEpisode.ended).isEqualToIgnoringMinutes(LocalDateTime.now())
+      assertThat(assessmentEpisode?.assessmentUuid).isEqualTo(assessmentUuid)
+      assertThat(assessmentEpisode?.ended).isEqualToIgnoringMinutes(LocalDateTime.now())
     }
 
     @Test
@@ -475,8 +475,8 @@ class AssessmentControllerTest : IntegrationTest() {
         .expectBody<AssessmentEpisodeDto>()
         .returnResult()
         .responseBody
-      assertThat(assessmentEpisode.ended).isNull()
-      assertThat(assessmentEpisode.assessmentErrors).hasSize(1)
+      assertThat(assessmentEpisode?.ended).isNull()
+      assertThat(assessmentEpisode?.assessmentErrors).hasSize(1)
     }
 
     @Test

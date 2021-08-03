@@ -12,12 +12,12 @@ class UserDetailsRepositoryTest(@Autowired val userDetailsRepository: UserDetail
   @Test
   fun `test add to redis cache and get by id`() {
 
-    redisTemplate?.opsForValue()?.set("user:1", UserDetails("SUPPORT1"))
+    redisTemplate.opsForValue().set("user:1", UserDetails("SUPPORT1"))
 
     val userDetails = userDetailsRepository.findByUserId("1")
 
     assertThat(userDetails.oasysUserCode).isEqualTo("SUPPORT1")
 
-    redisTemplate?.delete(redisTemplate?.keys("*"))
+    redisTemplate.delete(redisTemplate.keys("*"))
   }
 }

@@ -130,7 +130,6 @@ class QuestionService(
       ?: throw EntityNotFoundException("Could not find group $groupName for question ${questionEntity.questionCode}")
   }
 
-
   private fun fetchGroupSections(
     group: GroupEntity,
     depth: Int = 0

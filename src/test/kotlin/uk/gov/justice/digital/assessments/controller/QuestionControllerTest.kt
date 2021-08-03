@@ -139,9 +139,9 @@ class QuestionControllerTest : IntegrationTest() {
       .returnResult()
       .responseBody
 
-    assertThat(assessmentGroup.groupId).isEqualTo(UUID.fromString(assessmentGroupUuid))
+    assertThat(assessmentGroup?.groupId).isEqualTo(UUID.fromString(assessmentGroupUuid))
 
-    val sections = assessmentGroup.contents!!
+    val sections = assessmentGroup?.contents!!
     assertThat(sections.size).isEqualTo(1)
 
     val section = sections.first()
