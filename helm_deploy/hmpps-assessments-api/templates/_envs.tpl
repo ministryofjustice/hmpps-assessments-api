@@ -67,13 +67,13 @@ env:
   - name: ASSESS_RISKS_AND_NEEDS_API_ID
     valueFrom:
       secretKeyRef:
-        name: assess-risks-and-needs-api
+        name: {{ template "app.name" . }}
         key: API_CLIENT_ID
 
   - name: ASSESS_RISKS_AND_NEEDS_API_CLIENT_SECRET
     valueFrom:
       secretKeyRef:
-        name: assess-risks-and-needs-api-id
+        name: {{ template "app.name" . }}
         key: API_CLIENT_SECRET
 
   - name: COMMUNITY_API_BASE_URL

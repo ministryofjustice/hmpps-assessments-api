@@ -39,7 +39,9 @@ class CommunityApiRestClient {
         )
       }
       .bodyToMono(CommunityOffenderDto::class.java)
-      .block()
+      .block().also {
+        log.info("Offender for crn: $crn, found in ${ExternalService.COMMUNITY_API.name}")
+      }
   }
 
   fun getConviction(crn: String, convictionId: Long): CommunityConvictionDto? {

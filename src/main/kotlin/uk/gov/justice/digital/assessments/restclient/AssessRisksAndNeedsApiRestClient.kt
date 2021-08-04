@@ -16,7 +16,7 @@ class AssessRisksAndNeedsApiRestClient {
 
   @Autowired
   @Qualifier("assessRisksAndNeedsApiWebClient")
-  internal lateinit var webClient: AuthenticatingRestClient
+  internal lateinit var webClient: RestClient
 
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)

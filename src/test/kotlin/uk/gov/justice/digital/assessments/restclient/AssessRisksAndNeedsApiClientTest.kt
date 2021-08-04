@@ -1,8 +1,14 @@
 package uk.gov.justice.digital.assessments.restclient
 
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.authority.AuthorityUtils
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.oauth2.jwt.Jwt
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 import uk.gov.justice.digital.assessments.jpa.entities.PredictorType
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.CurrentOffence
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.DynamicScoringOffences
@@ -23,6 +29,16 @@ import java.time.LocalDateTime
 class AssessRisksAndNeedsApiClientTest : IntegrationTest() {
   @Autowired
   internal lateinit var assessRiskAndNeedsApiRestClient: AssessRisksAndNeedsApiRestClient
+
+  @BeforeEach
+  fun init() {
+    val jwt = Jwt.withTokenValue("token")
+      .header("alg", "none")
+      .claim("sub", "user")
+      .build()
+    val authorities: Collection<GrantedAuthority> = AuthorityUtils.createAuthorityList("SCOPE_read")
+    SecurityContextHolder.getContext().authentication = JwtAuthenticationToken(jwt, authorities)
+  }
 
   @Test
   fun `get RSR predictors for offender and offences`() {
