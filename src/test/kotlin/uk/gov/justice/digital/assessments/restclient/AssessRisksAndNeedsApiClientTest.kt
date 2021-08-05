@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 import uk.gov.justice.digital.assessments.jpa.entities.PredictorType
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.CurrentOffence
+import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.CurrentOffences
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.DynamicScoringOffences
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.EmploymentType
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.Gender
@@ -84,6 +85,10 @@ class AssessRisksAndNeedsApiClientTest : IntegrationTest() {
           kidnapping = true,
           firearmPossession = true,
           robbery = true,
+          offencesWithWeapon = true
+        ),
+        currentOffences = CurrentOffences(
+          firearmPossession = true,
           offencesWithWeapon = true
         )
       )

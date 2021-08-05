@@ -39,7 +39,13 @@ data class DynamicScoringOffences(
   val impulsivityIssues: ProblemsLevel?,
   val temperControlIssues: ProblemsLevel?,
   val proCriminalAttitudes: ProblemsLevel?,
-  val previousOffences: PreviousOffences?
+  val previousOffences: PreviousOffences?,
+  val currentOffences: CurrentOffences?
+)
+
+data class CurrentOffences(
+  val firearmPossession: Boolean,
+  val offencesWithWeapon: Boolean
 )
 
 data class PreviousOffences(
