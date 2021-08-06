@@ -4,7 +4,6 @@ import uk.gov.justice.digital.assessments.jpa.entities.PredictorType
 import java.math.BigDecimal
 
 data class RiskPredictorsDto(
-  val algorithmVersion: Int,
   val type: PredictorType,
   val scoreType: ScoreType?,
   val rsrScore: Score,

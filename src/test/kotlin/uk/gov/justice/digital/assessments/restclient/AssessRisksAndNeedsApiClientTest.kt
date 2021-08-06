@@ -97,7 +97,6 @@ class AssessRisksAndNeedsApiClientTest : IntegrationTest() {
     val riskPredictors = assessRiskAndNeedsApiRestClient.getRiskPredictors(PredictorType.RSR, offenderAndOffencesDto)
     assertThat(riskPredictors).isEqualTo(
       RiskPredictorsDto(
-        algorithmVersion = 3,
         type = PredictorType.RSR,
         scoreType = ScoreType.STATIC,
         rsrScore = Score(level = ScoreLevel.HIGH, score = BigDecimal("11.34"), isValid = true),
