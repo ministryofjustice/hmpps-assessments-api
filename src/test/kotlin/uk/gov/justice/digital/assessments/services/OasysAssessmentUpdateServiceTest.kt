@@ -152,7 +152,7 @@ class OasysAssessmentUpdateServiceTest() {
       assertThat(first { it.questionCode == "oasysQ2" }.answer).isEqualTo("1975-01-20T00:00:00.000Z")
       assertThat(map { it.answer }).doesNotContain("not mapped to oasys")
     }
-    assertFalse(updateErrors.hasErrors()!!)
+    assertFalse(updateErrors.hasErrors())
   }
 
   @Test

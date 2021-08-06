@@ -1,17 +1,15 @@
-package uk.gov.justice.digital.assessments.services
+package uk.gov.justice.digital.assessments.restclient
 
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
-import org.springframework.stereotype.Service
-import uk.gov.justice.digital.assessments.api.AnswersDto
-import uk.gov.justice.digital.assessments.api.PredictorScoreDto
-import uk.gov.justice.digital.assessments.jpa.entities.Answer
-import uk.gov.justice.digital.assessments.jpa.entities.AnswerEntity
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
-import uk.gov.justice.digital.assessments.jpa.entities.PredictorFieldMapping
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.authority.AuthorityUtils
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.oauth2.jwt.Jwt
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 import uk.gov.justice.digital.assessments.jpa.entities.PredictorType
-import uk.gov.justice.digital.assessments.restclient.AssessRisksAndNeedsApiRestClient
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.CurrentOffence
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.CurrentOffences
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.DynamicScoringOffences
@@ -20,57 +18,31 @@ import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.Gend
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.OffenderAndOffencesDto
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.PreviousOffences
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.ProblemsLevel
+import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.RiskPredictorsDto
+import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.Score
+import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.ScoreLevel
+import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.ScoreType
+import uk.gov.justice.digital.assessments.testutils.IntegrationTest
+import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.util.UUID
 
-@Service
-class PredictorService(
-  private val assessmentSchemaService: AssessmentSchemaService,
-  private val assessRisksAndNeedsApiRestClient: AssessRisksAndNeedsApiRestClient
-) {
-  companion object {
-    val log: Logger = LoggerFactory.getLogger(this::class.java)
+class AssessRisksAndNeedsApiClientTest : IntegrationTest() {
+  @Autowired
+  internal lateinit var assessRiskAndNeedsApiRestClient: AssessRisksAndNeedsApiRestClient
+
+  @BeforeEach
+  fun init() {
+    val jwt = Jwt.withTokenValue("token")
+      .header("alg", "none")
+      .claim("sub", "user")
+      .build()
+    val authorities: Collection<GrantedAuthority> = AuthorityUtils.createAuthorityList("SCOPE_read")
+    SecurityContextHolder.getContext().authentication = JwtAuthenticationToken(jwt, authorities)
   }
 
-  fun getPredictorResults(
-    assessmentSchemaCode: AssessmentSchemaCode,
-    episode: AssessmentEpisodeEntity,
-  ): List<PredictorScoreDto> {
-    val predictors = assessmentSchemaService.getPredictorsForAssessment(assessmentSchemaCode)
-
-    log.info("Found ${predictors.size} predictors for episode ${episode.episodeUuid} with assessment type $assessmentSchemaCode")
-
-    return predictors.map { predictor ->
-      val predictorFields = predictor.fields.toList()
-      val extractedAnswers = extractAnswers(predictorFields, episode.answers.orEmpty())
-      if (predictorFields.isNotEmpty() && predictorFields.size == extractedAnswers.size)
-        fetchResults(predictor.type, extractedAnswers) else PredictorScoreDto.incomplete(predictor.type)
-    }
-  }
-
-  private fun extractAnswers(
-    predictorFields: List<PredictorFieldMapping>,
-    answers: Map<UUID, AnswerEntity>
-  ): Map<String, AnswersDto> {
-    return predictorFields
-      .associate { predictorField ->
-        val questionUuid = predictorField.questionSchema.questionSchemaUuid
-        val questionAnswer = answers[questionUuid]
-        predictorField.predictorFieldName to questionAnswer?.answers
-      }
-      .filterValues { it != null && it.isNotEmpty() }
-      .mapValues {
-        AnswersDto.from(it.value as Collection<Answer>)
-      }
-      .filterValues { answersDto -> answersDto.answers.flatMap { answerDto -> answerDto.items }.isNotEmpty() }
-  }
-
-  private fun fetchResults(
-    predictorType: PredictorType,
-    answers: Map<String, AnswersDto>,
-  ): PredictorScoreDto {
-    log.info("Stubbed call to get Predictor Score")
+  @Test
+  fun `get RSR predictors for offender and offences`() {
     val offenderAndOffencesDto = OffenderAndOffencesDto(
       crn = "X1345",
       gender = Gender.MALE,
@@ -121,11 +93,17 @@ class PredictorService(
         )
       )
     )
-    val riskPredictors = assessRisksAndNeedsApiRestClient.getRiskPredictors(PredictorType.RSR, offenderAndOffencesDto)
-    log.info("Risk Predictors from ARN $riskPredictors")
-    return PredictorScoreDto(
-      type = predictorType,
-      score = 1234
+
+    val riskPredictors = assessRiskAndNeedsApiRestClient.getRiskPredictors(PredictorType.RSR, offenderAndOffencesDto)
+    assertThat(riskPredictors).isEqualTo(
+      RiskPredictorsDto(
+        algorithmVersion = 3,
+        type = PredictorType.RSR,
+        scoreType = ScoreType.STATIC,
+        rsrScore = Score(level = ScoreLevel.HIGH, score = BigDecimal("11.34"), isValid = true),
+        ospcScore = Score(level = ScoreLevel.NOT_APPLICABLE, score = BigDecimal("0"), isValid = false),
+        ospiScore = Score(level = ScoreLevel.NOT_APPLICABLE, score = BigDecimal("0"), isValid = false)
+      )
     )
   }
 }

@@ -39,6 +39,7 @@ abstract class IntegrationTest {
     internal val assessmentUpdateMockServer = AssessmentUpdateMockServer()
     internal val communityApiMockServer = CommunityApiMockServer()
     internal val assessmentApiMockServer = AssessmentApiMockServer()
+    internal val assessRisksAndNeedsApiMockServer = AssessRisksAndNeedsApiMockServer()
 
     @BeforeAll
     @JvmStatic
@@ -47,6 +48,7 @@ abstract class IntegrationTest {
       assessmentUpdateMockServer.start()
       communityApiMockServer.start()
       assessmentApiMockServer.start()
+      assessRisksAndNeedsApiMockServer.start()
     }
 
     @AfterAll
@@ -56,6 +58,7 @@ abstract class IntegrationTest {
       assessmentUpdateMockServer.stop()
       communityApiMockServer.stop()
       assessmentApiMockServer.stop()
+      assessRisksAndNeedsApiMockServer.stop()
     }
   }
 
@@ -67,7 +70,7 @@ abstract class IntegrationTest {
 
   @BeforeEach
   fun resetStubs() {
-    redisTemplate?.opsForValue()?.set("user:1", UserDetails("STUARTWHITLAM"))
+    redisTemplate.opsForValue().set("user:1", UserDetails("STUARTWHITLAM"))
     courtCaseMockServer.resetAll()
     courtCaseMockServer.stubCourtCase()
     assessmentUpdateMockServer.stubCreateOffender()
@@ -75,11 +78,13 @@ abstract class IntegrationTest {
     communityApiMockServer.stubGetOffender()
     communityApiMockServer.stubGetConvictions()
     assessmentApiMockServer.stubGetAssessment()
+    assessRisksAndNeedsApiMockServer.resetAll()
+    assessRisksAndNeedsApiMockServer.stubGetRSRPredictorsForOffenderAndOffences()
   }
 
   @AfterEach
   fun resetRedis() {
-    redisTemplate?.delete(redisTemplate?.keys("*"))
+    redisTemplate.delete(redisTemplate.keys("*"))
   }
 
   internal fun setAuthorisation(

@@ -30,6 +30,13 @@ spring:
             client-authentication-method: basic
             authorization-grant-type: client_credentials
             provider: oauth-service
+          assess-risks-and-needs-api-client:
+            client-name: assess-risks-and-needs-api-client
+            client-id: ${assess-risks-and-needs-api-id:sentence-plan-api-client}
+            client-secret: ${assess-risks-and-needs-api-client-secret:clientsecret}
+            client-authentication-method: basic
+            authorization-grant-type: client_credentials
+            provider: oauth-service
           community-api-client:
             client-name: community-api-client
             client-id: ${community-api-client-id:community-api-client}
