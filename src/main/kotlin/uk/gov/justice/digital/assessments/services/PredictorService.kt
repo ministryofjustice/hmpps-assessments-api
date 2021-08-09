@@ -4,22 +4,20 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.assessments.api.AnswersDto
-import uk.gov.justice.digital.assessments.api.PredictorScoreDto
+import uk.gov.justice.digital.assessments.api.PredictorScoresDto
 import uk.gov.justice.digital.assessments.jpa.entities.Answer
 import uk.gov.justice.digital.assessments.jpa.entities.AnswerEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.PredictorFieldMapping
-import uk.gov.justice.digital.assessments.jpa.entities.PredictorType
+import uk.gov.justice.digital.assessments.services.dto.PredictorType
 import uk.gov.justice.digital.assessments.restclient.AssessRisksAndNeedsApiRestClient
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.CurrentOffence
-import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.CurrentOffences
-import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.DynamicScoringOffences
-import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.EmploymentType
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.Gender
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.OffenderAndOffencesDto
-import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.PreviousOffences
-import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.ProblemsLevel
+import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.RiskPredictorsDto
+import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
+import uk.gov.justice.digital.assessments.services.exceptions.PredictorCalculationException
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
@@ -36,16 +34,13 @@ class PredictorService(
   fun getPredictorResults(
     assessmentSchemaCode: AssessmentSchemaCode,
     episode: AssessmentEpisodeEntity,
-  ): List<PredictorScoreDto> {
+  ): List<PredictorScoresDto> {
     val predictors = assessmentSchemaService.getPredictorsForAssessment(assessmentSchemaCode)
 
     log.info("Found ${predictors.size} predictors for episode ${episode.episodeUuid} with assessment type $assessmentSchemaCode")
 
     return predictors.map { predictor ->
-      val predictorFields = predictor.fields.toList()
-      val extractedAnswers = extractAnswers(predictorFields, episode.answers.orEmpty())
-      if (predictorFields.isNotEmpty() && predictorFields.size == extractedAnswers.size)
-        fetchResults(predictor.type, extractedAnswers) else PredictorScoreDto.incomplete(predictor.type)
+        fetchResults(predictor.type, extractAnswers(predictor.fields.toList(), episode.answers.orEmpty()))
     }
   }
 
@@ -69,63 +64,92 @@ class PredictorService(
   private fun fetchResults(
     predictorType: PredictorType,
     answers: Map<String, AnswersDto>,
-  ): PredictorScoreDto {
-    log.info("Stubbed call to get Predictor Score")
+  ): PredictorScoresDto {
+    val crn = "X1345"
+    log.info("Getting Predictor Score for crn $crn")
+    val dateOfFirstSanction = getAnswerFor(answers, "date_first_sanction")
+    val totalOffences = getAnswerFor(answers, "total_sanctions")
+    val totalViolentOffences = getAnswerFor(answers, "total_violent_offences")
+    val dateOfCurrentConviction = getAnswerFor(answers, "date_current_conviction")
+    val hasAnySexualOffences = getAnswerFor(answers, "any_sexual_offences")
+    val isCurrentSexualOffence = getAnswerFor(answers, "current_sexual_offence")
+    val isCurrentOffenceVictimStranger = getAnswerFor(answers, "current_offence_victim_stranger")
+    val mostRecentSexualOffenceDate = getAnswerFor(answers, "most_recent_sexual_offence_date")
+    val totalSexualOffencesInvolvingAnAdult = getAnswerFor(answers, "total_sexual_offences_adult")
+    val totalSexualOffencesInvolvingAChild = getAnswerFor(answers, "total_sexual_offences_child")
+    val totalSexualOffencesInvolvingChildImages = getAnswerFor(answers, "total_sexual_offences_child_image")
+    val totalNonSexualOffences = getAnswerFor(answers, "total_non_sexual_offences")
+    val earliestReleaseDate = getAnswerFor(answers, "earliest_release_date")
+    val hasCompletedInterview = getAnswerFor(answers, "completed_interview")
+
     val offenderAndOffencesDto = OffenderAndOffencesDto(
-      crn = "X1345",
+      crn = crn,
       gender = Gender.MALE,
       dob = LocalDate.of(2021, 1, 1).minusYears(20),
       assessmentDate = LocalDateTime.of(2021, 1, 1, 0, 0, 0),
       currentOffence = CurrentOffence("138", "00"),
-      dateOfFirstSanction = LocalDate.of(2021, 1, 1).minusYears(1),
-      totalOffences = 10,
-      totalViolentOffences = 8,
-      dateOfCurrentConviction = LocalDate.of(2021, 1, 1).minusWeeks(2),
-      hasAnySexualOffences = true,
-      isCurrentSexualOffence = true,
-      isCurrentOffenceVictimStranger = true,
-      mostRecentSexualOffenceDate = LocalDate.of(2021, 1, 1).minusWeeks(3),
-      totalSexualOffencesInvolvingAnAdult = 5,
-      totalSexualOffencesInvolvingAChild = 3,
-      totalSexualOffencesInvolvingChildImages = 2,
-      totalNonSexualOffences = 2,
-      earliestReleaseDate = LocalDate.of(2021, 1, 1).plusMonths(10),
-      hasCompletedInterview = true,
-      dynamicScoringOffences = DynamicScoringOffences(
-        committedOffenceUsingWeapon = true,
-        hasSuitableAccommodation = ProblemsLevel.MISSING,
-        employment = EmploymentType.NOT_AVAILABLE_FOR_WORK,
-        currentRelationshipWithPartner = ProblemsLevel.SIGNIFICANT_PROBLEMS,
-        evidenceOfDomesticViolence = true,
-        isAVictim = true,
-        isAPerpetrator = true,
-        alcoholUseIssues = ProblemsLevel.SIGNIFICANT_PROBLEMS,
-        bingeDrinkingIssues = ProblemsLevel.SIGNIFICANT_PROBLEMS,
-        impulsivityIssues = ProblemsLevel.SOME_PROBLEMS,
-        temperControlIssues = ProblemsLevel.SIGNIFICANT_PROBLEMS,
-        proCriminalAttitudes = ProblemsLevel.SOME_PROBLEMS,
-        previousOffences = PreviousOffences(
-          murderAttempt = true,
-          wounding = true,
-          aggravatedBurglary = true,
-          arson = true,
-          criminalDamage = true,
-          kidnapping = true,
-          firearmPossession = true,
-          robbery = true,
-          offencesWithWeapon = true
-        ),
-        currentOffences = CurrentOffences(
-          firearmPossession = true,
-          offencesWithWeapon = true
-        )
+      dateOfFirstSanction = dateOfFirstSanction,
+      totalOffences = totalOffences.toInt(),
+      totalViolentOffences = totalViolentOffences.toInt(),
+      dateOfCurrentConviction = dateOfCurrentConviction,
+      hasAnySexualOffences = hasAnySexualOffences.toBoolean(),
+      isCurrentSexualOffence = isCurrentSexualOffence.toBoolean(),
+      isCurrentOffenceVictimStranger = isCurrentOffenceVictimStranger.toBoolean(),
+      mostRecentSexualOffenceDate = mostRecentSexualOffenceDate,
+      totalSexualOffencesInvolvingAnAdult = totalSexualOffencesInvolvingAnAdult.toInt(),
+      totalSexualOffencesInvolvingAChild = totalSexualOffencesInvolvingAChild.toInt(),
+      totalSexualOffencesInvolvingChildImages = totalSexualOffencesInvolvingChildImages.toInt(),
+      totalNonSexualOffences = totalNonSexualOffences.toInt(),
+      earliestReleaseDate = earliestReleaseDate,
+      hasCompletedInterview = hasCompletedInterview.toBoolean()
+    )
+
+    return assessRisksAndNeedsApiRestClient.getRiskPredictors(predictorType, offenderAndOffencesDto)
+      .toRiskPredictorScores(crn)
+  }
+
+  private fun RiskPredictorsDto?.toRiskPredictorScores(crn: String): PredictorScoresDto {
+    log.info("Risk Predictors from ARN $this for crn $crn")
+    if (this == null) throw PredictorCalculationException("The risk predictors calculation failed for crn $crn")
+    return PredictorScoresDto(
+      type = this.type,
+      scores = this.toRiskPredictorsScores()
+    )
+  }
+
+  private fun RiskPredictorsDto.toRiskPredictorsScores(): Map<String, uk.gov.justice.digital.assessments.api.Score> {
+    return mapOf(
+      "RSR" to uk.gov.justice.digital.assessments.api.Score(
+        this.rsrScore.level?.name,
+        this.rsrScore.score,
+        this.rsrScore.isValid,
+        this.calculatedAt
+      ),
+      "OSP/C" to uk.gov.justice.digital.assessments.api.Score(
+        this.ospcScore.level?.name,
+        this.ospcScore.score,
+        this.ospcScore.isValid,
+        this.calculatedAt
+      ),
+      "OSP/I" to uk.gov.justice.digital.assessments.api.Score(
+        this.ospiScore.level?.name,
+        this.ospiScore.score,
+        this.ospiScore.isValid,
+        this.calculatedAt
       )
     )
-    val riskPredictors = assessRisksAndNeedsApiRestClient.getRiskPredictors(PredictorType.RSR, offenderAndOffencesDto)
-    log.info("Risk Predictors from ARN $riskPredictors")
-    return PredictorScoreDto(
-      type = predictorType,
-      score = 1234
-    )
+  }
+
+  private fun getAnswerFor(answers: Map<String, AnswersDto>, answerCode: String): String {
+    return answers[answerCode]?.answers?.toList()?.get(0)?.items?.toList()?.get(0)
+      ?: throw EntityNotFoundException("Answer $answerCode for predictor not found")
+  }
+
+  fun String?.toBoolean(): Boolean {
+    return this == ResponseDto.YES.name
+  }
+
+  enum class ResponseDto(val value: String) {
+    YES("Yes"), NO("No");
   }
 }
