@@ -16,9 +16,8 @@ import uk.gov.justice.digital.assessments.jpa.entities.OasysAssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.EpisodeRepository
-import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.UpdateAssessmentAnswersResponseDto
-import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.ValidationErrorDto
 import uk.gov.justice.digital.assessments.services.dto.AssessmentEpisodeUpdateErrors
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -84,7 +83,9 @@ class AssessmentUpdateServiceCompleteTest {
   }
 
   private fun assessmentEntity(): AssessmentEntity {
-    val subject = SubjectEntity(oasysOffenderPk = 9999)
+    val subject = SubjectEntity(
+      oasysOffenderPk = 9999, dateOfBirth = LocalDate.of(1989, 1, 1)
+    )
     val episodes = mutableListOf<AssessmentEpisodeEntity>()
     val assessment = AssessmentEntity(
       assessmentUuid = UUID.fromString("7b4de6d5-4488-4c29-a909-7d3fdf15393d"),
@@ -104,25 +105,5 @@ class AssessmentUpdateServiceCompleteTest {
       )
     )
     return assessment
-  }
-
-  private fun assessmentWithNoEpisodeEntity(): AssessmentEntity {
-    val subject = SubjectEntity(oasysOffenderPk = 9999)
-    val episodes = mutableListOf<AssessmentEpisodeEntity>()
-    return AssessmentEntity(
-      assessmentUuid = UUID.fromString("7b4de6d5-4488-4c29-a909-7d3fdf15393d"),
-      assessmentId = 1,
-      episodes = episodes,
-      subject_ = mutableListOf(subject)
-    )
-  }
-
-  private fun oasysAssessmentError(): UpdateAssessmentAnswersResponseDto {
-    return UpdateAssessmentAnswersResponseDto(
-      7777,
-      setOf(
-        ValidationErrorDto("ASSESSMENT", null, "Q1", "OOPS", "NO", false)
-      )
-    )
   }
 }

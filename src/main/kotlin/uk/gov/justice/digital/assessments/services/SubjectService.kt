@@ -12,8 +12,10 @@ class SubjectService(
 ) {
 
   fun getSubjectForAssessment(assessmentUuid: UUID): SubjectEntity {
-    val assessmentEntity = (assessmentRepository.findByAssessmentUuid(assessmentUuid)
-      ?: throw EntityNotFoundException("Assessment $assessmentUuid not found"))
+    val assessmentEntity = (
+      assessmentRepository.findByAssessmentUuid(assessmentUuid)
+        ?: throw EntityNotFoundException("Assessment $assessmentUuid not found")
+      )
 
     return assessmentEntity.subject ?: throw EntityNotFoundException("Subject not found for $assessmentUuid ")
   }

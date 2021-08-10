@@ -10,15 +10,14 @@ import uk.gov.justice.digital.assessments.jpa.entities.AnswerEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.PredictorFieldMapping
-import uk.gov.justice.digital.assessments.services.dto.PredictorType
 import uk.gov.justice.digital.assessments.restclient.AssessRisksAndNeedsApiRestClient
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.CurrentOffence
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.Gender
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.OffenderAndOffencesDto
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.RiskPredictorsDto
+import uk.gov.justice.digital.assessments.services.dto.PredictorType
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import uk.gov.justice.digital.assessments.services.exceptions.PredictorCalculationException
-import java.time.LocalDateTime
 import java.util.UUID
 
 @Service
@@ -40,7 +39,7 @@ class PredictorService(
     log.info("Found ${predictors.size} predictors for episode ${episode.episodeUuid} with assessment type $assessmentSchemaCode")
 
     return predictors.map { predictor ->
-        fetchResults(episode, predictor.type, extractAnswers(predictor.fields.toList(), episode.answers.orEmpty()),)
+      fetchResults(episode, predictor.type, extractAnswers(predictor.fields.toList(), episode.answers.orEmpty()),)
     }
   }
 
@@ -83,12 +82,11 @@ class PredictorService(
     val earliestReleaseDate = getAnswerFor(answers, "earliest_release_date")
     val hasCompletedInterview = getAnswerFor(answers, "completed_interview")
 
-
     val offenderAndOffencesDto = OffenderAndOffencesDto(
       crn = crn,
       gender = Gender.MALE,
       dob = subjectService.getSubjectForAssessment(episode.episodeUuid).dateOfBirth,
-      assessmentDate = LocalDateTime.of(2021, 1, 1, 0, 0, 0),
+      assessmentDate = episode.createdDate,
       currentOffence = CurrentOffence("138", "00"),
       dateOfFirstSanction = dateOfFirstSanction,
       totalOffences = totalOffences.toInt(),

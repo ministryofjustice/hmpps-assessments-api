@@ -9,7 +9,6 @@ import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
-import uk.gov.justice.digital.assessments.services.dto.PredictorType
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.CurrentOffence
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.CurrentOffences
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.DynamicScoringOffences
@@ -22,6 +21,7 @@ import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.Risk
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.Score
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.ScoreLevel
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.ScoreType
+import uk.gov.justice.digital.assessments.services.dto.PredictorType
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import java.math.BigDecimal
 import java.time.LocalDate

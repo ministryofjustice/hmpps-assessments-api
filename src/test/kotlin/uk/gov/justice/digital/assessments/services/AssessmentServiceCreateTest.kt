@@ -209,7 +209,9 @@ class AssessmentServiceCreateTest {
           AssessmentService.courtSource,
           "$courtCode|$caseNumber"
         )
-      } returns SubjectEntity(assessment = AssessmentEntity(assessmentId = 1))
+      } returns SubjectEntity(
+        assessment = AssessmentEntity(assessmentId = 1), dateOfBirth = LocalDate.of(1989, 1, 1)
+      )
 
       assessmentsService.createNewAssessment(
         CreateAssessmentDto(

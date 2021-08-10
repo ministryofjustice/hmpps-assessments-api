@@ -16,6 +16,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.Predictor
 import uk.gov.justice.digital.assessments.jpa.entities.PredictorFieldMapping
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
+import uk.gov.justice.digital.assessments.jpa.entities.SubjectEntity
 import uk.gov.justice.digital.assessments.restclient.AssessRisksAndNeedsApiRestClient
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.CurrentOffence
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.Gender
@@ -291,7 +292,7 @@ class PredictorServiceTest {
         crn = "X1345",
         gender = Gender.MALE,
         dob = LocalDate.of(2021, 1, 1).minusYears(20),
-        assessmentDate = LocalDateTime.of(2021, 1, 1, 0, 0, 0),
+        assessmentDate = assessmentEpisode.createdDate,
         currentOffence = CurrentOffence("138", "00"),
         dateOfFirstSanction = "2021-10-01",
         totalOffences = 10,
@@ -320,13 +321,20 @@ class PredictorServiceTest {
         calculatedAt = "2021-08-09 14:46:48"
       )
 
+      every {
+        subjectService.getSubjectForAssessment(assessmentEpisode.episodeUuid)
+      } returns SubjectEntity(
+        oasysOffenderPk = 9999, dateOfBirth = LocalDate.of(2001, 1, 1)
+      )
+
       val results = predictorService.getPredictorResults(AssessmentSchemaCode.RSR, assessmentEpisode)
 
       assertThat(results).hasSize(1)
       assertThat(results.first().type).isEqualTo(PredictorType.RSR)
       assertThat(results.first().scores).contains(
         entry(
-          "RSR", uk.gov.justice.digital.assessments.api.Score(
+          "RSR",
+          uk.gov.justice.digital.assessments.api.Score(
             "HIGH",
             BigDecimal("11.34"),
             true,
@@ -334,7 +342,8 @@ class PredictorServiceTest {
           )
         ),
         entry(
-          "OSP/C", uk.gov.justice.digital.assessments.api.Score(
+          "OSP/C",
+          uk.gov.justice.digital.assessments.api.Score(
             "NOT_APPLICABLE",
             BigDecimal("0"),
             false,
@@ -342,7 +351,8 @@ class PredictorServiceTest {
           )
         ),
         entry(
-          "OSP/I", uk.gov.justice.digital.assessments.api.Score(
+          "OSP/I",
+          uk.gov.justice.digital.assessments.api.Score(
             "NOT_APPLICABLE",
             BigDecimal("0"),
             false,
@@ -352,5 +362,4 @@ class PredictorServiceTest {
       )
     }
   }
-
 }

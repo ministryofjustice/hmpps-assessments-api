@@ -32,6 +32,7 @@ import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.Validat
 import uk.gov.justice.digital.assessments.services.dto.AssessmentEpisodeUpdateErrors
 import uk.gov.justice.digital.assessments.services.dto.OasysAnswers
 import uk.gov.justice.digital.assessments.testutils.Verify
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -464,7 +465,9 @@ class AssessmentUpdateServiceOASysTest {
   }
 
   private fun assessmentEntityWithOasysOffender(answers: MutableMap<UUID, AnswerEntity>): AssessmentEntity {
-    val subject = SubjectEntity(oasysOffenderPk = 9999)
+    val subject = SubjectEntity(
+      oasysOffenderPk = 9999, dateOfBirth = LocalDate.of(1989, 1, 1)
+    )
     val episodes = mutableListOf<AssessmentEpisodeEntity>()
     val assessment = AssessmentEntity(
       assessmentId = assessmentId,
@@ -504,7 +507,8 @@ class AssessmentUpdateServiceOASysTest {
         subject_ = mutableListOf(
           SubjectEntity(
             oasysOffenderPk = 1,
-            subjectUuid = UUID.randomUUID()
+            subjectUuid = UUID.randomUUID(),
+            dateOfBirth = LocalDate.of(1989, 1, 1)
           )
         )
       )
