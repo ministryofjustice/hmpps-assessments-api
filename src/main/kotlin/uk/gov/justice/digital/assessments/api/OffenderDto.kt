@@ -8,7 +8,7 @@ data class OffenderDto(
   var offenderId: Long? = null,
   val firstName: String? = null,
   val surname: String? = null,
-  val dateOfBirth: LocalDate? = null,
+  val dateOfBirth: LocalDate,
   val gender: String? = null,
   val crn: String? = null,
   val pncNumber: String? = null,

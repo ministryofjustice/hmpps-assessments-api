@@ -33,9 +33,11 @@ import java.util.UUID
 
 class PredictorServiceTest {
   private val assessmentSchemaService: AssessmentSchemaService = mockk()
+  private val subjectService: SubjectService = mockk()
   private val assessRisksAndNeedsApiRestClient: AssessRisksAndNeedsApiRestClient = mockk()
 
-  private val predictorService = PredictorService(assessmentSchemaService, assessRisksAndNeedsApiRestClient)
+  private val predictorService =
+    PredictorService(assessmentSchemaService, subjectService, assessRisksAndNeedsApiRestClient)
 
   private val testQuestion1 = QuestionSchemaEntity(
     questionSchemaId = 1,

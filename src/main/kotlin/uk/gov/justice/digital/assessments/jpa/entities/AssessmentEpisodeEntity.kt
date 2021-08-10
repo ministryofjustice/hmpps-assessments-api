@@ -32,7 +32,7 @@ class AssessmentEpisodeEntity(
   val episodeId: Long? = null,
 
   @Column(name = "EPISODE_UUID")
-  val episodeUuid: UUID? = UUID.randomUUID(),
+  val episodeUuid: UUID = UUID.randomUUID(),
 
   @ManyToOne
   @JoinColumn(name = "ASSESSMENT_UUID", referencedColumnName = "ASSESSMENT_UUID")

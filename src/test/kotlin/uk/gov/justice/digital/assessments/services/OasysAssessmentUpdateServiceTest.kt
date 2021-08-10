@@ -28,6 +28,7 @@ import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OasysAnswer
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.UpdateAssessmentAnswersResponseDto
 import uk.gov.justice.digital.assessments.services.dto.AssessmentEpisodeUpdateErrors
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -215,7 +216,8 @@ class OasysAssessmentUpdateServiceTest() {
         subject_ = mutableListOf(
           SubjectEntity(
             oasysOffenderPk = 1,
-            subjectUuid = UUID.randomUUID()
+            subjectUuid = UUID.randomUUID(),
+            dateOfBirth = LocalDate.of(1989,1,1)
           )
         )
       )

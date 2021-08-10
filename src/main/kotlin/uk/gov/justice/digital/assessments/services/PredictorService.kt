@@ -18,13 +18,13 @@ import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.Offe
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.RiskPredictorsDto
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import uk.gov.justice.digital.assessments.services.exceptions.PredictorCalculationException
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
 
 @Service
 class PredictorService(
   private val assessmentSchemaService: AssessmentSchemaService,
+  private val subjectService: SubjectService,
   private val assessRisksAndNeedsApiRestClient: AssessRisksAndNeedsApiRestClient
 ) {
   companion object {
@@ -40,7 +40,7 @@ class PredictorService(
     log.info("Found ${predictors.size} predictors for episode ${episode.episodeUuid} with assessment type $assessmentSchemaCode")
 
     return predictors.map { predictor ->
-        fetchResults(predictor.type, extractAnswers(predictor.fields.toList(), episode.answers.orEmpty()))
+        fetchResults(episode, predictor.type, extractAnswers(predictor.fields.toList(), episode.answers.orEmpty()),)
     }
   }
 
@@ -62,6 +62,7 @@ class PredictorService(
   }
 
   private fun fetchResults(
+    episode: AssessmentEpisodeEntity,
     predictorType: PredictorType,
     answers: Map<String, AnswersDto>,
   ): PredictorScoresDto {
@@ -82,10 +83,11 @@ class PredictorService(
     val earliestReleaseDate = getAnswerFor(answers, "earliest_release_date")
     val hasCompletedInterview = getAnswerFor(answers, "completed_interview")
 
+
     val offenderAndOffencesDto = OffenderAndOffencesDto(
       crn = crn,
       gender = Gender.MALE,
-      dob = LocalDate.of(2021, 1, 1).minusYears(20),
+      dob = subjectService.getSubjectForAssessment(episode.episodeUuid).dateOfBirth,
       assessmentDate = LocalDateTime.of(2021, 1, 1, 0, 0, 0),
       currentOffence = CurrentOffence("138", "00"),
       dateOfFirstSanction = dateOfFirstSanction,
@@ -141,7 +143,7 @@ class PredictorService(
   }
 
   private fun getAnswerFor(answers: Map<String, AnswersDto>, answerCode: String): String {
-    return answers[answerCode]?.answers?.toList()?.get(0)?.items?.toList()?.get(0)
+    return answers[answerCode]?.answers?.first()?.items?.first()
       ?: throw EntityNotFoundException("Answer $answerCode for predictor not found")
   }
 

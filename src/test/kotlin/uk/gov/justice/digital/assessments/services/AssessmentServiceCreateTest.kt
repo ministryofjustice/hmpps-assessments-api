@@ -24,6 +24,7 @@ import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import uk.gov.justice.digital.assessments.restclient.courtcaseapi.CourtCase
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import uk.gov.justice.digital.assessments.utils.RequestData
+import java.time.LocalDate
 import java.util.UUID
 
 @ExtendWith(MockKExtension::class)
@@ -74,7 +75,7 @@ class AssessmentServiceCreateTest {
     @Test
     fun `create new offender with new assessment from delius event id and crn`() {
       every { subjectRepository.findBySourceAndSourceIdAndCrn(deliusSource, eventId.toString(), crn) } returns null
-      every { offenderService.getOffender("X12345") } returns OffenderDto()
+      every { offenderService.getOffender("X12345") } returns OffenderDto(dateOfBirth = LocalDate.of(1989, 1, 1))
       every { oasysAssessmentUpdateService.createOasysAssessment(crn, eventId, assessmentSchemaCode) } returns Pair(
         oasysOffenderPk,
         oasysSetPk
@@ -95,7 +96,10 @@ class AssessmentServiceCreateTest {
     @Test
     fun `return existing assessment from delius event id and crn if one already exists`() {
       every { subjectRepository.findBySourceAndSourceIdAndCrn(deliusSource, eventId.toString(), crn) } returns
-        SubjectEntity(assessment = AssessmentEntity(assessmentId = assessmentId, assessmentUuid = assessmentUuid))
+        SubjectEntity(
+          assessment = AssessmentEntity(assessmentId = assessmentId, assessmentUuid = assessmentUuid),
+          dateOfBirth = LocalDate.of(1989, 1, 1)
+        )
 
       val assessmentDto =
         assessmentsService.createNewAssessment(
@@ -173,7 +177,10 @@ class AssessmentServiceCreateTest {
         )
       } returns null
       every { assessmentRepository.save(any()) } returns AssessmentEntity(assessmentId = assessmentId)
-      every { courtCaseRestClient.getCourtCase(courtCode, caseNumber) } returns CourtCase(crn = crn)
+      every { courtCaseRestClient.getCourtCase(courtCode, caseNumber) } returns CourtCase(
+        crn = crn,
+        defendantDob = LocalDate.of(1989, 1, 1)
+      )
       every {
         oasysAssessmentUpdateService.createOasysAssessment(
           crn = crn,

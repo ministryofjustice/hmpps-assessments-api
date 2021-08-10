@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS subject
     oasys_offender_pk   NUMERIC         NULL,
     pnc                 TEXT            NULL,
     crn                 TEXT            NULL,
-    date_of_birth       DATE            NULL,
+    date_of_birth       DATE            NOT NULL,
     created_date        TIMESTAMP       NOT NULL,
     assessment_uuid     UUID            NOT NULL,
     FOREIGN KEY (assessment_uuid)
