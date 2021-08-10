@@ -3,6 +3,7 @@ package uk.gov.justice.digital.assessments.services
 import io.mockk.every
 import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -16,13 +17,15 @@ import uk.gov.justice.digital.assessments.jpa.entities.Predictor
 import uk.gov.justice.digital.assessments.jpa.entities.PredictorFieldMapping
 import uk.gov.justice.digital.assessments.jpa.entities.PredictorType
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
+import uk.gov.justice.digital.assessments.restclient.AssessRisksAndNeedsApiRestClient
 import java.time.LocalDateTime
 import java.util.UUID
 
 class PredictorServiceTest {
   private val assessmentSchemaService: AssessmentSchemaService = mockk()
+  private val assessRisksAndNeedsApiRestClient: AssessRisksAndNeedsApiRestClient = mockk()
 
-  private val predictorService = PredictorService(assessmentSchemaService)
+  private val predictorService = PredictorService(assessmentSchemaService, assessRisksAndNeedsApiRestClient)
 
   private val testQuestion = QuestionSchemaEntity(
     questionSchemaId = 1,
@@ -64,6 +67,11 @@ class PredictorServiceTest {
     episodeUuid = UUID.randomUUID(),
     createdDate = LocalDateTime.now(),
   )
+
+  @BeforeEach
+  private fun setup() {
+    every { assessRisksAndNeedsApiRestClient.getRiskPredictors(any(), any()) } returns null
+  }
 
   @Nested
   @DisplayName("get predictor results")

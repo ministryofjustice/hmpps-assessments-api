@@ -41,7 +41,7 @@ class AssessmentEntityTest {
         AssessmentEpisodeEntity(
           episodeId = episodeId,
           changeReason = "Change of Circs",
-          createdDate = LocalDateTime.now()
+          createdDate = LocalDateTime.now(),
         )
       )
     )

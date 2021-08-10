@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.assessments.config
 
-import io.netty.channel.ChannelOption
 import io.netty.handler.timeout.ReadTimeoutHandler
 import io.netty.handler.timeout.WriteTimeoutHandler
 import org.springframework.beans.factory.annotation.Value
@@ -14,6 +13,8 @@ import org.springframework.security.oauth2.client.web.reactive.function.client.S
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.netty.http.client.HttpClient
 import uk.gov.justice.digital.assessments.restclient.AuthenticatingRestClient
+import uk.gov.justice.digital.assessments.restclient.RestClient
+import java.time.Duration
 import java.util.concurrent.TimeUnit
 
 @Configuration
@@ -27,6 +28,9 @@ class WebClientConfig {
   @Value("\${assessment-api.base-url}")
   private lateinit var assessmentApiBaseUrl: String
 
+  @Value("\${assess-risks-and-needs-api.base-url}")
+  private lateinit var assessRisksAndNeedsBaseUrl: String
+
   @Value("\${community-api.base-url}")
   private lateinit var communityApiBaseUrl: String
 
@@ -34,7 +38,7 @@ class WebClientConfig {
   private val disableAuthentication = false
 
   @Value("\${web.client.connect-timeout-ms}")
-  private val connectTimeoutMs: Int? = null
+  private val connectTimeoutMs: Long = 100000
 
   @Value("\${web.client.read-timeout-ms}")
   private val readTimeoutMs: Long = 0
@@ -73,6 +77,14 @@ class WebClientConfig {
   }
 
   @Bean
+  fun assessRisksAndNeedsApiWebClient(authorizedClientManager: OAuth2AuthorizedClientManager): RestClient {
+    return RestClient(
+      webClientFactory(assessRisksAndNeedsBaseUrl, authorizedClientManager, bufferByteSize),
+      "assess-risks-and-needs-api-client"
+    )
+  }
+
+  @Bean
   fun communityApiWebClient(authorizedClientManager: OAuth2AuthorizedClientManager): AuthenticatingRestClient {
     return AuthenticatingRestClient(
       webClientFactory(communityApiBaseUrl, authorizedClientManager, bufferByteSize),
@@ -89,13 +101,12 @@ class WebClientConfig {
     val oauth2Client = ServletOAuth2AuthorizedClientExchangeFilterFunction(authorizedClientManager)
 
     val httpClient = HttpClient.create()
-      .tcpConfiguration {
-        it.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, connectTimeoutMs)
-          .doOnConnected {
-            it.addHandlerLast(ReadTimeoutHandler(readTimeoutMs, TimeUnit.MILLISECONDS))
-              .addHandlerLast(WriteTimeoutHandler(writeTimeoutMs, TimeUnit.MILLISECONDS))
-          }
+      .doOnConnected {
+        it
+          .addHandlerLast(ReadTimeoutHandler(readTimeoutMs, TimeUnit.MILLISECONDS))
+          .addHandlerLast(WriteTimeoutHandler(writeTimeoutMs, TimeUnit.MILLISECONDS))
       }
+      .responseTimeout(Duration.ofSeconds(connectTimeoutMs))
 
     return WebClient
       .builder()
