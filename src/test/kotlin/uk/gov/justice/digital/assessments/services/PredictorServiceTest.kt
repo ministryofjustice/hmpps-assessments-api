@@ -247,7 +247,7 @@ class PredictorServiceTest {
       listOf(Answer(items = listOf("2025-11-01")))
     ),
     testQuestion14.questionSchemaUuid to AnswerEntity(
-      listOf(Answer(items = listOf("YES")))
+      listOf(Answer(items = listOf("NO")))
     )
   )
 
@@ -275,6 +275,11 @@ class PredictorServiceTest {
     @Test
     fun `throws exception when required answer is not found`() {
       every { assessmentSchemaService.getPredictorsForAssessment(AssessmentSchemaCode.RSR) } returns predictors
+      every {
+        subjectService.getSubjectForAssessment(assessmentEpisodeNoAnswers.episodeUuid)
+      } returns SubjectEntity(
+        oasysOffenderPk = 9999, dateOfBirth = LocalDate.of(2001, 1, 1)
+      )
 
       assertThrows<EntityNotFoundException> {
         predictorService.getPredictorResults(
@@ -291,7 +296,7 @@ class PredictorServiceTest {
       val offenderAndOffencesDto = OffenderAndOffencesDto(
         crn = "X1345",
         gender = Gender.MALE,
-        dob = LocalDate.of(2021, 1, 1).minusYears(20),
+        dob = LocalDate.of(2001, 1, 1),
         assessmentDate = assessmentEpisode.createdDate,
         currentOffence = CurrentOffence("138", "00"),
         dateOfFirstSanction = "2021-10-01",
@@ -307,7 +312,8 @@ class PredictorServiceTest {
         totalSexualOffencesInvolvingChildImages = 10,
         totalNonSexualOffences = 9,
         earliestReleaseDate = "2025-11-01",
-        hasCompletedInterview = true
+        hasCompletedInterview = false,
+        dynamicScoringOffences = null
       )
 
       every {

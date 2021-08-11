@@ -30,9 +30,9 @@ data class DynamicScoringOffences(
   val hasSuitableAccommodation: String?,
   val employment: String?,
   val currentRelationshipWithPartner: String?,
-  val evidenceOfDomesticViolence: Boolean,
-  val isVictim: Boolean,
-  val isPerpetrator: Boolean,
+  val evidenceOfDomesticViolence: Boolean?,
+  val isVictim: Boolean? = null,
+  val isPerpetrator: Boolean?,
   val alcoholUseIssues: String?,
   val bingeDrinkingIssues: String?,
   val impulsivityIssues: String?,
@@ -48,15 +48,15 @@ data class CurrentOffences(
 )
 
 data class PreviousOffences(
-  val murderAttempt: Boolean,
-  val wounding: Boolean,
-  val aggravatedBurglary: Boolean,
-  val arson: Boolean,
-  val criminalDamage: Boolean,
-  val kidnapping: Boolean,
-  val firearmPossession: Boolean,
-  val robbery: Boolean,
-  val offencesWithWeapon: Boolean
+  val murderAttempt: Boolean?,
+  val wounding: Boolean?,
+  val aggravatedBurglary: Boolean?,
+  val arson: Boolean?,
+  val criminalDamage: Boolean?,
+  val kidnapping: Boolean?,
+  val firearmPossession: Boolean?,
+  val robbery: Boolean?,
+  val offencesWithWeapon: Boolean?
 )
 
 data class CurrentOffence(val offenceCode: String, val offenceSubcode: String)

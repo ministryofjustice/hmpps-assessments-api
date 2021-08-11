@@ -24,7 +24,7 @@ INSERT INTO predictor_field_mapping (predictor_mapping_uuid, question_schema_uui
 ('89926828-7862-4b22-b02e-2e449a76c622', 'f04dd882-0a0d-49f5-9736-91eeadbff9e7', 'RSR', 'evidence_domestic_violence', false),
 ('ca66afba-46c0-4be4-a23d-306bce15a4fd', '38b3a40a-df23-4ea1-872e-c04a8b03ee05', 'RSR', 'perpetrator_domestic_violence', false),
 ('a4feacfe-6bda-41d6-806e-872c0b84189e', 'f0416e89-3a71-46d1-8fa2-aebd886dcb34', 'RSR', 'use_of_alcohol', false),
-('8dea672f-5264-4973-94f4-9d10f1daf5f6', '574618c3-27f4-4dd2-94bb-6de74126ff229', 'RSR', 'binge_drinking', false),
+('8dea672f-5264-4973-94f4-9d10f1daf5f6', '574618c3-27f4-4dd2-94bb-6de74126ff22', 'RSR', 'binge_drinking', false),
 ('0365e911-b1bd-4271-b498-3657eda1c859', '5a90a38d-ee0a-4775-994c-addf3397b817', 'RSR', 'impulsivity_issues', false),
 ('42d9430a-f004-402c-af37-4b8bf24ef0fb', 'd0619e6b-cc90-4031-90c6-ab15e06cc779', 'RSR', 'temper_control_issues', false),
 ('c5d29ac7-69bb-49a6-bf3d-9943a0e93303', '2f1b543b-1e69-4f7e-a61c-6d21ff967432', 'RSR', 'pro_criminal_attitudes', false),

@@ -70,6 +70,7 @@ class PredictorService(
     val crn = "X1345"
     log.info("Getting Predictor Score for crn $crn and type $predictorType")
 
+    val hasCompletedInterview = getRequiredAnswer(answers, "completed_interview").toBoolean()
     val offenderAndOffencesDto = OffenderAndOffencesDto(
       crn = crn,
       gender = Gender.MALE,
@@ -89,35 +90,39 @@ class PredictorService(
       totalSexualOffencesInvolvingChildImages = getRequiredAnswer(answers, "total_sexual_offences_child_image").toInt(),
       totalNonSexualOffences = getRequiredAnswer(answers, "total_non_sexual_offences").toInt(),
       earliestReleaseDate = getRequiredAnswer(answers, "earliest_release_date"),
-      hasCompletedInterview = getRequiredAnswer(answers, "completed_interview").toBoolean(),
-      dynamicScoringOffences = DynamicScoringOffences(
-        hasSuitableAccommodation = getNonRequiredAnswer(answers, "suitable_accommodation"),
-        employment = getNonRequiredAnswer(answers, "unemployed_on_release"),
-        currentRelationshipWithPartner = getNonRequiredAnswer(answers, "current_relationship_with_partner"),
-        evidenceOfDomesticViolence = getNonRequiredAnswer(answers, "evidence_domestic_violence").toBoolean(),
-        isVictim = false,
-        isPerpetrator = getNonRequiredAnswer(answers, "perpetrator_domestic_violence").toBoolean(),
-        alcoholUseIssues = getNonRequiredAnswer(answers, "use_of_alcohol"),
-        bingeDrinkingIssues = getNonRequiredAnswer(answers, "binge_drinking"),
-        impulsivityIssues = getNonRequiredAnswer(answers, "impulsivity_issues"),
-        temperControlIssues = getNonRequiredAnswer(answers, "temper_control_issues"),
-        proCriminalAttitudes = getNonRequiredAnswer(answers, "pro_criminal_attitudes"),
-        previousOffences = PreviousOffences(
-          murderAttempt = getNonRequiredAnswer(answers, "previous_murder_attempt").toBoolean(),
-          wounding = getNonRequiredAnswer(answers, "previous_wounding").toBoolean(),
-          aggravatedBurglary = getNonRequiredAnswer(answers, "previous_aggravated_burglary").toBoolean(),
-          arson = getNonRequiredAnswer(answers, "previous_arson").toBoolean(),
-          criminalDamage = getNonRequiredAnswer(answers, "previous_criminal_damage").toBoolean(),
-          kidnapping = getNonRequiredAnswer(answers, "previous_kidnapping").toBoolean(),
-          firearmPossession = getNonRequiredAnswer(answers, "previous_possession_firearm").toBoolean(),
-          robbery = getNonRequiredAnswer(answers, "previous_robbery").toBoolean(),
-          offencesWithWeapon = getNonRequiredAnswer(answers, "previous_offence_weapon").toBoolean(),
-        )
-      )
+      hasCompletedInterview = hasCompletedInterview,
+      dynamicScoringOffences = getDynamicScoringOffences(hasCompletedInterview, answers)
     )
 
     return assessRisksAndNeedsApiRestClient.getRiskPredictors(predictorType, offenderAndOffencesDto)
       .toRiskPredictorScores(crn)
+  }
+
+  private fun getDynamicScoringOffences(hasCompletedInterview: Boolean, answers: Map<String, AnswersDto>): DynamicScoringOffences? {
+    if (!hasCompletedInterview) return null
+    return DynamicScoringOffences(
+      hasSuitableAccommodation = getNonRequiredAnswer(answers, "suitable_accommodation"),
+      employment = getNonRequiredAnswer(answers, "unemployed_on_release"),
+      currentRelationshipWithPartner = getNonRequiredAnswer(answers, "current_relationship_with_partner"),
+      evidenceOfDomesticViolence = getNonRequiredAnswer(answers, "evidence_domestic_violence").toBoolean(),
+      isPerpetrator = getNonRequiredAnswer(answers, "perpetrator_domestic_violence").toBoolean(),
+      alcoholUseIssues = getNonRequiredAnswer(answers, "use_of_alcohol"),
+      bingeDrinkingIssues = getNonRequiredAnswer(answers, "binge_drinking"),
+      impulsivityIssues = getNonRequiredAnswer(answers, "impulsivity_issues"),
+      temperControlIssues = getNonRequiredAnswer(answers, "temper_control_issues"),
+      proCriminalAttitudes = getNonRequiredAnswer(answers, "pro_criminal_attitudes"),
+      previousOffences = PreviousOffences(
+        murderAttempt = getNonRequiredAnswer(answers, "previous_murder_attempt").toBoolean(),
+        wounding = getNonRequiredAnswer(answers, "previous_wounding").toBoolean(),
+        aggravatedBurglary = getNonRequiredAnswer(answers, "previous_aggravated_burglary").toBoolean(),
+        arson = getNonRequiredAnswer(answers, "previous_arson").toBoolean(),
+        criminalDamage = getNonRequiredAnswer(answers, "previous_criminal_damage").toBoolean(),
+        kidnapping = getNonRequiredAnswer(answers, "previous_kidnapping").toBoolean(),
+        firearmPossession = getNonRequiredAnswer(answers, "previous_possession_firearm").toBoolean(),
+        robbery = getNonRequiredAnswer(answers, "previous_robbery").toBoolean(),
+        offencesWithWeapon = getNonRequiredAnswer(answers, "previous_offence_weapon").toBoolean(),
+      )
+    )
   }
 
   private fun RiskPredictorsDto?.toRiskPredictorScores(crn: String): PredictorScoresDto {
@@ -161,7 +166,11 @@ class PredictorService(
     return answers[answerCode]?.answers?.first()?.items?.first()
   }
 
-  fun String?.toBoolean(): Boolean {
+  fun String?.toBoolean(): Boolean? {
+    return if (this == null) null else this == ResponseDto.YES.name
+  }
+
+  fun String.toBoolean(): Boolean {
     return this == ResponseDto.YES.name
   }
 
