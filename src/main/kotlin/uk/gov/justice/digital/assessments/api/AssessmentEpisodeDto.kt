@@ -42,7 +42,7 @@ data class AssessmentEpisodeDto(
   val assessmentErrors: Collection<String>? = null,
 
   @Schema(description = "Results of predictors")
-  val predictors: Collection<PredictorScoreDto>,
+  val predictors: Collection<PredictorScoresDto>,
 ) {
   companion object {
 
@@ -53,7 +53,7 @@ data class AssessmentEpisodeDto(
     fun from(
       episode: AssessmentEpisodeEntity,
       errors: AssessmentEpisodeUpdateErrors? = null,
-      predictors: Collection<PredictorScoreDto> = emptyList(),
+      predictors: Collection<PredictorScoresDto> = emptyList(),
     ): AssessmentEpisodeDto {
       return AssessmentEpisodeDto(
         episode.episodeId,

@@ -232,7 +232,7 @@ class AssessmentService(
       name = courtCase.defendantName,
       oasysOffenderPk = oasysOffenderPk,
       pnc = courtCase.pnc,
-      crn = courtCase.crn,
+      crn = courtCase.crn ?: "",
       dateOfBirth = courtCase.defendantDob,
       createdDate = assessment.createdDate,
       assessment = assessment

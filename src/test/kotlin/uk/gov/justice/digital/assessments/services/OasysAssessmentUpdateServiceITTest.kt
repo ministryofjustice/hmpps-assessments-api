@@ -15,6 +15,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.SubjectEntity
 import uk.gov.justice.digital.assessments.services.dto.AssessmentEpisodeUpdateErrors
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import uk.gov.justice.digital.assessments.utils.RequestData
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -105,7 +106,13 @@ class OasysAssessmentUpdateServiceITTest() : IntegrationTest() {
     episodes = mutableListOf(
       AssessmentEpisodeEntity(
         episodeUuid = episodeUuid,
-        assessment = AssessmentEntity(subject_ = mutableListOf(SubjectEntity(oasysOffenderPk = 1L))),
+        assessment = AssessmentEntity(
+          subject_ = mutableListOf(
+            SubjectEntity(
+              oasysOffenderPk = 1L, dateOfBirth = LocalDate.of(1989, 1, 1), crn = "X1345"
+            )
+          )
+        ),
         episodeId = episodeId2,
         changeReason = "Change of Circs 2",
         oasysSetPk = 1L,

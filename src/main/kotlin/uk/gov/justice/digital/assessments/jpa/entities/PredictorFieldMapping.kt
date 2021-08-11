@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.assessments.jpa.entities
 
+import uk.gov.justice.digital.assessments.services.dto.PredictorType
 import java.io.Serializable
 import java.util.UUID
 import javax.persistence.Column

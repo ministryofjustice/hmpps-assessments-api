@@ -6,7 +6,7 @@ data class CourtCase(
   var courtCode: String? = null,
   var caseNo: String? = null,
   var defendantName: String? = null,
-  var defendantDob: LocalDate? = null,
+  var defendantDob: LocalDate,
   var pnc: String? = null,
   var crn: String? = null,
   val defendantAddress: DefendantAddress? = null

@@ -9,38 +9,37 @@ data class OffenderAndOffencesDto(
   val dob: LocalDate,
   val assessmentDate: LocalDateTime,
   val currentOffence: CurrentOffence,
-  val dateOfFirstSanction: LocalDate,
+  val dateOfFirstSanction: String,
   val totalOffences: Int,
   val totalViolentOffences: Int,
-  val dateOfCurrentConviction: LocalDate,
+  val dateOfCurrentConviction: String,
   val hasAnySexualOffences: Boolean,
   val isCurrentSexualOffence: Boolean,
   val isCurrentOffenceVictimStranger: Boolean,
-  val mostRecentSexualOffenceDate: LocalDate,
+  val mostRecentSexualOffenceDate: String,
   val totalSexualOffencesInvolvingAnAdult: Int,
   val totalSexualOffencesInvolvingAChild: Int,
   val totalSexualOffencesInvolvingChildImages: Int,
   val totalNonSexualOffences: Int,
-  val earliestReleaseDate: LocalDate,
+  val earliestReleaseDate: String,
   val hasCompletedInterview: Boolean,
-  val dynamicScoringOffences: DynamicScoringOffences?
+  val dynamicScoringOffences: DynamicScoringOffences? = null
 )
 
 data class DynamicScoringOffences(
-  val committedOffenceUsingWeapon: Boolean,
-  val hasSuitableAccommodation: ProblemsLevel?,
-  val employment: EmploymentType?,
-  val currentRelationshipWithPartner: ProblemsLevel?,
-  val evidenceOfDomesticViolence: Boolean,
-  val isAVictim: Boolean,
-  val isAPerpetrator: Boolean,
-  val alcoholUseIssues: ProblemsLevel?,
-  val bingeDrinkingIssues: ProblemsLevel?,
-  val impulsivityIssues: ProblemsLevel?,
-  val temperControlIssues: ProblemsLevel?,
-  val proCriminalAttitudes: ProblemsLevel?,
-  val previousOffences: PreviousOffences?,
-  val currentOffences: CurrentOffences?
+  val hasSuitableAccommodation: String?,
+  val employment: String?,
+  val currentRelationshipWithPartner: String?,
+  val evidenceOfDomesticViolence: Boolean?,
+  val isVictim: Boolean? = null,
+  val isPerpetrator: Boolean?,
+  val alcoholUseIssues: String?,
+  val bingeDrinkingIssues: String?,
+  val impulsivityIssues: String?,
+  val temperControlIssues: String?,
+  val proCriminalAttitudes: String?,
+  val previousOffences: PreviousOffences? = null,
+  val currentOffences: CurrentOffences? = null
 )
 
 data class CurrentOffences(
@@ -49,15 +48,15 @@ data class CurrentOffences(
 )
 
 data class PreviousOffences(
-  val murderAttempt: Boolean,
-  val wounding: Boolean,
-  val aggravatedBurglary: Boolean,
-  val arson: Boolean,
-  val criminalDamage: Boolean,
-  val kidnapping: Boolean,
-  val firearmPossession: Boolean,
-  val robbery: Boolean,
-  val offencesWithWeapon: Boolean
+  val murderAttempt: Boolean?,
+  val wounding: Boolean?,
+  val aggravatedBurglary: Boolean?,
+  val arson: Boolean?,
+  val criminalDamage: Boolean?,
+  val kidnapping: Boolean?,
+  val firearmPossession: Boolean?,
+  val robbery: Boolean?,
+  val offencesWithWeapon: Boolean?
 )
 
 data class CurrentOffence(val offenceCode: String, val offenceSubcode: String)

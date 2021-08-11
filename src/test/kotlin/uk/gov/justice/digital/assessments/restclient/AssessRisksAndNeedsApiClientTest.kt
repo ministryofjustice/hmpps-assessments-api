@@ -9,7 +9,6 @@ import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
-import uk.gov.justice.digital.assessments.jpa.entities.PredictorType
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.CurrentOffence
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.CurrentOffences
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.DynamicScoringOffences
@@ -22,6 +21,7 @@ import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.Risk
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.Score
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.ScoreLevel
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.ScoreType
+import uk.gov.justice.digital.assessments.services.dto.PredictorType
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -49,33 +49,32 @@ class AssessRisksAndNeedsApiClientTest : IntegrationTest() {
       dob = LocalDate.of(2021, 1, 1).minusYears(20),
       assessmentDate = LocalDateTime.of(2021, 1, 1, 0, 0, 0),
       currentOffence = CurrentOffence("138", "00"),
-      dateOfFirstSanction = LocalDate.of(2021, 1, 1).minusYears(1),
+      dateOfFirstSanction = "2020-01-01",
       totalOffences = 10,
       totalViolentOffences = 8,
-      dateOfCurrentConviction = LocalDate.of(2021, 1, 1).minusWeeks(2),
+      dateOfCurrentConviction = "2020-12-18",
       hasAnySexualOffences = true,
       isCurrentSexualOffence = true,
       isCurrentOffenceVictimStranger = true,
-      mostRecentSexualOffenceDate = LocalDate.of(2021, 1, 1).minusWeeks(3),
+      mostRecentSexualOffenceDate = "2020-12-11",
       totalSexualOffencesInvolvingAnAdult = 5,
       totalSexualOffencesInvolvingAChild = 3,
       totalSexualOffencesInvolvingChildImages = 2,
       totalNonSexualOffences = 2,
-      earliestReleaseDate = LocalDate.of(2021, 1, 1).plusMonths(10),
+      earliestReleaseDate = "2021-11-01",
       hasCompletedInterview = true,
       dynamicScoringOffences = DynamicScoringOffences(
-        committedOffenceUsingWeapon = true,
-        hasSuitableAccommodation = ProblemsLevel.MISSING,
-        employment = EmploymentType.NOT_AVAILABLE_FOR_WORK,
-        currentRelationshipWithPartner = ProblemsLevel.SIGNIFICANT_PROBLEMS,
+        hasSuitableAccommodation = ProblemsLevel.MISSING.name,
+        employment = EmploymentType.NOT_AVAILABLE_FOR_WORK.name,
+        currentRelationshipWithPartner = ProblemsLevel.SIGNIFICANT_PROBLEMS.name,
         evidenceOfDomesticViolence = true,
-        isAVictim = true,
-        isAPerpetrator = true,
-        alcoholUseIssues = ProblemsLevel.SIGNIFICANT_PROBLEMS,
-        bingeDrinkingIssues = ProblemsLevel.SIGNIFICANT_PROBLEMS,
-        impulsivityIssues = ProblemsLevel.SOME_PROBLEMS,
-        temperControlIssues = ProblemsLevel.SIGNIFICANT_PROBLEMS,
-        proCriminalAttitudes = ProblemsLevel.SOME_PROBLEMS,
+        isVictim = true,
+        isPerpetrator = true,
+        alcoholUseIssues = ProblemsLevel.SIGNIFICANT_PROBLEMS.name,
+        bingeDrinkingIssues = ProblemsLevel.SIGNIFICANT_PROBLEMS.name,
+        impulsivityIssues = ProblemsLevel.SOME_PROBLEMS.name,
+        temperControlIssues = ProblemsLevel.SIGNIFICANT_PROBLEMS.name,
+        proCriminalAttitudes = ProblemsLevel.SOME_PROBLEMS.name,
         previousOffences = PreviousOffences(
           murderAttempt = true,
           wounding = true,
@@ -101,7 +100,8 @@ class AssessRisksAndNeedsApiClientTest : IntegrationTest() {
         scoreType = ScoreType.STATIC,
         rsrScore = Score(level = ScoreLevel.HIGH, score = BigDecimal("11.34"), isValid = true),
         ospcScore = Score(level = ScoreLevel.NOT_APPLICABLE, score = BigDecimal("0"), isValid = false),
-        ospiScore = Score(level = ScoreLevel.NOT_APPLICABLE, score = BigDecimal("0"), isValid = false)
+        ospiScore = Score(level = ScoreLevel.NOT_APPLICABLE, score = BigDecimal("0"), isValid = false),
+        calculatedAt = "2021-08-09 14:46:48"
       )
     )
   }

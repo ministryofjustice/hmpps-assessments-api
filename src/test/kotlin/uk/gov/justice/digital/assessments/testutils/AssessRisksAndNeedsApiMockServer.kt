@@ -20,22 +20,21 @@ class AssessRisksAndNeedsApiMockServer : WireMockServer(9007) {
               "    \"offenceCode\" : \"138\"," +
               "    \"offenceSubcode\" : \"00\"" +
               "}," +
-              "\"dateOfFirstSanction\" : [ 2020, 1, 1 ]," +
+              "\"dateOfFirstSanction\" : \"2020-01-01\"," +
               "\"totalOffences\" : 10," +
               "\"totalViolentOffences\" : 8," +
-              "\"dateOfCurrentConviction\" : [ 2020, 12, 18 ]," +
+              "\"dateOfCurrentConviction\" : \"2020-12-18\"," +
               "\"hasAnySexualOffences\" : true," +
               "\"isCurrentSexualOffence\" : true," +
               "\"isCurrentOffenceVictimStranger\" : true," +
-              "\"mostRecentSexualOffenceDate\" : [ 2020, 12, 11 ]," +
+              "\"mostRecentSexualOffenceDate\" : \"2020-12-11\"," +
               "\"totalSexualOffencesInvolvingAnAdult\" : 5," +
               "\"totalSexualOffencesInvolvingAChild\" : 3," +
               "\"totalSexualOffencesInvolvingChildImages\" : 2," +
               "\"totalNonSexualOffences\" : 2," +
-              "\"earliestReleaseDate\" : [ 2021, 11, 1 ]," +
+              "\"earliestReleaseDate\" : \"2021-11-01\"," +
               "\"hasCompletedInterview\" : true," +
               "\"dynamicScoringOffences\" : {" +
-              "   \"committedOffenceUsingWeapon\" : true," +
               "   \"hasSuitableAccommodation\" : \"MISSING\"," +
               "   \"employment\": \"NOT_AVAILABLE_FOR_WORK\"," +
               "   \"currentRelationshipWithPartner\" : \"SIGNIFICANT_PROBLEMS\"," +
@@ -56,8 +55,8 @@ class AssessRisksAndNeedsApiMockServer : WireMockServer(9007) {
               "   \"robbery\" : true," +
               "   \"offencesWithWeapon\" : true" +
               "}," +
-              "\"avictim\" : true," +
-              "\"aperpetrator\" : true" +
+              "\"isVictim\" : true," +
+              "\"isPerpetrator\" : true" +
               "}" +
               "}",
             true, true
@@ -74,6 +73,7 @@ class AssessRisksAndNeedsApiMockServer : WireMockServer(9007) {
   val riskRsrPredictors =
     """{
         "algorithmVersion": 3,
+        "calculatedAt": "2021-08-09 14:46:48", 
         "type": "RSR",
         "scoreType": "STATIC",
         "rsrScore": {"level": "HIGH", "score": 11.34, "isValid": true},

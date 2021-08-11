@@ -1,9 +1,10 @@
 package uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi
 
-import uk.gov.justice.digital.assessments.jpa.entities.PredictorType
+import uk.gov.justice.digital.assessments.services.dto.PredictorType
 import java.math.BigDecimal
 
 data class RiskPredictorsDto(
+  val calculatedAt: String,
   val type: PredictorType,
   val scoreType: ScoreType?,
   val rsrScore: Score,
@@ -25,10 +26,6 @@ enum class ScoreLevel(val type: String) {
       return values().firstOrNull { value -> value.type == type }
     }
   }
-}
-
-enum class PredictorType {
-  RSR
 }
 
 enum class ScoreType(val type: String) {

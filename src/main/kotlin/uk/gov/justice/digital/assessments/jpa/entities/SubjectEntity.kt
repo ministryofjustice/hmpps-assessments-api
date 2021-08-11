@@ -40,10 +40,10 @@ class SubjectEntity(
   val pnc: String? = null,
 
   @Column(name = "CRN")
-  val crn: String? = null,
+  val crn: String,
 
   @Column(name = "DATE_OF_BIRTH")
-  val dateOfBirth: LocalDate? = null,
+  val dateOfBirth: LocalDate,
 
   @Column(name = "CREATED_DATE")
   val createdDate: LocalDateTime? = null,

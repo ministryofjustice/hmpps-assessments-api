@@ -144,7 +144,9 @@ class OffenderServiceTest {
   @Test
   fun `return null offender address when none exist`() {
     every { subjectRepository.findAllByCrnAndSourceOrderByCreatedDateDesc(crn, "COURT") } returns validCourtSubject()
-    every { courtCaseRestClient.getCourtCase("courtCode", "caseNumber") } returns CourtCase()
+    every { courtCaseRestClient.getCourtCase("courtCode", "caseNumber") } returns CourtCase(
+      defendantDob = LocalDate.of(1989, 1, 1)
+    )
     val address = offenderService.getOffenderAddress(crn)
 
     assertThat(address).isNull()
@@ -201,7 +203,13 @@ class OffenderServiceTest {
   }
 
   private fun validCourtSubject(): List<SubjectEntity> {
-    return listOf(SubjectEntity(sourceId = "courtCode|caseNumber"))
+    return listOf(
+      SubjectEntity(
+        sourceId = "courtCode|caseNumber",
+        dateOfBirth = LocalDate.of(1989, 1, 1),
+        crn = "X1345"
+      )
+    )
   }
 
   private fun validCourtCase(): CourtCase {
@@ -213,7 +221,8 @@ class OffenderServiceTest {
         line4 = "line4",
         line5 = "line5",
         postcode = "postcode"
-      )
+      ),
+      defendantDob = LocalDate.of(1989, 1, 1)
     )
   }
 
