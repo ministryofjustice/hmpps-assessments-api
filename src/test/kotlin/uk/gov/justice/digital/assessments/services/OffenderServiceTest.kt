@@ -203,7 +203,13 @@ class OffenderServiceTest {
   }
 
   private fun validCourtSubject(): List<SubjectEntity> {
-    return listOf(SubjectEntity(sourceId = "courtCode|caseNumber", dateOfBirth = LocalDate.of(1989, 1, 1)))
+    return listOf(
+      SubjectEntity(
+        sourceId = "courtCode|caseNumber",
+        dateOfBirth = LocalDate.of(1989, 1, 1),
+        crn = "X1345"
+      )
+    )
   }
 
   private fun validCourtCase(): CourtCase {

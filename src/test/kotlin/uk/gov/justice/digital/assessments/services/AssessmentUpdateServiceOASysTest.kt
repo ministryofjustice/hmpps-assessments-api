@@ -466,7 +466,7 @@ class AssessmentUpdateServiceOASysTest {
 
   private fun assessmentEntityWithOasysOffender(answers: MutableMap<UUID, AnswerEntity>): AssessmentEntity {
     val subject = SubjectEntity(
-      oasysOffenderPk = 9999, dateOfBirth = LocalDate.of(1989, 1, 1)
+      oasysOffenderPk = 9999, dateOfBirth = LocalDate.of(1989, 1, 1), crn = "X1345"
     )
     val episodes = mutableListOf<AssessmentEpisodeEntity>()
     val assessment = AssessmentEntity(
@@ -508,7 +508,8 @@ class AssessmentUpdateServiceOASysTest {
           SubjectEntity(
             oasysOffenderPk = 1,
             subjectUuid = UUID.randomUUID(),
-            dateOfBirth = LocalDate.of(1989, 1, 1)
+            dateOfBirth = LocalDate.of(1989, 1, 1),
+            crn = "X1345"
           )
         )
       )

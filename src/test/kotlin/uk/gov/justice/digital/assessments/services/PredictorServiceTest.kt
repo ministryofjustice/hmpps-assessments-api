@@ -278,7 +278,7 @@ class PredictorServiceTest {
       every {
         subjectService.getSubjectForAssessment(assessmentEpisodeNoAnswers.episodeUuid)
       } returns SubjectEntity(
-        oasysOffenderPk = 9999, dateOfBirth = LocalDate.of(2001, 1, 1)
+        oasysOffenderPk = 9999, dateOfBirth = LocalDate.of(2001, 1, 1), crn = "X1345"
       )
 
       assertThrows<EntityNotFoundException> {
@@ -330,7 +330,7 @@ class PredictorServiceTest {
       every {
         subjectService.getSubjectForAssessment(assessmentEpisode.episodeUuid)
       } returns SubjectEntity(
-        oasysOffenderPk = 9999, dateOfBirth = LocalDate.of(2001, 1, 1)
+        oasysOffenderPk = 9999, dateOfBirth = LocalDate.of(2001, 1, 1), crn = "X1345"
       )
 
       val results = predictorService.getPredictorResults(AssessmentSchemaCode.RSR, assessmentEpisode)

@@ -109,7 +109,7 @@ class OasysAssessmentUpdateServiceITTest() : IntegrationTest() {
         assessment = AssessmentEntity(
           subject_ = mutableListOf(
             SubjectEntity(
-              oasysOffenderPk = 1L, dateOfBirth = LocalDate.of(1989, 1, 1)
+              oasysOffenderPk = 1L, dateOfBirth = LocalDate.of(1989, 1, 1), crn = "X1345"
             )
           )
         ),

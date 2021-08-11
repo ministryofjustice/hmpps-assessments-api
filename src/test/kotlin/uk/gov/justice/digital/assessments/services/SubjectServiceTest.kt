@@ -17,12 +17,11 @@ class SubjectServiceTest {
 
   private val subjectService = SubjectService(assessmentRepository)
 
-
   @Test
   fun `get subject for assessment`() {
     val assessmentUuid = UUID.randomUUID()
     val subject = SubjectEntity(
-      oasysOffenderPk = 1L, dateOfBirth = LocalDate.of(1989, 1, 1)
+      oasysOffenderPk = 1L, dateOfBirth = LocalDate.of(1989, 1, 1), crn = "X1345"
     )
     every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns AssessmentEntity(
       subject_ = mutableListOf(

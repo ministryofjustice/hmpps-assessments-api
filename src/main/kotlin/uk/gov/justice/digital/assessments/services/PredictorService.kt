@@ -67,14 +67,14 @@ class PredictorService(
     predictorType: PredictorType,
     answers: Map<String, AnswersDto>,
   ): PredictorScoresDto {
-    val crn = "X1345"
+    val offender = subjectService.getSubjectForAssessment(episode.episodeUuid)
+    val crn = offender.crn
     log.info("Getting Predictor Score for crn $crn and type $predictorType")
-
     val hasCompletedInterview = getRequiredAnswer(answers, "completed_interview").toBoolean()
     val offenderAndOffencesDto = OffenderAndOffencesDto(
       crn = crn,
       gender = Gender.MALE,
-      dob = subjectService.getSubjectForAssessment(episode.episodeUuid).dateOfBirth,
+      dob = offender.dateOfBirth,
       assessmentDate = episode.createdDate,
       currentOffence = CurrentOffence("138", "00"),
       dateOfFirstSanction = getRequiredAnswer(answers, "date_first_sanction"),

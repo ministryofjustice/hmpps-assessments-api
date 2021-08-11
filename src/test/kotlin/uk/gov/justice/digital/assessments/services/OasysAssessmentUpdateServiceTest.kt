@@ -217,7 +217,8 @@ class OasysAssessmentUpdateServiceTest() {
           SubjectEntity(
             oasysOffenderPk = 1,
             subjectUuid = UUID.randomUUID(),
-            dateOfBirth = LocalDate.of(1989, 1, 1)
+            dateOfBirth = LocalDate.of(1989, 1, 1),
+            crn = "X1345"
           )
         )
       )

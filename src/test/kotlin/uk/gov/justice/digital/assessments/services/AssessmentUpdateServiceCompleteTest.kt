@@ -84,7 +84,7 @@ class AssessmentUpdateServiceCompleteTest {
 
   private fun assessmentEntity(): AssessmentEntity {
     val subject = SubjectEntity(
-      oasysOffenderPk = 9999, dateOfBirth = LocalDate.of(1989, 1, 1)
+      oasysOffenderPk = 9999, dateOfBirth = LocalDate.of(1989, 1, 1), crn = "X1345"
     )
     val episodes = mutableListOf<AssessmentEpisodeEntity>()
     val assessment = AssessmentEntity(
