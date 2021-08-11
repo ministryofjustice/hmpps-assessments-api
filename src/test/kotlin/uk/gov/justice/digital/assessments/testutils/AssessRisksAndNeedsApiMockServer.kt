@@ -35,7 +35,6 @@ class AssessRisksAndNeedsApiMockServer : WireMockServer(9007) {
               "\"earliestReleaseDate\" : \"2021-11-01\"," +
               "\"hasCompletedInterview\" : true," +
               "\"dynamicScoringOffences\" : {" +
-              "   \"committedOffenceUsingWeapon\" : true," +
               "   \"hasSuitableAccommodation\" : \"MISSING\"," +
               "   \"employment\": \"NOT_AVAILABLE_FOR_WORK\"," +
               "   \"currentRelationshipWithPartner\" : \"SIGNIFICANT_PROBLEMS\"," +

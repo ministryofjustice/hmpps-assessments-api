@@ -12,8 +12,10 @@ import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.PredictorFieldMapping
 import uk.gov.justice.digital.assessments.restclient.AssessRisksAndNeedsApiRestClient
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.CurrentOffence
+import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.DynamicScoringOffences
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.Gender
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.OffenderAndOffencesDto
+import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.PreviousOffences
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.RiskPredictorsDto
 import uk.gov.justice.digital.assessments.services.dto.PredictorType
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
@@ -39,7 +41,7 @@ class PredictorService(
     log.info("Found ${predictors.size} predictors for episode ${episode.episodeUuid} with assessment type $assessmentSchemaCode")
 
     return predictors.map { predictor ->
-      fetchResults(episode, predictor.type, extractAnswers(predictor.fields.toList(), episode.answers.orEmpty()),)
+      fetchResults(episode, predictor.type, extractAnswers(predictor.fields.toList(), episode.answers.orEmpty()))
     }
   }
 
@@ -66,21 +68,7 @@ class PredictorService(
     answers: Map<String, AnswersDto>,
   ): PredictorScoresDto {
     val crn = "X1345"
-    log.info("Getting Predictor Score for crn $crn")
-    val dateOfFirstSanction = getAnswerFor(answers, "date_first_sanction")
-    val totalOffences = getAnswerFor(answers, "total_sanctions")
-    val totalViolentOffences = getAnswerFor(answers, "total_violent_offences")
-    val dateOfCurrentConviction = getAnswerFor(answers, "date_current_conviction")
-    val hasAnySexualOffences = getAnswerFor(answers, "any_sexual_offences")
-    val isCurrentSexualOffence = getAnswerFor(answers, "current_sexual_offence")
-    val isCurrentOffenceVictimStranger = getAnswerFor(answers, "current_offence_victim_stranger")
-    val mostRecentSexualOffenceDate = getAnswerFor(answers, "most_recent_sexual_offence_date")
-    val totalSexualOffencesInvolvingAnAdult = getAnswerFor(answers, "total_sexual_offences_adult")
-    val totalSexualOffencesInvolvingAChild = getAnswerFor(answers, "total_sexual_offences_child")
-    val totalSexualOffencesInvolvingChildImages = getAnswerFor(answers, "total_sexual_offences_child_image")
-    val totalNonSexualOffences = getAnswerFor(answers, "total_non_sexual_offences")
-    val earliestReleaseDate = getAnswerFor(answers, "earliest_release_date")
-    val hasCompletedInterview = getAnswerFor(answers, "completed_interview")
+    log.info("Getting Predictor Score for crn $crn and type $predictorType")
 
     val offenderAndOffencesDto = OffenderAndOffencesDto(
       crn = crn,
@@ -88,20 +76,44 @@ class PredictorService(
       dob = subjectService.getSubjectForAssessment(episode.episodeUuid).dateOfBirth,
       assessmentDate = episode.createdDate,
       currentOffence = CurrentOffence("138", "00"),
-      dateOfFirstSanction = dateOfFirstSanction,
-      totalOffences = totalOffences.toInt(),
-      totalViolentOffences = totalViolentOffences.toInt(),
-      dateOfCurrentConviction = dateOfCurrentConviction,
-      hasAnySexualOffences = hasAnySexualOffences.toBoolean(),
-      isCurrentSexualOffence = isCurrentSexualOffence.toBoolean(),
-      isCurrentOffenceVictimStranger = isCurrentOffenceVictimStranger.toBoolean(),
-      mostRecentSexualOffenceDate = mostRecentSexualOffenceDate,
-      totalSexualOffencesInvolvingAnAdult = totalSexualOffencesInvolvingAnAdult.toInt(),
-      totalSexualOffencesInvolvingAChild = totalSexualOffencesInvolvingAChild.toInt(),
-      totalSexualOffencesInvolvingChildImages = totalSexualOffencesInvolvingChildImages.toInt(),
-      totalNonSexualOffences = totalNonSexualOffences.toInt(),
-      earliestReleaseDate = earliestReleaseDate,
-      hasCompletedInterview = hasCompletedInterview.toBoolean()
+      dateOfFirstSanction = getRequiredAnswer(answers, "date_first_sanction"),
+      totalOffences = getRequiredAnswer(answers, "total_sanctions").toInt(),
+      totalViolentOffences = getRequiredAnswer(answers, "total_violent_offences").toInt(),
+      dateOfCurrentConviction = getRequiredAnswer(answers, "date_current_conviction"),
+      hasAnySexualOffences = getRequiredAnswer(answers, "any_sexual_offences").toBoolean(),
+      isCurrentSexualOffence = getRequiredAnswer(answers, "current_sexual_offence").toBoolean(),
+      isCurrentOffenceVictimStranger = getRequiredAnswer(answers, "current_offence_victim_stranger").toBoolean(),
+      mostRecentSexualOffenceDate = getRequiredAnswer(answers, "most_recent_sexual_offence_date"),
+      totalSexualOffencesInvolvingAnAdult = getRequiredAnswer(answers, "total_sexual_offences_adult").toInt(),
+      totalSexualOffencesInvolvingAChild = getRequiredAnswer(answers, "total_sexual_offences_child").toInt(),
+      totalSexualOffencesInvolvingChildImages = getRequiredAnswer(answers, "total_sexual_offences_child_image").toInt(),
+      totalNonSexualOffences = getRequiredAnswer(answers, "total_non_sexual_offences").toInt(),
+      earliestReleaseDate = getRequiredAnswer(answers, "earliest_release_date"),
+      hasCompletedInterview = getRequiredAnswer(answers, "completed_interview").toBoolean(),
+      dynamicScoringOffences = DynamicScoringOffences(
+        hasSuitableAccommodation = getNonRequiredAnswer(answers, "suitable_accommodation"),
+        employment = getNonRequiredAnswer(answers, "unemployed_on_release"),
+        currentRelationshipWithPartner = getNonRequiredAnswer(answers, "current_relationship_with_partner"),
+        evidenceOfDomesticViolence = getNonRequiredAnswer(answers, "evidence_domestic_violence").toBoolean(),
+        isVictim = false,
+        isPerpetrator = getNonRequiredAnswer(answers, "perpetrator_domestic_violence").toBoolean(),
+        alcoholUseIssues = getNonRequiredAnswer(answers, "use_of_alcohol"),
+        bingeDrinkingIssues = getNonRequiredAnswer(answers, "binge_drinking"),
+        impulsivityIssues = getNonRequiredAnswer(answers, "impulsivity_issues"),
+        temperControlIssues = getNonRequiredAnswer(answers, "temper_control_issues"),
+        proCriminalAttitudes = getNonRequiredAnswer(answers, "pro_criminal_attitudes"),
+        previousOffences = PreviousOffences(
+          murderAttempt = getNonRequiredAnswer(answers, "previous_murder_attempt").toBoolean(),
+          wounding = getNonRequiredAnswer(answers, "previous_wounding").toBoolean(),
+          aggravatedBurglary = getNonRequiredAnswer(answers, "previous_aggravated_burglary").toBoolean(),
+          arson = getNonRequiredAnswer(answers, "previous_arson").toBoolean(),
+          criminalDamage = getNonRequiredAnswer(answers, "previous_criminal_damage").toBoolean(),
+          kidnapping = getNonRequiredAnswer(answers, "previous_kidnapping").toBoolean(),
+          firearmPossession = getNonRequiredAnswer(answers, "previous_possession_firearm").toBoolean(),
+          robbery = getNonRequiredAnswer(answers, "previous_robbery").toBoolean(),
+          offencesWithWeapon = getNonRequiredAnswer(answers, "previous_offence_weapon").toBoolean(),
+        )
+      )
     )
 
     return assessRisksAndNeedsApiRestClient.getRiskPredictors(predictorType, offenderAndOffencesDto)
@@ -140,9 +152,13 @@ class PredictorService(
     )
   }
 
-  private fun getAnswerFor(answers: Map<String, AnswersDto>, answerCode: String): String {
+  private fun getRequiredAnswer(answers: Map<String, AnswersDto>, answerCode: String): String {
     return answers[answerCode]?.answers?.first()?.items?.first()
       ?: throw EntityNotFoundException("Answer $answerCode for predictor not found")
+  }
+
+  private fun getNonRequiredAnswer(answers: Map<String, AnswersDto>, answerCode: String): String? {
+    return answers[answerCode]?.answers?.first()?.items?.first()
   }
 
   fun String?.toBoolean(): Boolean {

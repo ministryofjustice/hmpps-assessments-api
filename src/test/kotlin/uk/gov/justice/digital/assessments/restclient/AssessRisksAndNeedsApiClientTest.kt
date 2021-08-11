@@ -64,7 +64,6 @@ class AssessRisksAndNeedsApiClientTest : IntegrationTest() {
       earliestReleaseDate = "2021-11-01",
       hasCompletedInterview = true,
       dynamicScoringOffences = DynamicScoringOffences(
-        committedOffenceUsingWeapon = true,
         hasSuitableAccommodation = ProblemsLevel.MISSING.name,
         employment = EmploymentType.NOT_AVAILABLE_FOR_WORK.name,
         currentRelationshipWithPartner = ProblemsLevel.SIGNIFICANT_PROBLEMS.name,

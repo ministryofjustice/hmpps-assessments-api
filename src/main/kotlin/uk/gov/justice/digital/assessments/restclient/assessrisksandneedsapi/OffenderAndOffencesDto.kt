@@ -27,7 +27,6 @@ data class OffenderAndOffencesDto(
 )
 
 data class DynamicScoringOffences(
-  val committedOffenceUsingWeapon: Boolean,
   val hasSuitableAccommodation: String?,
   val employment: String?,
   val currentRelationshipWithPartner: String?,
@@ -39,8 +38,8 @@ data class DynamicScoringOffences(
   val impulsivityIssues: String?,
   val temperControlIssues: String?,
   val proCriminalAttitudes: String?,
-  val previousOffences: PreviousOffences?,
-  val currentOffences: CurrentOffences?
+  val previousOffences: PreviousOffences? = null,
+  val currentOffences: CurrentOffences? = null
 )
 
 data class CurrentOffences(
