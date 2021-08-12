@@ -43,8 +43,8 @@ data class DynamicScoringOffences(
 )
 
 data class CurrentOffences(
-  val firearmPossession: Boolean,
-  val offencesWithWeapon: Boolean
+  val firearmPossession: Boolean?,
+  val offencesWithWeapon: Boolean?
 )
 
 data class PreviousOffences(
