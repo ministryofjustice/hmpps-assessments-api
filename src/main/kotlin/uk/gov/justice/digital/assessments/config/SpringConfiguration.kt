@@ -8,6 +8,8 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.boot.jdbc.DataSourceBuilder
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
@@ -21,6 +23,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import uk.gov.justice.digital.assessments.redis.entities.UserDetails
 import uk.gov.justice.digital.assessments.utils.RequestData
+import javax.sql.DataSource
 
 @Configuration
 class SpringConfiguration : WebMvcConfigurer {
@@ -42,6 +45,9 @@ class SpringConfiguration : WebMvcConfigurer {
 
   @Value("\${spring.redis.client-name}")
   private val clientName: String = ""
+
+  @Value("\${spring.hmppsassessmentsapi.datasource.url}")
+  private val refDataDataSourceUrl: String = ""
 
   @Bean(name = ["globalObjectMapper"])
   @Primary
@@ -83,6 +89,15 @@ class SpringConfiguration : WebMvcConfigurer {
     jackson2JsonRedisSerializer.setObjectMapper(objectMapper())
     template.valueSerializer = jackson2JsonRedisSerializer
     return template
+  }
+
+  @Bean(name = ["referenceDataDataSource"])
+  @ConfigurationProperties(prefix = "spring.hmppsassessmentsapi.datasource")
+  fun abcDataSource(): DataSource? {
+    return DataSourceBuilder
+      .create()
+      .url(refDataDataSourceUrl)
+      .build()
   }
 
   override fun addInterceptors(registry: InterceptorRegistry) {
