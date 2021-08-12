@@ -67,7 +67,9 @@ class PredictorService(
     predictorType: PredictorType,
     answers: Map<String, AnswersDto>,
   ): PredictorScoresDto {
-    val offender = subjectService.getSubjectForAssessment(episode.episodeUuid)
+    val assessmentUuid = episode.assessment?.assessmentUuid
+      ?: throw EntityNotFoundException("Episode ${episode.episodeUuid} is not associated with an assessment")
+    val offender = subjectService.getSubjectForAssessment(assessmentUuid)
     val crn = offender.crn
     log.info("Getting Predictor Score for crn $crn and type $predictorType")
     val hasCompletedInterview = getRequiredAnswer(answers, "completed_interview").toBoolean()
@@ -98,7 +100,10 @@ class PredictorService(
       .toRiskPredictorScores(crn)
   }
 
-  private fun getDynamicScoringOffences(hasCompletedInterview: Boolean, answers: Map<String, AnswersDto>): DynamicScoringOffences? {
+  private fun getDynamicScoringOffences(
+    hasCompletedInterview: Boolean,
+    answers: Map<String, AnswersDto>
+  ): DynamicScoringOffences? {
     if (!hasCompletedInterview) return null
     return DynamicScoringOffences(
       hasSuitableAccommodation = getNonRequiredAnswer(answers, "suitable_accommodation"),
