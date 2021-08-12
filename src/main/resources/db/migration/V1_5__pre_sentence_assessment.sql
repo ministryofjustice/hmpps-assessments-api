@@ -184,8 +184,8 @@ VALUES ('1ea17930-d467-44c0-9e72-517747618acb', 'ui3.1', '2020-11-30 14:50:00', 
 ('06d5f00f-a5db-4cc5-b51e-a8c91e63686f', '133.1', '2020-11-30 14:50:00', null, 'radio', 'a2a6d156-4a70-41cf-989c-2857b4b2e625', 'Rape or serious sexual offence against an adult', null, null, null),
 ('0dcc92ff-20d4-4ee1-b3d7-b124b6f32ae8', '134.1', '2020-11-30 14:50:00', null, 'radio', 'a2a6d156-4a70-41cf-989c-2857b4b2e625', 'Any other offence against a child', null, null, null),
 ('c2b221b4-ee1f-41c8-8fc7-9d49998fab35', '138.1', '2020-11-30 14:50:00', null, 'radio', 'a2a6d156-4a70-41cf-989c-2857b4b2e625', 'Kidnapping/false imprisonment', null, null, null),
-('e887bcea-91d1-4c50-a25e-4335fa1e6ae5', '139.1', '2020-11-30 14:50:00', null, 'radio', 'a2a6d156-4a70-41cf-989c-2857b4b2e625', 'Possession of a firearm with intent to endanger life or resist arrest', null, null, null),
 ('97621b0d-5a64-42dd-9c8b-1484979e9145', '139.0', '2020-11-30 14:50:00', null, 'radio', 'a2a6d156-4a70-41cf-989c-2857b4b2e625', 'Possession of a firearm with intent to endanger life or resist arrest', null, null, null),
+('e887bcea-91d1-4c50-a25e-4335fa1e6ae5', '139.1', '2020-11-30 14:50:00', null, 'radio', 'a2a6d156-4a70-41cf-989c-2857b4b2e625', 'Possession of a firearm with intent to endanger life or resist arrest', null, null, null),
 ('9692659a-778a-436a-bf4e-fe1924638e37', '141.1', '2020-11-30 14:50:00', null, 'radio', 'a2a6d156-4a70-41cf-989c-2857b4b2e625', 'Robbery', null, null, null),
 ('66c3bdd2-6f47-4f13-aa7b-39d497d90a89', '140.1', '2020-11-30 14:50:00', null, 'radio', 'a2a6d156-4a70-41cf-989c-2857b4b2e625', 'A racially motivated or racially aggravated offence', null, null, null),
 ('ba327713-e580-418d-b45b-09a8a3d1166a', '142.0', '2020-11-30 14:50:00', null, 'radio', 'a2a6d156-4a70-41cf-989c-2857b4b2e625', 'Any other offence involving possession and/or use of weapons', null, null, null),
@@ -327,7 +327,7 @@ If the individual presents a risk to identifiable children, explain any relevant
 ('9a8d6d8e-ac11-4ff5-b4e6-9553fd462851', '283.1', '2020-11-30 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Has the individual received an extended sentence?', null, null, null),
 ('753c1687-c88c-4405-a274-5d77707924a8', 'ui_rsr_needs_1', '2020-11-30 14:50:00', null, 'presentation: divider', null, null, null, null, null),
 ('ccc2ecba-c441-477a-9f79-d44f0cab1567', 'ui_rsr_needs_2', '2020-11-30 14:50:00', null, 'presentation: heading_large', null, 'Current offences', null, null, null),
-('35e3e63b-6598-4db3-b5a3-1f902f33f22c', 'ui_rsr_needs_3', '2020-11-30 14:50:00', null, 'presentation: body', null, 'Has the individual been convicted of any of these offences?', null, null, null)
+('35e3e63b-6598-4db3-b5a3-1f902f33f22c', 'ui_rsr_needs_3', '2020-11-30 14:50:00', null, 'presentation: body', null, 'Has the individual been convicted of any of these offences?', null, null, null),
 ('551df80b-5368-4551-8fda-85b1c7a5f01f', 'ui_rsr_needs_3', '2020-11-30 14:50:00', null, 'presentation: divider', null, null, null, null, null),
 ('86da001c-a703-4ef2-9c0d-e5c90336055c', 'ui_rsr_needs_5', '2020-11-30 14:50:00', null, 'presentation: heading_large', null, 'Previous offences', null, null, null),
 ('47a94bc5-e71e-4327-9942-ad37d5163dee', 'ui_rsr_needs_6', '2020-11-30 14:50:00', null, 'presentation: body', null, 'Has the individual previously been convicted of any of these offences?', null, null, null)
