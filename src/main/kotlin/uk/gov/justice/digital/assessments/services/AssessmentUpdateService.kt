@@ -305,6 +305,7 @@ class AssessmentUpdateService(
     val predictorResults = episode.assessmentSchemaCode?.let {
       predictorService.getPredictorResults(it, episode)
     }
+    log.info("Predictors for assessment ${episode.assessment?.assessmentUuid} are $predictorResults")
     return AssessmentEpisodeDto.from(episode, oasysResult, predictorResults.orEmpty())
   }
 }
