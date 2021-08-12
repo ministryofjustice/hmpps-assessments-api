@@ -331,7 +331,6 @@ class AssessmentUpdateServiceOASysTest {
         any()
       )
     } returns oasysError
-    every { predictorService.getPredictorResults(AssessmentSchemaCode.ROSH, assessmentEpisode) } returns emptyList()
     // Christ, what a lot of set up
 
     // Apply the update
@@ -368,7 +367,6 @@ class AssessmentUpdateServiceOASysTest {
     } returns AssessmentEpisodeUpdateErrors()
     every { questionService.getAllQuestions() } returns setupQuestionCodes()
     every { assessmentRepository.save(any()) } returns mockk()
-    every { predictorService.getPredictorResults(AssessmentSchemaCode.ROSH, assessmentEpisode) } returns emptyList()
 
     val updatedEpisode = assessmentsUpdateService.updateEpisode(assessmentEpisode, update)
 

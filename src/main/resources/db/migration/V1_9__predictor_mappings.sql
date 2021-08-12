@@ -36,5 +36,7 @@ INSERT INTO predictor_field_mapping (predictor_mapping_uuid, question_schema_uui
 ('28cc6b11-5653-4bf3-a515-89c6fd59a1c9', 'c2b221b4-ee1f-41c8-8fc7-9d49998fab35', 'RSR', 'previous_kidnapping', false),
 ('a1c0d8da-52a3-4539-a86e-632aea772c7a', 'e887bcea-91d1-4c50-a25e-4335fa1e6ae5', 'RSR', 'previous_possession_firearm', false),
 ('a7be30d2-987a-44f1-ac1c-9722dc803f20', '9692659a-778a-436a-bf4e-fe1924638e37', 'RSR', 'previous_robbery', false),
-('cf0c913f-c5d5-4b28-a861-ac55b218899f', '68e31f3a-5175-47e2-986b-d722ad78d893', 'RSR', 'previous_offence_weapon', false)
+('cf0c913f-c5d5-4b28-a861-ac55b218899f', '68e31f3a-5175-47e2-986b-d722ad78d893', 'RSR', 'previous_offence_weapon', false),
+('a954021b-8c43-4792-9431-4c63b7b54e96', '97621b0d-5a64-42dd-9c8b-1484979e9145', 'RSR', 'current_possession_firearm', false),
+('94476286-d09b-4f26-8025-6d6e5c828bcf', 'ba327713-e580-418d-b45b-09a8a3d1166a', 'RSR', 'current_offence_weapon', false)
 ON CONFLICT DO NOTHING;

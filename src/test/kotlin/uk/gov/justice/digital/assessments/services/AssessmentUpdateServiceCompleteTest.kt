@@ -49,15 +49,17 @@ class AssessmentUpdateServiceCompleteTest {
     val assessment = assessmentEntity()
     every { assessmentRepository.findByAssessmentUuid(any()) } returns assessment
     every { episodeRepository.save(any()) } returns assessment.episodes[0]
+    val assessmentEpisode = assessment.episodes.first()
     every {
-      oasysAssessmentUpdateService.completeOASysAssessment(assessment.episodes.first(), 9999)
+      oasysAssessmentUpdateService.completeOASysAssessment(assessmentEpisode, 9999)
     } returns AssessmentEpisodeUpdateErrors()
+    every { predictorService.getPredictorResults(AssessmentSchemaCode.ROSH, assessmentEpisode) } returns emptyList()
 
-    val episode = assessmentUpdateService.closeEpisode(assessment.episodes.first())
+    val episode = assessmentUpdateService.closeEpisode(assessmentEpisode)
 
     verify(exactly = 1) { episodeRepository.save(any()) }
     verify(exactly = 1) {
-      oasysAssessmentUpdateService.completeOASysAssessment(assessment.episodes.first(), 9999)
+      oasysAssessmentUpdateService.completeOASysAssessment(assessmentEpisode, 9999)
     }
     assertThat(episode.ended).isEqualToIgnoringMinutes(LocalDateTime.now())
   }
@@ -67,17 +69,19 @@ class AssessmentUpdateServiceCompleteTest {
     val assessment = assessmentEntity()
     every { assessmentRepository.findByAssessmentUuid(any()) } returns assessment
     every { episodeRepository.save(any()) } returns assessment.episodes[0]
+    val assessmentEpisode = assessment.episodes.first()
     every {
-      oasysAssessmentUpdateService.completeOASysAssessment(assessment.episodes.first(), 9999)
+      oasysAssessmentUpdateService.completeOASysAssessment(assessmentEpisode, 9999)
     } returns AssessmentEpisodeUpdateErrors(
       answerErrors = mutableMapOf(UUID.randomUUID() to mutableListOf("error"))
     )
+    every { predictorService.getPredictorResults(AssessmentSchemaCode.ROSH, assessmentEpisode) } returns emptyList()
 
-    val episode = assessmentUpdateService.closeEpisode(assessment.episodes.first())
+    val episode = assessmentUpdateService.closeEpisode(assessmentEpisode)
 
     verify(exactly = 0) { episodeRepository.save(any()) }
     verify(exactly = 1) {
-      oasysAssessmentUpdateService.completeOASysAssessment(assessment.episodes.first(), 9999)
+      oasysAssessmentUpdateService.completeOASysAssessment(assessmentEpisode, 9999)
     }
     assertThat(episode.ended).isNull()
   }
