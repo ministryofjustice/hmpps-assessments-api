@@ -328,7 +328,7 @@ If the individual presents a risk to identifiable children, explain any relevant
 ('753c1687-c88c-4405-a274-5d77707924a8', 'ui_rsr_needs_1', '2020-11-30 14:50:00', null, 'presentation: divider', null, null, null, null, null),
 ('ccc2ecba-c441-477a-9f79-d44f0cab1567', 'ui_rsr_needs_2', '2020-11-30 14:50:00', null, 'presentation: heading_large', null, 'Current offences', null, null, null),
 ('35e3e63b-6598-4db3-b5a3-1f902f33f22c', 'ui_rsr_needs_3', '2020-11-30 14:50:00', null, 'presentation: body', null, 'Has the individual been convicted of any of these offences?', null, null, null),
-('551df80b-5368-4551-8fda-85b1c7a5f01f', 'ui_rsr_needs_3', '2020-11-30 14:50:00', null, 'presentation: divider', null, null, null, null, null),
+('551df80b-5368-4551-8fda-85b1c7a5f01f', 'ui_rsr_needs_4', '2020-11-30 14:50:00', null, 'presentation: divider', null, null, null, null, null),
 ('86da001c-a703-4ef2-9c0d-e5c90336055c', 'ui_rsr_needs_5', '2020-11-30 14:50:00', null, 'presentation: heading_large', null, 'Previous offences', null, null, null),
 ('47a94bc5-e71e-4327-9942-ad37d5163dee', 'ui_rsr_needs_6', '2020-11-30 14:50:00', null, 'presentation: body', null, 'Has the individual previously been convicted of any of these offences?', null, null, null)
 ON CONFLICT DO NOTHING;
