@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import uk.gov.justice.digital.assessments.jpa.entities.Answer
 import uk.gov.justice.digital.assessments.jpa.entities.AnswerEntity
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.Predictor
@@ -251,17 +252,20 @@ class PredictorServiceTest {
     )
   )
 
+  val assessment = AssessmentEntity()
   private val assessmentEpisode = AssessmentEpisodeEntity(
     episodeId = 1,
     episodeUuid = UUID.randomUUID(),
     answers = answers,
     createdDate = LocalDateTime.now(),
+    assessment = assessment
   )
 
   private val assessmentEpisodeNoAnswers = AssessmentEpisodeEntity(
     episodeId = 2,
     episodeUuid = UUID.randomUUID(),
     createdDate = LocalDateTime.now(),
+    assessment = assessment
   )
 
   @BeforeEach
@@ -276,7 +280,7 @@ class PredictorServiceTest {
     fun `throws exception when required answer is not found`() {
       every { assessmentSchemaService.getPredictorsForAssessment(AssessmentSchemaCode.RSR) } returns predictors
       every {
-        subjectService.getSubjectForAssessment(assessmentEpisodeNoAnswers.episodeUuid)
+        subjectService.getSubjectForAssessment(assessment.assessmentUuid)
       } returns SubjectEntity(
         oasysOffenderPk = 9999, dateOfBirth = LocalDate.of(2001, 1, 1), crn = "X1345"
       )
@@ -328,7 +332,7 @@ class PredictorServiceTest {
       )
 
       every {
-        subjectService.getSubjectForAssessment(assessmentEpisode.episodeUuid)
+        subjectService.getSubjectForAssessment(assessment.assessmentUuid)
       } returns SubjectEntity(
         oasysOffenderPk = 9999, dateOfBirth = LocalDate.of(2001, 1, 1), crn = "X1345"
       )
