@@ -72,11 +72,12 @@ class PredictorService(
       ?: throw EntityNotFoundException("Episode ${episode.episodeUuid} is not associated with an assessment")
     val offender = subjectService.getSubjectForAssessment(assessmentUuid)
     val crn = offender.crn
+    if (offender.gender == null) throw PredictorCalculationException("The risk predictors calculation failed for crn $crn: gender must not be null")
     log.info("Getting Predictor Score for crn $crn and type $predictorType")
     val hasCompletedInterview = getRequiredAnswer(answers, "completed_interview").toBoolean()
     val offenderAndOffencesDto = OffenderAndOffencesDto(
       crn = crn,
-      gender = Gender.MALE,
+      gender = Gender.valueOf(offender.gender!!),
       dob = offender.dateOfBirth,
       assessmentDate = episode.createdDate,
       currentOffence = CurrentOffence("138", "00"),
