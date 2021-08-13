@@ -45,6 +45,9 @@ class SubjectEntity(
   @Column(name = "DATE_OF_BIRTH")
   val dateOfBirth: LocalDate,
 
+  @Column(name = "GENDER")
+  val gender: String? = null,
+
   @Column(name = "CREATED_DATE")
   val createdDate: LocalDateTime? = null,
 
