@@ -12,6 +12,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.PredictorFieldMapping
 import uk.gov.justice.digital.assessments.restclient.AssessRisksAndNeedsApiRestClient
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.CurrentOffence
+import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.CurrentOffences
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.DynamicScoringOffences
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.Gender
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.OffenderAndOffencesDto
@@ -126,6 +127,10 @@ class PredictorService(
         firearmPossession = getNonRequiredAnswer(answers, "previous_possession_firearm").toBoolean(),
         robbery = getNonRequiredAnswer(answers, "previous_robbery").toBoolean(),
         offencesWithWeapon = getNonRequiredAnswer(answers, "previous_offence_weapon").toBoolean(),
+      ),
+      currentOffences = CurrentOffences(
+        firearmPossession = getNonRequiredAnswer(answers, "current_possession_firearm").toBoolean(),
+        offencesWithWeapon = getNonRequiredAnswer(answers, "current_offence_weapon").toBoolean(),
       )
     )
   }
