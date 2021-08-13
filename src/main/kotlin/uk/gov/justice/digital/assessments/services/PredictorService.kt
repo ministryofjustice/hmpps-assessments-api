@@ -72,11 +72,12 @@ class PredictorService(
       ?: throw EntityNotFoundException("Episode ${episode.episodeUuid} is not associated with an assessment")
     val offender = subjectService.getSubjectForAssessment(assessmentUuid)
     val crn = offender.crn
+    if (offender.gender == null) throw PredictorCalculationException("The risk predictors calculation failed for crn $crn: gender must not be null")
     log.info("Getting Predictor Score for crn $crn and type $predictorType")
     val hasCompletedInterview = getRequiredAnswer(answers, "completed_interview").toBoolean()
     val offenderAndOffencesDto = OffenderAndOffencesDto(
       crn = crn,
-      gender = Gender.MALE,
+      gender = Gender.valueOf(offender.gender!!),
       dob = offender.dateOfBirth,
       assessmentDate = episode.createdDate,
       currentOffence = CurrentOffence("138", "00"),
@@ -85,13 +86,13 @@ class PredictorService(
       totalViolentOffences = getRequiredAnswer(answers, "total_violent_offences").toInt(),
       dateOfCurrentConviction = getRequiredAnswer(answers, "date_current_conviction"),
       hasAnySexualOffences = getRequiredAnswer(answers, "any_sexual_offences").toBoolean(),
-      isCurrentSexualOffence = getRequiredAnswer(answers, "current_sexual_offence").toBoolean(),
-      isCurrentOffenceVictimStranger = getRequiredAnswer(answers, "current_offence_victim_stranger").toBoolean(),
-      mostRecentSexualOffenceDate = getRequiredAnswer(answers, "most_recent_sexual_offence_date"),
-      totalSexualOffencesInvolvingAnAdult = getRequiredAnswer(answers, "total_sexual_offences_adult").toInt(),
-      totalSexualOffencesInvolvingAChild = getRequiredAnswer(answers, "total_sexual_offences_child").toInt(),
-      totalSexualOffencesInvolvingChildImages = getRequiredAnswer(answers, "total_sexual_offences_child_image").toInt(),
-      totalNonSexualOffences = getRequiredAnswer(answers, "total_non_sexual_offences").toInt(),
+      isCurrentSexualOffence = getNonRequiredAnswer(answers, "current_sexual_offence").toBoolean(),
+      isCurrentOffenceVictimStranger = getNonRequiredAnswer(answers, "current_offence_victim_stranger").toBoolean(),
+      mostRecentSexualOffenceDate = getNonRequiredAnswer(answers, "most_recent_sexual_offence_date"),
+      totalSexualOffencesInvolvingAnAdult = getNonRequiredAnswer(answers, "total_sexual_offences_adult")?.toInt(),
+      totalSexualOffencesInvolvingAChild = getNonRequiredAnswer(answers, "total_sexual_offences_child")?.toInt(),
+      totalSexualOffencesInvolvingChildImages = getNonRequiredAnswer(answers, "total_sexual_offences_child_image")?.toInt(),
+      totalNonSexualOffences = getNonRequiredAnswer(answers, "total_non_sexual_offences")?.toInt(),
       earliestReleaseDate = getRequiredAnswer(answers, "earliest_release_date"),
       hasCompletedInterview = hasCompletedInterview,
       dynamicScoringOffences = getDynamicScoringOffences(hasCompletedInterview, answers)
