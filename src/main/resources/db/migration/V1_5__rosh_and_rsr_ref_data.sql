@@ -331,7 +331,8 @@ If the individual presents a risk to identifiable children, explain any relevant
 ('35e3e63b-6598-4db3-b5a3-1f902f33f22c', 'ui_rsr_needs_3', '2020-11-30 14:50:00', null, 'presentation: body', null, 'Has the individual been convicted of any of these offences?', null, null, null),
 ('551df80b-5368-4551-8fda-85b1c7a5f01f', 'ui_rsr_needs_4', '2020-11-30 14:50:00', null, 'presentation: divider', null, null, null, null, null),
 ('86da001c-a703-4ef2-9c0d-e5c90336055c', 'ui_rsr_needs_5', '2020-11-30 14:50:00', null, 'presentation: heading_large', null, 'Previous offences', null, null, null),
-('47a94bc5-e71e-4327-9942-ad37d5163dee', 'ui_rsr_needs_6', '2020-11-30 14:50:00', null, 'presentation: body', null, 'Has the individual previously been convicted of any of these offences?', null, null, null)
+('47a94bc5-e71e-4327-9942-ad37d5163dee', 'ui_rsr_needs_6', '2020-11-30 14:50:00', null, 'presentation: body', null, 'Has the individual previously been convicted of any of these offences?', null, null, null),
+('6e144a8e-e614-413a-8f73-a3a426f114a0', 'ui_rsr_needs_7', '2020-11-30 14:50:00', null, 'presentation: divider', null, null, null, null, null)
 ON CONFLICT DO NOTHING;
 
 
@@ -379,7 +380,7 @@ VALUES ('e224345c-0ac8-4a52-b170-97ef35e71967', '5d77fc6b-0001-4955-ad54-7f417be
 ('a75f573e-b627-48e9-af18-2a5c780c0f2a', 'd9846a60-5ba6-450f-9934-2c9646771f9d', 'question', '3cc4f4cb-a351-430b-adfb-3ad8ab9b5166', 2, true, null, false),
 ('935a599f-5fba-42de-867c-fda6d9779fba', '61feebd9-afe5-43ef-94a5-27c400453eba', 'group', '65a3924c-4130-4140-b7f4-cc39a52603bb', 3, true, null, false),
 ('ff988890-24f1-4ebe-a43f-160d1a4934b3', '5606da47-8f27-49a0-a943-0f2696f66186', 'group', '61feebd9-afe5-43ef-94a5-27c400453eba', 1, true, null, false),
-('4d20b4f5-5394-43cc-af41-4e801b9f9059', '5ca86a06-5472-4861-bd6a-a011780db49a', 'question', '5606da47-8f27-49a0-a943-0f2696f66186', 6, true, null, false),
+('ad18303e-4978-43a0-839c-49150344903b', '6e144a8e-e614-413a-8f73-a3a426f114a0', 'question', '5606da47-8f27-49a0-a943-0f2696f66186', 1, true, null, false),
 ('ff988890-24f1-4ebe-a43f-160d1a4934b3', 'eb7b7324-f2a6-4902-91ef-709a8fab1f82', 'group', '61feebd9-afe5-43ef-94a5-27c400453eba', 1, true, null, false),
 ('4d20b4f5-5394-43cc-af41-4e801b9f9059', '5ca86a06-5472-4861-bd6a-a011780db49a', 'question', 'eb7b7324-f2a6-4902-91ef-709a8fab1f82', 6, true, null, false),
 ('58a60d30-4545-40f1-8980-e82d1def9e5f', '63099aab-f852-4dd9-9179-16ee2218d0c6', 'question', 'eb7b7324-f2a6-4902-91ef-709a8fab1f82', 7, true, null, false),
