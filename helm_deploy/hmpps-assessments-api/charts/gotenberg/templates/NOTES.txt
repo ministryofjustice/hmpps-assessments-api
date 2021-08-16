@@ -1,0 +1,8 @@
+1. Get the application URL by running these commands:
+ Gotenberg deployed to the namespace and is running on {{ .Values.image.port }}, to access:
+
+ "kubectl port-forward {{ include "gotenberg.fullname" . }} {{ .Values.image.port }}:{{ .Values.image.port }}"
+
+ Or internally within the namespace via:
+
+ "{{ include "gotenberg.fullname" . }}.{{ .Release.namespace }}.svc.cluster.local"
