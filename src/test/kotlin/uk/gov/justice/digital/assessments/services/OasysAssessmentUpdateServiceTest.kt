@@ -45,9 +45,9 @@ class OasysAssessmentUpdateServiceTest() {
     assessmentSchemaService
   )
 
-  private val questionCode1 = "question_code_1"
-  private val questionCode2 = "question_code_2"
-  private val questionCode3 = "question_code_3"
+  private val questionCode1 = "Q1"
+  private val questionCode2 = "Q2"
+  private val questionCode3 = "Q3"
   private val answer1Uuid = UUID.randomUUID()
   private val answer2Uuid = UUID.randomUUID()
   private val answer3Uuid = UUID.randomUUID()
@@ -192,14 +192,22 @@ class OasysAssessmentUpdateServiceTest() {
       listOf(
         makeQuestion(
           questionSchemaId = 1,
-          questionCode = "Q1",
+          questionCode = questionCode1,
           answerType = "checkbox",
           answerSchemaGroup = group1,
           oasysSectionCode = "section1",
           oasysLogicalPage = 1,
           oasysQuestionCode = "oasysQ1"
         ),
-        makeQuestion(2, "Q2", "radio", group2, "section1", 1, "oasysQ2")
+        makeQuestion(
+          questionSchemaId = 2,
+          questionCode = questionCode2,
+          answerType = "radio",
+          answerSchemaGroup = group2,
+          oasysSectionCode = "section1",
+          oasysLogicalPage = 1,
+          oasysQuestionCode = "oasysQ2"
+        )
       )
     )
   }
@@ -248,9 +256,9 @@ class OasysAssessmentUpdateServiceTest() {
 
     return QuestionSchemaEntities(
       listOf(
-        makeQuestion(1, "Q1", "checkbox", group1),
-        makeQuestion(2, "Q2", "radio", group2),
-        makeQuestion(3, "Q3")
+        makeQuestion(1, questionCode1, "checkbox", group1),
+        makeQuestion(2, questionCode2, "radio", group2),
+        makeQuestion(3, questionCode3)
       )
     )
   }
