@@ -20,8 +20,11 @@ import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.SubjectEntity
 import uk.gov.justice.digital.assessments.restclient.AssessRisksAndNeedsApiRestClient
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.CurrentOffence
+import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.CurrentOffences
+import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.DynamicScoringOffences
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.Gender
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.OffenderAndOffencesDto
+import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.PreviousOffences
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.RiskPredictorsDto
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.Score
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.ScoreLevel
@@ -95,6 +98,90 @@ class PredictorServiceTest {
   )
   private val testQuestion14 = QuestionSchemaEntity(
     questionSchemaId = 14,
+    questionSchemaUuid = UUID.randomUUID(),
+  )
+  private val testQuestion15 = QuestionSchemaEntity(
+    questionSchemaId = 15,
+    questionSchemaUuid = UUID.randomUUID(),
+  )
+  private val testQuestion16 = QuestionSchemaEntity(
+    questionSchemaId = 16,
+    questionSchemaUuid = UUID.randomUUID(),
+  )
+  private val testQuestion17 = QuestionSchemaEntity(
+    questionSchemaId = 17,
+    questionSchemaUuid = UUID.randomUUID(),
+  )
+  private val testQuestion18 = QuestionSchemaEntity(
+    questionSchemaId = 18,
+    questionSchemaUuid = UUID.randomUUID(),
+  )
+  private val testQuestion19 = QuestionSchemaEntity(
+    questionSchemaId = 19,
+    questionSchemaUuid = UUID.randomUUID(),
+  )
+  private val testQuestion20 = QuestionSchemaEntity(
+    questionSchemaId = 20,
+    questionSchemaUuid = UUID.randomUUID(),
+  )
+  private val testQuestion21 = QuestionSchemaEntity(
+    questionSchemaId = 21,
+    questionSchemaUuid = UUID.randomUUID(),
+  )
+  private val testQuestion22 = QuestionSchemaEntity(
+    questionSchemaId = 22,
+    questionSchemaUuid = UUID.randomUUID(),
+  )
+  private val testQuestion23 = QuestionSchemaEntity(
+    questionSchemaId = 23,
+    questionSchemaUuid = UUID.randomUUID(),
+  )
+  private val testQuestion24 = QuestionSchemaEntity(
+    questionSchemaId = 24,
+    questionSchemaUuid = UUID.randomUUID(),
+  )
+  private val testQuestion25 = QuestionSchemaEntity(
+    questionSchemaId = 25,
+    questionSchemaUuid = UUID.randomUUID(),
+  )
+  private val testQuestion26 = QuestionSchemaEntity(
+    questionSchemaId = 26,
+    questionSchemaUuid = UUID.randomUUID(),
+  )
+  private val testQuestion27 = QuestionSchemaEntity(
+    questionSchemaId = 27,
+    questionSchemaUuid = UUID.randomUUID(),
+  )
+  private val testQuestion28 = QuestionSchemaEntity(
+    questionSchemaId = 28,
+    questionSchemaUuid = UUID.randomUUID(),
+  )
+  private val testQuestion29 = QuestionSchemaEntity(
+    questionSchemaId = 29,
+    questionSchemaUuid = UUID.randomUUID(),
+  )
+  private val testQuestion30 = QuestionSchemaEntity(
+    questionSchemaId = 30,
+    questionSchemaUuid = UUID.randomUUID(),
+  )
+  private val testQuestion31 = QuestionSchemaEntity(
+    questionSchemaId = 31,
+    questionSchemaUuid = UUID.randomUUID(),
+  )
+  private val testQuestion32 = QuestionSchemaEntity(
+    questionSchemaId = 32,
+    questionSchemaUuid = UUID.randomUUID(),
+  )
+  private val testQuestion33 = QuestionSchemaEntity(
+    questionSchemaId = 33,
+    questionSchemaUuid = UUID.randomUUID(),
+  )
+  private val testQuestion34 = QuestionSchemaEntity(
+    questionSchemaId = 34,
+    questionSchemaUuid = UUID.randomUUID(),
+  )
+  private val testQuestion35 = QuestionSchemaEntity(
+    questionSchemaId = 35,
     questionSchemaUuid = UUID.randomUUID(),
   )
 
@@ -203,6 +290,153 @@ class PredictorServiceTest {
           PredictorType.RSR,
           "completed_interview"
         ),
+        PredictorFieldMapping(
+          15,
+          UUID.randomUUID(),
+          testQuestion15,
+          PredictorType.RSR,
+          "suitable_accommodation"
+        ),
+        PredictorFieldMapping(
+          16,
+          UUID.randomUUID(),
+          testQuestion16,
+          PredictorType.RSR,
+          "unemployed_on_release"
+        ),
+        PredictorFieldMapping(
+          17,
+          UUID.randomUUID(),
+          testQuestion17,
+          PredictorType.RSR,
+          "current_relationship_with_partner"
+        ),
+        PredictorFieldMapping(
+          18,
+          UUID.randomUUID(),
+          testQuestion18,
+          PredictorType.RSR,
+          "evidence_domestic_violence"
+        ),
+        PredictorFieldMapping(
+          19,
+          UUID.randomUUID(),
+          testQuestion19,
+          PredictorType.RSR,
+          "perpetrator_domestic_violence"
+        ),
+        PredictorFieldMapping(
+          20,
+          UUID.randomUUID(),
+          testQuestion20,
+          PredictorType.RSR,
+          "use_of_alcohol"
+        ),
+        PredictorFieldMapping(
+          21,
+          UUID.randomUUID(),
+          testQuestion21,
+          PredictorType.RSR,
+          "binge_drinking"
+        ),
+        PredictorFieldMapping(
+          22,
+          UUID.randomUUID(),
+          testQuestion22,
+          PredictorType.RSR,
+          "impulsivity_issues"
+        ),
+        PredictorFieldMapping(
+          23,
+          UUID.randomUUID(),
+          testQuestion23,
+          PredictorType.RSR,
+          "temper_control_issues"
+        ),
+        PredictorFieldMapping(
+          24,
+          UUID.randomUUID(),
+          testQuestion24,
+          PredictorType.RSR,
+          "pro_criminal_attitudes"
+        ),
+        PredictorFieldMapping(
+          25,
+          UUID.randomUUID(),
+          testQuestion25,
+          PredictorType.RSR,
+          "previous_murder_attempt"
+        ),
+        PredictorFieldMapping(
+          26,
+          UUID.randomUUID(),
+          testQuestion26,
+          PredictorType.RSR,
+          "previous_wounding"
+        ),
+        PredictorFieldMapping(
+          27,
+          UUID.randomUUID(),
+          testQuestion27,
+          PredictorType.RSR,
+          "previous_aggravated_burglary"
+        ),
+        PredictorFieldMapping(
+          28,
+          UUID.randomUUID(),
+          testQuestion28,
+          PredictorType.RSR,
+          "previous_arson"
+        ),
+        PredictorFieldMapping(
+          29,
+          UUID.randomUUID(),
+          testQuestion29,
+          PredictorType.RSR,
+          "previous_criminal_damage"
+        ),
+        PredictorFieldMapping(
+          30,
+          UUID.randomUUID(),
+          testQuestion30,
+          PredictorType.RSR,
+          "previous_kidnapping"
+        ),
+        PredictorFieldMapping(
+          31,
+          UUID.randomUUID(),
+          testQuestion31,
+          PredictorType.RSR,
+          "previous_possession_firearm"
+        ),
+        PredictorFieldMapping(
+          32,
+          UUID.randomUUID(),
+          testQuestion32,
+          PredictorType.RSR,
+          "previous_robbery"
+        ),
+        PredictorFieldMapping(
+          33,
+          UUID.randomUUID(),
+          testQuestion33,
+          PredictorType.RSR,
+          "previous_offence_weapon"
+        ),
+        PredictorFieldMapping(
+          34,
+          UUID.randomUUID(),
+          testQuestion34,
+          PredictorType.RSR,
+          "current_possession_firearm"
+        ),
+        PredictorFieldMapping(
+          35,
+          UUID.randomUUID(),
+          testQuestion35,
+          PredictorType.RSR,
+          "current_offence_weapon"
+        ),
       )
     )
   )
@@ -248,8 +482,71 @@ class PredictorServiceTest {
       listOf(Answer(items = listOf("2025-11-01")))
     ),
     testQuestion14.questionSchemaUuid to AnswerEntity(
-      listOf(Answer(items = listOf("NO")))
-    )
+      listOf(Answer(items = listOf("YES")))
+    ),
+    testQuestion15.questionSchemaUuid to AnswerEntity(
+      listOf(Answer(items = listOf("")))
+    ),
+    testQuestion16.questionSchemaUuid to AnswerEntity(
+      listOf(Answer(items = listOf("not available for work")))
+    ),
+    testQuestion17.questionSchemaUuid to AnswerEntity(
+      listOf(Answer(items = listOf("significant problems")))
+    ),
+    testQuestion18.questionSchemaUuid to AnswerEntity(
+      listOf(Answer(items = listOf("YES")))
+    ),
+    testQuestion19.questionSchemaUuid to AnswerEntity(
+      listOf(Answer(items = listOf("YES")))
+    ),
+    testQuestion20.questionSchemaUuid to AnswerEntity(
+      listOf(Answer(items = listOf("significant problems")))
+    ),
+    testQuestion21.questionSchemaUuid to AnswerEntity(
+      listOf(Answer(items = listOf("significant problems")))
+    ),
+    testQuestion22.questionSchemaUuid to AnswerEntity(
+      listOf(Answer(items = listOf("some problems")))
+    ),
+    testQuestion23.questionSchemaUuid to AnswerEntity(
+      listOf(Answer(items = listOf("significant problems")))
+    ),
+    testQuestion24.questionSchemaUuid to AnswerEntity(
+      listOf(Answer(items = listOf("some problems")))
+    ),
+    testQuestion25.questionSchemaUuid to AnswerEntity(
+      listOf(Answer(items = listOf("YES")))
+    ),
+    testQuestion26.questionSchemaUuid to AnswerEntity(
+      listOf(Answer(items = listOf("YES")))
+    ),
+    testQuestion27.questionSchemaUuid to AnswerEntity(
+      listOf(Answer(items = listOf("YES")))
+    ),
+    testQuestion28.questionSchemaUuid to AnswerEntity(
+      listOf(Answer(items = listOf("YES")))
+    ),
+    testQuestion29.questionSchemaUuid to AnswerEntity(
+      listOf(Answer(items = listOf("YES")))
+    ),
+    testQuestion30.questionSchemaUuid to AnswerEntity(
+      listOf(Answer(items = listOf("YES")))
+    ),
+    testQuestion31.questionSchemaUuid to AnswerEntity(
+      listOf(Answer(items = listOf("YES")))
+    ),
+    testQuestion32.questionSchemaUuid to AnswerEntity(
+      listOf(Answer(items = listOf("YES")))
+    ),
+    testQuestion33.questionSchemaUuid to AnswerEntity(
+      listOf(Answer(items = listOf("YES")))
+    ),
+    testQuestion34.questionSchemaUuid to AnswerEntity(
+      listOf(Answer(items = listOf("YES")))
+    ),
+    testQuestion35.questionSchemaUuid to AnswerEntity(
+      listOf(Answer(items = listOf("YES")))
+    ),
   )
 
   val assessment = AssessmentEntity()
@@ -316,8 +613,34 @@ class PredictorServiceTest {
         totalSexualOffencesInvolvingChildImages = 10,
         totalNonSexualOffences = 9,
         earliestReleaseDate = "2025-11-01",
-        hasCompletedInterview = false,
-        dynamicScoringOffences = null
+        hasCompletedInterview = true,
+        dynamicScoringOffences = DynamicScoringOffences(
+          hasSuitableAccommodation = "MISSING",
+          employment = "NOT_AVAILABLE_FOR_WORK",
+          currentRelationshipWithPartner = "SIGNIFICANT_PROBLEMS",
+          evidenceOfDomesticViolence = true,
+          isPerpetrator = true,
+          alcoholUseIssues = "SIGNIFICANT_PROBLEMS",
+          bingeDrinkingIssues = "SIGNIFICANT_PROBLEMS",
+          impulsivityIssues = "SOME_PROBLEMS",
+          temperControlIssues = "SIGNIFICANT_PROBLEMS",
+          proCriminalAttitudes = "SOME_PROBLEMS",
+          previousOffences = PreviousOffences(
+            murderAttempt = true,
+            wounding = true,
+            aggravatedBurglary = true,
+            arson = true,
+            criminalDamage = true,
+            kidnapping = true,
+            firearmPossession = true,
+            robbery = true,
+            offencesWithWeapon = true
+          ),
+          currentOffences = CurrentOffences(
+            firearmPossession = true,
+            offencesWithWeapon = true
+          )
+        )
       )
 
       every {

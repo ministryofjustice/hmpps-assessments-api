@@ -91,7 +91,10 @@ class PredictorService(
       mostRecentSexualOffenceDate = getNonRequiredAnswer(answers, "most_recent_sexual_offence_date"),
       totalSexualOffencesInvolvingAnAdult = getNonRequiredAnswer(answers, "total_sexual_offences_adult")?.toInt(),
       totalSexualOffencesInvolvingAChild = getNonRequiredAnswer(answers, "total_sexual_offences_child")?.toInt(),
-      totalSexualOffencesInvolvingChildImages = getNonRequiredAnswer(answers, "total_sexual_offences_child_image")?.toInt(),
+      totalSexualOffencesInvolvingChildImages = getNonRequiredAnswer(
+        answers,
+        "total_sexual_offences_child_image"
+      )?.toInt(),
       totalNonSexualOffences = getNonRequiredAnswer(answers, "total_non_sexual_offences")?.toInt(),
       earliestReleaseDate = getRequiredAnswer(answers, "earliest_release_date"),
       hasCompletedInterview = hasCompletedInterview,
@@ -108,16 +111,16 @@ class PredictorService(
   ): DynamicScoringOffences? {
     if (!hasCompletedInterview) return null
     return DynamicScoringOffences(
-      hasSuitableAccommodation = getNonRequiredAnswer(answers, "suitable_accommodation"),
-      employment = getNonRequiredAnswer(answers, "unemployed_on_release"),
-      currentRelationshipWithPartner = getNonRequiredAnswer(answers, "current_relationship_with_partner"),
+      hasSuitableAccommodation = getNonRequiredAnswer(answers, "suitable_accommodation").toProblemsLevel(),
+      employment = getNonRequiredAnswer(answers, "unemployed_on_release").toEmploymentType(),
+      currentRelationshipWithPartner = getNonRequiredAnswer(answers, "current_relationship_with_partner").toProblemsLevel(),
       evidenceOfDomesticViolence = getNonRequiredAnswer(answers, "evidence_domestic_violence").toBoolean(),
       isPerpetrator = getNonRequiredAnswer(answers, "perpetrator_domestic_violence").toBoolean(),
-      alcoholUseIssues = getNonRequiredAnswer(answers, "use_of_alcohol"),
-      bingeDrinkingIssues = getNonRequiredAnswer(answers, "binge_drinking"),
-      impulsivityIssues = getNonRequiredAnswer(answers, "impulsivity_issues"),
-      temperControlIssues = getNonRequiredAnswer(answers, "temper_control_issues"),
-      proCriminalAttitudes = getNonRequiredAnswer(answers, "pro_criminal_attitudes"),
+      alcoholUseIssues = getNonRequiredAnswer(answers, "use_of_alcohol").toProblemsLevel(),
+      bingeDrinkingIssues = getNonRequiredAnswer(answers, "binge_drinking").toProblemsLevel(),
+      impulsivityIssues = getNonRequiredAnswer(answers, "impulsivity_issues").toProblemsLevel(),
+      temperControlIssues = getNonRequiredAnswer(answers, "temper_control_issues").toProblemsLevel(),
+      proCriminalAttitudes = getNonRequiredAnswer(answers, "pro_criminal_attitudes").toProblemsLevel(),
       previousOffences = PreviousOffences(
         murderAttempt = getNonRequiredAnswer(answers, "previous_murder_attempt").toBoolean(),
         wounding = getNonRequiredAnswer(answers, "previous_wounding").toBoolean(),
@@ -185,7 +188,37 @@ class PredictorService(
     return this == ResponseDto.YES.name
   }
 
+  private fun String?.toProblemsLevel(): String? {
+    return ProblemsLevel.fromString(this).name
+  }
+
+  private fun String?.toEmploymentType(): String? {
+    return EmploymentType.fromString(this).name
+  }
+
   enum class ResponseDto(val value: String) {
     YES("Yes"), NO("No");
+  }
+
+  enum class EmploymentType(val value: String? = null) {
+    NO("no"), NOT_AVAILABLE_FOR_WORK("not available for work"), YES("yes"), MISSING;
+
+    companion object {
+      fun fromString(enumValue: String?): EmploymentType {
+        return values().firstOrNull { it.value == enumValue }
+          ?: MISSING
+      }
+    }
+  }
+
+  enum class ProblemsLevel(val value: String? = null) {
+    NO_PROBLEMS("no problems"), SOME_PROBLEMS("some problems"), SIGNIFICANT_PROBLEMS("significant problems"), MISSING;
+
+    companion object {
+      fun fromString(enumValue: String?): ProblemsLevel {
+        return values().firstOrNull { it.value == enumValue }
+          ?: MISSING
+      }
+    }
   }
 }
