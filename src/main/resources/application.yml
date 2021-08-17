@@ -135,3 +135,6 @@ community-api:
 
 assessment-api:
   base-url: http://localhost:9080
+
+assess-risks-and-needs-api:
+  base-url: http://localhost:9080
