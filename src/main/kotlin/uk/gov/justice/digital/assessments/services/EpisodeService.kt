@@ -37,7 +37,7 @@ class EpisodeService(
     val rawAnswer = source.lookup<String?>(lookupPath).firstOrNull() ?: return
 
     val answer = answerFormat(rawAnswer, format)
-    episode.answers?.set(question.questionSchemaUuid, AnswerEntity.from(answer))
+    episode.answers?.set(question.questionCode, AnswerEntity.from(answer))
   }
 
   private fun loadSource(episode: AssessmentEpisodeEntity, sourceName: String?): JsonObject? {

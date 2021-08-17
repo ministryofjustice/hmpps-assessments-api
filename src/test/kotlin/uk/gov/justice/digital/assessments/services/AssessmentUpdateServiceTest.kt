@@ -45,13 +45,13 @@ class AssessmentUpdateServiceTest {
 
   private val episodeUuid = UUID.randomUUID()
 
-  private val existingQuestionUuid = UUID.randomUUID()
+  private val existingQuestionCode = "existing_question_code"
 
-  private val question1Uuid = UUID.randomUUID()
-  private val question2Uuid = UUID.randomUUID()
-  private val question3Uuid = UUID.randomUUID()
-  private val childQuestion1 = UUID.randomUUID()
-  private val childQuestion2 = UUID.randomUUID()
+  private val questionCode1 = "question_code_1"
+  private val questionCode2 = "question_code_2"
+  private val questionCode3 = "question_code_3"
+  private val childQuestionCode1 = "child_question_code_1"
+  private val childQuestionCode2 = "child_question_code_1"
 
   @BeforeEach
   fun setup() {
@@ -65,13 +65,13 @@ class AssessmentUpdateServiceTest {
     @Test
     fun `add new answers to existing question for an episode`() {
       val answers = mutableMapOf(
-        existingQuestionUuid to AnswerEntity.from("free text")
+        existingQuestionCode to AnswerEntity.from("free text")
       )
       val assessment = assessmentEntity(answers)
 
-      val newQuestionUuid = UUID.randomUUID()
+      val newQuestionCode = "new_question_code"
       val updatedAnswers = UpdateAssessmentEpisodeDto(
-        mapOf(newQuestionUuid to listOf("trousers"))
+        mapOf(newQuestionCode to listOf("trousers"))
       )
 
       every {
@@ -86,12 +86,12 @@ class AssessmentUpdateServiceTest {
 
       assertThat(episodeDto.answers).hasSize(2)
       Verify.singleAnswer(
-        episodeDto.answers[existingQuestionUuid]!!,
+        episodeDto.answers[existingQuestionCode]!!,
         "free text"
       )
 
       Verify.singleAnswer(
-        episodeDto.answers[newQuestionUuid]!!,
+        episodeDto.answers[newQuestionCode]!!,
         "trousers"
       )
     }
@@ -99,12 +99,12 @@ class AssessmentUpdateServiceTest {
     @Test
     fun `change an existing answer for an episode`() {
       val answers = mutableMapOf(
-        existingQuestionUuid to AnswerEntity.from("free text")
+        existingQuestionCode to AnswerEntity.from("free text")
       )
       val assessment = assessmentEntity(answers)
 
       val updatedAnswers = UpdateAssessmentEpisodeDto(
-        mapOf(existingQuestionUuid to listOf("new free text"))
+        mapOf(existingQuestionCode to listOf("new free text"))
       )
 
       every {
@@ -119,7 +119,7 @@ class AssessmentUpdateServiceTest {
 
       assertThat(episodeDto.answers).hasSize(1)
       Verify.singleAnswer(
-        episodeDto.answers[existingQuestionUuid]!!,
+        episodeDto.answers[existingQuestionCode]!!,
         "new free text"
       )
     }
@@ -127,12 +127,12 @@ class AssessmentUpdateServiceTest {
     @Test
     fun `remove answers for an existing question for an episode`() {
       val answers = mutableMapOf(
-        existingQuestionUuid to AnswerEntity.from(listOf("free text", "fruit loops", "biscuits"))
+        existingQuestionCode to AnswerEntity.from(listOf("free text", "fruit loops", "biscuits"))
       )
       val assessment = assessmentEntity(answers)
 
       val updatedAnswers = UpdateAssessmentEpisodeDto(
-        mapOf(existingQuestionUuid to listOf("fruit loops", "custard"))
+        mapOf(existingQuestionCode to listOf("fruit loops", "custard"))
       )
 
       every {
@@ -147,7 +147,7 @@ class AssessmentUpdateServiceTest {
 
       assertThat(episodeDto.answers).hasSize(1)
       Verify.singleAnswer(
-        episodeDto.answers[existingQuestionUuid]!!,
+        episodeDto.answers[existingQuestionCode]!!,
         "fruit loops",
         "custard"
       )
@@ -164,7 +164,7 @@ class AssessmentUpdateServiceTest {
             endDate = LocalDateTime.now().minusDays(1),
             changeReason = "Change of Circs 2",
             answers = mutableMapOf(
-              existingQuestionUuid to AnswerEntity.from("free text")
+              existingQuestionCode to AnswerEntity.from("free text")
             ),
             assessment = AssessmentEntity(assessmentUuid = assessmentUuid),
             createdDate = LocalDateTime.now(),
@@ -188,8 +188,8 @@ class AssessmentUpdateServiceTest {
   @Nested
   @DisplayName("update episode with table answers")
   inner class TableAnswers {
-    private val childNameQuestion = makeQuestion(10, childQuestion1, "Name")
-    private val childAddressQuestion = makeQuestion(11, childQuestion2, "Address")
+    private val childNameQuestion = makeQuestion(10, childQuestionCode1)
+    private val childAddressQuestion = makeQuestion(11, childQuestionCode2)
     private val childTableQuestions = QuestionSchemaEntities(
       listOf(
         childNameQuestion,
@@ -209,9 +209,9 @@ class AssessmentUpdateServiceTest {
     @Test
     fun `add first row to table`() {
       val answers = mutableMapOf(
-        question1Uuid to AnswerEntity.from("some free text"),
-        question2Uuid to AnswerEntity.from("1975-01-20T00:00:00.000Z"),
-        question3Uuid to AnswerEntity.from("not mapped to oasys"),
+        questionCode1 to AnswerEntity.from("some free text"),
+        questionCode2 to AnswerEntity.from("1975-01-20T00:00:00.000Z"),
+        questionCode3 to AnswerEntity.from("not mapped to oasys"),
       )
       val assessmentEntity = assessmentEntity(answers)
       every {
@@ -223,8 +223,8 @@ class AssessmentUpdateServiceTest {
 
       val tableAnswers = UpdateAssessmentEpisodeDto(
         mapOf(
-          childQuestion1 to listOf("child name"),
-          childQuestion2 to listOf("child address")
+          childQuestionCode1 to listOf("child name"),
+          childQuestionCode2 to listOf("child address")
         )
       )
 
@@ -233,12 +233,12 @@ class AssessmentUpdateServiceTest {
 
       assertThat(episodeDto.answers).hasSize(5)
       Verify.singleAnswer(
-        episodeDto.answers[childQuestion1]!!,
+        episodeDto.answers[childQuestionCode1]!!,
         "child name"
       )
 
       Verify.singleAnswer(
-        episodeDto.answers[childQuestion2]!!,
+        episodeDto.answers[childQuestionCode2]!!,
         "child address"
       )
     }
@@ -246,9 +246,9 @@ class AssessmentUpdateServiceTest {
     @Test
     fun `add first row to table - current episode`() {
       val answers = mutableMapOf(
-        question1Uuid to AnswerEntity.from("some free text"),
-        question2Uuid to AnswerEntity.from("1975-01-20T00:00:00.000Z"),
-        question3Uuid to AnswerEntity.from("not mapped to oasys"),
+        questionCode1 to AnswerEntity.from("some free text"),
+        questionCode2 to AnswerEntity.from("1975-01-20T00:00:00.000Z"),
+        questionCode3 to AnswerEntity.from("not mapped to oasys"),
       )
       val assessmentEntity = assessmentEntity(answers)
       every {
@@ -260,8 +260,8 @@ class AssessmentUpdateServiceTest {
 
       val tableAnswers = UpdateAssessmentEpisodeDto(
         mapOf(
-          childQuestion1 to listOf("child name"),
-          childQuestion2 to listOf("child address")
+          childQuestionCode1 to listOf("child name"),
+          childQuestionCode2 to listOf("child address")
         )
       )
 
@@ -274,12 +274,12 @@ class AssessmentUpdateServiceTest {
 
       assertThat(episodeDto.answers).hasSize(5)
       Verify.multiAnswers(
-        episodeDto.answers[childQuestion1]!!,
+        episodeDto.answers[childQuestionCode1]!!,
         "child name"
       )
 
       Verify.multiAnswers(
-        episodeDto.answers[childQuestion2]!!,
+        episodeDto.answers[childQuestionCode2]!!,
         "child address"
       )
     }
@@ -287,11 +287,11 @@ class AssessmentUpdateServiceTest {
     @Test
     fun `add second row to table`() {
       val answers = mutableMapOf(
-        question1Uuid to AnswerEntity.from("some free text"),
-        question2Uuid to AnswerEntity.from("1975-01-20T00:00:00.000Z"),
-        question3Uuid to AnswerEntity.from("not mapped to oasys"),
-        childQuestion1 to AnswerEntity.from("child name 1"),
-        childQuestion2 to AnswerEntity.from("child address 1")
+        questionCode1 to AnswerEntity.from("some free text"),
+        questionCode2 to AnswerEntity.from("1975-01-20T00:00:00.000Z"),
+        questionCode3 to AnswerEntity.from("not mapped to oasys"),
+        childQuestionCode1 to AnswerEntity.from("child name 1"),
+        childQuestionCode2 to AnswerEntity.from("child address 1")
       )
       val assessmentEntity = assessmentEntity(answers)
       every {
@@ -303,8 +303,8 @@ class AssessmentUpdateServiceTest {
 
       val tableAnswers = UpdateAssessmentEpisodeDto(
         mapOf(
-          childQuestion1 to listOf("child name 2"),
-          childQuestion2 to listOf("child address 2")
+          childQuestionCode1 to listOf("child name 2"),
+          childQuestionCode2 to listOf("child address 2")
         )
       )
 
@@ -313,13 +313,13 @@ class AssessmentUpdateServiceTest {
 
       assertThat(episodeDto.answers).hasSize(5)
       Verify.multiAnswers(
-        episodeDto.answers[childQuestion1]!!,
+        episodeDto.answers[childQuestionCode1]!!,
         "child name 1",
         "child name 2"
       )
 
       Verify.multiAnswers(
-        episodeDto.answers[childQuestion2]!!,
+        episodeDto.answers[childQuestionCode2]!!,
         "child address 1",
         "child address 2"
       )
@@ -328,11 +328,11 @@ class AssessmentUpdateServiceTest {
     @Test
     fun `add second row with partial data to table`() {
       val answers = mutableMapOf(
-        question1Uuid to AnswerEntity.from("some free text"),
-        question2Uuid to AnswerEntity.from("1975-01-20T00:00:00.000Z"),
-        question3Uuid to AnswerEntity.from("not mapped to oasys"),
-        childQuestion1 to AnswerEntity.from("child name 1"),
-        childQuestion2 to AnswerEntity.from("child address 1")
+        questionCode1 to AnswerEntity.from("some free text"),
+        questionCode2 to AnswerEntity.from("1975-01-20T00:00:00.000Z"),
+        questionCode3 to AnswerEntity.from("not mapped to oasys"),
+        childQuestionCode1 to AnswerEntity.from("child name 1"),
+        childQuestionCode2 to AnswerEntity.from("child address 1")
       )
 
       val assessmentEntity = assessmentEntity(answers)
@@ -345,7 +345,7 @@ class AssessmentUpdateServiceTest {
 
       val tableAnswers = UpdateAssessmentEpisodeDto(
         mapOf(
-          childQuestion1 to listOf("child name 2")
+          childQuestionCode1 to listOf("child name 2")
         )
       )
 
@@ -354,13 +354,13 @@ class AssessmentUpdateServiceTest {
 
       assertThat(episodeDto.answers).hasSize(5)
       Verify.multiAnswers(
-        episodeDto.answers[childQuestion1]!!,
+        episodeDto.answers[childQuestionCode1]!!,
         "child name 1",
         "child name 2"
       )
 
       Verify.multiAnswers(
-        episodeDto.answers[childQuestion2]!!,
+        episodeDto.answers[childQuestionCode2]!!,
         "child address 1",
         ""
       )
@@ -369,11 +369,11 @@ class AssessmentUpdateServiceTest {
     @Test
     fun `update first row of table`() {
       val answers = mutableMapOf(
-        question1Uuid to AnswerEntity.from("some free text"),
-        question2Uuid to AnswerEntity.from("1975-01-20T00:00:00.000Z"),
-        question3Uuid to AnswerEntity.from("not mapped to oasys"),
-        childQuestion1 to AnswerEntity.from(listOf("name of child 1", "child name 2")),
-        childQuestion2 to AnswerEntity.from(listOf("address of child 1", "child address 2"))
+        questionCode1 to AnswerEntity.from("some free text"),
+        questionCode2 to AnswerEntity.from("1975-01-20T00:00:00.000Z"),
+        questionCode3 to AnswerEntity.from("not mapped to oasys"),
+        childQuestionCode1 to AnswerEntity.from(listOf("name of child 1", "child name 2")),
+        childQuestionCode2 to AnswerEntity.from(listOf("address of child 1", "child address 2"))
       )
       val assessmentEntity = assessmentEntity(answers)
       every {
@@ -385,8 +385,8 @@ class AssessmentUpdateServiceTest {
 
       val tableAnswers = UpdateAssessmentEpisodeDto(
         mapOf(
-          childQuestion1 to listOf("child name 1"),
-          childQuestion2 to listOf("child address 1")
+          childQuestionCode1 to listOf("child name 1"),
+          childQuestionCode2 to listOf("child address 1")
         )
       )
 
@@ -400,13 +400,13 @@ class AssessmentUpdateServiceTest {
 
       assertThat(episodeDto.answers).hasSize(5)
       Verify.multiAnswers(
-        episodeDto.answers[childQuestion1]!!,
+        episodeDto.answers[childQuestionCode1]!!,
         "child name 1",
         "child name 2"
       )
 
       Verify.multiAnswers(
-        episodeDto.answers[childQuestion2]!!,
+        episodeDto.answers[childQuestionCode2]!!,
         "child address 1",
         "child address 2"
       )
@@ -415,11 +415,11 @@ class AssessmentUpdateServiceTest {
     @Test
     fun `update last row of table`() {
       val answers = mutableMapOf(
-        question1Uuid to AnswerEntity.from("some free text"),
-        question2Uuid to AnswerEntity.from("1975-01-20T00:00:00.000Z"),
-        question3Uuid to AnswerEntity.from("not mapped to oasys"),
-        childQuestion1 to AnswerEntity.from(listOf("child name 1", "name of child 2")),
-        childQuestion2 to AnswerEntity.from(listOf("child address 1", ""))
+        questionCode1 to AnswerEntity.from("some free text"),
+        questionCode2 to AnswerEntity.from("1975-01-20T00:00:00.000Z"),
+        questionCode3 to AnswerEntity.from("not mapped to oasys"),
+        childQuestionCode1 to AnswerEntity.from(listOf("child name 1", "name of child 2")),
+        childQuestionCode2 to AnswerEntity.from(listOf("child address 1", ""))
       )
       val assessmentEntity = assessmentEntity(answers)
       every {
@@ -431,8 +431,8 @@ class AssessmentUpdateServiceTest {
 
       val tableAnswers = UpdateAssessmentEpisodeDto(
         mapOf(
-          childQuestion1 to listOf("child name 2"),
-          childQuestion2 to listOf("child address 2")
+          childQuestionCode1 to listOf("child name 2"),
+          childQuestionCode2 to listOf("child address 2")
         )
       )
 
@@ -446,13 +446,13 @@ class AssessmentUpdateServiceTest {
 
       assertThat(episodeDto.answers).hasSize(5)
       Verify.multiAnswers(
-        episodeDto.answers[childQuestion1]!!,
+        episodeDto.answers[childQuestionCode1]!!,
         "child name 1",
         "child name 2"
       )
 
       Verify.multiAnswers(
-        episodeDto.answers[childQuestion2]!!,
+        episodeDto.answers[childQuestionCode2]!!,
         "child address 1",
         "child address 2"
       )
@@ -461,11 +461,11 @@ class AssessmentUpdateServiceTest {
     @Test
     fun `update middle row of table`() {
       val answers = mutableMapOf(
-        question1Uuid to AnswerEntity.from("some free text"),
-        question2Uuid to AnswerEntity.from("1975-01-20T00:00:00.000Z"),
-        question3Uuid to AnswerEntity.from("not mapped to oasys"),
-        childQuestion1 to AnswerEntity.from(listOf("child name 1", "name of child 2", "child name 3")),
-        childQuestion2 to AnswerEntity.from(listOf("child address 1", "address of child 2", "child address 3"))
+        questionCode1 to AnswerEntity.from("some free text"),
+        questionCode2 to AnswerEntity.from("1975-01-20T00:00:00.000Z"),
+        questionCode3 to AnswerEntity.from("not mapped to oasys"),
+        childQuestionCode1 to AnswerEntity.from(listOf("child name 1", "name of child 2", "child name 3")),
+        childQuestionCode2 to AnswerEntity.from(listOf("child address 1", "address of child 2", "child address 3"))
       )
       val assessmentEntity = assessmentEntity(answers)
       every {
@@ -477,8 +477,8 @@ class AssessmentUpdateServiceTest {
 
       val tableAnswers = UpdateAssessmentEpisodeDto(
         mapOf(
-          childQuestion1 to listOf("child name 2"),
-          childQuestion2 to listOf("child address 2")
+          childQuestionCode1 to listOf("child name 2"),
+          childQuestionCode2 to listOf("child address 2")
         )
       )
 
@@ -492,14 +492,14 @@ class AssessmentUpdateServiceTest {
 
       assertThat(episodeDto.answers).hasSize(5)
       Verify.multiAnswers(
-        episodeDto.answers[childQuestion1]!!,
+        episodeDto.answers[childQuestionCode1]!!,
         "child name 1",
         "child name 2",
         "child name 3"
       )
 
       Verify.multiAnswers(
-        episodeDto.answers[childQuestion2]!!,
+        episodeDto.answers[childQuestionCode2]!!,
         "child address 1",
         "child address 2",
         "child address 3"
@@ -509,11 +509,11 @@ class AssessmentUpdateServiceTest {
     @Test
     fun `delete first row of table`() {
       val answers = mutableMapOf(
-        question1Uuid to AnswerEntity.from("some free text"),
-        question2Uuid to AnswerEntity.from("1975-01-20T00:00:00.000Z"),
-        question3Uuid to AnswerEntity.from("not mapped to oasys"),
-        childQuestion1 to AnswerEntity.from(listOf("child name 1", "child name 2", "child name 3")),
-        childQuestion2 to AnswerEntity.from(listOf("child address 1", "child address 2", "child address 3"))
+        questionCode1 to AnswerEntity.from("some free text"),
+        questionCode2 to AnswerEntity.from("1975-01-20T00:00:00.000Z"),
+        questionCode3 to AnswerEntity.from("not mapped to oasys"),
+        childQuestionCode1 to AnswerEntity.from(listOf("child name 1", "child name 2", "child name 3")),
+        childQuestionCode2 to AnswerEntity.from(listOf("child address 1", "child address 2", "child address 3"))
       )
       val assessmentEntity = assessmentEntity(answers)
       every {
@@ -528,13 +528,13 @@ class AssessmentUpdateServiceTest {
 
       assertThat(episodeDto.answers).hasSize(5)
       Verify.multiAnswers(
-        episodeDto.answers[childQuestion1]!!,
+        episodeDto.answers[childQuestionCode1]!!,
         "child name 2",
         "child name 3"
       )
 
       Verify.multiAnswers(
-        episodeDto.answers[childQuestion2]!!,
+        episodeDto.answers[childQuestionCode2]!!,
         "child address 2",
         "child address 3"
       )
@@ -543,11 +543,11 @@ class AssessmentUpdateServiceTest {
     @Test
     fun `delete middle row of table`() {
       val answers = mutableMapOf(
-        question1Uuid to AnswerEntity.from("some free text"),
-        question2Uuid to AnswerEntity.from("1975-01-20T00:00:00.000Z"),
-        question3Uuid to AnswerEntity.from("not mapped to oasys"),
-        childQuestion1 to AnswerEntity.from(listOf("child name 1", "name of child 2", "child name 3")),
-        childQuestion2 to AnswerEntity.from(listOf("child address 1", "address of child 2", "child address 3"))
+        questionCode1 to AnswerEntity.from("some free text"),
+        questionCode2 to AnswerEntity.from("1975-01-20T00:00:00.000Z"),
+        questionCode3 to AnswerEntity.from("not mapped to oasys"),
+        childQuestionCode1 to AnswerEntity.from(listOf("child name 1", "name of child 2", "child name 3")),
+        childQuestionCode2 to AnswerEntity.from(listOf("child address 1", "address of child 2", "child address 3"))
       )
       val assessmentEntity = assessmentEntity(answers)
       every {
@@ -562,13 +562,13 @@ class AssessmentUpdateServiceTest {
 
       assertThat(episodeDto.answers).hasSize(5)
       Verify.multiAnswers(
-        episodeDto.answers[childQuestion1]!!,
+        episodeDto.answers[childQuestionCode1]!!,
         "child name 1",
         "child name 3"
       )
 
       Verify.multiAnswers(
-        episodeDto.answers[childQuestion2]!!,
+        episodeDto.answers[childQuestionCode2]!!,
         "child address 1",
         "child address 3"
       )
@@ -577,11 +577,11 @@ class AssessmentUpdateServiceTest {
     @Test
     fun `delete last row of table`() {
       val answers = mutableMapOf(
-        question1Uuid to AnswerEntity.from("some free text"),
-        question2Uuid to AnswerEntity.from("1975-01-20T00:00:00.000Z"),
-        question3Uuid to AnswerEntity.from("not mapped to oasys"),
-        childQuestion1 to AnswerEntity.from(listOf("child name 1", "child name 2", "child name 3")),
-        childQuestion2 to AnswerEntity.from(listOf("child address 1", "child address 2", "child address 3"))
+        questionCode1 to AnswerEntity.from("some free text"),
+        questionCode2 to AnswerEntity.from("1975-01-20T00:00:00.000Z"),
+        questionCode3 to AnswerEntity.from("not mapped to oasys"),
+        childQuestionCode1 to AnswerEntity.from(listOf("child name 1", "child name 2", "child name 3")),
+        childQuestionCode2 to AnswerEntity.from(listOf("child address 1", "child address 2", "child address 3"))
       )
 
       val assessmentEntity = assessmentEntity(answers)
@@ -597,13 +597,13 @@ class AssessmentUpdateServiceTest {
 
       assertThat(episodeDto.answers).hasSize(5)
       Verify.multiAnswers(
-        episodeDto.answers[childQuestion1]!!,
+        episodeDto.answers[childQuestionCode1]!!,
         "child name 1",
         "child name 2"
       )
 
       Verify.multiAnswers(
-        episodeDto.answers[childQuestion2]!!,
+        episodeDto.answers[childQuestionCode2]!!,
         "child address 1",
         "child address 2"
       )
@@ -612,11 +612,11 @@ class AssessmentUpdateServiceTest {
     @Test
     fun `delete only row of table`() {
       val answers = mutableMapOf(
-        question1Uuid to AnswerEntity.from("some free text"),
-        question2Uuid to AnswerEntity.from("1975-01-20T00:00:00.000Z"),
-        question3Uuid to AnswerEntity.from("not mapped to oasys"),
-        childQuestion1 to AnswerEntity.from(listOf("child name 1")),
-        childQuestion2 to AnswerEntity.from(listOf("child address 1"))
+        questionCode1 to AnswerEntity.from("some free text"),
+        questionCode2 to AnswerEntity.from("1975-01-20T00:00:00.000Z"),
+        questionCode3 to AnswerEntity.from("not mapped to oasys"),
+        childQuestionCode1 to AnswerEntity.from(listOf("child name 1")),
+        childQuestionCode2 to AnswerEntity.from(listOf("child address 1"))
       )
       val assessmentEntity = assessmentEntity(answers)
       every {
@@ -630,18 +630,18 @@ class AssessmentUpdateServiceTest {
         assessmentUpdateService.deleteEpisodeTableRow(assessmentEntity.episodes.first(), "children_at_risk", 0)
 
       assertThat(episodeDto.answers).hasSize(5)
-      Verify.emptyAnswer(episodeDto.answers[childQuestion1]!!)
-      Verify.emptyAnswer(episodeDto.answers[childQuestion2]!!)
+      Verify.emptyAnswer(episodeDto.answers[childQuestionCode1]!!)
+      Verify.emptyAnswer(episodeDto.answers[childQuestionCode2]!!)
     }
 
     @Test
     fun `fail on bad table name`() {
       val answers = mutableMapOf(
-        question1Uuid to AnswerEntity.from("some free text"),
-        question2Uuid to AnswerEntity.from("1975-01-20T00:00:00.000Z"),
-        question3Uuid to AnswerEntity.from("not mapped to oasys"),
-        childQuestion1 to AnswerEntity.from(listOf("child name 1", "name of child 2", "child name 3")),
-        childQuestion2 to AnswerEntity.from(listOf("child address 1", "address of child 2", "child address 3"))
+        questionCode1 to AnswerEntity.from("some free text"),
+        questionCode2 to AnswerEntity.from("1975-01-20T00:00:00.000Z"),
+        questionCode3 to AnswerEntity.from("not mapped to oasys"),
+        childQuestionCode1 to AnswerEntity.from(listOf("child name 1", "name of child 2", "child name 3")),
+        childQuestionCode2 to AnswerEntity.from(listOf("child address 1", "address of child 2", "child address 3"))
       )
       val assessmentEntity = assessmentEntity(answers)
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessmentEntity
@@ -695,7 +695,7 @@ class AssessmentUpdateServiceTest {
     }
   }
 
-  private fun assessmentEntity(answers: MutableMap<UUID, AnswerEntity>): AssessmentEntity {
+  private fun assessmentEntity(answers: MutableMap<String, AnswerEntity>): AssessmentEntity {
     return AssessmentEntity(
       assessmentId = assessmentId,
       episodes = mutableListOf(
@@ -712,12 +712,11 @@ class AssessmentUpdateServiceTest {
 
   private fun makeQuestion(
     questionSchemaId: Long,
-    questionSchemaUuid: UUID,
     questionCode: String
   ): QuestionSchemaEntity {
     return QuestionSchemaEntity(
       questionSchemaId = questionSchemaId,
-      questionSchemaUuid = questionSchemaUuid,
+      questionSchemaUuid = UUID.randomUUID(),
       questionCode = questionCode,
       answerType = "free text"
     )

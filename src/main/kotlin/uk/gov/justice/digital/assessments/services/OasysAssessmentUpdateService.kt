@@ -25,7 +25,7 @@ class OasysAssessmentUpdateService(
   @Transactional
   fun updateOASysAssessment(
     episode: AssessmentEpisodeEntity,
-    updatedEpisodeAnswers: Map<UUID, AnswersDto>
+    updatedEpisodeAnswers: Map<String, AnswersDto>
   ): AssessmentEpisodeUpdateErrors {
     val offenderPk = episode.assessment?.subject?.oasysOffenderPk
     if (episode.assessmentSchemaCode == null || episode.oasysSetPk == null || offenderPk == null) {

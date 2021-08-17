@@ -9,5 +9,7 @@ import java.util.UUID
 interface OASysMappingRepository : JpaRepository<OASysMappingEntity, String> {
   @Suppress("FunctionName")
   fun findAllByQuestionSchema_QuestionSchemaUuidIn(questionUuids: Collection<UUID>): Collection<OASysMappingEntity>?
+  @Suppress("FunctionName")
+  fun findAllByQuestionSchema_QuestionCodeIn(questionCodes: Collection<String>): Collection<OASysMappingEntity>?
   fun findAllBySectionCodeIn(sectionCodes: Collection<String>): Collection<OASysMappingEntity>
 }

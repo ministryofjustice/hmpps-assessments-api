@@ -5,10 +5,10 @@ import java.util.UUID
 
 class UpdateAssessmentEpisodeDto(
   @Schema(description = "Answers associated with this episode")
-  val answers: Map<UUID, Collection<String>> = emptyMap()
+  val answers: Map<String, Collection<String>> = emptyMap()
 ) {
 
-  fun asAnswersDtos(): Map<UUID, AnswersDto> {
+  fun asAnswersDtos(): Map<String, AnswersDto> {
     return answers.mapValues { asAnswersDto(it.value) }
   }
 

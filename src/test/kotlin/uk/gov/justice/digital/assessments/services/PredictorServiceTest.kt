@@ -47,58 +47,72 @@ class PredictorServiceTest {
   private val testQuestion1 = QuestionSchemaEntity(
     questionSchemaId = 1,
     questionSchemaUuid = UUID.randomUUID(),
+    questionCode= "question_one"
   )
   private val testQuestion2 = QuestionSchemaEntity(
     questionSchemaId = 2,
     questionSchemaUuid = UUID.randomUUID(),
+    questionCode= "question_two"
   )
   private val testQuestion3 = QuestionSchemaEntity(
     questionSchemaId = 3,
     questionSchemaUuid = UUID.randomUUID(),
+    questionCode= "question_three"
   )
   private val testQuestion4 = QuestionSchemaEntity(
     questionSchemaId = 4,
     questionSchemaUuid = UUID.randomUUID(),
+    questionCode= "question_four"
   )
   private val testQuestion5 = QuestionSchemaEntity(
     questionSchemaId = 5,
     questionSchemaUuid = UUID.randomUUID(),
+    questionCode= "question_five"
   )
   private val testQuestion6 = QuestionSchemaEntity(
     questionSchemaId = 6,
     questionSchemaUuid = UUID.randomUUID(),
+    questionCode= "question_six"
   )
   private val testQuestion7 = QuestionSchemaEntity(
     questionSchemaId = 7,
     questionSchemaUuid = UUID.randomUUID(),
+    questionCode= "question_seven"
   )
   private val testQuestion8 = QuestionSchemaEntity(
     questionSchemaId = 8,
     questionSchemaUuid = UUID.randomUUID(),
+    questionCode= "question_eight"
   )
   private val testQuestion9 = QuestionSchemaEntity(
     questionSchemaId = 9,
     questionSchemaUuid = UUID.randomUUID(),
+    questionCode= "question_nine"
   )
   private val testQuestion10 = QuestionSchemaEntity(
     questionSchemaId = 10,
     questionSchemaUuid = UUID.randomUUID(),
+    questionCode= "question_ten"
   )
   private val testQuestion11 = QuestionSchemaEntity(
     questionSchemaId = 11,
     questionSchemaUuid = UUID.randomUUID(),
+    questionCode= "question_eleven"
   )
   private val testQuestion12 = QuestionSchemaEntity(
     questionSchemaId = 12,
     questionSchemaUuid = UUID.randomUUID(),
+    questionCode= "question_twelve"
   )
   private val testQuestion13 = QuestionSchemaEntity(
     questionSchemaId = 13,
     questionSchemaUuid = UUID.randomUUID(),
+    questionCode= "question_thirtheen"
   )
   private val testQuestion14 = QuestionSchemaEntity(
     questionSchemaId = 14,
     questionSchemaUuid = UUID.randomUUID(),
+    questionCode= "question_fourteen"
   )
   private val testQuestion15 = QuestionSchemaEntity(
     questionSchemaId = 15,
@@ -442,46 +456,46 @@ class PredictorServiceTest {
   )
 
   private val answers = mutableMapOf(
-    testQuestion1.questionSchemaUuid to AnswerEntity(
+    testQuestion1.questionCode to AnswerEntity(
       listOf(Answer(items = listOf("2021-10-01")))
     ),
-    testQuestion2.questionSchemaUuid to AnswerEntity(
+    testQuestion2.questionCode to AnswerEntity(
       listOf(Answer(items = listOf("10")))
     ),
-    testQuestion3.questionSchemaUuid to AnswerEntity(
+    testQuestion3.questionCode to AnswerEntity(
       listOf(Answer(items = listOf("9")))
     ),
-    testQuestion4.questionSchemaUuid to AnswerEntity(
+    testQuestion4.questionCode to AnswerEntity(
       listOf(Answer(items = listOf("2021-11-01")))
     ),
-    testQuestion5.questionSchemaUuid to AnswerEntity(
+    testQuestion5.questionCode to AnswerEntity(
       listOf(Answer(items = listOf("YES")))
     ),
-    testQuestion6.questionSchemaUuid to AnswerEntity(
+    testQuestion6.questionCode to AnswerEntity(
       listOf(Answer(items = listOf("YES")))
     ),
-    testQuestion7.questionSchemaUuid to AnswerEntity(
+    testQuestion7.questionCode to AnswerEntity(
       listOf(Answer(items = listOf("YES")))
     ),
-    testQuestion8.questionSchemaUuid to AnswerEntity(
+    testQuestion8.questionCode to AnswerEntity(
       listOf(Answer(items = listOf("2021-09-01")))
     ),
-    testQuestion9.questionSchemaUuid to AnswerEntity(
+    testQuestion9.questionCode to AnswerEntity(
       listOf(Answer(items = listOf("2")))
     ),
-    testQuestion10.questionSchemaUuid to AnswerEntity(
+    testQuestion10.questionCode to AnswerEntity(
       listOf(Answer(items = listOf("4")))
     ),
-    testQuestion11.questionSchemaUuid to AnswerEntity(
+    testQuestion11.questionCode to AnswerEntity(
       listOf(Answer(items = listOf("10")))
     ),
-    testQuestion12.questionSchemaUuid to AnswerEntity(
+    testQuestion12.questionCode to AnswerEntity(
       listOf(Answer(items = listOf("9")))
     ),
-    testQuestion13.questionSchemaUuid to AnswerEntity(
+    testQuestion13.questionCode to AnswerEntity(
       listOf(Answer(items = listOf("2025-11-01")))
     ),
-    testQuestion14.questionSchemaUuid to AnswerEntity(
+    testQuestion14.questionCode to AnswerEntity(
       listOf(Answer(items = listOf("YES")))
     ),
     testQuestion15.questionSchemaUuid to AnswerEntity(

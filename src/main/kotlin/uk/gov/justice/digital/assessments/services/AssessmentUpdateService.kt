@@ -15,7 +15,7 @@ import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisod
 import java.util.UUID
 import javax.transaction.Transactional
 
-typealias TableAnswers = Map<UUID, Collection<Answer>>
+typealias TableAnswers = Map<String, Collection<Answer>>
 
 @Service
 class AssessmentUpdateService(
@@ -47,7 +47,7 @@ class AssessmentUpdateService(
 
   private fun updateEpisode(
     episode: AssessmentEpisodeEntity,
-    updatedEpisodeAnswers: Map<UUID, AnswersDto>
+    updatedEpisodeAnswers: Map<String, AnswersDto>
   ): AssessmentEpisodeDto {
     if (episode.isClosed()) throw UpdateClosedEpisodeException("Cannot update closed Episode ${episode.episodeUuid} for assessment ${episode.assessment?.assessmentUuid}")
 
@@ -64,7 +64,7 @@ class AssessmentUpdateService(
   }
 
   fun AssessmentEpisodeEntity.updateEpisodeAnswers(
-    updatedEpisodeAnswers: Map<UUID, AnswersDto>
+    updatedEpisodeAnswers: Map<String, AnswersDto>
   ) {
     for (updatedAnswer in updatedEpisodeAnswers) {
       val currentQuestionAnswer = this.answers?.get(updatedAnswer.key)
@@ -209,7 +209,7 @@ class AssessmentUpdateService(
   private fun modifyEpisodeTable(
     episode: AssessmentEpisodeEntity,
     tableName: String,
-    modifyFn: (TableAnswers) -> Map<UUID, AnswersDto>
+    modifyFn: (TableAnswers) -> Map<String, AnswersDto>
   ): AssessmentEpisodeDto {
     val tableQuestions = questionService.getAllGroupQuestionsByGroupCode(tableName)
     if (tableQuestions.isEmpty())
@@ -230,11 +230,11 @@ class AssessmentUpdateService(
     episode: AssessmentEpisodeEntity,
     tableQuestions: QuestionSchemaEntities
   ): TableAnswers {
-    val existingTable = mutableMapOf<UUID, Collection<Answer>>()
+    val existingTable = mutableMapOf<String, Collection<Answer>>()
 
-    for (questionUuid in tableQuestions.map { it.questionSchemaUuid }) {
-      val answer = episode.answers?.get(questionUuid) ?: AnswerEntity()
-      existingTable[questionUuid] = answer.answers
+    for (questionCode in tableQuestions.map { it.questionCode }) {
+      val answer = episode.answers?.get(questionCode) ?: AnswerEntity()
+      existingTable[questionCode] = answer.answers
     }
 
     return existingTable
@@ -242,14 +242,14 @@ class AssessmentUpdateService(
 
   private fun extendTableAnswers(
     existingTable: TableAnswers,
-    newTableRow: Map<UUID, AnswersDto>
-  ): Map<UUID, AnswersDto> {
-    val updatedTable = mutableMapOf<UUID, AnswersDto>()
+    newTableRow: Map<String, AnswersDto>
+  ): Map<String, AnswersDto> {
+    val updatedTable = mutableMapOf<String, AnswersDto>()
 
-    for ((id, answers) in existingTable) {
-      val newAnswer = newTableRow.get(id)?.toAnswers() ?: listOf(Answer(""))
+    for ((questionCode, answers) in existingTable) {
+      val newAnswer = newTableRow[questionCode]?.toAnswers() ?: listOf(Answer(""))
       val extendedAnswer = answers + newAnswer
-      updatedTable[id] = AnswersDto.from(extendedAnswer)
+      updatedTable[questionCode] = AnswersDto.from(extendedAnswer)
     }
 
     return updatedTable
@@ -258,16 +258,16 @@ class AssessmentUpdateService(
   private fun updateTableAnswers(
     existingTable: TableAnswers,
     index: Int,
-    updatedTableRow: Map<UUID, AnswersDto>
-  ): Map<UUID, AnswersDto> {
-    val updatedTable = mutableMapOf<UUID, AnswersDto>()
+    updatedTableRow: Map<String, AnswersDto>
+  ): Map<String, AnswersDto> {
+    val updatedTable = mutableMapOf<String, AnswersDto>()
 
-    for ((id, answers) in existingTable) {
-      val updatedAnswer = updatedTableRow.get(id)?.toAnswers() ?: listOf(Answer(""))
+    for ((question_code, answers) in existingTable) {
+      val updatedAnswer = updatedTableRow[question_code]?.toAnswers() ?: listOf(Answer(""))
       val before = answers.toList().subList(0, index)
       val after = answers.toList().subList(index + 1, answers.size)
       val extendedAnswer = listOf(before, updatedAnswer, after).flatten()
-      updatedTable[id] = AnswersDto.from(extendedAnswer)
+      updatedTable[question_code] = AnswersDto.from(extendedAnswer)
     }
 
     return updatedTable
@@ -276,14 +276,14 @@ class AssessmentUpdateService(
   private fun removeTableAnswers(
     existingTable: TableAnswers,
     index: Int
-  ): Map<UUID, AnswersDto> {
-    val updatedTable = mutableMapOf<UUID, AnswersDto>()
+  ): Map<String, AnswersDto> {
+    val updatedTable = mutableMapOf<String, AnswersDto>()
 
-    for ((id, answers) in existingTable) {
+    for ((question_code, answers) in existingTable) {
       val before = answers.toList().subList(0, index)
       val after = answers.toList().subList(index + 1, answers.size)
       val trimmedAnswer = listOf(before, after).flatten()
-      updatedTable[id] = AnswersDto.from(trimmedAnswer)
+      updatedTable[question_code] = AnswersDto.from(trimmedAnswer)
     }
 
     return updatedTable

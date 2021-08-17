@@ -52,9 +52,12 @@ class AssessmentServiceTest {
   private val episodeId2 = 2L
   private val episodeId3 = 3L
 
-  private val question1Uuid = UUID.randomUUID()
-  private val question2Uuid = UUID.randomUUID()
-  private val question3Uuid = UUID.randomUUID()
+  private val questionSchemaUuid1 = UUID.randomUUID()
+  private val questionSchemaUuid2 = UUID.randomUUID()
+  private val questionSchemaUuid3 = UUID.randomUUID()
+  private val questionCode1 = "Q1"
+  private val questionCode2 = "Q2"
+  private val questionCode3 = "question_code_3"
   private val answer1Uuid = UUID.randomUUID()
   private val answer2Uuid = UUID.randomUUID()
   private val answer3Uuid = UUID.randomUUID()
@@ -171,12 +174,12 @@ class AssessmentServiceTest {
         episodes = mutableListOf(
           AssessmentEpisodeEntity(
             episodeId = episodeId1,
-            answers = mutableMapOf(question1Uuid to AnswerEntity.from("YES")),
+            answers = mutableMapOf(questionCode1 to AnswerEntity.from("YES")),
             createdDate = LocalDateTime.now(),
           ),
           AssessmentEpisodeEntity(
             episodeId = episodeId2,
-            answers = mutableMapOf(question2Uuid to AnswerEntity.from("NO")),
+            answers = mutableMapOf(questionCode2 to AnswerEntity.from("NO")),
             createdDate = LocalDateTime.now(),
           )
         )
@@ -202,7 +205,7 @@ class AssessmentServiceTest {
             episodeId = episodeId1,
             endDate = LocalDateTime.of(2020, 10, 1, 9, 0, 0),
             answers = mutableMapOf(
-              question1Uuid to AnswerEntity.from("YES")
+              questionCode1 to AnswerEntity.from("YES")
             ),
             createdDate = LocalDateTime.now(),
           ),
@@ -210,7 +213,7 @@ class AssessmentServiceTest {
             episodeId = episodeId3,
             endDate = LocalDateTime.of(2020, 10, 2, 10, 0, 0),
             answers = mutableMapOf(
-              question2Uuid to AnswerEntity.from("MAYBE")
+              questionCode2 to AnswerEntity.from("MAYBE")
             ),
             createdDate = LocalDateTime.now(),
           ),
@@ -218,7 +221,7 @@ class AssessmentServiceTest {
             episodeId = episodeId2,
             endDate = LocalDateTime.of(2020, 10, 2, 9, 0, 0),
             answers = mutableMapOf(
-              question2Uuid to AnswerEntity.from("NO")
+              questionCode2 to AnswerEntity.from("NO")
             ),
             createdDate = LocalDateTime.now(),
           ),
@@ -241,7 +244,7 @@ class AssessmentServiceTest {
             episodeId = episodeId1,
             endDate = LocalDateTime.of(2020, 10, 1, 9, 0, 0),
             answers = mutableMapOf(
-              question1Uuid to AnswerEntity.from("YES")
+              questionCode1 to AnswerEntity.from("YES")
             ),
             createdDate = LocalDateTime.now(),
           ),
@@ -249,7 +252,7 @@ class AssessmentServiceTest {
             episodeId = episodeId3,
             endDate = null,
             answers = mutableMapOf(
-              question2Uuid to AnswerEntity.from("NO")
+              questionCode2 to AnswerEntity.from("NO")
             ),
             createdDate = LocalDateTime.now(),
           ),
@@ -257,7 +260,7 @@ class AssessmentServiceTest {
             episodeId = episodeId2,
             endDate = LocalDateTime.of(2020, 10, 2, 9, 0, 0),
             answers = mutableMapOf(
-              question2Uuid to AnswerEntity.from("MAYBE")
+              questionCode2 to AnswerEntity.from("MAYBE")
             ),
             createdDate = LocalDateTime.now(),
           ),
@@ -281,8 +284,8 @@ class AssessmentServiceTest {
           AssessmentEpisodeEntity(
             episodeId = episodeId1,
             answers = mutableMapOf(
-              question1Uuid to AnswerEntity.from("YES"),
-              question3Uuid to AnswerEntity.from("free text")
+              questionCode1 to AnswerEntity.from("YES"),
+              questionCode3 to AnswerEntity.from("free text")
             ),
             createdDate = LocalDateTime.now(),
           )
@@ -303,8 +306,9 @@ class AssessmentServiceTest {
         listOf(
           QuestionSchemaEntity(
             questionSchemaId = 2,
-            questionSchemaUuid = question2Uuid,
-            answerSchemaGroup = AnswerSchemaGroupEntity(1)
+            questionSchemaUuid = questionSchemaUuid2,
+            answerSchemaGroup = AnswerSchemaGroupEntity(1),
+            questionCode = questionCode2
           )
         )
       )
@@ -317,7 +321,7 @@ class AssessmentServiceTest {
           AssessmentEpisodeEntity(
             episodeId = episodeId1,
             answers = mutableMapOf(
-              question2Uuid to AnswerEntity.from("YES")
+              questionCode2 to AnswerEntity.from("YES")
             ),
             createdDate = LocalDateTime.now(),
           )
@@ -329,7 +333,7 @@ class AssessmentServiceTest {
         assessmentsService.getCurrentAssessmentCodedAnswers(assessmentUuid)
       }
         .isInstanceOf(IllegalStateException::class.java)
-        .hasMessage("Question Code not found for UUID $question2Uuid")
+        .hasMessage("Question Code not found for UUID $questionSchemaUuid2")
     }
 
     @Test
@@ -342,7 +346,7 @@ class AssessmentServiceTest {
           AssessmentEpisodeEntity(
             episodeId = episodeId1,
             answers = mutableMapOf(
-              question1Uuid to AnswerEntity.from("NO")
+              questionCode1 to AnswerEntity.from("NO")
             ),
             createdDate = LocalDateTime.now(),
           )
@@ -351,7 +355,7 @@ class AssessmentServiceTest {
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
       assertThatThrownBy { assessmentsService.getCurrentAssessmentCodedAnswers(assessmentUuid) }
         .isInstanceOf(IllegalStateException::class.java)
-        .hasMessage("Answer Code not found for question $question1Uuid answer value NO")
+        .hasMessage("Answer Code not found for question $questionSchemaUuid1 answer value NO")
     }
   }
 
@@ -372,17 +376,17 @@ class AssessmentServiceTest {
       listOf(
         QuestionSchemaEntity(
           questionSchemaId = 1,
-          questionSchemaUuid = question1Uuid,
-          questionCode = "Q1",
+          questionSchemaUuid = questionSchemaUuid1,
+          questionCode = questionCode1,
           answerSchemaGroup = group1
         ),
         QuestionSchemaEntity(
           questionSchemaId = 2,
-          questionSchemaUuid = question2Uuid,
-          questionCode = "Q2",
+          questionSchemaUuid = questionSchemaUuid2,
+          questionCode = questionCode2,
           answerSchemaGroup = group2
         ),
-        QuestionSchemaEntity(questionSchemaId = 3, questionSchemaUuid = question3Uuid)
+        QuestionSchemaEntity(questionSchemaId = 3, questionSchemaUuid = questionSchemaUuid3, questionCode = questionCode3)
       )
     )
   }

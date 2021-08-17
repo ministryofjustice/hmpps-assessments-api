@@ -179,8 +179,8 @@ class QuestionService(
       ?: throw EntityNotFoundException("Group not found: $uuid")
   }
 
-  fun getAllSectionQuestionsForQuestions(questions: List<UUID>): QuestionSchemaEntities {
-    val mappings = oasysMappingRepository.findAllByQuestionSchema_QuestionSchemaUuidIn(questions)
+  fun getAllSectionQuestionsForQuestions(questionCodes: List<String>): QuestionSchemaEntities {
+    val mappings = oasysMappingRepository.findAllByQuestionSchema_QuestionCodeIn(questionCodes)
     val sections = mappings?.map { it.sectionCode }?.distinct() ?: emptyList()
     return QuestionSchemaEntities(
       oasysMappingRepository.findAllBySectionCodeIn(sections)
@@ -192,10 +192,10 @@ class QuestionService(
 class QuestionSchemaEntities(
   questionsList: List<QuestionSchemaEntity>
 ) : List<QuestionSchemaEntity> by questionsList {
-  private val questions = questionsList.associateBy { it.questionSchemaUuid }
+  private val questions = questionsList.associateBy { it.questionCode }
   private val oasysMapping = mapByOasysCoords(questionsList)
 
-  operator fun get(questionSchemaUuid: UUID) = questions[questionSchemaUuid]
+  operator fun get(questionCode: String) = questions[questionCode]
 
   fun withExternalSource(): List<QuestionSchemaEntity> {
     return questions.values.filter { it.externalSource != null }

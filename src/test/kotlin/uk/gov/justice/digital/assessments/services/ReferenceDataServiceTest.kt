@@ -39,7 +39,7 @@ private val assessment = AssessmentEntity(episodes = mutableListOf(episode))
 private val referenceDataElement = RefElementDto("code", "short description", "long description")
 private val referenceData = mapOf("some_field" to listOf(referenceDataElement))
 
-private val questionSchema = QuestionSchemaEntity(questionSchemaId = 1234)
+private val questionSchema = QuestionSchemaEntity(questionSchemaId = 1234,  questionCode = "question_code_1")
 private val questionMapping = OASysMappingEntity(
   mappingId = 1234,
   questionCode = "some_field",
@@ -47,7 +47,7 @@ private val questionMapping = OASysMappingEntity(
   questionSchema = questionSchema
 )
 
-private val parentQuestionSchema = QuestionSchemaEntity(questionSchemaId = 5678)
+private val parentQuestionSchema = QuestionSchemaEntity(questionSchemaId = 5678, questionCode = "question_code_2")
 private val parentQuestionMapping = OASysMappingEntity(
   mappingId = 5678,
   questionCode = "parent_field",

@@ -14,8 +14,8 @@ class QuestionSchemaDtoTest {
 
     val referenceDataTargetMappingEntity = ReferenceDataTargetMappingEntity(
       id = 2L,
-      questionSchema = QuestionSchemaEntity(1L),
-      parentQuestionSchema = QuestionSchemaEntity(2L),
+      questionSchema = QuestionSchemaEntity(questionSchemaId = 1L, questionCode = "question_code_one"),
+      parentQuestionSchema = QuestionSchemaEntity(questionSchemaId = 2L, questionCode = "question_code_two"),
       isRequired = false
     )
 
@@ -44,6 +44,8 @@ class QuestionSchemaDtoTest {
     assertThat(questionSchemaDto.questionText).isEqualTo(questionSchemaEntity.questionText)
     assertThat(questionSchemaDto.questionHelpText).isEqualTo(questionSchemaEntity.questionHelpText)
     assertThat(questionSchemaDto.referenceDataCategory).isEqualTo(questionSchemaEntity.referenceDataCategory)
-    assertThat(questionSchemaDto.referenceDataTargets.first().questionSchemaUuid).isEqualTo(referenceDataTargetMappingEntity.parentQuestionSchema.questionSchemaUuid)
+    assertThat(questionSchemaDto.referenceDataTargets.first().questionSchemaUuid).isEqualTo(
+      referenceDataTargetMappingEntity.parentQuestionSchema.questionSchemaUuid
+    )
   }
 }
