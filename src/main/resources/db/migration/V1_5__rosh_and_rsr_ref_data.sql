@@ -1,7 +1,6 @@
 INSERT INTO assessment_schema (assessment_schema_id, assessment_schema_uuid, assessment_schema_code, oasys_assessment_type, oasys_create_assessment_at, assessment_name)
 VALUES
-(0, '51c2e87e-a540-4027-8f5a-e6c80511332f', 'ROSH', 'SHORT_FORM_PSR', 'START', 'Pre-Sentence Assessment')
-ON CONFLICT DO NOTHING;
+(0, '51c2e87e-a540-4027-8f5a-e6c80511332f', 'ROSH', 'SHORT_FORM_PSR', 'START', 'Pre-Sentence Assessment');
 
 INSERT INTO answer_schema_group (answer_schema_group_uuid, answer_schema_group_code, group_start, group_end)
 VALUES ('887f4528-06d1-4247-8bc3-5e679222baa6', 'yes-no', '2020-11-30 14:50:00', null),
@@ -14,8 +13,7 @@ VALUES ('887f4528-06d1-4247-8bc3-5e679222baa6', 'yes-no', '2020-11-30 14:50:00',
 ('a2a6d156-4a70-41cf-989c-2857b4b2e625', 'yes-no', '2020-11-30 14:50:00', null),
 ('5eb0380b-f928-481a-a8c4-255821dc69b2', 'yes-no-dontknow', '2020-11-30 14:50:00', null),
 ('16a910e5-e06f-4b56-937a-65ec8bf492ce', 'yes-no-n', '2020-11-30 14:50:00', null),
-('f8a83fb6-b49f-48c8-9044-2d234bcedb62', 'low-medium-high-veryhigh', '2020-11-30 14:50:00', null)
-ON CONFLICT DO NOTHING;
+('f8a83fb6-b49f-48c8-9044-2d234bcedb62', 'low-medium-high-veryhigh', '2020-11-30 14:50:00', null);
 
 
 INSERT INTO answer_schema (answer_schema_uuid, answer_schema_code, answer_schema_group_uuid, answer_start, answer_end, value, text)
@@ -63,8 +61,7 @@ VALUES ('0d4682ab-7b24-4527-b0b3-b4d520e7c2d8', 'yes', '887f4528-06d1-4247-8bc3-
 ('a151763e-4046-4d30-85ef-919cee3c08a4', 'low', 'f8a83fb6-b49f-48c8-9044-2d234bcedb62', '2020-11-30 14:50:00', null, 'L', 'Low'),
 ('65b63f4b-c0c4-406d-be2d-49c0ed925459', 'medium', 'f8a83fb6-b49f-48c8-9044-2d234bcedb62', '2020-11-30 14:50:00', null, 'M', 'Medium'),
 ('8df7b711-ddd9-4c57-9f62-53e953633043', 'high', 'f8a83fb6-b49f-48c8-9044-2d234bcedb62', '2020-11-30 14:50:00', null, 'H', 'High'),
-('3909a928-74d4-4661-9756-8c1e4b5fc343', 'very_high', 'f8a83fb6-b49f-48c8-9044-2d234bcedb62', '2020-11-30 14:50:00', null, 'V', 'Very High')
-ON CONFLICT DO NOTHING;
+('3909a928-74d4-4661-9756-8c1e4b5fc343', 'very_high', 'f8a83fb6-b49f-48c8-9044-2d234bcedb62', '2020-11-30 14:50:00', null, 'V', 'Very High');
 
 
 INSERT INTO grouping (group_uuid, group_code, heading, subheading, help_text, group_start, group_end)
@@ -98,8 +95,7 @@ VALUES ('65a3924c-4130-4140-b7f4-cc39a52603bb', 'pre_sentence_assessment', 'Pre-
 ('121f7277-c0fc-4cdf-a02c-049f73993cbd', 'risk_summary', 'Risk summary', null, null, '2020-11-30 14:50:00', null),
 ('aa8645f9-2774-4962-b73e-e1773d88291d', 'imminence_circumstances_and_other_factors', 'Imminence, circumstances and other factors', null, null, '2020-11-30 14:50:00', null),
 ('a33c4703-fa0a-4826-99a5-9de753305841', 'rosh_scores', 'ROSH scores', null, null, '2020-11-30 14:50:00', null),
-('1d69e176-8459-4d30-8410-006828ff8c72', 'risk_management_issues', 'Risk management issues', null, null, '2020-11-30 14:50:00', null)
-ON CONFLICT DO NOTHING;
+('1d69e176-8459-4d30-8410-006828ff8c72', 'risk_management_issues', 'Risk management issues', null, null, '2020-11-30 14:50:00', null);
 
 
 INSERT INTO question_schema (question_schema_uuid, question_code, question_start, question_end, answer_type, answer_schema_group_uuid, question_text, question_help_text, external_source, reference_data_category)
@@ -330,8 +326,7 @@ If the individual presents a risk to identifiable children, explain any relevant
 ('551df80b-5368-4551-8fda-85b1c7a5f01f', 'divider_rsr_needs_2', '2020-11-30 14:50:00', null, 'presentation: divider', null, null, null, null, null),
 ('86da001c-a703-4ef2-9c0d-e5c90336055c', 'ui_rsr_needs_5', '2020-11-30 14:50:00', null, 'presentation: heading_large', null, 'Previous offences', null, null, null),
 ('47a94bc5-e71e-4327-9942-ad37d5163dee', 'heading_convicted_2', '2020-11-30 14:50:00', null, 'presentation: body', null, 'Has the individual previously been convicted of any of these offences?', null, null, null),
-('6e144a8e-e614-413a-8f73-a3a426f114a0', 'divider_rsr_needs_2', '2020-11-30 14:50:00', null, 'presentation: divider', null, null, null, null, null)
-ON CONFLICT DO NOTHING;
+('6e144a8e-e614-413a-8f73-a3a426f114a0', 'divider_rsr_needs_3', '2020-11-30 14:50:00', null, 'presentation: divider', null, null, null, null, null);
 
 
 INSERT INTO question_group (question_group_uuid, content_uuid, content_type, group_uuid, display_order, mandatory, validation, read_only)
@@ -379,7 +374,7 @@ VALUES ('e224345c-0ac8-4a52-b170-97ef35e71967', '5d77fc6b-0001-4955-ad54-7f417be
 ('935a599f-5fba-42de-867c-fda6d9779fba', '61feebd9-afe5-43ef-94a5-27c400453eba', 'group', '65a3924c-4130-4140-b7f4-cc39a52603bb', 3, true, null, false),
 ('ff988890-24f1-4ebe-a43f-160d1a4934b3', '5606da47-8f27-49a0-a943-0f2696f66186', 'group', '61feebd9-afe5-43ef-94a5-27c400453eba', 1, true, null, false),
 ('ad18303e-4978-43a0-839c-49150344903b', '6e144a8e-e614-413a-8f73-a3a426f114a0', 'question', '5606da47-8f27-49a0-a943-0f2696f66186', 1, true, null, false),
-('ff988890-24f1-4ebe-a43f-160d1a4934b3', 'eb7b7324-f2a6-4902-91ef-709a8fab1f82', 'group', '61feebd9-afe5-43ef-94a5-27c400453eba', 1, true, null, false),
+('ff988890-24f1-4ebe-a43f-160d1a4934b4', 'eb7b7324-f2a6-4902-91ef-709a8fab1f82', 'group', '61feebd9-afe5-43ef-94a5-27c400453eba', 1, true, null, false),
 ('4d20b4f5-5394-43cc-af41-4e801b9f9059', '5ca86a06-5472-4861-bd6a-a011780db49a', 'question', 'eb7b7324-f2a6-4902-91ef-709a8fab1f82', 6, true, null, false),
 ('58a60d30-4545-40f1-8980-e82d1def9e5f', '63099aab-f852-4dd9-9179-16ee2218d0c6', 'question', 'eb7b7324-f2a6-4902-91ef-709a8fab1f82', 7, true, null, false),
 ('3df95896-ae2a-4575-a561-11c2c8c1d31d', '8e83a0ad-2fcf-4afb-a0af-09d1e23d3c33', 'question', 'eb7b7324-f2a6-4902-91ef-709a8fab1f82', 8, true, '{"mandatory":{"errorMessage":"Enter the total number of sanctions","errorSummary":"Enter the total number of sanctions"}}', false),
@@ -604,8 +599,7 @@ VALUES ('e224345c-0ac8-4a52-b170-97ef35e71967', '5d77fc6b-0001-4955-ad54-7f417be
 ('e0a2f314-74b8-4de0-bd3c-5903967deba5', '106e8722-04b3-4f55-b661-1eb250e1d5f6', 'question', '1d69e176-8459-4d30-8410-006828ff8c72', 16, true, '{"mandatory":{"errorMessage":"Select yes or no","errorSummary":"Select yes or no (subject to Public Protection Manual restrictions or communications?)"}}', false),
 ('c0ff0bdd-9e54-490c-a9ca-25878507c7fc', '0a7bc16c-5213-4a1a-8cd2-f29162eab17d', 'question', '1d69e176-8459-4d30-8410-006828ff8c72', 17, true, '{"mandatory":{"errorMessage":"Select yes or no","errorSummary":"Select yes or no (conditionally discharged under Mental Health Act?)"}}', false),
 ('f2f2eced-32da-4a8b-b9db-e7154f69068a', 'b06ab9df-16b9-4dd2-8a91-1f45aeaa4f2c', 'question', '1d69e176-8459-4d30-8410-006828ff8c72', 18, true, '{"mandatory":{"errorMessage":"Select yes or no","errorSummary":"Select yes or no (on life licence?)"}}', false),
-('1f8d4be6-bfb8-47aa-9d3e-ad3ef6833d57', '9a8d6d8e-ac11-4ff5-b4e6-9553fd462851', 'question', '1d69e176-8459-4d30-8410-006828ff8c72', 19, true, '{"mandatory":{"errorMessage":"Select yes or no","errorSummary":"Select yes or no (extended sentence?)"}}', false)
-ON CONFLICT DO NOTHING;
+('1f8d4be6-bfb8-47aa-9d3e-ad3ef6833d57', '9a8d6d8e-ac11-4ff5-b4e6-9553fd462851', 'question', '1d69e176-8459-4d30-8410-006828ff8c72', 19, true, '{"mandatory":{"errorMessage":"Select yes or no","errorSummary":"Select yes or no (extended sentence?)"}}', false);
 
 
 INSERT INTO question_dependency (subject_question_uuid, trigger_question_uuid, trigger_answer_value, dependency_start, display_inline)
@@ -673,8 +667,7 @@ VALUES
 ('ad6cdfee-6ed6-43a0-9dae-d108b62e4ae6', 'e84fc24d-798b-4e5b-9142-46b9bebc6bdb', 'Y', '2020-11-30 14:50:00', true),
 ('ebc8e739-627f-48de-b864-3ba001fe09d9', '1ff5bd0f-c500-47d5-8f13-0d29d46e7c56', 'Y', '2020-11-30 14:50:00', true),
 ('00c3001c-a5fe-434a-9d83-629cc097ea07', 'c5f95ef6-70f9-460a-86cb-93d404489c0a', 'Y', '2020-11-30 14:50:00', true),
-('86ee742c-4bfb-4e29-afca-04ad35a3abda', '3662710d-ce3e-4e45-bce3-caa4155872aa', 'YES', '2020-11-30 14:50:00', true)
-ON CONFLICT DO NOTHING;
+('86ee742c-4bfb-4e29-afca-04ad35a3abda', '3662710d-ce3e-4e45-bce3-caa4155872aa', 'YES', '2020-11-30 14:50:00', true);
 
 
 INSERT INTO oasys_question_mapping (mapping_uuid, question_schema_uuid, ref_section_code, logical_page, ref_question_code, fixed_field)
@@ -836,10 +829,8 @@ VALUES ('9905a862-94a0-434a-b5ae-ff7b9a77c7c4', '33923c1e-e3ba-4c02-ba42-3b8d828
 ('38cc53ef-0f25-479a-b43e-536d552193db', '106e8722-04b3-4f55-b661-1eb250e1d5f6', 'RMP', null, 'RM14', false),
 ('7b5abf35-77b8-4c69-8f35-98d3da15f7f2', '0a7bc16c-5213-4a1a-8cd2-f29162eab17d', 'RMP', null, 'RM15', false),
 ('3605f7e3-f236-44fb-acd8-3d893f5256cc', 'b06ab9df-16b9-4dd2-8a91-1f45aeaa4f2c', 'RMP', null, 'RM16', false),
-('6aea7808-dccc-4ed9-971f-f9fc4c01602d', '9a8d6d8e-ac11-4ff5-b4e6-9553fd462851', 'RMP', null, 'RM17', false)
-ON CONFLICT DO NOTHING;
+('6aea7808-dccc-4ed9-971f-f9fc4c01602d', '9a8d6d8e-ac11-4ff5-b4e6-9553fd462851', 'RMP', null, 'RM17', false);
 
 
 INSERT INTO assessment_schema_groups(assessment_schema_group_id, assessment_schema_uuid, group_uuid)
-VALUES (0, '51c2e87e-a540-4027-8f5a-e6c80511332f', '65a3924c-4130-4140-b7f4-cc39a52603bb')
-ON CONFLICT DO NOTHING;
+VALUES (0, '51c2e87e-a540-4027-8f5a-e6c80511332f', '65a3924c-4130-4140-b7f4-cc39a52603bb');

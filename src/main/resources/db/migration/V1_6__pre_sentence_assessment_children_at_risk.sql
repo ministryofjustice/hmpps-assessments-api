@@ -1,7 +1,6 @@
 INSERT INTO answer_schema_group (answer_schema_group_uuid, answer_schema_group_code, group_start, group_end)
 VALUES ('8ad6d0ab-bb5e-4ead-8596-f670aa3aa55b', 'male-female-notspecified-notknown', '2020-11-30 14:50:00', null),
-('7f0dfd25-4ea5-4ade-ad51-4cb1ac1966d9', 'neglect-physical-sexual-emotional', '2020-11-30 14:50:00', null)
-ON CONFLICT DO NOTHING;
+('7f0dfd25-4ea5-4ade-ad51-4cb1ac1966d9', 'neglect-physical-sexual-emotional', '2020-11-30 14:50:00', null);
 
 
 INSERT INTO answer_schema (answer_schema_uuid, answer_schema_code, answer_schema_group_uuid, answer_start, answer_end, value, text)
@@ -12,14 +11,12 @@ VALUES ('7b82e106-0f05-4c3a-9e59-3f5a319d3f88', 'male', '8ad6d0ab-bb5e-4ead-8596
 ('d6348467-bfab-4e8f-9162-ad1adbc94b06', 'neglect', '7f0dfd25-4ea5-4ade-ad51-4cb1ac1966d9', '2020-11-30 14:50:00', null, 'neglect', 'Neglect'),
 ('4a790b90-aa60-4554-9c4e-bf83ea0f7895', 'physical', '7f0dfd25-4ea5-4ade-ad51-4cb1ac1966d9', '2020-11-30 14:50:00', null, 'physical', 'Physical'),
 ('8de6868a-76be-45a0-becc-263b2a4e088f', 'sexual', '7f0dfd25-4ea5-4ade-ad51-4cb1ac1966d9', '2020-11-30 14:50:00', null, 'sexual', 'Sexual'),
-('191b4513-be7e-4b13-9e56-543c328029d9', 'emotional', '7f0dfd25-4ea5-4ade-ad51-4cb1ac1966d9', '2020-11-30 14:50:00', null, 'emotional', 'Emotional')
-ON CONFLICT DO NOTHING;
+('191b4513-be7e-4b13-9e56-543c328029d9', 'emotional', '7f0dfd25-4ea5-4ade-ad51-4cb1ac1966d9', '2020-11-30 14:50:00', null, 'emotional', 'Emotional');
 
 
 INSERT INTO grouping (group_uuid, group_code, heading, subheading, help_text, group_start, group_end)
 VALUES ('3c7eb3ac-53a7-4f61-a81f-38e8068b372c', 'psr_children_at_risk', 'psr_children_at_risk', null, null, '2020-11-30 14:50:00', null),
-('729f0c2a-9bc1-4cbc-843d-c91bf69fe76c', 'children_at_risk_of_serious_harm', 'Children at Risk of Serious Harm', null, null, '2020-11-30 14:50:00', null)
-ON CONFLICT DO NOTHING;
+('729f0c2a-9bc1-4cbc-843d-c91bf69fe76c', 'children_at_risk_of_serious_harm', 'Children at Risk of Serious Harm', null, null, '2020-11-30 14:50:00', null);
 
 
 INSERT INTO question_schema (question_schema_uuid, question_code, question_start, question_end, answer_type, answer_schema_group_uuid, question_text, question_help_text, external_source, reference_data_category)
@@ -39,8 +36,7 @@ VALUES ('c993ef11-7b97-4dd6-a811-455ce9d675b9', 'uiS5.1', '2020-11-30 14:50:00',
 ('f822b029-5907-4789-93e0-e52aac2acfac', 'uiS5.7', '2020-11-30 14:50:00', null, 'presentation: divider', null, null, null, null, null),
 ('1be1c40e-07d4-4842-8447-6cd2bfffa3bd', 'uiS5.8', '2020-11-30 14:50:00', null, 'presentation: heading_large', null, 'Child protection details', null, null, null),
 ('32be7f8b-5973-48c4-9640-0fbd292f6ff8', '210.1', '2020-11-30 14:50:00', null, 'checkbox', '7f0dfd25-4ea5-4ade-ad51-4cb1ac1966d9', 'Current category of child protection registration', null, null, null),
-('070232a5-c01e-452f-a554-2898f0674a45', '211.1', '2020-11-30 14:50:00', null, 'checkbox', '7f0dfd25-4ea5-4ade-ad51-4cb1ac1966d9', 'Previous category of child protection registration', null, null, null)
-ON CONFLICT DO NOTHING;
+('070232a5-c01e-452f-a554-2898f0674a45', '211.1', '2020-11-30 14:50:00', null, 'checkbox', '7f0dfd25-4ea5-4ade-ad51-4cb1ac1966d9', 'Previous category of child protection registration', null, null, null);
 
 
 INSERT INTO question_group (question_group_uuid, content_uuid, content_type, group_uuid, display_order, mandatory, validation, read_only)
@@ -61,8 +57,7 @@ VALUES ('c298bc71-7308-499f-9f16-b2aa59b85d16', '729f0c2a-9bc1-4cbc-843d-c91bf69
 ('ef51a35a-c01b-48d2-85fc-2a7389411cec', 'f822b029-5907-4789-93e0-e52aac2acfac', 'question', '729f0c2a-9bc1-4cbc-843d-c91bf69fe76c', 14, true, null, true),
 ('1fe42053-11c5-4715-a0f4-4e850e3539aa', '1be1c40e-07d4-4842-8447-6cd2bfffa3bd', 'question', '729f0c2a-9bc1-4cbc-843d-c91bf69fe76c', 15, true, null, true),
 ('73f65cc9-2286-4358-a04a-5902a88d8a98', '32be7f8b-5973-48c4-9640-0fbd292f6ff8', 'question', '729f0c2a-9bc1-4cbc-843d-c91bf69fe76c', 16, true, '{"mandatory":{"errorMessage":"Select a currentcategory of child protection registration","errorSummary":"Select a current category of child protection registration"}}', false),
-('2c054816-9cae-4ad7-814e-70494cc63a69', '070232a5-c01e-452f-a554-2898f0674a45', 'question', '729f0c2a-9bc1-4cbc-843d-c91bf69fe76c', 17, true, '{"mandatory":{"errorMessage":"Select a previous category of child protection registration","errorSummary":"Select a previous category of child protection registration"}}', false)
-ON CONFLICT DO NOTHING;
+('2c054816-9cae-4ad7-814e-70494cc63a69', '070232a5-c01e-452f-a554-2898f0674a45', 'question', '729f0c2a-9bc1-4cbc-843d-c91bf69fe76c', 17, true, '{"mandatory":{"errorMessage":"Select a previous category of child protection registration","errorSummary":"Select a previous category of child protection registration"}}', false);
 
 
 
