@@ -301,42 +301,6 @@ class AssessmentServiceTest {
     }
 
     @Test
-    fun `throw exception when question code lookup fails`() {
-      every { questionService.getAllQuestions() } returns QuestionSchemaEntities(
-        listOf(
-          QuestionSchemaEntity(
-            questionSchemaId = 2,
-            questionSchemaUuid = questionSchemaUuid2,
-            answerSchemaGroup = AnswerSchemaGroupEntity(1),
-            questionCode = questionCode2
-          )
-        )
-      )
-
-      every { questionService.getAllAnswers() } returns listOf()
-
-      val assessment = AssessmentEntity(
-        assessmentId = assessmentId,
-        episodes = mutableListOf(
-          AssessmentEpisodeEntity(
-            episodeId = episodeId1,
-            answers = mutableMapOf(
-              questionCode2 to AnswerEntity.from("YES")
-            ),
-            createdDate = LocalDateTime.now(),
-          )
-        )
-      )
-
-      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
-      assertThatThrownBy {
-        assessmentsService.getCurrentAssessmentCodedAnswers(assessmentUuid)
-      }
-        .isInstanceOf(IllegalStateException::class.java)
-        .hasMessage("Question Code not found for UUID $questionSchemaUuid2")
-    }
-
-    @Test
     fun `throw exception when answer code lookup fails`() {
       setupQuestionCodes()
 
