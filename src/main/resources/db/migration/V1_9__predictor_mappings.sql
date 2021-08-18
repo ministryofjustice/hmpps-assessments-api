@@ -1,8 +1,6 @@
 INSERT INTO assessment_predictors (assessment_schema_code, predictor_type) VALUES
-('RSR', 'RSR')
-ON CONFLICT DO NOTHING;
+('RSR', 'RSR');
 
--- TODO: add actual mappings
 INSERT INTO predictor_field_mapping (predictor_mapping_uuid, question_schema_uuid, predictor_type, predictor_field_name, required) VALUES
 ('c828f801-667f-48cf-8371-8c19aac28d95', '5ca86a06-5472-4861-bd6a-a011780db49a', 'RSR', 'date_first_sanction', true),
 ('d4e41828-9f40-4a1c-9a3d-121abe140989', '8e83a0ad-2fcf-4afb-a0af-09d1e23d3c33', 'RSR', 'total_sanctions', true),
