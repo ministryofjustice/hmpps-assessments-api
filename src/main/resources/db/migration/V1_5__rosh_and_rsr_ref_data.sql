@@ -99,7 +99,7 @@ VALUES ('65a3924c-4130-4140-b7f4-cc39a52603bb', 'pre_sentence_assessment', 'Pre-
 
 
 INSERT INTO question_schema (question_schema_uuid, question_code, question_start, question_end, answer_type, answer_schema_group_uuid, question_text, question_help_text, external_source, reference_data_category)
-VALUES ('1ea17930-d467-44c0-9e72-517747618acb', 'ui3.1', '2020-11-30 14:50:00', null, 'presentation: heading', null, 'Personal details', null, null, null),
+VALUES ('1ea17930-d467-44c0-9e72-517747618acb', 'heading_personal_details', '2020-11-30 14:50:00', null, 'presentation: heading', null, 'Personal details', null, null, null),
 ('33923c1e-e3ba-4c02-ba42-3b8d828f9e18', 'family_name', '2020-11-30 14:50:00', null, 'freetext', null, 'Family name or names', null, 'COURT:name.surname', null),
 ('81cbd5f5-f8ec-430e-b18a-c48fdf660216', 'family_name_aliases', '2020-11-30 14:50:00', null, 'freetext', null, 'Family name (aliases)', null, null, null),
 ('2d6f7515-dd03-4cfc-b365-6739e1251498', 'first_name', '2020-11-30 14:50:00', null, 'freetext', null, 'First name or names', null, 'COURT:name.forename1', null),
