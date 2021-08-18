@@ -51,7 +51,7 @@ class AssessmentUpdateServiceTest {
   private val questionCode2 = "question_code_2"
   private val questionCode3 = "question_code_3"
   private val childQuestionCode1 = "child_question_code_1"
-  private val childQuestionCode2 = "child_question_code_1"
+  private val childQuestionCode2 = "child_question_code_2"
 
   @BeforeEach
   fun setup() {
