@@ -55,7 +55,6 @@ class AssessRisksAndNeedsApiMockServer : WireMockServer(9007) {
               "   \"robbery\" : true," +
               "   \"offencesWithWeapon\" : true" +
               "}," +
-              "\"isVictim\" : true," +
               "\"isPerpetrator\" : true" +
               "}" +
               "}",

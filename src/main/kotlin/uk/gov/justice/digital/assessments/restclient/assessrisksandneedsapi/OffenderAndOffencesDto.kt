@@ -31,7 +31,6 @@ data class DynamicScoringOffences(
   val employment: String?,
   val currentRelationshipWithPartner: String?,
   val evidenceOfDomesticViolence: Boolean?,
-  val isVictim: Boolean? = null,
   val isPerpetrator: Boolean?,
   val alcoholUseIssues: String?,
   val bingeDrinkingIssues: String?,
