@@ -611,7 +611,7 @@ class PredictorServiceTest {
         totalSexualOffencesInvolvingAnAdult = 2,
         totalSexualOffencesInvolvingAChild = 4,
         totalSexualOffencesInvolvingChildImages = 10,
-        totalNonSexualOffences = 9,
+        totalNonContactSexualOffences = 9,
         earliestReleaseDate = "2025-11-01",
         hasCompletedInterview = true,
         dynamicScoringOffences = DynamicScoringOffences(

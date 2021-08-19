@@ -20,7 +20,7 @@ data class OffenderAndOffencesDto(
   val totalSexualOffencesInvolvingAnAdult: Int?,
   val totalSexualOffencesInvolvingAChild: Int?,
   val totalSexualOffencesInvolvingChildImages: Int?,
-  val totalNonSexualOffences: Int?,
+  val totalNonContactSexualOffences: Int?,
   val earliestReleaseDate: String,
   val hasCompletedInterview: Boolean,
   val dynamicScoringOffences: DynamicScoringOffences? = null
