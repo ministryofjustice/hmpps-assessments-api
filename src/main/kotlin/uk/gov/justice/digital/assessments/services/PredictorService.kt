@@ -95,7 +95,7 @@ class PredictorService(
         answers,
         "total_sexual_offences_child_image"
       )?.toInt(),
-      totalNonSexualOffences = getNonRequiredAnswer(answers, "total_non_sexual_offences")?.toInt(),
+      totalNonContactSexualOffences = getNonRequiredAnswer(answers, "total_non_sexual_offences")?.toInt(),
       earliestReleaseDate = getRequiredAnswer(answers, "earliest_release_date"),
       hasCompletedInterview = hasCompletedInterview,
       dynamicScoringOffences = getDynamicScoringOffences(hasCompletedInterview, answers)

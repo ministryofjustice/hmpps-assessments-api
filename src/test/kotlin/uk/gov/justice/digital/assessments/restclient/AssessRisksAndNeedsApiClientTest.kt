@@ -60,7 +60,7 @@ class AssessRisksAndNeedsApiClientTest : IntegrationTest() {
       totalSexualOffencesInvolvingAnAdult = 5,
       totalSexualOffencesInvolvingAChild = 3,
       totalSexualOffencesInvolvingChildImages = 2,
-      totalNonSexualOffences = 2,
+      totalNonContactSexualOffences = 2,
       earliestReleaseDate = "2021-11-01",
       hasCompletedInterview = true,
       dynamicScoringOffences = DynamicScoringOffences(
