@@ -22,7 +22,6 @@ import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.UpdateA
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.UpdateAssessmentAnswersResponseDto
 import uk.gov.justice.digital.assessments.utils.offenderStubResource.OffenderStubDto
 import uk.gov.justice.digital.assessments.utils.RequestData
-import uk.gov.justice.digital.assessments.utils.offenderStubResource.OffenderStubDto
 
 @Component
 class AssessmentUpdateRestClient {
