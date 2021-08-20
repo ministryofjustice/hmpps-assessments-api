@@ -27,6 +27,8 @@ import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiEntityN
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiForbiddenException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiInvalidRequestException
 import uk.gov.justice.digital.assessments.utils.RequestData
+import uk.gov.justice.digital.assessments.utils.offenderStubResource.OffenderStubDto
+import javax.persistence.EntityNotFoundException
 
 @Component
 class AssessmentApiRestClient {
@@ -211,5 +213,24 @@ class AssessmentApiRestClient {
       }
       else -> handleError(clientResponse, method, url, ExternalService.ASSESSMENTS_API)
     }
+  }
+
+  fun getOffenderStubs(): List<OffenderStubDto> {
+    val url = "/offender/stub"
+    val offenderStubs = webClient
+      .get(url)
+      .retrieve()
+      .onStatus(HttpStatus::is5xxServerError) {
+        handle5xxError(
+          "Failed to retrieve OASys offender stubs",
+          HttpMethod.GET,
+          url,
+          ExternalService.ASSESSMENTS_API
+        )
+      }
+      .bodyToMono(object : ParameterizedTypeReference<List<OffenderStubDto>>() {})
+      .block()
+      .also { log.info("Retrieved offender stubs") }
+    return offenderStubs ?: throw EntityNotFoundException("Failed to retrieve OASys offender stubs")
   }
 }
