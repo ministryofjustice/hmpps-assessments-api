@@ -239,6 +239,18 @@ class AssessmentApiMockServer : WireMockServer(9004) {
     )
   }
 
+  fun stubOffenderStubs() {
+    stubFor(
+      WireMock.get(WireMock.urlEqualTo("/offender/stub"))
+        .willReturn(
+          WireMock.aResponse()
+            .withStatus(200)
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withBody(offenderStubs)
+        )
+    )
+  }
+
   companion object {
 
     val assessmentJson =
@@ -319,5 +331,46 @@ class AssessmentApiMockServer : WireMockServer(9004) {
             ]
         }
       """.trimIndent()
+
+    val offenderStubs = """
+    [
+    {
+        "offenderPk": 8001,
+        "crn": "D001022",
+        "familyName": "John",
+        "forename1": "David",
+        "laoIndicator": "N",
+        "areaCode": "WWS",
+        "createDate": "2021-06-16T12:58:23",
+        "createUser": "STUARTWHITLAM",
+        "updatedDate": "2021-06-16T12:58:23",
+        "updatedUser": "STUARTWHITLAM"
+    },
+    {
+        "offenderPk": 3001,
+        "crn": "D001040",
+        "familyName": "Whitlam",
+        "forename1": "Stuart",
+        "areaCode": "WWS",
+        "createDate": "2021-04-26T10:43:37",
+        "createUser": "STUARTWHITLAM",
+        "updatedDate": "2021-04-26T14:05:11",
+        "updatedUser": "STUARTWHITLAM"
+    },
+    {
+        "offenderPk": 9001,
+        "crn": "X320741",
+        "familyName": "Smith",
+        "forename1": "John",
+        "laoIndicator": "N",
+        "areaCode": "WWS",
+        "createDate": "2021-06-30T13:10:27",
+        "createUser": "STUARTWHITLAM",
+        "updatedDate": "2021-06-30T13:10:27",
+        "updatedUser": "STUARTWHITLAM"
+    }
+   ]
+      
+    """.trimIndent()
   }
 }

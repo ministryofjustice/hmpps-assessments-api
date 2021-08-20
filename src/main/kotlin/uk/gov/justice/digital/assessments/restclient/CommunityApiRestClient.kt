@@ -9,6 +9,9 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityConvictionDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
+import uk.gov.justice.digital.assessments.utils.offenderStubResource.OffendersPage
+import uk.gov.justice.digital.assessments.utils.offenderStubResource.PrimaryId
+import javax.persistence.EntityNotFoundException
 
 @Component
 class CommunityApiRestClient {
@@ -68,6 +71,19 @@ class CommunityApiRestClient {
       }
       .bodyToMono(CommunityConvictionDto::class.java)
       .block()
+  }
+
+  fun getPrimaryIds(page: Int): List<PrimaryId>? {
+    val pageSize = 100
+    val path = "/secure/offenders/primaryIdentifiers?includeActiveOnly=true&page=$page&size=$pageSize"
+    val offendersPage = webClient
+      .get(path)
+      .retrieve()
+      .bodyToMono(OffendersPage::class.java)
+      .block()
+
+    log.info("Retrieved ${offendersPage?.content?.size} offender stubs")
+    return offendersPage?.content ?: throw EntityNotFoundException("Failed to retrieve CRNs from Community API")
   }
 
   companion object {

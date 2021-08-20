@@ -1,0 +1,442 @@
+{
+  "id": "b73f439b-cb50-4024-90ff-0159c42f18fc",
+  "request": {
+    "method": "GET",
+    "urlPathPattern": "/secure/offenders/primaryIdentifiers?includeActiveOnly=true&page=5"
+  },
+  "response": {
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "status": 200,
+    "jsonBody": {
+      "content": [
+        {
+          "offenderId": 2500000501,
+          "crn": "D001022"
+        },
+        {
+          "offenderId": 2500000519,
+          "crn": "D001040"
+        },
+        {
+          "offenderId": 2500000536,
+          "crn": "D001057"
+        },
+        {
+          "offenderId": 2500000537,
+          "crn": "D001058"
+        },
+        {
+          "offenderId": 2500000539,
+          "crn": "D001060"
+        },
+        {
+          "offenderId": 2500000541,
+          "crn": "D001062"
+        },
+        {
+          "offenderId": 2500000543,
+          "crn": "D001064"
+        },
+        {
+          "offenderId": 2500000544,
+          "crn": "D001065"
+        },
+        {
+          "offenderId": 2500000563,
+          "crn": "D001084"
+        },
+        {
+          "offenderId": 2500000565,
+          "crn": "D001086"
+        },
+        {
+          "offenderId": 2500000566,
+          "crn": "D001087"
+        },
+        {
+          "offenderId": 2500000568,
+          "crn": "D001089"
+        },
+        {
+          "offenderId": 2500000570,
+          "crn": "D001091"
+        },
+        {
+          "offenderId": 2500000571,
+          "crn": "D001092"
+        },
+        {
+          "offenderId": 2500000573,
+          "crn": "D001094"
+        },
+        {
+          "offenderId": 2500000574,
+          "crn": "D001095"
+        },
+        {
+          "offenderId": 2500000577,
+          "crn": "D001098"
+        },
+        {
+          "offenderId": 2500000578,
+          "crn": "D001099"
+        },
+        {
+          "offenderId": 2500000580,
+          "crn": "D001101"
+        },
+        {
+          "offenderId": 2500000583,
+          "crn": "D001104"
+        },
+        {
+          "offenderId": 2500000584,
+          "crn": "D001105"
+        },
+        {
+          "offenderId": 2500000585,
+          "crn": "D001106"
+        },
+        {
+          "offenderId": 2500000586,
+          "crn": "D001107"
+        },
+        {
+          "offenderId": 2500000587,
+          "crn": "D001108"
+        },
+        {
+          "offenderId": 2500000588,
+          "crn": "D001109"
+        },
+        {
+          "offenderId": 2500000589,
+          "crn": "D001110"
+        },
+        {
+          "offenderId": 2500000590,
+          "crn": "D001111"
+        },
+        {
+          "offenderId": 2500000591,
+          "crn": "D001112"
+        },
+        {
+          "offenderId": 2500000592,
+          "crn": "D001113"
+        },
+        {
+          "offenderId": 2500000593,
+          "crn": "D001114"
+        },
+        {
+          "offenderId": 2500000594,
+          "crn": "D001115"
+        },
+        {
+          "offenderId": 2500000595,
+          "crn": "D001116"
+        },
+        {
+          "offenderId": 2500000596,
+          "crn": "D001117"
+        },
+        {
+          "offenderId": 2500000597,
+          "crn": "D001118"
+        },
+        {
+          "offenderId": 2500000598,
+          "crn": "D001119"
+        },
+        {
+          "offenderId": 2500000599,
+          "crn": "D001120"
+        },
+        {
+          "offenderId": 2500000600,
+          "crn": "D001121"
+        },
+        {
+          "offenderId": 2500000601,
+          "crn": "D001122"
+        },
+        {
+          "offenderId": 2500000602,
+          "crn": "D001123"
+        },
+        {
+          "offenderId": 2500000603,
+          "crn": "D001124"
+        },
+        {
+          "offenderId": 2500000604,
+          "crn": "D001125"
+        },
+        {
+          "offenderId": 2500000605,
+          "crn": "D001126"
+        },
+        {
+          "offenderId": 2500000606,
+          "crn": "D001127"
+        },
+        {
+          "offenderId": 2500000607,
+          "crn": "D001128"
+        },
+        {
+          "offenderId": 2500000608,
+          "crn": "D001129"
+        },
+        {
+          "offenderId": 2500000609,
+          "crn": "D001130"
+        },
+        {
+          "offenderId": 2500000610,
+          "crn": "D001131"
+        },
+        {
+          "offenderId": 2500000611,
+          "crn": "D001132"
+        },
+        {
+          "offenderId": 2500000612,
+          "crn": "D001133"
+        },
+        {
+          "offenderId": 2500000613,
+          "crn": "D001134"
+        },
+        {
+          "offenderId": 2500000614,
+          "crn": "D001135"
+        },
+        {
+          "offenderId": 2500000615,
+          "crn": "D001136"
+        },
+        {
+          "offenderId": 2500000616,
+          "crn": "D001137"
+        },
+        {
+          "offenderId": 2500000617,
+          "crn": "D001138"
+        },
+        {
+          "offenderId": 2500000618,
+          "crn": "D001139"
+        },
+        {
+          "offenderId": 2500000619,
+          "crn": "D001140"
+        },
+        {
+          "offenderId": 2500000620,
+          "crn": "D001141"
+        },
+        {
+          "offenderId": 2500000621,
+          "crn": "D001142"
+        },
+        {
+          "offenderId": 2500000622,
+          "crn": "D001143"
+        },
+        {
+          "offenderId": 2500000623,
+          "crn": "D001144"
+        },
+        {
+          "offenderId": 2500000624,
+          "crn": "D001145"
+        },
+        {
+          "offenderId": 2500000625,
+          "crn": "D001146"
+        },
+        {
+          "offenderId": 2500000626,
+          "crn": "D001147"
+        },
+        {
+          "offenderId": 2500000627,
+          "crn": "D001148"
+        },
+        {
+          "offenderId": 2500000628,
+          "crn": "D001149"
+        },
+        {
+          "offenderId": 2500000629,
+          "crn": "D001150"
+        },
+        {
+          "offenderId": 2500000630,
+          "crn": "D001151"
+        },
+        {
+          "offenderId": 2500000631,
+          "crn": "D001152"
+        },
+        {
+          "offenderId": 2500000632,
+          "crn": "D001153"
+        },
+        {
+          "offenderId": 2500000633,
+          "crn": "D001154"
+        },
+        {
+          "offenderId": 2500000634,
+          "crn": "D001155"
+        },
+        {
+          "offenderId": 2500000635,
+          "crn": "D001156"
+        },
+        {
+          "offenderId": 2500000636,
+          "crn": "D001157"
+        },
+        {
+          "offenderId": 2500000637,
+          "crn": "D001158"
+        },
+        {
+          "offenderId": 2500000638,
+          "crn": "D001159"
+        },
+        {
+          "offenderId": 2500000639,
+          "crn": "D001160"
+        },
+        {
+          "offenderId": 2500000640,
+          "crn": "D001161"
+        },
+        {
+          "offenderId": 2500000641,
+          "crn": "D001162"
+        },
+        {
+          "offenderId": 2500000642,
+          "crn": "D001163"
+        },
+        {
+          "offenderId": 2500000643,
+          "crn": "D001164"
+        },
+        {
+          "offenderId": 2500000644,
+          "crn": "D001165"
+        },
+        {
+          "offenderId": 2500000645,
+          "crn": "D001166"
+        },
+        {
+          "offenderId": 2500000646,
+          "crn": "D001167"
+        },
+        {
+          "offenderId": 2500000647,
+          "crn": "D001168"
+        },
+        {
+          "offenderId": 2500000648,
+          "crn": "D001169"
+        },
+        {
+          "offenderId": 2500000649,
+          "crn": "D001170"
+        },
+        {
+          "offenderId": 2500000650,
+          "crn": "D001171"
+        },
+        {
+          "offenderId": 2500000651,
+          "crn": "D001172"
+        },
+        {
+          "offenderId": 2500000652,
+          "crn": "D001173"
+        },
+        {
+          "offenderId": 2500000653,
+          "crn": "D001174"
+        },
+        {
+          "offenderId": 2500000654,
+          "crn": "D001175"
+        },
+        {
+          "offenderId": 2500000655,
+          "crn": "D001176"
+        },
+        {
+          "offenderId": 2500000656,
+          "crn": "D001177"
+        },
+        {
+          "offenderId": 2500000657,
+          "crn": "D001178"
+        },
+        {
+          "offenderId": 2500000658,
+          "crn": "D001179"
+        },
+        {
+          "offenderId": 2500000659,
+          "crn": "D001180"
+        },
+        {
+          "offenderId": 2500000660,
+          "crn": "D001181"
+        },
+        {
+          "offenderId": 2500000661,
+          "crn": "D001182"
+        },
+        {
+          "offenderId": 2500000662,
+          "crn": "D001183"
+        },
+        {
+          "offenderId": 2500000663,
+          "crn": "D001184"
+        }
+      ],
+      "pageable": {
+        "sort": {
+          "sorted": true,
+          "unsorted": false,
+          "empty": false
+        },
+        "offset": 0,
+        "pageSize": 100,
+        "pageNumber": 0,
+        "paged": true,
+        "unpaged": false
+      },
+      "last": false,
+      "totalPages": 109,
+      "totalElements": 10893,
+      "size": 100,
+      "number": 0,
+      "sort": {
+        "sorted": true,
+        "unsorted": false,
+        "empty": false
+      },
+      "first": true,
+      "numberOfElements": 100,
+      "empty": false
+    }
+  }
+}

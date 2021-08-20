@@ -96,6 +96,17 @@ class CommunityApiMockServer : WireMockServer(9096) {
     )
   }
 
+  fun stubGetPrimaryIds() {
+    stubFor(
+      WireMock.get(WireMock.urlEqualTo("/secure/offenders/primaryIdentifiers?includeActiveOnly=true&page=0&size=100"))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withBody(primaryIdsJson)
+        )
+    )
+  }
+
   internal fun mapToJson(dto: Any): String {
     return objectMapper.writeValueAsString(dto)
   }
@@ -157,4 +168,48 @@ class CommunityApiMockServer : WireMockServer(9096) {
       convictionDate = LocalDate.of(2020, 2, 1)
     )
   }
+
+  private val primaryIdsJson = """
+    {
+      "content": [
+        {
+          "offenderId": 2500000501,
+          "crn": "D001022"
+        },
+        {
+          "offenderId": 2500000519,
+          "crn": "D001040"
+        },
+        {
+          "offenderId": 2500000536,
+          "crn": "DX12340A"
+        }
+      ],
+      "pageable": {
+        "sort": {
+          "sorted": true,
+          "unsorted": false,
+          "empty": false
+        },
+        "offset": 0,
+        "pageSize": 10,
+        "pageNumber": 0,
+        "unpaged": false,
+        "paged": true
+      },
+      "last": false,
+      "totalPages": 1090,
+      "totalElements": 10893,
+      "size": 10,
+      "number": 0,
+      "sort": {
+        "sorted": true,
+        "unsorted": false,
+        "empty": false
+      },
+      "first": true,
+      "numberOfElements": 10,
+      "empty": false
+    }
+  """.trimIndent()
 }

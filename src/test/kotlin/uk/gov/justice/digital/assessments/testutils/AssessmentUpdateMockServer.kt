@@ -221,6 +221,17 @@ class AssessmentUpdateMockServer : WireMockServer(9003) {
     )
   }
 
+  fun stubOffenderStub() {
+    stubFor(
+      WireMock.post(WireMock.urlEqualTo("/offender/stub"))
+        .withRequestBody(equalToJson("{ \"crn\": \"DX12340A\", \"pnc\": \"A/1234560BA\", \"familyName\": \"Smith\", \"forename1\": \"John\", \"areaCode\": \"WWS\" }", true, true))
+        .willReturn(
+          WireMock.aResponse()
+            .withStatus(200)
+        )
+    )
+  }
+
   companion object {
     val createOffenderJson =
       """{ "oasysOffenderId": "1" }""".trimIndent()
