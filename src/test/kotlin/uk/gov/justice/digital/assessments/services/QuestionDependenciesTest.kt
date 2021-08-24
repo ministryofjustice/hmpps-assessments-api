@@ -20,7 +20,7 @@ class QuestionDependenciesTest(
   private val questionDependencyService: QuestionDependencyService
 ) : IntegrationTest() {
   val subjectUuid: UUID = UUID.fromString("11111111-1111-1111-1111-111111111113")
-  val subjectQuestionCode: String = "RSR_05"
+  val subjectQuestionCode: String = "RSR_06"
 
   val triggerUuid: UUID = UUID.fromString("11111111-1111-1111-1111-111111111112")
   lateinit var dependencies: QuestionDependencies
