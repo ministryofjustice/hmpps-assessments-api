@@ -7,9 +7,8 @@ data class RiskPredictorsDto(
   val calculatedAt: String,
   val type: PredictorType,
   val scoreType: ScoreType?,
-  val rsrScore: Score,
-  val ospcScore: Score,
-  val ospiScore: Score
+  val scores: Map<PredictorSubType, Score>,
+  val errors: List<String> = emptyList()
 )
 
 data class Score(
@@ -34,6 +33,17 @@ enum class ScoreType(val type: String) {
   companion object {
     fun findByType(type: String): ScoreType? {
       return values().firstOrNull { value -> value.type == type }
+    }
+  }
+}
+
+enum class PredictorSubType {
+  RSR, OSPC, OSPI;
+
+  companion object {
+    fun fromString(enumValue: String?): PredictorSubType {
+      return values().firstOrNull { it.name == enumValue }
+        ?: throw IllegalArgumentException("Unknown PredictorSubType $enumValue")
     }
   }
 }

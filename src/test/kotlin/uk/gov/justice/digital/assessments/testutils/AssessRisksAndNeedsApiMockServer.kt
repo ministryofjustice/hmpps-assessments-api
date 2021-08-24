@@ -79,9 +79,11 @@ class AssessRisksAndNeedsApiMockServer : WireMockServer(9007) {
         "calculatedAt": "2021-08-09 14:46:48", 
         "type": "RSR",
         "scoreType": "STATIC",
-        "rsrScore": {"level": "HIGH", "score": 11.34, "isValid": true},
-        "ospcScore": {"level": "NOT_APPLICABLE", "score": 0, "isValid" : false},
-        "ospiScore": {"level": "NOT_APPLICABLE", "score": 0, "isValid" : false}
+        "scores": {
+          "RSR": {"level": "HIGH", "score": 11.34, "isValid": true},
+          "OSPC":{"level": "NOT_APPLICABLE", "score": 0, "isValid" : false},
+          "OSPI":{"level": "NOT_APPLICABLE", "score": 0, "isValid" : false}
+          }
         }
     """.trimIndent()
 }
