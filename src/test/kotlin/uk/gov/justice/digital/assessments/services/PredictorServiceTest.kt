@@ -687,7 +687,7 @@ class PredictorServiceTest {
           )
         ),
         entry(
-          "OSP/C",
+          "OSPC",
           uk.gov.justice.digital.assessments.api.Score(
             "NOT_APPLICABLE",
             BigDecimal("0"),
@@ -696,7 +696,7 @@ class PredictorServiceTest {
           )
         ),
         entry(
-          "OSP/I",
+          "OSPI",
           uk.gov.justice.digital.assessments.api.Score(
             "NOT_APPLICABLE",
             BigDecimal("0"),
