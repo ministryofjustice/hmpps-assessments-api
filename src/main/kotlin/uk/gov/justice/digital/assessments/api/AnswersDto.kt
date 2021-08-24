@@ -24,7 +24,7 @@ data class AnswersDto(
   }
 
   companion object {
-    fun from(answers: Map<UUID, AnswerEntity>?): Map<UUID, AnswersDto>? {
+    fun from(answers: Map<String, AnswerEntity>?): Map<String, AnswersDto>? {
       return answers?.mapValues {
         from(it.value)
       }

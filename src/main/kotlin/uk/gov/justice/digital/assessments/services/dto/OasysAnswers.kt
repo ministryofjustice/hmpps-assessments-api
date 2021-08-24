@@ -62,31 +62,31 @@ data class OasysAnswers(
 
     private fun buildAllTableAnswers(
       tables: Set<String>,
-      answers: Map<UUID, AnswerEntity>,
+      answers: Map<String, AnswerEntity>,
       mappingProvider: MappingProvider
-    ): Pair<Set<UUID>, OasysAnswers> {
-      val allTableQuestionIds = mutableSetOf<UUID>()
+    ): Pair<Set<String>, OasysAnswers> {
+      val allTableQuestionCodes = mutableSetOf<String>()
       val allTableAnswers = OasysAnswers()
       tables.forEach { table ->
         val tableQuestions = mappingProvider.getTableQuestions(table)
 
         val (tableQuestionIds, tableAnswers) = buildTableAnswers(tableQuestions, answers)
 
-        allTableQuestionIds.addAll(tableQuestionIds)
+        allTableQuestionCodes.addAll(tableQuestionIds)
         allTableAnswers.addAll(tableAnswers)
       }
-      return Pair(allTableQuestionIds, allTableAnswers)
+      return Pair(allTableQuestionCodes, allTableAnswers)
     }
 
     private fun buildTableAnswers(
       tableQuestions: QuestionSchemaEntities,
-      answers: Map<UUID, AnswerEntity>
-    ): Pair<List<UUID>, OasysAnswers> {
+      answers: Map<String, AnswerEntity>
+    ): Pair<List<String>, OasysAnswers> {
       // gather tables answers
-      val questionUuids = tableQuestions.map { it.questionSchemaUuid }
-      val tableAnswers = answers.filter { questionUuids.contains(it.key) }
+      val questionCodes = tableQuestions.map { it.questionCode }
+      val tableAnswers = answers.filter { questionCodes.contains(it.key) }
 
-      if (tableAnswers.isEmpty()) return Pair(questionUuids, OasysAnswers())
+      if (tableAnswers.isEmpty()) return Pair(questionCodes, OasysAnswers())
 
       // consistency check
       val tableLength = tableAnswers.values.first().answers.size
@@ -99,19 +99,19 @@ data class OasysAnswers(
 
       // build OasysAnswers
       return Pair(
-        questionUuids,
+        questionCodes,
         buildOasysAnswers(tableQuestions, tableAnswers, ::mapOasysTableAnswers)
       )
     }
 
     private fun buildOasysAnswers(
       questions: QuestionSchemaEntities,
-      answers: Map<UUID, AnswerEntity>,
+      answers: Map<String, AnswerEntity>,
       builder: (OASysMappingEntity, Collection<Answer>, String?) -> List<OasysAnswer>
     ): OasysAnswers {
       val oasysAnswers = OasysAnswers()
-      answers.forEach { uuid, answerEntity ->
-        val question = questions[uuid]
+      answers.forEach { (questionCode, answerEntity) ->
+        val question = questions[questionCode]
         // TODO: If we want to handle multiple mappings per question we will need to add assessment type to the mapping
         question?.oasysMappings?.firstOrNull()?.let { oasysMapping ->
           oasysAnswers.addAll(

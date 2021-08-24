@@ -11,7 +11,7 @@ class UpdateAssessmentEpisodeDtoTest {
     val testAnswers = """
      {
         "answers": {
-          "00000000-0000-0000-0000-000000000000": [
+          "question_code": [
             "FOO",
             "BAR"
           ]
@@ -21,7 +21,7 @@ class UpdateAssessmentEpisodeDtoTest {
 
     val deserialized = ObjectMapper().readValue(testAnswers, UpdateAssessmentEpisodeDto::class.java)
     val transformed = deserialized.asAnswersDtos()
-    val answersDto: AnswersDto? = transformed[UUID.fromString("00000000-0000-0000-0000-000000000000")]
+    val answersDto: AnswersDto? = transformed["question_code"]
     with(answersDto?.answers!!) {
       assertThat(size).isEqualTo(1)
       assertThat(first().items).isEqualTo(listOf("FOO", "BAR"))
@@ -33,14 +33,14 @@ class UpdateAssessmentEpisodeDtoTest {
     val testAnswers = """
      {
         "answers": {
-          "00000000-0000-0000-0000-000000000000": []
+          "question_code": []
         }
     }
     """.trimIndent()
 
     val deserialized = ObjectMapper().readValue(testAnswers, UpdateAssessmentEpisodeDto::class.java)
     val transformed = deserialized.asAnswersDtos()
-    val answersDto: AnswersDto? = transformed[UUID.fromString("00000000-0000-0000-0000-000000000000")]
+    val answersDto: AnswersDto? = transformed["question_code"]
     with(answersDto?.answers!!) {
       assertThat(size).isEqualTo(1)
       assertThat(first().items).isEqualTo(emptyList<AnswerDto>())
@@ -52,7 +52,7 @@ class UpdateAssessmentEpisodeDtoTest {
     val testAnswers = """
      {
         "answers": {
-          "00000000-0000-0000-0000-000000000000": [
+          "question_code": [
             ""
           ]
         }
@@ -61,7 +61,7 @@ class UpdateAssessmentEpisodeDtoTest {
 
     val deserialized = ObjectMapper().readValue(testAnswers, UpdateAssessmentEpisodeDto::class.java)
     val transformed = deserialized.asAnswersDtos()
-    val answersDto: AnswersDto? = transformed[UUID.fromString("00000000-0000-0000-0000-000000000000")]
+    val answersDto: AnswersDto? = transformed["question_code"]
     with(answersDto?.answers!!) {
       assertThat(size).isEqualTo(1)
       assertThat(first().items).isEqualTo(emptyList<AnswerDto>())

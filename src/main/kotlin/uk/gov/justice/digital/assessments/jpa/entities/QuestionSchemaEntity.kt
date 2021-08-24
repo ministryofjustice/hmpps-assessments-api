@@ -27,7 +27,7 @@ class QuestionSchemaEntity(
   val questionSchemaUuid: UUID = UUID.randomUUID(),
 
   @Column(name = "question_code")
-  val questionCode: String? = null,
+  val questionCode: String,
 
   @Column(name = "external_source")
   val externalSource: String? = null,

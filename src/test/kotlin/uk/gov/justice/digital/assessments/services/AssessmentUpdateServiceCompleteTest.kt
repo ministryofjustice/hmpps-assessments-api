@@ -73,7 +73,7 @@ class AssessmentUpdateServiceCompleteTest {
     every {
       oasysAssessmentUpdateService.completeOASysAssessment(assessmentEpisode, 9999)
     } returns AssessmentEpisodeUpdateErrors(
-      answerErrors = mutableMapOf(UUID.randomUUID() to mutableListOf("error"))
+      answerErrors = mutableMapOf("question_code" to mutableListOf("error"))
     )
     every { predictorService.getPredictorResults(AssessmentSchemaCode.ROSH, assessmentEpisode) } returns emptyList()
 

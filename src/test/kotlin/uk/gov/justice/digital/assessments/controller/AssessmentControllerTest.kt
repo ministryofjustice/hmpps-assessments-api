@@ -88,9 +88,9 @@ class AssessmentControllerTest : IntegrationTest() {
   inner class UpdatingEpisode {
     @Test
     fun `updates episode answers`() {
-      val newQuestionUUID = UUID.randomUUID()
+      val newQuestionCode = "question_code"
       val updateEpisodeDto = UpdateAssessmentEpisodeDto(
-        mapOf(newQuestionUUID to listOf("new free text"))
+        mapOf(newQuestionCode to listOf("new free text"))
       )
       val episode = webTestClient.post().uri("/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259")
         .bodyValue(updateEpisodeDto)
@@ -102,43 +102,43 @@ class AssessmentControllerTest : IntegrationTest() {
         .responseBody
 
       assertThat(episode).isNotNull
-      assertThat(episode?.answers).containsKey(newQuestionUUID)
+      assertThat(episode?.answers).containsKey(newQuestionCode)
 
-      Verify.singleAnswer(episode?.answers?.get(newQuestionUUID)!!, "new free text")
+      Verify.singleAnswer(episode?.answers?.get(newQuestionCode)!!, "new free text")
     }
 
     @Test
     fun `update episode answers from JSON`() {
-      val newQuestionUUID = UUID.randomUUID()
+      val newQuestionCode = "new_q_code"
       val answerText = "one day I'll fly away"
-      val jsonString = "{\"answers\":{\"${newQuestionUUID}\":[\"${answerText}\"]}}"
+      val jsonString = "{\"answers\":{\"${newQuestionCode}\":[\"${answerText}\"]}}"
 
-      updateEpisodeFromJson(newQuestionUUID, answerText, jsonString)
+      updateEpisodeFromJson(newQuestionCode, answerText, jsonString)
     }
 
     @Test
     fun `update episode answers from JSON - single answer, not array`() {
-      val newQuestionUUID = UUID.randomUUID()
+      val questionCode = "q_code"
       val answerText = "one day I'll fly away"
-      val jsonString = "{\"answers\":{\"${newQuestionUUID}\":\"${answerText}\"}}"
+      val jsonString = "{\"answers\":{\"${questionCode}\":\"${answerText}\"}}"
 
-      updateEpisodeFromJson(newQuestionUUID, answerText, jsonString)
+      updateEpisodeFromJson(questionCode, answerText, jsonString)
     }
 
     @Test
     fun `add episode table row from JSON`() {
-      val childQuestion = UUID.fromString("23c3e984-54c7-480f-b06c-7d000e2fb87c")
+      val childQuestionCode = "question_code_for_test"
       val answerText = "child answer"
-      val jsonString = "{\"answers\":{\"${childQuestion}\":\"${answerText}\"}}"
+      val jsonString = "{\"answers\":{\"${childQuestionCode}\":\"${answerText}\"}}"
 
-      val episode = addTableRowFromJson(childQuestion, jsonString)
+      val episode = addTableRowFromJson(childQuestionCode, jsonString)
 
-      Verify.singleAnswer(episode.answers.get(childQuestion)!!, answerText)
+      Verify.singleAnswer(episode.answers.get(childQuestionCode)!!, answerText)
     }
 
     @Test
     fun `add episode table row from JSON, single value array`() {
-      val childQuestion = UUID.fromString("23c3e984-54c7-480f-b06c-7d000e2fb87c")
+      val childQuestion = "question_code_for_test"
       val answerText = "child answer"
       val jsonString = "{\"answers\":{\"${childQuestion}\":[\"${answerText}\"]}}"
 
@@ -152,7 +152,7 @@ class AssessmentControllerTest : IntegrationTest() {
 
     @Test
     fun `add episode table row with multivalue from JSON`() {
-      val childQuestion = UUID.fromString("23c3e984-54c7-480f-b06c-7d000e2fb87c")
+      val childQuestion = "question_code_for_test"
       val firstAnswer = "answer1"
       val secondAnswer = "answer2"
       val jsonString = "{\"answers\":{\"${childQuestion}\":[\"${firstAnswer}\",\"${secondAnswer}\"]}}"
@@ -170,7 +170,7 @@ class AssessmentControllerTest : IntegrationTest() {
 
     @Test
     fun `add several table rows from JSON`() {
-      val childQuestion = UUID.fromString("23c3e984-54c7-480f-b06c-7d000e2fb87c")
+      val childQuestion = "question_code_for_test"
       val firstAnswer = "row1-answer1"
       val secondAnswer = "row1-answer2"
       val row1 = "{\"answers\":{\"${childQuestion}\":[\"${firstAnswer}\",\"${secondAnswer}\"]}}"
@@ -208,7 +208,7 @@ class AssessmentControllerTest : IntegrationTest() {
 
     @Test
     fun `update episode table row from JSON`() {
-      val childQuestion = UUID.fromString("23c3e984-54c7-480f-b06c-7d000e2fb87c")
+      val childQuestion = "question_code_for_test"
       val firstAnswer = "row1-answer1"
       val secondAnswer = "row1-answer2"
       val row1 = "{\"answers\":{\"${childQuestion}\":[\"${firstAnswer}\",\"${secondAnswer}\"]}}"
@@ -250,7 +250,7 @@ class AssessmentControllerTest : IntegrationTest() {
 
     @Test
     fun `remove first of three table rows`() {
-      val childQuestion = UUID.fromString("23c3e984-54c7-480f-b06c-7d000e2fb87c")
+      val childQuestion = "question_code_for_test"
       val firstAnswer = "row1-answer1"
       val secondAnswer = "row1-answer2"
       val row1 = "{\"answers\":{\"${childQuestion}\":[\"${firstAnswer}\",\"${secondAnswer}\"]}}"
@@ -285,7 +285,7 @@ class AssessmentControllerTest : IntegrationTest() {
 
     @Test
     fun `remove second of three table rows`() {
-      val childQuestion = UUID.fromString("23c3e984-54c7-480f-b06c-7d000e2fb87c")
+      val childQuestion = "question_code_for_test"
       val firstAnswer = "row1-answer1"
       val secondAnswer = "row1-answer2"
       val row1 = "{\"answers\":{\"${childQuestion}\":[\"${firstAnswer}\",\"${secondAnswer}\"]}}"
@@ -320,7 +320,7 @@ class AssessmentControllerTest : IntegrationTest() {
 
     @Test
     fun `remove all three table rows`() {
-      val childQuestion = UUID.fromString("23c3e984-54c7-480f-b06c-7d000e2fb87c")
+      val childQuestion = "question_code_for_test"
       val firstAnswer = "row1-answer1"
       val secondAnswer = "row1-answer2"
       val row1 = "{\"answers\":{\"${childQuestion}\":[\"${firstAnswer}\",\"${secondAnswer}\"]}}"
@@ -345,29 +345,29 @@ class AssessmentControllerTest : IntegrationTest() {
       assertThat(answers.size).isEqualTo(0)
     }
 
-    private fun updateEpisodeFromJson(questionUUID: UUID, expectedAnswer: String, jsonString: String) {
+    private fun updateEpisodeFromJson(questionCode: String, expectedAnswer: String, jsonString: String) {
       val episode = updateFromJson(
         "/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259",
-        questionUUID,
+        questionCode,
         jsonString
       )
 
-      Verify.singleAnswer(episode.answers.get(questionUUID)!!, expectedAnswer)
+      Verify.singleAnswer(episode.answers[questionCode]!!, expectedAnswer)
     }
 
-    private fun addTableRowFromJson(questionUUID: UUID, jsonString: String): AssessmentEpisodeDto {
+    private fun addTableRowFromJson(questionCode: String, jsonString: String): AssessmentEpisodeDto {
       return updateFromJson(
         "/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259/children_at_risk_of_serious_harm",
-        questionUUID,
+        questionCode,
         jsonString
       )
     }
 
-    private fun updateTableRowFromJson(questionUUID: UUID, index: Int, jsonString: String): AssessmentEpisodeDto {
+    private fun updateTableRowFromJson(questionCode: String, index: Int, jsonString: String): AssessmentEpisodeDto {
       val endpoint = "/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259/children_at_risk_of_serious_harm/$index"
       return updateFromJson(
         endpoint,
-        questionUUID,
+        questionCode,
         jsonString
       )
     }
@@ -389,7 +389,7 @@ class AssessmentControllerTest : IntegrationTest() {
 
     private fun updateFromJson(
       endpoint: String,
-      questionUUID: UUID,
+      questionCode: String,
       jsonString: String
     ): AssessmentEpisodeDto {
       val episode = webTestClient.post().uri(endpoint)
@@ -403,16 +403,16 @@ class AssessmentControllerTest : IntegrationTest() {
         .responseBody
 
       assertThat(episode).isNotNull
-      assertThat(episode?.answers).containsKey(questionUUID)
+      assertThat(episode?.answers).containsKey(questionCode)
 
       return episode
     }
 
     @Test
     fun `does not update episode answers if episode is closed`() {
-      val newQuestionUUID = UUID.randomUUID()
+      val newQuestionCode = "new_question_code"
       val updateEpisodeDto = UpdateAssessmentEpisodeDto(
-        mapOf(newQuestionUUID to listOf("new free text"))
+        mapOf(newQuestionCode to listOf("new free text"))
       )
       webTestClient.post().uri("/assessments/$assessmentUuid/episodes/d7aafe55-0cff-4f20-a57a-b66d79eb9c91")
         .bodyValue(updateEpisodeDto)

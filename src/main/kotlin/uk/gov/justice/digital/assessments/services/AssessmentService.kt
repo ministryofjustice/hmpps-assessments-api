@@ -119,7 +119,6 @@ class AssessmentService(
 
       if (question.answerSchemaGroup != null) {
         val questionCode = question.questionCode
-          ?: throw IllegalStateException("Question Code not found for UUID ${episodeAnswer.key}")
         val answerSchema = matchAnswers(episodeAnswer, question)
         if (answerSchema.isNotEmpty()) {
           answers[questionCode] = AnswerSchemaDto.from(answerSchema)
@@ -190,14 +189,14 @@ class AssessmentService(
   }
 
   private fun matchAnswers(
-    episodeAnswer: Map.Entry<UUID, AnswerEntity>,
+    episodeAnswer: Map.Entry<String, AnswerEntity>,
     question: QuestionSchemaEntity
   ): Set<AnswerSchemaEntity> {
     val answerSchemas = question.answerSchemaEntities
     return episodeAnswer.value.answers.map { answer ->
       answer.items.map { item ->
         answerSchemas.firstOrNull { answerSchema ->
-          item.equals(answerSchema.value)
+          item == answerSchema.value
         }
           ?: throw IllegalStateException("Answer Code not found for question ${question.questionSchemaUuid} answer value $item")
       }

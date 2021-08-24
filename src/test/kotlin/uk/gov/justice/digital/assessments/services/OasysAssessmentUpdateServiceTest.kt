@@ -45,9 +45,9 @@ class OasysAssessmentUpdateServiceTest() {
     assessmentSchemaService
   )
 
-  private val question1Uuid = UUID.randomUUID()
-  private val question2Uuid = UUID.randomUUID()
-  private val question3Uuid = UUID.randomUUID()
+  private val questionCode1 = "Q1"
+  private val questionCode2 = "Q2"
+  private val questionCode3 = "Q3"
   private val answer1Uuid = UUID.randomUUID()
   private val answer2Uuid = UUID.randomUUID()
   private val answer3Uuid = UUID.randomUUID()
@@ -74,7 +74,7 @@ class OasysAssessmentUpdateServiceTest() {
     } returns UpdateAssessmentAnswersResponseDto()
     every { questionService.getAllSectionQuestionsForQuestions(any()) } returns QuestionSchemaEntities(questionsList = emptyList())
 
-    val update = mapOf(question1Uuid to makeAnswersDto("YES"))
+    val update = mapOf(questionCode1 to makeAnswersDto("YES"))
 
     oasysAssessmentUpdateService.updateOASysAssessment(setupEpisode(), update)
 
@@ -104,7 +104,7 @@ class OasysAssessmentUpdateServiceTest() {
       oasysSetPk = oasysSetPk,
       createdDate = LocalDateTime.now()
     )
-    val update = mapOf(question1Uuid to makeAnswersDto("YES"))
+    val update = mapOf(questionCode1 to makeAnswersDto("YES"))
 
     oasysAssessmentUpdateService.updateOASysAssessment(episode, update)
 
@@ -122,9 +122,9 @@ class OasysAssessmentUpdateServiceTest() {
   fun `update episode sends only updated sections to oasys`() {
     val assessmentEpisode = setupEpisode()
 
-    every { questionService.getAllSectionQuestionsForQuestions(listOf(question1Uuid)) } returns setupSectionQuestionCodes()
+    every { questionService.getAllSectionQuestionsForQuestions(listOf(questionCode1)) } returns setupSectionQuestionCodes()
 
-    val update = UpdateAssessmentEpisodeDto(answers = mapOf(question1Uuid to listOf("Updated")))
+    val update = UpdateAssessmentEpisodeDto(answers = mapOf(questionCode1 to listOf("Updated")))
     val oasysAnswersSlot = slot<Set<OasysAnswer>>()
     every {
       assessmentUpdateRestClient.updateAssessment(
@@ -159,7 +159,7 @@ class OasysAssessmentUpdateServiceTest() {
   @Test
   fun `Update oasys assessment returns errors when offender null`() {
     val assessmentEpisode = AssessmentEpisodeEntity(episodeId = 128)
-    val update = UpdateAssessmentEpisodeDto(answers = mapOf(question1Uuid to listOf("Updated")))
+    val update = UpdateAssessmentEpisodeDto(answers = mapOf(questionCode1 to listOf("Updated")))
     val updateAssessmentResponse =
       oasysAssessmentUpdateService.updateOASysAssessment(assessmentEpisode, update.asAnswersDtos())
 
@@ -190,8 +190,24 @@ class OasysAssessmentUpdateServiceTest() {
 
     return QuestionSchemaEntities(
       listOf(
-        makeQuestion(1, question1Uuid, "Q1", "checkbox", group1, "section1", 1, "oasysQ1"),
-        makeQuestion(2, question2Uuid, "Q2", "radio", group2, "section1", 1, "oasysQ2")
+        makeQuestion(
+          questionSchemaId = 1,
+          questionCode = questionCode1,
+          answerType = "checkbox",
+          answerSchemaGroup = group1,
+          oasysSectionCode = "section1",
+          oasysLogicalPage = 1,
+          oasysQuestionCode = "oasysQ1"
+        ),
+        makeQuestion(
+          questionSchemaId = 2,
+          questionCode = questionCode2,
+          answerType = "radio",
+          answerSchemaGroup = group2,
+          oasysSectionCode = "section1",
+          oasysLogicalPage = 1,
+          oasysQuestionCode = "oasysQ2"
+        )
       )
     )
   }
@@ -202,9 +218,9 @@ class OasysAssessmentUpdateServiceTest() {
 
   private fun setupEpisode(): AssessmentEpisodeEntity {
     val answers = mutableMapOf(
-      question1Uuid to AnswerEntity.from("some free text"),
-      question2Uuid to AnswerEntity.from("1975-01-20T00:00:00.000Z"),
-      question3Uuid to AnswerEntity.from("not mapped to oasys")
+      questionCode1 to AnswerEntity.from("some free text"),
+      questionCode2 to AnswerEntity.from("1975-01-20T00:00:00.000Z"),
+      questionCode3 to AnswerEntity.from("not mapped to oasys")
     )
     return AssessmentEpisodeEntity(
       episodeId = episodeId1,
@@ -240,16 +256,15 @@ class OasysAssessmentUpdateServiceTest() {
 
     return QuestionSchemaEntities(
       listOf(
-        makeQuestion(1, question1Uuid, "Q1", "checkbox", group1),
-        makeQuestion(2, question2Uuid, "Q2", "radio", group2),
-        makeQuestion(3, question3Uuid, "Q3")
+        makeQuestion(1, questionCode1, "checkbox", group1),
+        makeQuestion(2, questionCode2, "radio", group2),
+        makeQuestion(3, questionCode3)
       )
     )
   }
 
   private fun makeQuestion(
     questionSchemaId: Long,
-    questionSchemaUuid: UUID,
     questionCode: String,
     answerType: String = "freetext",
     answerSchemaGroup: AnswerSchemaGroupEntity? = null,
@@ -260,7 +275,7 @@ class OasysAssessmentUpdateServiceTest() {
     val oaSysMappings = mutableListOf<OASysMappingEntity>()
     val question = QuestionSchemaEntity(
       questionSchemaId = questionSchemaId,
-      questionSchemaUuid = questionSchemaUuid,
+      questionSchemaUuid = UUID.randomUUID(),
       questionCode = questionCode,
       answerType = answerType,
       answerSchemaGroup = answerSchemaGroup,

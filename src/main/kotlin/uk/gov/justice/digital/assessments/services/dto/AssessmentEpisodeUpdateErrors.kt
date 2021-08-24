@@ -6,20 +6,20 @@ import uk.gov.justice.digital.assessments.services.QuestionSchemaEntities
 import java.util.UUID
 
 data class AssessmentEpisodeUpdateErrors(
-  private val answerErrors: MutableMap<UUID, MutableCollection<String>> = mutableMapOf(),
+  private val answerErrors: MutableMap<String, MutableCollection<String>> = mutableMapOf(),
   private val errorsOnPage: MutableList<String> = mutableListOf(),
   private val errorsInAssessment: MutableList<String> = mutableListOf(),
 ) {
-  val errors: Map<UUID, Collection<String>>?
+  val errors: Map<String, Collection<String>>?
     get() = answerErrors.ifEmpty { null }
   val pageErrors: Collection<String>?
     get() = errorsOnPage.ifEmpty { null }
   val assessmentErrors: Collection<String>?
     get() = errorsInAssessment.ifEmpty { null }
 
-  private fun addAnswerError(question: UUID, message: String?) {
-    answerErrors.putIfAbsent(question, mutableListOf())
-    answerErrors[question]?.add(message ?: "Field validation error")
+  private fun addAnswerError(questionCode: String, message: String?) {
+    answerErrors.putIfAbsent(questionCode, mutableListOf())
+    answerErrors[questionCode]?.add(message ?: "Field validation error")
   }
 
   private fun addPageError(message: String?) {
@@ -58,8 +58,8 @@ data class AssessmentEpisodeUpdateErrors(
       oasysUpdateResult.validationErrorDtos.forEach {
         val mappedQuestions = questions.forOasysMapping(it.sectionCode, it.logicalPage, it.questionCode)
         mappedQuestions
-          .filter { q -> questionsInThisEpisode.contains(q.questionSchemaUuid) }
-          .forEach { q -> updateErrors.addAnswerError(q.questionSchemaUuid, it.message) }
+          .filter { q -> questionsInThisEpisode.contains(q.questionCode) }
+          .forEach { q -> updateErrors.addAnswerError(q.questionCode, it.message) }
       }
     } // mapAnswerErrors
 

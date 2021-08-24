@@ -30,10 +30,10 @@ data class AssessmentEpisodeDto(
   val ended: LocalDateTime? = null,
 
   @Schema(description = "Answers associated with this episode")
-  val answers: Map<UUID, AnswersDto> = emptyMap(),
+  val answers: Map<String, AnswersDto> = emptyMap(),
 
-  @Schema(description = "Validation errors on this episode, indexed by question UUID")
-  val errors: Map<UUID, Collection<String>>? = null,
+  @Schema(description = "Validation errors on this episode, indexed by question code")
+  val errors: Map<String, Collection<String>>? = null,
 
   @Schema(description = "Validation level errors")
   val pageErrors: Collection<String>? = null,
