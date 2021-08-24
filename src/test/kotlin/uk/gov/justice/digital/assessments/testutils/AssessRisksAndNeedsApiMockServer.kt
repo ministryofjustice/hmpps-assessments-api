@@ -8,7 +8,8 @@ import java.util.UUID
 
 class AssessRisksAndNeedsApiMockServer : WireMockServer(9007) {
   fun stubGetRSRPredictorsForOffenderAndOffences(
-    final: Boolean, episodeUuid: UUID
+    final: Boolean,
+    episodeUuid: UUID
   ) {
     stubFor(
       WireMock.post(WireMock.urlEqualTo("/risks/predictors/RSR?final=$final&source=ASSESSMENTS_API&sourceId=$episodeUuid"))

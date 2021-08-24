@@ -69,31 +69,31 @@ class AssessRisksAndNeedsApiClientTest : IntegrationTest() {
       earliestReleaseDate = "2021-11-01",
       hasCompletedInterview = true,
       dynamicScoringOffences = DynamicScoringOffences(
-          hasSuitableAccommodation = ProblemsLevel.MISSING.name,
-          employment = EmploymentType.NOT_AVAILABLE_FOR_WORK.name,
-          currentRelationshipWithPartner = ProblemsLevel.SIGNIFICANT_PROBLEMS.name,
-          evidenceOfDomesticViolence = true,
-          isPerpetrator = true,
-          alcoholUseIssues = ProblemsLevel.SIGNIFICANT_PROBLEMS.name,
-          bingeDrinkingIssues = ProblemsLevel.SIGNIFICANT_PROBLEMS.name,
-          impulsivityIssues = ProblemsLevel.SOME_PROBLEMS.name,
-          temperControlIssues = ProblemsLevel.SIGNIFICANT_PROBLEMS.name,
-          proCriminalAttitudes = ProblemsLevel.SOME_PROBLEMS.name,
-          previousOffences = PreviousOffences(
-            murderAttempt = true,
-            wounding = true,
-            aggravatedBurglary = true,
-            arson = true,
-            criminalDamage = true,
-            kidnapping = true,
-            firearmPossession = true,
-            robbery = true,
-            offencesWithWeapon = true
-          ),
-          currentOffences = CurrentOffences(
-            firearmPossession = true,
-            offencesWithWeapon = true
-          )
+        hasSuitableAccommodation = ProblemsLevel.MISSING.name,
+        employment = EmploymentType.NOT_AVAILABLE_FOR_WORK.name,
+        currentRelationshipWithPartner = ProblemsLevel.SIGNIFICANT_PROBLEMS.name,
+        evidenceOfDomesticViolence = true,
+        isPerpetrator = true,
+        alcoholUseIssues = ProblemsLevel.SIGNIFICANT_PROBLEMS.name,
+        bingeDrinkingIssues = ProblemsLevel.SIGNIFICANT_PROBLEMS.name,
+        impulsivityIssues = ProblemsLevel.SOME_PROBLEMS.name,
+        temperControlIssues = ProblemsLevel.SIGNIFICANT_PROBLEMS.name,
+        proCriminalAttitudes = ProblemsLevel.SOME_PROBLEMS.name,
+        previousOffences = PreviousOffences(
+          murderAttempt = true,
+          wounding = true,
+          aggravatedBurglary = true,
+          arson = true,
+          criminalDamage = true,
+          kidnapping = true,
+          firearmPossession = true,
+          robbery = true,
+          offencesWithWeapon = true
+        ),
+        currentOffences = CurrentOffences(
+          firearmPossession = true,
+          offencesWithWeapon = true
+        )
       )
     )
 
