@@ -4,9 +4,13 @@ import java.time.LocalDateTime
 import java.util.UUID
 import javax.persistence.Column
 import javax.persistence.Entity
+import javax.persistence.FetchType
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
+import javax.persistence.JoinColumn
+import javax.persistence.OneToMany
+import javax.persistence.OneToOne
 import javax.persistence.Table
 
 @Entity
@@ -17,8 +21,9 @@ class QuestionDependencyEntity(
   @Column(name = "dependency_id")
   val dependencyId: Long,
 
-  @Column(name = "subject_question_uuid")
-  val subjectQuestionUuid: UUID,
+  @OneToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "subject_question_uuid", referencedColumnName = "question_schema_uuid")
+  val subjectQuestionSchema: QuestionSchemaEntity,
 
   @Column(name = "trigger_question_uuid")
   val triggerQuestionUuid: UUID,

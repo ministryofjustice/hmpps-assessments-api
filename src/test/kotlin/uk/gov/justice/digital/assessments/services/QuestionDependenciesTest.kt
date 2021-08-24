@@ -20,6 +20,8 @@ class QuestionDependenciesTest(
   private val questionDependencyService: QuestionDependencyService
 ) : IntegrationTest() {
   val subjectUuid: UUID = UUID.fromString("11111111-1111-1111-1111-111111111113")
+  val subjectQuestionCode: String = "RSR_06"
+
   val triggerUuid: UUID = UUID.fromString("11111111-1111-1111-1111-111111111112")
   lateinit var dependencies: QuestionDependencies
 
@@ -40,14 +42,14 @@ class QuestionDependenciesTest(
 
   @Test
   fun `question triggers a dependency`() {
-    assertThat(dependencies.triggersDependency(triggerUuid, "Y")).first().isEqualTo(ConditionalsSchemaDto(subjectUuid, true))
+    assertThat(dependencies.triggersDependency(triggerUuid, "Y")).first().isEqualTo(ConditionalsSchemaDto(subjectQuestionCode, true))
   }
 
   @Test
   fun `question triggers multiple dependencies`() {
     val multipleDependencies = mutableSetOf<ConditionalsSchemaDto>()
-    multipleDependencies.add(ConditionalsSchemaDto(UUID.fromString("11111111-1111-1111-1111-111111111117"), true))
-    multipleDependencies.add(ConditionalsSchemaDto(UUID.fromString("11111111-1111-1111-1111-111111111119"), false))
+    multipleDependencies.add(ConditionalsSchemaDto("RSR_09", true))
+    multipleDependencies.add(ConditionalsSchemaDto("RSR_11", false))
 
     assertThat(dependencies.triggersDependency(UUID.fromString("11111111-1111-1111-1111-111111111116"), "Y")).isEqualTo(multipleDependencies)
   }

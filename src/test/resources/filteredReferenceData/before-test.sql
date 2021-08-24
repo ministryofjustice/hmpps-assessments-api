@@ -11,6 +11,7 @@ DELETE FROM assessment_schema WHERE true;
 DELETE FROM grouping WHERE true;
 DELETE FROM predictor_field_mapping WHERE true;
 DELETE FROM assessment_predictors WHERE true;
+DELETE FROM question_dependency WHERE true;
 DELETE FROM question_schema WHERE true;
 
 /* Assessment with Episodes */
