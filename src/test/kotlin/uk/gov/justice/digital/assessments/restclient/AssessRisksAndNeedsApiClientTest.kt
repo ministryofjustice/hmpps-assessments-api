@@ -15,6 +15,7 @@ import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.Dyna
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.EmploymentType
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.Gender
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.OffenderAndOffencesDto
+import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.PredictorSubType
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.PreviousOffences
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.ProblemsLevel
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.RiskPredictorsDto
@@ -26,6 +27,7 @@ import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.util.UUID
 
 class AssessRisksAndNeedsApiClientTest : IntegrationTest() {
   @Autowired
@@ -43,6 +45,9 @@ class AssessRisksAndNeedsApiClientTest : IntegrationTest() {
 
   @Test
   fun `get RSR predictors for offender and offences`() {
+    val final = true
+    val episodeUuid = UUID.randomUUID()
+    assessRisksAndNeedsApiMockServer.stubGetRSRPredictorsForOffenderAndOffences(final, episodeUuid)
     val offenderAndOffencesDto = OffenderAndOffencesDto(
       crn = "X1345",
       gender = Gender.MALE,
@@ -64,42 +69,49 @@ class AssessRisksAndNeedsApiClientTest : IntegrationTest() {
       earliestReleaseDate = "2021-11-01",
       hasCompletedInterview = true,
       dynamicScoringOffences = DynamicScoringOffences(
-          hasSuitableAccommodation = ProblemsLevel.MISSING.name,
-          employment = EmploymentType.NOT_AVAILABLE_FOR_WORK.name,
-          currentRelationshipWithPartner = ProblemsLevel.SIGNIFICANT_PROBLEMS.name,
-          evidenceOfDomesticViolence = true,
-          isPerpetrator = true,
-          alcoholUseIssues = ProblemsLevel.SIGNIFICANT_PROBLEMS.name,
-          bingeDrinkingIssues = ProblemsLevel.SIGNIFICANT_PROBLEMS.name,
-          impulsivityIssues = ProblemsLevel.SOME_PROBLEMS.name,
-          temperControlIssues = ProblemsLevel.SIGNIFICANT_PROBLEMS.name,
-          proCriminalAttitudes = ProblemsLevel.SOME_PROBLEMS.name,
-          previousOffences = PreviousOffences(
-            murderAttempt = true,
-            wounding = true,
-            aggravatedBurglary = true,
-            arson = true,
-            criminalDamage = true,
-            kidnapping = true,
-            firearmPossession = true,
-            robbery = true,
-            offencesWithWeapon = true
-          ),
-          currentOffences = CurrentOffences(
-            firearmPossession = true,
-            offencesWithWeapon = true
-          )
+        hasSuitableAccommodation = ProblemsLevel.MISSING.name,
+        employment = EmploymentType.NOT_AVAILABLE_FOR_WORK.name,
+        currentRelationshipWithPartner = ProblemsLevel.SIGNIFICANT_PROBLEMS.name,
+        evidenceOfDomesticViolence = true,
+        isPerpetrator = true,
+        alcoholUseIssues = ProblemsLevel.SIGNIFICANT_PROBLEMS.name,
+        bingeDrinkingIssues = ProblemsLevel.SIGNIFICANT_PROBLEMS.name,
+        impulsivityIssues = ProblemsLevel.SOME_PROBLEMS.name,
+        temperControlIssues = ProblemsLevel.SIGNIFICANT_PROBLEMS.name,
+        proCriminalAttitudes = ProblemsLevel.SOME_PROBLEMS.name,
+        previousOffences = PreviousOffences(
+          murderAttempt = true,
+          wounding = true,
+          aggravatedBurglary = true,
+          arson = true,
+          criminalDamage = true,
+          kidnapping = true,
+          firearmPossession = true,
+          robbery = true,
+          offencesWithWeapon = true
+        ),
+        currentOffences = CurrentOffences(
+          firearmPossession = true,
+          offencesWithWeapon = true
+        )
       )
     )
 
-    val riskPredictors = assessRiskAndNeedsApiRestClient.getRiskPredictors(PredictorType.RSR, offenderAndOffencesDto)
+    val riskPredictors = assessRiskAndNeedsApiRestClient.getRiskPredictors(
+      PredictorType.RSR,
+      offenderAndOffencesDto,
+      final,
+      episodeUuid
+    )
     assertThat(riskPredictors).isEqualTo(
       RiskPredictorsDto(
         type = PredictorType.RSR,
         scoreType = ScoreType.STATIC,
-        rsrScore = Score(level = ScoreLevel.HIGH, score = BigDecimal("11.34"), isValid = true),
-        ospcScore = Score(level = ScoreLevel.NOT_APPLICABLE, score = BigDecimal("0"), isValid = false),
-        ospiScore = Score(level = ScoreLevel.NOT_APPLICABLE, score = BigDecimal("0"), isValid = false),
+        scores = mapOf(
+          PredictorSubType.RSR to Score(level = ScoreLevel.HIGH, score = BigDecimal("11.34"), isValid = true),
+          PredictorSubType.OSPC to Score(level = ScoreLevel.NOT_APPLICABLE, score = BigDecimal("0"), isValid = false),
+          PredictorSubType.OSPI to Score(level = ScoreLevel.NOT_APPLICABLE, score = BigDecimal("0"), isValid = false),
+        ),
         calculatedAt = "2021-08-09 14:46:48"
       )
     )

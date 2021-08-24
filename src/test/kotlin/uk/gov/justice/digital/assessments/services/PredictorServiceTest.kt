@@ -24,6 +24,7 @@ import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.Curr
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.DynamicScoringOffences
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.Gender
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.OffenderAndOffencesDto
+import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.PredictorSubType
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.PreviousOffences
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.RiskPredictorsDto
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.Score
@@ -564,10 +565,14 @@ class PredictorServiceTest {
     createdDate = LocalDateTime.now(),
     assessment = assessment
   )
+  val final = true
+  val episodeUuid = assessmentEpisode.episodeUuid
 
   @BeforeEach
   private fun setup() {
-    every { assessRisksAndNeedsApiRestClient.getRiskPredictors(any(), any()) } returns null
+    every {
+      assessRisksAndNeedsApiRestClient.getRiskPredictors(any(), any(), final, episodeUuid)
+    } returns null
   }
 
   @Nested
@@ -644,13 +649,20 @@ class PredictorServiceTest {
       )
 
       every {
-        assessRisksAndNeedsApiRestClient.getRiskPredictors(PredictorType.RSR, offenderAndOffencesDto)
+        assessRisksAndNeedsApiRestClient.getRiskPredictors(
+          PredictorType.RSR,
+          offenderAndOffencesDto,
+          final,
+          episodeUuid
+        )
       } returns RiskPredictorsDto(
         type = PredictorType.RSR,
         scoreType = ScoreType.STATIC,
-        rsrScore = Score(level = ScoreLevel.HIGH, score = BigDecimal("11.34"), isValid = true),
-        ospcScore = Score(level = ScoreLevel.NOT_APPLICABLE, score = BigDecimal("0"), isValid = false),
-        ospiScore = Score(level = ScoreLevel.NOT_APPLICABLE, score = BigDecimal("0"), isValid = false),
+        scores = mapOf(
+          PredictorSubType.RSR to Score(level = ScoreLevel.HIGH, score = BigDecimal("11.34"), isValid = true),
+          PredictorSubType.OSPC to Score(level = ScoreLevel.NOT_APPLICABLE, score = BigDecimal("0"), isValid = false),
+          PredictorSubType.OSPI to Score(level = ScoreLevel.NOT_APPLICABLE, score = BigDecimal("0"), isValid = false),
+        ),
         calculatedAt = "2021-08-09 14:46:48"
       )
 
@@ -675,7 +687,7 @@ class PredictorServiceTest {
           )
         ),
         entry(
-          "OSP/C",
+          "OSPC",
           uk.gov.justice.digital.assessments.api.Score(
             "NOT_APPLICABLE",
             BigDecimal("0"),
@@ -684,7 +696,7 @@ class PredictorServiceTest {
           )
         ),
         entry(
-          "OSP/I",
+          "OSPI",
           uk.gov.justice.digital.assessments.api.Score(
             "NOT_APPLICABLE",
             BigDecimal("0"),

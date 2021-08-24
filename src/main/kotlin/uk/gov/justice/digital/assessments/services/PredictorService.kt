@@ -16,6 +16,7 @@ import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.Curr
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.DynamicScoringOffences
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.Gender
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.OffenderAndOffencesDto
+import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.PredictorSubType
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.PreviousOffences
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.RiskPredictorsDto
 import uk.gov.justice.digital.assessments.services.dto.PredictorType
@@ -101,7 +102,8 @@ class PredictorService(
       dynamicScoringOffences = getDynamicScoringOffences(hasCompletedInterview, answers)
     )
 
-    return assessRisksAndNeedsApiRestClient.getRiskPredictors(predictorType, offenderAndOffencesDto)
+    val final = true
+    return assessRisksAndNeedsApiRestClient.getRiskPredictors(predictorType, offenderAndOffencesDto, final, episode.episodeUuid)
       .toRiskPredictorScores(crn)
   }
 
@@ -149,23 +151,27 @@ class PredictorService(
   }
 
   private fun RiskPredictorsDto.toRiskPredictorsScores(): Map<String, uk.gov.justice.digital.assessments.api.Score> {
+    val rsrScore = this.scores[PredictorSubType.RSR]
+    val ospcScore = this.scores[PredictorSubType.OSPC]
+    val ospiScore = this.scores[PredictorSubType.OSPI]
+
     return mapOf(
-      "RSR" to uk.gov.justice.digital.assessments.api.Score(
-        this.rsrScore.level?.name,
-        this.rsrScore.score,
-        this.rsrScore.isValid,
+      PredictorSubType.RSR.name to uk.gov.justice.digital.assessments.api.Score(
+        rsrScore?.level?.name,
+        rsrScore?.score,
+        rsrScore?.isValid == true,
         this.calculatedAt
       ),
-      "OSP/C" to uk.gov.justice.digital.assessments.api.Score(
-        this.ospcScore.level?.name,
-        this.ospcScore.score,
-        this.ospcScore.isValid,
+      PredictorSubType.OSPC.name to uk.gov.justice.digital.assessments.api.Score(
+        ospcScore?.level?.name,
+        ospcScore?.score,
+        ospcScore?.isValid == true,
         this.calculatedAt
       ),
-      "OSP/I" to uk.gov.justice.digital.assessments.api.Score(
-        this.ospiScore.level?.name,
-        this.ospiScore.score,
-        this.ospiScore.isValid,
+      PredictorSubType.OSPI.name to uk.gov.justice.digital.assessments.api.Score(
+        ospiScore?.level?.name,
+        ospiScore?.score,
+        ospiScore?.isValid == true,
         this.calculatedAt
       )
     )

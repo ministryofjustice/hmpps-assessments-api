@@ -4,11 +4,15 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.http.HttpHeader
 import com.github.tomakehurst.wiremock.http.HttpHeaders
+import java.util.UUID
 
 class AssessRisksAndNeedsApiMockServer : WireMockServer(9007) {
-  fun stubGetRSRPredictorsForOffenderAndOffences() {
+  fun stubGetRSRPredictorsForOffenderAndOffences(
+    final: Boolean,
+    episodeUuid: UUID
+  ) {
     stubFor(
-      WireMock.post(WireMock.urlEqualTo("/risks/predictors/RSR"))
+      WireMock.post(WireMock.urlEqualTo("/risks/predictors/RSR?final=$final&source=ASSESSMENTS_API&sourceId=$episodeUuid"))
         .withRequestBody(
           WireMock.equalToJson(
             "{ " +
@@ -69,15 +73,18 @@ class AssessRisksAndNeedsApiMockServer : WireMockServer(9007) {
         )
     )
   }
+
   val riskRsrPredictors =
     """{
         "algorithmVersion": 3,
         "calculatedAt": "2021-08-09 14:46:48", 
         "type": "RSR",
         "scoreType": "STATIC",
-        "rsrScore": {"level": "HIGH", "score": 11.34, "isValid": true},
-        "ospcScore": {"level": "NOT_APPLICABLE", "score": 0, "isValid" : false},
-        "ospiScore": {"level": "NOT_APPLICABLE", "score": 0, "isValid" : false}
+        "scores": {
+          "RSR": {"level": "HIGH", "score": 11.34, "isValid": true},
+          "OSPC":{"level": "NOT_APPLICABLE", "score": 0, "isValid" : false},
+          "OSPI":{"level": "NOT_APPLICABLE", "score": 0, "isValid" : false}
+          }
         }
     """.trimIndent()
 }

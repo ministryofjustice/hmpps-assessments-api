@@ -79,7 +79,6 @@ abstract class IntegrationTest {
     communityApiMockServer.stubGetConvictions()
     assessmentApiMockServer.stubGetAssessment()
     assessRisksAndNeedsApiMockServer.resetAll()
-    assessRisksAndNeedsApiMockServer.stubGetRSRPredictorsForOffenderAndOffences()
   }
 
   @AfterEach
