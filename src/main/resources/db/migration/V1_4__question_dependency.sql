@@ -8,5 +8,8 @@ CREATE TABLE IF NOT EXISTS question_dependency
     trigger_answer_value    TEXT        NOT NULL,
     dependency_start        TIMESTAMP   NOT NULL,
     dependency_end          TIMESTAMP,
-    display_inline          BOOLEAN     NOT NULL
+    display_inline          BOOLEAN     NOT NULL,
+    FOREIGN KEY (subject_question_uuid) REFERENCES question_schema (question_schema_uuid),
+    FOREIGN KEY (trigger_question_uuid) REFERENCES question_schema (question_schema_uuid)
+
 );
