@@ -13,7 +13,7 @@ INSERT INTO predictor_field_mapping (predictor_mapping_uuid, question_schema_uui
 ('32072397-d849-4708-8281-9feb00893c9f', 'fc45b061-a4a6-44c3-937c-2949069e0926', 'RSR', 'total_sexual_offences_adult', true),
 ('131fa3c0-119d-432a-a9ab-41f46006199f', 'ed495c57-21f3-4388-87e6-57017a6999b1', 'RSR', 'total_sexual_offences_child', true),
 ('cc7190e6-5611-4192-ac3b-17f9e8cb8cc6', '00a559e4-32d5-4ae7-aa21-247068a639ad', 'RSR', 'total_sexual_offences_child_image', true),
-('e49598a5-5b10-408b-8fac-a0a29c6a3b83', '1b6c8f79-0fd9-45d4-ba50-309c3ccfdb2d', 'RSR', 'total_non_sexual_offences', true),
+('e49598a5-5b10-408b-8fac-a0a29c6a3b83', '1b6c8f79-0fd9-45d4-ba50-309c3ccfdb2d', 'RSR', 'total_non_contact_sexual_offences', true),
 ('c55c3087-c8b1-497c-929b-c1d107c37234', '5cd344d4-acf3-45a9-9493-5dda5aa9dfa8', 'RSR', 'earliest_release_date', true),
 ('ef3f6c4a-c4d1-4fbe-82eb-3914b7519629', '420c2ffe-8f2c-49b3-a523-674af3197b9e', 'RSR', 'completed_interview', true),
 ('61d76f92-e603-4c91-9e75-73e48aca8664', 'ed0e988a-38a4-4f9f-9691-08fb695cbed9', 'RSR', 'suitable_accommodation', false),

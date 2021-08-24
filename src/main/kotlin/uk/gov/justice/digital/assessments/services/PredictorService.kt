@@ -101,7 +101,8 @@ class PredictorService(
       dynamicScoringOffences = getDynamicScoringOffences(hasCompletedInterview, answers)
     )
 
-    return assessRisksAndNeedsApiRestClient.getRiskPredictors(predictorType, offenderAndOffencesDto)
+    val final = true
+    return assessRisksAndNeedsApiRestClient.getRiskPredictors(predictorType, offenderAndOffencesDto, final, episode.episodeUuid)
       .toRiskPredictorScores(crn)
   }
 

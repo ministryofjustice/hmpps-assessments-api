@@ -4,11 +4,14 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.http.HttpHeader
 import com.github.tomakehurst.wiremock.http.HttpHeaders
+import java.util.UUID
 
 class AssessRisksAndNeedsApiMockServer : WireMockServer(9007) {
-  fun stubGetRSRPredictorsForOffenderAndOffences() {
+  fun stubGetRSRPredictorsForOffenderAndOffences(
+    final: Boolean, episodeUuid: UUID
+  ) {
     stubFor(
-      WireMock.post(WireMock.urlEqualTo("/risks/predictors/RSR"))
+      WireMock.post(WireMock.urlEqualTo("/risks/predictors/RSR?final=$final&source=ASSESSMENTS_API&sourceId=$episodeUuid"))
         .withRequestBody(
           WireMock.equalToJson(
             "{ " +
@@ -69,6 +72,7 @@ class AssessRisksAndNeedsApiMockServer : WireMockServer(9007) {
         )
     )
   }
+
   val riskRsrPredictors =
     """{
         "algorithmVersion": 3,

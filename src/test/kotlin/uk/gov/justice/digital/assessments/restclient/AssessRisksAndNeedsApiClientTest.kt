@@ -26,6 +26,7 @@ import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.util.UUID
 
 class AssessRisksAndNeedsApiClientTest : IntegrationTest() {
   @Autowired
@@ -43,6 +44,9 @@ class AssessRisksAndNeedsApiClientTest : IntegrationTest() {
 
   @Test
   fun `get RSR predictors for offender and offences`() {
+    val final = true
+    val episodeUuid = UUID.randomUUID()
+    assessRisksAndNeedsApiMockServer.stubGetRSRPredictorsForOffenderAndOffences(final, episodeUuid)
     val offenderAndOffencesDto = OffenderAndOffencesDto(
       crn = "X1345",
       gender = Gender.MALE,
@@ -92,7 +96,12 @@ class AssessRisksAndNeedsApiClientTest : IntegrationTest() {
       )
     )
 
-    val riskPredictors = assessRiskAndNeedsApiRestClient.getRiskPredictors(PredictorType.RSR, offenderAndOffencesDto)
+    val riskPredictors = assessRiskAndNeedsApiRestClient.getRiskPredictors(
+      PredictorType.RSR,
+      offenderAndOffencesDto,
+      final,
+      episodeUuid
+    )
     assertThat(riskPredictors).isEqualTo(
       RiskPredictorsDto(
         type = PredictorType.RSR,

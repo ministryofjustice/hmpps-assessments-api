@@ -564,10 +564,14 @@ class PredictorServiceTest {
     createdDate = LocalDateTime.now(),
     assessment = assessment
   )
+  val final = true
+  val episodeUuid = assessmentEpisode.episodeUuid
 
   @BeforeEach
   private fun setup() {
-    every { assessRisksAndNeedsApiRestClient.getRiskPredictors(any(), any()) } returns null
+    every {
+      assessRisksAndNeedsApiRestClient.getRiskPredictors(any(), any(), final, episodeUuid)
+    } returns null
   }
 
   @Nested
@@ -644,7 +648,12 @@ class PredictorServiceTest {
       )
 
       every {
-        assessRisksAndNeedsApiRestClient.getRiskPredictors(PredictorType.RSR, offenderAndOffencesDto)
+        assessRisksAndNeedsApiRestClient.getRiskPredictors(
+          PredictorType.RSR,
+          offenderAndOffencesDto,
+          final,
+          episodeUuid
+        )
       } returns RiskPredictorsDto(
         type = PredictorType.RSR,
         scoreType = ScoreType.STATIC,
