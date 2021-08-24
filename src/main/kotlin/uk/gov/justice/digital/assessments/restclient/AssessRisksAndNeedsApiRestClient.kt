@@ -30,7 +30,8 @@ class AssessRisksAndNeedsApiRestClient {
     episodeUuid: UUID
   ): RiskPredictorsDto? {
     log.info("Calculating Risk Predictors for $predictorType")
-    val path = "/risks/predictors/$predictorType?final=$final&source=ASSESSMENTS_API&sourceId=$episodeUuid"
+    val path =
+      "/risks/predictors/$predictorType?final=$final&source=${ExternalService.ASSESSMENTS_API}&sourceId=$episodeUuid"
     return webClient
       .post(path, offenderAndOffencesDto)
       .retrieve()
