@@ -6,6 +6,7 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.reactive.server.expectBody
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import uk.gov.justice.digital.assessments.utils.offenderStubResource.OffenderStubDto
+import java.time.LocalDate
 
 @ActiveProfiles
 class OffenderStubControllerTest : IntegrationTest() {
@@ -29,6 +30,8 @@ class OffenderStubControllerTest : IntegrationTest() {
         pnc = "A/1234560BA",
         familyName = "Smith",
         forename1 = "John",
+        gender = "F",
+        dateOfBirth = LocalDate.of(1979,8,18),
         areaCode = "WWS"
       )
     )

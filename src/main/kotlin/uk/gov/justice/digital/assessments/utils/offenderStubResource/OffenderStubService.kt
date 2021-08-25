@@ -36,6 +36,8 @@ class OffenderStubService(
       pnc = offender?.otherIds?.pncNumber,
       forename1 = offender?.firstName,
       familyName = offender?.surname,
+      dateOfBirth = offender?.dateOfBirth,
+      gender = offender?.gender,
       areaCode = AREA_CODE
     )
   }

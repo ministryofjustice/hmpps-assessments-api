@@ -22,7 +22,7 @@ import uk.gov.justice.digital.assessments.utils.offenderStubResource.PrimaryId
 import java.time.LocalDate
 
 @ExtendWith(MockKExtension::class)
-@DisplayName("Offender Service Tests")
+@DisplayName("Offender Stub Service Tests")
 class OffenderStubServiceTest {
 
   private val communityApiRestClient: CommunityApiRestClient = mockk()
@@ -45,6 +45,8 @@ class OffenderStubServiceTest {
           pnc = "A/1234560BA",
           familyName = "Smith",
           forename1 = "John",
+          gender = "F",
+          dateOfBirth = LocalDate.of(1979, 8, 18),
           areaCode = "WWS"
         )
       )
@@ -69,6 +71,8 @@ class OffenderStubServiceTest {
         pnc = "12345",
         familyName = "familyname",
         forename1 = "forename",
+        gender = "Male",
+        dateOfBirth = LocalDate.of(2000, 1, 1),
         areaCode = "WWS"
       ),
       OffenderStubDto(
@@ -76,6 +80,8 @@ class OffenderStubServiceTest {
         pnc = "12345",
         familyName = "familyname",
         forename1 = "forename",
+        gender = "Male",
+        dateOfBirth = LocalDate.of(2000, 1, 1),
         areaCode = "WWS"
       )
     )
@@ -88,6 +94,8 @@ class OffenderStubServiceTest {
         pnc = "12345",
         familyName = "familyname",
         forename1 = "forename",
+        gender = "Male",
+        dateOfBirth = LocalDate.of(2000, 1, 1),
         areaCode = "WWS"
       ),
       OffenderStubDto(
@@ -95,6 +103,8 @@ class OffenderStubServiceTest {
         pnc = "12345",
         familyName = "familyname",
         forename1 = "forename",
+        gender = "Male",
+        dateOfBirth = LocalDate.of(2000, 1, 1),
         areaCode = "WWS"
       ),
       OffenderStubDto(
@@ -102,6 +112,8 @@ class OffenderStubServiceTest {
         pnc = "12345",
         familyName = "familyname",
         forename1 = "forename",
+        gender = "Male",
+        dateOfBirth = LocalDate.of(2000, 1, 1),
         areaCode = "WWS"
       )
     )
