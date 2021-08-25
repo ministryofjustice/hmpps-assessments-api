@@ -701,6 +701,7 @@ class RiskPredictorsServiceTest {
     @Test
     fun `returns predictor scores for the assessment episode`() {
       val final = false
+      every{ episodeRepository.findByEpisodeUuid(episodeUuid) } returns assessmentEpisode
       every { assessmentSchemaService.getPredictorsForAssessment(AssessmentSchemaCode.RSR) } returns predictors
 
       val offenderAndOffencesDto = offenderAndOffencesDto()
@@ -729,7 +730,7 @@ class RiskPredictorsServiceTest {
         oasysOffenderPk = 9999, dateOfBirth = LocalDate.of(2001, 1, 1), gender = "FEMALE", crn = "X1345"
       )
 
-      val results = predictorService.getPredictorResults(assessmentEpisode.episodeUuid, final)
+      val results = predictorService.getPredictorResults(episodeUuid, final)
 
       assertThat(results).hasSize(1)
       assertThat(results.first().type).isEqualTo(PredictorType.RSR)
