@@ -28,7 +28,7 @@ import java.util.UUID
     executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
   )
 )
-@AutoConfigureWebTestClient(timeout = "50000")
+@AutoConfigureWebTestClient
 class ReferenceDataControllerTest : IntegrationTest() {
   private val validAssessmentUuid = UUID.fromString("2e020e78-a81c-407f-bc78-e5f284e237e5")
   private val validQuestionUuid = UUID.fromString("2fe94330-22c4-4a6e-a494-9f53dc2139c6")
