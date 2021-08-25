@@ -637,54 +637,7 @@ class RiskPredictorsServiceTest {
     fun `returns predictor scores for the assessment code`() {
       every { assessmentSchemaService.getPredictorsForAssessment(AssessmentSchemaCode.RSR) } returns predictors
 
-      val offenderAndOffencesDto = OffenderAndOffencesDto(
-        crn = "X1345",
-        gender = Gender.FEMALE,
-        dob = LocalDate.of(2001, 1, 1),
-        assessmentDate = assessmentEpisode.createdDate,
-        currentOffence = CurrentOffence("138", "00"),
-        dateOfFirstSanction = "2021-10-01",
-        totalOffences = 10,
-        totalViolentOffences = 9,
-        dateOfCurrentConviction = "2021-11-01",
-        hasAnySexualOffences = true,
-        isCurrentSexualOffence = true,
-        isCurrentOffenceVictimStranger = true,
-        mostRecentSexualOffenceDate = "2021-09-01",
-        totalSexualOffencesInvolvingAnAdult = 2,
-        totalSexualOffencesInvolvingAChild = 4,
-        totalSexualOffencesInvolvingChildImages = 10,
-        totalNonContactSexualOffences = 9,
-        earliestReleaseDate = "2025-11-01",
-        hasCompletedInterview = true,
-        dynamicScoringOffences = DynamicScoringOffences(
-          hasSuitableAccommodation = "MISSING",
-          employment = "NOT_AVAILABLE_FOR_WORK",
-          currentRelationshipWithPartner = "SIGNIFICANT_PROBLEMS",
-          evidenceOfDomesticViolence = true,
-          isPerpetrator = true,
-          alcoholUseIssues = "SIGNIFICANT_PROBLEMS",
-          bingeDrinkingIssues = "SIGNIFICANT_PROBLEMS",
-          impulsivityIssues = "SOME_PROBLEMS",
-          temperControlIssues = "SIGNIFICANT_PROBLEMS",
-          proCriminalAttitudes = "SOME_PROBLEMS",
-          previousOffences = PreviousOffences(
-            murderAttempt = true,
-            wounding = true,
-            aggravatedBurglary = true,
-            arson = true,
-            criminalDamage = true,
-            kidnapping = true,
-            firearmPossession = true,
-            robbery = true,
-            offencesWithWeapon = true
-          ),
-          currentOffences = CurrentOffences(
-            firearmPossession = true,
-            offencesWithWeapon = true
-          )
-        )
-      )
+      val offenderAndOffencesDto = offenderAndOffencesDto()
 
       every {
         assessRisksAndNeedsApiRestClient.getRiskPredictors(
@@ -744,5 +697,120 @@ class RiskPredictorsServiceTest {
         )
       )
     }
+
+    @Test
+    fun `returns predictor scores for the assessment episode`() {
+      val final = false
+      every { assessmentSchemaService.getPredictorsForAssessment(AssessmentSchemaCode.RSR) } returns predictors
+
+      val offenderAndOffencesDto = offenderAndOffencesDto()
+
+      every {
+        assessRisksAndNeedsApiRestClient.getRiskPredictors(
+          PredictorType.RSR,
+          offenderAndOffencesDto,
+          final,
+          episodeUuid
+        )
+      } returns RiskPredictorsDto(
+        type = PredictorType.RSR,
+        scoreType = ScoreType.STATIC,
+        scores = mapOf(
+          PredictorSubType.RSR to Score(level = ScoreLevel.HIGH, score = BigDecimal("11.34"), isValid = true),
+          PredictorSubType.OSPC to Score(level = ScoreLevel.NOT_APPLICABLE, score = BigDecimal("0"), isValid = false),
+          PredictorSubType.OSPI to Score(level = ScoreLevel.NOT_APPLICABLE, score = BigDecimal("0"), isValid = false),
+        ),
+        calculatedAt = "2021-08-09 14:46:48"
+      )
+
+      every {
+        subjectService.getSubjectForAssessment(assessment.assessmentUuid)
+      } returns SubjectEntity(
+        oasysOffenderPk = 9999, dateOfBirth = LocalDate.of(2001, 1, 1), gender = "FEMALE", crn = "X1345"
+      )
+
+      val results = predictorService.getPredictorResults(assessmentEpisode.episodeUuid, final)
+
+      assertThat(results).hasSize(1)
+      assertThat(results.first().type).isEqualTo(PredictorType.RSR)
+      assertThat(results.first().scores).contains(
+        entry(
+          "RSR",
+          uk.gov.justice.digital.assessments.api.Score(
+            "HIGH",
+            BigDecimal("11.34"),
+            true,
+            "2021-08-09 14:46:48"
+          )
+        ),
+        entry(
+          "OSPC",
+          uk.gov.justice.digital.assessments.api.Score(
+            "NOT_APPLICABLE",
+            BigDecimal("0"),
+            false,
+            "2021-08-09 14:46:48"
+          )
+        ),
+        entry(
+          "OSPI",
+          uk.gov.justice.digital.assessments.api.Score(
+            "NOT_APPLICABLE",
+            BigDecimal("0"),
+            false,
+            "2021-08-09 14:46:48"
+          )
+        )
+      )
+    }
   }
+
+  private fun offenderAndOffencesDto() = OffenderAndOffencesDto(
+    crn = "X1345",
+    gender = Gender.FEMALE,
+    dob = LocalDate.of(2001, 1, 1),
+    assessmentDate = assessmentEpisode.createdDate,
+    currentOffence = CurrentOffence("138", "00"),
+    dateOfFirstSanction = "2021-10-01",
+    totalOffences = 10,
+    totalViolentOffences = 9,
+    dateOfCurrentConviction = "2021-11-01",
+    hasAnySexualOffences = true,
+    isCurrentSexualOffence = true,
+    isCurrentOffenceVictimStranger = true,
+    mostRecentSexualOffenceDate = "2021-09-01",
+    totalSexualOffencesInvolvingAnAdult = 2,
+    totalSexualOffencesInvolvingAChild = 4,
+    totalSexualOffencesInvolvingChildImages = 10,
+    totalNonContactSexualOffences = 9,
+    earliestReleaseDate = "2025-11-01",
+    hasCompletedInterview = true,
+    dynamicScoringOffences = DynamicScoringOffences(
+      hasSuitableAccommodation = "MISSING",
+      employment = "NOT_AVAILABLE_FOR_WORK",
+      currentRelationshipWithPartner = "SIGNIFICANT_PROBLEMS",
+      evidenceOfDomesticViolence = true,
+      isPerpetrator = true,
+      alcoholUseIssues = "SIGNIFICANT_PROBLEMS",
+      bingeDrinkingIssues = "SIGNIFICANT_PROBLEMS",
+      impulsivityIssues = "SOME_PROBLEMS",
+      temperControlIssues = "SIGNIFICANT_PROBLEMS",
+      proCriminalAttitudes = "SOME_PROBLEMS",
+      previousOffences = PreviousOffences(
+        murderAttempt = true,
+        wounding = true,
+        aggravatedBurglary = true,
+        arson = true,
+        criminalDamage = true,
+        kidnapping = true,
+        firearmPossession = true,
+        robbery = true,
+        offencesWithWeapon = true
+      ),
+      currentOffences = CurrentOffences(
+        firearmPossession = true,
+        offencesWithWeapon = true
+      )
+    )
+  )
 }

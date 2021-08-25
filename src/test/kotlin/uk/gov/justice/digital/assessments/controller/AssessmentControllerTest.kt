@@ -37,7 +37,7 @@ import java.util.UUID
     executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
   )
 )
-@AutoConfigureWebTestClient(timeout = "360000")
+@AutoConfigureWebTestClient
 class AssessmentControllerTest : IntegrationTest() {
   val assessmentUuid = "2e020e78-a81c-407f-bc78-e5f284e237e5"
   val episodeId = "current"
