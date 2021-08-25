@@ -18,6 +18,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.Predictor
 import uk.gov.justice.digital.assessments.jpa.entities.PredictorFieldMapping
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.SubjectEntity
+import uk.gov.justice.digital.assessments.jpa.repositories.EpisodeRepository
 import uk.gov.justice.digital.assessments.restclient.AssessRisksAndNeedsApiRestClient
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.CurrentOffence
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.CurrentOffences
@@ -37,13 +38,14 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
 
-class PredictorServiceTest {
+class RiskPredictorsServiceTest {
   private val assessmentSchemaService: AssessmentSchemaService = mockk()
   private val subjectService: SubjectService = mockk()
+  private val episodeRepository: EpisodeRepository = mockk()
   private val assessRisksAndNeedsApiRestClient: AssessRisksAndNeedsApiRestClient = mockk()
 
   private val predictorService =
-    PredictorService(assessmentSchemaService, subjectService, assessRisksAndNeedsApiRestClient)
+    RiskPredictorsService(assessmentSchemaService, subjectService, episodeRepository, assessRisksAndNeedsApiRestClient)
 
   private val testQuestion1 = QuestionSchemaEntity(
     questionSchemaId = 1,
@@ -118,107 +120,107 @@ class PredictorServiceTest {
   private val testQuestion15 = QuestionSchemaEntity(
     questionSchemaId = 15,
     questionSchemaUuid = UUID.randomUUID(),
-    questionCode= "question_fifteen"
+    questionCode = "question_fifteen"
   )
   private val testQuestion16 = QuestionSchemaEntity(
     questionSchemaId = 16,
     questionSchemaUuid = UUID.randomUUID(),
-    questionCode= "question_sixteen"
+    questionCode = "question_sixteen"
   )
   private val testQuestion17 = QuestionSchemaEntity(
     questionSchemaId = 17,
     questionSchemaUuid = UUID.randomUUID(),
-    questionCode= "question_seventeen"
+    questionCode = "question_seventeen"
   )
   private val testQuestion18 = QuestionSchemaEntity(
     questionSchemaId = 18,
     questionSchemaUuid = UUID.randomUUID(),
-    questionCode= "question_eighteen"
+    questionCode = "question_eighteen"
   )
   private val testQuestion19 = QuestionSchemaEntity(
     questionSchemaId = 19,
     questionSchemaUuid = UUID.randomUUID(),
-    questionCode= "question_nineteen"
+    questionCode = "question_nineteen"
   )
   private val testQuestion20 = QuestionSchemaEntity(
     questionSchemaId = 20,
     questionSchemaUuid = UUID.randomUUID(),
-    questionCode= "question_twenty"
+    questionCode = "question_twenty"
   )
   private val testQuestion21 = QuestionSchemaEntity(
     questionSchemaId = 21,
     questionSchemaUuid = UUID.randomUUID(),
-    questionCode= "question_twenty_one"
+    questionCode = "question_twenty_one"
   )
   private val testQuestion22 = QuestionSchemaEntity(
     questionSchemaId = 22,
     questionSchemaUuid = UUID.randomUUID(),
-    questionCode= "question_twenty_two"
+    questionCode = "question_twenty_two"
   )
   private val testQuestion23 = QuestionSchemaEntity(
     questionSchemaId = 23,
     questionSchemaUuid = UUID.randomUUID(),
-    questionCode= "question_twenty_three"
+    questionCode = "question_twenty_three"
   )
   private val testQuestion24 = QuestionSchemaEntity(
     questionSchemaId = 24,
     questionSchemaUuid = UUID.randomUUID(),
-    questionCode= "question_twenty_four"
+    questionCode = "question_twenty_four"
   )
   private val testQuestion25 = QuestionSchemaEntity(
     questionSchemaId = 25,
     questionSchemaUuid = UUID.randomUUID(),
-    questionCode= "question_twenty_five"
+    questionCode = "question_twenty_five"
   )
   private val testQuestion26 = QuestionSchemaEntity(
     questionSchemaId = 26,
     questionSchemaUuid = UUID.randomUUID(),
-    questionCode= "question_twenty_six"
+    questionCode = "question_twenty_six"
   )
   private val testQuestion27 = QuestionSchemaEntity(
     questionSchemaId = 27,
     questionSchemaUuid = UUID.randomUUID(),
-    questionCode= "question_twenty_seven"
+    questionCode = "question_twenty_seven"
   )
   private val testQuestion28 = QuestionSchemaEntity(
     questionSchemaId = 28,
     questionSchemaUuid = UUID.randomUUID(),
-    questionCode= "question_twenty_eight"
+    questionCode = "question_twenty_eight"
   )
   private val testQuestion29 = QuestionSchemaEntity(
     questionSchemaId = 29,
     questionSchemaUuid = UUID.randomUUID(),
-    questionCode= "question_twenty_nine"
+    questionCode = "question_twenty_nine"
   )
   private val testQuestion30 = QuestionSchemaEntity(
     questionSchemaId = 30,
     questionSchemaUuid = UUID.randomUUID(),
-    questionCode= "question_thirty"
+    questionCode = "question_thirty"
   )
   private val testQuestion31 = QuestionSchemaEntity(
     questionSchemaId = 31,
     questionSchemaUuid = UUID.randomUUID(),
-    questionCode= "question_thirty_one"
+    questionCode = "question_thirty_one"
   )
   private val testQuestion32 = QuestionSchemaEntity(
     questionSchemaId = 32,
     questionSchemaUuid = UUID.randomUUID(),
-    questionCode= "question_thirty_two"
+    questionCode = "question_thirty_two"
   )
   private val testQuestion33 = QuestionSchemaEntity(
     questionSchemaId = 33,
     questionSchemaUuid = UUID.randomUUID(),
-    questionCode= "question_thirty_three"
+    questionCode = "question_thirty_three"
   )
   private val testQuestion34 = QuestionSchemaEntity(
     questionSchemaId = 34,
     questionSchemaUuid = UUID.randomUUID(),
-    questionCode= "question_thirty_four"
+    questionCode = "question_thirty_four"
   )
   private val testQuestion35 = QuestionSchemaEntity(
     questionSchemaId = 35,
     questionSchemaUuid = UUID.randomUUID(),
-    questionCode= "question_thirty_five"
+    questionCode = "question_thirty_five"
   )
 
   private val predictors = listOf(
@@ -591,14 +593,16 @@ class PredictorServiceTest {
     episodeUuid = UUID.randomUUID(),
     answers = answers,
     createdDate = LocalDateTime.now(),
-    assessment = assessment
+    assessment = assessment,
+    assessmentSchemaCode = AssessmentSchemaCode.RSR
   )
 
   private val assessmentEpisodeNoAnswers = AssessmentEpisodeEntity(
     episodeId = 2,
     episodeUuid = UUID.randomUUID(),
     createdDate = LocalDateTime.now(),
-    assessment = assessment
+    assessment = assessment,
+    assessmentSchemaCode = AssessmentSchemaCode.RSR
   )
   val final = true
   val episodeUuid = assessmentEpisode.episodeUuid
@@ -624,7 +628,6 @@ class PredictorServiceTest {
 
       assertThrows<EntityNotFoundException> {
         predictorService.getPredictorResults(
-          AssessmentSchemaCode.RSR,
           assessmentEpisodeNoAnswers
         )
       }
@@ -707,7 +710,7 @@ class PredictorServiceTest {
         oasysOffenderPk = 9999, dateOfBirth = LocalDate.of(2001, 1, 1), gender = "FEMALE", crn = "X1345"
       )
 
-      val results = predictorService.getPredictorResults(AssessmentSchemaCode.RSR, assessmentEpisode)
+      val results = predictorService.getPredictorResults(assessmentEpisode, final)
 
       assertThat(results).hasSize(1)
       assertThat(results.first().type).isEqualTo(PredictorType.RSR)

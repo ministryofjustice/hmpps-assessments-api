@@ -42,6 +42,7 @@ class AssessmentEntityTest {
           episodeId = episodeId,
           changeReason = "Change of Circs",
           createdDate = LocalDateTime.now(),
+          assessmentSchemaCode = AssessmentSchemaCode.ROSH
         )
       )
     )
@@ -60,7 +61,8 @@ class AssessmentEntityTest {
         AssessmentEpisodeEntity(
           episodeId = episodeId,
           changeReason = "Change of Circs",
-          createdDate = LocalDateTime.now()
+          createdDate = LocalDateTime.now(),
+          assessmentSchemaCode = AssessmentSchemaCode.ROSH
         )
       )
     )
@@ -78,7 +80,8 @@ class AssessmentEntityTest {
           episodeId = episodeId,
           changeReason = "Change of Circs",
           createdDate = LocalDateTime.now(),
-          endDate = LocalDateTime.now().minusDays(1)
+          endDate = LocalDateTime.now().minusDays(1),
+          assessmentSchemaCode = AssessmentSchemaCode.ROSH
         )
       )
     )

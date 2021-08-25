@@ -27,7 +27,7 @@ class AssessmentUpdateServiceTest {
   private val assessmentRepository: AssessmentRepository = mockk()
   private val episodeRepository: EpisodeRepository = mockk()
   private val questionService: QuestionService = mockk()
-  private val predictorService: PredictorService = mockk()
+  private val riskPredictorsService: RiskPredictorsService = mockk()
   private val assessmentSchemaService: AssessmentSchemaService = mockk()
   private val oasysAssessmentUpdateService: OasysAssessmentUpdateService = mockk()
 
@@ -35,7 +35,7 @@ class AssessmentUpdateServiceTest {
     assessmentRepository,
     episodeRepository,
     questionService,
-    predictorService,
+    riskPredictorsService,
     oasysAssessmentUpdateService
   )
 
@@ -168,6 +168,7 @@ class AssessmentUpdateServiceTest {
             ),
             assessment = AssessmentEntity(assessmentUuid = assessmentUuid),
             createdDate = LocalDateTime.now(),
+            assessmentSchemaCode = AssessmentSchemaCode.ROSH
           )
         )
       )
@@ -705,6 +706,7 @@ class AssessmentUpdateServiceTest {
           changeReason = "Change of Circs 2",
           answers = answers,
           createdDate = LocalDateTime.now(),
+          assessmentSchemaCode = AssessmentSchemaCode.ROSH
         ),
       )
     )

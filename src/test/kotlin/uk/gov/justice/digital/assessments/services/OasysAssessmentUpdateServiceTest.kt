@@ -102,7 +102,8 @@ class OasysAssessmentUpdateServiceTest() {
 
     val episode = AssessmentEpisodeEntity(
       oasysSetPk = oasysSetPk,
-      createdDate = LocalDateTime.now()
+      createdDate = LocalDateTime.now(),
+      assessmentSchemaCode = AssessmentSchemaCode.ROSH
     )
     val update = mapOf(questionCode1 to makeAnswersDto("YES"))
 
@@ -158,21 +159,25 @@ class OasysAssessmentUpdateServiceTest() {
 
   @Test
   fun `Update oasys assessment returns errors when offender null`() {
-    val assessmentEpisode = AssessmentEpisodeEntity(episodeId = 128)
+    val assessmentEpisode = AssessmentEpisodeEntity(
+      episodeId = 128, assessmentSchemaCode = AssessmentSchemaCode.ROSH
+    )
     val update = UpdateAssessmentEpisodeDto(answers = mapOf(questionCode1 to listOf("Updated")))
     val updateAssessmentResponse =
       oasysAssessmentUpdateService.updateOASysAssessment(assessmentEpisode, update.asAnswersDtos())
 
-    assertThat(updateAssessmentResponse).isEqualTo(AssessmentEpisodeUpdateErrors(errorsInAssessment = mutableListOf("Unable to update OASys Assessment with keys type: null oasysSet: null offenderPk: null, values cant be null")))
+    assertThat(updateAssessmentResponse).isEqualTo(AssessmentEpisodeUpdateErrors(errorsInAssessment = mutableListOf("Unable to update OASys Assessment with keys type: ROSH oasysSet: null offenderPk: null, values cant be null")))
   }
 
   @Test
   fun `Complete oasys assessment returns errors when offender null`() {
-    val assessmentEpisode = AssessmentEpisodeEntity(episodeId = 128)
+    val assessmentEpisode = AssessmentEpisodeEntity(
+      episodeId = 128, assessmentSchemaCode = AssessmentSchemaCode.ROSH
+    )
     val completeAssessmentResponse =
       oasysAssessmentUpdateService.completeOASysAssessment(assessmentEpisode, null)
 
-    assertThat(completeAssessmentResponse).isEqualTo(AssessmentEpisodeUpdateErrors(errorsInAssessment = mutableListOf("Unable to complete OASys Assessment with keys type: null oasysSet: null offenderPk: null, values cant be null")))
+    assertThat(completeAssessmentResponse).isEqualTo(AssessmentEpisodeUpdateErrors(errorsInAssessment = mutableListOf("Unable to complete OASys Assessment with keys type: ROSH oasysSet: null offenderPk: null, values cant be null")))
   }
 
   private fun setupSectionQuestionCodes(): QuestionSchemaEntities {

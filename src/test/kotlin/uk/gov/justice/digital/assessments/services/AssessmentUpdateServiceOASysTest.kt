@@ -43,7 +43,7 @@ class AssessmentUpdateServiceOASysTest {
   private val episodeRepository: EpisodeRepository = mockk()
   private val questionService: QuestionService = mockk()
   private val assessmentUpdateRestClient: AssessmentUpdateRestClient = mockk()
-  private val predictorService: PredictorService = mockk()
+  private val riskPredictorsService: RiskPredictorsService = mockk()
   private val assessmentSchemaService: AssessmentSchemaService = mockk()
   private val oasysAssessmentUpdateService: OasysAssessmentUpdateService = mockk()
 
@@ -51,7 +51,7 @@ class AssessmentUpdateServiceOASysTest {
     assessmentRepository,
     episodeRepository,
     questionService,
-    predictorService,
+    riskPredictorsService,
     oasysAssessmentUpdateService
   )
 
@@ -129,6 +129,7 @@ class AssessmentUpdateServiceOASysTest {
     val episode = AssessmentEpisodeEntity(
       answers = answers,
       createdDate = LocalDateTime.now(),
+      assessmentSchemaCode = AssessmentSchemaCode.ROSH
     )
     val questions = QuestionSchemaEntities(
       listOf(
@@ -204,6 +205,7 @@ class AssessmentUpdateServiceOASysTest {
       val episode = AssessmentEpisodeEntity(
         answers = answers,
         createdDate = LocalDateTime.now(),
+        assessmentSchemaCode = AssessmentSchemaCode.ROSH
       )
       val oasysAnswers = OasysAnswers.from(episode, testMapper)
 
@@ -227,6 +229,7 @@ class AssessmentUpdateServiceOASysTest {
       val episode = AssessmentEpisodeEntity(
         answers = answers,
         createdDate = LocalDateTime.now(),
+        assessmentSchemaCode = AssessmentSchemaCode.ROSH
       )
 
       val oasysAnswers = OasysAnswers.from(episode, testMapper)
@@ -261,6 +264,7 @@ class AssessmentUpdateServiceOASysTest {
       val episode = AssessmentEpisodeEntity(
         answers = answers,
         createdDate = LocalDateTime.now(),
+        assessmentSchemaCode = AssessmentSchemaCode.ROSH
       )
 
       val oasysAnswers = OasysAnswers.from(episode, testMapper)

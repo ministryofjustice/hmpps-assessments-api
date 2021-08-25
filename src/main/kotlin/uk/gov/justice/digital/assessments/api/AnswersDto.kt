@@ -12,7 +12,6 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer
 import uk.gov.justice.digital.assessments.jpa.entities.Answer
 import uk.gov.justice.digital.assessments.jpa.entities.AnswerEntity
 import java.lang.IllegalStateException
-import java.util.UUID
 
 @JsonSerialize(using = AnswersDtoSerializer::class)
 @JsonDeserialize(using = AnswersDtoDeserializer::class)
