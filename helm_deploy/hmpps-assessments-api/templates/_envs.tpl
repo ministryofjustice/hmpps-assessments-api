@@ -139,4 +139,7 @@ env:
   - name: SPRING_REDIS_SSL
     value: {{ .Values.redis.tlsEnabled | quote }}
 
+  - name: INGRESS_URL
+    value: 'https://{{ .Values.ingress.host }}'
+
 {{- end -}}
