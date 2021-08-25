@@ -46,7 +46,7 @@ class OffenderStubServiceTest {
           familyName = "Smith",
           forename1 = "John",
           gender = "F",
-          dateOfBirth = LocalDate.of(1979,8,18),
+          dateOfBirth = LocalDate.of(1979, 8, 18),
           areaCode = "WWS"
         )
       )
@@ -72,7 +72,7 @@ class OffenderStubServiceTest {
         familyName = "familyname",
         forename1 = "forename",
         gender = "Male",
-        dateOfBirth = LocalDate.of(2000,1,1),
+        dateOfBirth = LocalDate.of(2000, 1, 1),
         areaCode = "WWS"
       ),
       OffenderStubDto(
@@ -81,7 +81,7 @@ class OffenderStubServiceTest {
         familyName = "familyname",
         forename1 = "forename",
         gender = "Male",
-        dateOfBirth = LocalDate.of(2000,1,1),
+        dateOfBirth = LocalDate.of(2000, 1, 1),
         areaCode = "WWS"
       )
     )
@@ -95,7 +95,7 @@ class OffenderStubServiceTest {
         familyName = "familyname",
         forename1 = "forename",
         gender = "Male",
-        dateOfBirth = LocalDate.of(2000,1,1),
+        dateOfBirth = LocalDate.of(2000, 1, 1),
         areaCode = "WWS"
       ),
       OffenderStubDto(
@@ -104,7 +104,7 @@ class OffenderStubServiceTest {
         familyName = "familyname",
         forename1 = "forename",
         gender = "Male",
-        dateOfBirth = LocalDate.of(2000,1,1),
+        dateOfBirth = LocalDate.of(2000, 1, 1),
         areaCode = "WWS"
       ),
       OffenderStubDto(
@@ -113,7 +113,7 @@ class OffenderStubServiceTest {
         familyName = "familyname",
         forename1 = "forename",
         gender = "Male",
-        dateOfBirth = LocalDate.of(2000,1,1),
+        dateOfBirth = LocalDate.of(2000, 1, 1),
         areaCode = "WWS"
       )
     )
