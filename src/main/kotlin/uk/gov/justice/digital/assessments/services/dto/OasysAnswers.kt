@@ -10,7 +10,6 @@ import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OasysAn
 import uk.gov.justice.digital.assessments.services.QuestionSchemaEntities
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.UUID
 
 data class OasysAnswers(
   private val allAnswers: MutableSet<OasysAnswer> = mutableSetOf()

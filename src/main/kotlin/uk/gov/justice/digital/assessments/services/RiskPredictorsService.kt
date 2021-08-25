@@ -8,8 +8,8 @@ import uk.gov.justice.digital.assessments.api.PredictorScoresDto
 import uk.gov.justice.digital.assessments.jpa.entities.Answer
 import uk.gov.justice.digital.assessments.jpa.entities.AnswerEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.PredictorFieldMapping
+import uk.gov.justice.digital.assessments.jpa.repositories.EpisodeRepository
 import uk.gov.justice.digital.assessments.restclient.AssessRisksAndNeedsApiRestClient
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.CurrentOffence
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.CurrentOffences
@@ -18,6 +18,7 @@ import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.Gend
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.OffenderAndOffencesDto
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.PredictorSubType
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.PreviousOffences
+import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.ProblemsLevel
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.RiskPredictorsDto
 import uk.gov.justice.digital.assessments.services.dto.PredictorType
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
@@ -25,25 +26,31 @@ import uk.gov.justice.digital.assessments.services.exceptions.PredictorCalculati
 import java.util.UUID
 
 @Service
-class PredictorService(
+class RiskPredictorsService(
   private val assessmentSchemaService: AssessmentSchemaService,
   private val subjectService: SubjectService,
+  private val episodeRepository: EpisodeRepository,
   private val assessRisksAndNeedsApiRestClient: AssessRisksAndNeedsApiRestClient
 ) {
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
   }
 
-  fun getPredictorResults(
-    assessmentSchemaCode: AssessmentSchemaCode,
-    episode: AssessmentEpisodeEntity,
-  ): List<PredictorScoresDto> {
-    val predictors = assessmentSchemaService.getPredictorsForAssessment(assessmentSchemaCode)
+  fun getPredictorResults(episodeUuid: UUID, final: Boolean = false): List<PredictorScoresDto> {
+    val episode = episodeRepository.findByEpisodeUuid(episodeUuid)
+      ?: throw EntityNotFoundException("Episode with $episodeUuid not found")
+    return getPredictorResults(episode)
+  }
 
-    log.info("Found ${predictors.size} predictors for episode ${episode.episodeUuid} with assessment type $assessmentSchemaCode")
+  fun getPredictorResults(
+    episode: AssessmentEpisodeEntity,
+    final: Boolean = false
+  ): List<PredictorScoresDto> {
+    val predictors = assessmentSchemaService.getPredictorsForAssessment(episode.assessmentSchemaCode)
+    log.info("Found ${predictors.size} predictors for episode ${episode.episodeUuid} with assessment type ${episode.assessmentSchemaCode}")
 
     return predictors.map { predictor ->
-      fetchResults(episode, predictor.type, extractAnswers(predictor.fields.toList(), episode.answers.orEmpty()))
+      fetchResults(episode, final, predictor.type, extractAnswers(predictor.fields.toList(), episode.answers.orEmpty()))
     }
   }
 
@@ -66,6 +73,7 @@ class PredictorService(
 
   private fun fetchResults(
     episode: AssessmentEpisodeEntity,
+    final: Boolean,
     predictorType: PredictorType,
     answers: Map<String, AnswersDto>,
   ): PredictorScoresDto {
@@ -102,8 +110,12 @@ class PredictorService(
       dynamicScoringOffences = getDynamicScoringOffences(hasCompletedInterview, answers)
     )
 
-    val final = true
-    return assessRisksAndNeedsApiRestClient.getRiskPredictors(predictorType, offenderAndOffencesDto, final, episode.episodeUuid)
+    return assessRisksAndNeedsApiRestClient.getRiskPredictors(
+      predictorType,
+      offenderAndOffencesDto,
+      final,
+      episode.episodeUuid
+    )
       .toRiskPredictorScores(crn)
   }
 
@@ -115,7 +127,10 @@ class PredictorService(
     return DynamicScoringOffences(
       hasSuitableAccommodation = getNonRequiredAnswer(answers, "suitable_accommodation").toProblemsLevel(),
       employment = getNonRequiredAnswer(answers, "unemployed_on_release").toEmploymentType(),
-      currentRelationshipWithPartner = getNonRequiredAnswer(answers, "current_relationship_with_partner").toProblemsLevel(),
+      currentRelationshipWithPartner = getNonRequiredAnswer(
+        answers,
+        "current_relationship_with_partner"
+      ).toProblemsLevel(),
       evidenceOfDomesticViolence = getNonRequiredAnswer(answers, "evidence_domestic_violence").toBoolean(),
       isPerpetrator = getNonRequiredAnswer(answers, "perpetrator_domestic_violence").toBoolean(),
       alcoholUseIssues = getNonRequiredAnswer(answers, "use_of_alcohol").toProblemsLevel(),

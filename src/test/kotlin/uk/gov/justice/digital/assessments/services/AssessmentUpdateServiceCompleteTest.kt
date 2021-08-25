@@ -28,14 +28,14 @@ class AssessmentUpdateServiceCompleteTest {
   private val episodeRepository: EpisodeRepository = mockk()
   private val questionService: QuestionService = mockk()
   private val assessmentSchemaService: AssessmentSchemaService = mockk()
-  private val predictorService: PredictorService = mockk()
+  private val riskPredictorsService: RiskPredictorsService = mockk()
   private val oasysAssessmentUpdateService: OasysAssessmentUpdateService = mockk()
 
   private val assessmentUpdateService = AssessmentUpdateService(
     assessmentRepository,
     episodeRepository,
     questionService,
-    predictorService,
+    riskPredictorsService,
     oasysAssessmentUpdateService
   )
 
@@ -53,7 +53,7 @@ class AssessmentUpdateServiceCompleteTest {
     every {
       oasysAssessmentUpdateService.completeOASysAssessment(assessmentEpisode, 9999)
     } returns AssessmentEpisodeUpdateErrors()
-    every { predictorService.getPredictorResults(AssessmentSchemaCode.ROSH, assessmentEpisode) } returns emptyList()
+    every { riskPredictorsService.getPredictorResults(assessmentEpisode, true) } returns emptyList()
 
     val episode = assessmentUpdateService.closeEpisode(assessmentEpisode)
 
@@ -75,7 +75,7 @@ class AssessmentUpdateServiceCompleteTest {
     } returns AssessmentEpisodeUpdateErrors(
       answerErrors = mutableMapOf("question_code" to mutableListOf("error"))
     )
-    every { predictorService.getPredictorResults(AssessmentSchemaCode.ROSH, assessmentEpisode) } returns emptyList()
+    every { riskPredictorsService.getPredictorResults(assessmentEpisode, true) } returns emptyList()
 
     val episode = assessmentUpdateService.closeEpisode(assessmentEpisode)
 

@@ -3,7 +3,6 @@ package uk.gov.justice.digital.assessments.services.dto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.UpdateAssessmentAnswersResponseDto
 import uk.gov.justice.digital.assessments.services.QuestionSchemaEntities
-import java.util.UUID
 
 data class AssessmentEpisodeUpdateErrors(
   private val answerErrors: MutableMap<String, MutableCollection<String>> = mutableMapOf(),

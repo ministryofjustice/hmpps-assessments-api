@@ -12,7 +12,6 @@ import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.EpisodeRepository
 import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
-import java.util.UUID
 import javax.transaction.Transactional
 
 typealias TableAnswers = Map<String, Collection<Answer>>
@@ -22,7 +21,7 @@ class AssessmentUpdateService(
   private val assessmentRepository: AssessmentRepository,
   private val episodeRepository: EpisodeRepository,
   private val questionService: QuestionService,
-  private val predictorService: PredictorService,
+  private val riskPredictorsService: RiskPredictorsService,
   private val oasysAssessmentUpdateService: OasysAssessmentUpdateService,
 ) {
   companion object {
@@ -302,10 +301,9 @@ class AssessmentUpdateService(
       episodeRepository.save(episode)
       log.info("Saved closed episode ${episode.episodeUuid} for assessment ${episode.assessment?.assessmentUuid}")
     }
-    val predictorResults = episode.assessmentSchemaCode?.let {
-      predictorService.getPredictorResults(it, episode)
-    }
+    val predictorResults = riskPredictorsService.getPredictorResults(episode = episode, final = true)
+
     log.info("Predictors for assessment ${episode.assessment?.assessmentUuid} are $predictorResults")
-    return AssessmentEpisodeDto.from(episode, oasysResult, predictorResults.orEmpty())
+    return AssessmentEpisodeDto.from(episode, oasysResult, predictorResults)
   }
 }

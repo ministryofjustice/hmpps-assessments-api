@@ -40,7 +40,7 @@ class AssessmentEpisodeEntity(
 
   @Column(name = "ASSESSMENT_SCHEMA_CODE")
   @Enumerated(EnumType.STRING)
-  val assessmentSchemaCode: AssessmentSchemaCode? = null,
+  val assessmentSchemaCode: AssessmentSchemaCode,
 
   @Column(name = "OASYS_SET_PK")
   val oasysSetPk: Long? = null,

@@ -76,7 +76,11 @@ class AssessmentServiceTest {
           assessmentSchemaCode = assessmentSchemaCode
         )
       } returns AssessmentEpisodeEntity(
-        episodeId = episodeId1, assessment = assessment, createdDate = LocalDateTime.now(),
+        episodeId = episodeId1,
+        assessment = assessment,
+        createdDate = LocalDateTime.now(),
+        assessmentSchemaCode = AssessmentSchemaCode.ROSH
+
       )
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
       every { episodeService.prepopulate(any()) } returnsArgument 0
@@ -93,10 +97,18 @@ class AssessmentServiceTest {
         assessmentId = assessmentId,
         episodes = mutableListOf(
           AssessmentEpisodeEntity(
-            episodeId = episodeId1, changeReason = "Change of Circs 1", createdDate = LocalDateTime.now(),
+            episodeId = episodeId1,
+            changeReason = "Change of Circs 1",
+            createdDate = LocalDateTime.now(),
+            assessmentSchemaCode = AssessmentSchemaCode.ROSH
+
           ),
           AssessmentEpisodeEntity(
-            episodeId = episodeId2, changeReason = "Change of Circs 2", createdDate = LocalDateTime.now(),
+            episodeId = episodeId2,
+            changeReason = "Change of Circs 2",
+            createdDate = LocalDateTime.now(),
+            assessmentSchemaCode = AssessmentSchemaCode.ROSH
+
           )
         )
       )
@@ -126,10 +138,14 @@ class AssessmentServiceTest {
             episodeId = episodeId1,
             changeReason = "Change of Circs 1",
             createdDate = LocalDateTime.now(),
-            endDate = LocalDateTime.now().minusDays(1)
+            endDate = LocalDateTime.now().minusDays(1),
+            assessmentSchemaCode = AssessmentSchemaCode.ROSH
           ),
           AssessmentEpisodeEntity(
-            episodeId = episodeId2, changeReason = "Change of Circs 2", createdDate = LocalDateTime.now(),
+            episodeId = episodeId2,
+            changeReason = "Change of Circs 2",
+            createdDate = LocalDateTime.now(),
+            assessmentSchemaCode = AssessmentSchemaCode.ROSH
           )
         )
       )
@@ -176,11 +192,13 @@ class AssessmentServiceTest {
             episodeId = episodeId1,
             answers = mutableMapOf(questionCode1 to AnswerEntity.from("YES")),
             createdDate = LocalDateTime.now(),
+            assessmentSchemaCode = AssessmentSchemaCode.ROSH
           ),
           AssessmentEpisodeEntity(
             episodeId = episodeId2,
             answers = mutableMapOf(questionCode2 to AnswerEntity.from("NO")),
             createdDate = LocalDateTime.now(),
+            assessmentSchemaCode = AssessmentSchemaCode.ROSH
           )
         )
       )
@@ -208,6 +226,7 @@ class AssessmentServiceTest {
               questionCode1 to AnswerEntity.from("YES")
             ),
             createdDate = LocalDateTime.now(),
+            assessmentSchemaCode = AssessmentSchemaCode.ROSH
           ),
           AssessmentEpisodeEntity(
             episodeId = episodeId3,
@@ -216,6 +235,7 @@ class AssessmentServiceTest {
               questionCode2 to AnswerEntity.from("MAYBE")
             ),
             createdDate = LocalDateTime.now(),
+            assessmentSchemaCode = AssessmentSchemaCode.ROSH
           ),
           AssessmentEpisodeEntity(
             episodeId = episodeId2,
@@ -224,6 +244,7 @@ class AssessmentServiceTest {
               questionCode2 to AnswerEntity.from("NO")
             ),
             createdDate = LocalDateTime.now(),
+            assessmentSchemaCode = AssessmentSchemaCode.ROSH
           ),
         )
       )
@@ -247,6 +268,7 @@ class AssessmentServiceTest {
               questionCode1 to AnswerEntity.from("YES")
             ),
             createdDate = LocalDateTime.now(),
+            assessmentSchemaCode = AssessmentSchemaCode.ROSH
           ),
           AssessmentEpisodeEntity(
             episodeId = episodeId3,
@@ -255,6 +277,7 @@ class AssessmentServiceTest {
               questionCode2 to AnswerEntity.from("NO")
             ),
             createdDate = LocalDateTime.now(),
+            assessmentSchemaCode = AssessmentSchemaCode.ROSH
           ),
           AssessmentEpisodeEntity(
             episodeId = episodeId2,
@@ -263,6 +286,7 @@ class AssessmentServiceTest {
               questionCode2 to AnswerEntity.from("MAYBE")
             ),
             createdDate = LocalDateTime.now(),
+            assessmentSchemaCode = AssessmentSchemaCode.ROSH
           ),
         )
       )
@@ -288,6 +312,7 @@ class AssessmentServiceTest {
               questionCode3 to AnswerEntity.from("free text")
             ),
             createdDate = LocalDateTime.now(),
+            assessmentSchemaCode = AssessmentSchemaCode.ROSH
           )
         )
       )
@@ -313,6 +338,7 @@ class AssessmentServiceTest {
               questionCode1 to AnswerEntity.from("NO")
             ),
             createdDate = LocalDateTime.now(),
+            assessmentSchemaCode = AssessmentSchemaCode.ROSH
           )
         )
       )
@@ -350,7 +376,11 @@ class AssessmentServiceTest {
           questionCode = questionCode2,
           answerSchemaGroup = group2
         ),
-        QuestionSchemaEntity(questionSchemaId = 3, questionSchemaUuid = questionSchemaUuid3, questionCode = questionCode3)
+        QuestionSchemaEntity(
+          questionSchemaId = 3,
+          questionSchemaUuid = questionSchemaUuid3,
+          questionCode = questionCode3
+        )
       )
     )
   }
