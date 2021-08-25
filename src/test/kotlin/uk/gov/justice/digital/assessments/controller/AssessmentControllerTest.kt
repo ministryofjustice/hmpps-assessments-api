@@ -13,18 +13,31 @@ import org.springframework.test.web.reactive.server.expectBody
 import uk.gov.justice.digital.assessments.api.AssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.api.AssessmentSubjectDto
 import uk.gov.justice.digital.assessments.api.ErrorResponse
+import uk.gov.justice.digital.assessments.api.PredictorScoresDto
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
+import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.PredictorSubType
+import uk.gov.justice.digital.assessments.api.Score
+import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.ScoreLevel
+import uk.gov.justice.digital.assessments.services.dto.PredictorType
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import uk.gov.justice.digital.assessments.testutils.Verify
 import uk.gov.justice.digital.assessments.utils.RequestData
+import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.util.UUID
 
 @SqlGroup(
-  Sql(scripts = ["classpath:assessments/before-test.sql"], config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED)),
-  Sql(scripts = ["classpath:assessments/after-test.sql"], config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED), executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+  Sql(
+    scripts = ["classpath:assessments/before-test.sql"],
+    config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED)
+  ),
+  Sql(
+    scripts = ["classpath:assessments/after-test.sql"],
+    config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED),
+    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
+  )
 )
-@AutoConfigureWebTestClient(timeout = "50000")
+@AutoConfigureWebTestClient(timeout = "360000")
 class AssessmentControllerTest : IntegrationTest() {
   val assessmentUuid = "2e020e78-a81c-407f-bc78-e5f284e237e5"
   val episodeId = "current"
@@ -38,9 +51,9 @@ class AssessmentControllerTest : IntegrationTest() {
 
       assertThat(subject.assessmentUuid).isEqualTo(UUID.fromString("19c8d211-68dc-4692-a6e2-d58468127056"))
       assertThat(subject.name).isEqualTo("John Smith")
-      assertThat(subject.dob).isEqualTo("1928-08-01")
-      assertThat(subject.age).isGreaterThanOrEqualTo(92)
-      assertThat(subject.crn).isEqualTo("dummy-crn")
+      assertThat(subject.dob).isEqualTo("2001-01-01")
+      assertThat(subject.age).isEqualTo(20)
+      assertThat(subject.crn).isEqualTo("X1345")
       assertThat(subject.pnc).isEqualTo("dummy-pnc")
     }
   }
@@ -92,14 +105,15 @@ class AssessmentControllerTest : IntegrationTest() {
       val updateEpisodeDto = UpdateAssessmentEpisodeDto(
         mapOf(newQuestionCode to listOf("new free text"))
       )
-      val episode = webTestClient.post().uri("/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259")
-        .bodyValue(updateEpisodeDto)
-        .headers(setAuthorisation())
-        .exchange()
-        .expectStatus().isOk
-        .expectBody<AssessmentEpisodeDto>()
-        .returnResult()
-        .responseBody
+      val episode =
+        webTestClient.post().uri("/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259")
+          .bodyValue(updateEpisodeDto)
+          .headers(setAuthorisation())
+          .exchange()
+          .expectStatus().isOk
+          .expectBody<AssessmentEpisodeDto>()
+          .returnResult()
+          .responseBody
 
       assertThat(episode).isNotNull
       assertThat(episode?.answers).containsKey(newQuestionCode)
@@ -364,7 +378,8 @@ class AssessmentControllerTest : IntegrationTest() {
     }
 
     private fun updateTableRowFromJson(questionCode: String, index: Int, jsonString: String): AssessmentEpisodeDto {
-      val endpoint = "/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259/children_at_risk_of_serious_harm/$index"
+      val endpoint =
+        "/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259/children_at_risk_of_serious_harm/$index"
       return updateFromJson(
         endpoint,
         questionCode,
@@ -373,7 +388,8 @@ class AssessmentControllerTest : IntegrationTest() {
     }
 
     private fun deleteTableRow(index: Int): AssessmentEpisodeDto {
-      val endpoint = "/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259/children_at_risk_of_serious_harm/$index"
+      val endpoint =
+        "/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259/children_at_risk_of_serious_harm/$index"
       val episode = webTestClient.delete().uri(endpoint)
         .headers(setAuthorisation())
         .exchange()
@@ -429,6 +445,7 @@ class AssessmentControllerTest : IntegrationTest() {
   @DisplayName("completing assessment episodes")
   inner class CompletingEpisodes {
     private val assessmentUuid = UUID.fromString("e399ed1b-0e77-4c68-8bbc-d2f0befece84")
+    private val episodeUuid = UUID.fromString("163cf020-ff53-4dc6-a15c-e93e8537d347")
 
     @Test
     fun `access forbidden when no authority`() {
@@ -440,6 +457,8 @@ class AssessmentControllerTest : IntegrationTest() {
 
     @Test
     fun `complete assessment episode returns episode`() {
+      assessRisksAndNeedsApiMockServer.stubGetRSRPredictorsForOffenderAndOffences(true, episodeUuid)
+
       val assessmentEpisode = webTestClient.post().uri("/assessments/$assessmentUuid/complete")
         .header(RequestData.USER_AREA_HEADER_NAME, "WWS")
         .headers(setAuthorisation())
@@ -450,6 +469,33 @@ class AssessmentControllerTest : IntegrationTest() {
         .responseBody
       assertThat(assessmentEpisode?.assessmentUuid).isEqualTo(assessmentUuid)
       assertThat(assessmentEpisode?.ended).isEqualToIgnoringMinutes(LocalDateTime.now())
+      assertThat(assessmentEpisode?.predictors).isEqualTo(
+        listOf(
+          PredictorScoresDto(
+            type = PredictorType.RSR,
+            scores = mapOf(
+              PredictorSubType.RSR.name to Score(
+                level = ScoreLevel.HIGH.name,
+                score = BigDecimal("11.34"),
+                isValid = true,
+                date = "2021-08-09 14:46:48"
+              ),
+              PredictorSubType.OSPC.name to Score(
+                level = ScoreLevel.NOT_APPLICABLE.name,
+                score = BigDecimal("0"),
+                isValid = false,
+                date = "2021-08-09 14:46:48"
+              ),
+              PredictorSubType.OSPI.name to Score(
+                level = ScoreLevel.NOT_APPLICABLE.name,
+                score = BigDecimal("0"),
+                isValid = false,
+                date = "2021-08-09 14:46:48"
+              ),
+            )
+          )
+        )
+      )
     }
 
     @Test
@@ -481,7 +527,8 @@ class AssessmentControllerTest : IntegrationTest() {
 
     @Test
     fun `should return bad request when no user area header is set when completing assessment`() {
-      webTestClient.post().uri("/assessments/$assessmentUuid/complete")
+      val roshAssessmentUuid = UUID.fromString("aa47e6c4-e41f-467c-95e7-fcf5ffd422f5")
+      webTestClient.post().uri("/assessments/$roshAssessmentUuid/complete")
         .headers(setAuthorisation())
         .exchange()
         .expectStatus().isBadRequest

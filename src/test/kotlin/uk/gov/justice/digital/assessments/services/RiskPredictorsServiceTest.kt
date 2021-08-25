@@ -312,7 +312,7 @@ class RiskPredictorsServiceTest {
           UUID.randomUUID(),
           testQuestion12,
           PredictorType.RSR,
-          "total_non_sexual_offences"
+          "total_non_contact_sexual_offences"
         ),
         PredictorFieldMapping(
           13,
@@ -535,7 +535,7 @@ class RiskPredictorsServiceTest {
       listOf(Answer(items = listOf("YES")))
     ),
     testQuestion19.questionCode to AnswerEntity(
-      listOf(Answer(items = listOf("YES")))
+      listOf(Answer(items = listOf("perpetrator")))
     ),
     testQuestion20.questionCode to AnswerEntity(
       listOf(Answer(items = listOf("significant problems")))

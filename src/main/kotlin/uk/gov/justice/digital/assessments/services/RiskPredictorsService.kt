@@ -104,7 +104,7 @@ class RiskPredictorsService(
         answers,
         "total_sexual_offences_child_image"
       )?.toInt(),
-      totalNonContactSexualOffences = getNonRequiredAnswer(answers, "total_non_sexual_offences")?.toInt(),
+      totalNonContactSexualOffences = getNonRequiredAnswer(answers, "total_non_contact_sexual_offences")?.toInt(),
       earliestReleaseDate = getRequiredAnswer(answers, "earliest_release_date"),
       hasCompletedInterview = hasCompletedInterview,
       dynamicScoringOffences = getDynamicScoringOffences(hasCompletedInterview, answers)
@@ -132,7 +132,7 @@ class RiskPredictorsService(
         "current_relationship_with_partner"
       ).toProblemsLevel(),
       evidenceOfDomesticViolence = getNonRequiredAnswer(answers, "evidence_domestic_violence").toBoolean(),
-      isPerpetrator = getNonRequiredAnswer(answers, "perpetrator_domestic_violence").toBoolean(),
+      isPerpetrator = getNonRequiredAnswer(answers, "perpetrator_domestic_violence").toPerpetratorBoolean(),
       alcoholUseIssues = getNonRequiredAnswer(answers, "use_of_alcohol").toProblemsLevel(),
       bingeDrinkingIssues = getNonRequiredAnswer(answers, "binge_drinking").toProblemsLevel(),
       impulsivityIssues = getNonRequiredAnswer(answers, "impulsivity_issues").toProblemsLevel(),
@@ -203,6 +203,10 @@ class RiskPredictorsService(
 
   fun String?.toBoolean(): Boolean? {
     return if (this == null) null else this == ResponseDto.YES.name
+  }
+
+  fun String?.toPerpetratorBoolean(): Boolean? {
+    return if (this == null) null else this == "perpetrator"
   }
 
   fun String.toBoolean(): Boolean {

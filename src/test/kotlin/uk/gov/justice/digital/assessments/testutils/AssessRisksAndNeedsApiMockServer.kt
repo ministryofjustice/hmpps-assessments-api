@@ -43,6 +43,7 @@ class AssessRisksAndNeedsApiMockServer : WireMockServer(9007) {
               "   \"employment\": \"NOT_AVAILABLE_FOR_WORK\"," +
               "   \"currentRelationshipWithPartner\" : \"SIGNIFICANT_PROBLEMS\"," +
               "   \"evidenceOfDomesticViolence\" : true," +
+              "   \"isPerpetrator\" : true," +
               "   \"alcoholUseIssues\" : \"SIGNIFICANT_PROBLEMS\"," +
               "   \"bingeDrinkingIssues\" : \"SIGNIFICANT_PROBLEMS\"," +
               "   \"impulsivityIssues\" : \"SOME_PROBLEMS\"," +
@@ -58,8 +59,11 @@ class AssessRisksAndNeedsApiMockServer : WireMockServer(9007) {
               "   \"firearmPossession\" : true," +
               "   \"robbery\" : true," +
               "   \"offencesWithWeapon\" : true" +
-              "}," +
-              "\"isPerpetrator\" : true" +
+              "   }," +
+              "   \"currentOffences\" : { " +
+              "   \"firearmPossession\" :null, " +
+              "   \"offencesWithWeapon\" : null " +
+              "   } " +
               "}" +
               "}",
             true, true
