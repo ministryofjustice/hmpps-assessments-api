@@ -1,13 +1,13 @@
 {{- if .Values.ingress.enabled -}}
-{{- $fullName := include "hmpps-assessments-api.fullname" . -}}
+{{- $fullName := include "app.fullname" . -}}
 {{- $ingressPath := .Values.ingress.path -}}
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
   name: {{ $fullName }}
   labels:
-    app: {{ template "hmpps-assessments-api.name" . }}
-    chart: {{ template "hmpps-assessments-api.chart" . }}
+    app: {{ template "app.name" . }}
+    chart: {{ template "app.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
   annotations:
