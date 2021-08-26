@@ -18,6 +18,7 @@ import uk.gov.justice.digital.assessments.api.CreateAssessmentDto
 import uk.gov.justice.digital.assessments.api.CreateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.api.GroupSectionsDto
 import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
+import uk.gov.justice.digital.assessments.api.QuestionSchemaDto
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.services.AssessmentSchemaService
@@ -342,6 +343,18 @@ class AssessmentController(
     ) @PathVariable assessmentSchemaCode: AssessmentSchemaCode
   ): GroupSectionsDto {
     return assessmentSchemaService.getAssessmentSchemaSummary(assessmentSchemaCode)
+  }
+
+  @RequestMapping(path = ["/assessments/schema/{assessmentSchemaCode}/questions"], method = [RequestMethod.GET])
+  @Operation(description = "Gets questions for Assessment Schema code")
+  @ApiResponses(
+    value = [
+      ApiResponse(responseCode = "404", description = "Questions not found for Assessment Schema code"),
+      ApiResponse(responseCode = "200", description = "OK")
+    ]
+  )
+  fun getQuestionsForAssessmentSchemaCode(@PathVariable("assessmentSchemaCode") assessmentSchemaCode: String): List<QuestionSchemaDto> {
+    return assessmentSchemaService.getQuestionsForSchemaCode(AssessmentSchemaCode.valueOf(assessmentSchemaCode))
   }
 
   private fun updateResponse(
