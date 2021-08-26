@@ -10,6 +10,7 @@ import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
 import uk.gov.justice.digital.assessments.api.QuestionSchemaDto
 import uk.gov.justice.digital.assessments.api.TableQuestionDto
 import uk.gov.justice.digital.assessments.jpa.entities.AnswerSchemaEntity
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.GroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionGroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
@@ -50,6 +51,26 @@ class QuestionService(
 
   fun getGroupSections(groupCode: String): GroupSectionsDto {
     return fetchGroupSections(findByGroupCode(groupCode))
+  }
+
+  fun flattenQuestionsForGroup(groupUuid: UUID, dependencies: QuestionDependencies) : List<GroupQuestionDto> {
+    val group = findByGroupUuid(groupUuid)
+
+    return group.contents.flatMap {
+      when (it.contentType) {
+        "question" -> {
+          val questionSchema = questionSchemaRepository.findByQuestionSchemaUuid(it.contentUuid)
+          listOf(GroupQuestionDto.from(questionSchema!!, it, dependencies))
+        }
+        "group" -> {flattenQuestionsForGroup(it.contentUuid, dependencies)}
+        else -> emptyList()
+      }
+    }
+  }
+
+  fun getFlatQuestionsForGroup(groupUuid: UUID): List<GroupQuestionDto> {
+    val dependencies = questionDependencyService.dependencies()
+    return flattenQuestionsForGroup(groupUuid, dependencies)
   }
 
   private fun getQuestionGroupContents(group: GroupEntity) =
