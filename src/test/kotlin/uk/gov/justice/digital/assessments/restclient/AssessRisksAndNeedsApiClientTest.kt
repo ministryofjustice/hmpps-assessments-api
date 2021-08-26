@@ -47,7 +47,7 @@ class AssessRisksAndNeedsApiClientTest : IntegrationTest() {
   fun `get RSR predictors for offender and offences`() {
     val final = true
     val episodeUuid = UUID.randomUUID()
-    assessRisksAndNeedsApiMockServer.stubGetRSRPredictorsForOffenderAndOffences(final, episodeUuid)
+    assessRisksAndNeedsApiMockServer.stubGetRSRPredictorsForOffenderAndOffencesWithCurrentOffences(final, episodeUuid )
     val offenderAndOffencesDto = OffenderAndOffencesDto(
       crn = "X1345",
       gender = Gender.MALE,

@@ -30,4 +30,5 @@ ingress:
   enable_allow_list: true
   host: api-dev.hmpps-assessments.service.justice.gov.uk
   cert_secret: hmpps-assessments-api-cert
+
   path: /
