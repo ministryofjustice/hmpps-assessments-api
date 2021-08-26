@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.assessments.services
 
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.assessments.api.GroupQuestionDto
 import uk.gov.justice.digital.assessments.api.GroupSectionsDto
 import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
 import uk.gov.justice.digital.assessments.api.QuestionSchemaDto
@@ -29,9 +30,9 @@ class AssessmentSchemaService(
     return questionService.getGroupContents(assessmentSchemaGroupUuid)
   }
 
-  fun getQuestionsForSchemaCode(assessmentSchemaCode: AssessmentSchemaCode?) : List<QuestionSchemaDto> {
+  fun getQuestionsForSchemaCode(assessmentSchemaCode: AssessmentSchemaCode?) : List<GroupQuestionDto> {
     val assessmentSchema = getAssessmentSchema(assessmentSchemaCode)
-    return questionService.getAllGroupQuestionsByGroupCode(assessmentSchema.groupCode).map { QuestionSchemaDto.from(it) }
+    return questionService.getFlatQuestionsForGroup(assessmentSchema.groupId)
   }
 
   fun getAssessmentSchemaSummary(assessmentSchemaCode: AssessmentSchemaCode?): GroupSectionsDto {
