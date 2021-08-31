@@ -15,9 +15,12 @@ import uk.gov.justice.digital.assessments.api.GroupQuestionDto
 import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
 import uk.gov.justice.digital.assessments.api.QuestionSchemaDto
 import uk.gov.justice.digital.assessments.api.TableQuestionDto
+import uk.gov.justice.digital.assessments.jpa.entities.AnswerSchemaEntity
+import uk.gov.justice.digital.assessments.jpa.entities.AnswerSchemaGroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.GroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.GroupSummaryEntity
 import uk.gov.justice.digital.assessments.jpa.entities.OASysMappingEntity
+import uk.gov.justice.digital.assessments.jpa.entities.QuestionDependencyEntity
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionGroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.AnswerSchemaRepository
@@ -477,5 +480,132 @@ class QuestionServiceTest {
     verify(exactly = 1) { oasysMappingRepository.findAllByQuestionSchema_QuestionCodeIn(listOf("question_code_1")) }
     assertThat(result).hasSize(2)
     assertThat(result.map { it.questionSchemaUuid }).contains(questionUuid1, questionUuid2)
+  }
+
+  @Test
+  fun `get a flat array of questions for an assessment type`() {
+    val questionGroupContents = mutableListOf<QuestionGroupEntity>()
+    val questionGroup = GroupEntity(
+      groupId = 1,
+      groupUuid = UUID.randomUUID(),
+      groupCode = "parent_group",
+      contents = questionGroupContents,
+    )
+
+    val childQuestionGroupContents = mutableListOf<QuestionGroupEntity>()
+    val childQuestionGroup = GroupEntity(
+      groupId = 2,
+      groupUuid = UUID.randomUUID(),
+      groupCode = "child_group",
+      contents = childQuestionGroupContents,
+    )
+
+    val firstQuestion = QuestionSchemaEntity(
+      questionSchemaId = 1,
+      questionSchemaUuid = UUID.randomUUID(),
+      questionCode = "first_question",
+    )
+
+    val answerSchemaEntities = mutableListOf<AnswerSchemaEntity>()
+    val answerSchemaGroup = AnswerSchemaGroupEntity(
+      answerSchemaId = 1,
+      answerSchemaGroupUuid = UUID.randomUUID(),
+      answerSchemaEntities = answerSchemaEntities,
+    )
+    val answer = AnswerSchemaEntity(
+      answerSchemaId = 1,
+      answerSchemaUuid = UUID.randomUUID(),
+      answerSchemaCode = "yes",
+      value = "YES",
+      answerSchemaGroup = answerSchemaGroup,
+    )
+    answerSchemaEntities.add(answer)
+
+    val secondQuestion = QuestionSchemaEntity(
+      questionSchemaId = 2,
+      questionSchemaUuid = UUID.randomUUID(),
+      questionCode = "second_question",
+      answerSchemaGroup = answerSchemaGroup
+    )
+
+    val thirdQuestion = QuestionSchemaEntity(
+      questionSchemaId = 3,
+      questionSchemaUuid = UUID.randomUUID(),
+      questionCode = "third_question",
+    )
+
+    questionGroupContents.add(QuestionGroupEntity(
+      questionGroupId = 1,
+      contentUuid = childQuestionGroup.groupUuid,
+      contentType = "group",
+      group = questionGroup,
+      question = null,
+      nestedGroup = null,
+    ))
+
+    childQuestionGroupContents.add(QuestionGroupEntity(
+      questionGroupId = 2,
+      contentUuid = firstQuestion.questionSchemaUuid,
+      contentType = "question",
+      group = childQuestionGroup,
+      question = firstQuestion,
+      nestedGroup = null,
+    ))
+
+    questionGroupContents.add(QuestionGroupEntity(
+      questionGroupId = 3,
+      contentUuid = secondQuestion.questionSchemaUuid,
+      contentType = "question",
+      group = questionGroup,
+      question = secondQuestion,
+      nestedGroup = null,
+    ))
+
+    questionGroupContents.add(QuestionGroupEntity(
+      questionGroupId = 4,
+      contentUuid = thirdQuestion.questionSchemaUuid,
+      contentType = "question",
+      group = questionGroup,
+      question = thirdQuestion,
+      nestedGroup = null,
+    ))
+
+    val questionDependencies = QuestionDependencies(questionDeps = listOf(
+      QuestionDependencyEntity(
+        dependencyId = 1,
+        triggerQuestionUuid = secondQuestion.questionSchemaUuid,
+        triggerAnswerValue = "YES",
+        subjectQuestionSchema = thirdQuestion,
+        displayInline = true,
+      )
+    ))
+
+    every { dependencyService.dependencies() } returns questionDependencies
+    every { groupRepository.findByGroupUuid(questionGroup.groupUuid) } returns questionGroup
+    every { groupRepository.findByGroupUuid(childQuestionGroup.groupUuid) } returns childQuestionGroup
+
+    every {
+      questionSchemaRepository.findByQuestionSchemaUuid(firstQuestion.questionSchemaUuid)
+    } returns firstQuestion
+    every {
+      questionSchemaRepository.findByQuestionSchemaUuid(secondQuestion.questionSchemaUuid)
+    } returns secondQuestion
+    every {
+      questionSchemaRepository.findByQuestionSchemaUuid(thirdQuestion.questionSchemaUuid)
+    } returns thirdQuestion
+
+    val result = questionService.getFlatQuestionsForGroup(questionGroup.groupUuid)
+
+    assertThat(result.size).isEqualTo(3)
+    assertThat(result.map { it.questionId }).contains(
+      firstQuestion.questionSchemaUuid,
+      secondQuestion.questionSchemaUuid,
+      thirdQuestion.questionSchemaUuid,
+    )
+    result
+      .filter { it.questionId == secondQuestion.questionSchemaUuid }
+      .forEach { assertThat(
+        it.answerSchemas?.first()?.conditionals?.first()?.conditional
+      ).isEqualTo(thirdQuestion.questionCode)}
   }
 }
