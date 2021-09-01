@@ -306,4 +306,86 @@ class AssessmentUpdateService(
     log.info("Predictors for assessment ${episode.assessment?.assessmentUuid} are $predictorResults")
     return AssessmentEpisodeDto.from(episode, oasysResult, predictorResults)
   }
+
+  private fun getTableFieldCodes(tableName: String): List<String> {
+      val tableFields = questionService.getAllGroupQuestionsByGroupCode(tableName)
+      return tableFields.map {it.questionCode}
+  }
+
+  fun addEntryToTable(
+    episode: AssessmentEpisodeEntity,
+    tableName: String,
+    requestBody: UpdateAssessmentEpisodeDto
+  ): AssessmentEpisodeDto {
+    val tableFieldCodes = getTableFieldCodes(tableName)
+
+    val tableEntry = requestBody.answers
+      .filterKeys { it in tableFieldCodes }
+      .map { it.key to it.value.toList() }
+      .toMap()
+
+    val table = episode.tables[tableName]
+      .orEmpty()
+      .toMutableList()
+
+    table.let {
+      table.add(tableEntry)
+      episode.tables[tableName] = table
+      // update in OASys
+      episodeRepository.save(episode)
+    }
+
+    return AssessmentEpisodeDto.from(episode)
+  }
+
+  fun updateTableEntry(
+    episode: AssessmentEpisodeEntity,
+    tableName: String,
+    requestBody: UpdateAssessmentEpisodeDto,
+    index: Int,
+  ): AssessmentEpisodeDto {
+    val tableFieldCodes = getTableFieldCodes(tableName)
+
+    val newValues = requestBody.answers
+      .filterKeys { it in tableFieldCodes }
+      .map { it.key to it.value.toList() }
+      .toMap()
+
+    val table = episode.tables[tableName]
+      .orEmpty()
+      .toMutableList()
+
+    val existingEntry = table[index]
+    val updatedEntry = existingEntry
+      .toMutableMap()
+      .apply { putAll(newValues) }
+
+    table.let {
+      table[index] = updatedEntry
+      episode.tables[tableName] = table
+      // update in OASys
+      episodeRepository.save(episode)
+    }
+
+    return AssessmentEpisodeDto.from(episode)
+  }
+
+  fun deleteTableEntry(
+    episode: AssessmentEpisodeEntity,
+    tableName: String,
+    index: Int,
+  ): AssessmentEpisodeDto {
+    val table = episode.tables[tableName]
+      .orEmpty()
+      .toMutableList()
+
+    table.let {
+      table.removeAt(index)
+      episode.tables[tableName] = table
+      // update in OASys
+      episodeRepository.save(episode)
+    }
+
+    return AssessmentEpisodeDto.from(episode)
+  }
 }

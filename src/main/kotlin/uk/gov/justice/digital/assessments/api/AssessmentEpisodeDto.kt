@@ -54,7 +54,10 @@ data class AssessmentEpisodeDto(
   val offenceSubCode: String? = null,
 
   @Schema(description = "Description for offence sub-category code")
-  val subCodeDescription: String? = null
+  val subCodeDescription: String? = null,
+
+  @Schema(description = "Tables associated with this episode")
+  val tables: Map<String, List<Map<String, List<String>>>> = emptyMap(),
 ) {
   companion object {
 
@@ -83,7 +86,8 @@ data class AssessmentEpisodeDto(
         episode.offenceCode,
         episode.codeDescription,
         episode.offenceSubCode,
-        episode.subCodeDescription
+        episode.subCodeDescription,
+        episode.tables,
       )
     }
   }
