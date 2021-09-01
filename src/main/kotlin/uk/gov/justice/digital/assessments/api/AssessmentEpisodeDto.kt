@@ -87,7 +87,7 @@ data class AssessmentEpisodeDto(
         episode.codeDescription,
         episode.offenceSubCode,
         episode.subCodeDescription,
-        episode.tables,
+        episode.tables.orEmpty(),
       )
     }
   }

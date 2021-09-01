@@ -76,7 +76,7 @@ class AssessmentEpisodeEntity(
 
   @Type(type = "json")
   @Column(columnDefinition = "jsonb", name = "tables")
-  var tables: MutableMap<String, MutableList<Map<String, List<String>>>> = mutableMapOf(),
+  var tables: MutableMap<String, MutableList<Map<String, List<String>>>>? = mutableMapOf(),
 ) {
   fun isClosed(): Boolean {
     return endDate != null

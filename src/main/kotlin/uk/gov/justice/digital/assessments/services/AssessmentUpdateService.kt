@@ -312,6 +312,20 @@ class AssessmentUpdateService(
       return tableFields.map {it.questionCode}
   }
 
+  private fun getTableFromEpisode(episode: AssessmentEpisodeEntity, tableName: String) : MutableList<Map<String, List<String>>> {
+    val tables = episode.tables.orEmpty()
+    return tables[tableName]
+      .orEmpty()
+      .toMutableList()
+  }
+
+  private fun updateTableForEpisode(episode: AssessmentEpisodeEntity, tableName: String, updatedTable: MutableList<Map<String, List<String>>>) {
+    if (episode.tables == null) {
+      episode.tables = mutableMapOf(tableName to updatedTable)
+    }
+    episode.tables!![tableName] = updatedTable
+  }
+
   fun addEntryToTable(
     episode: AssessmentEpisodeEntity,
     tableName: String,
@@ -324,13 +338,11 @@ class AssessmentUpdateService(
       .map { it.key to it.value.toList() }
       .toMap()
 
-    val table = episode.tables[tableName]
-      .orEmpty()
-      .toMutableList()
+    val table = getTableFromEpisode(episode, tableName)
 
     table.let {
       table.add(tableEntry)
-      episode.tables[tableName] = table
+      updateTableForEpisode(episode, tableName, table)
       // update in OASys
       episodeRepository.save(episode)
     }
@@ -351,9 +363,7 @@ class AssessmentUpdateService(
       .map { it.key to it.value.toList() }
       .toMap()
 
-    val table = episode.tables[tableName]
-      .orEmpty()
-      .toMutableList()
+    val table = getTableFromEpisode(episode, tableName)
 
     val existingEntry = table[index]
     val updatedEntry = existingEntry
@@ -362,7 +372,7 @@ class AssessmentUpdateService(
 
     table.let {
       table[index] = updatedEntry
-      episode.tables[tableName] = table
+      updateTableForEpisode(episode, tableName, table)
       // update in OASys
       episodeRepository.save(episode)
     }
@@ -375,13 +385,11 @@ class AssessmentUpdateService(
     tableName: String,
     index: Int,
   ): AssessmentEpisodeDto {
-    val table = episode.tables[tableName]
-      .orEmpty()
-      .toMutableList()
+    val table = getTableFromEpisode(episode, tableName)
 
     table.let {
       table.removeAt(index)
-      episode.tables[tableName] = table
+      updateTableForEpisode(episode, tableName, table)
       // update in OASys
       episodeRepository.save(episode)
     }
