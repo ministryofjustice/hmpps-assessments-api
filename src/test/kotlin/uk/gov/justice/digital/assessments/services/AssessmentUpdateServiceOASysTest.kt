@@ -198,14 +198,22 @@ class AssessmentUpdateServiceOASysTest {
         questionCode1 to AnswerEntity.from("some free text"),
         questionCode2 to AnswerEntity.from("1975-01-20T00:00:00.000Z"),
         questionCode3 to AnswerEntity.from("not mapped to oasys"),
-        childQuestion1 to AnswerEntity.from("child name"),
-        childQuestion2 to AnswerEntity.from("child address")
+      )
+
+      val tables = mutableMapOf(
+        "children_at_risk" to mutableListOf(
+          mapOf(
+            childQuestion1 to listOf("child name"),
+            childQuestion2 to listOf("child address"),
+          )
+        )
       )
 
       val episode = AssessmentEpisodeEntity(
         answers = answers,
         createdDate = LocalDateTime.now(),
-        assessmentSchemaCode = AssessmentSchemaCode.ROSH
+        assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+        tables = tables,
       )
       val oasysAnswers = OasysAnswers.from(episode, testMapper)
 
@@ -222,25 +230,39 @@ class AssessmentUpdateServiceOASysTest {
         questionCode1 to AnswerEntity.from("some free text"),
         questionCode2 to AnswerEntity.from("1975-01-20T00:00:00.000Z"),
         questionCode3 to AnswerEntity.from("not mapped to oasys"),
-        childQuestion1 to AnswerEntity.from(listOf("name1", "name2", "name3")),
-        childQuestion2 to AnswerEntity.from(listOf("address1", "", "address3"))
+      )
+
+      val tables = mutableMapOf(
+        "children_at_risk" to mutableListOf(
+          mapOf(
+            childQuestion1 to listOf("name1"),
+            childQuestion2 to listOf("address1"),
+          ),
+          mapOf(
+            childQuestion1 to listOf("name2"),
+          ),
+          mapOf(
+            childQuestion1 to listOf("name3"),
+            childQuestion2 to listOf("address3"),
+          )
+        )
       )
 
       val episode = AssessmentEpisodeEntity(
         answers = answers,
         createdDate = LocalDateTime.now(),
-        assessmentSchemaCode = AssessmentSchemaCode.ROSH
+        assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+        tables = tables,
       )
 
       val oasysAnswers = OasysAnswers.from(episode, testMapper)
 
-      assertThat(oasysAnswers).hasSize(8)
+      assertThat(oasysAnswers).hasSize(7)
       assertThat(oasysAnswers).contains(OasysAnswer("section1", 1, "name", "some free text"))
       assertThat(oasysAnswers).contains(OasysAnswer("section1", 1, "dob", "20/01/1975"))
       assertThat(oasysAnswers).contains(OasysAnswer("children", 0, "childname", "name1"))
       assertThat(oasysAnswers).contains(OasysAnswer("children", 0, "childaddress", "address1"))
       assertThat(oasysAnswers).contains(OasysAnswer("children", 1, "childname", "name2"))
-      assertThat(oasysAnswers).contains(OasysAnswer("children", 1, "childaddress", ""))
       assertThat(oasysAnswers).contains(OasysAnswer("children", 2, "childname", "name3"))
       assertThat(oasysAnswers).contains(OasysAnswer("children", 2, "childaddress", "address3"))
     }
@@ -251,12 +273,21 @@ class AssessmentUpdateServiceOASysTest {
         questionCode1 to AnswerEntity.from("some free text"),
         questionCode2 to AnswerEntity.from("1975-01-20T00:00:00.000Z"),
         questionCode3 to AnswerEntity.from("not mapped to oasys"),
-        childQuestion1 to AnswerEntity.from(listOf("name1", "name2", "name3")),
-        childQuestion2 to AnswerEntity(
-          listOf(
-            Answer(listOf("address1")),
-            Answer(listOf("address2a", "address2b")),
-            Answer(listOf("address3"))
+      )
+
+      val tables = mutableMapOf(
+        "children_at_risk" to mutableListOf(
+          mapOf(
+            childQuestion1 to listOf("name1"),
+            childQuestion2 to listOf("address1"),
+          ),
+          mapOf(
+            childQuestion1 to listOf("name2"),
+            childQuestion2 to listOf("address2a", "address2b"),
+          ),
+          mapOf(
+            childQuestion1 to listOf("name3"),
+            childQuestion2 to listOf("address3"),
           )
         )
       )
@@ -264,7 +295,8 @@ class AssessmentUpdateServiceOASysTest {
       val episode = AssessmentEpisodeEntity(
         answers = answers,
         createdDate = LocalDateTime.now(),
-        assessmentSchemaCode = AssessmentSchemaCode.ROSH
+        assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+        tables = tables,
       )
 
       val oasysAnswers = OasysAnswers.from(episode, testMapper)
