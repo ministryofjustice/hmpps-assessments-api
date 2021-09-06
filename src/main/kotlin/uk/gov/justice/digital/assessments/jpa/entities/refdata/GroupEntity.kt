@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.assessments.jpa.entities
+package uk.gov.justice.digital.assessments.jpa.entities.refdata
 
 import java.io.Serializable
 import java.time.LocalDateTime

@@ -9,8 +9,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.ser.std.StdSerializer
-import uk.gov.justice.digital.assessments.jpa.entities.Answer
-import uk.gov.justice.digital.assessments.jpa.entities.AnswerEntity
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.Answer
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.AnswerEntity
 import java.lang.IllegalStateException
 
 @JsonSerialize(using = AnswersDtoSerializer::class)

@@ -3,8 +3,8 @@ package uk.gov.justice.digital.assessments.jpa.repositories
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
-import uk.gov.justice.digital.assessments.jpa.entities.GroupSummaryEntity
-import uk.gov.justice.digital.assessments.jpa.entities.QuestionGroupEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.GroupSummaryEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionGroupEntity
 import java.util.UUID
 
 @Repository

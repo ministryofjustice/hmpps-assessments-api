@@ -1,5 +1,6 @@
-package uk.gov.justice.digital.assessments.jpa.entities
+package uk.gov.justice.digital.assessments.jpa.entities.refdata
 
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerSchemaEntity
 import java.io.Serializable
 import java.time.LocalDateTime
 import java.util.UUID

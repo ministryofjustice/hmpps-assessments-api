@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.assessments.api
 
 import io.swagger.v3.oas.annotations.media.Schema
-import uk.gov.justice.digital.assessments.jpa.entities.ReferenceDataTargetMappingEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.ReferenceDataTargetMappingEntity
 import java.util.UUID
 
 data class ReferenceDataTargetDto(

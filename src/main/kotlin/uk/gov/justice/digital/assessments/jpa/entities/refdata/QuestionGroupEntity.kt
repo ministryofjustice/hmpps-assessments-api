@@ -1,5 +1,7 @@
-package uk.gov.justice.digital.assessments.jpa.entities
+package uk.gov.justice.digital.assessments.jpa.entities.refdata
 
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.GroupEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEntity
 import java.io.Serializable
 import java.util.UUID
 import javax.persistence.Column

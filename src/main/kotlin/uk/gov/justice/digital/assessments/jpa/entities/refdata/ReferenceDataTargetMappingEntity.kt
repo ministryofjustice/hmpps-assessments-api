@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.assessments.jpa.entities
+package uk.gov.justice.digital.assessments.jpa.entities.refdata
 
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -29,4 +29,4 @@ class ReferenceDataTargetMappingEntity(
   @Column(name = "is_required")
   val isRequired: Boolean = false,
 
-)
+  )

@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.assessments.jpa.entities
+package uk.gov.justice.digital.assessments.jpa.entities.assessments
 
 import java.io.Serializable
 

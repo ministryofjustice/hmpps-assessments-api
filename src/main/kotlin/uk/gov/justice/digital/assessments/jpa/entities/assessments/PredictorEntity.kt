@@ -1,5 +1,6 @@
-package uk.gov.justice.digital.assessments.jpa.entities
+package uk.gov.justice.digital.assessments.jpa.entities.assessments
 
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.PredictorFieldMappingEntity
 import uk.gov.justice.digital.assessments.services.dto.PredictorType
 import java.io.Serializable
 import javax.persistence.Column
@@ -15,7 +16,7 @@ import javax.persistence.Table
 
 @Entity
 @Table(name = "assessment_predictors")
-class Predictor(
+class PredictorEntity(
   @Id
   @Column(name = "id")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,5 +32,5 @@ class Predictor(
 
   @OneToMany
   @JoinColumn(name = "predictor_type", referencedColumnName = "predictor_type")
-  val fields: Collection<PredictorFieldMapping> = emptyList(),
+  val fieldEntities: Collection<PredictorFieldMappingEntity> = emptyList(),
 ) : Serializable

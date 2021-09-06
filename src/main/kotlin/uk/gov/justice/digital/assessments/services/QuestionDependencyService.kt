@@ -2,7 +2,7 @@ package uk.gov.justice.digital.assessments.services
 
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.assessments.api.ConditionalsSchemaDto
-import uk.gov.justice.digital.assessments.jpa.entities.QuestionDependencyEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionDependencyEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.QuestionDependencyRepository
 import java.util.UUID
 

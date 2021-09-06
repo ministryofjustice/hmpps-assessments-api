@@ -93,7 +93,7 @@ class SpringConfiguration : WebMvcConfigurer {
 
   @Bean(name = ["referenceDataDataSource"])
   @ConfigurationProperties(prefix = "spring.hmppsassessmentsapi.datasource")
-  fun abcDataSource(): DataSource? {
+  fun referenceDataDataSource(): DataSource? {
     return DataSourceBuilder
       .create()
       .url(refDataDataSourceUrl)

@@ -1,5 +1,6 @@
-package uk.gov.justice.digital.assessments.jpa.entities
+package uk.gov.justice.digital.assessments.jpa.entities.refdata
 
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.services.dto.PredictorType
 import java.io.Serializable
 import java.util.UUID
@@ -16,7 +17,7 @@ import javax.persistence.Table
 
 @Entity
 @Table(name = "predictor_field_mapping")
-class PredictorFieldMapping(
+class PredictorFieldMappingEntity(
   @Id
   @Column(name = "predictor_mapping_id")
   @GeneratedValue(strategy = GenerationType.IDENTITY)

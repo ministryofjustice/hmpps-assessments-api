@@ -1,5 +1,7 @@
-package uk.gov.justice.digital.assessments.jpa.entities
+package uk.gov.justice.digital.assessments.jpa.entities.refdata
 
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.PredictorEntity
 import java.io.Serializable
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -42,5 +44,5 @@ class AssessmentSchemaEntity(
 
   @OneToMany
   @JoinColumn(name = "assessment_schema_code", referencedColumnName = "assessment_schema_code")
-  val predictors: Collection<Predictor> = emptyList(),
+  val predictorEntities: Collection<PredictorEntity> = emptyList(),
 ) : Serializable

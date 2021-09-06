@@ -5,10 +5,10 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.assessments.api.AnswersDto
 import uk.gov.justice.digital.assessments.api.PredictorScoresDto
-import uk.gov.justice.digital.assessments.jpa.entities.Answer
-import uk.gov.justice.digital.assessments.jpa.entities.AnswerEntity
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
-import uk.gov.justice.digital.assessments.jpa.entities.PredictorFieldMapping
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.Answer
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.AnswerEntity
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.PredictorFieldMappingEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.EpisodeRepository
 import uk.gov.justice.digital.assessments.restclient.AssessRisksAndNeedsApiRestClient
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.CurrentOffence
@@ -18,7 +18,6 @@ import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.Gend
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.OffenderAndOffencesDto
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.PredictorSubType
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.PreviousOffences
-import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.ProblemsLevel
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.RiskPredictorsDto
 import uk.gov.justice.digital.assessments.services.dto.PredictorType
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
@@ -50,15 +49,15 @@ class RiskPredictorsService(
     log.info("Found ${predictors.size} predictors for episode ${episode.episodeUuid} with assessment type ${episode.assessmentSchemaCode}")
 
     return predictors.map { predictor ->
-      fetchResults(episode, final, predictor.type, extractAnswers(predictor.fields.toList(), episode.answers.orEmpty()))
+      fetchResults(episode, final, predictor.type, extractAnswers(predictor.fieldEntities.toList(), episode.answers.orEmpty()))
     }
   }
 
   private fun extractAnswers(
-    predictorFields: List<PredictorFieldMapping>,
+    predictorFieldEntities: List<PredictorFieldMappingEntity>,
     answers: Map<String, AnswerEntity>
   ): Map<String, AnswersDto> {
-    return predictorFields
+    return predictorFieldEntities
       .associate { predictorField ->
         val questionCode = predictorField.questionSchema.questionCode
         val questionAnswer = answers[questionCode]
