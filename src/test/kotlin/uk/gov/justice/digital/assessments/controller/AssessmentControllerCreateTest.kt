@@ -15,7 +15,7 @@ import uk.gov.justice.digital.assessments.api.AssessmentSubjectDto
 import uk.gov.justice.digital.assessments.api.CreateAssessmentDto
 import uk.gov.justice.digital.assessments.api.CreateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.api.ErrorResponse
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import uk.gov.justice.digital.assessments.utils.RequestData
 import java.time.LocalDateTime

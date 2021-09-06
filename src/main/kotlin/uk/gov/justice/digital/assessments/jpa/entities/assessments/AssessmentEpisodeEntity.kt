@@ -5,6 +5,7 @@ import com.vladmihalcea.hibernate.type.json.JsonStringType
 import org.hibernate.annotations.Type
 import org.hibernate.annotations.TypeDef
 import org.hibernate.annotations.TypeDefs
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import java.time.LocalDateTime
 import java.util.UUID
 import javax.persistence.Column

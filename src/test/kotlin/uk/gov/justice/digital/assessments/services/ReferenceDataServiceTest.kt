@@ -10,11 +10,11 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.OASysMappingEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEntity
-import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
-import uk.gov.justice.digital.assessments.jpa.repositories.OASysMappingRepository
+import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
+import uk.gov.justice.digital.assessments.jpa.repositories.refdata.OASysMappingRepository
 import uk.gov.justice.digital.assessments.restclient.AssessmentApiRestClient
 import uk.gov.justice.digital.assessments.restclient.assessmentapi.RefElementDto
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException

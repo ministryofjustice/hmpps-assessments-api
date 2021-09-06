@@ -14,11 +14,11 @@ import uk.gov.justice.digital.assessments.jpa.entities.assessments.AnswerEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
-import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
-import uk.gov.justice.digital.assessments.jpa.repositories.SubjectRepository
+import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
+import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRepository
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import uk.gov.justice.digital.assessments.restclient.courtcaseapi.CourtCase
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException

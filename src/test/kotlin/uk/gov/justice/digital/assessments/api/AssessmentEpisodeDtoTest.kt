@@ -4,7 +4,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import java.time.LocalDateTime
 import java.util.UUID
 

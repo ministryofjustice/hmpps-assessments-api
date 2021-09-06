@@ -9,7 +9,6 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.slf4j.MDC
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.utils.RequestData
 import java.time.LocalDateTime
 

@@ -10,7 +10,7 @@ import org.springframework.test.context.jdbc.SqlConfig
 import org.springframework.test.context.jdbc.SqlGroup
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
 import uk.gov.justice.digital.assessments.services.dto.AssessmentEpisodeUpdateErrors
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest

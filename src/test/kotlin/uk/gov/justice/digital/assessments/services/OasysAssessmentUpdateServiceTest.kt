@@ -14,12 +14,12 @@ import org.junit.jupiter.api.extension.ExtendWith
 import uk.gov.justice.digital.assessments.api.AnswerDto
 import uk.gov.justice.digital.assessments.api.AnswersDto
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
-import uk.gov.justice.digital.assessments.jpa.entities.AnswerEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerSchemaGroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.AnswerEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.OASysMappingEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.OasysAssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEntity

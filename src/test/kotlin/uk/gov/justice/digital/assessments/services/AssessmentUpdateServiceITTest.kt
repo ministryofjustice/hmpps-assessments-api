@@ -7,8 +7,8 @@ import uk.gov.justice.digital.assessments.api.AssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentSchemaCode
-import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import java.time.LocalDateTime
 import java.util.UUID

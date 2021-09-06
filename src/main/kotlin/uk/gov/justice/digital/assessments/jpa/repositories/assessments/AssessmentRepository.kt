@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.assessments.jpa.repositories
+package uk.gov.justice.digital.assessments.jpa.repositories.assessments
 
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository

@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
-import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
+import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import java.time.LocalDate
 import java.util.UUID

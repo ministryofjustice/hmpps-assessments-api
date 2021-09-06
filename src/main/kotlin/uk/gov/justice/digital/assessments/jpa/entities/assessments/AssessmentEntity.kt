@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.assessments.jpa.entities.assessments
 
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.utils.RequestData
 import java.io.Serializable
 import java.lang.IllegalStateException

@@ -9,8 +9,8 @@ import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.Answer
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AnswerEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
-import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
-import uk.gov.justice.digital.assessments.jpa.repositories.EpisodeRepository
+import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
+import uk.gov.justice.digital.assessments.jpa.repositories.assessments.EpisodeRepository
 import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
 import javax.transaction.Transactional
 

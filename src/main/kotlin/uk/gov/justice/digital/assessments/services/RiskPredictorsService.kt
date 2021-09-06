@@ -9,7 +9,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.assessments.Answer
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AnswerEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.PredictorFieldMappingEntity
-import uk.gov.justice.digital.assessments.jpa.repositories.EpisodeRepository
+import uk.gov.justice.digital.assessments.jpa.repositories.assessments.EpisodeRepository
 import uk.gov.justice.digital.assessments.restclient.AssessRisksAndNeedsApiRestClient
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.CurrentOffence
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.CurrentOffences

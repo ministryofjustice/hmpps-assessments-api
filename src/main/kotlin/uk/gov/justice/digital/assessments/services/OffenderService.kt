@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.assessments.api.Address
 import uk.gov.justice.digital.assessments.api.OffenceDto
 import uk.gov.justice.digital.assessments.api.OffenderDto
-import uk.gov.justice.digital.assessments.jpa.repositories.SubjectRepository
+import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRepository
 import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException

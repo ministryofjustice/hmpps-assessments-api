@@ -13,11 +13,11 @@ import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerSchemaEntit
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.GroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionGroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEntity
-import uk.gov.justice.digital.assessments.jpa.repositories.AnswerSchemaRepository
-import uk.gov.justice.digital.assessments.jpa.repositories.GroupRepository
-import uk.gov.justice.digital.assessments.jpa.repositories.OASysMappingRepository
-import uk.gov.justice.digital.assessments.jpa.repositories.QuestionGroupRepository
-import uk.gov.justice.digital.assessments.jpa.repositories.QuestionSchemaRepository
+import uk.gov.justice.digital.assessments.jpa.repositories.refdata.AnswerSchemaRepository
+import uk.gov.justice.digital.assessments.jpa.repositories.refdata.GroupRepository
+import uk.gov.justice.digital.assessments.jpa.repositories.refdata.OASysMappingRepository
+import uk.gov.justice.digital.assessments.jpa.repositories.refdata.QuestionGroupRepository
+import uk.gov.justice.digital.assessments.jpa.repositories.refdata.QuestionSchemaRepository
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import java.util.UUID
 

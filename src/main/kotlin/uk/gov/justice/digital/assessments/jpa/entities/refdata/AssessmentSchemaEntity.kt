@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.assessments.jpa.entities.refdata
 
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.PredictorEntity
 import java.io.Serializable
 import javax.persistence.Column

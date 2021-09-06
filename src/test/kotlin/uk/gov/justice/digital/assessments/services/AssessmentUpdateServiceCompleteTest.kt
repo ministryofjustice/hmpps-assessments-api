@@ -11,11 +11,11 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.OasysAssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
-import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
-import uk.gov.justice.digital.assessments.jpa.repositories.EpisodeRepository
+import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
+import uk.gov.justice.digital.assessments.jpa.repositories.assessments.EpisodeRepository
 import uk.gov.justice.digital.assessments.services.dto.AssessmentEpisodeUpdateErrors
 import java.time.LocalDate
 import java.time.LocalDateTime

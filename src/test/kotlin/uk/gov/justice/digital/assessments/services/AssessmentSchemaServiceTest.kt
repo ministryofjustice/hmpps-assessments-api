@@ -10,12 +10,12 @@ import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import uk.gov.justice.digital.assessments.api.GroupSectionsDto
 import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.AssessmentSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.AssessmentSchemaGroupsEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.GroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.OasysAssessmentType
-import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentSchemaRepository
+import uk.gov.justice.digital.assessments.jpa.repositories.refdata.AssessmentSchemaRepository
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import java.time.LocalDateTime
 import java.util.UUID
