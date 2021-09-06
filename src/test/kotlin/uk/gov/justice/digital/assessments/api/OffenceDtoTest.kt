@@ -30,7 +30,8 @@ class OffenceDtoTest {
           )
         )
       ),
-      convictionDate = convictionDate
+      convictionDate = convictionDate,
+      index = 1
     )
 
     val offenceDto = OffenceDto.from(communityConvictionDto)

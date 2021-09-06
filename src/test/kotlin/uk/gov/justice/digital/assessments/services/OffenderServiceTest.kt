@@ -38,7 +38,7 @@ class OffenderServiceTest {
 
   private val oasysOffenderPk = 101L
   private val crn = "DX12340A"
-  private val convictionId = 636401162L
+  private val eventId = 1L
 
   @Test
   fun `return offender`() {
@@ -51,48 +51,48 @@ class OffenderServiceTest {
 
   @Test
   fun `return offence`() {
-    every { communityApiRestClient.getConviction(crn, convictionId) } returns validCommunityConvictionDto()
+    every { communityApiRestClient.getConvictions(crn) } returns validCommunityConvictionsDto()
 
-    val offenceDto = offenderService.getOffence(crn, convictionId)
-    assertThat(offenceDto.convictionId).isEqualTo(convictionId)
+    val offenceDto = offenderService.getOffence(crn, eventId)
+    assertThat(offenceDto.convictionId).isEqualTo(636401162)
     assertThat(offenceDto.mainOffenceId).isEqualTo("offence1")
     assertThat(offenceDto.offenceCode).isEqualTo("offence code")
 
-    verify(exactly = 1) { communityApiRestClient.getConviction(any(), any()) }
+    verify(exactly = 1) { communityApiRestClient.getConvictions(any()) }
   }
 
   @Test
   fun `return offender and offence`() {
     every { communityApiRestClient.getOffender(crn) } returns validCommunityOffenderDto()
-    every { communityApiRestClient.getConviction(crn, convictionId) } returns validCommunityConvictionDto()
+    every { communityApiRestClient.getConvictions(crn) } returns validCommunityConvictionsDto()
     every { subjectRepository.findAllByCrnAndSourceOrderByCreatedDateDesc(crn, "COURT") } returns validCourtSubject()
     every { courtCaseRestClient.getCourtCase("courtCode", "caseNumber") } returns validCourtCase()
 
-    val offenderDto = offenderService.getOffenderAndOffence(crn, convictionId)
+    val offenderDto = offenderService.getOffenderAndOffence(crn, eventId)
 
     assertThat(offenderDto.offenderId).isEqualTo(oasysOffenderPk)
-    assertThat(offenderDto.offence?.convictionId).isEqualTo(convictionId)
+    assertThat(offenderDto.offence?.convictionId).isEqualTo(636401162)
     assertThat(offenderDto.offence?.mainOffenceId).isEqualTo("offence1")
     assertThat(offenderDto.offence?.offenceCode).isEqualTo("offence code")
     verify(exactly = 1) { communityApiRestClient.getOffender(any()) }
-    verify(exactly = 1) { communityApiRestClient.getConviction(any(), any()) }
+    verify(exactly = 1) { communityApiRestClient.getConvictions(any()) }
   }
 
   @Test
   fun `return offender with address`() {
     every { communityApiRestClient.getOffender(crn) } returns validCommunityOffenderDto()
-    every { communityApiRestClient.getConviction(crn, convictionId) } returns validCommunityConvictionDto()
+    every { communityApiRestClient.getConvictions(crn) } returns validCommunityConvictionsDto()
     every { subjectRepository.findAllByCrnAndSourceOrderByCreatedDateDesc(crn, "COURT") } returns validCourtSubject()
     every { courtCaseRestClient.getCourtCase("courtCode", "caseNumber") } returns validCourtCase()
 
-    val offenderDto = offenderService.getOffenderAndOffence(crn, convictionId)
+    val offenderDto = offenderService.getOffenderAndOffence(crn, eventId)
 
     assertThat(offenderDto.offenderId).isEqualTo(oasysOffenderPk)
     assertThat(offenderDto.address?.address1).isEqualTo("line1")
     assertThat(offenderDto.address?.postcode).isEqualTo("postcode")
 
     verify(exactly = 1) { communityApiRestClient.getOffender(any()) }
-    verify(exactly = 1) { communityApiRestClient.getConviction(any(), any()) }
+    verify(exactly = 1) { communityApiRestClient.getConvictions(any()) }
   }
 
   @Test
@@ -104,7 +104,7 @@ class OffenderServiceTest {
       ExternalService.COMMUNITY_API
     )
 
-    assertThrows<ExternalApiEntityNotFoundException> { offenderService.getOffenderAndOffence(crn, convictionId) }
+    assertThrows<ExternalApiEntityNotFoundException> { offenderService.getOffenderAndOffence(crn, eventId) }
     verify(exactly = 1) { communityApiRestClient.getOffender(any()) }
   }
 
@@ -158,28 +158,28 @@ class OffenderServiceTest {
   @Test
   fun `return offender with alias`() {
     every { communityApiRestClient.getOffender(crn) } returns validCommunityOffenderDto()
-    every { communityApiRestClient.getConviction(crn, convictionId) } returns validCommunityConvictionDto()
+    every { communityApiRestClient.getConvictions(crn) } returns validCommunityConvictionsDto()
     every { subjectRepository.findAllByCrnAndSourceOrderByCreatedDateDesc(crn, "COURT") } returns validCourtSubject()
     every { courtCaseRestClient.getCourtCase("courtCode", "caseNumber") } returns validCourtCase()
 
-    val offenderDto = offenderService.getOffenderAndOffence(crn, convictionId)
+    val offenderDto = offenderService.getOffenderAndOffence(crn, eventId)
 
     assertThat(offenderDto.offenderId).isEqualTo(oasysOffenderPk)
     assertThat(offenderDto.firstNameAliases?.get(0)).isEqualTo("firstName")
     assertThat(offenderDto.surnameAliases?.get(0)).isEqualTo("surname")
 
     verify(exactly = 1) { communityApiRestClient.getOffender(any()) }
-    verify(exactly = 1) { communityApiRestClient.getConviction(any(), any()) }
+    verify(exactly = 1) { communityApiRestClient.getConvictions(any()) }
   }
 
   @Test
   fun `return empty offender aliases list when none exist`() {
     every { communityApiRestClient.getOffender(crn) } returns validCommunityOffenderDto().copy(offenderAliases = emptyList())
-    every { communityApiRestClient.getConviction(crn, convictionId) } returns validCommunityConvictionDto()
+    every { communityApiRestClient.getConvictions(crn) } returns validCommunityConvictionsDto()
     every { subjectRepository.findAllByCrnAndSourceOrderByCreatedDateDesc(crn, "COURT") } returns validCourtSubject()
     every { courtCaseRestClient.getCourtCase("courtCode", "caseNumber") } returns validCourtCase()
 
-    val offenderDto = offenderService.getOffenderAndOffence(crn, convictionId)
+    val offenderDto = offenderService.getOffenderAndOffence(crn, eventId)
 
     assertThat(offenderDto.firstNameAliases).isEmpty()
     assertThat(offenderDto.surnameAliases).isEmpty()
@@ -189,17 +189,17 @@ class OffenderServiceTest {
 
   @Test
   fun `return offence with category codes and category descriptions`() {
-    every { communityApiRestClient.getConviction(crn, convictionId) } returns validCommunityConvictionDto()
+    every { communityApiRestClient.getConvictions(crn) } returns validCommunityConvictionsDto()
 
-    val offenceDto = offenderService.getOffence(crn, convictionId)
-    assertThat(offenceDto.convictionId).isEqualTo(convictionId)
+    val offenceDto = offenderService.getOffence(crn, eventId)
+    assertThat(offenceDto.convictionId).isEqualTo(636401162L)
     assertThat(offenceDto.offenceCode).isEqualTo("offence code")
     assertThat(offenceDto.categoryCode).isEqualTo("main category code")
     assertThat(offenceDto.categoryDescription).isEqualTo("code description 1")
     assertThat(offenceDto.subCategoryCode).isEqualTo("subcategory code")
     assertThat(offenceDto.subCategoryDescription).isEqualTo("code description 2")
 
-    verify(exactly = 1) { communityApiRestClient.getConviction(any(), any()) }
+    verify(exactly = 1) { communityApiRestClient.getConvictions(any()) }
   }
 
   private fun validCourtSubject(): List<SubjectEntity> {
@@ -226,36 +226,70 @@ class OffenderServiceTest {
     )
   }
 
-  private fun validCommunityConvictionDto(): CommunityConvictionDto {
-    return CommunityConvictionDto(
-      convictionId = 636401162L,
-      offences = listOf(
-        Offence(
-          offenceId = "offence1",
-          mainOffence = true,
-          detail = OffenceDetail(
-            code = "offence code",
-            description = "Offence description",
-            mainCategoryCode = "main category code",
-            mainCategoryDescription = "code description 1",
-            subCategoryCode = "subcategory code",
-            subCategoryDescription = "code description 2"
+  private fun validCommunityConvictionsDto(): List<CommunityConvictionDto> {
+    return listOf(
+      CommunityConvictionDto(
+        convictionId = 636401162L,
+        offences = listOf(
+          Offence(
+            offenceId = "offence1",
+            mainOffence = true,
+            detail = OffenceDetail(
+              code = "offence code",
+              description = "Offence description",
+              mainCategoryCode = "main category code",
+              mainCategoryDescription = "code description 1",
+              subCategoryCode = "subcategory code",
+              subCategoryDescription = "code description 2"
+            )
+          ),
+          Offence(
+            offenceId = "offence2",
+            mainOffence = false,
+            detail = OffenceDetail(
+              code = "code2",
+              description = "Offence description",
+              mainCategoryCode = "main category code",
+              mainCategoryDescription = "code description 1",
+              subCategoryCode = "subcategory code",
+              subCategoryDescription = "code description 2"
+            )
           )
         ),
-        Offence(
-          offenceId = "offence2",
-          mainOffence = false,
-          detail = OffenceDetail(
-            code = "code2",
-            description = "Offence description",
-            mainCategoryCode = "main category code",
-            mainCategoryDescription = "code description 1",
-            subCategoryCode = "subcategory code",
-            subCategoryDescription = "code description 2"
-          )
-        )
+        convictionDate = LocalDate.of(2020, 2, 1),
+        index = 1
       ),
-      convictionDate = LocalDate.of(2020, 2, 1)
+      CommunityConvictionDto(
+        convictionId = 1234567,
+        offences = listOf(
+          Offence(
+            offenceId = "offenceA",
+            mainOffence = true,
+            detail = OffenceDetail(
+              code = "offence code",
+              description = "Offence description",
+              mainCategoryCode = "main category code",
+              mainCategoryDescription = "code description 1",
+              subCategoryCode = "subcategory code",
+              subCategoryDescription = "code description 2"
+            )
+          ),
+          Offence(
+            offenceId = "offenceB",
+            mainOffence = false,
+            detail = OffenceDetail(
+              code = "code2",
+              description = "Offence description",
+              mainCategoryCode = "main category code",
+              mainCategoryDescription = "code description 1",
+              subCategoryCode = "subcategory code",
+              subCategoryDescription = "code description 2"
+            )
+          )
+        ),
+        convictionDate = LocalDate.of(2020, 2, 1),
+        index = 2
+      )
     )
   }
 

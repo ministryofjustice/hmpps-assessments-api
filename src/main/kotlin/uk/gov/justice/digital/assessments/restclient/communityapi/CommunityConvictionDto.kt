@@ -5,7 +5,8 @@ import java.time.LocalDate
 data class CommunityConvictionDto(
   val convictionId: Long? = null,
   val offences: List<Offence>? = null,
-  val convictionDate: LocalDate? = null
+  val convictionDate: LocalDate? = null,
+  val index: Long
 )
 
 class Offence(

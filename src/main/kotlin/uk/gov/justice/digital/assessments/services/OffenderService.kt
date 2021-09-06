@@ -18,9 +18,9 @@ class OffenderService(
   private val courtCaseClient: CourtCaseRestClient
 ) {
 
-  fun getOffenderAndOffence(crn: String, convictionId: Long): OffenderDto {
+  fun getOffenderAndOffence(crn: String, eventId: Long): OffenderDto {
     val offender = getOffender(crn)
-    val offence = getOffence(crn, convictionId)
+    val offence = getOffence(crn, eventId)
     val address = getOffenderAddress(crn)
     return offender.copy(offence = offence, address = address)
   }
@@ -32,10 +32,12 @@ class OffenderService(
     return OffenderDto.from(communityOffenderDto)
   }
 
-  fun getOffence(crn: String, convictionId: Long): OffenceDto {
-    log.info("Requesting main offence details for crn: $crn, conviction id: $convictionId")
-    val conviction = communityApiRestClient.getConviction(crn, convictionId)
-      ?: throw EntityNotFoundException("No conviction found for crn: $crn, conviction id: $convictionId")
+  fun getOffence(crn: String, eventId: Long): OffenceDto {
+    log.info("Requesting offences for crn: $crn")
+    val convictions = communityApiRestClient.getConvictions(crn)
+      ?: throw EntityNotFoundException("Could not get convictions for crn: $crn")
+    val conviction = convictions.find { it.index == eventId }
+      ?: throw EntityNotFoundException("Could not get conviction for crn: $crn, event ID: $eventId")
     return OffenceDto.from(conviction)
   }
 

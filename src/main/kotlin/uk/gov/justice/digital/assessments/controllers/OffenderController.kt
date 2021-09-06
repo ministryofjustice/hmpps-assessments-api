@@ -14,7 +14,7 @@ import uk.gov.justice.digital.assessments.services.OffenderService
 @RestController
 class OffenderController(val offenderService: OffenderService) {
 
-  @RequestMapping(path = ["/offender/crn/{crn}/conviction/{convictionId}"], method = [RequestMethod.GET])
+  @RequestMapping(path = ["/offender/crn/{crn}/eventId/{eventId}"], method = [RequestMethod.GET])
   @Operation(description = "Gets offender and offence information")
   @ApiResponses(
     value = [
@@ -24,8 +24,8 @@ class OffenderController(val offenderService: OffenderService) {
   )
   fun getOffenderAndOffence(
     @Parameter(description = "Offender CRN", required = true) @PathVariable crn: String,
-    @Parameter(description = "Conviction ID", required = true) @PathVariable convictionId: Long
+    @Parameter(description = "Delius Event ID", required = true) @PathVariable eventId: Long
   ): OffenderDto? {
-    return offenderService.getOffenderAndOffence(crn, convictionId)
+    return offenderService.getOffenderAndOffence(crn, eventId)
   }
 }
