@@ -23,7 +23,7 @@ class AssessmentSubjectDto(
   @Schema(description = "Date of birth", example = "1929-08-08")
   val dob: LocalDate? = null,
 
-  @Schema(description = "Date of birth", example = "1929-08-08")
+  @Schema(description = "Gender", example = "Male")
   val gender: String? = null,
 
   @Schema(description = "Subject Record created Date", example = "2020-01-02T16:00:00")
