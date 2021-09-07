@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.assessments.jpa.entities.refdata
 
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.PredictorEntity
 import java.io.Serializable
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -16,7 +15,7 @@ import javax.persistence.OneToMany
 import javax.persistence.Table
 
 @Entity
-@Table(name = "assessment_schema", schema = "hmppsassessmentsapi")//, schema = "hmppsassessmentsschemas")
+@Table(name = "assessment_schema", schema = "hmppsassessmentsschemas")
 class AssessmentSchemaEntity(
   @Id
   @Column(name = "assessment_schema_id")

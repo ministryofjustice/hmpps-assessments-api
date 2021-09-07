@@ -11,7 +11,7 @@ import javax.persistence.ManyToOne
 import javax.persistence.Table
 
 @Entity
-@Table(name = "oasys_question_mapping", schema = "hmppsassessmentsapi")//, schema = "hmppsassessmentsschemas")
+@Table(name = "oasys_question_mapping", schema = "hmppsassessmentsschemas")
 class OASysMappingEntity(
   @Id
   @Column(name = "mapping_id")

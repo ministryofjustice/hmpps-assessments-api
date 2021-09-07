@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.assessments.jpa.entities.assessments
+package uk.gov.justice.digital.assessments.jpa.entities.refdata
 
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.PredictorFieldMappingEntity
@@ -16,7 +16,7 @@ import javax.persistence.OneToMany
 import javax.persistence.Table
 
 @Entity
-@Table(name = "assessment_predictors", schema = "hmppsassessmentsapi")
+@Table(name = "assessment_predictors", schema = "hmppsassessmentsschemas")
 class PredictorEntity(
   @Id
   @Column(name = "id")

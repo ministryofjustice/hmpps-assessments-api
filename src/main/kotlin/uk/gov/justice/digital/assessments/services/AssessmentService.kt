@@ -3,6 +3,7 @@ package uk.gov.justice.digital.assessments.services
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.assessments.api.AnswerSchemaDto
 import uk.gov.justice.digital.assessments.api.AssessmentAnswersDto
 import uk.gov.justice.digital.assessments.api.AssessmentDto
@@ -24,7 +25,6 @@ import uk.gov.justice.digital.assessments.restclient.courtcaseapi.CourtCase
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import java.time.LocalDateTime
 import java.util.UUID
-import javax.transaction.Transactional
 
 @Service
 class AssessmentService(
@@ -42,7 +42,7 @@ class AssessmentService(
     const val deliusSource = "DELIUS"
   }
 
-  @Transactional
+  @Transactional("assessmentsTransactionManager")
   fun createNewAssessment(newAssessment: CreateAssessmentDto): AssessmentDto {
     if (newAssessment.isDelius()) {
       return createFromDelius(newAssessment.deliusEventId, newAssessment.crn, newAssessment.assessmentSchemaCode)
@@ -57,7 +57,7 @@ class AssessmentService(
     throw IllegalStateException("Empty create assessment request")
   }
 
-  @Transactional
+  @Transactional("assessmentsTransactionManager")
   fun createNewEpisode(
     assessmentUuid: UUID,
     reason: String,

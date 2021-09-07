@@ -5,7 +5,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.boot.jdbc.DataSourceBuilder
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Primary
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 import org.springframework.orm.jpa.JpaTransactionManager
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean
@@ -17,43 +16,40 @@ import javax.sql.DataSource
 
 @Configuration
 @EnableJpaRepositories(
-  basePackages = ["uk.gov.justice.digital.assessments.jpa.repositories.assessments"],
-  entityManagerFactoryRef = "assessmentsEntityManager",
-  transactionManagerRef = "assessmentsTransactionManager"
+  basePackages = ["uk.gov.justice.digital.assessments.jpa.repositories.refdata"],
+  entityManagerFactoryRef = "refDataEntityManager",
+  transactionManagerRef = "refDataTransactionManager"
 )
-class PersistenceAssessmentsConfiguration : WebMvcConfigurer {
+class PersistenceRefDataConfiguration : WebMvcConfigurer {
 
-  @Value("\${spring.hmppsassessmentsapi.datasource.url}")
-  private val assessmentsDataSourceUrl: String = ""
+  @Value("\${spring.hmppsassessmentsschemas.datasource.url}")
+  private val refDataDataSourceUrl: String = ""
 
   @Bean
-  @Primary
-  fun assessmentsEntityManager(): LocalContainerEntityManagerFactoryBean {
+  fun refDataEntityManager(): LocalContainerEntityManagerFactoryBean {
     val em = LocalContainerEntityManagerFactoryBean()
-    em.dataSource = assessmentsDataSource()
+    em.dataSource = refDataDataSource()
     em.setPackagesToScan(
-      "uk.gov.justice.digital.assessments.jpa.entities.assessments"
+      "uk.gov.justice.digital.assessments.jpa.entities.refdata"
     )
     val vendorAdapter = HibernateJpaVendorAdapter()
     em.jpaVendorAdapter = vendorAdapter
     return em
   }
 
-  @Primary
   @Bean
-  fun assessmentsTransactionManager(): PlatformTransactionManager {
+  fun refDataTransactionManager(): PlatformTransactionManager {
     val transactionManager = JpaTransactionManager()
-    transactionManager.entityManagerFactory = assessmentsEntityManager().getObject()
+    transactionManager.entityManagerFactory = refDataEntityManager().getObject()
     return transactionManager
   }
 
-  @Primary
-  @Bean(name = ["assessmentsDataSource"])
-  @ConfigurationProperties(prefix = "spring.hmppsassessmentsapi.datasource")
-  fun assessmentsDataSource(): DataSource? {
+  @Bean(name = ["refDataDataSource"])
+  @ConfigurationProperties(prefix = "spring.hmppsassessmentsschemas.datasource")
+  fun refDataDataSource(): DataSource? {
    return DataSourceBuilder
       .create()
-      .url(assessmentsDataSourceUrl)
+      .url(refDataDataSourceUrl)
       .build()
   }
 }

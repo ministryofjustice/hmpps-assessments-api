@@ -14,7 +14,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpi
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.Answer
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AnswerEntity
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.PredictorEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.PredictorEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.PredictorFieldMappingEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity

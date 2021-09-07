@@ -11,7 +11,7 @@ import javax.persistence.OneToMany
 import javax.persistence.Table
 
 @Entity
-@Table(name = "answer_schema_group", schema = "hmppsassessmentsapi")//, schema = "hmppsassessmentsschemas")
+@Table(name = "answer_schema_group", schema = "hmppsassessmentsschemas")
 class AnswerSchemaGroupEntity(
   @Id
   @Column(name = "answer_schema_group_id")

@@ -14,7 +14,7 @@ import javax.persistence.OneToOne
 import javax.persistence.Table
 
 @Entity
-@Table(name = "question_dependency", schema = "hmppsassessmentsapi")//, schema = "hmppsassessmentsschemas")
+@Table(name = "question_dependency", schema = "hmppsassessmentsschemas")
 class QuestionDependencyEntity(
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -6,7 +6,7 @@ import uk.gov.justice.digital.assessments.api.GroupSectionsDto
 import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.OasysAssessmentType
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.PredictorEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.PredictorEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.AssessmentSchemaRepository
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import uk.gov.justice.digital.assessments.services.exceptions.OasysAssessmentTypeMappingMissing

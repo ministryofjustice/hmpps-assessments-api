@@ -15,7 +15,7 @@ import javax.persistence.ManyToOne
 import javax.persistence.Table
 
 @Entity
-@Table(name = "predictor_field_mapping", schema = "hmppsassessmentsapi")
+@Table(name = "predictor_field_mapping", schema = "hmppsassessmentsschemas")
 class PredictorFieldMappingEntity(
   @Id
   @Column(name = "predictor_mapping_id")

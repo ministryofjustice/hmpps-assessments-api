@@ -13,7 +13,7 @@ import javax.persistence.OneToMany
 import javax.persistence.Table
 
 @Entity
-@Table(name = "grouping", schema = "hmppsassessmentsapi")//, schema = "hmppsassessmentsschemas")
+@Table(name = "grouping", schema = "hmppsassessmentsschemas")
 class GroupEntity(
 
   @Id
