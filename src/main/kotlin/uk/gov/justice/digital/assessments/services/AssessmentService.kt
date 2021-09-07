@@ -12,7 +12,6 @@ import uk.gov.justice.digital.assessments.api.AssessmentSubjectDto
 import uk.gov.justice.digital.assessments.api.CreateAssessmentDto
 import uk.gov.justice.digital.assessments.api.OffenceDto
 import uk.gov.justice.digital.assessments.api.OffenderDto
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.AnswerEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
@@ -94,8 +93,8 @@ class AssessmentService(
     return AssessmentEpisodeDto.from(assessment.episodes)
   }
 
-  fun getCurrentAssessmentEpisode(assessmentUuid: UUID): AssessmentEpisodeDto {
-    return AssessmentEpisodeDto.from(getCurrentEpisode(assessmentUuid))
+  fun getCurrentAssessmentEpisode(assessmentUuid: UUID): AssessmentEpisodeEntity {
+    return getCurrentEpisode(assessmentUuid)
   }
 
   fun getCurrentAssessmentCodedAnswers(assessmentUuid: UUID): AssessmentAnswersDto {
@@ -126,7 +125,7 @@ class AssessmentService(
   ): MutableMap<String, Collection<AnswerSchemaDto>> {
     val answers: MutableMap<String, Collection<AnswerSchemaDto>> = mutableMapOf()
 
-    episode.answers?.forEach { episodeAnswer ->
+    episode.answers.forEach { episodeAnswer ->
       val question = questions[episodeAnswer.key]
         ?: throw IllegalStateException("Question not found for UUID ${episodeAnswer.key}")
 
@@ -204,18 +203,16 @@ class AssessmentService(
   }
 
   private fun matchAnswers(
-    episodeAnswer: Map.Entry<String, AnswerEntity>,
+    episodeAnswer: Map.Entry<String, List<String>>,
     question: QuestionSchemaEntity
   ): Set<AnswerSchemaEntity> {
     val answerSchemas = question.answerSchemaEntities
-    return episodeAnswer.value.answers.map { answer ->
-      answer.items.map { item ->
+    return episodeAnswer.value.map { answer ->
         answerSchemas.firstOrNull { answerSchema ->
-          item == answerSchema.value
+          answer == answerSchema.value
         }
-          ?: throw IllegalStateException("Answer Code not found for question ${question.questionSchemaUuid} answer value $item")
-      }
-    }.flatten().toSet()
+          ?: throw IllegalStateException("Answer Code not found for question ${question.questionSchemaUuid} answer value $answer")
+    }.toSet()
   }
 
   fun getEpisode(episodeUuid: UUID, assessmentUuid: UUID): AssessmentEpisodeEntity {

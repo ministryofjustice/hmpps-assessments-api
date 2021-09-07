@@ -11,15 +11,12 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import uk.gov.justice.digital.assessments.api.AnswerDto
-import uk.gov.justice.digital.assessments.api.AnswersDto
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerSchemaGroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.AnswerEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.OASysMappingEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.OasysAssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEntity
@@ -74,7 +71,7 @@ class OasysAssessmentUpdateServiceTest() {
     } returns UpdateAssessmentAnswersResponseDto()
     every { questionService.getAllSectionQuestionsForQuestions(any()) } returns QuestionSchemaEntities(questionsList = emptyList())
 
-    val update = mapOf(questionCode1 to makeAnswersDto("YES"))
+    val update = mapOf(questionCode1 to listOf("YES"))
 
     oasysAssessmentUpdateService.updateOASysAssessment(setupEpisode(), update)
 
@@ -105,7 +102,7 @@ class OasysAssessmentUpdateServiceTest() {
       createdDate = LocalDateTime.now(),
       assessmentSchemaCode = AssessmentSchemaCode.ROSH
     )
-    val update = mapOf(questionCode1 to makeAnswersDto("YES"))
+    val update = mapOf(questionCode1 to listOf("YES"))
 
     oasysAssessmentUpdateService.updateOASysAssessment(episode, update)
 
@@ -137,7 +134,7 @@ class OasysAssessmentUpdateServiceTest() {
     } returns UpdateAssessmentAnswersResponseDto()
     every { questionService.getAllQuestions() } returns setupQuestionCodes()
 
-    val updateErrors = oasysAssessmentUpdateService.updateOASysAssessment(assessmentEpisode, update.asAnswersDtos())
+    val updateErrors = oasysAssessmentUpdateService.updateOASysAssessment(assessmentEpisode, update.answers)
 
     verify(exactly = 1) {
       assessmentUpdateRestClient.updateAssessment(
@@ -164,7 +161,7 @@ class OasysAssessmentUpdateServiceTest() {
     )
     val update = UpdateAssessmentEpisodeDto(answers = mapOf(questionCode1 to listOf("Updated")))
     val updateAssessmentResponse =
-      oasysAssessmentUpdateService.updateOASysAssessment(assessmentEpisode, update.asAnswersDtos())
+      oasysAssessmentUpdateService.updateOASysAssessment(assessmentEpisode, update.answers)
 
     assertThat(updateAssessmentResponse).isEqualTo(AssessmentEpisodeUpdateErrors(errorsInAssessment = mutableListOf("Unable to update OASys Assessment with keys type: ROSH oasysSet: null offenderPk: null, values cant be null")))
   }
@@ -217,15 +214,11 @@ class OasysAssessmentUpdateServiceTest() {
     )
   }
 
-  fun makeAnswersDto(vararg ans: String): AnswersDto {
-    return AnswersDto(listOf(AnswerDto(listOf(*ans))))
-  }
-
   private fun setupEpisode(): AssessmentEpisodeEntity {
     val answers = mutableMapOf(
-      questionCode1 to AnswerEntity.from("some free text"),
-      questionCode2 to AnswerEntity.from("1975-01-20T00:00:00.000Z"),
-      questionCode3 to AnswerEntity.from("not mapped to oasys")
+      questionCode1 to listOf("some free text"),
+      questionCode2 to listOf("1975-01-20T00:00:00.000Z"),
+      questionCode3 to listOf("not mapped to oasys")
     )
     return AssessmentEpisodeEntity(
       episodeId = episodeId1,

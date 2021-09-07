@@ -10,15 +10,13 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import uk.gov.justice.digital.assessments.api.AnswerDto
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerSchemaGroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.Answer
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.AnswerEntity
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.Answers
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.OASysMappingEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.OasysAssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEntity
@@ -90,7 +88,7 @@ class AssessmentUpdateServiceOASysTest {
       questionSchema = QuestionSchemaEntity(questionSchemaId = 1, questionCode = "question_code")
     )
 
-    val result = OasysAnswers.mapOasysAnswers(mapping, listOf(Answer("Free Text")), "radios")[0]
+    val result = OasysAnswers.mapOasysAnswers(mapping, listOf("Free Text"), "radios")[0]
 
     assertThat(result.answer).isEqualTo("Free Text")
     assertThat(result.logicalPage).isEqualTo(1)
@@ -110,7 +108,7 @@ class AssessmentUpdateServiceOASysTest {
       questionSchema = QuestionSchemaEntity(questionSchemaId = 1, questionCode = "question_code")
     )
 
-    val result = OasysAnswers.mapOasysAnswers(mapping, listOf(Answer("1975-01-20T00:00:00.000Z")), "date")[0]
+    val result = OasysAnswers.mapOasysAnswers(mapping, listOf("1975-01-20T00:00:00.000Z"), "date")[0]
 
     assertThat(result.answer).isEqualTo("20/01/1975")
     assertThat(result.logicalPage).isEqualTo(1)
@@ -122,9 +120,9 @@ class AssessmentUpdateServiceOASysTest {
   @Test
   fun `map Oasys answers from ARN questions and answers`() {
     val answers = mutableMapOf(
-      questionCode1 to AnswerEntity.from("some free text"),
-      questionCode2 to AnswerEntity.from("1975-01-20T00:00:00.000Z"),
-      questionCode3 to AnswerEntity.from("not mapped to oasys")
+      questionCode1 to listOf("some free text"),
+      questionCode2 to listOf("1975-01-20T00:00:00.000Z"),
+      questionCode3 to listOf("not mapped to oasys"),
     )
     val episode = AssessmentEpisodeEntity(
       answers = answers,
@@ -195,9 +193,9 @@ class AssessmentUpdateServiceOASysTest {
     @Test
     fun `with one child`() {
       val answers = mutableMapOf(
-        questionCode1 to AnswerEntity.from("some free text"),
-        questionCode2 to AnswerEntity.from("1975-01-20T00:00:00.000Z"),
-        questionCode3 to AnswerEntity.from("not mapped to oasys"),
+        questionCode1 to listOf("some free text"),
+        questionCode2 to listOf("1975-01-20T00:00:00.000Z"),
+        questionCode3 to listOf("not mapped to oasys"),
       )
 
       val tables = mutableMapOf(
@@ -227,9 +225,9 @@ class AssessmentUpdateServiceOASysTest {
     @Test
     fun `with multiple children`() {
       val answers = mutableMapOf(
-        questionCode1 to AnswerEntity.from("some free text"),
-        questionCode2 to AnswerEntity.from("1975-01-20T00:00:00.000Z"),
-        questionCode3 to AnswerEntity.from("not mapped to oasys"),
+        questionCode1 to listOf("some free text"),
+        questionCode2 to listOf("1975-01-20T00:00:00.000Z"),
+        questionCode3 to listOf("not mapped to oasys"),
       )
 
       val tables = mutableMapOf(
@@ -270,9 +268,9 @@ class AssessmentUpdateServiceOASysTest {
     @Test
     fun `with multiple children with multi-value answer`() {
       val answers = mutableMapOf(
-        questionCode1 to AnswerEntity.from("some free text"),
-        questionCode2 to AnswerEntity.from("1975-01-20T00:00:00.000Z"),
-        questionCode3 to AnswerEntity.from("not mapped to oasys"),
+        questionCode1 to listOf("some free text"),
+        questionCode2 to listOf("1975-01-20T00:00:00.000Z"),
+        questionCode3 to listOf("not mapped to oasys"),
       )
 
       val tables = mutableMapOf(
@@ -321,7 +319,7 @@ class AssessmentUpdateServiceOASysTest {
 
     val assessment = assessmentEntityWithOasysOffender(
       mutableMapOf(
-        existingQuestionCode to AnswerEntity.from(listOf("free text", "fruit loops", "biscuits"))
+        existingQuestionCode to listOf("free text", "fruit loops", "biscuits")
       )
     )
 
@@ -375,7 +373,7 @@ class AssessmentUpdateServiceOASysTest {
 
     // Updated answers in returned DTO
     assertThat(episodeDto.answers).hasSize(1)
-    Verify.singleAnswer(
+    Verify.multiAnswers(
       episodeDto.answers[existingQuestionCode]!!,
       "fruit loops",
       "custard"
@@ -397,7 +395,7 @@ class AssessmentUpdateServiceOASysTest {
 
     val update = UpdateAssessmentEpisodeDto(answers = mapOf(questionCode1 to listOf("Updated")))
     every {
-      oasysAssessmentUpdateService.updateOASysAssessment(assessmentEpisode, update.asAnswersDtos())
+      oasysAssessmentUpdateService.updateOASysAssessment(assessmentEpisode, update.answers)
     } returns AssessmentEpisodeUpdateErrors()
     every { questionService.getAllQuestions() } returns setupQuestionCodes()
     every { assessmentRepository.save(any()) } returns mockk()
@@ -407,16 +405,16 @@ class AssessmentUpdateServiceOASysTest {
     verify(exactly = 1) {
       oasysAssessmentUpdateService.updateOASysAssessment(
         assessmentEpisode,
-        update.asAnswersDtos()
+        update.answers,
       )
     }
 
     with(updatedEpisode.answers) {
       assertThat(map { it.key }).containsOnlyOnce(questionCode1, questionCode2)
-      assertThat(flatMap { it.value.answers }).contains(
-        AnswerDto(listOf("Updated")),
-        AnswerDto(listOf("1975-01-20T00:00:00.000Z")),
-        AnswerDto(listOf("not mapped to oasys"))
+      assertThat(map { it.value }).contains(
+        listOf("Updated"),
+        listOf("1975-01-20T00:00:00.000Z"),
+        listOf("not mapped to oasys"),
       )
     }
   }
@@ -495,7 +493,7 @@ class AssessmentUpdateServiceOASysTest {
     return question
   }
 
-  private fun assessmentEntityWithOasysOffender(answers: MutableMap<String, AnswerEntity>): AssessmentEntity {
+  private fun assessmentEntityWithOasysOffender(answers: Answers): AssessmentEntity {
     val subject = SubjectEntity(
       oasysOffenderPk = 9999, dateOfBirth = LocalDate.of(1989, 1, 1), crn = "X1345"
     )
@@ -524,9 +522,9 @@ class AssessmentUpdateServiceOASysTest {
 
   private fun setupEpisode(): AssessmentEpisodeEntity {
     val answers = mutableMapOf(
-      questionCode1 to AnswerEntity.from("some free text"),
-      questionCode2 to AnswerEntity.from("1975-01-20T00:00:00.000Z"),
-      questionCode3 to AnswerEntity.from("not mapped to oasys")
+      questionCode1 to listOf("some free text"),
+      questionCode2 to listOf("1975-01-20T00:00:00.000Z"),
+      questionCode3 to listOf("not mapped to oasys"),
     )
     return AssessmentEpisodeEntity(
       episodeId = episodeId1,

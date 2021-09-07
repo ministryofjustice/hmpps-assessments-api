@@ -19,12 +19,9 @@ class UpdateAssessmentEpisodeDtoTest {
     """.trimIndent()
 
     val deserialized = ObjectMapper().readValue(testAnswers, UpdateAssessmentEpisodeDto::class.java)
-    val transformed = deserialized.asAnswersDtos()
-    val answersDto: AnswersDto? = transformed["question_code"]
-    with(answersDto?.answers!!) {
-      assertThat(size).isEqualTo(1)
-      assertThat(first().items).isEqualTo(listOf("FOO", "BAR"))
-    }
+    val transformed = deserialized.answers
+    val answers: List<String>? = transformed["question_code"]
+    assertThat(answers).isEqualTo(listOf("FOO", "BAR"))
   }
 
   @Test
@@ -38,32 +35,8 @@ class UpdateAssessmentEpisodeDtoTest {
     """.trimIndent()
 
     val deserialized = ObjectMapper().readValue(testAnswers, UpdateAssessmentEpisodeDto::class.java)
-    val transformed = deserialized.asAnswersDtos()
-    val answersDto: AnswersDto? = transformed["question_code"]
-    with(answersDto?.answers!!) {
-      assertThat(size).isEqualTo(1)
-      assertThat(first().items).isEqualTo(emptyList<AnswerDto>())
-    }
-  }
-
-  @Test
-  fun `filters out blank strings from answers`() {
-    val testAnswers = """
-     {
-        "answers": {
-          "question_code": [
-            ""
-          ]
-        }
-    }
-    """.trimIndent()
-
-    val deserialized = ObjectMapper().readValue(testAnswers, UpdateAssessmentEpisodeDto::class.java)
-    val transformed = deserialized.asAnswersDtos()
-    val answersDto: AnswersDto? = transformed["question_code"]
-    with(answersDto?.answers!!) {
-      assertThat(size).isEqualTo(1)
-      assertThat(first().items).isEqualTo(emptyList<AnswerDto>())
-    }
+    val transformed = deserialized.answers
+    val answers: List<String>? = transformed["question_code"]
+    assertThat(answers).isEqualTo(emptyList<String>())
   }
 }
