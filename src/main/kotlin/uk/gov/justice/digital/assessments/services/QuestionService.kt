@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.assessments.services
 
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.assessments.api.CheckboxGroupDto
 import uk.gov.justice.digital.assessments.api.GroupContentDto
 import uk.gov.justice.digital.assessments.api.GroupQuestionDto
@@ -22,6 +23,7 @@ import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundExce
 import java.util.UUID
 
 @Service
+@Transactional("refDataTransactionManager")
 class QuestionService(
   private val questionSchemaRepository: QuestionSchemaRepository,
   private val questionGroupRepository: QuestionGroupRepository,
@@ -30,6 +32,7 @@ class QuestionService(
   private val oasysMappingRepository: OASysMappingRepository,
   private val questionDependencyService: QuestionDependencyService
 ) {
+
   fun getQuestionSchema(questionSchemaId: UUID): QuestionSchemaDto {
     val questionSchemaEntity = questionSchemaRepository.findByQuestionSchemaUuid(questionSchemaId)
       ?: throw EntityNotFoundException("Question Schema not found for id: $questionSchemaId")

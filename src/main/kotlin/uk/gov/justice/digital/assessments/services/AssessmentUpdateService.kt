@@ -3,6 +3,7 @@ package uk.gov.justice.digital.assessments.services
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.assessments.api.AnswersDto
 import uk.gov.justice.digital.assessments.api.AssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
@@ -12,7 +13,6 @@ import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpi
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.EpisodeRepository
 import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
-import javax.transaction.Transactional
 
 typealias TableAnswers = Map<String, Collection<Answer>>
 
@@ -28,7 +28,7 @@ class AssessmentUpdateService(
     val log: Logger = LoggerFactory.getLogger(this::class.java)
   }
 
-  @Transactional
+  @Transactional("assessmentsTransactionManager")
   fun updateEpisode(
     episode: AssessmentEpisodeEntity,
     updatedEpisodeAnswers: UpdateAssessmentEpisodeDto
@@ -36,7 +36,7 @@ class AssessmentUpdateService(
     return updateEpisode(episode, updatedEpisodeAnswers.asAnswersDtos())
   }
 
-  @Transactional
+  @Transactional("assessmentsTransactionManager")
   fun updateCurrentEpisode(
     episode: AssessmentEpisodeEntity,
     updatedEpisodeAnswers: UpdateAssessmentEpisodeDto
