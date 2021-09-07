@@ -16,10 +16,10 @@ import javax.persistence.OneToMany
 import javax.persistence.Table
 
 @Entity
-@Table(name = "ASSESSMENT_SCHEMA")
+@Table(name = "assessment_schema", schema = "hmppsassessmentsapi")//, schema = "hmppsassessmentsschemas")
 class AssessmentSchemaEntity(
   @Id
-  @Column(name = "ASSESSMENT_SCHEMA_ID")
+  @Column(name = "assessment_schema_id")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   val assessmentSchemaId: Long,
 
@@ -27,19 +27,19 @@ class AssessmentSchemaEntity(
   @JoinColumn(name = "assessment_schema_uuid", referencedColumnName = "assessment_schema_uuid")
   val assessmentSchemaGroup: AssessmentSchemaGroupsEntity,
 
-  @Column(name = "ASSESSMENT_SCHEMA_CODE")
+  @Column(name = "assessment_schema_code")
   @Enumerated(EnumType.STRING)
   val assessmentSchemaCode: AssessmentSchemaCode,
 
-  @Column(name = "OASYS_ASSESSMENT_TYPE")
+  @Column(name = "oasys_assessment_type")
   @Enumerated(EnumType.STRING)
   val oasysAssessmentType: OasysAssessmentType? = null,
 
-  @Column(name = "OASYS_CREATE_ASSESSMENT_AT")
+  @Column(name = "oasys_create_assessment_at")
   @Enumerated(EnumType.STRING)
   val oasysCreateAssessmentAt: OasysCreateAssessmentAt? = null,
 
-  @Column(name = "ASSESSMENT_NAME")
+  @Column(name = "assessment_name")
   val assessmentName: String? = null,
 
   @OneToMany

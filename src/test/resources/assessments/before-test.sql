@@ -1,4 +1,5 @@
 -- noinspection SqlResolveForFile
+set schema hmppsassessmentsapi;
 
 DELETE FROM assessed_episode WHERE true;
 DELETE FROM subject WHERE true;

@@ -46,9 +46,6 @@ class SpringConfiguration : WebMvcConfigurer {
   @Value("\${spring.redis.client-name}")
   private val clientName: String = ""
 
-  @Value("\${spring.hmppsassessmentsapi.datasource.url}")
-  private val refDataDataSourceUrl: String = ""
-
   @Bean(name = ["globalObjectMapper"])
   @Primary
   fun objectMapper(): ObjectMapper {
@@ -89,15 +86,6 @@ class SpringConfiguration : WebMvcConfigurer {
     jackson2JsonRedisSerializer.setObjectMapper(objectMapper())
     template.valueSerializer = jackson2JsonRedisSerializer
     return template
-  }
-
-  @Bean(name = ["referenceDataDataSource"])
-  @ConfigurationProperties(prefix = "spring.hmppsassessmentsapi.datasource")
-  fun referenceDataDataSource(): DataSource? {
-    return DataSourceBuilder
-      .create()
-      .url(refDataDataSourceUrl)
-      .build()
   }
 
   override fun addInterceptors(registry: InterceptorRegistry) {

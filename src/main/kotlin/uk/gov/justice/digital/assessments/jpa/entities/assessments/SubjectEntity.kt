@@ -14,44 +14,44 @@ import javax.persistence.ManyToOne
 import javax.persistence.Table
 
 @Entity
-@Table(name = "SUBJECT")
+@Table(name = "subject", schema = "hmppsassessmentsapi")
 class SubjectEntity(
   @Id
-  @Column(name = "SUBJECT_ID")
+  @Column(name = "subject_id")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   val subjectId: Long? = null,
 
-  @Column(name = "SUBJECT_UUID")
+  @Column(name = "subject_uuid")
   val subjectUuid: UUID = UUID.randomUUID(),
 
-  @Column(name = "SOURCE")
+  @Column(name = "source")
   val source: String? = null,
 
-  @Column(name = "SOURCE_ID")
+  @Column(name = "source_id")
   val sourceId: String? = null,
 
-  @Column(name = "NAME")
+  @Column(name = "name")
   val name: String? = null,
 
-  @Column(name = "OASYS_OFFENDER_PK")
+  @Column(name = "oasys_offender_pk")
   val oasysOffenderPk: Long? = null,
 
-  @Column(name = "PNC")
+  @Column(name = "pnc")
   val pnc: String? = null,
 
-  @Column(name = "CRN")
+  @Column(name = "crn")
   val crn: String,
 
-  @Column(name = "DATE_OF_BIRTH")
+  @Column(name = "date_of_birth")
   val dateOfBirth: LocalDate,
 
-  @Column(name = "GENDER")
+  @Column(name = "gender")
   val gender: String? = null,
 
-  @Column(name = "CREATED_DATE")
+  @Column(name = "created_date")
   val createdDate: LocalDateTime? = null,
 
   @ManyToOne
-  @JoinColumn(name = "ASSESSMENT_UUID", referencedColumnName = "ASSESSMENT_UUID")
+  @JoinColumn(name = "assessment_uuid", referencedColumnName = "assessment_uuid")
   val assessment: AssessmentEntity? = null,
 ) : Serializable

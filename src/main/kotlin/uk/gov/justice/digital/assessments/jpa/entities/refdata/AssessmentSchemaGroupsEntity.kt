@@ -12,10 +12,10 @@ import javax.persistence.ManyToOne
 import javax.persistence.Table
 
 @Entity
-@Table(name = "ASSESSMENT_SCHEMA_GROUPS")
+@Table(name = "assessment_schema_groups", schema = "hmppsassessmentsapi")//, schema = "hmppsassessmentsschemas")
 class AssessmentSchemaGroupsEntity(
   @Id
-  @Column(name = "ASSESSMENT_SCHEMA_GROUP_ID")
+  @Column(name = "assessment_schema_group_id")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   val assessmentSchemaGroupId: Long,
 

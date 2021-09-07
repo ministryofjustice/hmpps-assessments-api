@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.assessments.jpa.entities.refdata
 
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.services.dto.PredictorType
 import java.io.Serializable
 import java.util.UUID
@@ -16,7 +15,7 @@ import javax.persistence.ManyToOne
 import javax.persistence.Table
 
 @Entity
-@Table(name = "predictor_field_mapping")
+@Table(name = "predictor_field_mapping", schema = "hmppsassessmentsapi")
 class PredictorFieldMappingEntity(
   @Id
   @Column(name = "predictor_mapping_id")

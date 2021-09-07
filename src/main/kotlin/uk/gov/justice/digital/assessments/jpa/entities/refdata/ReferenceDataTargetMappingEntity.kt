@@ -10,7 +10,7 @@ import javax.persistence.ManyToOne
 import javax.persistence.Table
 
 @Entity(name = "reference_data_target")
-@Table(name = "OASYS_REFERENCE_DATA_TARGET_MAPPING")
+@Table(name = "oasys_reference_data_target_mapping", schema = "hmppsassessmentsapi")//, schema = "hmppsassessmentsschemas")
 class ReferenceDataTargetMappingEntity(
 
   @Id

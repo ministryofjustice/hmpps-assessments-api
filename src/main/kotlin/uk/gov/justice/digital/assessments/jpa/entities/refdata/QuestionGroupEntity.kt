@@ -14,7 +14,7 @@ import javax.persistence.ManyToOne
 import javax.persistence.Table
 
 @Entity
-@Table(name = "QUESTION_GROUP")
+@Table(name = "question_group", schema = "hmppsassessmentsapi")//, schema = "hmppsassessmentsschemas")
 class QuestionGroupEntity(
 
   @Id

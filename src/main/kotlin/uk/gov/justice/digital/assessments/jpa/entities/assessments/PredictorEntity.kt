@@ -16,7 +16,7 @@ import javax.persistence.OneToMany
 import javax.persistence.Table
 
 @Entity
-@Table(name = "assessment_predictors")
+@Table(name = "assessment_predictors", schema = "hmppsassessmentsapi")
 class PredictorEntity(
   @Id
   @Column(name = "id")

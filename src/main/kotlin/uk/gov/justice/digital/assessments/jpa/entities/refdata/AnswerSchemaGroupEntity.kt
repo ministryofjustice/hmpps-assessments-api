@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.assessments.jpa.entities.refdata
 
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerSchemaEntity
 import java.io.Serializable
 import java.time.LocalDateTime
 import java.util.UUID
@@ -12,7 +11,7 @@ import javax.persistence.OneToMany
 import javax.persistence.Table
 
 @Entity
-@Table(name = "ANSWER_SCHEMA_GROUP")
+@Table(name = "answer_schema_group", schema = "hmppsassessmentsapi")//, schema = "hmppsassessmentsschemas")
 class AnswerSchemaGroupEntity(
   @Id
   @Column(name = "answer_schema_group_id")

@@ -17,21 +17,21 @@ import javax.persistence.OneToMany
 import javax.persistence.Table
 
 @Entity
-@Table(name = "ASSESSMENT")
+@Table(name = "assessment", schema = "hmppsassessmentsapi")
 class AssessmentEntity(
 
   @Id
-  @Column(name = "ASSESSMENT_ID")
+  @Column(name = "assessment_id")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   val assessmentId: Long? = null,
 
-  @Column(name = "ASSESSMENT_UUID")
+  @Column(name = "assessment_uuid")
   val assessmentUuid: UUID = UUID.randomUUID(),
 
-  @Column(name = "CREATED_DATE")
+  @Column(name = "created_date")
   val createdDate: LocalDateTime = LocalDateTime.now(),
 
-  @Column(name = "COMPLETED_DATE")
+  @Column(name = "completed_date")
   var completedDate: LocalDateTime? = null,
 
   @OneToMany(mappedBy = "assessment", cascade = [CascadeType.ALL])

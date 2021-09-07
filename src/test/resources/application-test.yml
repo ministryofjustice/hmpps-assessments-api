@@ -11,11 +11,16 @@ server:
 spring:
   hmppsassessmentsapi:
     datasource:
-      url: 'jdbc:h2:mem:testdb;INIT=create domain if not exists jsonb as text;Mode=PostgreSQL'
+      url: 'jdbc:h2:mem:testdb;INIT=create domain if not exists JSONB as text;Mode=PostgreSQL;DATABASE_TO_UPPER=false'
       type: com.zaxxer.hikari.HikariDataSource
   jpa:
     show_sql: true
+  h2:
+    console:
+      enabled: true
+      path: '/h2-console'
   flyway:
+    schemas: hmppsassessmentsapi
     enabled: true
 
 graceful:

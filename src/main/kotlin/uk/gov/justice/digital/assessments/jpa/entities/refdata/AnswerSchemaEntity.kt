@@ -10,7 +10,7 @@ import javax.persistence.ManyToOne
 import javax.persistence.Table
 
 @Entity
-@Table(name = "ANSWER_SCHEMA")
+@Table(name = "answer_schema", schema = "hmppsassessmentsapi")//, schema = "hmppsassessmentsschemas")
 class AnswerSchemaEntity(
   @Id
   @Column(name = "answer_schema_id")

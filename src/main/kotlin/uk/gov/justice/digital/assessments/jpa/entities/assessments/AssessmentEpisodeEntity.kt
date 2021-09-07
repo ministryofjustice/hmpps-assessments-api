@@ -20,7 +20,7 @@ import javax.persistence.ManyToOne
 import javax.persistence.Table
 
 @Entity
-@Table(name = "ASSESSED_EPISODE")
+@Table(name = "assessed_episode", schema = "hmppsassessmentsapi")
 @TypeDefs(
   TypeDef(name = "json", typeClass = JsonStringType::class),
   TypeDef(name = "jsonb", typeClass = JsonBinaryType::class)
@@ -28,38 +28,38 @@ import javax.persistence.Table
 class AssessmentEpisodeEntity(
 
   @Id
-  @Column(name = "EPISODE_ID")
+  @Column(name = "episode_id")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   val episodeId: Long? = null,
 
-  @Column(name = "EPISODE_UUID")
+  @Column(name = "episode_uuid")
   val episodeUuid: UUID = UUID.randomUUID(),
 
   @ManyToOne
-  @JoinColumn(name = "ASSESSMENT_UUID", referencedColumnName = "ASSESSMENT_UUID")
+  @JoinColumn(name = "assessment_uuid", referencedColumnName = "assessment_uuid")
   val assessment: AssessmentEntity? = null,
 
-  @Column(name = "ASSESSMENT_SCHEMA_CODE")
+  @Column(name = "assessment_schema_code")
   @Enumerated(EnumType.STRING)
   val assessmentSchemaCode: AssessmentSchemaCode,
 
-  @Column(name = "OASYS_SET_PK")
+  @Column(name = "oasys_set_pk")
   val oasysSetPk: Long? = null,
 
-  @Column(name = "USER_ID")
+  @Column(name = "user_id")
   val userId: String? = null,
 
-  @Column(name = "CREATED_DATE")
+  @Column(name = "created_date")
   val createdDate: LocalDateTime = LocalDateTime.now(),
 
-  @Column(name = "END_DATE")
+  @Column(name = "end_date")
   var endDate: LocalDateTime? = null,
 
-  @Column(name = "CHANGE_REASON")
+  @Column(name = "change_reason")
   val changeReason: String? = null,
 
   @Type(type = "json")
-  @Column(columnDefinition = "jsonb", name = "ANSWERS")
+  @Column(columnDefinition = "jsonb", name = "answers")
   var answers: MutableMap<String, AnswerEntity>? = mutableMapOf()
 ) {
   fun isClosed(): Boolean {
