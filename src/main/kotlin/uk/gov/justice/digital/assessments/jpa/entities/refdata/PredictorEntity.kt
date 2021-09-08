@@ -8,6 +8,7 @@ import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.EnumType
 import javax.persistence.Enumerated
+import javax.persistence.FetchType
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
@@ -31,7 +32,7 @@ class PredictorEntity(
   @Enumerated(EnumType.STRING)
   val type: PredictorType,
 
-  @OneToMany
+  @OneToMany(fetch = FetchType.EAGER)
   @JoinColumn(name = "predictor_type", referencedColumnName = "predictor_type")
   val fieldEntities: Collection<PredictorFieldMappingEntity> = emptyList(),
 ) : Serializable

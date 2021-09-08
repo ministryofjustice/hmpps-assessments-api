@@ -6,6 +6,7 @@ import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.EnumType
 import javax.persistence.Enumerated
+import javax.persistence.FetchType
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
@@ -41,7 +42,7 @@ class AssessmentSchemaEntity(
   @Column(name = "assessment_name")
   val assessmentName: String? = null,
 
-  @OneToMany
-  @JoinColumn(name = "assessment_schema_code", referencedColumnName = "assessment_schema_code")
+  @OneToMany(fetch = FetchType.EAGER)
+  @JoinColumn(name = "assessment_schema_code", referencedColumnName = "assessment_schema_code" )
   val predictorEntities: Collection<PredictorEntity> = emptyList(),
 ) : Serializable

@@ -36,14 +36,12 @@ class RiskPredictorsService(
     val log: Logger = LoggerFactory.getLogger(this::class.java)
   }
 
-  @Transactional("assessmentsTransactionManager")
   fun getPredictorResults(episodeUuid: UUID, final: Boolean = false): List<PredictorScoresDto> {
     val episode = episodeRepository.findByEpisodeUuid(episodeUuid)
       ?: throw EntityNotFoundException("Episode with $episodeUuid not found")
     return getPredictorResults(episode)
   }
 
-  @Transactional("refDataTransactionManager")
   fun getPredictorResults(
     episode: AssessmentEpisodeEntity,
     final: Boolean = false
