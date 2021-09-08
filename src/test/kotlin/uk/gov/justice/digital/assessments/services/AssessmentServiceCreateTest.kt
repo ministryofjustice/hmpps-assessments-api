@@ -13,6 +13,7 @@ import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.slf4j.MDC
 import uk.gov.justice.digital.assessments.api.CreateAssessmentDto
+import uk.gov.justice.digital.assessments.api.OffenceDto
 import uk.gov.justice.digital.assessments.api.OffenderDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
@@ -80,6 +81,12 @@ class AssessmentServiceCreateTest {
         oasysOffenderPk,
         oasysSetPk
       )
+      every { offenderService.getOffence(crn, eventId) } returns OffenceDto(
+        offenceCode = "Code",
+        codeDescription = "Code description",
+        offenceSubCode = "Sub-code",
+        subCodeDescription = "Sub-code description"
+      )
       every { episodeService.prepopulate(any()) } returnsArgument 0
       every { assessmentRepository.save(any()) } returns AssessmentEntity(assessmentId = assessmentId)
 
@@ -111,34 +118,6 @@ class AssessmentServiceCreateTest {
           )
         )
       assertThat(assessmentDto.assessmentUuid).isEqualTo(assessmentUuid)
-      verify(exactly = 0) { assessmentRepository.save(any()) }
-    }
-
-    @Test
-    fun `throw exception if crn is null`() {
-      assertThrows<IllegalStateException> {
-        assessmentsService.createNewAssessment(
-          CreateAssessmentDto(
-            deliusEventId = eventId,
-            crn = null,
-            assessmentSchemaCode = assessmentSchemaCode
-          )
-        )
-      }
-      verify(exactly = 0) { assessmentRepository.save(any()) }
-    }
-
-    @Test
-    fun `throw exception if delius event id is null`() {
-      assertThrows<IllegalStateException> {
-        assessmentsService.createNewAssessment(
-          CreateAssessmentDto(
-            deliusEventId = null,
-            crn = crn,
-            assessmentSchemaCode = assessmentSchemaCode
-          )
-        )
-      }
       verify(exactly = 0) { assessmentRepository.save(any()) }
     }
 
@@ -189,10 +168,18 @@ class AssessmentServiceCreateTest {
         )
       } returns Pair(oasysOffenderPk, oasysSetPk)
 
+      every { offenderService.getOffence(crn, eventId) } returns OffenceDto(
+        offenceCode = "Code",
+        codeDescription = "Code description",
+        offenceSubCode = "Sub-code",
+        subCodeDescription = "Sub-code description"
+      )
       every { episodeService.prepopulate(any()) } returnsArgument 0
 
       assessmentsService.createNewAssessment(
         CreateAssessmentDto(
+          deliusEventId = 1L,
+          crn = "DX0000001",
           courtCode = courtCode,
           caseNumber = caseNumber,
           assessmentSchemaCode = assessmentSchemaCode
@@ -216,6 +203,8 @@ class AssessmentServiceCreateTest {
 
       assessmentsService.createNewAssessment(
         CreateAssessmentDto(
+          deliusEventId = 1L,
+          crn = "DX0000001",
           courtCode = courtCode,
           caseNumber = caseNumber,
           assessmentSchemaCode = assessmentSchemaCode

@@ -4,6 +4,7 @@ import io.mockk.every
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import io.mockk.verify
+import java.time.LocalDate
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -18,13 +19,12 @@ import uk.gov.justice.digital.assessments.restclient.ExternalService
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityConvictionDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.IDs
-import uk.gov.justice.digital.assessments.restclient.communityapi.Offence
-import uk.gov.justice.digital.assessments.restclient.communityapi.OffenceDetail
+import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenceDto
+import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenceDetail
 import uk.gov.justice.digital.assessments.restclient.communityapi.OffenderAlias
 import uk.gov.justice.digital.assessments.restclient.courtcaseapi.CourtCase
 import uk.gov.justice.digital.assessments.restclient.courtcaseapi.DefendantAddress
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiEntityNotFoundException
-import java.time.LocalDate
 
 @ExtendWith(MockKExtension::class)
 @DisplayName("Offender Service Tests")
@@ -55,8 +55,10 @@ class OffenderServiceTest {
 
     val offenceDto = offenderService.getOffence(crn, eventId)
     assertThat(offenceDto.convictionId).isEqualTo(636401162)
-    assertThat(offenceDto.mainOffenceId).isEqualTo("offence1")
-    assertThat(offenceDto.offenceCode).isEqualTo("offence code")
+    assertThat(offenceDto.offenceCode).isEqualTo("Code")
+    assertThat(offenceDto.codeDescription).isEqualTo("Code description")
+    assertThat(offenceDto.offenceSubCode).isEqualTo("Sub code")
+    assertThat(offenceDto.subCodeDescription).isEqualTo("Sub code description")
 
     verify(exactly = 1) { communityApiRestClient.getConvictions(any()) }
   }
@@ -72,8 +74,10 @@ class OffenderServiceTest {
 
     assertThat(offenderDto.offenderId).isEqualTo(oasysOffenderPk)
     assertThat(offenderDto.offence?.convictionId).isEqualTo(636401162)
-    assertThat(offenderDto.offence?.mainOffenceId).isEqualTo("offence1")
-    assertThat(offenderDto.offence?.offenceCode).isEqualTo("offence code")
+    assertThat(offenderDto.offence?.offenceCode).isEqualTo("Code")
+    assertThat(offenderDto.offence?.codeDescription).isEqualTo("Code description")
+    assertThat(offenderDto.offence?.offenceSubCode).isEqualTo("Sub code")
+    assertThat(offenderDto.offence?.subCodeDescription).isEqualTo("Sub code description")
     verify(exactly = 1) { communityApiRestClient.getOffender(any()) }
     verify(exactly = 1) { communityApiRestClient.getConvictions(any()) }
   }
@@ -193,11 +197,10 @@ class OffenderServiceTest {
 
     val offenceDto = offenderService.getOffence(crn, eventId)
     assertThat(offenceDto.convictionId).isEqualTo(636401162L)
-    assertThat(offenceDto.offenceCode).isEqualTo("offence code")
-    assertThat(offenceDto.categoryCode).isEqualTo("main category code")
-    assertThat(offenceDto.categoryDescription).isEqualTo("code description 1")
-    assertThat(offenceDto.subCategoryCode).isEqualTo("subcategory code")
-    assertThat(offenceDto.subCategoryDescription).isEqualTo("code description 2")
+    assertThat(offenceDto.offenceCode).isEqualTo("Code")
+    assertThat(offenceDto.codeDescription).isEqualTo("Code description")
+    assertThat(offenceDto.offenceSubCode).isEqualTo("Sub code")
+    assertThat(offenceDto.subCodeDescription).isEqualTo("Sub code description")
 
     verify(exactly = 1) { communityApiRestClient.getConvictions(any()) }
   }
@@ -231,28 +234,24 @@ class OffenderServiceTest {
       CommunityConvictionDto(
         convictionId = 636401162L,
         offences = listOf(
-          Offence(
+          CommunityOffenceDto(
             offenceId = "offence1",
             mainOffence = true,
-            detail = OffenceDetail(
-              code = "offence code",
-              description = "Offence description",
-              mainCategoryCode = "main category code",
-              mainCategoryDescription = "code description 1",
-              subCategoryCode = "subcategory code",
-              subCategoryDescription = "code description 2"
+            detail = CommunityOffenceDetail(
+              mainCategoryCode = "Code",
+              mainCategoryDescription = "Code description",
+              subCategoryCode = "Sub code",
+              subCategoryDescription = "Sub code description"
             )
           ),
-          Offence(
+          CommunityOffenceDto(
             offenceId = "offence2",
             mainOffence = false,
-            detail = OffenceDetail(
-              code = "code2",
-              description = "Offence description",
-              mainCategoryCode = "main category code",
-              mainCategoryDescription = "code description 1",
-              subCategoryCode = "subcategory code",
-              subCategoryDescription = "code description 2"
+            detail = CommunityOffenceDetail(
+              mainCategoryCode = "Code",
+              mainCategoryDescription = "Code description",
+              subCategoryCode = "Sub code",
+              subCategoryDescription = "Sub code description"
             )
           )
         ),
@@ -262,28 +261,24 @@ class OffenderServiceTest {
       CommunityConvictionDto(
         convictionId = 1234567,
         offences = listOf(
-          Offence(
+          CommunityOffenceDto(
             offenceId = "offenceA",
             mainOffence = true,
-            detail = OffenceDetail(
-              code = "offence code",
-              description = "Offence description",
-              mainCategoryCode = "main category code",
-              mainCategoryDescription = "code description 1",
-              subCategoryCode = "subcategory code",
-              subCategoryDescription = "code description 2"
+            detail = CommunityOffenceDetail(
+              mainCategoryCode = "Code",
+              mainCategoryDescription = "Code description",
+              subCategoryCode = "Sub code",
+              subCategoryDescription = "Sub code description"
             )
           ),
-          Offence(
+          CommunityOffenceDto(
             offenceId = "offenceB",
             mainOffence = false,
-            detail = OffenceDetail(
-              code = "code2",
-              description = "Offence description",
-              mainCategoryCode = "main category code",
-              mainCategoryDescription = "code description 1",
-              subCategoryCode = "subcategory code",
-              subCategoryDescription = "code description 2"
+            detail = CommunityOffenceDetail(
+              mainCategoryCode = "Code",
+              mainCategoryDescription = "Code description",
+              subCategoryCode = "Sub code",
+              subCategoryDescription = "Sub code description"
             )
           )
         ),

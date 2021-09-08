@@ -1,43 +1,29 @@
 package uk.gov.justice.digital.assessments.api
 
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityConvictionDto
-import uk.gov.justice.digital.assessments.restclient.communityapi.Offence
+import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenceDto.Companion.getMainOffence
 import java.time.LocalDate
-import javax.persistence.EntityNotFoundException
 
-class OffenceDto(
+data class OffenceDto(
   val convictionId: Long? = null,
   val convictionDate: LocalDate? = null,
-  val mainOffenceId: String? = null,
   val offenceCode: String? = null,
-  val offenceDescription: String? = null,
-  val categoryCode: String? = null,
-  val categoryDescription: String? = null,
-  val subCategoryCode: String? = null,
-  val subCategoryDescription: String? = null
+  val codeDescription: String? = null,
+  val offenceSubCode: String? = null,
+  val subCodeDescription: String? = null
 ) {
+
   companion object {
     fun from(convictionDto: CommunityConvictionDto): OffenceDto {
       val offence = getMainOffence(convictionDto.offences)
       return OffenceDto(
         convictionId = convictionDto.convictionId,
         convictionDate = convictionDto.convictionDate,
-        mainOffenceId = offence.offenceId,
-        offenceCode = offence.detail?.code,
-        offenceDescription = offence.detail?.description,
-        categoryCode = offence.detail?.mainCategoryCode,
-        categoryDescription = offence.detail?.mainCategoryDescription,
-        subCategoryCode = offence.detail?.subCategoryCode,
-        subCategoryDescription = offence.detail?.subCategoryDescription
+        offenceCode = offence.detail!!.mainCategoryCode,
+        codeDescription = offence.detail.mainCategoryDescription,
+        offenceSubCode = offence.detail.subCategoryCode,
+        subCodeDescription = offence.detail.subCategoryDescription
       )
-    }
-
-    private fun getMainOffence(offences: List<Offence>?): Offence {
-      if (offences.isNullOrEmpty()) {
-        throw EntityNotFoundException("No offences found")
-      } else {
-        return offences.first { it.mainOffence == true }
-      }
     }
   }
 }

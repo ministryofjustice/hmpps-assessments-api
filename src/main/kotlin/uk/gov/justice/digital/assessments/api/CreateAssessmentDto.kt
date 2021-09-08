@@ -5,10 +5,10 @@ import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 
 data class CreateAssessmentDto(
   @Schema(description = "Delius Event ID", example = "1234")
-  val deliusEventId: Long? = null,
+  val deliusEventId: Long,
 
   @Schema(description = "Offender CRN", example = "CRN1")
-  val crn: String? = null,
+  val crn: String,
 
   @Schema(description = "Court Code", example = "SHF")
   val courtCode: String? = null,
@@ -20,6 +20,5 @@ data class CreateAssessmentDto(
   val assessmentSchemaCode: AssessmentSchemaCode
 
 ) {
-  fun isDelius() = (deliusEventId != null && crn != null)
   fun isCourtCase() = (courtCode != null && caseNumber != null)
 }

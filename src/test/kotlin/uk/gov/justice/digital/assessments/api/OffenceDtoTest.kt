@@ -4,8 +4,8 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityConvictionDto
-import uk.gov.justice.digital.assessments.restclient.communityapi.Offence
-import uk.gov.justice.digital.assessments.restclient.communityapi.OffenceDetail
+import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenceDetail
+import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenceDto
 import java.time.LocalDate
 
 @DisplayName("Offence DTO Tests")
@@ -17,12 +17,10 @@ class OffenceDtoTest {
     val communityConvictionDto = CommunityConvictionDto(
       convictionId = 1234L,
       offences = listOf(
-        Offence(
+        CommunityOffenceDto(
           offenceId = "offenceId",
           mainOffence = true,
-          detail = OffenceDetail(
-            code = "offence code",
-            description = "offence description",
+          detail = CommunityOffenceDetail(
             mainCategoryCode = "main category code",
             mainCategoryDescription = "code description 1",
             subCategoryCode = "subcategory code",
@@ -38,12 +36,9 @@ class OffenceDtoTest {
 
     assertThat(offenceDto.convictionId).isEqualTo(1234L)
     assertThat(offenceDto.convictionDate).isEqualTo(convictionDate)
-    assertThat(offenceDto.mainOffenceId).isEqualTo("offenceId")
-    assertThat(offenceDto.offenceCode).isEqualTo("offence code")
-    assertThat(offenceDto.offenceDescription).isEqualTo("offence description")
-    assertThat(offenceDto.categoryCode).isEqualTo("main category code")
-    assertThat(offenceDto.categoryDescription).isEqualTo("code description 1")
-    assertThat(offenceDto.subCategoryCode).isEqualTo("subcategory code")
-    assertThat(offenceDto.subCategoryDescription).isEqualTo("code description 2")
+    assertThat(offenceDto.offenceCode).isEqualTo("main category code")
+    assertThat(offenceDto.codeDescription).isEqualTo("code description 1")
+    assertThat(offenceDto.offenceSubCode).isEqualTo("subcategory code")
+    assertThat(offenceDto.subCodeDescription).isEqualTo("code description 2")
   }
 }

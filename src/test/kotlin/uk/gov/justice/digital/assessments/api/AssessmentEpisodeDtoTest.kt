@@ -30,7 +30,11 @@ class AssessmentEpisodeDtoTest {
       "USER",
       LocalDateTime.of(2019, 8, 1, 8, 0),
       null,
-      "Change of Circs"
+      "Change of Circs",
+      "CODE",
+      "Code description",
+      "SUBCODE",
+      "Subcode description"
     )
 
     val episodeDto = AssessmentEpisodeDto.from(episodeEntity)
@@ -42,5 +46,9 @@ class AssessmentEpisodeDtoTest {
     assertThat(episodeDto.reasonForChange).isEqualTo(episodeEntity.changeReason)
     assertThat(episodeDto.episodeUuid).isEqualTo(episodeEntity.episodeUuid)
     assertThat(episodeDto.oasysAssessmentId).isEqualTo(episodeEntity.oasysSetPk)
+    assertThat(episodeDto.offenceCode).isEqualTo(episodeEntity.offenceCode)
+    assertThat(episodeDto.codeDescription).isEqualTo(episodeEntity.codeDescription)
+    assertThat(episodeDto.offenceSubCode).isEqualTo(episodeEntity.offenceSubCode)
+    assertThat(episodeDto.subCodeDescription).isEqualTo(episodeEntity.subCodeDescription)
   }
 }

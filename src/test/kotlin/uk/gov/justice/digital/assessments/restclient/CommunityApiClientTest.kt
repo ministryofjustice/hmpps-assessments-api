@@ -16,7 +16,6 @@ class CommunityApiClientTest : IntegrationTest() {
   internal lateinit var communityApiRestClient: CommunityApiRestClient
 
   val crn = "DX12340A"
-  val eventId = 1L
 
   @Test
   fun `get Delius Offender returns offender DTO`() {

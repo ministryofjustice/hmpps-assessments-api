@@ -37,8 +37,8 @@ class OffenderControllerTest : IntegrationTest() {
       .responseBody
 
     assertThat(offenderDto?.offenderId).isEqualTo(oasysUserId)
-    assertThat(offenderDto?.offence?.mainOffenceId).isEqualTo("M2500000001")
-    assertThat(offenderDto?.offence?.offenceCode).isEqualTo("11600")
+    assertThat(offenderDto?.offence?.offenceCode).isEqualTo("116")
+    assertThat(offenderDto?.offence?.offenceSubCode).isEqualTo("00")
   }
 
   @Test
@@ -91,11 +91,9 @@ class OffenderControllerTest : IntegrationTest() {
       .responseBody
 
     assertThat(offenderDto?.offenderId).isEqualTo(oasysUserId)
-    assertThat(offenderDto?.offence?.offenceCode).isEqualTo("11600")
-    assertThat(offenderDto?.offence?.offenceDescription).isEqualTo("Fishery Laws - 11600")
-    assertThat(offenderDto?.offence?.categoryCode).isEqualTo("116")
-    assertThat(offenderDto?.offence?.categoryDescription).isEqualTo("Fishery Laws")
-    assertThat(offenderDto?.offence?.subCategoryCode).isEqualTo("00")
-    assertThat(offenderDto?.offence?.subCategoryDescription).isEqualTo("Fishery Laws")
+    assertThat(offenderDto?.offence?.offenceCode).isEqualTo("116")
+    assertThat(offenderDto?.offence?.codeDescription).isEqualTo("Fishery Laws")
+    assertThat(offenderDto?.offence?.offenceSubCode).isEqualTo("00")
+    assertThat(offenderDto?.offence?.subCodeDescription).isEqualTo("Fishery Laws")
   }
 }

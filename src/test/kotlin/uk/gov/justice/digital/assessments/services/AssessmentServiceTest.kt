@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import uk.gov.justice.digital.assessments.api.OffenceDto
 import uk.gov.justice.digital.assessments.jpa.entities.AnswerEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AnswerSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AnswerSchemaGroupEntity
@@ -16,10 +17,12 @@ import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
+import uk.gov.justice.digital.assessments.jpa.entities.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.SubjectRepository
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -62,6 +65,14 @@ class AssessmentServiceTest {
   private val answer2Uuid = UUID.randomUUID()
   private val answer3Uuid = UUID.randomUUID()
 
+  private val crn = "DX12345A"
+  private val eventId = 1L
+
+  private val offenceCode = "Code"
+  private val codeDescription = "Code description"
+  private val offenceSubCode = "Sub-code"
+  private val subCodeDescription = "Sub-code description"
+
   @Nested
   @DisplayName("episodes")
   inner class CreatingEpisode {
@@ -73,19 +84,40 @@ class AssessmentServiceTest {
       every {
         assessment.newEpisode(
           "Change of Circs",
-          assessmentSchemaCode = assessmentSchemaCode
+          assessmentSchemaCode = assessmentSchemaCode,
+          offence = OffenceDto(
+            offenceCode = offenceCode,
+            codeDescription = codeDescription,
+            offenceSubCode = offenceSubCode,
+            subCodeDescription = subCodeDescription
+          )
         )
       } returns AssessmentEpisodeEntity(
         episodeId = episodeId1,
         assessment = assessment,
         createdDate = LocalDateTime.now(),
-        assessmentSchemaCode = AssessmentSchemaCode.ROSH
-
+        assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+        offenceCode = offenceCode,
+        codeDescription = codeDescription,
+        offenceSubCode = offenceSubCode,
+        subCodeDescription = subCodeDescription
       )
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
+      every { assessment.subject } returns SubjectEntity(crn = crn, dateOfBirth = LocalDate.now())
+      every { offenderService.getOffence(crn, eventId) } returns OffenceDto(
+        offenceCode = offenceCode,
+        codeDescription = codeDescription,
+        offenceSubCode = offenceSubCode,
+        subCodeDescription = subCodeDescription
+      )
       every { episodeService.prepopulate(any()) } returnsArgument 0
 
-      val episodeDto = assessmentsService.createNewEpisode(assessmentUuid, "Change of Circs", assessmentSchemaCode)
+      val episodeDto = assessmentsService.createNewEpisode(
+        assessmentUuid,
+        eventId,
+        "Change of Circs",
+        assessmentSchemaCode
+      )
 
       assertThat(episodeDto.assessmentUuid).isEqualTo(assessmentUuid)
       assertThat(episodeDto.episodeId).isEqualTo(episodeId1)
