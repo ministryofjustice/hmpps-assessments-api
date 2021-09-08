@@ -21,7 +21,6 @@ class OasysAssessmentUpdateService(
     val log: Logger = LoggerFactory.getLogger(this::class.java)
   }
 
-  @Transactional
   fun updateOASysAssessment(
     episode: AssessmentEpisodeEntity,
     updatedEpisodeAnswers: Map<String, AnswersDto>

@@ -13,7 +13,6 @@ import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 
 @Service
-@Transactional("assessmentsTransactionManager")
 class OffenderService(
   private val communityApiRestClient: CommunityApiRestClient,
   private val subjectRepository: SubjectRepository,

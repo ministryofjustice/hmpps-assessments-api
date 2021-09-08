@@ -79,7 +79,7 @@ class AssessmentUpdateService(
     }
   }
 
-  @Transactional
+  @Transactional("assessmentsTransactionManager")
   fun addEpisodeTableRow(
     episode: AssessmentEpisodeEntity,
     tableName: String,
@@ -92,7 +92,7 @@ class AssessmentUpdateService(
     )
   }
 
-  @Transactional
+  @Transactional("assessmentsTransactionManager")
   fun addCurrentEpisodeTableRow(
     episode: AssessmentEpisodeEntity,
     tableName: String,
@@ -118,7 +118,7 @@ class AssessmentUpdateService(
     }
   }
 
-  @Transactional
+  @Transactional("assessmentsTransactionManager")
   fun updateEpisodeTableRow(
     episode: AssessmentEpisodeEntity,
     tableName: String,
@@ -133,7 +133,7 @@ class AssessmentUpdateService(
     )
   }
 
-  @Transactional
+  @Transactional("assessmentsTransactionManager")
   fun updateCurrentEpisodeTableRow(
     episode: AssessmentEpisodeEntity,
     tableName: String,
@@ -164,7 +164,7 @@ class AssessmentUpdateService(
     }
   }
 
-  @Transactional
+  @Transactional("assessmentsTransactionManager")
   fun deleteEpisodeTableRow(
     episode: AssessmentEpisodeEntity,
     tableName: String,
@@ -177,7 +177,7 @@ class AssessmentUpdateService(
     )
   }
 
-  @Transactional
+  @Transactional("assessmentsTransactionManager")
   fun deleteCurrentEpisodeTableRow(
     episode: AssessmentEpisodeEntity,
     tableName: String,
@@ -288,7 +288,7 @@ class AssessmentUpdateService(
     return updatedTable
   }
 
-  @Transactional
+  @Transactional("assessmentsTransactionManager")
   fun closeEpisode(
     episode: AssessmentEpisodeEntity
   ): AssessmentEpisodeDto {
