@@ -27,7 +27,7 @@ import java.util.UUID
     executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
   )
 )
-@AutoConfigureWebTestClient
+@AutoConfigureWebTestClient(timeout = "360000")
 class RiskPredictorsControllerTest : IntegrationTest() {
 
   @Test

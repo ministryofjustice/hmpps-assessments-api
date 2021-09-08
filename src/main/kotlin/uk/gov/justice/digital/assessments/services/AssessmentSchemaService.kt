@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.assessments.services
 
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.assessments.api.GroupQuestionDto
 import uk.gov.justice.digital.assessments.api.GroupSectionsDto
 import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
@@ -12,6 +13,7 @@ import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundExce
 import uk.gov.justice.digital.assessments.services.exceptions.OasysAssessmentTypeMappingMissing
 
 @Service
+@Transactional("refDataTransactionManager")
 class AssessmentSchemaService(
   private val assessmentSchemaRepository: AssessmentSchemaRepository,
   private val questionService: QuestionService

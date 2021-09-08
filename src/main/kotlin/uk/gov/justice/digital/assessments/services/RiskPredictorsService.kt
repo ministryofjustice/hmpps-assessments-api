@@ -3,6 +3,7 @@ package uk.gov.justice.digital.assessments.services
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.assessments.api.AnswersDto
 import uk.gov.justice.digital.assessments.api.PredictorScoresDto
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.Answer
@@ -35,12 +36,14 @@ class RiskPredictorsService(
     val log: Logger = LoggerFactory.getLogger(this::class.java)
   }
 
+  @Transactional("assessmentsTransactionManager")
   fun getPredictorResults(episodeUuid: UUID, final: Boolean = false): List<PredictorScoresDto> {
     val episode = episodeRepository.findByEpisodeUuid(episodeUuid)
       ?: throw EntityNotFoundException("Episode with $episodeUuid not found")
     return getPredictorResults(episode)
   }
 
+  @Transactional("refDataTransactionManager")
   fun getPredictorResults(
     episode: AssessmentEpisodeEntity,
     final: Boolean = false
