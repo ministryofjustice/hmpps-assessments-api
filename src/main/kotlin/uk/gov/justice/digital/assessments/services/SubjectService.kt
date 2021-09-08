@@ -8,7 +8,6 @@ import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundExce
 import java.util.UUID
 
 @Service
-@Transactional("assessmentsTransactionManager")
 class SubjectService(
   private val assessmentRepository: AssessmentRepository
 ) {

@@ -8,7 +8,6 @@ import uk.gov.justice.digital.assessments.jpa.repositories.refdata.QuestionDepen
 import java.util.UUID
 
 @Service
-@Transactional("refDataTransactionManager")
 class QuestionDependencyService(
   private val questionDependencyRepository: QuestionDependencyRepository
 ) {
