@@ -17,7 +17,7 @@ class SubjectServiceTest {
   private val assessmentRepository: AssessmentRepository = mockk()
   private val subjectRepository: SubjectRepository = mockk()
 
-  private val subjectService = SubjectService(assessmentRepository, subjectRepository)
+  private val subjectService = SubjectService(assessmentRepository)
 
   @Test
   fun `get subject for assessment`() {

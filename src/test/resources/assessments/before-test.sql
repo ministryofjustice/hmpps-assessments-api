@@ -2,23 +2,23 @@
 DELETE FROM hmppsassessmentsapi.assessed_episode WHERE true;
 DELETE FROM hmppsassessmentsapi.subject WHERE true;
 DELETE FROM hmppsassessmentsapi.assessment WHERE true;
-
-DELETE FROM hmppsassessmentsschemas.assessment_predictors WHERE true;
-DELETE FROM hmppsassessmentsschemas.oasys_question_mapping WHERE true;
-DELETE FROM hmppsassessmentsschemas.answer_schema WHERE true;
-DELETE FROM hmppsassessmentsschemas.oasys_reference_data_target_mapping WHERE true;
-DELETE FROM hmppsassessmentsschemas.predictor_field_mapping WHERE true;
-DELETE FROM hmppsassessmentsschemas.assessment_predictors WHERE true;
-DELETE FROM hmppsassessmentsschemas.question_dependency WHERE true;
-DELETE FROM hmppsassessmentsschemas.question_schema WHERE true;
-DELETE FROM hmppsassessmentsschemas.answer_schema_group WHERE true;
-DELETE FROM hmppsassessmentsschemas.question_group WHERE true;
-DELETE FROM hmppsassessmentsschemas.assessment_schema_groups WHERE true;
-DELETE FROM hmppsassessmentsschemas.assessment_schema WHERE true;
-DELETE FROM hmppsassessmentsschemas.answer_schema_group WHERE true;
-DELETE FROM hmppsassessmentsschemas.question_schema WHERE true;
-DELETE FROM hmppsassessmentsschemas.predictor_field_mapping WHERE true;
-DELETE FROM hmppsassessmentsschemas.grouping WHERE true;
+--
+-- DELETE FROM hmppsassessmentsschemas.assessment_predictors WHERE true;
+-- DELETE FROM hmppsassessmentsschemas.oasys_question_mapping WHERE true;
+-- DELETE FROM hmppsassessmentsschemas.answer_schema WHERE true;
+-- DELETE FROM hmppsassessmentsschemas.oasys_reference_data_target_mapping WHERE true;
+-- DELETE FROM hmppsassessmentsschemas.predictor_field_mapping WHERE true;
+-- DELETE FROM hmppsassessmentsschemas.assessment_predictors WHERE true;
+-- DELETE FROM hmppsassessmentsschemas.question_dependency WHERE true;
+-- DELETE FROM hmppsassessmentsschemas.question_schema WHERE true;
+-- DELETE FROM hmppsassessmentsschemas.answer_schema_group WHERE true;
+-- DELETE FROM hmppsassessmentsschemas.question_group WHERE true;
+-- DELETE FROM hmppsassessmentsschemas.assessment_schema_groups WHERE true;
+-- DELETE FROM hmppsassessmentsschemas.assessment_schema WHERE true;
+-- DELETE FROM hmppsassessmentsschemas.answer_schema_group WHERE true;
+-- DELETE FROM hmppsassessmentsschemas.question_schema WHERE true;
+-- DELETE FROM hmppsassessmentsschemas.predictor_field_mapping WHERE true;
+-- DELETE FROM hmppsassessmentsschemas.grouping WHERE true;
 
 /* Assessment with Episodes */
 INSERT INTO hmppsassessmentsapi.assessment  (assessment_id, assessment_uuid, created_date) VALUES
@@ -33,7 +33,7 @@ INSERT INTO hmppsassessmentsapi.assessed_episode  (episode_id, episode_uuid, use
 (2, 'f3569440-efd5-4289-8fdd-4560360e5259', 'USER1', '2019-11-14 09:00', null,'More Change of Circs', 'ROSH', '2e020e78-a81c-407f-bc78-e5f284e237e5', '{}'),
 (3, 'f3569440-efd5-4289-8fdd-4560360e5279', 'USER1', '2019-11-14 09:00', null,'Change', 'RSR', '19c8d211-68dc-4692-a6e2-d58468127056', '{}'),
 (4, 'f3569440-efd5-4289-8fdd-4560360e5289', 'USER1', '2019-11-14 09:00', '2019-11-14 12:00','Change', 'RSR', '19c8d211-68dc-4692-a6e2-d58468127056', '{}'),
-(5, 'f3569440-efd5-4289-8fdd-4560360e5299', 'USER1', '2019-11-14 09:00', '2019-11-14 13:00','More recent Change', 'RSR', '19c8d211-68dc-4692-a6e2-d58468127056', '{}');
+(5, 'f3569440-efd5-4289-8fdd-4560360e5299', 'USER1', '2019-11-14 09:00', '2019-11-14 13:00','More recent Change', 'RSR', '19c8d211-68dc-4692-a6e2-d58468127056', '{"total_sanctions": {"answers": [{"items": ["10"]}]}, "any_sexual_offences": {"answers": [{"items": ["YES"]}]},"current_sexual_offence": {"answers": [{"items": ["YES"]}]},"current_offence_victim_stranger": {"answers": [{"items": ["YES"]}]}, "completed_interview": {"answers": [{"items": ["YES"]}]}, "date_first_sanction": {"answers": [{"items": ["2020-01-01"]}]}, "age_first_conviction": {"answers": [{"items": ["23"]}]}, "earliest_release_date": {"answers": [{"items": ["2021-11-01"]}]}, "total_violent_offences": {"answers": [{"items": ["8"]}]}, "date_current_conviction": {"answers": [{"items": ["2020-12-18"]}]}, "total_non_sexual_offences": {"answers": [{"items": []}]}, "total_sexual_offences_adult": {"answers": [{"items": [5]}]}, "total_sexual_offences_child": {"answers": [{"items": [3]}]}, "most_recent_sexual_offence_date": {"answers": [{"items": ["2020-12-11"]}]}, "total_sexual_offences_child_image": {"answers": [{"items": [2]}]}, "total_non_contact_sexual_offences": {"answers": [{"items": [2]}]}, "binge_drinking": {"answers": [{"items": ["significant problems"]}]}, "previous_arson": {"answers": [{"items": ["YES"]}]}, "use_of_alcohol": {"answers": [{"items": ["significant problems"]}]},"previous_robbery": {"answers": [{"items": ["YES"]}]}, "previous_wounding": {"answers": [{"items": ["YES"]}]}, "impulsivity_issues": {"answers": [{"items": ["some problems"]}]},"previous_kidnapping": {"answers": [{"items": ["YES"]}]},"temper_control_issues": {"answers": [{"items": ["significant problems"]}]}, "unemployed_on_release": {"answers": [{"items": ["not available for work"]}]}, "current_sexual_offence": {"answers": [{"items": ["YES"]}]}, "previous_murder_attempt": {"answers": [{"items": ["YES"]}]}, "previous_offence_weapon": {"answers": [{"items": ["YES"]}]}, "previous_criminal_damage": {"answers": [{"items": ["YES"]}]}, "evidence_domestic_violence": {"answers": [{"items": ["YES"]}]}, "previous_possession_firearm": {"answers": [{"items": ["YES"]}]},"previous_aggravated_burglary": {"answers": [{"items": ["YES"]}]}, "perpetrator_domestic_violence": {"answers": [{"items": ["perpetrator"]}]}, "pro_criminal_attitudes": {"answers": [{"items": ["some problems"]}]}, "current_relationship_with_partner": {"answers": [{"items": ["significant problems"]}]}}');
 
 /* Empty assessment */
 INSERT INTO hmppsassessmentsapi.assessment  (assessment_id, assessment_uuid, created_date) VALUES
@@ -58,6 +58,7 @@ INSERT INTO hmppsassessmentsapi.assessed_episode  (episode_id, episode_uuid, use
 /* Existing Delius Subject */
 INSERT INTO hmppsassessmentsapi.subject (subject_id, subject_uuid, source, source_id, name, pnc, crn, date_of_birth, gender, created_date, assessment_uuid) VALUES
 (6, '362aae3c-852d-4a39-80f4-f41adc249bae', 'DELIUS', '12345', 'John Smith', 'dummy-pnc', 'CRN1', '1928-08-01', 'MALE', '2019-11-14 08:30', '19c8d211-68dc-4692-a6e2-d58468127056');
+/*
 
 INSERT INTO hmppsassessmentsschemas.grouping (group_uuid, group_code, heading, subheading, help_text, group_start, group_end)
 VALUES ('fb777be0-a183-4c83-8209-e7871df9c547', 'children_at_risk_of_serious_harm', 'Children at Risk of Serious Harm', null, null, '2020-11-30 14:50:00', null);
@@ -185,4 +186,4 @@ INSERT INTO hmppsassessmentsschemas.predictor_field_mapping (predictor_mapping_u
 ('a7be30d2-987a-44f1-ac1c-9722dc803f20', '9692659a-778a-436a-bf4e-fe1924638e37', 'RSR', 'previous_robbery', false),
 ('cf0c913f-c5d5-4b28-a861-ac55b218899f', '68e31f3a-5175-47e2-986b-d722ad78d893', 'RSR', 'previous_offence_weapon', false),
 ('a954021b-8c43-4792-9431-4c63b7b54e96', '97621b0d-5a64-42dd-9c8b-1484979e9145', 'RSR', 'current_possession_firearm', false),
-('94476286-d09b-4f26-8025-6d6e5c828bcf', 'ba327713-e580-418d-b45b-09a8a3d1166a', 'RSR', 'current_offence_weapon', false);
+('94476286-d09b-4f26-8025-6d6e5c828bcf', 'ba327713-e580-418d-b45b-09a8a3d1166a', 'RSR', 'current_offence_weapon', false);*/

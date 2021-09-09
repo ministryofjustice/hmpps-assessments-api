@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RestController
-import uk.gov.justice.digital.assessments.api.AssessmentEpisodeDto
+import uk.gov.justice.digital.assessments.api.OasysAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
-import uk.gov.justice.digital.assessments.services.SubjectService
+import uk.gov.justice.digital.assessments.services.OasysAssessmentService
 
 @RestController
-class SubjectController(val subjectService: SubjectService) {
+class SubjectController(val oasysAssessmentService: OasysAssessmentService) {
 
   @RequestMapping(
     path = ["/subject/{crn}/assessments/episodes/{assessmentSchemaCode}/current"],
@@ -36,9 +36,9 @@ class SubjectController(val subjectService: SubjectService) {
       required = true,
       example = "RSR"
     ) @PathVariable assessmentSchemaCode: AssessmentSchemaCode
-  ): AssessmentEpisodeDto {
+  ): OasysAssessmentEpisodeDto {
     log.info("Get current episode for an Offender with crn:$crn and assessment schema code:$assessmentSchemaCode")
-    return subjectService.getLatestEpisodeOfTypeForSubjectWithCrn(assessmentSchemaCode, crn)
+    return oasysAssessmentService.getLatestEpisodeOfTypeForSubjectWithCrn(assessmentSchemaCode, crn)
   }
 
   companion object {
