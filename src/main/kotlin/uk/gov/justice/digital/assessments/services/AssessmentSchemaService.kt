@@ -4,11 +4,10 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.assessments.api.GroupQuestionDto
 import uk.gov.justice.digital.assessments.api.GroupSectionsDto
 import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
-import uk.gov.justice.digital.assessments.api.QuestionSchemaDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
-import uk.gov.justice.digital.assessments.jpa.entities.OasysAssessmentType
-import uk.gov.justice.digital.assessments.jpa.entities.Predictor
-import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentSchemaRepository
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.OasysAssessmentType
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.PredictorEntity
+import uk.gov.justice.digital.assessments.jpa.repositories.refdata.AssessmentSchemaRepository
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import uk.gov.justice.digital.assessments.services.exceptions.OasysAssessmentTypeMappingMissing
 
@@ -18,8 +17,8 @@ class AssessmentSchemaService(
   private val questionService: QuestionService
 ) {
 
-  fun getPredictorsForAssessment(assessmentSchemaCode: AssessmentSchemaCode?): List<Predictor> {
-    return assessmentSchemaRepository.findByAssessmentSchemaCode(assessmentSchemaCode!!)?.predictors.orEmpty().toList()
+  fun getPredictorsForAssessment(assessmentSchemaCode: AssessmentSchemaCode?): List<PredictorEntity> {
+    return assessmentSchemaRepository.findByAssessmentSchemaCode(assessmentSchemaCode!!)?.predictorEntities.orEmpty().toList()
   }
 
   fun getAssessmentSchema(assessmentSchemaCode: AssessmentSchemaCode?): GroupWithContentsDto {

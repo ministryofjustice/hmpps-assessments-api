@@ -15,19 +15,19 @@ import uk.gov.justice.digital.assessments.api.GroupQuestionDto
 import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
 import uk.gov.justice.digital.assessments.api.QuestionSchemaDto
 import uk.gov.justice.digital.assessments.api.TableQuestionDto
-import uk.gov.justice.digital.assessments.jpa.entities.AnswerSchemaEntity
-import uk.gov.justice.digital.assessments.jpa.entities.AnswerSchemaGroupEntity
-import uk.gov.justice.digital.assessments.jpa.entities.GroupEntity
-import uk.gov.justice.digital.assessments.jpa.entities.GroupSummaryEntity
-import uk.gov.justice.digital.assessments.jpa.entities.OASysMappingEntity
-import uk.gov.justice.digital.assessments.jpa.entities.QuestionDependencyEntity
-import uk.gov.justice.digital.assessments.jpa.entities.QuestionGroupEntity
-import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
-import uk.gov.justice.digital.assessments.jpa.repositories.AnswerSchemaRepository
-import uk.gov.justice.digital.assessments.jpa.repositories.GroupRepository
-import uk.gov.justice.digital.assessments.jpa.repositories.OASysMappingRepository
-import uk.gov.justice.digital.assessments.jpa.repositories.QuestionGroupRepository
-import uk.gov.justice.digital.assessments.jpa.repositories.QuestionSchemaRepository
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerSchemaEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerSchemaGroupEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.GroupEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.GroupSummaryEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.OASysMappingEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionDependencyEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionGroupEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEntity
+import uk.gov.justice.digital.assessments.jpa.repositories.refdata.AnswerSchemaRepository
+import uk.gov.justice.digital.assessments.jpa.repositories.refdata.GroupRepository
+import uk.gov.justice.digital.assessments.jpa.repositories.refdata.OASysMappingRepository
+import uk.gov.justice.digital.assessments.jpa.repositories.refdata.QuestionGroupRepository
+import uk.gov.justice.digital.assessments.jpa.repositories.refdata.QuestionSchemaRepository
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import java.util.UUID
 
@@ -534,41 +534,49 @@ class QuestionServiceTest {
       questionCode = "third_question",
     )
 
-    questionGroupContents.add(QuestionGroupEntity(
+    questionGroupContents.add(
+      QuestionGroupEntity(
       questionGroupId = 1,
       contentUuid = childQuestionGroup.groupUuid,
       contentType = "group",
       group = questionGroup,
       question = null,
       nestedGroup = null,
-    ))
+    )
+    )
 
-    childQuestionGroupContents.add(QuestionGroupEntity(
+    childQuestionGroupContents.add(
+      QuestionGroupEntity(
       questionGroupId = 2,
       contentUuid = firstQuestion.questionSchemaUuid,
       contentType = "question",
       group = childQuestionGroup,
       question = firstQuestion,
       nestedGroup = null,
-    ))
+    )
+    )
 
-    questionGroupContents.add(QuestionGroupEntity(
+    questionGroupContents.add(
+      QuestionGroupEntity(
       questionGroupId = 3,
       contentUuid = secondQuestion.questionSchemaUuid,
       contentType = "question",
       group = questionGroup,
       question = secondQuestion,
       nestedGroup = null,
-    ))
+    )
+    )
 
-    questionGroupContents.add(QuestionGroupEntity(
+    questionGroupContents.add(
+      QuestionGroupEntity(
       questionGroupId = 4,
       contentUuid = thirdQuestion.questionSchemaUuid,
       contentType = "question",
       group = questionGroup,
       question = thirdQuestion,
       nestedGroup = null,
-    ))
+    )
+    )
 
     val questionDependencies = QuestionDependencies(questionDeps = listOf(
       QuestionDependencyEntity(

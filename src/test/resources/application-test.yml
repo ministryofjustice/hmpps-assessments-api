@@ -9,13 +9,20 @@ server:
       protocol-header: x-forwarded-proto
 
 spring:
-  datasource:
-    url: 'jdbc:h2:mem:testdb;INIT=create domain if not exists jsonb as text;Mode=PostgreSQL'
-    type: com.zaxxer.hikari.HikariDataSource
+  hmppsassessmentsapi:
+    datasource:
+      url: 'jdbc:h2:mem:testdb;INIT=create domain if not exists JSONB as text;Mode=PostgreSQL;DATABASE_TO_UPPER=false'
+      type: com.zaxxer.hikari.HikariDataSource
+  hmppsassessmentsschemas:
+    datasource:
+      url: 'jdbc:h2:mem:testdb;INIT=create domain if not exists JSONB as text;Mode=PostgreSQL;DATABASE_TO_UPPER=false'
+      type: com.zaxxer.hikari.HikariDataSource
   jpa:
     show_sql: true
-  flyway:
-    enabled: true
+  h2:
+    console:
+      enabled: true
+      path: '/h2-console'
 
 graceful:
   shutdown:

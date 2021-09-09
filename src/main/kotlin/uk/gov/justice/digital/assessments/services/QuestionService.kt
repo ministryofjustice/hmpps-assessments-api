@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.assessments.services
 
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.assessments.api.CheckboxGroupDto
 import uk.gov.justice.digital.assessments.api.GroupContentDto
 import uk.gov.justice.digital.assessments.api.GroupQuestionDto
@@ -9,20 +10,20 @@ import uk.gov.justice.digital.assessments.api.GroupSummaryDto
 import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
 import uk.gov.justice.digital.assessments.api.QuestionSchemaDto
 import uk.gov.justice.digital.assessments.api.TableQuestionDto
-import uk.gov.justice.digital.assessments.jpa.entities.AnswerSchemaEntity
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
-import uk.gov.justice.digital.assessments.jpa.entities.GroupEntity
-import uk.gov.justice.digital.assessments.jpa.entities.QuestionGroupEntity
-import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
-import uk.gov.justice.digital.assessments.jpa.repositories.AnswerSchemaRepository
-import uk.gov.justice.digital.assessments.jpa.repositories.GroupRepository
-import uk.gov.justice.digital.assessments.jpa.repositories.OASysMappingRepository
-import uk.gov.justice.digital.assessments.jpa.repositories.QuestionGroupRepository
-import uk.gov.justice.digital.assessments.jpa.repositories.QuestionSchemaRepository
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerSchemaEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.GroupEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionGroupEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEntity
+import uk.gov.justice.digital.assessments.jpa.repositories.refdata.AnswerSchemaRepository
+import uk.gov.justice.digital.assessments.jpa.repositories.refdata.GroupRepository
+import uk.gov.justice.digital.assessments.jpa.repositories.refdata.OASysMappingRepository
+import uk.gov.justice.digital.assessments.jpa.repositories.refdata.QuestionGroupRepository
+import uk.gov.justice.digital.assessments.jpa.repositories.refdata.QuestionSchemaRepository
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import java.util.UUID
 
 @Service
+@Transactional("refDataTransactionManager")
 class QuestionService(
   private val questionSchemaRepository: QuestionSchemaRepository,
   private val questionGroupRepository: QuestionGroupRepository,
@@ -31,6 +32,7 @@ class QuestionService(
   private val oasysMappingRepository: OASysMappingRepository,
   private val questionDependencyService: QuestionDependencyService
 ) {
+
   fun getQuestionSchema(questionSchemaId: UUID): QuestionSchemaDto {
     val questionSchemaEntity = questionSchemaRepository.findByQuestionSchemaUuid(questionSchemaId)
       ?: throw EntityNotFoundException("Question Schema not found for id: $questionSchemaId")

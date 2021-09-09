@@ -4,7 +4,7 @@ import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.web.reactive.function.client.ClientResponse
 import reactor.core.publisher.Mono
-import uk.gov.justice.digital.assessments.jpa.entities.OasysAssessmentType
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.OasysAssessmentType
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OASysErrorResponse
 import uk.gov.justice.digital.assessments.services.exceptions.DuplicateOffenderRecordException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiAuthorisationException
@@ -76,12 +76,12 @@ fun handleOffenderError(
 }
 
 fun handleAssessmentError(
-  offenderPK: Long?,
-  user: String?,
-  oasysAssessmentType: OasysAssessmentType,
-  clientResponse: ClientResponse,
-  method: HttpMethod,
-  url: String
+    offenderPK: Long?,
+    user: String?,
+    oasysAssessmentType: OasysAssessmentType,
+    clientResponse: ClientResponse,
+    method: HttpMethod,
+    url: String
 ): Mono<out Throwable?>? {
   return when {
     HttpStatus.CONFLICT == clientResponse.statusCode() -> {

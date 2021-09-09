@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.assessments.restclient.assessmentupdateapi
 
-import uk.gov.justice.digital.assessments.jpa.entities.OasysAssessmentType
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.OasysAssessmentType
 
 class CompleteAssessmentDto(
   val oasysSetPk: Long,

@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.context.jdbc.SqlConfig
 import org.springframework.test.context.jdbc.SqlGroup
-import uk.gov.justice.digital.assessments.jpa.repositories.QuestionGroupRepository
+import uk.gov.justice.digital.assessments.jpa.repositories.refdata.QuestionGroupRepository
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import java.util.UUID
 

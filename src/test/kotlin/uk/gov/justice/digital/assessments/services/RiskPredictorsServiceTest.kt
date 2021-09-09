@@ -9,16 +9,16 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import uk.gov.justice.digital.assessments.jpa.entities.Answer
-import uk.gov.justice.digital.assessments.jpa.entities.AnswerEntity
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEntity
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
-import uk.gov.justice.digital.assessments.jpa.entities.Predictor
-import uk.gov.justice.digital.assessments.jpa.entities.PredictorFieldMapping
-import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
-import uk.gov.justice.digital.assessments.jpa.entities.SubjectEntity
-import uk.gov.justice.digital.assessments.jpa.repositories.EpisodeRepository
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.Answer
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.AnswerEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.PredictorEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.PredictorFieldMappingEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEntity
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
+import uk.gov.justice.digital.assessments.jpa.repositories.assessments.EpisodeRepository
 import uk.gov.justice.digital.assessments.restclient.AssessRisksAndNeedsApiRestClient
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.CurrentOffence
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.CurrentOffences
@@ -224,75 +224,75 @@ class RiskPredictorsServiceTest {
   )
 
   private val predictors = listOf(
-    Predictor(
+    PredictorEntity(
       1,
       AssessmentSchemaCode.RSR,
       PredictorType.RSR,
       listOf(
-        PredictorFieldMapping(
+        PredictorFieldMappingEntity(
           1,
           UUID.randomUUID(),
           testQuestion1,
           PredictorType.RSR,
           "date_first_sanction"
         ),
-        PredictorFieldMapping(
+        PredictorFieldMappingEntity(
           2,
           UUID.randomUUID(),
           testQuestion2,
           PredictorType.RSR,
           "total_sanctions"
         ),
-        PredictorFieldMapping(
+        PredictorFieldMappingEntity(
           3,
           UUID.randomUUID(),
           testQuestion3,
           PredictorType.RSR,
           "total_violent_offences"
         ),
-        PredictorFieldMapping(
+        PredictorFieldMappingEntity(
           4,
           UUID.randomUUID(),
           testQuestion4,
           PredictorType.RSR,
           "date_current_conviction"
         ),
-        PredictorFieldMapping(
+        PredictorFieldMappingEntity(
           5,
           UUID.randomUUID(),
           testQuestion5,
           PredictorType.RSR,
           "any_sexual_offences"
         ),
-        PredictorFieldMapping(
+        PredictorFieldMappingEntity(
           6,
           UUID.randomUUID(),
           testQuestion6,
           PredictorType.RSR,
           "current_sexual_offence"
         ),
-        PredictorFieldMapping(
+        PredictorFieldMappingEntity(
           7,
           UUID.randomUUID(),
           testQuestion7,
           PredictorType.RSR,
           "current_offence_victim_stranger"
         ),
-        PredictorFieldMapping(
+        PredictorFieldMappingEntity(
           8,
           UUID.randomUUID(),
           testQuestion8,
           PredictorType.RSR,
           "most_recent_sexual_offence_date"
         ),
-        PredictorFieldMapping(
+        PredictorFieldMappingEntity(
           9,
           UUID.randomUUID(),
           testQuestion9,
           PredictorType.RSR,
           "total_sexual_offences_adult"
         ),
-        PredictorFieldMapping(
+        PredictorFieldMappingEntity(
           10,
           UUID.randomUUID(),
           testQuestion10,
@@ -300,175 +300,175 @@ class RiskPredictorsServiceTest {
           "total_sexual_offences_child"
         ),
 
-        PredictorFieldMapping(
+        PredictorFieldMappingEntity(
           11,
           UUID.randomUUID(),
           testQuestion11,
           PredictorType.RSR,
           "total_sexual_offences_child_image"
         ),
-        PredictorFieldMapping(
+        PredictorFieldMappingEntity(
           12,
           UUID.randomUUID(),
           testQuestion12,
           PredictorType.RSR,
           "total_non_contact_sexual_offences"
         ),
-        PredictorFieldMapping(
+        PredictorFieldMappingEntity(
           13,
           UUID.randomUUID(),
           testQuestion13,
           PredictorType.RSR,
           "earliest_release_date"
         ),
-        PredictorFieldMapping(
+        PredictorFieldMappingEntity(
           14,
           UUID.randomUUID(),
           testQuestion14,
           PredictorType.RSR,
           "completed_interview"
         ),
-        PredictorFieldMapping(
+        PredictorFieldMappingEntity(
           15,
           UUID.randomUUID(),
           testQuestion15,
           PredictorType.RSR,
           "suitable_accommodation"
         ),
-        PredictorFieldMapping(
+        PredictorFieldMappingEntity(
           16,
           UUID.randomUUID(),
           testQuestion16,
           PredictorType.RSR,
           "unemployed_on_release"
         ),
-        PredictorFieldMapping(
+        PredictorFieldMappingEntity(
           17,
           UUID.randomUUID(),
           testQuestion17,
           PredictorType.RSR,
           "current_relationship_with_partner"
         ),
-        PredictorFieldMapping(
+        PredictorFieldMappingEntity(
           18,
           UUID.randomUUID(),
           testQuestion18,
           PredictorType.RSR,
           "evidence_domestic_violence"
         ),
-        PredictorFieldMapping(
+        PredictorFieldMappingEntity(
           19,
           UUID.randomUUID(),
           testQuestion19,
           PredictorType.RSR,
           "perpetrator_domestic_violence"
         ),
-        PredictorFieldMapping(
+        PredictorFieldMappingEntity(
           20,
           UUID.randomUUID(),
           testQuestion20,
           PredictorType.RSR,
           "use_of_alcohol"
         ),
-        PredictorFieldMapping(
+        PredictorFieldMappingEntity(
           21,
           UUID.randomUUID(),
           testQuestion21,
           PredictorType.RSR,
           "binge_drinking"
         ),
-        PredictorFieldMapping(
+        PredictorFieldMappingEntity(
           22,
           UUID.randomUUID(),
           testQuestion22,
           PredictorType.RSR,
           "impulsivity_issues"
         ),
-        PredictorFieldMapping(
+        PredictorFieldMappingEntity(
           23,
           UUID.randomUUID(),
           testQuestion23,
           PredictorType.RSR,
           "temper_control_issues"
         ),
-        PredictorFieldMapping(
+        PredictorFieldMappingEntity(
           24,
           UUID.randomUUID(),
           testQuestion24,
           PredictorType.RSR,
           "pro_criminal_attitudes"
         ),
-        PredictorFieldMapping(
+        PredictorFieldMappingEntity(
           25,
           UUID.randomUUID(),
           testQuestion25,
           PredictorType.RSR,
           "previous_murder_attempt"
         ),
-        PredictorFieldMapping(
+        PredictorFieldMappingEntity(
           26,
           UUID.randomUUID(),
           testQuestion26,
           PredictorType.RSR,
           "previous_wounding"
         ),
-        PredictorFieldMapping(
+        PredictorFieldMappingEntity(
           27,
           UUID.randomUUID(),
           testQuestion27,
           PredictorType.RSR,
           "previous_aggravated_burglary"
         ),
-        PredictorFieldMapping(
+        PredictorFieldMappingEntity(
           28,
           UUID.randomUUID(),
           testQuestion28,
           PredictorType.RSR,
           "previous_arson"
         ),
-        PredictorFieldMapping(
+        PredictorFieldMappingEntity(
           29,
           UUID.randomUUID(),
           testQuestion29,
           PredictorType.RSR,
           "previous_criminal_damage"
         ),
-        PredictorFieldMapping(
+        PredictorFieldMappingEntity(
           30,
           UUID.randomUUID(),
           testQuestion30,
           PredictorType.RSR,
           "previous_kidnapping"
         ),
-        PredictorFieldMapping(
+        PredictorFieldMappingEntity(
           31,
           UUID.randomUUID(),
           testQuestion31,
           PredictorType.RSR,
           "previous_possession_firearm"
         ),
-        PredictorFieldMapping(
+        PredictorFieldMappingEntity(
           32,
           UUID.randomUUID(),
           testQuestion32,
           PredictorType.RSR,
           "previous_robbery"
         ),
-        PredictorFieldMapping(
+        PredictorFieldMappingEntity(
           33,
           UUID.randomUUID(),
           testQuestion33,
           PredictorType.RSR,
           "previous_offence_weapon"
         ),
-        PredictorFieldMapping(
+        PredictorFieldMappingEntity(
           34,
           UUID.randomUUID(),
           testQuestion34,
           PredictorType.RSR,
           "current_possession_firearm"
         ),
-        PredictorFieldMapping(
+        PredictorFieldMappingEntity(
           35,
           UUID.randomUUID(),
           testQuestion35,
@@ -616,7 +616,7 @@ class RiskPredictorsServiceTest {
 
   @Nested
   @DisplayName("get predictor results")
-  inner class GetPredictorResults {
+  inner class GetPredictorEntityResults {
     @Test
     fun `throws exception when required answer is not found`() {
       every { assessmentSchemaService.getPredictorsForAssessment(AssessmentSchemaCode.RSR) } returns predictors
