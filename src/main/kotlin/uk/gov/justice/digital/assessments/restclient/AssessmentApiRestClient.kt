@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.ClientResponse
 import reactor.core.publisher.Mono
-import uk.gov.justice.digital.assessments.jpa.entities.OasysAssessmentType
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.OasysAssessmentType
 import uk.gov.justice.digital.assessments.redis.UserDetailsRedisRepository
 import uk.gov.justice.digital.assessments.restclient.assessmentapi.Authorized
 import uk.gov.justice.digital.assessments.restclient.assessmentapi.FilteredReferenceDataDto

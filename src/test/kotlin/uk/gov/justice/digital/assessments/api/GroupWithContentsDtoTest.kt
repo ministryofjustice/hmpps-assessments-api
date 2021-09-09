@@ -3,9 +3,9 @@ package uk.gov.justice.digital.assessments.api
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import uk.gov.justice.digital.assessments.jpa.entities.GroupEntity
-import uk.gov.justice.digital.assessments.jpa.entities.QuestionGroupEntity
-import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.GroupEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionGroupEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.services.QuestionDependencies
 import java.time.LocalDateTime
 import java.util.UUID

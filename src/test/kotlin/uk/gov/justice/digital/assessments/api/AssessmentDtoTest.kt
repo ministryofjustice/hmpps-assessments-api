@@ -2,7 +2,7 @@ package uk.gov.justice.digital.assessments.api
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEntity
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import java.time.LocalDateTime
 import java.util.UUID
 

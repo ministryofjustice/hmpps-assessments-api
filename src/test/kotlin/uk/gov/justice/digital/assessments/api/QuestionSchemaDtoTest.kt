@@ -2,8 +2,8 @@ package uk.gov.justice.digital.assessments.api
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
-import uk.gov.justice.digital.assessments.jpa.entities.ReferenceDataTargetMappingEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.ReferenceDataTargetMappingEntity
 import java.time.LocalDateTime
 import java.util.UUID
 

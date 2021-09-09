@@ -39,8 +39,8 @@ dependencies {
   implementation("com.google.guava:guava:30.1.1-jre")
   implementation("org.apache.commons:commons-lang3:3.12.0")
   implementation("org.postgresql:postgresql")
+  implementation("org.flywaydb:flyway-core:7.11.4")
   runtimeOnly("com.h2database:h2:1.4.200")
-  runtimeOnly("org.flywaydb:flyway-core:7.11.4")
 
   testRuntimeOnly("com.h2database:h2:1.4.200")
   testAnnotationProcessor("org.springframework.boot:spring-boot-configuration-processor")

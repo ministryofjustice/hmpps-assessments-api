@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import uk.gov.justice.digital.assessments.api.AnswerDto
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.Answer
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.AnswerEntity
 
 @ExtendWith(MockKExtension::class)
 @DisplayName("Answer Entity Tests")
