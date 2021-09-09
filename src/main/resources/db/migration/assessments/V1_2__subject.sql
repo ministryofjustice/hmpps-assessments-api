@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS subject
     name                TEXT            NOT NULL,
     oasys_offender_pk   NUMERIC         NULL,
     pnc                 TEXT            NULL,
-    crn                 TEXT            NOT NULL,
+    crn                 VARCHAR(255)    NOT NULL UNIQUE,
     date_of_birth       DATE            NOT NULL,
     created_date        TIMESTAMP       NOT NULL,
     assessment_uuid     UUID            NOT NULL,

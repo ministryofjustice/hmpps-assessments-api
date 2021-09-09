@@ -43,7 +43,7 @@ data class AssessmentEpisodeDto(
   val assessmentErrors: Collection<String>? = null,
 
   @Schema(description = "Results of predictors")
-  val predictors: Collection<PredictorScoresDto>,
+  val predictors: Collection<PredictorScoresDto> = emptyList(),
 
   @Schema(description = "Offence category code")
   val offenceCode: String? = null,

@@ -47,6 +47,11 @@ class AssessmentEntity(
     return episodes.firstOrNull { !it.isClosed() }
   }
 
+  fun getLatestClosedEpisodeOfType(assessmentSchemaCode: AssessmentSchemaCode): AssessmentEpisodeEntity? {
+    return episodes.filter { it.assessmentSchemaCode == assessmentSchemaCode && it.isClosed() }
+      .maxByOrNull { it.endDate!! }
+  }
+
   fun newEpisode(
     changeReason: String,
     oasysSetPk: Long? = null,
