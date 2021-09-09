@@ -178,7 +178,6 @@ class AssessmentServiceCreateTest {
 
       assessmentsService.createNewAssessment(
         CreateAssessmentDto(
-          deliusEventId = 1L,
           crn = "DX0000001",
           courtCode = courtCode,
           caseNumber = caseNumber,
@@ -203,7 +202,6 @@ class AssessmentServiceCreateTest {
 
       assessmentsService.createNewAssessment(
         CreateAssessmentDto(
-          deliusEventId = 1L,
           crn = "DX0000001",
           courtCode = courtCode,
           caseNumber = caseNumber,

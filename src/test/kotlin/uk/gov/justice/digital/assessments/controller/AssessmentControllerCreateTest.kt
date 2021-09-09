@@ -51,7 +51,6 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       webTestClient.post().uri("/assessments")
         .bodyValue(
           CreateAssessmentDto(
-            deliusEventId = 1L,
             crn = "DX0000001",
             courtCode = "SHF06",
             caseNumber = "668911253",
@@ -71,7 +70,6 @@ class AssessmentControllerCreateTest : IntegrationTest() {
     @Test
     fun `create a new assessment from court details, creates subject and episode, returns assessment`() {
       val dto = CreateAssessmentDto(
-        deliusEventId = 1L,
         crn = "DX0000001",
         courtCode = "SHF06",
         caseNumber = "668911253",
@@ -87,27 +85,26 @@ class AssessmentControllerCreateTest : IntegrationTest() {
         .returnResult()
         .responseBody
 
-      assertThat(assessment.assessmentId).isNotNull
-      assertThat(assessment.assessmentUuid).isNotNull
-      assertThat(assessment.createdDate).isEqualToIgnoringMinutes(LocalDateTime.now())
+      assertThat(assessment?.assessmentId).isNotNull
+      assertThat(assessment?.assessmentUuid).isNotNull
+      assertThat(assessment?.createdDate).isEqualToIgnoringMinutes(LocalDateTime.now())
 
-      val subject = fetchAssessmentSubject(assessment.assessmentUuid!!)
-      assertThat(subject.assessmentUuid).isEqualTo(assessment.assessmentUuid)
-      assertThat(subject.name).isEqualTo("John Smith")
-      assertThat(subject.dob).isEqualTo("1979-08-18")
-      assertThat(subject.crn).isEqualTo("DX12340A")
-      assertThat(subject.pnc).isEqualTo("A/1234560BA")
-      assertThat(subject.createdDate).isEqualToIgnoringMinutes(LocalDateTime.now())
+      val subject = fetchAssessmentSubject(assessment?.assessmentUuid)
+      assertThat(subject?.assessmentUuid).isEqualTo(assessment?.assessmentUuid)
+      assertThat(subject?.name).isEqualTo("John Smith")
+      assertThat(subject?.dob).isEqualTo("1979-08-18")
+      assertThat(subject?.crn).isEqualTo("DX12340A")
+      assertThat(subject?.pnc).isEqualTo("A/1234560BA")
+      assertThat(subject?.createdDate).isEqualToIgnoringMinutes(LocalDateTime.now())
 
-      val episodes = fetchEpisodes(assessment.assessmentUuid!!)
+      val episodes = fetchEpisodes(assessment?.assessmentUuid!!)
       assertThat(episodes).hasSize(1)
-      assertThat(episodes[0].oasysAssessmentId).isEqualTo(1)
+      assertThat(episodes?.get(0)?.oasysAssessmentId).isEqualTo(1)
     }
 
     @Test
     fun `creating an assessment from court details when one already exists returns existing assessment`() {
       val dto = CreateAssessmentDto(
-        deliusEventId = 1L,
         crn = "DX0000001",
         courtCode = "courtCode",
         caseNumber = "caseNumber",
@@ -123,8 +120,8 @@ class AssessmentControllerCreateTest : IntegrationTest() {
         .returnResult()
         .responseBody
 
-      assertThat(assessment.assessmentId).isEqualTo(2)
-      assertThat(assessment.assessmentUuid).isEqualTo(UUID.fromString("19c8d211-68dc-4692-a6e2-d58468127056"))
+      assertThat(assessment?.assessmentId).isEqualTo(2)
+      assertThat(assessment?.assessmentUuid).isEqualTo(UUID.fromString("19c8d211-68dc-4692-a6e2-d58468127056"))
     }
   }
 
@@ -193,9 +190,9 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       val existingAssessment = createDeliusAssessment(existingCrn, existingEventId)
       val assessmentDto = createDeliusAssessment(existingCrn, existingEventId)
 
-      assertThat(assessmentDto.assessmentId).isEqualTo(existingAssessment.assessmentId)
-      assertThat(assessmentDto.assessmentUuid).isEqualTo(existingAssessment.assessmentUuid)
-      assertThat(assessmentDto.createdDate).isEqualTo(existingAssessment.createdDate)
+      assertThat(assessmentDto?.assessmentId).isEqualTo(existingAssessment?.assessmentId)
+      assertThat(assessmentDto?.assessmentUuid).isEqualTo(existingAssessment?.assessmentUuid)
+      assertThat(assessmentDto?.createdDate).isEqualTo(existingAssessment?.createdDate)
     }
   }
 
@@ -223,7 +220,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
     }
   }
 
-  private fun createDeliusAssessment(crn: String, deliusId: Long): AssessmentDto {
+  private fun createDeliusAssessment(crn: String, deliusId: Long): AssessmentDto? {
     val dto = CreateAssessmentDto(
       crn = crn,
       deliusEventId = deliusId,
@@ -240,7 +237,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       .responseBody
   }
 
-  private fun fetchAssessmentSubject(assessmentUuid: UUID): AssessmentSubjectDto {
+  private fun fetchAssessmentSubject(assessmentUuid: UUID?): AssessmentSubjectDto? {
     val subject = webTestClient.get().uri("/assessments/$assessmentUuid/subject")
       .headers(setAuthorisation())
       .exchange()
@@ -251,7 +248,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
     return subject!!
   }
 
-  private fun fetchEpisodes(assessmentUuid: UUID): List<AssessmentEpisodeDto> {
+  private fun fetchEpisodes(assessmentUuid: UUID?): List<AssessmentEpisodeDto>? {
     return webTestClient.get().uri("/assessments/$assessmentUuid/episodes")
       .headers(setAuthorisation())
       .exchange()

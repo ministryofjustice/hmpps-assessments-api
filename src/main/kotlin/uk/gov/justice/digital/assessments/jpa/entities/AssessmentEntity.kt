@@ -50,7 +50,7 @@ class AssessmentEntity(
     changeReason: String,
     oasysSetPk: Long? = null,
     assessmentSchemaCode: AssessmentSchemaCode,
-    offence: OffenceDto
+    offence: OffenceDto?
   ): AssessmentEpisodeEntity {
     val currentEpisode = getCurrentEpisode()
     if (currentEpisode != null) {
@@ -63,10 +63,10 @@ class AssessmentEntity(
       userId = RequestData.getUserName(),
       oasysSetPk = oasysSetPk,
       assessmentSchemaCode = assessmentSchemaCode,
-      offenceCode = offence.offenceCode,
-      codeDescription = offence.codeDescription,
-      offenceSubCode = offence.offenceSubCode,
-      subCodeDescription = offence.subCodeDescription
+      offenceCode = offence?.offenceCode,
+      codeDescription = offence?.codeDescription,
+      offenceSubCode = offence?.offenceSubCode,
+      subCodeDescription = offence?.subCodeDescription
     )
     episodes.add(newEpisode)
     return newEpisode
