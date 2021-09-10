@@ -4,6 +4,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
@@ -47,9 +48,9 @@ class CommunityApiRestClient {
       }
   }
 
-  fun getConviction(crn: String, convictionId: Long): CommunityConvictionDto? {
-    log.info("Client retrieving conviction details for crn: $crn, conviction id: $convictionId")
-    val path = "secure/offenders/crn/$crn/convictions/$convictionId"
+  fun getConvictions(crn: String): List<CommunityConvictionDto>? {
+    log.info("Client retrieving conviction details for crn: $crn")
+    val path = "secure/offenders/crn/$crn/convictions"
     return webClient
       .get(path)
       .retrieve()
@@ -63,13 +64,13 @@ class CommunityApiRestClient {
       }
       .onStatus(HttpStatus::is5xxServerError) {
         handle5xxError(
-          "Failed to retrieve conviction details for crn: $crn, conviction id: $convictionId",
+          "Failed to retrieve conviction details for crn: $crn",
           HttpMethod.GET,
           path,
           ExternalService.COMMUNITY_API
         )
       }
-      .bodyToMono(CommunityConvictionDto::class.java)
+      .bodyToMono(object : ParameterizedTypeReference<List<CommunityConvictionDto>>() {})
       .block()
   }
 

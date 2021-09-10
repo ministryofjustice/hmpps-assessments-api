@@ -7,11 +7,8 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.http.HttpHeader
 import com.github.tomakehurst.wiremock.http.HttpHeaders
-import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityConvictionDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.IDs
-import uk.gov.justice.digital.assessments.restclient.communityapi.Offence
-import uk.gov.justice.digital.assessments.restclient.communityapi.OffenceDetail
 import uk.gov.justice.digital.assessments.restclient.communityapi.OffenderAlias
 import java.time.LocalDate
 
@@ -84,14 +81,12 @@ class CommunityApiMockServer : WireMockServer(9096) {
 
   fun stubGetConvictions() {
     val crn = "DX12340A"
-    val convictionId = "636401162"
-    val convictionJson = mapToJson(convictionDto())
     stubFor(
-      WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/$crn/convictions/$convictionId"))
+      WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/$crn/convictions"))
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
-            .withBody(convictionJson)
+            .withBody(convictionsJson)
         )
     )
   }
@@ -136,38 +131,127 @@ class CommunityApiMockServer : WireMockServer(9096) {
     )
   }
 
-  private fun convictionDto(): CommunityConvictionDto {
-    return CommunityConvictionDto(
-      convictionId = 636401162L,
-      offences = listOf(
-        Offence(
-          offenceId = "offence1",
-          mainOffence = true,
-          detail = OffenceDetail(
-            code = "code1",
-            description = "Offence description",
-            mainCategoryCode = "cat1",
-            mainCategoryDescription = "category description 1",
-            subCategoryCode = "cat2",
-            subCategoryDescription = "category description 2"
-          )
-        ),
-        Offence(
-          offenceId = "offence2",
-          mainOffence = false,
-          detail = OffenceDetail(
-            code = "code2",
-            description = "Offence description",
-            mainCategoryCode = "cat1",
-            mainCategoryDescription = "category description 1",
-            subCategoryCode = "cat2",
-            subCategoryDescription = "category description 2"
-          )
-        )
-      ),
-      convictionDate = LocalDate.of(2020, 2, 1)
-    )
+  private val convictionsJson = """[
+    {
+      "convictionId": 2500000001,
+      "index": "1",
+      "active": true,
+      "inBreach": false,
+      "failureToComplyCount": 0,
+      "awaitingPsr": true,
+      "referralDate": "2014-08-25",
+      "offences": [
+        {
+          "offenceId": "M2500000001",
+          "mainOffence": true,
+          "detail": {
+            "code": "11600",
+            "description": "Fishery Laws - 11600",
+            "mainCategoryCode": "116",
+            "mainCategoryDescription": "Fishery Laws",
+            "mainCategoryAbbreviation": "Fishery Laws",
+            "ogrsOffenceCategory": "Other offence",
+            "subCategoryCode": "00",
+            "subCategoryDescription": "Fishery Laws",
+            "form20Code": "91"
+          },
+          "offenceDate": "2013-08-25T00:00:00",
+          "offenceCount": 1,
+          "offenderId": 2500000501,
+          "createdDatetime": "1900-01-01T00:00:00",
+          "lastUpdatedDatetime": "1900-01-01T00:00:00"
+        }
+    ],
+    "latestCourtAppearanceOutcome": {
+      "code": "101",
+      "description": "Adjourned - Pre-Sentence Report"
+    },
+    "courtAppearance": {
+      "courtAppearanceId": 2500000001,
+      "appearanceDate": "2014-09-08T00:00:00",
+      "courtCode": "BRRWCC",
+      "courtName": "Barrow Crown Court",
+      "appearanceType": {
+          "code": "T",
+          "description": "Trial/Adjournment"
+      },
+      "crn": "D001022"
+    }
+    },
+    {
+      "convictionId": 2500000002,
+      "index": "2",
+      "active": true,
+      "inBreach": false,
+      "failureToComplyCount": 0,
+      "awaitingPsr": false,
+      "referralDate": "2014-08-25",
+      "offences": [
+        {
+          "offenceId": "M2500000002",
+          "mainOffence": true,
+          "detail": {
+            "code": "11600",
+            "description": "Fishery Laws - 11600",
+            "mainCategoryCode": "116",
+            "mainCategoryDescription": "Fishery Laws",
+            "mainCategoryAbbreviation": "Fishery Laws",
+            "ogrsOffenceCategory": "Other offence",
+            "subCategoryCode": "00",
+            "subCategoryDescription": "Fishery Laws",
+            "form20Code": "91"
+          },
+          "offenceDate": "2013-08-25T00:00:00",
+          "offenceCount": 1,
+          "offenderId": 2500000501,
+          "createdDatetime": "1900-01-01T00:00:00",
+          "lastUpdatedDatetime": "1900-01-01T00:00:00"
+        }
+      ],
+      "sentence": {
+        "sentenceId": 2500000000,
+        "description": "CJA - Community Order",
+        "originalLength": 12,
+        "originalLengthUnits": "Months",
+        "defaultLength": 12,
+        "lengthInDays": 365,
+        "unpaidWork": {
+          "minutesOrdered": 6000,
+          "minutesCompleted": 0,
+          "appointments": {
+            "total": 13,
+            "attended": 0,
+            "acceptableAbsences": 0,
+            "unacceptableAbsences": 0,
+            "noOutcomeRecorded": 13
+          },
+        "status": "Being Worked"
+        },
+        "startDate": "2014-08-25",
+        "sentenceType": {
+          "code": "SP",
+          "description": "CJA - Community Order"
+        },
+      "failureToComplyLimit": 2
+      },
+      "latestCourtAppearanceOutcome": {
+        "code": "201",
+        "description": "CJA - Community Order"
+      },
+      "courtAppearance": {
+        "courtAppearanceId": 2500000002,
+        "appearanceDate": "2014-08-25T00:00:00",
+        "courtCode": "ALLSHF",
+        "courtName": "Alloa Sheriff's Court",
+        "appearanceType": {
+          "code": "S",
+          "description": "Sentence"
+        },
+        "crn": "D001022"
+      }
   }
+]
+"""
 
   private val primaryIdsJson = """
     {

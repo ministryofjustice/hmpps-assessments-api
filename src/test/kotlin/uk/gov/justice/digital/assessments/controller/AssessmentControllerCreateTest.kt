@@ -36,7 +36,7 @@ import java.util.UUID
 class AssessmentControllerCreateTest : IntegrationTest() {
 
   @Nested
-  @DisplayName("creating court assessments")
+  @DisplayName("Creating assessments from court")
   inner class CreatingAssessment {
     @Test
     fun `access forbidden when no authority`() {
@@ -51,6 +51,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       webTestClient.post().uri("/assessments")
         .bodyValue(
           CreateAssessmentDto(
+            crn = "DX0000001",
             courtCode = "SHF06",
             caseNumber = "668911253",
             assessmentSchemaCode = AssessmentSchemaCode.ROSH
@@ -68,36 +69,64 @@ class AssessmentControllerCreateTest : IntegrationTest() {
 
     @Test
     fun `create a new assessment from court details, creates subject and episode, returns assessment`() {
-      val assessment = createCourtAssessment("SHF06", "668911253")
+      val dto = CreateAssessmentDto(
+        crn = "DX0000001",
+        courtCode = "SHF06",
+        caseNumber = "668911253",
+        assessmentSchemaCode = AssessmentSchemaCode.ROSH
+      )
+      val assessment = webTestClient.post().uri("/assessments")
+        .bodyValue(dto)
+        .header(RequestData.USER_AREA_HEADER_NAME, "WWS")
+        .headers(setAuthorisation())
+        .exchange()
+        .expectStatus().isOk
+        .expectBody<AssessmentDto>()
+        .returnResult()
+        .responseBody
 
-      assertThat(assessment.assessmentId).isNotNull
-      assertThat(assessment.assessmentUuid).isNotNull
-      assertThat(assessment.createdDate).isEqualToIgnoringMinutes(LocalDateTime.now())
+      assertThat(assessment?.assessmentId).isNotNull
+      assertThat(assessment?.assessmentUuid).isNotNull
+      assertThat(assessment?.createdDate).isEqualToIgnoringMinutes(LocalDateTime.now())
 
-      val subject = fetchAssessmentSubject(assessment.assessmentUuid!!)
-      assertThat(subject.assessmentUuid).isEqualTo(assessment.assessmentUuid)
-      assertThat(subject.name).isEqualTo("John Smith")
-      assertThat(subject.dob).isEqualTo("1979-08-18")
-      assertThat(subject.crn).isEqualTo("DX12340A")
-      assertThat(subject.pnc).isEqualTo("A/1234560BA")
-      assertThat(subject.createdDate).isEqualToIgnoringMinutes(LocalDateTime.now())
+      val subject = fetchAssessmentSubject(assessment?.assessmentUuid)
+      assertThat(subject?.assessmentUuid).isEqualTo(assessment?.assessmentUuid)
+      assertThat(subject?.name).isEqualTo("John Smith")
+      assertThat(subject?.dob).isEqualTo("1979-08-18")
+      assertThat(subject?.crn).isEqualTo("DX12340A")
+      assertThat(subject?.pnc).isEqualTo("A/1234560BA")
+      assertThat(subject?.createdDate).isEqualToIgnoringMinutes(LocalDateTime.now())
 
-      val episodes = fetchEpisodes(assessment.assessmentUuid!!.toString())
+      val episodes = fetchEpisodes(assessment?.assessmentUuid!!)
       assertThat(episodes).hasSize(1)
-      assertThat(episodes[0].oasysAssessmentId).isEqualTo(1)
+      assertThat(episodes?.get(0)?.oasysAssessmentId).isEqualTo(1)
     }
 
     @Test
     fun `creating an assessment from court details when one already exists returns existing assessment`() {
-      val assessment = createCourtAssessment("courtCode", "caseNumber")
+      val dto = CreateAssessmentDto(
+        crn = "DX0000001",
+        courtCode = "courtCode",
+        caseNumber = "caseNumber",
+        assessmentSchemaCode = AssessmentSchemaCode.ROSH
+      )
+      val assessment = webTestClient.post().uri("/assessments")
+        .bodyValue(dto)
+        .header(RequestData.USER_AREA_HEADER_NAME, "WWS")
+        .headers(setAuthorisation())
+        .exchange()
+        .expectStatus().isOk
+        .expectBody<AssessmentDto>()
+        .returnResult()
+        .responseBody
 
-      assertThat(assessment.assessmentId).isEqualTo(2)
-      assertThat(assessment.assessmentUuid).isEqualTo(UUID.fromString("19c8d211-68dc-4692-a6e2-d58468127056"))
+      assertThat(assessment?.assessmentId).isEqualTo(2)
+      assertThat(assessment?.assessmentUuid).isEqualTo(UUID.fromString("19c8d211-68dc-4692-a6e2-d58468127056"))
     }
   }
 
   @Nested
-  @DisplayName("creating assessments from crn")
+  @DisplayName("Creating assessments from Delius")
   inner class CreatingAssessmentFromCrn {
 
     private val crn = "DX12340A"
@@ -134,10 +163,24 @@ class AssessmentControllerCreateTest : IntegrationTest() {
     @Test
     fun `creating a new assessment from crn and delius event id returns assessment`() {
 
-      val assessment = createDeliusAssessment(crn, eventID)
-      assertThat(assessment.assessmentId).isNotNull
-      assertThat(assessment.assessmentUuid).isNotNull
-      assertThat(assessment.createdDate).isEqualToIgnoringMinutes(LocalDateTime.now())
+      val dto = CreateAssessmentDto(
+        crn = crn,
+        deliusEventId = eventID,
+        assessmentSchemaCode = AssessmentSchemaCode.ROSH
+      )
+      val assessment = webTestClient.post().uri("/assessments")
+        .bodyValue(dto)
+        .header(RequestData.USER_AREA_HEADER_NAME, "WWS")
+        .headers(setAuthorisation())
+        .exchange()
+        .expectStatus().isOk
+        .expectBody<AssessmentDto>()
+        .returnResult()
+        .responseBody
+
+      assertThat(assessment?.assessmentId).isNotNull
+      assertThat(assessment?.assessmentUuid).isNotNull
+      assertThat(assessment?.createdDate).isEqualToIgnoringMinutes(LocalDateTime.now())
     }
 
     @Test
@@ -147,19 +190,19 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       val existingAssessment = createDeliusAssessment(existingCrn, existingEventId)
       val assessmentDto = createDeliusAssessment(existingCrn, existingEventId)
 
-      assertThat(assessmentDto.assessmentId).isEqualTo(existingAssessment.assessmentId)
-      assertThat(assessmentDto.assessmentUuid).isEqualTo(existingAssessment.assessmentUuid)
-      assertThat(assessmentDto.createdDate).isEqualTo(existingAssessment.createdDate)
+      assertThat(assessmentDto?.assessmentId).isEqualTo(existingAssessment?.assessmentId)
+      assertThat(assessmentDto?.assessmentUuid).isEqualTo(existingAssessment?.assessmentUuid)
+      assertThat(assessmentDto?.createdDate).isEqualTo(existingAssessment?.createdDate)
     }
   }
 
   @Nested
-  @DisplayName("creating episode")
+  @DisplayName("Creating an episode")
   inner class CreatingEpisode {
     @Test
     fun `creates new episode on existing assessment`() {
-      val episode = webTestClient.post().uri("/assessments/f9a07b3f-91b7-45a7-a5ca-2d98cf1147d8/episodes")
-        .bodyValue(CreateAssessmentEpisodeDto("Change of Circs", AssessmentSchemaCode.ROSH))
+      val episode = webTestClient.post().uri("/assessments/19c8d211-68dc-4692-a6e2-d58468127056/episodes")
+        .bodyValue(CreateAssessmentEpisodeDto("Change of Circs", 1L, AssessmentSchemaCode.ROSH))
         .headers(setAuthorisation())
         .exchange()
         .expectStatus().isOk
@@ -167,25 +210,24 @@ class AssessmentControllerCreateTest : IntegrationTest() {
         .returnResult()
         .responseBody
 
-      assertThat(episode?.assessmentUuid).isEqualTo(UUID.fromString("f9a07b3f-91b7-45a7-a5ca-2d98cf1147d8"))
+      assertThat(episode?.assessmentUuid).isEqualTo(UUID.fromString("19c8d211-68dc-4692-a6e2-d58468127056"))
       assertThat(episode?.created).isEqualToIgnoringMinutes(LocalDateTime.now())
       assertThat(episode?.answers).isEmpty()
+      assertThat(episode?.offenceCode).isEqualTo("116")
+      assertThat(episode?.codeDescription).isEqualTo("Fishery Laws")
+      assertThat(episode?.offenceSubCode).isEqualTo("00")
+      assertThat(episode?.subCodeDescription).isEqualTo("Fishery Laws")
     }
   }
 
-  private fun createDeliusAssessment(crn: String, deliusId: Long): AssessmentDto {
-    return createDeliusAssessment(
-      CreateAssessmentDto(
-        crn = crn,
-        deliusEventId = deliusId,
-        assessmentSchemaCode = AssessmentSchemaCode.ROSH
-      )
+  private fun createDeliusAssessment(crn: String, deliusId: Long): AssessmentDto? {
+    val dto = CreateAssessmentDto(
+      crn = crn,
+      deliusEventId = deliusId,
+      assessmentSchemaCode = AssessmentSchemaCode.ROSH
     )
-  }
-
-  private fun createDeliusAssessment(cad: CreateAssessmentDto): AssessmentDto {
-    val assessment = webTestClient.post().uri("/assessments")
-      .bodyValue(cad)
+    return webTestClient.post().uri("/assessments")
+      .bodyValue(dto)
       .header(RequestData.USER_AREA_HEADER_NAME, "WWS")
       .headers(setAuthorisation())
       .exchange()
@@ -193,37 +235,9 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       .expectBody<AssessmentDto>()
       .returnResult()
       .responseBody
-    return assessment!!
   }
 
-  private fun createCourtAssessment(courtCode: String, caseNumber: String): AssessmentDto {
-    return createCourtAssessment(
-      CreateAssessmentDto(
-        courtCode = courtCode,
-        caseNumber = caseNumber,
-        assessmentSchemaCode = AssessmentSchemaCode.ROSH
-      )
-    )
-  }
-
-  private fun createCourtAssessment(cad: CreateAssessmentDto): AssessmentDto {
-    val assessment = webTestClient.post().uri("/assessments")
-      .bodyValue(cad)
-      .header(RequestData.USER_AREA_HEADER_NAME, "WWS")
-      .headers(setAuthorisation())
-      .exchange()
-      .expectStatus().isOk
-      .expectBody<AssessmentDto>()
-      .returnResult()
-      .responseBody
-    return assessment!!
-  }
-
-  private fun fetchAssessmentSubject(assessmentUuid: UUID): AssessmentSubjectDto {
-    return fetchAssessmentSubject(assessmentUuid.toString())
-  }
-
-  private fun fetchAssessmentSubject(assessmentUuid: String): AssessmentSubjectDto {
+  private fun fetchAssessmentSubject(assessmentUuid: UUID?): AssessmentSubjectDto? {
     val subject = webTestClient.get().uri("/assessments/$assessmentUuid/subject")
       .headers(setAuthorisation())
       .exchange()
@@ -234,7 +248,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
     return subject!!
   }
 
-  private fun fetchEpisodes(assessmentUuid: String): List<AssessmentEpisodeDto> {
+  private fun fetchEpisodes(assessmentUuid: UUID?): List<AssessmentEpisodeDto>? {
     return webTestClient.get().uri("/assessments/$assessmentUuid/episodes")
       .headers(setAuthorisation())
       .exchange()

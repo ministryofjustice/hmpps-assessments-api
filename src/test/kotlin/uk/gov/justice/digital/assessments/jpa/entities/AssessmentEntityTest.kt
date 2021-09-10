@@ -7,6 +7,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.slf4j.MDC
+import uk.gov.justice.digital.assessments.api.OffenceDto
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.utils.RequestData
@@ -29,7 +30,16 @@ class AssessmentEntityTest {
   fun `should create new episode if none exist`() {
     val assessment = AssessmentEntity(assessmentId = assessmentID)
     assertThat(assessment.episodes).hasSize(0)
-    val newEpisode = assessment.newEpisode("Change of Circs", assessmentSchemaCode = assessmentSchemaCode)
+    val newEpisode = assessment.newEpisode(
+      "Change of Circs",
+      assessmentSchemaCode = assessmentSchemaCode,
+      offence = OffenceDto(
+        offenceCode = "Code",
+        codeDescription = "Code description",
+        offenceSubCode = "Sub-code",
+        subCodeDescription = "Sub-code description"
+      )
+    )
     assertThat(newEpisode.episodeId).isNull()
     assertThat(newEpisode.changeReason).isEqualTo("Change of Circs")
     assertThat(assessment.episodes).hasSize(1)
@@ -49,7 +59,16 @@ class AssessmentEntityTest {
       )
     )
     assertThat(assessment.episodes).hasSize(1)
-    val newEpisode = assessment.newEpisode("Another change of Circs", assessmentSchemaCode = assessmentSchemaCode)
+    val newEpisode = assessment.newEpisode(
+      "Another change of Circs",
+      assessmentSchemaCode = assessmentSchemaCode,
+      offence = OffenceDto(
+        offenceCode = "Code",
+        codeDescription = "Code description",
+        offenceSubCode = "Sub-code",
+        subCodeDescription = "Sub-code description"
+      )
+    )
     assertThat(newEpisode.episodeId).isEqualTo(episodeId)
     assertThat(newEpisode.changeReason).isEqualTo("Change of Circs")
     assertThat(assessment.episodes).hasSize(1)

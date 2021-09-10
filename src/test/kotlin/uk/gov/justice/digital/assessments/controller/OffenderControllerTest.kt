@@ -16,7 +16,7 @@ import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 class OffenderControllerTest : IntegrationTest() {
 
   val crn = "DX12340A"
-  val convictionId = 636401162L
+  val eventId = 1
   val oasysUserId = 101L
   @Test
   fun `access forbidden when no authority`() {
@@ -28,7 +28,7 @@ class OffenderControllerTest : IntegrationTest() {
 
   @Test
   fun `get offender returns offender and offence for crn and conviction ID`() {
-    val offenderDto = webTestClient.get().uri("/offender/crn/$crn/conviction/$convictionId")
+    val offenderDto = webTestClient.get().uri("/offender/crn/$crn/eventId/$eventId")
       .headers(setAuthorisation())
       .exchange()
       .expectStatus().isOk
@@ -37,14 +37,13 @@ class OffenderControllerTest : IntegrationTest() {
       .responseBody
 
     assertThat(offenderDto?.offenderId).isEqualTo(oasysUserId)
-    assertThat(offenderDto?.offence?.convictionId).isEqualTo(convictionId)
-    assertThat(offenderDto?.offence?.mainOffenceId).isEqualTo("offence1")
-    assertThat(offenderDto?.offence?.offenceCode).isEqualTo("code1")
+    assertThat(offenderDto?.offence?.offenceCode).isEqualTo("116")
+    assertThat(offenderDto?.offence?.offenceSubCode).isEqualTo("00")
   }
 
   @Test
   fun `returns offender with address`() {
-    val offenderDto = webTestClient.get().uri("/offender/crn/$crn/conviction/$convictionId")
+    val offenderDto = webTestClient.get().uri("/offender/crn/$crn/eventId/$eventId")
       .headers(setAuthorisation())
       .exchange()
       .expectStatus().isOk
@@ -60,7 +59,7 @@ class OffenderControllerTest : IntegrationTest() {
   @Test
   fun `returns not found for invalid crn`() {
     val invalidCrn = "invalidNotFound"
-    webTestClient.get().uri("/offender/crn/$invalidCrn/conviction/$convictionId")
+    webTestClient.get().uri("/offender/crn/$invalidCrn/eventId/$eventId")
       .headers(setAuthorisation())
       .exchange()
       .expectStatus().isNotFound
@@ -68,7 +67,7 @@ class OffenderControllerTest : IntegrationTest() {
 
   @Test
   fun `returns offender with aliases`() {
-    val offenderDto = webTestClient.get().uri("/offender/crn/$crn/conviction/$convictionId")
+    val offenderDto = webTestClient.get().uri("/offender/crn/$crn/eventId/$eventId")
       .headers(setAuthorisation())
       .exchange()
       .expectStatus().isOk
@@ -83,7 +82,7 @@ class OffenderControllerTest : IntegrationTest() {
 
   @Test
   fun `returns offence with category codes and code descriptions`() {
-    val offenderDto = webTestClient.get().uri("/offender/crn/$crn/conviction/$convictionId")
+    val offenderDto = webTestClient.get().uri("/offender/crn/$crn/eventId/$eventId")
       .headers(setAuthorisation())
       .exchange()
       .expectStatus().isOk
@@ -92,11 +91,9 @@ class OffenderControllerTest : IntegrationTest() {
       .responseBody
 
     assertThat(offenderDto?.offenderId).isEqualTo(oasysUserId)
-    assertThat(offenderDto?.offence?.offenceCode).isEqualTo("code1")
-    assertThat(offenderDto?.offence?.offenceDescription).isEqualTo("Offence description")
-    assertThat(offenderDto?.offence?.categoryCode).isEqualTo("cat1")
-    assertThat(offenderDto?.offence?.categoryDescription).isEqualTo("category description 1")
-    assertThat(offenderDto?.offence?.subCategoryCode).isEqualTo("cat2")
-    assertThat(offenderDto?.offence?.subCategoryDescription).isEqualTo("category description 2")
+    assertThat(offenderDto?.offence?.offenceCode).isEqualTo("116")
+    assertThat(offenderDto?.offence?.codeDescription).isEqualTo("Fishery Laws")
+    assertThat(offenderDto?.offence?.offenceSubCode).isEqualTo("00")
+    assertThat(offenderDto?.offence?.subCodeDescription).isEqualTo("Fishery Laws")
   }
 }

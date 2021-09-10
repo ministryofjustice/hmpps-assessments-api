@@ -79,6 +79,7 @@ class AssessmentController(
   ): AssessmentEpisodeDto? {
     return assessmentService.createNewEpisode(
       assessmentUuid,
+      createAssessmentEpisodeDto.eventID,
       createAssessmentEpisodeDto.changeReason,
       createAssessmentEpisodeDto.assessmentSchemaCode
     )

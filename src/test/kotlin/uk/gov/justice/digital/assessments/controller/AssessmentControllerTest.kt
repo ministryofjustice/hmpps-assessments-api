@@ -1,5 +1,8 @@
 package uk.gov.justice.digital.assessments.controller
 
+import java.math.BigDecimal
+import java.time.LocalDateTime
+import java.util.UUID
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -22,9 +25,6 @@ import uk.gov.justice.digital.assessments.services.dto.PredictorType
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import uk.gov.justice.digital.assessments.testutils.Verify
 import uk.gov.justice.digital.assessments.utils.RequestData
-import java.math.BigDecimal
-import java.time.LocalDateTime
-import java.util.UUID
 
 @SqlGroup(
   Sql(
@@ -53,7 +53,7 @@ class AssessmentControllerTest : IntegrationTest() {
       assertThat(subject.name).isEqualTo("John Smith")
       assertThat(subject.dob).isEqualTo("2001-01-01")
       assertThat(subject.age).isEqualTo(20)
-      assertThat(subject.crn).isEqualTo("X1345")
+      assertThat(subject.crn).isEqualTo("DX12340A")
       assertThat(subject.pnc).isEqualTo("dummy-pnc")
     }
   }

@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.assessments.jpa.entities.assessments
 
+import uk.gov.justice.digital.assessments.api.OffenceDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.utils.RequestData
 import java.io.Serializable
@@ -49,7 +50,8 @@ class AssessmentEntity(
   fun newEpisode(
     changeReason: String,
     oasysSetPk: Long? = null,
-    assessmentSchemaCode: AssessmentSchemaCode
+    assessmentSchemaCode: AssessmentSchemaCode,
+    offence: OffenceDto?
   ): AssessmentEpisodeEntity {
     val currentEpisode = getCurrentEpisode()
     if (currentEpisode != null) {
@@ -61,7 +63,11 @@ class AssessmentEntity(
       changeReason = changeReason,
       userId = RequestData.getUserName(),
       oasysSetPk = oasysSetPk,
-      assessmentSchemaCode = assessmentSchemaCode
+      assessmentSchemaCode = assessmentSchemaCode,
+      offenceCode = offence?.offenceCode,
+      codeDescription = offence?.codeDescription,
+      offenceSubCode = offence?.offenceSubCode,
+      subCodeDescription = offence?.subCodeDescription
     )
     episodes.add(newEpisode)
     return newEpisode

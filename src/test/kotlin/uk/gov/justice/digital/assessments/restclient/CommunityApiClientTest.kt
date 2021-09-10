@@ -16,7 +16,6 @@ class CommunityApiClientTest : IntegrationTest() {
   internal lateinit var communityApiRestClient: CommunityApiRestClient
 
   val crn = "DX12340A"
-  val convictionId = 636401162L
 
   @Test
   fun `get Delius Offender returns offender DTO`() {
@@ -69,11 +68,10 @@ class CommunityApiClientTest : IntegrationTest() {
 
   @Test
   fun `get Delius Conviction returns conviction DTO`() {
-    val convictionDto = communityApiRestClient.getConviction(crn, convictionId)
-    assertThat(convictionDto?.convictionId).isEqualTo(636401162L)
-    assertThat(convictionDto?.offences?.get(0)?.mainOffence).isEqualTo(true)
-    assertThat(convictionDto?.offences?.get(0)?.offenceId).isEqualTo("offence1")
-    assertThat(convictionDto?.offences?.get(1)?.mainOffence).isEqualTo(false)
-    assertThat(convictionDto?.offences?.get(1)?.offenceId).isEqualTo("offence2")
+    val convictions = communityApiRestClient.getConvictions(crn)
+    assertThat(convictions?.get(0)?.convictionId).isEqualTo(2500000001)
+    assertThat(convictions?.get(0)?.offences?.get(0)?.mainOffence).isEqualTo(true)
+    assertThat(convictions?.get(0)?.offences?.get(0)?.offenceId).isEqualTo("M2500000001")
+    assertThat(convictions?.get(1)?.convictionId).isEqualTo(2500000002)
   }
 }

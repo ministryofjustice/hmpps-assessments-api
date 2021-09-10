@@ -58,6 +58,18 @@ class AssessmentEpisodeEntity(
   @Column(name = "change_reason")
   val changeReason: String? = null,
 
+  @Column(name = "offence_code")
+  val offenceCode: String? = null,
+
+  @Column(name = "code_description")
+  val codeDescription: String? = null,
+
+  @Column(name = "offence_subcode")
+  val offenceSubCode: String? = null,
+
+  @Column(name = "subcode_description")
+  val subCodeDescription: String? = null,
+
   @Type(type = "json")
   @Column(columnDefinition = "jsonb", name = "answers")
   var answers: MutableMap<String, AnswerEntity>? = mutableMapOf()
