@@ -55,22 +55,22 @@ class QuestionService(
     return fetchGroupSections(findByGroupCode(groupCode))
   }
 
-  fun flattenQuestionsForGroup(groupUuid: UUID, dependencies: QuestionDependencies) : List<GroupQuestionDto> {
+  fun flattenQuestionsForGroup(groupUuid: UUID, dependencies: QuestionDependencies): List<GroupContentDto> {
     val group = findByGroupUuid(groupUuid)
 
     return group.contents.flatMap {
       when (it.contentType) {
         "question" -> {
-          val questionSchema = questionSchemaRepository.findByQuestionSchemaUuid(it.contentUuid)
-          listOf(GroupQuestionDto.from(questionSchema!!, it, dependencies))
+          val questionSchema = getGroupQuestion(it, dependencies)
+          listOf(questionSchema)
         }
-        "group" -> {flattenQuestionsForGroup(it.contentUuid, dependencies)}
+        "group" -> { flattenQuestionsForGroup(it.contentUuid, dependencies) }
         else -> emptyList()
       }
     }
   }
 
-  fun getFlatQuestionsForGroup(groupUuid: UUID): List<GroupQuestionDto> {
+  fun getFlatQuestionsForGroup(groupUuid: UUID): List<GroupContentDto> {
     val dependencies = questionDependencyService.dependencies()
     return flattenQuestionsForGroup(groupUuid, dependencies)
   }
