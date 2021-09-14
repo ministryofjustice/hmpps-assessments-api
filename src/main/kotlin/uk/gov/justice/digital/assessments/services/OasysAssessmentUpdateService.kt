@@ -4,8 +4,8 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.assessments.api.Answers
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient
 import uk.gov.justice.digital.assessments.services.dto.AssessmentEpisodeUpdateErrors
 import uk.gov.justice.digital.assessments.services.dto.OasysAnswers
@@ -18,6 +18,12 @@ class OasysAssessmentUpdateService(
 ) {
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
+  }
+
+  fun updateOASysAssessment(
+    episode: AssessmentEpisodeEntity,
+  ): AssessmentEpisodeUpdateErrors {
+    return updateOASysAssessment(episode, emptyMap())
   }
 
   fun updateOASysAssessment(

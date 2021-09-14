@@ -10,12 +10,12 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode.ROSH
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.OasysAssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.EpisodeRepository
+import uk.gov.justice.digital.assessments.services.dto.AssessmentEpisodeUpdateErrors
 import java.util.UUID
 
 @ExtendWith(MockKExtension::class)
@@ -56,7 +56,7 @@ class AssessmentUpdateServiceTablesTest {
   private val assessmentEpisode = AssessmentEpisodeEntity(
     episodeId = 1L,
     episodeUuid = UUID.randomUUID(),
-    assessmentSchemaCode = ROSH
+    assessmentSchemaCode = AssessmentSchemaCode.ROSH
   )
 
   @BeforeEach
@@ -64,6 +64,10 @@ class AssessmentUpdateServiceTablesTest {
     every { assessmentSchemaService.toOasysAssessmentType(AssessmentSchemaCode.ROSH) } returns OasysAssessmentType.SHORT_FORM_PSR
     every { assessmentSchemaService.toOasysAssessmentType(AssessmentSchemaCode.RSR) } returns OasysAssessmentType.SOMETHING_IN_OASYS
     every { episodeRepository.save(any()) } returns null
+    every { assessmentRepository.save(any()) } returns null
+    every {
+      oasysAssessmentUpdateService.updateOASysAssessment(any())
+    } returns AssessmentEpisodeUpdateErrors()
   }
 
   @Test
@@ -126,7 +130,7 @@ class AssessmentUpdateServiceTablesTest {
     val assessmentEpisodeWithExistingTable = AssessmentEpisodeEntity(
       episodeId = 1L,
       episodeUuid = UUID.randomUUID(),
-      assessmentSchemaCode = ROSH,
+      assessmentSchemaCode = AssessmentSchemaCode.ROSH,
       tables = mutableMapOf(
         tableName to mutableListOf(
           mapOf(
@@ -167,7 +171,7 @@ class AssessmentUpdateServiceTablesTest {
     val assessmentEpisodeWithExistingTable = AssessmentEpisodeEntity(
       episodeId = 1L,
       episodeUuid = UUID.randomUUID(),
-      assessmentSchemaCode = ROSH,
+      assessmentSchemaCode = AssessmentSchemaCode.ROSH,
       tables = mutableMapOf(
         tableName to mutableListOf(
           mapOf(
