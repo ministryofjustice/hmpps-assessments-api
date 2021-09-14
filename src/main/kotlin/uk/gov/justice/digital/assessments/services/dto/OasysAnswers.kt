@@ -33,17 +33,14 @@ data class OasysAnswers(
       episode: AssessmentEpisodeEntity,
       mappingProvider: MappingProvider
     ): OasysAnswers {
-      val episodeAnswers = episode.answers
-      val episodeTables = episode.tables ?: mutableMapOf()
-
       val questions = mappingProvider.getAllQuestions()
       val tables = pullTableNames(questions)
 
-      val oasysTableAnswers = buildAllTableAnswers(tables, episodeTables, mappingProvider)
+      val oasysTableAnswers = buildAllTableAnswers(tables, episode.tables, mappingProvider)
 
       val nonTableAnswers = buildOasysAnswers(
         questions,
-        episodeAnswers ?: mutableMapOf(),
+        episode.answers,
         ::mapOasysAnswers
       )
 
@@ -62,12 +59,12 @@ data class OasysAnswers(
 
     private fun buildAllTableAnswers(
       listOfTables: Set<String>,
-      tables: Tables,
+      tables: Tables? = mutableMapOf(),
       mappingProvider: MappingProvider
     ): OasysAnswers {
       val oasysAnswers = listOfTables.map { tableName ->
         convertTableAnswersToOasysAnswers(
-          tables.getOrDefault(tableName, mutableListOf()),
+          tables!![tableName] ?: mutableListOf(),
           mappingProvider.getTableQuestions(tableName),
         )
       }.flatten().toMutableSet()
@@ -104,11 +101,11 @@ data class OasysAnswers(
 
     private fun buildOasysAnswers(
       questions: QuestionSchemaEntities,
-      answers: Answers,
+      answers: Answers?,
       builder: (OASysMappingEntity, List<String>, String?) -> List<OasysAnswer>
     ): OasysAnswers {
       val oasysAnswers = OasysAnswers()
-      answers.forEach { (questionCode, answerEntity) ->
+      answers?.forEach { (questionCode, answerEntity) ->
         val question = questions[questionCode]
         // TODO: If we want to handle multiple mappings per question we will need to add assessment type to the mapping
         question?.oasysMappings?.firstOrNull()?.let { oasysMapping ->
