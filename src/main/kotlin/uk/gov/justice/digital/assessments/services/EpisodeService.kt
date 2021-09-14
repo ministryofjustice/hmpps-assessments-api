@@ -57,7 +57,7 @@ class EpisodeService(
     val subject = episode.assessment?.subject
     if (subject?.source != "COURT") return null
 
-    val (courtCode, caseNumber) = subject.sourceId!!.split('|')
+    val (courtCode, caseNumber) = subject.sourceId.split('|')
     return courtCaseRestClient.getCourtCaseJson(courtCode, caseNumber)
   }
 

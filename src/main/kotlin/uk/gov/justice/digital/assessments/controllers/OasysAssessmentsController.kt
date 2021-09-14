@@ -15,13 +15,13 @@ import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.services.OasysAssessmentService
 
 @RestController
-class SubjectController(val oasysAssessmentService: OasysAssessmentService) {
+class OasysAssessmentsController(val oasysAssessmentService: OasysAssessmentService) {
 
   @RequestMapping(
     path = ["/subject/{crn}/assessments/episodes/{assessmentSchemaCode}/current"],
     method = [RequestMethod.GET]
   )
-  @Operation(description = "Gets current assessment episode for a specific schema type")
+  @Operation(description = "Gets current assessment episode with oasys formatted answers for a specific schema type")
   @ApiResponses(
     value = [
       ApiResponse(responseCode = "403", description = "Unauthorized"),

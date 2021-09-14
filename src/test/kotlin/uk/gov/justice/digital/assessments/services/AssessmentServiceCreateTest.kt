@@ -106,7 +106,9 @@ class AssessmentServiceCreateTest {
         SubjectEntity(
           assessment = AssessmentEntity(assessmentId = assessmentId, assessmentUuid = assessmentUuid),
           dateOfBirth = LocalDate.of(1989, 1, 1),
-          crn = "X1345"
+          crn = "X1345",
+          source = "DELIUS",
+          sourceId = "128647"
         )
 
       val assessmentDto =
@@ -197,7 +199,11 @@ class AssessmentServiceCreateTest {
           "$courtCode|$caseNumber"
         )
       } returns SubjectEntity(
-        assessment = AssessmentEntity(assessmentId = 1), dateOfBirth = LocalDate.of(1989, 1, 1), crn = "X1345"
+        assessment = AssessmentEntity(assessmentId = 1),
+        dateOfBirth = LocalDate.of(1989, 1, 1),
+        crn = "X1345",
+        source = "DELIUS",
+        sourceId = "128647"
       )
 
       assessmentsService.createNewAssessment(

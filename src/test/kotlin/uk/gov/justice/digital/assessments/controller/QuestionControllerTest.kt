@@ -118,9 +118,9 @@ class QuestionControllerTest : IntegrationTest() {
       .returnResult()
       .responseBody
 
-    assertThat(groupSummaries).hasSize(3)
+    assertThat(groupSummaries).hasSize(37)
 
-    val groupInfo = groupSummaries?.first()
+    val groupInfo = groupSummaries.find { it.groupCode == "Group code" }
 
     assertThat(groupInfo?.groupId).isEqualTo(UUID.fromString(groupUuid))
     assertThat(groupInfo?.title).isEqualTo("Heading 1")

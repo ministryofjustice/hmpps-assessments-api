@@ -61,7 +61,7 @@ class OffenderService(
       log.info("No court data found for crn: $crn")
       null
     } else {
-      val (courtCode, caseNumber) = court.sourceId!!.split('|')
+      val (courtCode, caseNumber) = court.sourceId.split('|')
       Pair(courtCode, caseNumber)
     }
   }

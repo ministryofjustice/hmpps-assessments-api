@@ -25,10 +25,10 @@ class SubjectEntity(
   val subjectUuid: UUID = UUID.randomUUID(),
 
   @Column(name = "source")
-  val source: String? = null,
+  val source: String,
 
   @Column(name = "source_id")
-  val sourceId: String? = null,
+  val sourceId: String,
 
   @Column(name = "name")
   val name: String? = null,
@@ -49,7 +49,7 @@ class SubjectEntity(
   val gender: String? = null,
 
   @Column(name = "created_date")
-  val createdDate: LocalDateTime? = null,
+  val createdDate: LocalDateTime? = LocalDateTime.now(),
 
   @ManyToOne
   @JoinColumn(name = "assessment_uuid", referencedColumnName = "assessment_uuid")

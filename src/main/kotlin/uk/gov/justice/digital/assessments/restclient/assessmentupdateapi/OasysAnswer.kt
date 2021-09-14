@@ -4,6 +4,6 @@ data class OasysAnswer(
   val sectionCode: String,
   val logicalPage: Long? = null,
   val questionCode: String,
-  val answer: String? = null,
+  val answer: String,
   val isStatic: Boolean? = false
 )

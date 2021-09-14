@@ -17,6 +17,6 @@ class SubjectService(
         ?: throw EntityNotFoundException("Assessment $assessmentUuid not found")
       )
 
-    return assessmentEntity.subject ?: throw EntityNotFoundException("Subject not found for $assessmentUuid ")
+    return assessmentEntity.subject ?: throw EntityNotFoundException("Subject not found for assessment $assessmentUuid ")
   }
 }

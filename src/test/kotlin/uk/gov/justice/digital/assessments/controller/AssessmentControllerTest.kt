@@ -325,7 +325,7 @@ class AssessmentControllerTest : IntegrationTest() {
     }
 
     private fun addTableRowFromJson(tableName: String, jsonString: String): AssessmentEpisodeDto {
-      val endpoint = "/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259/table/children_at_risk_of_serious_harm"
+      val endpoint = "/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259/table/children_at_risk_of_serious_harm_test"
 
       val episode = webTestClient.post().uri(endpoint)
         .contentType(MediaType.APPLICATION_JSON)
@@ -345,7 +345,7 @@ class AssessmentControllerTest : IntegrationTest() {
 
     private fun updateTableRowFromJson(tableName: String, index: Int, jsonString: String): AssessmentEpisodeDto {
       val endpoint =
-        "/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259/table/children_at_risk_of_serious_harm/$index"
+        "/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259/table/children_at_risk_of_serious_harm_test/$index"
 
       val episode = webTestClient.put().uri(endpoint)
         .contentType(MediaType.APPLICATION_JSON)
@@ -365,7 +365,7 @@ class AssessmentControllerTest : IntegrationTest() {
 
     private fun deleteTableRow(index: Int): AssessmentEpisodeDto {
       val endpoint =
-        "/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259/table/children_at_risk_of_serious_harm/$index"
+        "/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259/table/children_at_risk_of_serious_harm_test/$index"
       val episode = webTestClient.delete().uri(endpoint)
         .headers(setAuthorisation())
         .exchange()

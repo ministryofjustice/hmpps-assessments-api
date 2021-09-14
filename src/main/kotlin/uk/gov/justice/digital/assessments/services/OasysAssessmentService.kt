@@ -4,7 +4,10 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.assessments.api.OasysAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRepository
+import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OasysAnswer
+import uk.gov.justice.digital.assessments.services.dto.EmploymentType
 import uk.gov.justice.digital.assessments.services.dto.OasysAnswers
+import uk.gov.justice.digital.assessments.services.dto.ProblemsLevel
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 
 @Service
@@ -24,7 +27,7 @@ class OasysAssessmentService(
     val latestClosedEpisode = subjectEntity.assessment?.getLatestClosedEpisodeOfType(assessmentSchemaCode)
       ?: throw EntityNotFoundException("Closed Episode for Subject for crn $crn not found for type $assessmentSchemaCode ")
 
-    val oasysAnswers = OasysAnswers.from(
+    var oasysAnswers = OasysAnswers.from(
       latestClosedEpisode,
       object : OasysAnswers.Companion.MappingProvider {
         override fun getAllQuestions(): QuestionSchemaEntities =
@@ -34,7 +37,6 @@ class OasysAssessmentService(
           questionService.getAllGroupQuestionsByGroupCode(tableCode)
       }
     )
-
     return OasysAssessmentEpisodeDto.from(latestClosedEpisode, oasysAnswers)
   }
 }

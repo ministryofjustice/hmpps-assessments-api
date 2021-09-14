@@ -3,17 +3,6 @@ DELETE FROM hmppsassessmentsapi.assessed_episode WHERE true;
 DELETE FROM hmppsassessmentsapi.subject WHERE true;
 DELETE FROM hmppsassessmentsapi.assessment WHERE true;
 
-DELETE FROM hmppsassessmentsschemas.question_group WHERE true;
-DELETE FROM hmppsassessmentsschemas.oasys_question_mapping WHERE true;
-DELETE FROM hmppsassessmentsschemas.oasys_reference_data_target_mapping WHERE true;
-DELETE FROM hmppsassessmentsschemas.assessment_schema_groups WHERE true;
-DELETE FROM hmppsassessmentsschemas.assessment_schema WHERE true;
-DELETE FROM hmppsassessmentsschemas.grouping WHERE true;
-DELETE FROM hmppsassessmentsschemas.predictor_field_mapping WHERE true;
-DELETE FROM hmppsassessmentsschemas.assessment_predictors WHERE true;
-DELETE FROM hmppsassessmentsschemas.question_dependency WHERE true;
-DELETE FROM hmppsassessmentsschemas.question_schema WHERE true;
-
 /* Assessment with Episodes */
 INSERT INTO hmppsassessmentsapi.assessment  (assessment_id, assessment_uuid, created_date) VALUES
 (1, '2e020e78-a81c-407f-bc78-e5f284e237e5', '2019-11-14 09:00'),
@@ -41,8 +30,8 @@ INSERT INTO hmppsassessmentsschemas.question_schema (question_schema_uuid, quest
 ('8d48ff4d-60f6-461b-ab00-67d1c2ed5f6b', '31.1', '2019-11-14 08:30', null, 'freetext', null, 'Team', null, null, null);
 
 INSERT INTO hmppsassessmentsschemas.grouping (group_uuid, group_code, heading, subheading, help_text, group_start, group_end) VALUES
-('1250321c-feff-4b87-83a7-00a65095cab1', 'individual_and_case_details', 'Individual and case details', null, null, '2019-11-14 08:30', null),
-('8dc6d75e-7908-4f3b-97d4-48d5441af5e1', 'assessment_details', 'Assessment details', null, null, '2019-11-14 08:30', null);
+('1250321c-feff-4b87-83a7-00a65095cab1', 'individual_and_case_details_test', 'Individual and case details', null, null, '2019-11-14 08:30', null),
+('8dc6d75e-7908-4f3b-97d4-48d5441af5e1', 'assessment_details_test', 'Assessment details', null, null, '2019-11-14 08:30', null);
 
 INSERT INTO hmppsassessmentsschemas.oasys_question_mapping (mapping_uuid, question_schema_uuid, ref_section_code, logical_page, ref_question_code, fixed_field) VALUES
 ('b28a7159-edbc-409a-8a53-3d6b8a4ae3b6', '2fe94330-22c4-4a6e-a494-9f53dc2139c6', 'OFFIN', null, 'assessor_office', true),

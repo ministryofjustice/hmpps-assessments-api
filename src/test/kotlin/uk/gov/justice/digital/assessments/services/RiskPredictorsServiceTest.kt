@@ -492,16 +492,16 @@ class RiskPredictorsServiceTest {
     testQuestion12.questionCode to listOf("9"),
     testQuestion13.questionCode to listOf("2025-11-01"),
     testQuestion14.questionCode to listOf("YES"),
-    testQuestion15.questionCode to listOf(""),
-    testQuestion16.questionCode to listOf("not available for work"),
-    testQuestion17.questionCode to listOf("significant problems"),
+    testQuestion15.questionCode to listOf("MISSING"),
+    testQuestion16.questionCode to listOf("NOT_AVAILABLE_FOR_WORK"),
+    testQuestion17.questionCode to listOf("SIGNIFICANT_PROBLEMS"),
     testQuestion18.questionCode to listOf("YES"),
     testQuestion19.questionCode to listOf("perpetrator"),
-    testQuestion20.questionCode to listOf("significant problems"),
-    testQuestion21.questionCode to listOf("significant problems"),
-    testQuestion22.questionCode to listOf("some problems"),
-    testQuestion23.questionCode to listOf("significant problems"),
-    testQuestion24.questionCode to listOf("some problems"),
+    testQuestion20.questionCode to listOf("SIGNIFICANT_PROBLEMS"),
+    testQuestion21.questionCode to listOf("SIGNIFICANT_PROBLEMS"),
+    testQuestion22.questionCode to listOf("SOME_PROBLEMS"),
+    testQuestion23.questionCode to listOf("SIGNIFICANT_PROBLEMS"),
+    testQuestion24.questionCode to listOf("SOME_PROBLEMS"),
     testQuestion25.questionCode to listOf("YES"),
     testQuestion26.questionCode to listOf("YES"),
     testQuestion27.questionCode to listOf("YES"),
@@ -551,7 +551,12 @@ class RiskPredictorsServiceTest {
       every {
         subjectService.getSubjectForAssessment(assessment.assessmentUuid)
       } returns SubjectEntity(
-        oasysOffenderPk = 9999, dateOfBirth = LocalDate.of(2001, 1, 1), gender = "MALE", crn = "X1345"
+        oasysOffenderPk = 9999,
+        dateOfBirth = LocalDate.of(2001, 1, 1),
+        gender = "MALE",
+        crn = "X1345",
+        source = "DELIUS",
+        sourceId = "128647"
       )
 
       assertThrows<EntityNotFoundException> {
@@ -588,7 +593,12 @@ class RiskPredictorsServiceTest {
       every {
         subjectService.getSubjectForAssessment(assessment.assessmentUuid)
       } returns SubjectEntity(
-        oasysOffenderPk = 9999, dateOfBirth = LocalDate.of(2001, 1, 1), gender = "FEMALE", crn = "X1345"
+        oasysOffenderPk = 9999,
+        dateOfBirth = LocalDate.of(2001, 1, 1),
+        gender = "FEMALE",
+        crn = "X1345",
+        source = "DELIUS",
+        sourceId = "128647"
       )
 
       val results = predictorService.getPredictorResults(assessmentEpisode, final)
@@ -655,7 +665,12 @@ class RiskPredictorsServiceTest {
       every {
         subjectService.getSubjectForAssessment(assessment.assessmentUuid)
       } returns SubjectEntity(
-        oasysOffenderPk = 9999, dateOfBirth = LocalDate.of(2001, 1, 1), gender = "FEMALE", crn = "X1345"
+        oasysOffenderPk = 9999,
+        dateOfBirth = LocalDate.of(2001, 1, 1),
+        gender = "FEMALE",
+        crn = "X1345",
+        source = "DELIUS",
+        sourceId = "128647"
       )
 
       val results = predictorService.getPredictorResults(episodeUuid, final)
