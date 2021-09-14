@@ -52,7 +52,7 @@ data class AssessmentEpisodeUpdateErrors(
       questions: QuestionSchemaEntities,
       oasysUpdateResult: UpdateAssessmentAnswersResponseDto
     ) {
-      val questionsInThisEpisode = episode.answers.keys
+      val questionsInThisEpisode = episode.answers.orEmpty().keys
 
       oasysUpdateResult.validationErrorDtos.forEach {
         val mappedQuestions = questions.forOasysMapping(it.sectionCode, it.logicalPage, it.questionCode)

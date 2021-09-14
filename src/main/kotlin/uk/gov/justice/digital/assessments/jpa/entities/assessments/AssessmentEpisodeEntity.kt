@@ -72,7 +72,7 @@ class AssessmentEpisodeEntity(
 
   @Type(type = "json")
   @Column(columnDefinition = "jsonb", name = "answers")
-  var answers: Answers = mutableMapOf(),
+  var answers: Answers? = mutableMapOf(),
 
   @Type(type = "json")
   @Column(columnDefinition = "jsonb", name = "tables")

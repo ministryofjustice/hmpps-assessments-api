@@ -9,10 +9,10 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.Answers
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.Answers
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.OasysAssessmentType
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.EpisodeRepository
@@ -29,13 +29,15 @@ class AssessmentUpdateServiceTest {
   private val riskPredictorsService: RiskPredictorsService = mockk()
   private val assessmentSchemaService: AssessmentSchemaService = mockk()
   private val oasysAssessmentUpdateService: OasysAssessmentUpdateService = mockk()
+  private val assessmentService: AssessmentService = mockk()
 
   private val assessmentUpdateService = AssessmentUpdateService(
     assessmentRepository,
     episodeRepository,
     questionService,
     riskPredictorsService,
-    oasysAssessmentUpdateService
+    oasysAssessmentUpdateService,
+    assessmentService,
   )
 
   private val assessmentUuid = UUID.randomUUID()

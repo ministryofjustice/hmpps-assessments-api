@@ -175,6 +175,7 @@ class ControllerAdvice {
   @ExceptionHandler(Exception::class)
   @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
   fun handle(e: Exception): ResponseEntity<ErrorResponse?> {
+    log.error("Exception: {}", e.message)
     return ResponseEntity(
       ErrorResponse(
         status = 500,

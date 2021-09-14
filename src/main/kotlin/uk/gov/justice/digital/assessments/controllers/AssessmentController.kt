@@ -118,7 +118,7 @@ class AssessmentController(
       example = "1234"
     ) @PathVariable assessmentUuid: UUID
   ): AssessmentEpisodeDto {
-    return AssessmentEpisodeDto.from(assessmentService.getCurrentAssessmentEpisode(assessmentUuid))
+    return assessmentService.getCurrentAssessmentEpisode(assessmentUuid)
   }
 
   @RequestMapping(path = ["/assessments/{assessmentUuid}/episodes/{episodeUuid}"], method = [RequestMethod.POST])
@@ -135,7 +135,7 @@ class AssessmentController(
     @Parameter(description = "Episode UUID", required = true) @PathVariable episodeUuid: UUID,
     @Parameter(description = "Episode Answers", required = true) @RequestBody episodeAnswers: UpdateAssessmentEpisodeDto
   ): ResponseEntity<AssessmentEpisodeDto> {
-    val episode = assessmentService.getEpisode(episodeUuid, assessmentUuid)
+    val episode = assessmentService.getEpisode(assessmentUuid, episodeUuid)
     return updateResponse(assessmentUpdateService.updateEpisode(episode, episodeAnswers))
   }
 
@@ -154,11 +154,10 @@ class AssessmentController(
   fun addTableEntryForCurrentEpisode(
     @Parameter(description = "Assessment UUID", required = true, example = "1234") @PathVariable assessmentUuid: UUID,
     @Parameter(description = "Table name", required = true) @PathVariable tableName: String,
-    @Parameter(description = "New Row", required = true) @RequestBody requestBody: UpdateAssessmentEpisodeDto
+    @Parameter(description = "New Row", required = true) @RequestBody tableEntry: UpdateAssessmentEpisodeDto
   ): ResponseEntity<AssessmentEpisodeDto> {
-    val episode = assessmentService.getCurrentAssessmentEpisode(assessmentUuid)
     return updateResponse(
-      assessmentUpdateService.addEntryToTable(episode, tableName, requestBody)
+      assessmentUpdateService.addEntryToTableForCurrentEpisode(assessmentUuid, tableName, tableEntry)
     )
   }
 
@@ -180,9 +179,8 @@ class AssessmentController(
     @Parameter(description = "Index", required = true) @PathVariable index: Int,
     @Parameter(description = "Updated values", required = true) @RequestBody requestBody: UpdateAssessmentEpisodeDto
   ): ResponseEntity<AssessmentEpisodeDto> {
-    val episode = assessmentService.getCurrentAssessmentEpisode(assessmentUuid)
     return updateResponse(
-      assessmentUpdateService.updateTableEntry(episode, tableName, requestBody, index)
+      assessmentUpdateService.updateEntryToTableForCurrentEpisode(assessmentUuid, tableName, requestBody, index)
     )
   }
 
@@ -203,9 +201,8 @@ class AssessmentController(
     @Parameter(description = "Table name", required = true) @PathVariable tableName: String,
     @Parameter(description = "Index", required = true) @PathVariable index: Int,
   ): ResponseEntity<AssessmentEpisodeDto> {
-    val episode = assessmentService.getCurrentAssessmentEpisode(assessmentUuid)
     return updateResponse(
-      assessmentUpdateService.deleteTableEntry(episode, tableName, index)
+      assessmentUpdateService.deleteEntryToTableForCurrentEpisode(assessmentUuid, tableName, index)
     )
   }
 
@@ -225,11 +222,10 @@ class AssessmentController(
     @Parameter(description = "Assessment UUID", required = true, example = "1234") @PathVariable assessmentUuid: UUID,
     @Parameter(description = "Episode UUID", required = true) @PathVariable episodeUuid: UUID,
     @Parameter(description = "Table name", required = true) @PathVariable tableName: String,
-    @Parameter(description = "New Row", required = true) @RequestBody requestBody: UpdateAssessmentEpisodeDto
+    @Parameter(description = "New Row", required = true) @RequestBody tableEntry: UpdateAssessmentEpisodeDto
   ): ResponseEntity<AssessmentEpisodeDto> {
-    val episode = assessmentService.getEpisode(episodeUuid, assessmentUuid)
     return updateResponse(
-      assessmentUpdateService.addEntryToTable(episode, tableName, requestBody)
+      assessmentUpdateService.addEntryToTableForEpisode(assessmentUuid, episodeUuid, tableName, tableEntry)
     )
   }
 
@@ -252,9 +248,8 @@ class AssessmentController(
     @Parameter(description = "Index", required = true) @PathVariable index: Int,
     @Parameter(description = "Updated values", required = true) @RequestBody requestBody: UpdateAssessmentEpisodeDto
   ): ResponseEntity<AssessmentEpisodeDto> {
-    val episode = assessmentService.getEpisode(episodeUuid, assessmentUuid)
     return updateResponse(
-      assessmentUpdateService.updateTableEntry(episode, tableName, requestBody, index)
+      assessmentUpdateService.updateEntryToTableForEpisode(assessmentUuid, episodeUuid, tableName, requestBody, index)
     )
   }
 
@@ -276,9 +271,8 @@ class AssessmentController(
     @Parameter(description = "Table name", required = true) @PathVariable tableName: String,
     @Parameter(description = "Index", required = true) @PathVariable index: Int,
   ): ResponseEntity<AssessmentEpisodeDto> {
-    val episode = assessmentService.getEpisode(episodeUuid, assessmentUuid)
     return updateResponse(
-      assessmentUpdateService.deleteTableEntry(episode, tableName, index)
+      assessmentUpdateService.deleteEntryToTableForEpisode(assessmentUuid, episodeUuid, tableName, index)
     )
   }
 

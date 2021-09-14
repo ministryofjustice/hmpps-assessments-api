@@ -27,13 +27,15 @@ class AssessmentUpdateServiceTablesTest {
   private val riskPredictorsService: RiskPredictorsService = mockk()
   private val assessmentSchemaService: AssessmentSchemaService = mockk()
   private val oasysAssessmentUpdateService: OasysAssessmentUpdateService = mockk()
+  private val assessmentService: AssessmentService = mockk()
 
   private val assessmentUpdateService = AssessmentUpdateService(
     assessmentRepository,
     episodeRepository,
     questionService,
     riskPredictorsService,
-    oasysAssessmentUpdateService
+    oasysAssessmentUpdateService,
+    assessmentService,
   )
 
   private val tableName = "test_table"
@@ -53,9 +55,11 @@ class AssessmentUpdateServiceTablesTest {
     )
   )
 
+  private val assessmentUuid = UUID.randomUUID()
+  private val episodeUuid = UUID.randomUUID()
   private val assessmentEpisode = AssessmentEpisodeEntity(
     episodeId = 1L,
-    episodeUuid = UUID.randomUUID(),
+    episodeUuid = episodeUuid,
     assessmentSchemaCode = AssessmentSchemaCode.ROSH
   )
 
@@ -68,10 +72,12 @@ class AssessmentUpdateServiceTablesTest {
     every {
       oasysAssessmentUpdateService.updateOASysAssessment(any())
     } returns AssessmentEpisodeUpdateErrors()
+    every { assessmentService.getCurrentEpisode(assessmentUuid) } returns assessmentEpisode
+    every { assessmentService.getEpisode(assessmentUuid, episodeUuid) } returns assessmentEpisode
   }
 
   @Test
-  fun `adds an entry to a table`() {
+  fun `adds an entry to a table for a given episode`() {
     val requestBody = UpdateAssessmentEpisodeDto(
       answers = mapOf(
         "first_question" to listOf("first_answer"),
@@ -81,8 +87,36 @@ class AssessmentUpdateServiceTablesTest {
 
     every { questionService.getAllGroupQuestionsByGroupCode(tableName) } returns tableFields
 
-    val updatedEpisode = assessmentUpdateService.addEntryToTable(
-      assessmentEpisode,
+    val updatedEpisode = assessmentUpdateService.addEntryToTableForEpisode(
+      assessmentUuid,
+      episodeUuid,
+      tableName,
+      requestBody,
+    )
+
+    assertThat(updatedEpisode.tables.size).isEqualTo(1)
+    assertThat(updatedEpisode.tables[tableName]?.size).isEqualTo(1)
+    assertThat(updatedEpisode.tables[tableName]?.first()).isEqualTo(
+      mapOf(
+        "first_question" to listOf("first_answer"),
+        "second_question" to listOf("second_answer"),
+      )
+    )
+  }
+
+  @Test
+  fun `adds an entry to a table for the current episode`() {
+    val requestBody = UpdateAssessmentEpisodeDto(
+      answers = mapOf(
+        "first_question" to listOf("first_answer"),
+        "second_question" to listOf("second_answer"),
+      )
+    )
+
+    every { questionService.getAllGroupQuestionsByGroupCode(tableName) } returns tableFields
+
+    val updatedEpisode = assessmentUpdateService.addEntryToTableForCurrentEpisode(
+      assessmentUuid,
       tableName,
       requestBody,
     )
@@ -109,8 +143,9 @@ class AssessmentUpdateServiceTablesTest {
 
     every { questionService.getAllGroupQuestionsByGroupCode(tableName) } returns tableFields
 
-    val updatedEpisode = assessmentUpdateService.addEntryToTable(
-      assessmentEpisode,
+    val updatedEpisode = assessmentUpdateService.addEntryToTableForEpisode(
+      assessmentUuid,
+      episodeUuid,
       tableName,
       requestBody,
     )
@@ -126,10 +161,11 @@ class AssessmentUpdateServiceTablesTest {
   }
 
   @Test
-  fun `updates entries for a given table`() {
+  fun `updates entries for a given table in an episode`() {
+    val episodeUuid = UUID.randomUUID()
     val assessmentEpisodeWithExistingTable = AssessmentEpisodeEntity(
       episodeId = 1L,
-      episodeUuid = UUID.randomUUID(),
+      episodeUuid = episodeUuid,
       assessmentSchemaCode = AssessmentSchemaCode.ROSH,
       tables = mutableMapOf(
         tableName to mutableListOf(
@@ -148,9 +184,54 @@ class AssessmentUpdateServiceTablesTest {
     )
 
     every { questionService.getAllGroupQuestionsByGroupCode(tableName) } returns tableFields
+    every { assessmentService.getEpisode(assessmentUuid, episodeUuid) } returns assessmentEpisodeWithExistingTable
 
-    val updatedEpisode = assessmentUpdateService.updateTableEntry(
-      assessmentEpisodeWithExistingTable,
+    val updatedEpisode = assessmentUpdateService.updateEntryToTableForEpisode(
+      assessmentUuid,
+      episodeUuid,
+      tableName,
+      requestBody,
+      0,
+    )
+
+    assertThat(updatedEpisode.tables.size).isEqualTo(1)
+    assertThat(updatedEpisode.tables[tableName]?.size).isEqualTo(1)
+    assertThat(updatedEpisode.tables[tableName]?.first()).isEqualTo(
+      mapOf(
+        "first_question" to listOf("updated_answer"),
+        "second_question" to listOf("second_answer"),
+      )
+    )
+  }
+
+  @Test
+  fun `updates entries for a given table in the current episode`() {
+    val episodeUuid = UUID.randomUUID()
+    val assessmentEpisodeWithExistingTable = AssessmentEpisodeEntity(
+      episodeId = 1L,
+      episodeUuid = episodeUuid,
+      assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+      tables = mutableMapOf(
+        tableName to mutableListOf(
+          mapOf(
+            "first_question" to listOf("first_answer"),
+            "second_question" to listOf("second_answer"),
+          )
+        )
+      )
+    )
+
+    val requestBody = UpdateAssessmentEpisodeDto(
+      answers = mapOf(
+        "first_question" to listOf("updated_answer"),
+      )
+    )
+
+    every { questionService.getAllGroupQuestionsByGroupCode(tableName) } returns tableFields
+    every { assessmentService.getCurrentEpisode(assessmentUuid) } returns assessmentEpisodeWithExistingTable
+
+    val updatedEpisode = assessmentUpdateService.updateEntryToTableForCurrentEpisode(
+      assessmentUuid,
       tableName,
       requestBody,
       0,
@@ -168,9 +249,10 @@ class AssessmentUpdateServiceTablesTest {
 
   @Test
   fun `remove an entry for a given index`() {
+    val episodeUuid = UUID.randomUUID()
     val assessmentEpisodeWithExistingTable = AssessmentEpisodeEntity(
       episodeId = 1L,
-      episodeUuid = UUID.randomUUID(),
+      episodeUuid = episodeUuid,
       assessmentSchemaCode = AssessmentSchemaCode.ROSH,
       tables = mutableMapOf(
         tableName to mutableListOf(
@@ -188,9 +270,56 @@ class AssessmentUpdateServiceTablesTest {
     )
 
     every { questionService.getAllGroupQuestionsByGroupCode(tableName) } returns tableFields
+    every { assessmentService.getEpisode(assessmentUuid, episodeUuid) } returns assessmentEpisodeWithExistingTable
 
-    val updatedEpisode = assessmentUpdateService.deleteTableEntry(
-      assessmentEpisodeWithExistingTable,
+    val updatedEpisode = assessmentUpdateService.deleteEntryToTableForEpisode(
+      assessmentUuid,
+      episodeUuid,
+      tableName,
+      1,
+    )
+
+    assertThat(updatedEpisode.tables.size).isEqualTo(1)
+    assertThat(updatedEpisode.tables[tableName]?.size).isEqualTo(2)
+    assertThat(updatedEpisode.tables[tableName]).isEqualTo(
+      mutableListOf(
+        mapOf(
+          "first_question" to listOf("for_first_entry"),
+        ),
+        mapOf(
+          "first_question" to listOf("for_third_entry"),
+        )
+      )
+    )
+  }
+
+  @Test
+  fun `remove an entry for a given index in the current episode`() {
+    val episodeUuid = UUID.randomUUID()
+    val assessmentEpisodeWithExistingTable = AssessmentEpisodeEntity(
+      episodeId = 1L,
+      episodeUuid = episodeUuid,
+      assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+      tables = mutableMapOf(
+        tableName to mutableListOf(
+          mapOf(
+            "first_question" to listOf("for_first_entry"),
+          ),
+          mapOf(
+            "first_question" to listOf("for_second_entry"),
+          ),
+          mapOf(
+            "first_question" to listOf("for_third_entry"),
+          )
+        )
+      )
+    )
+
+    every { questionService.getAllGroupQuestionsByGroupCode(tableName) } returns tableFields
+    every { assessmentService.getCurrentEpisode(assessmentUuid) } returns assessmentEpisodeWithExistingTable
+
+    val updatedEpisode = assessmentUpdateService.deleteEntryToTableForCurrentEpisode(
+      assessmentUuid,
       tableName,
       1,
     )

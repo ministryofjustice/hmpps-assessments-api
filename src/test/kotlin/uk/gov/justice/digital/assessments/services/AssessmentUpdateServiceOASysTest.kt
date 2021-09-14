@@ -11,16 +11,16 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerSchemaEntity
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerSchemaGroupEntity
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.Answers
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerSchemaEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerSchemaGroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.OASysMappingEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.OasysAssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEntity
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.EpisodeRepository
 import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient
@@ -44,13 +44,15 @@ class AssessmentUpdateServiceOASysTest {
   private val riskPredictorsService: RiskPredictorsService = mockk()
   private val assessmentSchemaService: AssessmentSchemaService = mockk()
   private val oasysAssessmentUpdateService: OasysAssessmentUpdateService = mockk()
+  private val assessmentService: AssessmentService = mockk()
 
   private val assessmentsUpdateService = AssessmentUpdateService(
     assessmentRepository,
     episodeRepository,
     questionService,
     riskPredictorsService,
-    oasysAssessmentUpdateService
+    oasysAssessmentUpdateService,
+    assessmentService,
   )
 
   private val assessmentId = 1L

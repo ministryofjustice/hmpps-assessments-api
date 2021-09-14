@@ -47,7 +47,7 @@ class RiskPredictorsService(
     log.info("Found ${predictors.size} predictors for episode ${episode.episodeUuid} with assessment type ${episode.assessmentSchemaCode}")
 
     return predictors.map { predictor ->
-      fetchResults(episode, final, predictor.type, extractAnswers(predictor.fieldEntities.toList(), episode.answers))
+      fetchResults(episode, final, predictor.type, extractAnswers(predictor.fieldEntities.toList(), episode.answers.orEmpty()))
     }
   }
 
@@ -55,13 +55,13 @@ class RiskPredictorsService(
     predictorFieldEntities: List<PredictorFieldMappingEntity>,
     answers: Answers
   ): Answers {
-     return predictorFieldEntities
+    return predictorFieldEntities
       .associate { predictorField ->
         val questionCode = predictorField.questionSchema.questionCode
         val questionAnswer = answers[questionCode]
         predictorField.predictorFieldName to questionAnswer.orEmpty()
       }
-       .filterValues { answer -> answer.isNotEmpty() }
+      .filterValues { answer -> answer.isNotEmpty() }
   }
 
   private fun fetchResults(

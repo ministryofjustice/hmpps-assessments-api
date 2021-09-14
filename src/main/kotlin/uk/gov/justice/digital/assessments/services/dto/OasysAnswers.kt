@@ -2,13 +2,13 @@ package uk.gov.justice.digital.assessments.services.dto
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.OASysMappingEntity
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.Answers
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.TableRow
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.TableRows
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.Tables
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.OASysMappingEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OasysAnswer
 import uk.gov.justice.digital.assessments.services.QuestionSchemaEntities
 import java.time.LocalDate
@@ -43,7 +43,7 @@ data class OasysAnswers(
 
       val nonTableAnswers = buildOasysAnswers(
         questions,
-        episodeAnswers,
+        episodeAnswers ?: mutableMapOf(),
         ::mapOasysAnswers
       )
 
@@ -126,7 +126,7 @@ data class OasysAnswers(
       answerType: String?
     ): List<OasysAnswer> {
       return answers.map { answer ->
-          makeOasysAnswer(answer, oasysMapping, answerType)
+        makeOasysAnswer(answer, oasysMapping, answerType)
       }
     }
 

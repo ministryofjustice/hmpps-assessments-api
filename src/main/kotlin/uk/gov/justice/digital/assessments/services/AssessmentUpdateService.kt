@@ -12,6 +12,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.assessments.TableRows
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.EpisodeRepository
 import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
+import java.util.UUID
 
 @Service
 class AssessmentUpdateService(
@@ -20,6 +21,7 @@ class AssessmentUpdateService(
   private val questionService: QuestionService,
   private val riskPredictorsService: RiskPredictorsService,
   private val oasysAssessmentUpdateService: OasysAssessmentUpdateService,
+  private val assessmentService: AssessmentService,
 ) {
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
@@ -63,7 +65,9 @@ class AssessmentUpdateService(
     updatedEpisodeAnswers: Answers
   ) {
     for (updatedAnswer in updatedEpisodeAnswers) {
-      this.answers[updatedAnswer.key] = updatedAnswer.value
+      this.answers?.let {
+        it[updatedAnswer.key] = updatedAnswer.value
+      }
     }
   }
 
@@ -106,15 +110,35 @@ class AssessmentUpdateService(
     }
   }
 
-  @Transactional
-  fun addEntryToTable(
+  @Transactional("assessmentsTransactionManager")
+  fun addEntryToTableForCurrentEpisode(
+    assessmentUuid: UUID,
+    tableName: String,
+    tableEntry: UpdateAssessmentEpisodeDto
+  ): AssessmentEpisodeDto {
+    val episode = assessmentService.getCurrentEpisode(assessmentUuid)
+    return addEntryToTable(episode, tableName, tableEntry)
+  }
+
+  @Transactional("assessmentsTransactionManager")
+  fun addEntryToTableForEpisode(
+    assessmentUuid: UUID,
+    episodeUuid: UUID,
+    tableName: String,
+    tableEntry: UpdateAssessmentEpisodeDto
+  ): AssessmentEpisodeDto {
+    val episode = assessmentService.getEpisode(assessmentUuid, episodeUuid)
+    return addEntryToTable(episode, tableName, tableEntry)
+  }
+
+  private fun addEntryToTable(
     episode: AssessmentEpisodeEntity,
     tableName: String,
-    requestBody: UpdateAssessmentEpisodeDto
+    newTableEntry: UpdateAssessmentEpisodeDto
   ): AssessmentEpisodeDto {
     val tableFieldCodes = getTableFieldCodes(tableName)
 
-    val tableEntry = requestBody.answers
+    val tableEntry = newTableEntry.answers
       .filterKeys { it in tableFieldCodes }
       .map { it.key to it.value.toList() }
       .toMap()
@@ -134,16 +158,38 @@ class AssessmentUpdateService(
     }
   }
 
-  @Transactional
-  fun updateTableEntry(
+  @Transactional("assessmentsTransactionManager")
+  fun updateEntryToTableForCurrentEpisode(
+    assessmentUuid: UUID,
+    tableName: String,
+    tableEntry: UpdateAssessmentEpisodeDto,
+    index: Int,
+  ): AssessmentEpisodeDto {
+    val episode = assessmentService.getCurrentEpisode(assessmentUuid)
+    return updateTableEntry(episode, tableName, tableEntry, index)
+  }
+
+  @Transactional("assessmentsTransactionManager")
+  fun updateEntryToTableForEpisode(
+    assessmentUuid: UUID,
+    episodeUuid: UUID,
+    tableName: String,
+    tableEntry: UpdateAssessmentEpisodeDto,
+    index: Int,
+  ): AssessmentEpisodeDto {
+    val episode = assessmentService.getEpisode(assessmentUuid, episodeUuid)
+    return updateTableEntry(episode, tableName, tableEntry, index)
+  }
+
+  private fun updateTableEntry(
     episode: AssessmentEpisodeEntity,
     tableName: String,
-    requestBody: UpdateAssessmentEpisodeDto,
+    tableEntry: UpdateAssessmentEpisodeDto,
     index: Int,
   ): AssessmentEpisodeDto {
     val tableFieldCodes = getTableFieldCodes(tableName)
 
-    val newValues = requestBody.answers
+    val newValues = tableEntry.answers
       .filterKeys { it in tableFieldCodes }
       .map { it.key to it.value.toList() }
       .toMap()
@@ -168,8 +214,28 @@ class AssessmentUpdateService(
     }
   }
 
-  @Transactional
-  fun deleteTableEntry(
+  @Transactional("assessmentsTransactionManager")
+  fun deleteEntryToTableForCurrentEpisode(
+    assessmentUuid: UUID,
+    tableName: String,
+    index: Int,
+  ): AssessmentEpisodeDto {
+    val episode = assessmentService.getCurrentEpisode(assessmentUuid)
+    return deleteTableEntry(episode, tableName, index)
+  }
+
+  @Transactional("assessmentsTransactionManager")
+  fun deleteEntryToTableForEpisode(
+    assessmentUuid: UUID,
+    episodeUuid: UUID,
+    tableName: String,
+    index: Int,
+  ): AssessmentEpisodeDto {
+    val episode = assessmentService.getEpisode(assessmentUuid, episodeUuid)
+    return deleteTableEntry(episode, tableName, index)
+  }
+
+  private fun deleteTableEntry(
     episode: AssessmentEpisodeEntity,
     tableName: String,
     index: Int,
