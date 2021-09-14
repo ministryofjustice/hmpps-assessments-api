@@ -9,14 +9,14 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode.ROSH
-import uk.gov.justice.digital.assessments.jpa.entities.OasysAssessmentType
-import uk.gov.justice.digital.assessments.jpa.entities.QuestionSchemaEntity
-import uk.gov.justice.digital.assessments.jpa.repositories.AssessmentRepository
-import uk.gov.justice.digital.assessments.jpa.repositories.EpisodeRepository
-import java.util.*
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.OasysAssessmentType
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEntity
+import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
+import uk.gov.justice.digital.assessments.jpa.repositories.assessments.EpisodeRepository
+import java.util.UUID
 
 @ExtendWith(MockKExtension::class)
 @DisplayName("Assessment Service Tables Tests")
@@ -38,18 +38,20 @@ class AssessmentUpdateServiceTablesTest {
 
   private val tableName = "test_table"
 
-  private val tableFields = QuestionSchemaEntities(listOf(
-    QuestionSchemaEntity(
-      questionSchemaId = 1L,
-      questionSchemaUuid = UUID.randomUUID(),
-      questionCode = "first_question",
-    ),
-    QuestionSchemaEntity(
-      questionSchemaId = 2L,
-      questionSchemaUuid = UUID.randomUUID(),
-      questionCode = "second_question",
+  private val tableFields = QuestionSchemaEntities(
+    listOf(
+      QuestionSchemaEntity(
+        questionSchemaId = 1L,
+        questionSchemaUuid = UUID.randomUUID(),
+        questionCode = "first_question",
+      ),
+      QuestionSchemaEntity(
+        questionSchemaId = 2L,
+        questionSchemaUuid = UUID.randomUUID(),
+        questionCode = "second_question",
+      )
     )
-  ))
+  )
 
   private val assessmentEpisode = AssessmentEpisodeEntity(
     episodeId = 1L,
@@ -83,10 +85,12 @@ class AssessmentUpdateServiceTablesTest {
 
     assertThat(updatedEpisode.tables.size).isEqualTo(1)
     assertThat(updatedEpisode.tables[tableName]?.size).isEqualTo(1)
-    assertThat(updatedEpisode.tables[tableName]?.first()).isEqualTo(mapOf(
-      "first_question" to listOf("first_answer"),
-      "second_question" to listOf("second_answer"),
-    ))
+    assertThat(updatedEpisode.tables[tableName]?.first()).isEqualTo(
+      mapOf(
+        "first_question" to listOf("first_answer"),
+        "second_question" to listOf("second_answer"),
+      )
+    )
   }
 
   @Test
@@ -109,10 +113,12 @@ class AssessmentUpdateServiceTablesTest {
 
     assertThat(updatedEpisode.tables.size).isEqualTo(1)
     assertThat(updatedEpisode.tables[tableName]?.size).isEqualTo(1)
-    assertThat(updatedEpisode.tables[tableName]?.first()).isEqualTo(mapOf(
-      "first_question" to listOf("first_answer"),
-      "second_question" to listOf("second_answer"),
-    ))
+    assertThat(updatedEpisode.tables[tableName]?.first()).isEqualTo(
+      mapOf(
+        "first_question" to listOf("first_answer"),
+        "second_question" to listOf("second_answer"),
+      )
+    )
   }
 
   @Test
@@ -148,10 +154,12 @@ class AssessmentUpdateServiceTablesTest {
 
     assertThat(updatedEpisode.tables.size).isEqualTo(1)
     assertThat(updatedEpisode.tables[tableName]?.size).isEqualTo(1)
-    assertThat(updatedEpisode.tables[tableName]?.first()).isEqualTo(mapOf(
-      "first_question" to listOf("updated_answer"),
-      "second_question" to listOf("second_answer"),
-    ))
+    assertThat(updatedEpisode.tables[tableName]?.first()).isEqualTo(
+      mapOf(
+        "first_question" to listOf("updated_answer"),
+        "second_question" to listOf("second_answer"),
+      )
+    )
   }
 
   @Test
@@ -185,13 +193,15 @@ class AssessmentUpdateServiceTablesTest {
 
     assertThat(updatedEpisode.tables.size).isEqualTo(1)
     assertThat(updatedEpisode.tables[tableName]?.size).isEqualTo(2)
-    assertThat(updatedEpisode.tables[tableName]).isEqualTo(mutableListOf(
-      mapOf(
-        "first_question" to listOf("for_first_entry"),
-      ),
-      mapOf(
-        "first_question" to listOf("for_third_entry"),
+    assertThat(updatedEpisode.tables[tableName]).isEqualTo(
+      mutableListOf(
+        mapOf(
+          "first_question" to listOf("for_first_entry"),
+        ),
+        mapOf(
+          "first_question" to listOf("for_third_entry"),
+        )
       )
-    ))
+    )
   }
 }

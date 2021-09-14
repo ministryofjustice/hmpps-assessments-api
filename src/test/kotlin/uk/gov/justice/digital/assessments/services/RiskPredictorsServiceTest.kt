@@ -9,17 +9,13 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEntity
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentEpisodeEntity
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.Answer
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.AnswerEntity
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.PredictorEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.PredictorFieldMappingEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEntity
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.EpisodeRepository
 import uk.gov.justice.digital.assessments.restclient.AssessRisksAndNeedsApiRestClient
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.CurrentOffence
@@ -633,7 +629,7 @@ class RiskPredictorsServiceTest {
     @Test
     fun `returns predictor scores for the assessment episode`() {
       val final = false
-      every{ episodeRepository.findByEpisodeUuid(episodeUuid) } returns assessmentEpisode
+      every { episodeRepository.findByEpisodeUuid(episodeUuid) } returns assessmentEpisode
       every { assessmentSchemaService.getPredictorsForAssessment(AssessmentSchemaCode.RSR) } returns predictors
 
       val offenderAndOffencesDto = offenderAndOffencesDto()
