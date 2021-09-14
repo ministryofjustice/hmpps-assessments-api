@@ -81,14 +81,15 @@ class AssessRisksAndNeedsApiMockServer : WireMockServer(9007) {
 
   fun stubGetRSRPredictorsForOffenderAndOffencesWithCurrentOffences(
     final: Boolean,
-    episodeUuid: UUID
+    episodeUuid: UUID,
+    crn: String
   ) {
     stubFor(
       WireMock.post(WireMock.urlEqualTo("/risks/predictors/RSR?final=$final&source=ASSESSMENTS_API&sourceId=$episodeUuid"))
         .withRequestBody(
           WireMock.equalToJson(
             "{ " +
-              "\"crn\": \"X1345\"," +
+              "\"crn\": \"$crn\"," +
               "\"gender\" : \"MALE\"," +
               "\"dob\" : [ 2001, 1, 1 ]," +
               "\"assessmentDate\" : [ 2021, 1, 1, 0, 0 ]," +

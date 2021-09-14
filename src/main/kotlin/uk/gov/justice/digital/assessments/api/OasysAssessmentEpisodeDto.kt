@@ -2,15 +2,11 @@ package uk.gov.justice.digital.assessments.api
 
 import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
-import uk.gov.justice.digital.assessments.services.dto.AssessmentEpisodeUpdateErrors
 import uk.gov.justice.digital.assessments.services.dto.OasysAnswers
 import java.time.LocalDateTime
 import java.util.UUID
 
 data class OasysAssessmentEpisodeDto(
-
-  @Schema(description = "Episode primary key", example = "1234")
-  val episodeId: Long? = null,
 
   @Schema(description = "Episode UUID", example = "0e5e0848-6ab0-4b1b-a354-f7894913d8e4")
   val episodeUuid: UUID? = null,
@@ -36,7 +32,6 @@ data class OasysAssessmentEpisodeDto(
       answers: OasysAnswers
     ): OasysAssessmentEpisodeDto {
       return OasysAssessmentEpisodeDto(
-        episode.episodeId,
         episode.episodeUuid,
         episode.assessment?.assessmentUuid,
         episode.oasysSetPk,
@@ -46,5 +41,4 @@ data class OasysAssessmentEpisodeDto(
       )
     }
   }
-
 }

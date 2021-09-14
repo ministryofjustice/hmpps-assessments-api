@@ -31,7 +31,7 @@ class OasysAssessmentsControllerTest : IntegrationTest() {
 
   @Test
   fun `get latest closed episode rsr oasys answers`() {
-    val crn = "X1346"
+    val crn = "X1355"
 
     val latestClosedEpisode = webTestClient.get().uri("/subject/$crn/assessments/episodes/RSR/current")
       .headers(setAuthorisation())
@@ -43,9 +43,8 @@ class OasysAssessmentsControllerTest : IntegrationTest() {
 
     Assertions.assertThat(latestClosedEpisode).isEqualTo(
       OasysAssessmentEpisodeDto(
-        episodeId = 5,
-        episodeUuid = UUID.fromString("f3569440-efd5-4289-8fdd-4560360e5299"),
-        assessmentUuid = UUID.fromString("19c8d211-68dc-4692-a6e2-d58468127056"),
+        episodeUuid = UUID.fromString("f7765470-efd5-4589-8fdd-4570360e5289"),
+        assessmentUuid = UUID.fromString("49c8d211-68dc-4692-a6e2-d58468127356"),
         created = LocalDateTime.of(2019, 11, 14, 9, 0),
         ended = LocalDateTime.of(2019, 11, 14, 13, 0),
         answers = OasysAnswers(
@@ -63,6 +62,13 @@ class OasysAssessmentsControllerTest : IntegrationTest() {
               questionCode = "1.33",
               answer = "11/12/2020",
               isStatic = true
+            ),
+            OasysAnswer(
+              sectionCode = AssessmentSchemaCode.ROSH.name,
+              logicalPage = null,
+              questionCode = "R1.2.13.1_V2",
+              answer = "YES",
+              isStatic = false
             ),
             OasysAnswer(
               sectionCode = AssessmentSchemaCode.ROSH.name,
@@ -91,6 +97,13 @@ class OasysAssessmentsControllerTest : IntegrationTest() {
               questionCode = "1.29",
               answer = "18/12/2020",
               isStatic = true
+            ),
+            OasysAnswer(
+              sectionCode = AssessmentSchemaCode.ROSH.name,
+              logicalPage = null,
+              questionCode = "R1.2.10.1_V2",
+              answer = "YES",
+              isStatic = false
             ),
             OasysAnswer(
               sectionCode = AssessmentSchemaCode.RSR.name,
