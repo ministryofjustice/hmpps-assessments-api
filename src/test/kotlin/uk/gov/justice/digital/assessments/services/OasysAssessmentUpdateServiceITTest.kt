@@ -19,17 +19,6 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
 
-@SqlGroup(
-  Sql(
-    scripts = ["classpath:referenceData/before-test.sql"],
-    config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED)
-  ),
-  Sql(
-    scripts = ["classpath:referenceData/after-test.sql"],
-    config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED),
-    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
-  )
-)
 class OasysAssessmentUpdateServiceITTest() : IntegrationTest() {
   @Autowired
   internal lateinit var oasysAssessmentUpdateService: OasysAssessmentUpdateService

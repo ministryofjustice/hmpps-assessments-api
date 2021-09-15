@@ -10,18 +10,14 @@ import uk.gov.justice.digital.assessments.jpa.repositories.refdata.AnswerSchemaG
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import java.util.UUID
 
-@SqlGroup(
-  Sql(scripts = ["classpath:referenceData/before-test.sql"], config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED)),
-  Sql(scripts = ["classpath:referenceData/after-test.sql"], config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED), executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-)
 class AnswerSchemaGroupRepositoryTest(@Autowired val answerSchemaGroupRepository: AnswerSchemaGroupRepository) : IntegrationTest() {
 
   @Test
   fun `return Answer Schema Group by UUID`() {
-    val answerSchemaGroupUuid = UUID.fromString("f756f79d-dfad-49f9-a1b9-964a41cf660d")
+    val answerSchemaGroupUuid = UUID.fromString("d03940ce-5f84-4ec1-af45-ab2957d09402")
     val answerSchemaGroup = answerSchemaGroupRepository.findByAnswerSchemaGroupUuid(answerSchemaGroupUuid)
     assertThat(answerSchemaGroup?.answerSchemaGroupUuid).isEqualTo(answerSchemaGroupUuid)
-    assertThat(answerSchemaGroup?.answerSchemaGroupCode).isEqualTo("TEST")
-    assertThat(answerSchemaGroup?.answerSchemaEntities?.size).isEqualTo(2)
+    assertThat(answerSchemaGroup?.answerSchemaGroupCode).isEqualTo("noproblems-someproblems-significantproblems")
+    assertThat(answerSchemaGroup?.answerSchemaEntities?.size).isEqualTo(3)
   }
 }

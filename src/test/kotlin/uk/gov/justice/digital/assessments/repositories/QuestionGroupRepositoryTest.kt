@@ -10,18 +10,14 @@ import uk.gov.justice.digital.assessments.jpa.repositories.refdata.QuestionGroup
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import java.util.UUID
 
-@SqlGroup(
-  Sql(scripts = ["classpath:referenceData/before-test.sql"], config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED)),
-  Sql(scripts = ["classpath:referenceData/after-test.sql"], config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED), executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-)
 class QuestionGroupRepositoryTest(@Autowired val questionGroupRepository: QuestionGroupRepository) : IntegrationTest() {
-  val groupUuid: UUID = UUID.fromString("e353f3df-113d-401c-a3c0-14239fc17cf9")
-  val questionSchemaUuid: UUID = UUID.fromString("fd412ca8-d361-47ab-a189-7acb8ae0675b")
+  val groupUuid: UUID = UUID.fromString("eb7b7324-f2a6-4902-91ef-709a8fab1f82")
+  val questionSchemaUuid: UUID = UUID.fromString("5ca86a06-5472-4861-bd6a-a011780db49a")
 
   @Test
   fun `fetch group contents`() {
     val questionGroupEntities = questionGroupRepository.findByGroupGroupUuid(groupUuid)
-    assertThat(questionGroupEntities).hasSize(3)
+    assertThat(questionGroupEntities).hasSize(14)
 
     val questionGroupEntity = questionGroupEntities!!.first()
     assertThat(questionGroupEntity.contentType).isEqualTo("question")
@@ -31,14 +27,14 @@ class QuestionGroupRepositoryTest(@Autowired val questionGroupRepository: Questi
   @Test
   fun `list group summaries`() {
     val groupSummaries = questionGroupRepository.listGroups()
-    assertThat(groupSummaries).hasSize(37)
+    assertThat(groupSummaries).hasSize(34)
 
-    val groupInfo = groupSummaries.find { it.groupCode == "Group code" }
+    val groupInfo = groupSummaries.find { it.groupCode == "risk_to_others" }
 
-    assertThat(groupInfo?.groupUuid).isEqualTo(groupUuid.toString())
-    assertThat(groupInfo?.heading).isEqualTo("Heading 1")
-    assertThat(groupInfo?.contentCount).isEqualTo(3)
+    assertThat(groupInfo?.groupUuid).isEqualTo("946091d2-4038-4e2b-9283-83cc4876f6ed")
+    assertThat(groupInfo?.heading).isEqualTo("Risk to others")
+    assertThat(groupInfo?.contentCount).isEqualTo(33)
     assertThat(groupInfo?.groupCount).isEqualTo(0)
-    assertThat(groupInfo?.questionCount).isEqualTo(2)
+    assertThat(groupInfo?.questionCount).isEqualTo(33)
   }
 }

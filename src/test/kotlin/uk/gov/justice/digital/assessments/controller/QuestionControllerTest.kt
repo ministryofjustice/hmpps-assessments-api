@@ -15,20 +15,10 @@ import uk.gov.justice.digital.assessments.api.QuestionSchemaDto
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import java.util.UUID
 
-@SqlGroup(
-  Sql(scripts = ["classpath:referenceData/before-test.sql"], config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED)),
-  Sql(scripts = ["classpath:referenceData/after-test.sql"], config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED), executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-)
 @AutoConfigureWebTestClient
 class QuestionControllerTest : IntegrationTest() {
 
-  private val assessmentGroupUuid = "e964d699-cf96-4abd-af0e-ddf1f6687a46"
-  private val groupUuid = "e353f3df-113d-401c-a3c0-14239fc17cf9"
-  private val subgroupUuid = "6afbe596-9956-4620-824b-c6c9000ace7c"
-  private val questionSchemaUuid = "fd412ca8-d361-47ab-a189-7acb8ae0675b"
-  private val subjectQuestionUuid = "1948af63-07f2-4a8c-9e4c-0ec347bd6ba8"
-  private val answerSchemaUuid = "464e25da-f843-43b6-8223-4af415abda0c"
-  private val subquestionUuid = "b9dd3680-c4d6-403e-8f27-8d65481cbf44"
+  private val questionSchemaUuid = "ed495c57-21f3-4388-87e6-57017a6999b1"
 
   @Test
   fun `access forbidden when no authority`() {
@@ -53,7 +43,7 @@ class QuestionControllerTest : IntegrationTest() {
 
   @Test
   fun `get all reference questions and answers for group by group code`() {
-    val questionsGroup = webTestClient.get().uri("/questions/Group code")
+    val questionsGroup = webTestClient.get().uri("/questions/risk_to_self")
       .headers(setAuthorisation())
       .exchange()
       .expectStatus().isOk
@@ -61,25 +51,25 @@ class QuestionControllerTest : IntegrationTest() {
       .returnResult()
       .responseBody
 
-    assertThat(questionsGroup?.groupId).isEqualTo(UUID.fromString(groupUuid))
+    assertThat(questionsGroup?.groupId).isEqualTo(UUID.fromString("991117ce-8e1a-4c1c-9cd4-962c7979fce2"))
 
     val questionRefs = questionsGroup?.contents
     val questionRef = questionRefs?.first() as GroupQuestionDto
-    assertThat(questionRef.questionId).isEqualTo(UUID.fromString(questionSchemaUuid))
+    assertThat(questionRef.questionId).isEqualTo(UUID.fromString("f2de0ecb-b004-47c9-98c4-71ad81f84d70"))
+    val questionRef2 = questionRefs?.get(1) as GroupQuestionDto
+    assertThat(questionRef2.questionId).isEqualTo(UUID.fromString("b7d3e56e-4df0-4152-b92d-edb51e2e95a9"))
 
-    val answerSchemaUuids = questionRef.answerSchemas?.map { it.answerSchemaUuid }
-    assertThat(answerSchemaUuids).contains(UUID.fromString(answerSchemaUuid))
-
-    val subGroup = questionRefs.last() as GroupWithContentsDto
-    assertThat(subGroup.groupId).isEqualTo(UUID.fromString(subgroupUuid))
-    assertThat(subGroup.contents.size).isEqualTo(1)
-    val subQuestion = subGroup.contents.first() as GroupQuestionDto
-    assertThat(subQuestion.questionId).isEqualTo(UUID.fromString(subquestionUuid))
+    val answerSchemaUuids = questionRef2.answerSchemas?.map { it.answerSchemaUuid }
+    assertThat(answerSchemaUuids).contains(
+      UUID.fromString("9541bbcd-dc4f-4d38-8a7c-0ddda92e82d4"),
+      UUID.fromString("2b45f6bc-0fa0-4713-a25b-a14e96e8007b"),
+      UUID.fromString("199de7bd-6191-41b5-bb3c-5e1f888b3755")
+    )
   }
 
   @Test
   fun `verify dependency conditionals`() {
-    val questions = webTestClient.get().uri("/questions/Group code")
+    val questions = webTestClient.get().uri("/questions/offences_and_convictions")
       .headers(setAuthorisation())
       .exchange()
       .expectStatus().isOk
@@ -88,14 +78,23 @@ class QuestionControllerTest : IntegrationTest() {
       .responseBody
       ?.contents
 
-    val subjectQuestion = questions?.find { (it as GroupQuestionDto).questionId.toString() == subjectQuestionUuid } as GroupQuestionDto
+    val subjectQuestion =
+      questions?.find { (it as GroupQuestionDto).questionId.toString() == "3662710d-ce3e-4e45-bce3-caa4155872aa" } as GroupQuestionDto
     assertThat(subjectQuestion.conditional).isTrue
+    assertThat(subjectQuestion.questionText).isEqualTo("Does the current offence have a sexual motivation?")
 
-    val triggerQuestion = questions.find { (it as GroupQuestionDto).questionId.toString() == questionSchemaUuid } as GroupQuestionDto
+    val triggerQuestion =
+      questions.find { (it as GroupQuestionDto).questionId.toString() == "58d3efd1-65a1-439b-952f-b2826ffa5e71" } as GroupQuestionDto
     assertThat(triggerQuestion.conditional).isFalse
-    val yesAnswer = triggerQuestion.answerSchemas?.find { it.value == "true" }
-    assertThat(yesAnswer?.conditionals?.first()?.conditional.toString()).isEqualTo("RSR_01_conditional")
-    val noAnswer = triggerQuestion.answerSchemas?.find { it.value == "false" }
+    assertThat(triggerQuestion.questionText).isEqualTo("Have they ever committed a sexual offence?")
+
+    val yesAnswer = triggerQuestion.answerSchemas?.find { it.value == "YES" }
+    assertThat(yesAnswer?.conditionals?.size).isEqualTo(6)
+    assertThat(yesAnswer?.conditionals?.map { it.conditional }).contains(
+      "current_sexual_offence", "most_recent_sexual_offence_date", "total_sexual_offences_adult",
+      "total_sexual_offences_child", "total_sexual_offences_child_image", "total_non_contact_sexual_offences"
+    )
+    val noAnswer = triggerQuestion.answerSchemas?.find { it.value == "NO" }
     assertThat(noAnswer?.conditionals?.first()?.conditional).isNull()
   }
 
@@ -118,20 +117,20 @@ class QuestionControllerTest : IntegrationTest() {
       .returnResult()
       .responseBody
 
-    assertThat(groupSummaries).hasSize(37)
+    assertThat(groupSummaries).hasSize(34)
 
-    val groupInfo = groupSummaries.find { it.groupCode == "Group code" }
+    val groupInfo = groupSummaries?.find { it.groupCode == "risk_to_others" }
 
-    assertThat(groupInfo?.groupId).isEqualTo(UUID.fromString(groupUuid))
-    assertThat(groupInfo?.title).isEqualTo("Heading 1")
-    assertThat(groupInfo?.contentCount).isEqualTo(3)
+    assertThat(groupInfo?.title).isEqualTo("Risk to others")
+    assertThat(groupInfo?.groupId).isEqualTo(UUID.fromString("946091d2-4038-4e2b-9283-83cc4876f6ed"))
+    assertThat(groupInfo?.contentCount).isEqualTo(33)
     assertThat(groupInfo?.groupCount).isEqualTo(0)
-    assertThat(groupInfo?.questionCount).isEqualTo(2)
+    assertThat(groupInfo?.questionCount).isEqualTo(33)
   }
 
   @Test
-  fun `section for top-level group by uuid`() {
-    val assessmentGroup = webTestClient.get().uri("/questions/assessment/summary")
+  fun `section for top-level group by group code`() {
+    val assessmentGroup = webTestClient.get().uri("/questions/pre_sentence_assessment/summary")
       .headers(setAuthorisation())
       .exchange()
       .expectStatus().isOk
@@ -139,19 +138,19 @@ class QuestionControllerTest : IntegrationTest() {
       .returnResult()
       .responseBody
 
-    assertThat(assessmentGroup?.groupId).isEqualTo(UUID.fromString(assessmentGroupUuid))
+    assertThat(assessmentGroup?.groupId).isEqualTo(UUID.fromString("65a3924c-4130-4140-b7f4-cc39a52603bb"))
 
     val sections = assessmentGroup?.contents!!
-    assertThat(sections.size).isEqualTo(1)
+    assertThat(sections.size).isEqualTo(5)
 
     val section = sections.first()
-    assertThat(section.groupId).isEqualTo(UUID.fromString(groupUuid))
+    assertThat(section.groupId).isEqualTo(UUID.fromString("5d77fc6b-0001-4955-ad54-7f417becc7c8"))
 
     val subsections = section.contents!!
-    assertThat(subsections.size).isEqualTo(1)
+    assertThat(subsections.size).isEqualTo(2)
 
     val subsection = subsections.first()
-    assertThat(subsection.groupId).isEqualTo(UUID.fromString(subgroupUuid))
+    assertThat(subsection.groupId).isEqualTo(UUID.fromString("f7dd78a8-7f04-4fde-8a4f-ac2cf0c56ff5"))
     assertThat(subsection.contents).isNull()
   }
 }
