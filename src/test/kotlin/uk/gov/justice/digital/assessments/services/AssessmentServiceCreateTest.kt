@@ -13,7 +13,7 @@ import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.slf4j.MDC
 import uk.gov.justice.digital.assessments.api.CreateAssessmentDto
-import uk.gov.justice.digital.assessments.api.OffenceDto
+import uk.gov.justice.digital.assessments.api.OffenceCodeDto
 import uk.gov.justice.digital.assessments.api.OffenderDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
@@ -60,8 +60,8 @@ class AssessmentServiceCreateTest {
 
   private val courtCode = "SHF06"
   private val caseNumber = "668911253"
+  private val existingCaseNumber = "existingAssessment"
 
-  private val deliusSource = "DELIUS"
   private val eventId = 1L
 
   @BeforeEach
@@ -75,13 +75,13 @@ class AssessmentServiceCreateTest {
   inner class CreatingDeliusAssessments {
     @Test
     fun `create new offender with new assessment from delius event id and crn`() {
-      every { subjectRepository.findBySourceAndSourceIdAndCrn(deliusSource, eventId.toString(), crn) } returns null
+      every { subjectRepository.findByCrn(crn) } returns null
       every { offenderService.getOffender("X12345") } returns OffenderDto(dateOfBirth = LocalDate.of(1989, 1, 1))
       every { oasysAssessmentUpdateService.createOasysAssessment(crn, eventId, assessmentSchemaCode) } returns Pair(
         oasysOffenderPk,
         oasysSetPk
       )
-      every { offenderService.getOffence(crn, eventId) } returns OffenceDto(
+      every { offenderService.getOffenceCodes(crn, eventId) } returns OffenceCodeDto(
         offenceCode = "Code",
         codeDescription = "Code description",
         offenceSubCode = "Sub-code",
@@ -102,7 +102,7 @@ class AssessmentServiceCreateTest {
 
     @Test
     fun `return existing assessment from delius event id and crn if one already exists`() {
-      every { subjectRepository.findBySourceAndSourceIdAndCrn(deliusSource, eventId.toString(), crn) } returns
+      every { subjectRepository.findByCrn(crn) } returns
         SubjectEntity(
           assessment = AssessmentEntity(assessmentId = assessmentId, assessmentUuid = assessmentUuid),
           dateOfBirth = LocalDate.of(1989, 1, 1),
@@ -125,7 +125,7 @@ class AssessmentServiceCreateTest {
 
     @Test
     fun `throw exception if offender is not returned from Delius`() {
-      every { subjectRepository.findBySourceAndSourceIdAndCrn(deliusSource, eventId.toString(), crn) } returns null
+      every { subjectRepository.findByCrn(crn) } returns null
       every { offenderService.getOffender("X12345") } throws EntityNotFoundException("")
 
       assertThrows<EntityNotFoundException> {
@@ -152,12 +152,7 @@ class AssessmentServiceCreateTest {
 
     @Test
     fun `create new assessment from court`() {
-      every {
-        subjectRepository.findBySourceAndSourceId(
-          AssessmentService.courtSource,
-          "$courtCode|$caseNumber"
-        )
-      } returns null
+      every { subjectRepository.findByCrn(crn) } returns null
       every { assessmentRepository.save(any()) } returns AssessmentEntity(assessmentId = assessmentId)
       every { courtCaseRestClient.getCourtCase(courtCode, caseNumber) } returns CourtCase(
         crn = crn,
@@ -170,7 +165,7 @@ class AssessmentServiceCreateTest {
         )
       } returns Pair(oasysOffenderPk, oasysSetPk)
 
-      every { offenderService.getOffence(crn, eventId) } returns OffenceDto(
+      every { offenderService.getOffenceCodes(crn, eventId) } returns OffenceCodeDto(
         offenceCode = "Code",
         codeDescription = "Code description",
         offenceSubCode = "Sub-code",
@@ -180,7 +175,6 @@ class AssessmentServiceCreateTest {
 
       assessmentsService.createNewAssessment(
         CreateAssessmentDto(
-          crn = "DX0000001",
           courtCode = courtCode,
           caseNumber = caseNumber,
           assessmentSchemaCode = assessmentSchemaCode
@@ -193,30 +187,25 @@ class AssessmentServiceCreateTest {
 
     @Test
     fun `return existing assessment if one exists from court`() {
-      every {
-        subjectRepository.findBySourceAndSourceId(
-          AssessmentService.courtSource,
-          "$courtCode|$caseNumber"
-        )
-      } returns SubjectEntity(
+      every { subjectRepository.findByCrn(crn) } returns SubjectEntity(
         assessment = AssessmentEntity(assessmentId = 1),
         dateOfBirth = LocalDate.of(1989, 1, 1),
-        crn = "X1345",
-        source = "DELIUS",
-        sourceId = "128647"
+        crn = "X1345"
+      )
+      every { courtCaseRestClient.getCourtCase(courtCode, existingCaseNumber) } returns CourtCase(
+        defendantDob = LocalDate.now(),
+        crn = crn
       )
 
       assessmentsService.createNewAssessment(
         CreateAssessmentDto(
-          crn = "DX0000001",
           courtCode = courtCode,
-          caseNumber = caseNumber,
+          caseNumber = existingCaseNumber,
           assessmentSchemaCode = assessmentSchemaCode
         )
       )
 
       verify(exactly = 0) { assessmentRepository.save(any()) }
-      verify(exactly = 0) { courtCaseRestClient.getCourtCase(courtCode, caseNumber) }
       verify(exactly = 0) { assessmentRepository.save(any()) }
     }
   }

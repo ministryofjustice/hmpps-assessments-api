@@ -24,12 +24,6 @@ class SubjectEntity(
   @Column(name = "subject_uuid")
   val subjectUuid: UUID = UUID.randomUUID(),
 
-  @Column(name = "source")
-  val source: String,
-
-  @Column(name = "source_id")
-  val sourceId: String,
-
   @Column(name = "name")
   val name: String? = null,
 

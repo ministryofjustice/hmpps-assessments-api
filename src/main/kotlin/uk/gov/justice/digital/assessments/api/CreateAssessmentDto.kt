@@ -8,7 +8,7 @@ data class CreateAssessmentDto(
   val deliusEventId: Long? = null,
 
   @Schema(description = "Offender CRN", example = "CRN1")
-  val crn: String,
+  val crn: String? = null,
 
   @Schema(description = "Court Code", example = "SHF")
   val courtCode: String? = null,
@@ -21,5 +21,5 @@ data class CreateAssessmentDto(
 
 ) {
   fun isCourtCase() = (courtCode != null && caseNumber != null)
-  fun isDelius() = (deliusEventId != null)
+  fun isDelius() = (crn != null && deliusEventId != null)
 }

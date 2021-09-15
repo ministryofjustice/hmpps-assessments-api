@@ -73,6 +73,16 @@ class AssessmentUpdateMockServer : WireMockServer(9003) {
         )
     )
 
+    stubFor(
+      WireMock.post(WireMock.urlEqualTo("/offenders"))
+        .withRequestBody(equalToJson("{ \"crn\": \"DX5678A\" }", true, true))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withBody(createOffenderJson)
+        )
+    )
+
     // create assessment stubs
     stubFor(
       WireMock.post(WireMock.urlEqualTo("/assessments"))

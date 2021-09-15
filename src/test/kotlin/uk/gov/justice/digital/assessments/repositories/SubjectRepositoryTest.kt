@@ -20,8 +20,7 @@ class SubjectRepositoryTest(@Autowired val subjectRepository: SubjectRepository)
 
   @Test
   fun `return Court Cases by CRN`() {
-    val court = subjectRepository.findAllByCrnAndSourceOrderByCreatedDateDesc(crn, subject)
-    assertThat(court).hasSize(1)
-    assertThat(court[0].sourceId).isEqualTo("courtCode|caseNumber1")
+    val court = subjectRepository.findByCrn(crn)
+    assertThat(court?.name).isEqualTo("John Smith")
   }
 }

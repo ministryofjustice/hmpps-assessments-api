@@ -5,18 +5,18 @@ import uk.gov.justice.digital.assessments.restclient.courtcaseapi.DefendantAddre
 import java.time.LocalDate
 
 data class OffenderDto(
-  var offenderId: Long? = null,
-  val firstName: String? = null,
-  val surname: String? = null,
-  val dateOfBirth: LocalDate,
-  val gender: String? = null,
-  val crn: String? = null,
-  val pncNumber: String? = null,
-  val croNumber: String? = null,
-  val offence: OffenceDto? = null,
-  val address: Address? = null,
-  val firstNameAliases: List<String>? = emptyList(),
-  val surnameAliases: List<String>? = emptyList()
+    var offenderId: Long? = null,
+    val firstName: String? = null,
+    val surname: String? = null,
+    val dateOfBirth: LocalDate,
+    val gender: String? = null,
+    val crn: String? = null,
+    val pncNumber: String? = null,
+    val croNumber: String? = null,
+    val offence: OffenceCodeDto? = null,
+    val address: Address? = null,
+    val firstNameAliases: List<String>? = emptyList(),
+    val surnameAliases: List<String>? = emptyList()
 ) {
   companion object {
 

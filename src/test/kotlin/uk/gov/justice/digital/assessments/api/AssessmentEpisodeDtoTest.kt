@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.OffenceEntity
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -21,6 +22,15 @@ class AssessmentEpisodeDtoTest {
       LocalDateTime.of(2020, 8, 1, 8, 0)
     )
 
+    val offenceEntity = OffenceEntity(
+      source = "DELIUS",
+      sourceId = "1",
+      offenceCode = "CODE",
+      codeDescription = "Code description",
+      offenceSubCode = "SUBCODE",
+      subCodeDescription = "Subcode description"
+    )
+
     val episodeEntity = AssessmentEpisodeEntity(
       assessmentId,
       UUID.randomUUID(),
@@ -31,10 +41,7 @@ class AssessmentEpisodeDtoTest {
       LocalDateTime.of(2019, 8, 1, 8, 0),
       null,
       "Change of Circs",
-      "CODE",
-      "Code description",
-      "SUBCODE",
-      "Subcode description"
+      offenceEntity
     )
 
     val episodeDto = AssessmentEpisodeDto.from(episodeEntity)
@@ -46,9 +53,9 @@ class AssessmentEpisodeDtoTest {
     assertThat(episodeDto.reasonForChange).isEqualTo(episodeEntity.changeReason)
     assertThat(episodeDto.episodeUuid).isEqualTo(episodeEntity.episodeUuid)
     assertThat(episodeDto.oasysAssessmentId).isEqualTo(episodeEntity.oasysSetPk)
-    assertThat(episodeDto.offenceCode).isEqualTo(episodeEntity.offenceCode)
-    assertThat(episodeDto.codeDescription).isEqualTo(episodeEntity.codeDescription)
-    assertThat(episodeDto.offenceSubCode).isEqualTo(episodeEntity.offenceSubCode)
-    assertThat(episodeDto.subCodeDescription).isEqualTo(episodeEntity.subCodeDescription)
+    assertThat(episodeDto.offence.offenceCode).isEqualTo(offenceEntity.offenceCode)
+    assertThat(episodeDto.offence.codeDescription).isEqualTo(offenceEntity.codeDescription)
+    assertThat(episodeDto.offence.offenceSubCode).isEqualTo(offenceEntity.offenceSubCode)
+    assertThat(episodeDto.offence.subCodeDescription).isEqualTo(offenceEntity.subCodeDescription)
   }
 }

@@ -38,6 +38,15 @@ class CommunityApiMockServer : WireMockServer(9096) {
     )
 
     stubFor(
+      WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/DX5678A/all"))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withBody(offenderJson)
+        )
+    )
+
+    stubFor(
       WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/invalidNotFound/all"))
         .willReturn(
           WireMock.aResponse()
@@ -91,6 +100,14 @@ class CommunityApiMockServer : WireMockServer(9096) {
   fun stubGetConvictions() {
     stubFor(
       WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/DX12340A/convictions"))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withBody(convictionsJson)
+        )
+    )
+    stubFor(
+      WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/DX5678A/convictions"))
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
