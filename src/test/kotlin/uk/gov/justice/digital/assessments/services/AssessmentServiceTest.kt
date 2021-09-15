@@ -9,11 +9,12 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import uk.gov.justice.digital.assessments.api.OffenceDto
+import uk.gov.justice.digital.assessments.api.OffenceCodeDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AnswerEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.OffenceEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerSchemaGroupEntity
@@ -85,26 +86,23 @@ class AssessmentServiceTest {
         assessment.newEpisode(
           "Change of Circs",
           assessmentSchemaCode = assessmentSchemaCode,
-          offence = OffenceDto(
-            offenceCode = offenceCode,
-            codeDescription = codeDescription,
-            offenceSubCode = offenceSubCode,
-            subCodeDescription = subCodeDescription
-          )
+          offence = any()
         )
       } returns AssessmentEpisodeEntity(
         episodeId = episodeId1,
         assessment = assessment,
         createdDate = LocalDateTime.now(),
         assessmentSchemaCode = AssessmentSchemaCode.ROSH,
-        offenceCode = offenceCode,
-        codeDescription = codeDescription,
-        offenceSubCode = offenceSubCode,
-        subCodeDescription = subCodeDescription
+        offence = OffenceEntity(
+          offenceCode = offenceCode,
+          codeDescription = codeDescription,
+          offenceSubCode = offenceSubCode,
+          subCodeDescription = subCodeDescription
+        )
       )
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
       every { assessment.subject } returns SubjectEntity(crn = crn, dateOfBirth = LocalDate.now())
-      every { offenderService.getOffence(crn, eventId) } returns OffenceDto(
+      every { offenderService.getOffenceCodes(crn, eventId) } returns OffenceCodeDto(
         offenceCode = offenceCode,
         codeDescription = codeDescription,
         offenceSubCode = offenceSubCode,

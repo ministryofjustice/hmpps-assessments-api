@@ -15,13 +15,12 @@ import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 )
 
 class SubjectRepositoryTest(@Autowired val subjectRepository: SubjectRepository) : IntegrationTest() {
-  val crn = "dummy-crn"
+  val crn = "DX12340A"
   val subject = "COURT"
 
   @Test
   fun `return Court Cases by CRN`() {
-    val court = subjectRepository.findAllByCrnAndSourceOrderByCreatedDateDesc(crn, subject)
-    assertThat(court[0].sourceId).isEqualTo("courtCode|caseNumber2")
-    assertThat(court[1].sourceId).isEqualTo("courtCode|caseNumber1")
+    val court = subjectRepository.findByCrn(crn)
+    assertThat(court?.name).isEqualTo("John Smith")
   }
 }

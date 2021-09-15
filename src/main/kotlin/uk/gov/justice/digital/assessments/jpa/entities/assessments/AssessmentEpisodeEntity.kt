@@ -8,10 +8,12 @@ import org.hibernate.annotations.TypeDefs
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import java.time.LocalDateTime
 import java.util.UUID
+import javax.persistence.CascadeType
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.EnumType
 import javax.persistence.Enumerated
+import javax.persistence.FetchType
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
@@ -58,17 +60,9 @@ class AssessmentEpisodeEntity(
   @Column(name = "change_reason")
   val changeReason: String? = null,
 
-  @Column(name = "offence_code")
-  val offenceCode: String? = null,
-
-  @Column(name = "code_description")
-  val codeDescription: String? = null,
-
-  @Column(name = "offence_subcode")
-  val offenceSubCode: String? = null,
-
-  @Column(name = "subcode_description")
-  val subCodeDescription: String? = null,
+  @ManyToOne(cascade = [CascadeType.ALL])
+  @JoinColumn(name = "offence_uuid", referencedColumnName = "offence_uuid")
+  val offence: OffenceEntity? = null,
 
   @Type(type = "json")
   @Column(columnDefinition = "jsonb", name = "answers")

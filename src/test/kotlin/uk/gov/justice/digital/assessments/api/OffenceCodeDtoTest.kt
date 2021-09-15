@@ -9,7 +9,7 @@ import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffen
 import java.time.LocalDate
 
 @DisplayName("Offence DTO Tests")
-class OffenceDtoTest {
+class OffenceCodeDtoTest {
 
   private val convictionDate: LocalDate = LocalDate.now()
   @Test
@@ -32,13 +32,11 @@ class OffenceDtoTest {
       index = 1
     )
 
-    val offenceDto = OffenceDto.from(communityConvictionDto)
+    val offenceCodeDto = OffenceCodeDto.from(communityConvictionDto)
 
-    assertThat(offenceDto.convictionId).isEqualTo(1234L)
-    assertThat(offenceDto.convictionDate).isEqualTo(convictionDate)
-    assertThat(offenceDto.offenceCode).isEqualTo("main category code")
-    assertThat(offenceDto.codeDescription).isEqualTo("code description 1")
-    assertThat(offenceDto.offenceSubCode).isEqualTo("subcategory code")
-    assertThat(offenceDto.subCodeDescription).isEqualTo("code description 2")
+    assertThat(offenceCodeDto.offenceCode).isEqualTo("main category code")
+    assertThat(offenceCodeDto.codeDescription).isEqualTo("code description 1")
+    assertThat(offenceCodeDto.offenceSubCode).isEqualTo("subcategory code")
+    assertThat(offenceCodeDto.subCodeDescription).isEqualTo("code description 2")
   }
 }

@@ -4,12 +4,10 @@ CREATE TABLE IF NOT EXISTS subject
 (
     subject_id          SERIAL          PRIMARY KEY,
     subject_uuid        UUID            UNIQUE,
-    source              TEXT            NOT NULL,
-    source_id           TEXT            NOT NULL,
     name                TEXT            NOT NULL,
     oasys_offender_pk   NUMERIC         NULL,
     pnc                 TEXT            NULL,
-    crn                 TEXT            NOT NULL,
+    crn                 VARCHAR(255)    NOT NULL UNIQUE,
     date_of_birth       DATE            NOT NULL,
     created_date        TIMESTAMP       NOT NULL,
     assessment_uuid     UUID            NOT NULL,

@@ -18,9 +18,19 @@ class CommunityApiMockServer : WireMockServer(9096) {
 
   fun stubGetOffender() {
     val crn = "DX12340A"
+    val newAssessmentCrn = "DX5678A"
     val offenderJson = mapToJson(offenderDto())
     stubFor(
       WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/$crn/all"))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withBody(offenderJson)
+        )
+    )
+
+    stubFor(
+      WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/$newAssessmentCrn/all"))
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
@@ -81,8 +91,17 @@ class CommunityApiMockServer : WireMockServer(9096) {
 
   fun stubGetConvictions() {
     val crn = "DX12340A"
+    val newAssessmentCrn = "DX5678A"
     stubFor(
       WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/$crn/convictions"))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withBody(convictionsJson)
+        )
+    )
+    stubFor(
+      WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/$newAssessmentCrn/convictions"))
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))

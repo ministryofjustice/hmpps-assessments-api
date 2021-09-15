@@ -32,7 +32,7 @@ import java.util.UUID
     executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
   )
 )
-@AutoConfigureWebTestClient
+@AutoConfigureWebTestClient(timeout = "600000")
 class AssessmentControllerCreateTest : IntegrationTest() {
 
   @Nested
@@ -51,7 +51,6 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       webTestClient.post().uri("/assessments")
         .bodyValue(
           CreateAssessmentDto(
-            crn = "DX0000001",
             courtCode = "SHF06",
             caseNumber = "668911253",
             assessmentSchemaCode = AssessmentSchemaCode.ROSH
@@ -69,8 +68,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
 
     @Test
     fun `create a new assessment from court details, creates subject and episode, returns assessment`() {
-      val dto = CreateAssessmentDto(
-        crn = "DX0000001",
+     val dto = CreateAssessmentDto(
         courtCode = "SHF06",
         caseNumber = "668911253",
         assessmentSchemaCode = AssessmentSchemaCode.ROSH
@@ -93,7 +91,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(subject?.assessmentUuid).isEqualTo(assessment?.assessmentUuid)
       assertThat(subject?.name).isEqualTo("John Smith")
       assertThat(subject?.dob).isEqualTo("1979-08-18")
-      assertThat(subject?.crn).isEqualTo("DX12340A")
+      assertThat(subject?.crn).isEqualTo("DX5678A")
       assertThat(subject?.pnc).isEqualTo("A/1234560BA")
       assertThat(subject?.createdDate).isEqualToIgnoringMinutes(LocalDateTime.now())
 
@@ -105,9 +103,8 @@ class AssessmentControllerCreateTest : IntegrationTest() {
     @Test
     fun `creating an assessment from court details when one already exists returns existing assessment`() {
       val dto = CreateAssessmentDto(
-        crn = "DX0000001",
-        courtCode = "courtCode",
-        caseNumber = "caseNumber",
+        courtCode = "SHF06",
+        caseNumber = "existingAssessment",
         assessmentSchemaCode = AssessmentSchemaCode.ROSH
       )
       val assessment = webTestClient.post().uri("/assessments")
@@ -129,7 +126,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
   @DisplayName("Creating assessments from Delius")
   inner class CreatingAssessmentFromCrn {
 
-    private val crn = "DX12340A"
+    private val crn = "DX5678A"
     private val eventID = 1L
 
     @Test
@@ -213,10 +210,10 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(episode?.assessmentUuid).isEqualTo(UUID.fromString("19c8d211-68dc-4692-a6e2-d58468127056"))
       assertThat(episode?.created).isEqualToIgnoringMinutes(LocalDateTime.now())
       assertThat(episode?.answers).isEmpty()
-      assertThat(episode?.offenceCode).isEqualTo("116")
-      assertThat(episode?.codeDescription).isEqualTo("Fishery Laws")
-      assertThat(episode?.offenceSubCode).isEqualTo("00")
-      assertThat(episode?.subCodeDescription).isEqualTo("Fishery Laws")
+      assertThat(episode?.offence?.offenceCode).isEqualTo("116")
+      assertThat(episode?.offence?.codeDescription).isEqualTo("Fishery Laws")
+      assertThat(episode?.offence?.offenceSubCode).isEqualTo("00")
+      assertThat(episode?.offence?.subCodeDescription).isEqualTo("Fishery Laws")
     }
   }
 

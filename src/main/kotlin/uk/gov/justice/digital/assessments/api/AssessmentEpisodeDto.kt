@@ -44,18 +44,9 @@ data class AssessmentEpisodeDto(
   @Schema(description = "Results of predictors")
   val predictors: Collection<PredictorScoresDto>,
 
-  @Schema(description = "Offence category code")
-  val offenceCode: String? = null,
-
-  @Schema(description = "Description for offence category code")
-  val codeDescription: String? = null,
-
-  @Schema(description = "Offence sub-category code")
-  val offenceSubCode: String? = null,
-
-  @Schema(description = "Description for offence sub-category code")
-  val subCodeDescription: String? = null
-) {
+  @Schema(description = "Offence codes")
+  val offence: OffenceCodeDto
+  ) {
   companion object {
 
     fun from(episodes: MutableCollection<AssessmentEpisodeEntity>): Collection<AssessmentEpisodeDto> {
@@ -80,10 +71,7 @@ data class AssessmentEpisodeDto(
         errors?.pageErrors,
         errors?.assessmentErrors,
         predictors,
-        episode.offenceCode,
-        episode.codeDescription,
-        episode.offenceSubCode,
-        episode.subCodeDescription
+        OffenceCodeDto.from(episode.offence)
       )
     }
   }
