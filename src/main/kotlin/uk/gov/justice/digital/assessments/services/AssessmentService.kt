@@ -12,13 +12,12 @@ import uk.gov.justice.digital.assessments.api.AssessmentSubjectDto
 import uk.gov.justice.digital.assessments.api.CreateAssessmentDto
 import uk.gov.justice.digital.assessments.api.OffenceDto
 import uk.gov.justice.digital.assessments.api.OffenderDto
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.AnswerEntity
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerSchemaEntity
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerSchemaEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRepository
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
@@ -204,21 +203,19 @@ class AssessmentService(
   }
 
   private fun matchAnswers(
-    episodeAnswer: Map.Entry<String, AnswerEntity>,
+    episodeAnswer: Map.Entry<String, List<String>>,
     question: QuestionSchemaEntity
   ): Set<AnswerSchemaEntity> {
     val answerSchemas = question.answerSchemaEntities
-    return episodeAnswer.value.answers.map { answer ->
-      answer.items.map { item ->
-        answerSchemas.firstOrNull { answerSchema ->
-          item == answerSchema.value
-        }
-          ?: throw IllegalStateException("Answer Code not found for question ${question.questionSchemaUuid} answer value $item")
+    return episodeAnswer.value.map { answer ->
+      answerSchemas.firstOrNull { answerSchema ->
+        answer == answerSchema.value
       }
-    }.flatten().toSet()
+        ?: throw IllegalStateException("Answer Code not found for question ${question.questionSchemaUuid} answer value $answer")
+    }.toSet()
   }
 
-  fun getEpisode(episodeUuid: UUID, assessmentUuid: UUID): AssessmentEpisodeEntity {
+  fun getEpisode(assessmentUuid: UUID, episodeUuid: UUID): AssessmentEpisodeEntity {
     return getAssessmentByUuid(assessmentUuid).episodes.firstOrNull { it.episodeUuid == episodeUuid }
       ?: throw EntityNotFoundException("No Episode $episodeUuid for $assessmentUuid")
   }

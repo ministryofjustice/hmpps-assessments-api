@@ -3,10 +3,8 @@ package uk.gov.justice.digital.assessments.services
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.assessments.api.AnswersDto
+import uk.gov.justice.digital.assessments.api.Answers
 import uk.gov.justice.digital.assessments.api.PredictorScoresDto
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.Answer
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.AnswerEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.PredictorFieldMappingEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.EpisodeRepository
@@ -55,26 +53,22 @@ class RiskPredictorsService(
 
   private fun extractAnswers(
     predictorFieldEntities: List<PredictorFieldMappingEntity>,
-    answers: Map<String, AnswerEntity>
-  ): Map<String, AnswersDto> {
+    answers: Answers
+  ): Answers {
     return predictorFieldEntities
       .associate { predictorField ->
         val questionCode = predictorField.questionSchema.questionCode
         val questionAnswer = answers[questionCode]
-        predictorField.predictorFieldName to questionAnswer?.answers
+        predictorField.predictorFieldName to questionAnswer.orEmpty()
       }
-      .filterValues { it != null && it.isNotEmpty() }
-      .mapValues {
-        AnswersDto.from(it.value as Collection<Answer>)
-      }
-      .filterValues { answersDto -> answersDto.answers.flatMap { answerDto -> answerDto.items }.isNotEmpty() }
+      .filterValues { answer -> answer.isNotEmpty() }
   }
 
   private fun fetchResults(
     episode: AssessmentEpisodeEntity,
     final: Boolean,
     predictorType: PredictorType,
-    answers: Map<String, AnswersDto>,
+    answers: Answers,
   ): PredictorScoresDto {
     val assessmentUuid = episode.assessment?.assessmentUuid
       ?: throw EntityNotFoundException("Episode ${episode.episodeUuid} is not associated with an assessment")
@@ -120,7 +114,7 @@ class RiskPredictorsService(
 
   private fun getDynamicScoringOffences(
     hasCompletedInterview: Boolean,
-    answers: Map<String, AnswersDto>
+    answers: Answers,
   ): DynamicScoringOffences? {
     if (!hasCompletedInterview) return null
     return DynamicScoringOffences(
@@ -191,13 +185,13 @@ class RiskPredictorsService(
     )
   }
 
-  private fun getRequiredAnswer(answers: Map<String, AnswersDto>, answerCode: String): String {
-    return answers[answerCode]?.answers?.first()?.items?.first()
+  private fun getRequiredAnswer(answers: Answers, answerCode: String): String {
+    return answers[answerCode]?.first()
       ?: throw EntityNotFoundException("Answer $answerCode for predictor not found")
   }
 
-  private fun getNonRequiredAnswer(answers: Map<String, AnswersDto>, answerCode: String): String? {
-    return answers[answerCode]?.answers?.first()?.items?.first()
+  private fun getNonRequiredAnswer(answers: Answers, answerCode: String): String? {
+    return answers[answerCode]?.first()
   }
 
   fun String?.toBoolean(): Boolean? {

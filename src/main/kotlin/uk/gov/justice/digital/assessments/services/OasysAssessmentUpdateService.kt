@@ -3,9 +3,9 @@ package uk.gov.justice.digital.assessments.services
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.assessments.api.AnswersDto
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
+import uk.gov.justice.digital.assessments.api.Answers
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient
 import uk.gov.justice.digital.assessments.services.dto.AssessmentEpisodeUpdateErrors
 import uk.gov.justice.digital.assessments.services.dto.OasysAnswers
@@ -22,14 +22,20 @@ class OasysAssessmentUpdateService(
 
   fun updateOASysAssessment(
     episode: AssessmentEpisodeEntity,
-    updatedEpisodeAnswers: Map<String, AnswersDto>
+  ): AssessmentEpisodeUpdateErrors {
+    return updateOASysAssessment(episode, emptyMap())
+  }
+
+  fun updateOASysAssessment(
+    episode: AssessmentEpisodeEntity,
+    updatedEpisodeAnswers: Answers,
   ): AssessmentEpisodeUpdateErrors {
     val offenderPk = episode.assessment?.subject?.oasysOffenderPk
     if (episode.assessmentSchemaCode == null || episode.oasysSetPk == null || offenderPk == null) {
       val errorMessage =
         "Unable to update OASys Assessment with keys type: ${episode.assessmentSchemaCode} oasysSet: ${episode.oasysSetPk} offenderPk: $offenderPk, values cant be null"
       log.error(errorMessage)
-      return AssessmentEpisodeUpdateErrors(errorsInAssessment = mutableListOf("$errorMessage"))
+      return AssessmentEpisodeUpdateErrors(errorsInAssessment = mutableListOf(errorMessage))
     }
 
     val oasysAnswers = OasysAnswers.from(

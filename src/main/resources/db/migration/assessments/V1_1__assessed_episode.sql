@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS assessed_episode
     code_description      TEXT,
     offence_subcode       TEXT,
     subcode_description   TEXT,
+    tables                JSONB,
     FOREIGN KEY (assessment_uuid)
         REFERENCES assessment (assessment_uuid)
 );

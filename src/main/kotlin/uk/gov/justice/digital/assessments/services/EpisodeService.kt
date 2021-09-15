@@ -4,7 +4,6 @@ import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import com.beust.klaxon.lookup
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.AnswerEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
@@ -37,7 +36,9 @@ class EpisodeService(
     val rawAnswer = source.lookup<String?>(lookupPath).firstOrNull() ?: return
 
     val answer = answerFormat(rawAnswer, format)
-    episode.answers?.set(question.questionCode, AnswerEntity.from(answer))
+    episode.answers?.let {
+      it[question.questionCode] = listOf(answer)
+    }
   }
 
   private fun loadSource(episode: AssessmentEpisodeEntity, sourceName: String?): JsonObject? {
@@ -64,7 +65,7 @@ class EpisodeService(
     return when (format) {
       "date" -> rawAnswer.split('T')[0]
       "time" -> rawAnswer.split('T')[1]
-      "toUpper" -> rawAnswer.toUpperCase()
+      "toUpper" -> rawAnswer.uppercase()
       else -> rawAnswer
     }
   }

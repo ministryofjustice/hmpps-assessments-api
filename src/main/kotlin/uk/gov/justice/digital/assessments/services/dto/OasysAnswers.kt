@@ -2,10 +2,13 @@ package uk.gov.justice.digital.assessments.services.dto
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.Answer
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.AnswerEntity
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.Answers
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.TableRow
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.TableRows
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.Tables
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.OASysMappingEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OasysAnswer
 import uk.gov.justice.digital.assessments.services.QuestionSchemaEntities
 import java.time.LocalDate
@@ -30,19 +33,14 @@ data class OasysAnswers(
       episode: AssessmentEpisodeEntity,
       mappingProvider: MappingProvider
     ): OasysAnswers {
-      val episodeAnswers = episode.answers ?: return OasysAnswers()
-
       val questions = mappingProvider.getAllQuestions()
       val tables = pullTableNames(questions)
 
-      val (processedQuestions, oasysTableAnswers) =
-        buildAllTableAnswers(tables, episodeAnswers, mappingProvider)
+      val oasysTableAnswers = buildAllTableAnswers(tables, episode.tables, mappingProvider)
 
       val nonTableAnswers = buildOasysAnswers(
         questions,
-        episodeAnswers.filterNot { episodeAnswer -> // skip table questions - we've already done them
-          processedQuestions.contains(episodeAnswer.key)
-        },
+        episode.answers,
         ::mapOasysAnswers
       )
 
@@ -60,61 +58,59 @@ data class OasysAnswers(
     }
 
     private fun buildAllTableAnswers(
-      tables: Set<String>,
-      answers: Map<String, AnswerEntity>,
+      listOfTables: Set<String>,
+      tables: Tables? = mutableMapOf(),
       mappingProvider: MappingProvider
-    ): Pair<Set<String>, OasysAnswers> {
-      val allTableQuestionCodes = mutableSetOf<String>()
-      val allTableAnswers = OasysAnswers()
-      tables.forEach { table ->
-        val tableQuestions = mappingProvider.getTableQuestions(table)
-
-        val (tableQuestionIds, tableAnswers) = buildTableAnswers(tableQuestions, answers)
-
-        allTableQuestionCodes.addAll(tableQuestionIds)
-        allTableAnswers.addAll(tableAnswers)
-      }
-      return Pair(allTableQuestionCodes, allTableAnswers)
+    ): OasysAnswers {
+      val oasysAnswers = listOfTables.map { tableName ->
+        convertTableAnswersToOasysAnswers(
+          tables!![tableName] ?: mutableListOf(),
+          mappingProvider.getTableQuestions(tableName),
+        )
+      }.flatten().toMutableSet()
+      return OasysAnswers(oasysAnswers)
     }
 
-    private fun buildTableAnswers(
-      tableQuestions: QuestionSchemaEntities,
-      answers: Map<String, AnswerEntity>
-    ): Pair<List<String>, OasysAnswers> {
-      // gather tables answers
-      val questionCodes = tableQuestions.map { it.questionCode }
-      val tableAnswers = answers.filter { questionCodes.contains(it.key) }
-
-      if (tableAnswers.isEmpty()) return Pair(questionCodes, OasysAnswers())
-
-      // consistency check
-      val tableLength = tableAnswers.values.first().answers.size
-      if (tableAnswers.values.any { it.answers.size != tableLength }) {
-        log.info("Inconsistent table size")
-        answers.forEach {
-          log.info(" ${it.key} -> ${it.value.answers.joinToString()}")
+    private fun convertTableAnswersToOasysAnswers(tableRows: TableRows, tableFields: QuestionSchemaEntities): List<OasysAnswer> {
+      val results = mutableListOf<OasysAnswer>()
+      tableRows.mapIndexed { index, row ->
+        tableFields.forEach { field ->
+          results.addAll(createOasysAnswerForTableEntry(row, field, index.toLong()))
         }
       }
+      return results
+    }
 
-      // build OasysAnswers
-      return Pair(
-        questionCodes,
-        buildOasysAnswers(tableQuestions, tableAnswers, ::mapOasysTableAnswers)
-      )
+    private fun createOasysAnswerForTableEntry(tableRow: TableRow, field: QuestionSchemaEntity, index: Long = 0): List<OasysAnswer> {
+      val answersForField = tableRow.getOrDefault(field.questionCode, emptyList())
+      return answersForField.mapNotNull { answer ->
+        createOasysAnswer(answer, field, index)
+      }
+    }
+
+    private fun createOasysAnswer(answer: String, field: QuestionSchemaEntity, index: Long = 0): OasysAnswer? {
+      return field.oasysMappings.firstOrNull()?.let { mapping ->
+        makeOasysAnswer(
+          answer,
+          mapping,
+          field.answerType,
+          index,
+        )
+      }
     }
 
     private fun buildOasysAnswers(
       questions: QuestionSchemaEntities,
-      answers: Map<String, AnswerEntity>,
-      builder: (OASysMappingEntity, Collection<Answer>, String?) -> List<OasysAnswer>
+      answers: Answers?,
+      builder: (OASysMappingEntity, List<String>, String?) -> List<OasysAnswer>
     ): OasysAnswers {
       val oasysAnswers = OasysAnswers()
-      answers.forEach { (questionCode, answerEntity) ->
+      answers?.forEach { (questionCode, answerEntity) ->
         val question = questions[questionCode]
         // TODO: If we want to handle multiple mappings per question we will need to add assessment type to the mapping
         question?.oasysMappings?.firstOrNull()?.let { oasysMapping ->
           oasysAnswers.addAll(
-            builder(oasysMapping, answerEntity.answers, question.answerType)
+            builder(oasysMapping, answerEntity, question.answerType)
           )
         }
       }
@@ -123,26 +119,12 @@ data class OasysAnswers(
 
     fun mapOasysAnswers(
       oasysMapping: OASysMappingEntity,
-      answers: Collection<Answer>,
+      answers: List<String>,
       answerType: String?
     ): List<OasysAnswer> {
       return answers.map { answer ->
-        answer.items.map { item ->
-          makeOasysAnswer(item, oasysMapping, answerType)
-        }
-      }.flatten()
-    }
-
-    private fun mapOasysTableAnswers(
-      oasysMapping: OASysMappingEntity,
-      answers: Collection<Answer>,
-      answerType: String?
-    ): List<OasysAnswer> {
-      return answers.mapIndexed { index, answer ->
-        answer.items.map { item ->
-          makeOasysAnswer(item, oasysMapping, answerType, index.toLong())
-        }
-      }.flatten()
+        makeOasysAnswer(answer, oasysMapping, answerType)
+      }
     }
 
     private fun makeOasysAnswer(

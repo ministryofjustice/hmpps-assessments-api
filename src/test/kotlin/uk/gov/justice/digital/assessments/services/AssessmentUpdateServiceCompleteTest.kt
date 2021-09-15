@@ -9,11 +9,11 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.OasysAssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.OasysAssessmentType
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.EpisodeRepository
 import uk.gov.justice.digital.assessments.services.dto.AssessmentEpisodeUpdateErrors
@@ -30,13 +30,15 @@ class AssessmentUpdateServiceCompleteTest {
   private val assessmentSchemaService: AssessmentSchemaService = mockk()
   private val riskPredictorsService: RiskPredictorsService = mockk()
   private val oasysAssessmentUpdateService: OasysAssessmentUpdateService = mockk()
+  private val assessmentService: AssessmentService = mockk()
 
   private val assessmentUpdateService = AssessmentUpdateService(
     assessmentRepository,
     episodeRepository,
     questionService,
     riskPredictorsService,
-    oasysAssessmentUpdateService
+    oasysAssessmentUpdateService,
+    assessmentService,
   )
 
   @BeforeEach

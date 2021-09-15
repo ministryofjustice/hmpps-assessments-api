@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import uk.gov.justice.digital.assessments.api.OffenceDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.AnswerEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
@@ -24,7 +23,7 @@ import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
 
 @ExtendWith(MockKExtension::class)
 @DisplayName("Assessment Service Tests")
@@ -140,7 +139,6 @@ class AssessmentServiceTest {
             changeReason = "Change of Circs 2",
             createdDate = LocalDateTime.now(),
             assessmentSchemaCode = AssessmentSchemaCode.ROSH
-
           )
         )
       )
@@ -222,13 +220,13 @@ class AssessmentServiceTest {
         episodes = mutableListOf(
           AssessmentEpisodeEntity(
             episodeId = episodeId1,
-            answers = mutableMapOf(questionCode1 to AnswerEntity.from("YES")),
+            answers = mutableMapOf(questionCode1 to listOf("YES")),
             createdDate = LocalDateTime.now(),
             assessmentSchemaCode = AssessmentSchemaCode.ROSH
           ),
           AssessmentEpisodeEntity(
             episodeId = episodeId2,
-            answers = mutableMapOf(questionCode2 to AnswerEntity.from("NO")),
+            answers = mutableMapOf(questionCode2 to listOf("NO")),
             createdDate = LocalDateTime.now(),
             assessmentSchemaCode = AssessmentSchemaCode.ROSH
           )
@@ -255,7 +253,7 @@ class AssessmentServiceTest {
             episodeId = episodeId1,
             endDate = LocalDateTime.of(2020, 10, 1, 9, 0, 0),
             answers = mutableMapOf(
-              questionCode1 to AnswerEntity.from("YES")
+              questionCode1 to listOf("YES")
             ),
             createdDate = LocalDateTime.now(),
             assessmentSchemaCode = AssessmentSchemaCode.ROSH
@@ -264,7 +262,7 @@ class AssessmentServiceTest {
             episodeId = episodeId3,
             endDate = LocalDateTime.of(2020, 10, 2, 10, 0, 0),
             answers = mutableMapOf(
-              questionCode2 to AnswerEntity.from("MAYBE")
+              questionCode2 to listOf("MAYBE")
             ),
             createdDate = LocalDateTime.now(),
             assessmentSchemaCode = AssessmentSchemaCode.ROSH
@@ -273,7 +271,7 @@ class AssessmentServiceTest {
             episodeId = episodeId2,
             endDate = LocalDateTime.of(2020, 10, 2, 9, 0, 0),
             answers = mutableMapOf(
-              questionCode2 to AnswerEntity.from("NO")
+              questionCode2 to listOf("NO")
             ),
             createdDate = LocalDateTime.now(),
             assessmentSchemaCode = AssessmentSchemaCode.ROSH
@@ -297,7 +295,7 @@ class AssessmentServiceTest {
             episodeId = episodeId1,
             endDate = LocalDateTime.of(2020, 10, 1, 9, 0, 0),
             answers = mutableMapOf(
-              questionCode1 to AnswerEntity.from("YES")
+              questionCode1 to listOf("YES")
             ),
             createdDate = LocalDateTime.now(),
             assessmentSchemaCode = AssessmentSchemaCode.ROSH
@@ -306,7 +304,7 @@ class AssessmentServiceTest {
             episodeId = episodeId3,
             endDate = null,
             answers = mutableMapOf(
-              questionCode2 to AnswerEntity.from("NO")
+              questionCode2 to listOf("NO")
             ),
             createdDate = LocalDateTime.now(),
             assessmentSchemaCode = AssessmentSchemaCode.ROSH
@@ -315,7 +313,7 @@ class AssessmentServiceTest {
             episodeId = episodeId2,
             endDate = LocalDateTime.of(2020, 10, 2, 9, 0, 0),
             answers = mutableMapOf(
-              questionCode2 to AnswerEntity.from("MAYBE")
+              questionCode2 to listOf("MAYBE")
             ),
             createdDate = LocalDateTime.now(),
             assessmentSchemaCode = AssessmentSchemaCode.ROSH
@@ -340,8 +338,8 @@ class AssessmentServiceTest {
           AssessmentEpisodeEntity(
             episodeId = episodeId1,
             answers = mutableMapOf(
-              questionCode1 to AnswerEntity.from("YES"),
-              questionCode3 to AnswerEntity.from("free text")
+              questionCode1 to listOf("YES"),
+              questionCode3 to listOf("free text")
             ),
             createdDate = LocalDateTime.now(),
             assessmentSchemaCode = AssessmentSchemaCode.ROSH
@@ -367,7 +365,7 @@ class AssessmentServiceTest {
           AssessmentEpisodeEntity(
             episodeId = episodeId1,
             answers = mutableMapOf(
-              questionCode1 to AnswerEntity.from("NO")
+              questionCode1 to listOf("NO")
             ),
             createdDate = LocalDateTime.now(),
             assessmentSchemaCode = AssessmentSchemaCode.ROSH

@@ -16,7 +16,7 @@ import uk.gov.justice.digital.assessments.api.AssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.api.AssessmentSubjectDto
 import uk.gov.justice.digital.assessments.api.CreateAssessmentDto
 import uk.gov.justice.digital.assessments.api.CreateAssessmentEpisodeDto
-import uk.gov.justice.digital.assessments.api.GroupQuestionDto
+import uk.gov.justice.digital.assessments.api.GroupContentDto
 import uk.gov.justice.digital.assessments.api.GroupSectionsDto
 import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
@@ -135,143 +135,144 @@ class AssessmentController(
     @Parameter(description = "Episode UUID", required = true) @PathVariable episodeUuid: UUID,
     @Parameter(description = "Episode Answers", required = true) @RequestBody episodeAnswers: UpdateAssessmentEpisodeDto
   ): ResponseEntity<AssessmentEpisodeDto> {
-    val episode = assessmentService.getEpisode(episodeUuid, assessmentUuid)
+    val episode = assessmentService.getEpisode(assessmentUuid, episodeUuid)
     return updateResponse(assessmentUpdateService.updateEpisode(episode, episodeAnswers))
   }
 
   @RequestMapping(
-    path = ["/assessments/{assessmentUuid}/episodes/{episodeUuid}/{tableName}"],
+    path = ["/assessments/{assessmentUuid}/episodes/current/table/{tableName}"],
     method = [RequestMethod.POST]
   )
-  @Operation(description = "adds a row to a table answer")
+  @Operation(description = "creates an entry to a table for a given assessment episode")
   @ApiResponses(
     value = [
       ApiResponse(responseCode = "200", description = "OK"),
       ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
-      ApiResponse(responseCode = "422", description = "The update couldn't be processed")
+      ApiResponse(responseCode = "422", description = "The table couldn't be processed")
     ]
   )
-  fun addAssessmentEpisodeTableRow(
+  fun addTableEntryForCurrentEpisode(
     @Parameter(description = "Assessment UUID", required = true, example = "1234") @PathVariable assessmentUuid: UUID,
-    @Parameter(description = "Episode UUID", required = true) @PathVariable episodeUuid: UUID,
-    @Parameter(description = "Table Name", required = true) @PathVariable tableName: String,
-    @Parameter(description = "New Row", required = true) @RequestBody episodeAnswers: UpdateAssessmentEpisodeDto
+    @Parameter(description = "Table name", required = true) @PathVariable tableName: String,
+    @Parameter(description = "New Row", required = true) @RequestBody tableEntry: UpdateAssessmentEpisodeDto
   ): ResponseEntity<AssessmentEpisodeDto> {
-    val episode = assessmentService.getEpisode(episodeUuid, assessmentUuid)
     return updateResponse(
-      assessmentUpdateService.addEpisodeTableRow(episode, tableName, episodeAnswers)
-    )
-  }
-
-  @RequestMapping(path = ["/assessments/{assessmentUuid}/episodes/current/{tableName}"], method = [RequestMethod.POST])
-  @Operation(description = "adds a row to a table answer")
-  @ApiResponses(
-    value = [
-      ApiResponse(responseCode = "200", description = "OK"),
-      ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
-      ApiResponse(responseCode = "422", description = "The update couldn't be processed")
-    ]
-  )
-  fun addAssessmentCurrentEpisodeTableRow(
-    @Parameter(description = "Assessment UUID", required = true, example = "1234") @PathVariable assessmentUuid: UUID,
-    @Parameter(description = "Table Name", required = true) @PathVariable tableName: String,
-    @Parameter(description = "New Row", required = true) @RequestBody episodeAnswers: UpdateAssessmentEpisodeDto
-  ): ResponseEntity<AssessmentEpisodeDto> {
-    val currentEpisode = assessmentService.getCurrentEpisode(assessmentUuid)
-    return updateResponse(assessmentUpdateService.addCurrentEpisodeTableRow(currentEpisode, tableName, episodeAnswers))
-  }
-
-  @RequestMapping(
-    path = ["/assessments/{assessmentUuid}/episodes/{episodeUuid}/{tableName}/{index}"],
-    method = [RequestMethod.POST]
-  )
-  @Operation(description = "update a row in a table answer")
-  @ApiResponses(
-    value = [
-      ApiResponse(responseCode = "200", description = "OK"),
-      ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
-      ApiResponse(responseCode = "422", description = "The update couldn't be processed")
-    ]
-  )
-  fun updateAssessmentEpisodeTableRow(
-    @Parameter(description = "Assessment UUID", required = true, example = "1234") @PathVariable assessmentUuid: UUID,
-    @Parameter(description = "Episode UUID", required = true) @PathVariable episodeUuid: UUID,
-    @Parameter(description = "Table Name", required = true) @PathVariable tableName: String,
-    @Parameter(description = "Row index", required = true) @PathVariable index: Int,
-    @Parameter(description = "Updated Row", required = true) @RequestBody episodeAnswers: UpdateAssessmentEpisodeDto
-  ): ResponseEntity<AssessmentEpisodeDto> {
-    val episode = assessmentService.getEpisode(episodeUuid, assessmentUuid)
-    return updateResponse(assessmentUpdateService.updateEpisodeTableRow(episode, tableName, index, episodeAnswers))
-  }
-
-  @RequestMapping(
-    path = ["/assessments/{assessmentUuid}/episodes/current/{tableName}/{index}"],
-    method = [RequestMethod.POST]
-  )
-  @Operation(description = "updates a row in a table answer")
-  @ApiResponses(
-    value = [
-      ApiResponse(responseCode = "200", description = "OK"),
-      ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
-      ApiResponse(responseCode = "422", description = "The update couldn't be processed")
-    ]
-  )
-  fun updateAssessmentCurrentEpisodeTableRow(
-    @Parameter(description = "Assessment UUID", required = true, example = "1234") @PathVariable assessmentUuid: UUID,
-    @Parameter(description = "Table Name", required = true) @PathVariable tableName: String,
-    @Parameter(description = "Row index", required = true) @PathVariable index: Int,
-    @Parameter(description = "Updated Row", required = true) @RequestBody episodeAnswers: UpdateAssessmentEpisodeDto
-  ): ResponseEntity<AssessmentEpisodeDto> {
-    val currentEpisode = assessmentService.getCurrentEpisode(assessmentUuid)
-    return updateResponse(
-      assessmentUpdateService.updateCurrentEpisodeTableRow(currentEpisode, tableName, index, episodeAnswers)
+      assessmentUpdateService.addEntryToTableForCurrentEpisode(assessmentUuid, tableName, tableEntry)
     )
   }
 
   @RequestMapping(
-    path = ["/assessments/{assessmentUuid}/episodes/{episodeUuid}/{tableName}/{index}"],
+    path = ["/assessments/{assessmentUuid}/episodes/current/table/{tableName}/{index}"],
+    method = [RequestMethod.PUT]
+  )
+  @Operation(description = "updates an entry to a table for a given assessment episode")
+  @ApiResponses(
+    value = [
+      ApiResponse(responseCode = "200", description = "OK"),
+      ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
+      ApiResponse(responseCode = "422", description = "The table couldn't be processed")
+    ]
+  )
+  fun updateTableEntryForCurrentEpisode(
+    @Parameter(description = "Assessment UUID", required = true, example = "1234") @PathVariable assessmentUuid: UUID,
+    @Parameter(description = "Table name", required = true) @PathVariable tableName: String,
+    @Parameter(description = "Index", required = true) @PathVariable index: Int,
+    @Parameter(description = "Updated values", required = true) @RequestBody requestBody: UpdateAssessmentEpisodeDto
+  ): ResponseEntity<AssessmentEpisodeDto> {
+    return updateResponse(
+      assessmentUpdateService.updateEntryToTableForCurrentEpisode(assessmentUuid, tableName, requestBody, index)
+    )
+  }
+
+  @RequestMapping(
+    path = ["/assessments/{assessmentUuid}/episodes/current/table/{tableName}/{index}"],
     method = [RequestMethod.DELETE]
   )
-  @Operation(description = "remove a row from a table answer")
+  @Operation(description = "removes an entry to a table for a given assessment episode")
   @ApiResponses(
     value = [
       ApiResponse(responseCode = "200", description = "OK"),
       ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
-      ApiResponse(responseCode = "422", description = "The update couldn't be processed")
+      ApiResponse(responseCode = "422", description = "The table couldn't be processed")
     ]
   )
-  fun deleteAssessmentEpisodeTableRow(
+  fun deleteTableEntryForCurrentEpisode(
     @Parameter(description = "Assessment UUID", required = true, example = "1234") @PathVariable assessmentUuid: UUID,
-    @Parameter(description = "Episode UUID", required = true) @PathVariable episodeUuid: UUID,
-    @Parameter(description = "Table Name", required = true) @PathVariable tableName: String,
-    @Parameter(description = "Row index", required = true) @PathVariable index: Int
+    @Parameter(description = "Table name", required = true) @PathVariable tableName: String,
+    @Parameter(description = "Index", required = true) @PathVariable index: Int,
   ): ResponseEntity<AssessmentEpisodeDto> {
-    val episode = assessmentService.getEpisode(episodeUuid, assessmentUuid)
     return updateResponse(
-      assessmentUpdateService.deleteEpisodeTableRow(episode, tableName, index)
+      assessmentUpdateService.deleteEntryToTableForCurrentEpisode(assessmentUuid, tableName, index)
     )
   }
 
   @RequestMapping(
-    path = ["/assessments/{assessmentUuid}/episodes/current/{tableName}/{index}"],
-    method = [RequestMethod.DELETE]
+    path = ["/assessments/{assessmentUuid}/episodes/{episodeUuid}/table/{tableName}"],
+    method = [RequestMethod.POST]
   )
-  @Operation(description = "removes a row in a table answer in the current episode")
+  @Operation(description = "creates an entry to a table for a given assessment episode")
   @ApiResponses(
     value = [
       ApiResponse(responseCode = "200", description = "OK"),
       ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
-      ApiResponse(responseCode = "422", description = "The update couldn't be processed")
+      ApiResponse(responseCode = "422", description = "The table couldn't be processed")
     ]
   )
-  fun deleteAssessmentCurrentEpisodeTableRow(
+  fun addTableEntryForEpisode(
     @Parameter(description = "Assessment UUID", required = true, example = "1234") @PathVariable assessmentUuid: UUID,
-    @Parameter(description = "Table Name", required = true) @PathVariable tableName: String,
-    @Parameter(description = "Row index", required = true) @PathVariable index: Int
+    @Parameter(description = "Episode UUID", required = true) @PathVariable episodeUuid: UUID,
+    @Parameter(description = "Table name", required = true) @PathVariable tableName: String,
+    @Parameter(description = "New Row", required = true) @RequestBody tableEntry: UpdateAssessmentEpisodeDto
   ): ResponseEntity<AssessmentEpisodeDto> {
-    val currentEpisode = assessmentService.getCurrentEpisode(assessmentUuid)
     return updateResponse(
-      assessmentUpdateService.deleteCurrentEpisodeTableRow(currentEpisode, tableName, index)
+      assessmentUpdateService.addEntryToTableForEpisode(assessmentUuid, episodeUuid, tableName, tableEntry)
+    )
+  }
+
+  @RequestMapping(
+    path = ["/assessments/{assessmentUuid}/episodes/{episodeUuid}/table/{tableName}/{index}"],
+    method = [RequestMethod.PUT]
+  )
+  @Operation(description = "updates an entry to a table for a given assessment episode")
+  @ApiResponses(
+    value = [
+      ApiResponse(responseCode = "200", description = "OK"),
+      ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
+      ApiResponse(responseCode = "422", description = "The table couldn't be processed")
+    ]
+  )
+  fun updateTableEntryForEpisode(
+    @Parameter(description = "Assessment UUID", required = true, example = "1234") @PathVariable assessmentUuid: UUID,
+    @Parameter(description = "Episode UUID", required = true) @PathVariable episodeUuid: UUID,
+    @Parameter(description = "Table name", required = true) @PathVariable tableName: String,
+    @Parameter(description = "Index", required = true) @PathVariable index: Int,
+    @Parameter(description = "Updated values", required = true) @RequestBody requestBody: UpdateAssessmentEpisodeDto
+  ): ResponseEntity<AssessmentEpisodeDto> {
+    return updateResponse(
+      assessmentUpdateService.updateEntryToTableForEpisode(assessmentUuid, episodeUuid, tableName, requestBody, index)
+    )
+  }
+
+  @RequestMapping(
+    path = ["/assessments/{assessmentUuid}/episodes/{episodeUuid}/table/{tableName}/{index}"],
+    method = [RequestMethod.DELETE]
+  )
+  @Operation(description = "removes an entry to a table for a given assessment episode")
+  @ApiResponses(
+    value = [
+      ApiResponse(responseCode = "200", description = "OK"),
+      ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
+      ApiResponse(responseCode = "422", description = "The table couldn't be processed")
+    ]
+  )
+  fun deleteTableEntryForEpisode(
+    @Parameter(description = "Assessment UUID", required = true, example = "1234") @PathVariable assessmentUuid: UUID,
+    @Parameter(description = "Episode UUID", required = true) @PathVariable episodeUuid: UUID,
+    @Parameter(description = "Table name", required = true) @PathVariable tableName: String,
+    @Parameter(description = "Index", required = true) @PathVariable index: Int,
+  ): ResponseEntity<AssessmentEpisodeDto> {
+    return updateResponse(
+      assessmentUpdateService.deleteEntryToTableForEpisode(assessmentUuid, episodeUuid, tableName, index)
     )
   }
 
@@ -289,6 +290,7 @@ class AssessmentController(
     @Parameter(description = "Episode Answers", required = true) @RequestBody episodeAnswers: UpdateAssessmentEpisodeDto
   ): ResponseEntity<AssessmentEpisodeDto> {
     val currentEpisode = assessmentService.getCurrentEpisode(assessmentUuid)
+
     return updateResponse(
       assessmentUpdateService.updateCurrentEpisode(currentEpisode, episodeAnswers)
     )
@@ -354,7 +356,7 @@ class AssessmentController(
       ApiResponse(responseCode = "200", description = "OK")
     ]
   )
-  fun getQuestionsForAssessmentSchemaCode(@PathVariable("assessmentSchemaCode") assessmentSchemaCode: String): List<GroupQuestionDto> {
+  fun getQuestionsForAssessmentSchemaCode(@PathVariable("assessmentSchemaCode") assessmentSchemaCode: String): List<GroupContentDto> {
     return assessmentSchemaService.getQuestionsForSchemaCode(AssessmentSchemaCode.valueOf(assessmentSchemaCode))
   }
 

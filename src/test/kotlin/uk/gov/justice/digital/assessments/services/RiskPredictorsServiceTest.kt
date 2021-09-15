@@ -9,15 +9,13 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.Answer
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.AnswerEntity
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.PredictorEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.PredictorFieldMappingEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEntity
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.EpisodeRepository
 import uk.gov.justice.digital.assessments.restclient.AssessRisksAndNeedsApiRestClient
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.CurrentOffence
@@ -480,111 +478,41 @@ class RiskPredictorsServiceTest {
   )
 
   private val answers = mutableMapOf(
-    testQuestion1.questionCode to AnswerEntity(
-      listOf(Answer(items = listOf("2021-10-01")))
-    ),
-    testQuestion2.questionCode to AnswerEntity(
-      listOf(Answer(items = listOf("10")))
-    ),
-    testQuestion3.questionCode to AnswerEntity(
-      listOf(Answer(items = listOf("9")))
-    ),
-    testQuestion4.questionCode to AnswerEntity(
-      listOf(Answer(items = listOf("2021-11-01")))
-    ),
-    testQuestion5.questionCode to AnswerEntity(
-      listOf(Answer(items = listOf("YES")))
-    ),
-    testQuestion6.questionCode to AnswerEntity(
-      listOf(Answer(items = listOf("YES")))
-    ),
-    testQuestion7.questionCode to AnswerEntity(
-      listOf(Answer(items = listOf("YES")))
-    ),
-    testQuestion8.questionCode to AnswerEntity(
-      listOf(Answer(items = listOf("2021-09-01")))
-    ),
-    testQuestion9.questionCode to AnswerEntity(
-      listOf(Answer(items = listOf("2")))
-    ),
-    testQuestion10.questionCode to AnswerEntity(
-      listOf(Answer(items = listOf("4")))
-    ),
-    testQuestion11.questionCode to AnswerEntity(
-      listOf(Answer(items = listOf("10")))
-    ),
-    testQuestion12.questionCode to AnswerEntity(
-      listOf(Answer(items = listOf("9")))
-    ),
-    testQuestion13.questionCode to AnswerEntity(
-      listOf(Answer(items = listOf("2025-11-01")))
-    ),
-    testQuestion14.questionCode to AnswerEntity(
-      listOf(Answer(items = listOf("YES")))
-    ),
-    testQuestion15.questionCode to AnswerEntity(
-      listOf(Answer(items = listOf("")))
-    ),
-    testQuestion16.questionCode to AnswerEntity(
-      listOf(Answer(items = listOf("not available for work")))
-    ),
-    testQuestion17.questionCode to AnswerEntity(
-      listOf(Answer(items = listOf("significant problems")))
-    ),
-    testQuestion18.questionCode to AnswerEntity(
-      listOf(Answer(items = listOf("YES")))
-    ),
-    testQuestion19.questionCode to AnswerEntity(
-      listOf(Answer(items = listOf("perpetrator")))
-    ),
-    testQuestion20.questionCode to AnswerEntity(
-      listOf(Answer(items = listOf("significant problems")))
-    ),
-    testQuestion21.questionCode to AnswerEntity(
-      listOf(Answer(items = listOf("significant problems")))
-    ),
-    testQuestion22.questionCode to AnswerEntity(
-      listOf(Answer(items = listOf("some problems")))
-    ),
-    testQuestion23.questionCode to AnswerEntity(
-      listOf(Answer(items = listOf("significant problems")))
-    ),
-    testQuestion24.questionCode to AnswerEntity(
-      listOf(Answer(items = listOf("some problems")))
-    ),
-    testQuestion25.questionCode to AnswerEntity(
-      listOf(Answer(items = listOf("YES")))
-    ),
-    testQuestion26.questionCode to AnswerEntity(
-      listOf(Answer(items = listOf("YES")))
-    ),
-    testQuestion27.questionCode to AnswerEntity(
-      listOf(Answer(items = listOf("YES")))
-    ),
-    testQuestion28.questionCode to AnswerEntity(
-      listOf(Answer(items = listOf("YES")))
-    ),
-    testQuestion29.questionCode to AnswerEntity(
-      listOf(Answer(items = listOf("YES")))
-    ),
-    testQuestion30.questionCode to AnswerEntity(
-      listOf(Answer(items = listOf("YES")))
-    ),
-    testQuestion31.questionCode to AnswerEntity(
-      listOf(Answer(items = listOf("YES")))
-    ),
-    testQuestion32.questionCode to AnswerEntity(
-      listOf(Answer(items = listOf("YES")))
-    ),
-    testQuestion33.questionCode to AnswerEntity(
-      listOf(Answer(items = listOf("YES")))
-    ),
-    testQuestion34.questionCode to AnswerEntity(
-      listOf(Answer(items = listOf("YES")))
-    ),
-    testQuestion35.questionCode to AnswerEntity(
-      listOf(Answer(items = listOf("YES")))
-    ),
+    testQuestion1.questionCode to listOf("2021-10-01"),
+    testQuestion2.questionCode to listOf("10"),
+    testQuestion3.questionCode to listOf("9"),
+    testQuestion4.questionCode to listOf("2021-11-01"),
+    testQuestion5.questionCode to listOf("YES"),
+    testQuestion6.questionCode to listOf("YES"),
+    testQuestion7.questionCode to listOf("YES"),
+    testQuestion8.questionCode to listOf("2021-09-01"),
+    testQuestion9.questionCode to listOf("2"),
+    testQuestion10.questionCode to listOf("4"),
+    testQuestion11.questionCode to listOf("10"),
+    testQuestion12.questionCode to listOf("9"),
+    testQuestion13.questionCode to listOf("2025-11-01"),
+    testQuestion14.questionCode to listOf("YES"),
+    testQuestion15.questionCode to listOf(""),
+    testQuestion16.questionCode to listOf("not available for work"),
+    testQuestion17.questionCode to listOf("significant problems"),
+    testQuestion18.questionCode to listOf("YES"),
+    testQuestion19.questionCode to listOf("perpetrator"),
+    testQuestion20.questionCode to listOf("significant problems"),
+    testQuestion21.questionCode to listOf("significant problems"),
+    testQuestion22.questionCode to listOf("some problems"),
+    testQuestion23.questionCode to listOf("significant problems"),
+    testQuestion24.questionCode to listOf("some problems"),
+    testQuestion25.questionCode to listOf("YES"),
+    testQuestion26.questionCode to listOf("YES"),
+    testQuestion27.questionCode to listOf("YES"),
+    testQuestion28.questionCode to listOf("YES"),
+    testQuestion29.questionCode to listOf("YES"),
+    testQuestion30.questionCode to listOf("YES"),
+    testQuestion31.questionCode to listOf("YES"),
+    testQuestion32.questionCode to listOf("YES"),
+    testQuestion33.questionCode to listOf("YES"),
+    testQuestion34.questionCode to listOf("YES"),
+    testQuestion35.questionCode to listOf("YES"),
   )
 
   val assessment = AssessmentEntity()
@@ -701,7 +629,7 @@ class RiskPredictorsServiceTest {
     @Test
     fun `returns predictor scores for the assessment episode`() {
       val final = false
-      every{ episodeRepository.findByEpisodeUuid(episodeUuid) } returns assessmentEpisode
+      every { episodeRepository.findByEpisodeUuid(episodeUuid) } returns assessmentEpisode
       every { assessmentSchemaService.getPredictorsForAssessment(AssessmentSchemaCode.RSR) } returns predictors
 
       val offenderAndOffencesDto = offenderAndOffencesDto()

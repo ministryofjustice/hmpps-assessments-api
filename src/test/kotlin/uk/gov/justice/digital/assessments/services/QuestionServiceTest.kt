@@ -536,57 +536,59 @@ class QuestionServiceTest {
 
     questionGroupContents.add(
       QuestionGroupEntity(
-      questionGroupId = 1,
-      contentUuid = childQuestionGroup.groupUuid,
-      contentType = "group",
-      group = questionGroup,
-      question = null,
-      nestedGroup = null,
-    )
+        questionGroupId = 1,
+        contentUuid = childQuestionGroup.groupUuid,
+        contentType = "group",
+        group = questionGroup,
+        question = null,
+        nestedGroup = null,
+      )
     )
 
     childQuestionGroupContents.add(
       QuestionGroupEntity(
-      questionGroupId = 2,
-      contentUuid = firstQuestion.questionSchemaUuid,
-      contentType = "question",
-      group = childQuestionGroup,
-      question = firstQuestion,
-      nestedGroup = null,
-    )
-    )
-
-    questionGroupContents.add(
-      QuestionGroupEntity(
-      questionGroupId = 3,
-      contentUuid = secondQuestion.questionSchemaUuid,
-      contentType = "question",
-      group = questionGroup,
-      question = secondQuestion,
-      nestedGroup = null,
-    )
-    )
-
-    questionGroupContents.add(
-      QuestionGroupEntity(
-      questionGroupId = 4,
-      contentUuid = thirdQuestion.questionSchemaUuid,
-      contentType = "question",
-      group = questionGroup,
-      question = thirdQuestion,
-      nestedGroup = null,
-    )
-    )
-
-    val questionDependencies = QuestionDependencies(questionDeps = listOf(
-      QuestionDependencyEntity(
-        dependencyId = 1,
-        triggerQuestionUuid = secondQuestion.questionSchemaUuid,
-        triggerAnswerValue = "YES",
-        subjectQuestionSchema = thirdQuestion,
-        displayInline = true,
+        questionGroupId = 2,
+        contentUuid = firstQuestion.questionSchemaUuid,
+        contentType = "question",
+        group = childQuestionGroup,
+        question = firstQuestion,
+        nestedGroup = null,
       )
-    ))
+    )
+
+    questionGroupContents.add(
+      QuestionGroupEntity(
+        questionGroupId = 3,
+        contentUuid = secondQuestion.questionSchemaUuid,
+        contentType = "question",
+        group = questionGroup,
+        question = secondQuestion,
+        nestedGroup = null,
+      )
+    )
+
+    questionGroupContents.add(
+      QuestionGroupEntity(
+        questionGroupId = 4,
+        contentUuid = thirdQuestion.questionSchemaUuid,
+        contentType = "question",
+        group = questionGroup,
+        question = thirdQuestion,
+        nestedGroup = null,
+      )
+    )
+
+    val questionDependencies = QuestionDependencies(
+      questionDeps = listOf(
+        QuestionDependencyEntity(
+          dependencyId = 1,
+          triggerQuestionUuid = secondQuestion.questionSchemaUuid,
+          triggerAnswerValue = "YES",
+          subjectQuestionSchema = thirdQuestion,
+          displayInline = true,
+        )
+      )
+    )
 
     every { dependencyService.dependencies() } returns questionDependencies
     every { groupRepository.findByGroupUuid(questionGroup.groupUuid) } returns questionGroup
@@ -605,15 +607,22 @@ class QuestionServiceTest {
     val result = questionService.getFlatQuestionsForGroup(questionGroup.groupUuid)
 
     assertThat(result.size).isEqualTo(3)
-    assertThat(result.map { it.questionId }).contains(
+    assertThat(
+      result
+        .map { it as GroupQuestionDto }
+        .map { it.questionId }
+    ).contains(
       firstQuestion.questionSchemaUuid,
       secondQuestion.questionSchemaUuid,
       thirdQuestion.questionSchemaUuid,
     )
     result
+      .map { it as GroupQuestionDto }
       .filter { it.questionId == secondQuestion.questionSchemaUuid }
-      .forEach { assertThat(
-        it.answerSchemas?.first()?.conditionals?.first()?.conditional
-      ).isEqualTo(thirdQuestion.questionCode)}
+      .forEach {
+        assertThat(
+          it.answerSchemas?.first()?.conditionals?.first()?.conditional
+        ).isEqualTo(thirdQuestion.questionCode)
+      }
   }
 }

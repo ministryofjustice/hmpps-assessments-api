@@ -2,6 +2,7 @@ package uk.gov.justice.digital.assessments.api
 
 import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.Tables
 import uk.gov.justice.digital.assessments.services.dto.AssessmentEpisodeUpdateErrors
 import java.time.LocalDateTime
 import java.util.UUID
@@ -30,7 +31,7 @@ data class AssessmentEpisodeDto(
   val ended: LocalDateTime? = null,
 
   @Schema(description = "Answers associated with this episode")
-  val answers: Map<String, AnswersDto> = emptyMap(),
+  val answers: Answers = emptyMap(),
 
   @Schema(description = "Validation errors on this episode, indexed by question code")
   val errors: Map<String, Collection<String>>? = null,
@@ -54,7 +55,10 @@ data class AssessmentEpisodeDto(
   val offenceSubCode: String? = null,
 
   @Schema(description = "Description for offence sub-category code")
-  val subCodeDescription: String? = null
+  val subCodeDescription: String? = null,
+
+  @Schema(description = "Tables associated with this episode")
+  val tables: Tables = mutableMapOf(),
 ) {
   companion object {
 
@@ -75,7 +79,7 @@ data class AssessmentEpisodeDto(
         episode.changeReason,
         episode.createdDate,
         episode.endDate,
-        AnswersDto.from(episode.answers) ?: emptyMap(),
+        episode.answers ?: mutableMapOf(),
         errors?.errors,
         errors?.pageErrors,
         errors?.assessmentErrors,
@@ -83,7 +87,8 @@ data class AssessmentEpisodeDto(
         episode.offenceCode,
         episode.codeDescription,
         episode.offenceSubCode,
-        episode.subCodeDescription
+        episode.subCodeDescription,
+        episode.tables ?: mutableMapOf(),
       )
     }
   }
