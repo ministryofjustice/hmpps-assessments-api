@@ -3,17 +3,6 @@ DELETE FROM hmppsassessmentsapi.assessed_episode WHERE true;
 DELETE FROM hmppsassessmentsapi.subject WHERE true;
 DELETE FROM hmppsassessmentsapi.assessment WHERE true;
 
-DELETE FROM hmppsassessmentsschemas.question_group WHERE true;
-DELETE FROM hmppsassessmentsschemas.oasys_question_mapping WHERE true;
-DELETE FROM hmppsassessmentsschemas.oasys_reference_data_target_mapping WHERE true;
-DELETE FROM hmppsassessmentsschemas.assessment_schema_groups WHERE true;
-DELETE FROM hmppsassessmentsschemas.assessment_schema WHERE true;
-DELETE FROM hmppsassessmentsschemas.grouping WHERE true;
-DELETE FROM hmppsassessmentsschemas.predictor_field_mapping WHERE true;
-DELETE FROM hmppsassessmentsschemas.assessment_predictors WHERE true;
-DELETE FROM hmppsassessmentsschemas.question_dependency WHERE true;
-DELETE FROM hmppsassessmentsschemas.question_schema WHERE true;
-
 /* Assessment with Episodes */
 INSERT INTO hmppsassessmentsapi.assessment  (assessment_id, assessment_uuid, created_date) VALUES
 (1, '2e020e78-a81c-407f-bc78-e5f284e237e5', '2019-11-14 09:00'),
@@ -23,11 +12,11 @@ INSERT INTO hmppsassessmentsapi.assessment  (assessment_id, assessment_uuid, cre
 (5, '8177b6c7-1b20-459b-b6ee-0aeeb2f16857', '2019-11-14 09:00');
 
 INSERT INTO hmppsassessmentsapi.subject (subject_id, subject_uuid, source, source_id, name, pnc, crn, date_of_birth, gender, created_date, assessment_uuid) VALUES
-(1, 'a4e73a2c-3f1c-4f83-88b6-dd3ce1b78530', 'COURT', 'courtCode|caseNumber', 'John Smith', 'dummy-pnc', 'dummy-crn', '1928-08-01', 'MALE', '2019-11-14 08:30', '2e020e78-a81c-407f-bc78-e5f284e237e5'),
-(2, 'bf1979c5-518a-4300-80f2-189981182e5f', 'COURT', 'courtCode|caseNumber', 'John Smith', 'dummy-pnc', 'dummy-crn', '1928-08-01', 'MALE', '2019-11-14 08:30', 'bbbae903-7803-4206-800c-2d3b81116d5c'),
-(3, 'f0c3c497-b0b8-4fe1-9749-2f686b3b1aa0', 'COURT', 'courtCode|caseNumber', 'John Smith', 'dummy-pnc', 'dummy-crn', '1928-08-01', 'MALE', '2019-11-14 08:30', 'bd5e5a88-c0ac-4f55-9c08-b8e8bdd9568c'),
-(4, 'a2bb4345-beba-4806-b719-6cc4ae52ee43', 'COURT', 'courtCode|caseNumber', 'John Smith', 'dummy-pnc', 'dummy-crn', '1928-08-01', 'MALE', '2019-11-14 08:30', '80fd9a2a-59dd-4783-8cac-1689a0464437'),
-(5, '36afe601-a2d9-4e32-b921-1c20fd0befef', 'COURT', 'courtCode|caseNumber', 'John Smith', 'dummy-pnc', 'dummy-crn', '1928-08-01', 'MALE', '2019-11-14 08:30', '8177b6c7-1b20-459b-b6ee-0aeeb2f16857');
+(1, 'a4e73a2c-3f1c-4f83-88b6-dd3ce1b78530', 'COURT', 'courtCode|caseNumber', 'John Smith', 'dummy-pnc', 'dummy-crn-1', '1928-08-01', 'MALE', '2019-11-14 08:30', '2e020e78-a81c-407f-bc78-e5f284e237e5'),
+(2, 'bf1979c5-518a-4300-80f2-189981182e5f', 'COURT', 'courtCode|caseNumber', 'John Smith', 'dummy-pnc', 'dummy-crn-2', '1928-08-01', 'MALE', '2019-11-14 08:30', 'bbbae903-7803-4206-800c-2d3b81116d5c'),
+(3, 'f0c3c497-b0b8-4fe1-9749-2f686b3b1aa0', 'COURT', 'courtCode|caseNumber', 'John Smith', 'dummy-pnc', 'dummy-crn-3', '1928-08-01', 'MALE', '2019-11-14 08:30', 'bd5e5a88-c0ac-4f55-9c08-b8e8bdd9568c'),
+(4, 'a2bb4345-beba-4806-b719-6cc4ae52ee43', 'COURT', 'courtCode|caseNumber', 'John Smith', 'dummy-pnc', 'dummy-crn-4', '1928-08-01', 'MALE', '2019-11-14 08:30', '80fd9a2a-59dd-4783-8cac-1689a0464437'),
+(5, '36afe601-a2d9-4e32-b921-1c20fd0befef', 'COURT', 'courtCode|caseNumber', 'John Smith', 'dummy-pnc', 'dummy-crn-5', '1928-08-01', 'MALE', '2019-11-14 08:30', '8177b6c7-1b20-459b-b6ee-0aeeb2f16857');
 
 INSERT INTO hmppsassessmentsapi.assessed_episode  (episode_id, episode_uuid, user_id, created_date, end_date, change_reason, assessment_schema_code, assessment_uuid, answers, oasys_set_pk) VALUES
 (1, '8efd9267-e399-48f1-9402-51a08e245f3b', 'USER1', '2019-11-14 09:00', null,'Change of Circs', 'ROSH', '2e020e78-a81c-407f-bc78-e5f284e237e5', '{}', 1),
@@ -41,8 +30,8 @@ INSERT INTO hmppsassessmentsschemas.question_schema (question_schema_uuid, quest
 ('8d48ff4d-60f6-461b-ab00-67d1c2ed5f6b', '31.1', '2019-11-14 08:30', null, 'freetext', null, 'Team', null, null, null);
 
 INSERT INTO hmppsassessmentsschemas.grouping (group_uuid, group_code, heading, subheading, help_text, group_start, group_end) VALUES
-('1250321c-feff-4b87-83a7-00a65095cab1', 'individual_and_case_details', 'Individual and case details', null, null, '2019-11-14 08:30', null),
-('8dc6d75e-7908-4f3b-97d4-48d5441af5e1', 'assessment_details', 'Assessment details', null, null, '2019-11-14 08:30', null);
+('1250321c-feff-4b87-83a7-00a65095cab1', 'individual_and_case_details_test', 'Individual and case details', null, null, '2019-11-14 08:30', null),
+('8dc6d75e-7908-4f3b-97d4-48d5441af5e1', 'assessment_details_test', 'Assessment details', null, null, '2019-11-14 08:30', null);
 
 INSERT INTO hmppsassessmentsschemas.oasys_question_mapping (mapping_uuid, question_schema_uuid, ref_section_code, logical_page, ref_question_code, fixed_field) VALUES
 ('b28a7159-edbc-409a-8a53-3d6b8a4ae3b6', '2fe94330-22c4-4a6e-a494-9f53dc2139c6', 'OFFIN', null, 'assessor_office', true),

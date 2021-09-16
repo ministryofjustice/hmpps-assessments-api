@@ -19,17 +19,6 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
 
-@SqlGroup(
-  Sql(
-    scripts = ["classpath:referenceData/before-test.sql"],
-    config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED)
-  ),
-  Sql(
-    scripts = ["classpath:referenceData/after-test.sql"],
-    config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED),
-    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
-  )
-)
 class OasysAssessmentUpdateServiceITTest() : IntegrationTest() {
   @Autowired
   internal lateinit var oasysAssessmentUpdateService: OasysAssessmentUpdateService
@@ -109,7 +98,11 @@ class OasysAssessmentUpdateServiceITTest() : IntegrationTest() {
         assessment = AssessmentEntity(
           subject_ = mutableListOf(
             SubjectEntity(
-              oasysOffenderPk = 1L, dateOfBirth = LocalDate.of(1989, 1, 1), crn = "X1345"
+              oasysOffenderPk = 1L,
+              dateOfBirth = LocalDate.of(1989, 1, 1),
+              crn = "X1345",
+              source = "DELIUS",
+              sourceId = "128647"
             )
           )
         ),

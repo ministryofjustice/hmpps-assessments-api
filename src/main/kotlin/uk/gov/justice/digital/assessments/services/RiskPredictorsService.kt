@@ -17,7 +17,9 @@ import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.Offe
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.PredictorSubType
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.PreviousOffences
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.RiskPredictorsDto
+import uk.gov.justice.digital.assessments.services.dto.EmploymentType
 import uk.gov.justice.digital.assessments.services.dto.PredictorType
+import uk.gov.justice.digital.assessments.services.dto.ProblemsLevel
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import uk.gov.justice.digital.assessments.services.exceptions.PredictorCalculationException
 import java.util.UUID
@@ -47,7 +49,12 @@ class RiskPredictorsService(
     log.info("Found ${predictors.size} predictors for episode ${episode.episodeUuid} with assessment type ${episode.assessmentSchemaCode}")
 
     return predictors.map { predictor ->
-      fetchResults(episode, final, predictor.type, extractAnswers(predictor.fieldEntities.toList(), episode.answers.orEmpty()))
+      fetchResults(
+        episode,
+        final,
+        predictor.type,
+        extractAnswers(predictor.fieldEntities.toList(), episode.answers.orEmpty())
+      )
     }
   }
 
@@ -206,37 +213,15 @@ class RiskPredictorsService(
     return this == ResponseDto.YES.name
   }
 
-  private fun String?.toProblemsLevel(): String? {
-    return ProblemsLevel.fromString(this).name
+  private fun String?.toProblemsLevel(): String {
+    return this?.let { ProblemsLevel.valueOf(this).name } ?: ProblemsLevel.MISSING.name
   }
 
-  private fun String?.toEmploymentType(): String? {
-    return EmploymentType.fromString(this).name
+  private fun String?.toEmploymentType(): String {
+    return this?.let { EmploymentType.valueOf(this).name } ?: EmploymentType.MISSING.name
   }
 
   enum class ResponseDto(val value: String) {
     YES("Yes"), NO("No");
-  }
-
-  enum class EmploymentType(val value: String? = null) {
-    NO("no"), NOT_AVAILABLE_FOR_WORK("not available for work"), YES("yes"), MISSING;
-
-    companion object {
-      fun fromString(enumValue: String?): EmploymentType {
-        return values().firstOrNull { it.value == enumValue }
-          ?: MISSING
-      }
-    }
-  }
-
-  enum class ProblemsLevel(val value: String? = null) {
-    NO_PROBLEMS("no problems"), SOME_PROBLEMS("some problems"), SIGNIFICANT_PROBLEMS("significant problems"), MISSING;
-
-    companion object {
-      fun fromString(enumValue: String?): ProblemsLevel {
-        return values().firstOrNull { it.value == enumValue }
-          ?: MISSING
-      }
-    }
   }
 }

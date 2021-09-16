@@ -8,12 +8,14 @@ import org.junit.jupiter.api.assertThrows
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
+import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRepository
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import java.time.LocalDate
 import java.util.UUID
 
 class SubjectServiceTest {
   private val assessmentRepository: AssessmentRepository = mockk()
+  private val subjectRepository: SubjectRepository = mockk()
 
   private val subjectService = SubjectService(assessmentRepository)
 
@@ -21,7 +23,11 @@ class SubjectServiceTest {
   fun `get subject for assessment`() {
     val assessmentUuid = UUID.randomUUID()
     val subject = SubjectEntity(
-      oasysOffenderPk = 1L, dateOfBirth = LocalDate.of(1989, 1, 1), crn = "X1345"
+      oasysOffenderPk = 1L,
+      dateOfBirth = LocalDate.of(1989, 1, 1),
+      crn = "X1345",
+      source = "DELIUS",
+      sourceId = "128647"
     )
     every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns AssessmentEntity(
       subject_ = mutableListOf(

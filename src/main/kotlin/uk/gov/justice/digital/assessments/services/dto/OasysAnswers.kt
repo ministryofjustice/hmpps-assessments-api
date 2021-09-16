@@ -23,6 +23,8 @@ data class OasysAnswers(
 
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
+    private val problemsLevelQuestions: Set<String> = setOf("3.4", "6.4", "9.1", "9.2", "11.2", "11.4", "12.1")
+    private val employmentTypeQuestions: Set<String> = setOf("4.2")
 
     interface MappingProvider {
       fun getAllQuestions(): QuestionSchemaEntities
@@ -44,10 +46,19 @@ data class OasysAnswers(
         ::mapOasysAnswers
       )
 
-      val oasysAnswers = OasysAnswers()
-      oasysAnswers.addAll(oasysTableAnswers)
-      oasysAnswers.addAll(nonTableAnswers)
-      return oasysAnswers
+      val answers = OasysAnswers()
+      answers.addAll(oasysTableAnswers)
+      answers.addAll(nonTableAnswers)
+      return OasysAnswers(answers.map { it.toOasysRealAnswerValues() }.toMutableSet())
+    }
+
+    private fun OasysAnswer.toOasysRealAnswerValues(): OasysAnswer {
+      if (problemsLevelQuestions.contains(this.questionCode)) {
+        return this.copy(answer = ProblemsLevel.valueOf(this.answer).oasysValue.toString())
+      } else if (employmentTypeQuestions.contains(this.questionCode)) {
+        return this.copy(answer = EmploymentType.valueOf(this.answer).oasysValue.toString())
+      }
+      return this
     }
 
     private fun pullTableNames(questions: QuestionSchemaEntities): Set<String> {

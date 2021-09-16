@@ -102,7 +102,7 @@ class AssessmentServiceTest {
         subCodeDescription = subCodeDescription
       )
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
-      every { assessment.subject } returns SubjectEntity(crn = crn, dateOfBirth = LocalDate.now())
+      every { assessment.subject } returns SubjectEntity(crn = crn, dateOfBirth = LocalDate.now(), source = "DELIUS", sourceId = "123")
       every { offenderService.getOffence(crn, eventId) } returns OffenceDto(
         offenceCode = offenceCode,
         codeDescription = codeDescription,
