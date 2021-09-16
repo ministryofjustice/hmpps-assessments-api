@@ -53,7 +53,7 @@ class AssessmentControllerTest : IntegrationTest() {
       assertThat(subject.name).isEqualTo("John Smith")
       assertThat(subject.dob).isEqualTo("2001-01-01")
       assertThat(subject.age).isEqualTo(20)
-      assertThat(subject.crn).isEqualTo("DX12340A")
+      assertThat(subject.crn).isEqualTo("X1346")
       assertThat(subject.pnc).isEqualTo("dummy-pnc")
     }
   }
@@ -141,7 +141,7 @@ class AssessmentControllerTest : IntegrationTest() {
 
     @Test
     fun `add episode table row from JSON`() {
-      val tableName = "children_at_risk_of_serious_harm"
+      val tableName = "children_at_risk_of_serious_harm_test"
       val childQuestionCode = "question_code_for_test"
       val answerText = "child answer"
       val jsonString = "{\"answers\":{\"${childQuestionCode}\":\"${answerText}\"}}"
@@ -157,7 +157,7 @@ class AssessmentControllerTest : IntegrationTest() {
 
     @Test
     fun `add episode table row from JSON, single value`() {
-      val tableName = "children_at_risk_of_serious_harm"
+      val tableName = "children_at_risk_of_serious_harm_test"
       val childQuestion = "question_code_for_test"
       val answerText = "child answer"
       val jsonString = "{\"answers\":{\"${childQuestion}\": \"${answerText}\"}}"
@@ -173,7 +173,7 @@ class AssessmentControllerTest : IntegrationTest() {
 
     @Test
     fun `add episode table row with multi-value from JSON`() {
-      val tableName = "children_at_risk_of_serious_harm"
+      val tableName = "children_at_risk_of_serious_harm_test"
       val childQuestion = "question_code_for_test"
       val firstAnswer = "answer1"
       val secondAnswer = "answer2"
@@ -190,7 +190,7 @@ class AssessmentControllerTest : IntegrationTest() {
 
     @Test
     fun `add several table rows from JSON`() {
-      val tableName = "children_at_risk_of_serious_harm"
+      val tableName = "children_at_risk_of_serious_harm_test"
       val childQuestion = "question_code_for_test"
       val firstAnswer = "answer1"
       val secondAnswer = "answer2"
@@ -214,7 +214,7 @@ class AssessmentControllerTest : IntegrationTest() {
 
     @Test
     fun `update episode table row from JSON`() {
-      val tableName = "children_at_risk_of_serious_harm"
+      val tableName = "children_at_risk_of_serious_harm_test"
       val childQuestion = "question_code_for_test"
       val firstAnswer = "answer1"
       val secondAnswer = "answer2"
@@ -242,7 +242,7 @@ class AssessmentControllerTest : IntegrationTest() {
 
     @Test
     fun `remove first of three table rows`() {
-      val tableName = "children_at_risk_of_serious_harm"
+      val tableName = "children_at_risk_of_serious_harm_test"
       val childQuestion = "question_code_for_test"
       val firstAnswer = "answer1"
       val secondAnswer = "answer2"
@@ -267,7 +267,7 @@ class AssessmentControllerTest : IntegrationTest() {
 
     @Test
     fun `remove second of three table rows`() {
-      val tableName = "children_at_risk_of_serious_harm"
+      val tableName = "children_at_risk_of_serious_harm_test"
       val childQuestion = "question_code_for_test"
       val firstAnswer = "answer1"
       val secondAnswer = "answer2"
@@ -292,7 +292,7 @@ class AssessmentControllerTest : IntegrationTest() {
 
     @Test
     fun `remove all three table rows`() {
-      val tableName = "children_at_risk_of_serious_harm"
+      val tableName = "children_at_risk_of_serious_harm_test"
       val childQuestion = "question_code_for_test"
       val firstAnswer = "answer1"
       val secondAnswer = "answer2"

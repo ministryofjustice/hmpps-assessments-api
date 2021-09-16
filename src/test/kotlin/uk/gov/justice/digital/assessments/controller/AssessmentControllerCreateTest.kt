@@ -32,7 +32,7 @@ import java.util.UUID
     executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
   )
 )
-@AutoConfigureWebTestClient
+@AutoConfigureWebTestClient(timeout = "600000")
 class AssessmentControllerCreateTest : IntegrationTest() {
 
   @Nested
@@ -120,7 +120,6 @@ class AssessmentControllerCreateTest : IntegrationTest() {
         .returnResult()
         .responseBody
 
-      assertThat(assessment?.assessmentId).isEqualTo(2)
       assertThat(assessment?.assessmentUuid).isEqualTo(UUID.fromString("19c8d211-68dc-4692-a6e2-d58468127056"))
     }
   }
@@ -201,7 +200,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
   inner class CreatingEpisode {
     @Test
     fun `creates new episode on existing assessment`() {
-      val episode = webTestClient.post().uri("/assessments/19c8d211-68dc-4692-a6e2-d58468127056/episodes")
+      val episode = webTestClient.post().uri("/assessments/49c8d211-68dc-4692-a6e2-d58468127356/episodes")
         .bodyValue(CreateAssessmentEpisodeDto("Change of Circs", 1L, AssessmentSchemaCode.ROSH))
         .headers(setAuthorisation())
         .exchange()
@@ -210,7 +209,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
         .returnResult()
         .responseBody
 
-      assertThat(episode?.assessmentUuid).isEqualTo(UUID.fromString("19c8d211-68dc-4692-a6e2-d58468127056"))
+      assertThat(episode?.assessmentUuid).isEqualTo(UUID.fromString("49c8d211-68dc-4692-a6e2-d58468127356"))
       assertThat(episode?.created).isEqualToIgnoringMinutes(LocalDateTime.now())
       assertThat(episode?.answers).isEmpty()
       assertThat(episode?.offenceCode).isEqualTo("116")
