@@ -13,7 +13,6 @@ import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRe
 import uk.gov.justice.digital.assessments.services.dto.OasysAnswers
 import java.time.LocalDate
 import java.time.LocalDateTime
-import java.util.UUID
 
 
 class OasysAssessmentServiceTest {
