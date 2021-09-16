@@ -46,5 +46,4 @@ class OasysAssessmentsController(val oasysAssessmentService: OasysAssessmentServ
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
   }
-
 }

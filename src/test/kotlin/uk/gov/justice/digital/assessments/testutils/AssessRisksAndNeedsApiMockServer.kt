@@ -78,7 +78,6 @@ class AssessRisksAndNeedsApiMockServer : WireMockServer(9007) {
     )
   }
 
-
   fun stubGetRSRPredictorsForOffenderAndOffencesWithCurrentOffences(
     final: Boolean,
     episodeUuid: UUID,

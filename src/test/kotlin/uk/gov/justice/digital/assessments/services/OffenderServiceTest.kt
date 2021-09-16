@@ -4,7 +4,6 @@ import io.mockk.every
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import io.mockk.verify
-import java.time.LocalDate
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -17,14 +16,15 @@ import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import uk.gov.justice.digital.assessments.restclient.ExternalService
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityConvictionDto
+import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenceDetail
+import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenceDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.IDs
-import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenceDto
-import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenceDetail
 import uk.gov.justice.digital.assessments.restclient.communityapi.OffenderAlias
 import uk.gov.justice.digital.assessments.restclient.courtcaseapi.CourtCase
 import uk.gov.justice.digital.assessments.restclient.courtcaseapi.DefendantAddress
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiEntityNotFoundException
+import java.time.LocalDate
 
 @ExtendWith(MockKExtension::class)
 @DisplayName("Offender Service Tests")

@@ -76,12 +76,12 @@ fun handleOffenderError(
 }
 
 fun handleAssessmentError(
-    offenderPK: Long?,
-    user: String?,
-    oasysAssessmentType: OasysAssessmentType,
-    clientResponse: ClientResponse,
-    method: HttpMethod,
-    url: String
+  offenderPK: Long?,
+  user: String?,
+  oasysAssessmentType: OasysAssessmentType,
+  clientResponse: ClientResponse,
+  method: HttpMethod,
+  url: String
 ): Mono<out Throwable?>? {
   return when {
     HttpStatus.CONFLICT == clientResponse.statusCode() -> {

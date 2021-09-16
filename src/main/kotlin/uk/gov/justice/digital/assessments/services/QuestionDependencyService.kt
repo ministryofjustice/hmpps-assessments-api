@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.assessments.services
 
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.assessments.api.ConditionalsSchemaDto
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionDependencyEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.QuestionDependencyRepository

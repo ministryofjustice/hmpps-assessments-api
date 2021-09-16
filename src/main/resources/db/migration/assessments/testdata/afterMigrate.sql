@@ -19,7 +19,7 @@ VALUES ('6f3f2c4a-38ac-49ce-b790-70bc170fe553', '2021-01-01 08:11:53.177108', nu
 ON CONFLICT DO NOTHING;
 
 insert into subject (subject_uuid, source, source_id, name, pnc, crn, date_of_birth, gender, created_date, assessment_uuid) values
-('087bdec0-98de-4c86-af3d-2d05ff978007', 'DELIUS', 1, 'Gary Hart', null, 'X259950', '1977-08-15', 'MALE', '2021-07-12 16:42:06', '6f3f2c4a-38ac-49ce-b790-70bc170fe553')
+('087bdec0-98de-4c86-af3d-2d05ff978007', 'DELIUS', 1, 'Gary Hart', null, 'X259951', '1977-08-15', 'MALE', '2021-07-12 16:42:06', '6f3f2c4a-38ac-49ce-b790-70bc170fe553')
 ON CONFLICT DO NOTHING;
 
 INSERT INTO assessed_episode (episode_uuid, user_id, created_date, end_date, change_reason, assessment_schema_code, assessment_uuid, answers  )

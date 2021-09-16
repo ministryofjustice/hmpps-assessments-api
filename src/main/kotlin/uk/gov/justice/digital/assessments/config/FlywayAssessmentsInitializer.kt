@@ -1,13 +1,10 @@
 package uk.gov.justice.digital.assessments.config
 
 import org.flywaydb.core.Flyway
-
-import javax.annotation.PostConstruct
-
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Configuration
+import javax.annotation.PostConstruct
 import javax.sql.DataSource
-
 
 @Configuration
 class FlywayAssessmentsInitializer(@Qualifier("assessmentsDataSource") assessmentsDataSource: DataSource) {
@@ -21,5 +18,4 @@ class FlywayAssessmentsInitializer(@Qualifier("assessmentsDataSource") assessmen
       .locations("classpath:db/migration/assessments")
       .load().migrate()
   }
-
 }

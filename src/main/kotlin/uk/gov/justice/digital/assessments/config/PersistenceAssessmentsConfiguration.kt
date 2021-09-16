@@ -14,7 +14,6 @@ import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import javax.sql.DataSource
 
-
 @Configuration
 @EnableJpaRepositories(
   basePackages = ["uk.gov.justice.digital.assessments.jpa.repositories.assessments"],
@@ -51,7 +50,7 @@ class PersistenceAssessmentsConfiguration : WebMvcConfigurer {
   @Bean(name = ["assessmentsDataSource"])
   @ConfigurationProperties(prefix = "spring.hmppsassessmentsapi.datasource")
   fun assessmentsDataSource(): DataSource? {
-   return DataSourceBuilder
+    return DataSourceBuilder
       .create()
       .url(assessmentsDataSourceUrl)
       .build()

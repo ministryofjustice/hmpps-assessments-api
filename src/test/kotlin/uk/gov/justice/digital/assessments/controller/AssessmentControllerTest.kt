@@ -1,8 +1,5 @@
 package uk.gov.justice.digital.assessments.controller
 
-import java.math.BigDecimal
-import java.time.LocalDateTime
-import java.util.UUID
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -17,14 +14,17 @@ import uk.gov.justice.digital.assessments.api.AssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.api.AssessmentSubjectDto
 import uk.gov.justice.digital.assessments.api.ErrorResponse
 import uk.gov.justice.digital.assessments.api.PredictorScoresDto
+import uk.gov.justice.digital.assessments.api.Score
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.PredictorSubType
-import uk.gov.justice.digital.assessments.api.Score
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.ScoreLevel
 import uk.gov.justice.digital.assessments.services.dto.PredictorType
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import uk.gov.justice.digital.assessments.testutils.Verify
 import uk.gov.justice.digital.assessments.utils.RequestData
+import java.math.BigDecimal
+import java.time.LocalDateTime
+import java.util.UUID
 
 @SqlGroup(
   Sql(
@@ -151,7 +151,7 @@ class AssessmentControllerTest : IntegrationTest() {
       val rows = episode.tables[tableName]!!
       assertThat(rows.size).isEqualTo(1)
       assertThat(rows.first()).isEqualTo(
-        mapOf( childQuestionCode to listOf(answerText))
+        mapOf(childQuestionCode to listOf(answerText))
       )
     }
 
@@ -167,7 +167,7 @@ class AssessmentControllerTest : IntegrationTest() {
       val rows = episode.tables[tableName]!!
       assertThat(rows.size).isEqualTo(1)
       assertThat(rows.first()).isEqualTo(
-        mapOf( childQuestion to listOf(answerText))
+        mapOf(childQuestion to listOf(answerText))
       )
     }
 
@@ -184,7 +184,7 @@ class AssessmentControllerTest : IntegrationTest() {
       val rows = episode.tables[tableName]!!
       assertThat(rows.size).isEqualTo(1)
       assertThat(rows.first()).isEqualTo(
-          mapOf( childQuestion to listOf(firstAnswer, secondAnswer))
+        mapOf(childQuestion to listOf(firstAnswer, secondAnswer))
       )
     }
 
