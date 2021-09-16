@@ -14,13 +14,11 @@ import uk.gov.justice.digital.assessments.services.dto.OasysAnswers
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-
 class OasysAssessmentServiceTest {
   private val subjectRepository: SubjectRepository = mockk()
   private val questionService: QuestionService = mockk()
 
   private val oasysAssessmentService = OasysAssessmentService(subjectRepository, questionService)
-
 
   @Test
   fun `return latest episode for subject`() {

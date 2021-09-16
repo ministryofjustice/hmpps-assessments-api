@@ -43,6 +43,6 @@ class AssessmentSchemaEntity(
   val assessmentName: String? = null,
 
   @OneToMany(fetch = FetchType.EAGER)
-  @JoinColumn(name = "assessment_schema_code", referencedColumnName = "assessment_schema_code" )
+  @JoinColumn(name = "assessment_schema_code", referencedColumnName = "assessment_schema_code")
   val predictorEntities: Collection<PredictorEntity> = emptyList(),
 ) : Serializable

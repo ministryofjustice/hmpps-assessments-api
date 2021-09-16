@@ -26,4 +26,4 @@ class AssessmentSchemaGroupsEntity(
   @JoinColumn(name = "group_uuid", referencedColumnName = "group_uuid")
   val group: GroupEntity,
 
-  ) : Serializable
+) : Serializable

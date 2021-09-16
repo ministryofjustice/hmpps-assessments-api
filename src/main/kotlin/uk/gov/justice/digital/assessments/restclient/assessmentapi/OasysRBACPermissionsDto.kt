@@ -3,13 +3,13 @@ package uk.gov.justice.digital.assessments.restclient.assessmentapi
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.OasysAssessmentType
 
 data class OASysRBACPermissionsDto(
-    val userCode: String,
-    val roleChecks: Set<Roles>,
-    val area: String,
-    val offenderPk: Long? = null,
-    val oasysSetPk: Long? = null,
-    val assessmentType: OasysAssessmentType? = null,
-    val roleNames: Set<RoleNames>? = emptySet()
+  val userCode: String,
+  val roleChecks: Set<Roles>,
+  val area: String,
+  val offenderPk: Long? = null,
+  val oasysSetPk: Long? = null,
+  val assessmentType: OasysAssessmentType? = null,
+  val roleNames: Set<RoleNames>? = emptySet()
 )
 
 enum class RoleNames {

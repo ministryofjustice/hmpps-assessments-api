@@ -4,10 +4,7 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.assessments.api.OasysAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRepository
-import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OasysAnswer
-import uk.gov.justice.digital.assessments.services.dto.EmploymentType
 import uk.gov.justice.digital.assessments.services.dto.OasysAnswers
-import uk.gov.justice.digital.assessments.services.dto.ProblemsLevel
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 
 @Service

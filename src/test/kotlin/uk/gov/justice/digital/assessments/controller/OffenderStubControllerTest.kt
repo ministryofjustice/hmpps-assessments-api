@@ -31,7 +31,7 @@ class OffenderStubControllerTest : IntegrationTest() {
         familyName = "Smith",
         forename1 = "John",
         gender = "F",
-        dateOfBirth = LocalDate.of(1979,8,18),
+        dateOfBirth = LocalDate.of(1979, 8, 18),
         areaCode = "WWS"
       )
     )

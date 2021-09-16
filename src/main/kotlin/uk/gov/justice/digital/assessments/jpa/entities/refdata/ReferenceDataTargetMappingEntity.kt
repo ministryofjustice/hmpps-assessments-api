@@ -29,4 +29,4 @@ class ReferenceDataTargetMappingEntity(
   @Column(name = "is_required")
   val isRequired: Boolean = false,
 
-  )
+)
