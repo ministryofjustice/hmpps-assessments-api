@@ -34,7 +34,7 @@ class OasysAssessmentsControllerTest : IntegrationTest() {
     val crn = "X1355"
 
     val latestClosedEpisode = webTestClient.get().uri("/subject/$crn/assessments/episodes/RSR/current")
-      .headers(setAuthorisation())
+      .headers(setAuthorisation(roles = listOf("ROLE_ARN_READ_ONLY")))
       .exchange()
       .expectStatus().isOk
       .expectBody<OasysAssessmentEpisodeDto>()

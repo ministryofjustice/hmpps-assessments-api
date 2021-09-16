@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
@@ -28,6 +29,7 @@ class OasysAssessmentsController(val oasysAssessmentService: OasysAssessmentServ
       ApiResponse(responseCode = "200", description = "OK")
     ]
   )
+  @PreAuthorize("hasRole('ROLE_ARN_READ_ONLY')")
   fun getCurrentAssessmentEpisodeForAssessmentType(
     @Parameter(description = "crn", required = true, example = "D19873")
     @PathVariable crn: String,
