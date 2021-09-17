@@ -10,6 +10,7 @@ import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiForbidd
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiInvalidRequestException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiUnknownException
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
+import java.time.LocalDate
 
 class CommunityApiClientTest : IntegrationTest() {
   @Autowired
@@ -69,9 +70,16 @@ class CommunityApiClientTest : IntegrationTest() {
   @Test
   fun `get Delius Conviction returns conviction DTO`() {
     val convictions = communityApiRestClient.getConvictions(crn)
-    assertThat(convictions?.get(0)?.convictionId).isEqualTo(2500000001)
+    assertThat(convictions?.get(0)?.convictionId).isEqualTo(2500000223L)
+
     assertThat(convictions?.get(0)?.offences?.get(0)?.mainOffence).isEqualTo(true)
-    assertThat(convictions?.get(0)?.offences?.get(0)?.offenceId).isEqualTo("M2500000001")
-    assertThat(convictions?.get(1)?.convictionId).isEqualTo(2500000002)
+    assertThat(convictions?.get(0)?.offences?.get(0)?.offenceId).isEqualTo("M2500000223")
+
+    assertThat(convictions?.get(0)?.offences?.get(0)?.detail?.mainCategoryCode).isEqualTo("046")
+    assertThat(convictions?.get(0)?.offences?.get(0)?.detail?.mainCategoryDescription).isEqualTo("Stealing from shops and stalls (shoplifting)")
+    assertThat(convictions?.get(0)?.offences?.get(0)?.detail?.subCategoryCode).isEqualTo("00")
+    assertThat(convictions?.get(0)?.offences?.get(0)?.detail?.subCategoryDescription).isEqualTo("Stealing from shops and stalls (shoplifting)")
+
+    assertThat(convictions?.get(0)?.sentence?.startDate).isEqualTo(LocalDate.of(2014, 8, 25))
   }
 }

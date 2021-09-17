@@ -180,7 +180,6 @@ class AssessmentService(
     val courtCase = courtCaseClient.getCourtCase(courtCode, caseNumber)
       ?: throw EntityNotFoundException("No court case found for $courtCode, $caseNumber")
     val crn = courtCase.crn ?: throw EntityNotFoundException("No CRN found for $courtCode, $caseNumber")
-//    val sourceId = courtSourceId(courtCode, caseNumber)
     val existingSubject = subjectRepository.findByCrn(crn)
     if (existingSubject != null) {
       log.info("Existing assessment ${existingSubject.assessment?.assessmentUuid} found for court $courtCode, case $caseNumber")

@@ -16,6 +16,7 @@ import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffen
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.IDs
 import uk.gov.justice.digital.assessments.restclient.communityapi.OffenderAlias
+import uk.gov.justice.digital.assessments.restclient.communityapi.Sentence
 
 @ExtendWith(MockKExtension::class)
 @DisplayName("Offender Service Tests")
@@ -247,8 +248,8 @@ class OffenderServiceTest {
             )
           )
         ),
-        convictionDate = LocalDate.of(2020, 2, 1),
-        index = 1
+        sentence = Sentence(startDate = LocalDate.of(2020, 2, 1)),
+        index = 1,
       ),
       CommunityConvictionDto(
         convictionId = 1234567,
@@ -274,7 +275,7 @@ class OffenderServiceTest {
             )
           )
         ),
-        convictionDate = LocalDate.of(2020, 2, 1),
+        sentence = Sentence(startDate = LocalDate.of(2020, 2, 1)),
         index = 2
       )
     )

@@ -6,12 +6,12 @@ import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityConvictionDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenceDetail
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenceDto
+import uk.gov.justice.digital.assessments.restclient.communityapi.Sentence
 import java.time.LocalDate
 
 @DisplayName("Offence DTO Tests")
 class OffenceDtoTest {
 
-  private val convictionDate: LocalDate = LocalDate.now()
   @Test
   fun `builds offence DTO from Community Conviction`() {
     val communityConvictionDto = CommunityConvictionDto(
@@ -28,8 +28,8 @@ class OffenceDtoTest {
           )
         )
       ),
-      convictionDate = convictionDate,
-      index = 1
+        sentence = Sentence(startDate = LocalDate.of(2020, 2, 1)),
+        index = 1
     )
 
     val offenceDto = OffenceDto.from(communityConvictionDto)
