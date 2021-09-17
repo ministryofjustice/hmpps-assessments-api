@@ -18,6 +18,7 @@ import uk.gov.justice.digital.assessments.api.ErrorResponse
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import uk.gov.justice.digital.assessments.utils.RequestData
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -32,7 +33,7 @@ import java.util.UUID
     executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
   )
 )
-@AutoConfigureWebTestClient(timeout = "600000")
+@AutoConfigureWebTestClient()
 class AssessmentControllerCreateTest : IntegrationTest() {
 
   @Nested
@@ -210,10 +211,12 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(episode?.assessmentUuid).isEqualTo(UUID.fromString("19c8d211-68dc-4692-a6e2-d58468127056"))
       assertThat(episode?.created).isEqualToIgnoringMinutes(LocalDateTime.now())
       assertThat(episode?.answers).isEmpty()
-      assertThat(episode?.offence?.offenceCode).isEqualTo("116")
-      assertThat(episode?.offence?.codeDescription).isEqualTo("Fishery Laws")
+
+      assertThat(episode?.offence?.offenceCode).isEqualTo("046")
+      assertThat(episode?.offence?.codeDescription).isEqualTo("Stealing from shops and stalls (shoplifting)")
       assertThat(episode?.offence?.offenceSubCode).isEqualTo("00")
-      assertThat(episode?.offence?.subCodeDescription).isEqualTo("Fishery Laws")
+      assertThat(episode?.offence?.subCodeDescription).isEqualTo("Stealing from shops and stalls (shoplifting)")
+      assertThat(episode?.offence?.sentenceDate).isEqualTo(LocalDate.of(2014, 8, 25))
     }
   }
 
