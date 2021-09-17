@@ -7,9 +7,6 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.http.HttpHeader
 import com.github.tomakehurst.wiremock.http.HttpHeaders
-import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityConvictionDto
-import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenceDetail
-import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenceDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.IDs
 import uk.gov.justice.digital.assessments.restclient.communityapi.OffenderAlias
@@ -42,7 +39,7 @@ class CommunityApiMockServer : WireMockServer(9096) {
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
-            .withBody(offenderJson)
+            .withBody(mapToJson(offenderDto("DX5678A")))
         )
     )
 
@@ -120,7 +117,7 @@ class CommunityApiMockServer : WireMockServer(9096) {
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
-            .withBody(mapToJson(listOf(convictionDto())))
+            .withBody(convictionsJson)
         )
     )
   }
@@ -136,7 +133,7 @@ class CommunityApiMockServer : WireMockServer(9096) {
     )
   }
 
-  internal fun mapToJson(dto: Any): String {
+  private fun mapToJson(dto: Any): String {
     return objectMapper.writeValueAsString(dto)
   }
 
@@ -160,25 +157,6 @@ class CommunityApiMockServer : WireMockServer(9096) {
         ),
         OffenderAlias(
           firstName = "Jonny"
-        )
-      )
-    )
-  }
-
-  private fun convictionDto(): CommunityConvictionDto {
-    return CommunityConvictionDto(
-      convictionId = 2500000001,
-      index = 1,
-      offences = listOf(
-        CommunityOffenceDto(
-          offenceId = "M2500000001",
-          mainOffence = true,
-          detail = CommunityOffenceDetail(
-            mainCategoryCode = "116",
-            mainCategoryDescription = "Fishery Laws",
-            subCategoryCode = "00",
-            subCategoryDescription = "Fishery Laws",
-          )
         )
       )
     )

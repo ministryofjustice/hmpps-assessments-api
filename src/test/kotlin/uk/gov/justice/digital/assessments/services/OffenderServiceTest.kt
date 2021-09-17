@@ -17,6 +17,7 @@ import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffen
 import uk.gov.justice.digital.assessments.restclient.communityapi.IDs
 import uk.gov.justice.digital.assessments.restclient.communityapi.OffenderAlias
 import uk.gov.justice.digital.assessments.restclient.communityapi.Sentence
+import java.time.LocalDate
 
 @ExtendWith(MockKExtension::class)
 @DisplayName("Offender Service Tests")
@@ -53,9 +54,7 @@ class OffenderServiceTest {
 
     verify(exactly = 1) { communityApiRestClient.getConvictions(any()) }
   }
-
-
-  //TODO from ARN-618: Fix offender service
+  // TODO from ARN-618: Fix offender service
 //  @Test
 //  fun `return offender and offence`() {
 //    every { communityApiRestClient.getOffender(crn) } returns validCommunityOffenderDto()

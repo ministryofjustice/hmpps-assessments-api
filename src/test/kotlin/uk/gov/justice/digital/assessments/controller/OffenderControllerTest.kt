@@ -1,19 +1,22 @@
-//package uk.gov.justice.digital.assessments.controller
+package uk.gov.justice.digital.assessments.controller
+
+// TODO from ARN-618: Fix the offender and offence work
+
 //
-//import org.assertj.core.api.Assertions.assertThat
-//import org.junit.jupiter.api.Test
-//import org.springframework.test.context.jdbc.Sql
-//import org.springframework.test.context.jdbc.SqlConfig
-//import org.springframework.test.context.jdbc.SqlGroup
-//import org.springframework.test.web.reactive.server.expectBody
-//import uk.gov.justice.digital.assessments.api.OffenderDto
-//import uk.gov.justice.digital.assessments.testutils.IntegrationTest
+// import org.assertj.core.api.Assertions.assertThat
+// import org.junit.jupiter.api.Test
+// import org.springframework.test.context.jdbc.Sql
+// import org.springframework.test.context.jdbc.SqlConfig
+// import org.springframework.test.context.jdbc.SqlGroup
+// import org.springframework.test.web.reactive.server.expectBody
+// import uk.gov.justice.digital.assessments.api.OffenderDto
+// import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 //
-//@SqlGroup(
+// @SqlGroup(
 //  Sql(scripts = ["classpath:subject/before-test.sql"], config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED)),
 //  Sql(scripts = ["classpath:subject/after-test.sql"], config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED), executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-//)
-//class OffenderControllerTest : IntegrationTest() {
+// )
+// class OffenderControllerTest : IntegrationTest() {
 //
 //  val crn = "DX12340A"
 //  val eventId = 1
@@ -96,6 +99,4 @@
 //    assertThat(offenderDto?.offence?.offenceSubCode).isEqualTo("00")
 //    assertThat(offenderDto?.offence?.subCodeDescription).isEqualTo("Fishery Laws")
 //  }
-//}
-
-//TODO sort out this mess
+// }

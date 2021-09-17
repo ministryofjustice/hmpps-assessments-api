@@ -28,8 +28,8 @@ class OffenceDtoTest {
           )
         )
       ),
-        sentence = Sentence(startDate = LocalDate.of(2020, 2, 1)),
-        index = 1
+      sentence = Sentence(startDate = LocalDate.of(2020, 2, 1)),
+      index = 1
     )
 
     val offenceDto = OffenceDto.from(communityConvictionDto)

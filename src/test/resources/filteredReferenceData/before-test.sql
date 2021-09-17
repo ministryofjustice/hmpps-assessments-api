@@ -11,7 +11,7 @@ INSERT INTO hmppsassessmentsapi.assessment  (assessment_id, assessment_uuid, cre
 (4, '80fd9a2a-59dd-4783-8cac-1689a0464437', '2019-11-14 09:00'),
 (5, '8177b6c7-1b20-459b-b6ee-0aeeb2f16857', '2019-11-14 09:00');
 
-INSERT INTO hmppsassessmentsapi.subject (subject_id, subject_uuid, source, source_id, name, pnc, crn, date_of_birth, gender, created_date, assessment_uuid) VALUES
+INSERT INTO hmppsassessmentsapi.subject (subject_id, subject_uuid, name, pnc, crn, date_of_birth, gender, created_date, assessment_uuid) VALUES
 (1, 'a4e73a2c-3f1c-4f83-88b6-dd3ce1b78530', 'John Smith', 'dummy-pnc', 'dummy-crn-1', '1928-08-01', 'MALE', '2019-11-14 08:30', '2e020e78-a81c-407f-bc78-e5f284e237e5'),
 (2, 'bf1979c5-518a-4300-80f2-189981182e5f', 'John Smith', 'dummy-pnc', 'dummy-crn-2', '1928-08-01', 'MALE', '2019-11-14 08:30', 'bbbae903-7803-4206-800c-2d3b81116d5c'),
 (3, 'f0c3c497-b0b8-4fe1-9749-2f686b3b1aa0', 'John Smith', 'dummy-pnc', 'dummy-crn-3', '1928-08-01', 'MALE', '2019-11-14 08:30', 'bd5e5a88-c0ac-4f55-9c08-b8e8bdd9568c'),

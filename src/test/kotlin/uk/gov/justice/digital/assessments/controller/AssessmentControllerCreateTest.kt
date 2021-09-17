@@ -33,7 +33,7 @@ import java.util.UUID
     executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
   )
 )
-@AutoConfigureWebTestClient()
+@AutoConfigureWebTestClient(timeout = "600000")
 class AssessmentControllerCreateTest : IntegrationTest() {
 
   @Nested
@@ -69,7 +69,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
 
     @Test
     fun `create a new assessment from court details, creates subject and episode, returns assessment`() {
-     val dto = CreateAssessmentDto(
+      val dto = CreateAssessmentDto(
         courtCode = "SHF06",
         caseNumber = "668911253",
         assessmentSchemaCode = AssessmentSchemaCode.ROSH

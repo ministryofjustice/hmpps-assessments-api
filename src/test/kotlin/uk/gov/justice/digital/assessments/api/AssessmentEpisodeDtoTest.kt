@@ -31,7 +31,7 @@ class AssessmentEpisodeDtoTest {
       offenceSubCode = "SUBCODE",
       subCodeDescription = "Subcode description",
       sentenceDate = LocalDate.of(2000, 1, 1)
-      )
+    )
     val episodeEntity = AssessmentEpisodeEntity(
       assessmentId,
       UUID.randomUUID(),

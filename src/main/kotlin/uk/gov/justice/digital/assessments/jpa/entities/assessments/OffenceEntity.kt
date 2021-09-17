@@ -47,6 +47,4 @@ data class OffenceEntity(
 
   @OneToMany(mappedBy = "offence", fetch = FetchType.EAGER, cascade = [CascadeType.ALL])
   val episodes: MutableList<AssessmentEpisodeEntity> = mutableListOf()
-) : Serializable {
-
-}
+) : Serializable

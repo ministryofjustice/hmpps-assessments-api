@@ -54,10 +54,6 @@ class EpisodeService(
   }
 
   private fun loadFromCourtCase(episode: AssessmentEpisodeEntity): String? {
-    val subject = episode.assessment?.subject
-    if (subject?.source != "COURT") return null
-
-    val (courtCode, caseNumber) = subject.sourceId.split('|')
     if (episode.offence?.source != "COURT") return null
     val (courtCode, caseNumber) = episode.offence?.sourceId!!.split('|')
     return courtCaseRestClient.getCourtCaseJson(courtCode, caseNumber)
