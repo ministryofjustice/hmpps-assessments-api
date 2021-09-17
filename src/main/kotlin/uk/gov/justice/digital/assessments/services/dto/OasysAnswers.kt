@@ -9,7 +9,6 @@ import uk.gov.justice.digital.assessments.jpa.entities.assessments.TableRows
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.Tables
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.OASysMappingEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEntity
-import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OasysAnswer
 import uk.gov.justice.digital.assessments.services.QuestionSchemaEntities
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter

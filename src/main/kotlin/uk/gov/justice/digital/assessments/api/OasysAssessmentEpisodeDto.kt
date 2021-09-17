@@ -2,7 +2,6 @@ package uk.gov.justice.digital.assessments.api
 
 import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
-import uk.gov.justice.digital.assessments.services.dto.OasysAnswers
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -24,12 +23,12 @@ data class OasysAssessmentEpisodeDto(
   val ended: LocalDateTime? = null,
 
   @Schema(description = "Oasys Answers associated with this episode")
-  val answers: OasysAnswers,
+  val answers: EpisodeOasysAnswersDto,
 ) {
   companion object {
     fun from(
       episode: AssessmentEpisodeEntity,
-      answers: OasysAnswers
+      answers: EpisodeOasysAnswersDto
     ): OasysAssessmentEpisodeDto {
       return OasysAssessmentEpisodeDto(
         episode.episodeUuid,

@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.assessments.restclient.assessmentupdateapi
+package uk.gov.justice.digital.assessments.services.dto
 
 data class OasysAnswer(
   val sectionCode: String,

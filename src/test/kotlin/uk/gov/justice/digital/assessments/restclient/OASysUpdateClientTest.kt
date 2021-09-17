@@ -12,7 +12,7 @@ import org.springframework.http.HttpMethod
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.OasysAssessmentType
 import uk.gov.justice.digital.assessments.restclient.assessmentapi.RoleNames
 import uk.gov.justice.digital.assessments.restclient.assessmentapi.Roles
-import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OasysAnswer
+import uk.gov.justice.digital.assessments.services.dto.OasysAnswer
 import uk.gov.justice.digital.assessments.services.exceptions.DuplicateOffenderRecordException
 import uk.gov.justice.digital.assessments.services.exceptions.ExceptionReason
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiForbiddenException
