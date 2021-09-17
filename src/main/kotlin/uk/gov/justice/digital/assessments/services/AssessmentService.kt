@@ -10,7 +10,7 @@ import uk.gov.justice.digital.assessments.api.AssessmentDto
 import uk.gov.justice.digital.assessments.api.AssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.api.AssessmentSubjectDto
 import uk.gov.justice.digital.assessments.api.CreateAssessmentDto
-import uk.gov.justice.digital.assessments.api.OffenceCodeDto
+import uk.gov.justice.digital.assessments.api.OffenceDto
 import uk.gov.justice.digital.assessments.api.OffenderDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
@@ -302,9 +302,9 @@ class AssessmentService(
     source: String,
     eventId: String
   ): AssessmentEpisodeEntity {
-    var offenceCodes: OffenceCodeDto? = null
+    var offence: OffenceDto? = null
     if (source == deliusSource) {
-      offenceCodes = getEpisodeOffenceCodes(crn, eventId.toLong())
+      offence = getEpisodeOffence(crn, eventId.toLong())
     }
     val episode = assessment.newEpisode(
       reason,
@@ -313,10 +313,11 @@ class AssessmentService(
       offence = OffenceEntity(
         source = source,
         sourceId = eventId,
-        offenceCode = offenceCodes?.offenceCode,
-        codeDescription = offenceCodes?.codeDescription,
-        offenceSubCode = offenceCodes?.offenceSubCode,
-        subCodeDescription = offenceCodes?.subCodeDescription
+        offenceCode = offence?.offenceCode,
+        codeDescription = offence?.codeDescription,
+        offenceSubCode = offence?.offenceSubCode,
+        subCodeDescription = offence?.subCodeDescription,
+        sentenceDate = offence?.sentenceDate
       )
     )
     episodeService.prepopulate(episode)
@@ -324,8 +325,8 @@ class AssessmentService(
     return episode
   }
 
-  private fun getEpisodeOffenceCodes(crn: String, eventId: Long): OffenceCodeDto {
-    return offenderService.getOffenceCodes(crn, eventId)
+  private fun getEpisodeOffence(crn: String, eventId: Long): OffenceDto {
+    return offenderService.getOffence(crn, eventId)
   }
 
   private fun courtSourceId(courtCode: String?, caseNumber: String?): String {

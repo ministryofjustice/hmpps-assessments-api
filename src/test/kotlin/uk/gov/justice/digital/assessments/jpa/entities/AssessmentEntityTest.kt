@@ -11,6 +11,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEnt
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.OffenceEntity
 import uk.gov.justice.digital.assessments.utils.RequestData
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 @ExtendWith(MockKExtension::class)
@@ -37,7 +38,8 @@ class AssessmentEntityTest {
         offenceCode = "Code",
         codeDescription = "Code description",
         offenceSubCode = "Sub-code",
-        subCodeDescription = "Sub-code description"
+        subCodeDescription = "Sub-code description",
+        sentenceDate = LocalDate.of(2000, 1, 1)
       )
     )
     assertThat(newEpisode.episodeId).isNull()
@@ -66,7 +68,8 @@ class AssessmentEntityTest {
         offenceCode = "Code",
         codeDescription = "Code description",
         offenceSubCode = "Sub-code",
-        subCodeDescription = "Sub-code description"
+        subCodeDescription = "Sub-code description",
+        sentenceDate = LocalDate.of(2000, 1, 1)
       )
     )
     assertThat(newEpisode.episodeId).isEqualTo(episodeId)

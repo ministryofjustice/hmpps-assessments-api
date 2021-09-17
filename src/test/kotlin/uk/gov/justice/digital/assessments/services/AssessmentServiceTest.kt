@@ -9,7 +9,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import uk.gov.justice.digital.assessments.api.OffenceCodeDto
+import uk.gov.justice.digital.assessments.api.OffenceDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
@@ -96,12 +96,13 @@ class AssessmentServiceTest {
           offenceCode = offenceCode,
           codeDescription = codeDescription,
           offenceSubCode = offenceSubCode,
-          subCodeDescription = subCodeDescription
+          subCodeDescription = subCodeDescription,
+          sentenceDate = LocalDate.of(2000, 1, 1)
         )
       )
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
       every { assessment.subject } returns SubjectEntity(crn = crn, dateOfBirth = LocalDate.now())
-      every { offenderService.getOffenceCodes(crn, eventId) } returns OffenceCodeDto(
+      every { offenderService.getOffence(crn, eventId) } returns OffenceDto(
         offenceCode = offenceCode,
         codeDescription = codeDescription,
         offenceSubCode = offenceSubCode,

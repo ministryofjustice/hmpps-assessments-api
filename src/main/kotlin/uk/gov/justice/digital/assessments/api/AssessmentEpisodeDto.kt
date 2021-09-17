@@ -46,11 +46,11 @@ data class AssessmentEpisodeDto(
   val predictors: Collection<PredictorScoresDto> = emptyList(),
 
   @Schema(description = "Offence codes")
-  val offence: OffenceCodeDto
+  val offence: OffenceDto,
 
   @Schema(description = "Tables associated with this episode")
-  val tables: Tables = mutableMapOf(),
-) {
+  val tables: Tables = mutableMapOf()
+  ) {
   companion object {
 
     fun from(episodes: MutableCollection<AssessmentEpisodeEntity>): Collection<AssessmentEpisodeDto> {
@@ -75,8 +75,8 @@ data class AssessmentEpisodeDto(
         errors?.pageErrors,
         errors?.assessmentErrors,
         predictors,
-        OffenceCodeDto.from(episode.offence),
         episode.tables ?: mutableMapOf()
+        OffenceDto.from(episode.offence)
       )
     }
   }

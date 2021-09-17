@@ -3,9 +3,7 @@ package uk.gov.justice.digital.assessments.services
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.assessments.api.Address
 import uk.gov.justice.digital.assessments.api.OffenceDto
-import uk.gov.justice.digital.assessments.api.OffenceCodeDto
 import uk.gov.justice.digital.assessments.api.OffenderDto
 import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
@@ -16,7 +14,8 @@ class OffenderService(
   private val communityApiRestClient: CommunityApiRestClient,
   private val courtCaseClient: CourtCaseRestClient
 ) {
-// TODO Fix Offender service to work with court and delius
+
+// TODO from ARN-618: Fix Offender service to work with court and delius
 
 //  fun getOffenderAndOffence(crn: String, eventId: Long): OffenderDto {
 //    val offender = getOffender(crn)
@@ -32,13 +31,13 @@ class OffenderService(
     return OffenderDto.from(communityOffenderDto)
   }
 
-  fun getOffenceCodes(crn: String, eventId: Long): OffenceCodeDto {
+  fun getOffence(crn: String, eventId: Long): OffenceDto {
     log.info("Requesting offences for crn: $crn")
     val convictions = communityApiRestClient.getConvictions(crn)
       ?: throw EntityNotFoundException("Could not get convictions for crn: $crn")
     val conviction = convictions.find { it.index == eventId }
       ?: throw EntityNotFoundException("Could not get conviction for crn: $crn, event ID: $eventId")
-    return OffenceCodeDto.from(conviction)
+    return OffenceDto.from(conviction)
   }
 
 //  fun getOffenderAddress(crn: String): Address? {
