@@ -24,10 +24,6 @@ class AssessmentControllerSchemaTest : IntegrationTest() {
   private val roshSubGroupUuid4 = "1e1159e1-6092-4e22-9e29-5734654baeda"
   private val roshSubGroupUuid5 = "7773691f-7244-4415-b410-17c495bf9a59"
 
-  private val questionSchemaUuid = "fd412ca8-d361-47ab-a189-7acb8ae0675b"
-  private val answerSchemaUuid = "464e25da-f843-43b6-8223-4af415abda0c"
-  private val subquestionUuid = "b9dd3680-c4d6-403e-8f27-8d65481cbf44"
-
   @Test
   fun `get all reference questions and answers for assessment schema code`() {
     val groups = webTestClient.get().uri("/assessments/schema/ROSH")

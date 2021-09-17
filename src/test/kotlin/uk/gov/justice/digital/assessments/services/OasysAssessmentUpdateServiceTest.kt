@@ -22,9 +22,9 @@ import uk.gov.justice.digital.assessments.jpa.entities.refdata.OASysMappingEntit
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.OasysAssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient
-import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OasysAnswer
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.UpdateAssessmentAnswersResponseDto
 import uk.gov.justice.digital.assessments.services.dto.AssessmentEpisodeUpdateErrors
+import uk.gov.justice.digital.assessments.services.dto.OasysAnswer
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID

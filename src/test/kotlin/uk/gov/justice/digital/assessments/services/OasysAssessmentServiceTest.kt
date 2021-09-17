@@ -4,13 +4,13 @@ import io.mockk.every
 import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import uk.gov.justice.digital.assessments.api.EpisodeOasysAnswersDto
 import uk.gov.justice.digital.assessments.api.OasysAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRepository
-import uk.gov.justice.digital.assessments.services.dto.OasysAnswers
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -59,6 +59,6 @@ class OasysAssessmentServiceTest {
     val latestEpisode =
       oasysAssessmentService.getLatestEpisodeOfTypeForSubjectWithCrn(assessmentSchemaCode, crn)
 
-    assertThat(latestEpisode).isEqualTo(OasysAssessmentEpisodeDto.from(episode2, OasysAnswers()))
+    assertThat(latestEpisode).isEqualTo(OasysAssessmentEpisodeDto.from(episode2, EpisodeOasysAnswersDto()))
   }
 }
