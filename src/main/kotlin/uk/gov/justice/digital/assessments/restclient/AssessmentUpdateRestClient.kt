@@ -17,9 +17,9 @@ import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.CreateA
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.CreateAssessmentResponse
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.CreateOffenderDto
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.CreateOffenderResponseDto
-import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OasysAnswer
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.UpdateAssessmentAnswersDto
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.UpdateAssessmentAnswersResponseDto
+import uk.gov.justice.digital.assessments.services.dto.OasysAnswer
 import uk.gov.justice.digital.assessments.utils.RequestData
 import uk.gov.justice.digital.assessments.utils.offenderStubResource.OffenderStubDto
 

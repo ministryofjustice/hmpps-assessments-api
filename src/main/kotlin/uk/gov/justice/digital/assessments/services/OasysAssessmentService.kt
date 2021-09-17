@@ -1,6 +1,8 @@
 package uk.gov.justice.digital.assessments.services
 
 import org.springframework.stereotype.Service
+import uk.gov.justice.digital.assessments.api.EpisodeOasysAnswerDto
+import uk.gov.justice.digital.assessments.api.EpisodeOasysAnswersDto
 import uk.gov.justice.digital.assessments.api.OasysAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRepository
@@ -34,6 +36,11 @@ class OasysAssessmentService(
           questionService.getAllGroupQuestionsByGroupCode(tableCode)
       }
     )
-    return OasysAssessmentEpisodeDto.from(latestClosedEpisode, oasysAnswers)
+    return OasysAssessmentEpisodeDto.from(latestClosedEpisode, oasysAnswers.toEpisodeOasysAnswers())
+  }
+
+  private fun OasysAnswers.toEpisodeOasysAnswers(): EpisodeOasysAnswersDto {
+    val answers = this.map { EpisodeOasysAnswerDto(it.questionCode, it.answer) }
+    return EpisodeOasysAnswersDto(answers)
   }
 }

@@ -19,7 +19,7 @@ import uk.gov.justice.digital.assessments.services.OasysAssessmentService
 class OasysAssessmentsController(val oasysAssessmentService: OasysAssessmentService) {
 
   @RequestMapping(
-    path = ["/subject/{crn}/assessments/episodes/{assessmentSchemaCode}/current"],
+    path = ["/subject/{crn}/assessments/episodes/{assessmentSchemaCode}/latest"],
     method = [RequestMethod.GET]
   )
   @Operation(description = "Gets current assessment episode with oasys formatted answers for a specific schema type")

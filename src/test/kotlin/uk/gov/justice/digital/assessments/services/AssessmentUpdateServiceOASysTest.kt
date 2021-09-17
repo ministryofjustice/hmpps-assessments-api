@@ -24,10 +24,10 @@ import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEnt
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.EpisodeRepository
 import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient
-import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OasysAnswer
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.UpdateAssessmentAnswersResponseDto
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.ValidationErrorDto
 import uk.gov.justice.digital.assessments.services.dto.AssessmentEpisodeUpdateErrors
+import uk.gov.justice.digital.assessments.services.dto.OasysAnswer
 import uk.gov.justice.digital.assessments.services.dto.OasysAnswers
 import uk.gov.justice.digital.assessments.testutils.Verify
 import java.time.LocalDate
