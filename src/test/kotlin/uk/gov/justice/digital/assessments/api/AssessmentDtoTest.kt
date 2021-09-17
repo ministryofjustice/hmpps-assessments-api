@@ -20,7 +20,6 @@ class AssessmentDtoTest {
 
     val assessmentDto = AssessmentDto.from(assessmentEntity)
 
-    assertThat(assessmentDto.assessmentId).isEqualTo(assessmentEntity.assessmentId)
     assertThat(assessmentDto.createdDate).isEqualTo(assessmentEntity.createdDate)
     assertThat(assessmentDto.completedDate).isEqualTo(assessmentEntity.completedDate)
   }
