@@ -6,6 +6,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEnt
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.OffenceEntity
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -28,7 +29,9 @@ class AssessmentEpisodeDtoTest {
       offenceCode = "CODE",
       codeDescription = "Code description",
       offenceSubCode = "SUBCODE",
-      subCodeDescription = "Subcode description")
+      subCodeDescription = "Subcode description",
+      sentenceDate = LocalDate.of(2000, 1, 1)
+      )
     val episodeEntity = AssessmentEpisodeEntity(
       assessmentId,
       UUID.randomUUID(),

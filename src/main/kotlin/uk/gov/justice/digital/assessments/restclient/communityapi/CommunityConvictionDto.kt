@@ -7,7 +7,8 @@ data class CommunityConvictionDto(
   val convictionId: Long? = null,
   val offences: List<CommunityOffenceDto>? = null,
   val convictionDate: LocalDate? = null,
-  val index: Long
+  val index: Long,
+  val sentence: Sentence? = null
 )
 
 class CommunityOffenceDto(
@@ -31,4 +32,8 @@ class CommunityOffenceDetail(
   val mainCategoryDescription: String,
   val subCategoryCode: String,
   val subCategoryDescription: String
+)
+
+class Sentence(
+  val startDate: LocalDate
 )

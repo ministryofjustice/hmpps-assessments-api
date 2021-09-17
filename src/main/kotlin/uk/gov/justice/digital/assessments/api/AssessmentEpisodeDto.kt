@@ -45,7 +45,7 @@ data class AssessmentEpisodeDto(
   val predictors: Collection<PredictorScoresDto>,
 
   @Schema(description = "Offence codes")
-  val offence: OffenceCodeDto
+  val offence: OffenceDto
   ) {
   companion object {
 
@@ -71,7 +71,7 @@ data class AssessmentEpisodeDto(
         errors?.pageErrors,
         errors?.assessmentErrors,
         predictors,
-        OffenceCodeDto.from(episode.offence)
+        OffenceDto.from(episode.offence)
       )
     }
   }

@@ -13,7 +13,7 @@ import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.slf4j.MDC
 import uk.gov.justice.digital.assessments.api.CreateAssessmentDto
-import uk.gov.justice.digital.assessments.api.OffenceCodeDto
+import uk.gov.justice.digital.assessments.api.OffenceDto
 import uk.gov.justice.digital.assessments.api.OffenderDto
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
@@ -81,7 +81,7 @@ class AssessmentServiceCreateTest {
         oasysOffenderPk,
         oasysSetPk
       )
-      every { offenderService.getOffenceCodes(crn, eventId) } returns OffenceCodeDto(
+      every { offenderService.getOffence(crn, eventId) } returns OffenceDto(
         offenceCode = "Code",
         codeDescription = "Code description",
         offenceSubCode = "Sub-code",
@@ -163,7 +163,7 @@ class AssessmentServiceCreateTest {
         )
       } returns Pair(oasysOffenderPk, oasysSetPk)
 
-      every { offenderService.getOffenceCodes(crn, eventId) } returns OffenceCodeDto(
+      every { offenderService.getOffence(crn, eventId) } returns OffenceDto(
         offenceCode = "Code",
         codeDescription = "Code description",
         offenceSubCode = "Sub-code",

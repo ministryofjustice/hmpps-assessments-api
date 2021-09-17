@@ -8,23 +8,15 @@ import java.time.LocalDate
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
-import org.springframework.http.HttpMethod
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
-import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRepository
 import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
-import uk.gov.justice.digital.assessments.restclient.ExternalService
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityConvictionDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.IDs
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenceDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenceDetail
 import uk.gov.justice.digital.assessments.restclient.communityapi.OffenderAlias
-import uk.gov.justice.digital.assessments.restclient.courtcaseapi.CourtCase
-import uk.gov.justice.digital.assessments.restclient.courtcaseapi.DefendantAddress
-import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiEntityNotFoundException
 
 @ExtendWith(MockKExtension::class)
 @DisplayName("Offender Service Tests")
@@ -53,7 +45,7 @@ class OffenderServiceTest {
   fun `return offence`() {
     every { communityApiRestClient.getConvictions(crn) } returns validCommunityConvictionsDto()
 
-    val offenceDto = offenderService.getOffenceCodes(crn, eventId)
+    val offenceDto = offenderService.getOffence(crn, eventId)
     assertThat(offenceDto.offenceCode).isEqualTo("Code")
     assertThat(offenceDto.codeDescription).isEqualTo("Code description")
     assertThat(offenceDto.offenceSubCode).isEqualTo("Sub code")
@@ -63,7 +55,7 @@ class OffenderServiceTest {
   }
 
 
-  //TODO Fix offender service
+  //TODO from ARN-618: Fix offender service
 //  @Test
 //  fun `return offender and offence`() {
 //    every { communityApiRestClient.getOffender(crn) } returns validCommunityOffenderDto()

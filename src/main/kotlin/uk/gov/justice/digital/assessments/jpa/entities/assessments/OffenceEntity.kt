@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.assessments.jpa.entities.assessments
 
 import java.io.Serializable
+import java.time.LocalDate
 import java.util.UUID
 import javax.persistence.CascadeType
 import javax.persistence.Column
@@ -41,6 +42,11 @@ data class OffenceEntity(
   @Column(name = "subcode_description")
   val subCodeDescription: String? = null,
 
+  @Column(name = "sentence_date")
+  val sentenceDate: LocalDate?,
+
   @OneToMany(mappedBy = "offence", fetch = FetchType.EAGER, cascade = [CascadeType.ALL])
   val episodes: MutableList<AssessmentEpisodeEntity> = mutableListOf()
-) : Serializable
+) : Serializable {
+
+}

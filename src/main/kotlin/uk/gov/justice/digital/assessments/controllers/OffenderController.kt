@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.assessments.api.OffenderDto
 import uk.gov.justice.digital.assessments.services.OffenderService
 
-// TODO Fix Offender service
+// TODO from ARN-618: Fix Offender service
 //@RestController
 //class OffenderController(val offenderService: OffenderService) {
 //
