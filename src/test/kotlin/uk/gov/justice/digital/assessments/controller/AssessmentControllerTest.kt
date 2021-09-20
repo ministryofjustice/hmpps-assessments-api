@@ -81,7 +81,7 @@ class AssessmentControllerTest : IntegrationTest() {
     fun `get episodes returns not found when assessment does not exist`() {
       val invalidAssessmentId = UUID.randomUUID()
       webTestClient.get().uri("/assessments/$invalidAssessmentId/episodes")
-        .headers(setAuthorisation())
+        .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
         .exchange()
         .expectStatus().isNotFound
     }
@@ -90,7 +90,7 @@ class AssessmentControllerTest : IntegrationTest() {
     fun `get current episode returns not found when assessment does not exist`() {
       val invalidAssessmentId = UUID.randomUUID()
       webTestClient.get().uri("/assessments/$invalidAssessmentId/episodes/current")
-        .headers(setAuthorisation())
+        .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
         .exchange()
         .expectStatus().isNotFound
     }
@@ -108,7 +108,7 @@ class AssessmentControllerTest : IntegrationTest() {
       val episode =
         webTestClient.post().uri("/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259")
           .bodyValue(updateEpisodeDto)
-          .headers(setAuthorisation())
+          .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
           .exchange()
           .expectStatus().isOk
           .expectBody<AssessmentEpisodeDto>()
@@ -330,7 +330,7 @@ class AssessmentControllerTest : IntegrationTest() {
       val episode = webTestClient.post().uri(endpoint)
         .contentType(MediaType.APPLICATION_JSON)
         .bodyValue(jsonString)
-        .headers(setAuthorisation())
+        .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
         .exchange()
         .expectStatus().isOk
         .expectBody<AssessmentEpisodeDto>()
@@ -350,7 +350,7 @@ class AssessmentControllerTest : IntegrationTest() {
       val episode = webTestClient.put().uri(endpoint)
         .contentType(MediaType.APPLICATION_JSON)
         .bodyValue(jsonString)
-        .headers(setAuthorisation())
+        .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
         .exchange()
         .expectStatus().isOk
         .expectBody<AssessmentEpisodeDto>()
@@ -367,7 +367,7 @@ class AssessmentControllerTest : IntegrationTest() {
       val endpoint =
         "/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259/table/children_at_risk_of_serious_harm_test/$index"
       val episode = webTestClient.delete().uri(endpoint)
-        .headers(setAuthorisation())
+        .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
         .exchange()
         .expectStatus().isOk
         .expectBody<AssessmentEpisodeDto>()
@@ -387,7 +387,7 @@ class AssessmentControllerTest : IntegrationTest() {
       val episode = webTestClient.post().uri(endpoint)
         .contentType(MediaType.APPLICATION_JSON)
         .bodyValue(jsonString)
-        .headers(setAuthorisation())
+        .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
         .exchange()
         .expectStatus().isOk
         .expectBody<AssessmentEpisodeDto>()
@@ -408,7 +408,7 @@ class AssessmentControllerTest : IntegrationTest() {
       )
       webTestClient.post().uri("/assessments/$assessmentUuid/episodes/d7aafe55-0cff-4f20-a57a-b66d79eb9c91")
         .bodyValue(updateEpisodeDto)
-        .headers(setAuthorisation())
+        .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
         .exchange()
         .expectStatus().isBadRequest
         .expectBody<ErrorResponse>()
@@ -437,7 +437,7 @@ class AssessmentControllerTest : IntegrationTest() {
 
       val assessmentEpisode = webTestClient.post().uri("/assessments/$assessmentUuid/complete")
         .header(RequestData.USER_AREA_HEADER_NAME, "WWS")
-        .headers(setAuthorisation())
+        .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
         .exchange()
         .expectStatus().isOk
         .expectBody<AssessmentEpisodeDto>()
@@ -478,7 +478,7 @@ class AssessmentControllerTest : IntegrationTest() {
     fun `complete episode returns not found when there are no current episodes for assessment`() {
       val noEpisodesUUID = UUID.fromString("6082265e-885d-4526-b713-77e59b70691e")
       webTestClient.post().uri("/assessments/$noEpisodesUUID/complete")
-        .headers(setAuthorisation())
+        .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
         .exchange()
         .expectStatus().isNotFound
         .expectBody<ErrorResponse>()
@@ -491,7 +491,7 @@ class AssessmentControllerTest : IntegrationTest() {
       val assessmentErrorsUUID = UUID.fromString("aa47e6c4-e41f-467c-95e7-fcf5ffd422f5")
       val assessmentEpisode = webTestClient.post().uri("/assessments/$assessmentErrorsUUID/complete")
         .header(RequestData.USER_AREA_HEADER_NAME, "WWS")
-        .headers(setAuthorisation())
+        .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
         .exchange()
         .expectStatus().isOk
         .expectBody<AssessmentEpisodeDto>()
@@ -505,7 +505,7 @@ class AssessmentControllerTest : IntegrationTest() {
     fun `should return bad request when no user area header is set when completing assessment`() {
       val roshAssessmentUuid = UUID.fromString("aa47e6c4-e41f-467c-95e7-fcf5ffd422f5")
       webTestClient.post().uri("/assessments/$roshAssessmentUuid/complete")
-        .headers(setAuthorisation())
+        .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
         .exchange()
         .expectStatus().isBadRequest
         .expectBody<ErrorResponse>()
@@ -518,7 +518,7 @@ class AssessmentControllerTest : IntegrationTest() {
 
   private fun fetchAssessmentSubject(assessmentUuid: String): AssessmentSubjectDto {
     val subject = webTestClient.get().uri("/assessments/$assessmentUuid/subject")
-      .headers(setAuthorisation())
+      .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
       .exchange()
       .expectStatus().isOk
       .expectBody<AssessmentSubjectDto>()
@@ -529,7 +529,7 @@ class AssessmentControllerTest : IntegrationTest() {
 
   private fun fetchEpisodes(assessmentUuid: String): List<AssessmentEpisodeDto> {
     return webTestClient.get().uri("/assessments/$assessmentUuid/episodes")
-      .headers(setAuthorisation())
+      .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
       .exchange()
       .expectStatus().isOk
       .expectBody<List<AssessmentEpisodeDto>>()
@@ -543,7 +543,7 @@ class AssessmentControllerTest : IntegrationTest() {
 
   private fun fetchEpisode(assessmentUuid: String, episodeId: String): AssessmentEpisodeDto {
     return webTestClient.get().uri("/assessments/$assessmentUuid/episodes/$episodeId")
-      .headers(setAuthorisation())
+      .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
       .exchange()
       .expectStatus().isOk
       .expectBody<AssessmentEpisodeDto>()

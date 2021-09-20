@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -41,6 +42,7 @@ class AssessmentController(
       ApiResponse(responseCode = "200", description = "OK")
     ]
   )
+  @PreAuthorize("hasRole('ROLE_PROBATION')")
   fun createNewAssessment(@RequestBody createAssessmentDto: CreateAssessmentDto): AssessmentDto {
     return assessmentService.createNewAssessment(createAssessmentDto)
   }
@@ -53,6 +55,7 @@ class AssessmentController(
       ApiResponse(responseCode = "200", description = "OK")
     ]
   )
+  @PreAuthorize("hasRole('ROLE_PROBATION')")
   fun getAssessmentSubject(
     @Parameter(
       description = "Assessment UUID",
@@ -70,6 +73,7 @@ class AssessmentController(
       ApiResponse(responseCode = "200", description = "OK")
     ]
   )
+  @PreAuthorize("hasRole('ROLE_PROBATION')")
   fun createNewAssessmentEpisode(
     @Parameter(description = "Assessment UUID", required = true, example = "1234") @PathVariable assessmentUuid: UUID,
     @Parameter(
@@ -93,6 +97,7 @@ class AssessmentController(
       ApiResponse(responseCode = "200", description = "OK")
     ]
   )
+  @PreAuthorize("hasRole('ROLE_PROBATION')")
   fun getAllEpisodesForAssessment(
     @Parameter(
       description = "Assessment UUID",
@@ -111,6 +116,7 @@ class AssessmentController(
       ApiResponse(responseCode = "200", description = "OK")
     ]
   )
+  @PreAuthorize("hasRole('ROLE_PROBATION')")
   fun getCurrentEpisodeForAssessment(
     @Parameter(
       description = "Assessment ID",
@@ -130,6 +136,7 @@ class AssessmentController(
       ApiResponse(responseCode = "422", description = "The update couldn't be processed")
     ]
   )
+  @PreAuthorize("hasRole('ROLE_PROBATION')")
   fun updateAssessmentEpisode(
     @Parameter(description = "Assessment UUID", required = true, example = "1234") @PathVariable assessmentUuid: UUID,
     @Parameter(description = "Episode UUID", required = true) @PathVariable episodeUuid: UUID,
@@ -151,6 +158,7 @@ class AssessmentController(
       ApiResponse(responseCode = "422", description = "The table couldn't be processed")
     ]
   )
+  @PreAuthorize("hasRole('ROLE_PROBATION')")
   fun addTableEntryForCurrentEpisode(
     @Parameter(description = "Assessment UUID", required = true, example = "1234") @PathVariable assessmentUuid: UUID,
     @Parameter(description = "Table name", required = true) @PathVariable tableName: String,
@@ -173,6 +181,7 @@ class AssessmentController(
       ApiResponse(responseCode = "422", description = "The table couldn't be processed")
     ]
   )
+  @PreAuthorize("hasRole('ROLE_PROBATION')")
   fun updateTableEntryForCurrentEpisode(
     @Parameter(description = "Assessment UUID", required = true, example = "1234") @PathVariable assessmentUuid: UUID,
     @Parameter(description = "Table name", required = true) @PathVariable tableName: String,
@@ -196,6 +205,7 @@ class AssessmentController(
       ApiResponse(responseCode = "422", description = "The table couldn't be processed")
     ]
   )
+  @PreAuthorize("hasRole('ROLE_PROBATION')")
   fun deleteTableEntryForCurrentEpisode(
     @Parameter(description = "Assessment UUID", required = true, example = "1234") @PathVariable assessmentUuid: UUID,
     @Parameter(description = "Table name", required = true) @PathVariable tableName: String,
@@ -218,6 +228,7 @@ class AssessmentController(
       ApiResponse(responseCode = "422", description = "The table couldn't be processed")
     ]
   )
+  @PreAuthorize("hasRole('ROLE_PROBATION')")
   fun addTableEntryForEpisode(
     @Parameter(description = "Assessment UUID", required = true, example = "1234") @PathVariable assessmentUuid: UUID,
     @Parameter(description = "Episode UUID", required = true) @PathVariable episodeUuid: UUID,
@@ -241,6 +252,7 @@ class AssessmentController(
       ApiResponse(responseCode = "422", description = "The table couldn't be processed")
     ]
   )
+  @PreAuthorize("hasRole('ROLE_PROBATION')")
   fun updateTableEntryForEpisode(
     @Parameter(description = "Assessment UUID", required = true, example = "1234") @PathVariable assessmentUuid: UUID,
     @Parameter(description = "Episode UUID", required = true) @PathVariable episodeUuid: UUID,
@@ -265,6 +277,7 @@ class AssessmentController(
       ApiResponse(responseCode = "422", description = "The table couldn't be processed")
     ]
   )
+  @PreAuthorize("hasRole('ROLE_PROBATION')")
   fun deleteTableEntryForEpisode(
     @Parameter(description = "Assessment UUID", required = true, example = "1234") @PathVariable assessmentUuid: UUID,
     @Parameter(description = "Episode UUID", required = true) @PathVariable episodeUuid: UUID,
@@ -285,6 +298,7 @@ class AssessmentController(
       ApiResponse(responseCode = "422", description = "The update couldn't be processed")
     ]
   )
+  @PreAuthorize("hasRole('ROLE_PROBATION')")
   fun updateAssessmentEpisode(
     @Parameter(description = "Assessment UUID", required = true, example = "1234") @PathVariable assessmentUuid: UUID,
     @Parameter(description = "Episode Answers", required = true) @RequestBody episodeAnswers: UpdateAssessmentEpisodeDto
@@ -305,6 +319,7 @@ class AssessmentController(
       ApiResponse(responseCode = "422", description = "The update couldn't be processed")
     ]
   )
+  @PreAuthorize("hasRole('ROLE_PROBATION')")
   fun completeAssessmentEpisode(
     @Parameter(description = "Assessment UUID", required = true, example = "1234") @PathVariable assessmentUuid: UUID,
   ): ResponseEntity<AssessmentEpisodeDto> {
@@ -320,6 +335,7 @@ class AssessmentController(
       ApiResponse(responseCode = "200", description = "OK")
     ]
   )
+  @PreAuthorize("hasRole('ROLE_PROBATION')")
   fun getAssessmentSchema(
     @Parameter(
       description = "Assessment Schema Code",
@@ -338,6 +354,7 @@ class AssessmentController(
       ApiResponse(responseCode = "200", description = "OK")
     ]
   )
+  @PreAuthorize("hasRole('ROLE_PROBATION')")
   fun getAssessmentSchemaSummary(
     @Parameter(
       description = "Assessment Schema Code",
@@ -356,6 +373,7 @@ class AssessmentController(
       ApiResponse(responseCode = "200", description = "OK")
     ]
   )
+  @PreAuthorize("hasRole('ROLE_PROBATION')")
   fun getQuestionsForAssessmentSchemaCode(@PathVariable("assessmentSchemaCode") assessmentSchemaCode: String): List<GroupContentDto> {
     return assessmentSchemaService.getQuestionsForSchemaCode(AssessmentSchemaCode.valueOf(assessmentSchemaCode))
   }

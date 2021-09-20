@@ -57,7 +57,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
             assessmentSchemaCode = AssessmentSchemaCode.ROSH
           )
         )
-        .headers(setAuthorisation())
+        .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
         .exchange()
         .expectStatus().isBadRequest
         .expectBody<ErrorResponse>()
@@ -78,7 +78,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       val assessment = webTestClient.post().uri("/assessments")
         .bodyValue(dto)
         .header(RequestData.USER_AREA_HEADER_NAME, "WWS")
-        .headers(setAuthorisation())
+        .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
         .exchange()
         .expectStatus().isOk
         .expectBody<AssessmentDto>()
@@ -112,7 +112,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       val assessment = webTestClient.post().uri("/assessments")
         .bodyValue(dto)
         .header(RequestData.USER_AREA_HEADER_NAME, "WWS")
-        .headers(setAuthorisation())
+        .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
         .exchange()
         .expectStatus().isOk
         .expectBody<AssessmentDto>()
@@ -148,7 +148,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
             assessmentSchemaCode = AssessmentSchemaCode.ROSH
           )
         )
-        .headers(setAuthorisation())
+        .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
         .exchange()
         .expectStatus().isBadRequest
         .expectBody<ErrorResponse>()
@@ -169,7 +169,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       val assessment = webTestClient.post().uri("/assessments")
         .bodyValue(dto)
         .header(RequestData.USER_AREA_HEADER_NAME, "WWS")
-        .headers(setAuthorisation())
+        .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
         .exchange()
         .expectStatus().isOk
         .expectBody<AssessmentDto>()
@@ -199,7 +199,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
     fun `creates new episode on existing assessment`() {
       val episode = webTestClient.post().uri("/assessments/49c8d211-68dc-4692-a6e2-d58468127356/episodes")
         .bodyValue(CreateAssessmentEpisodeDto("Change of Circs", 1L, AssessmentSchemaCode.ROSH))
-        .headers(setAuthorisation())
+        .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
         .exchange()
         .expectStatus().isOk
         .expectBody<AssessmentEpisodeDto>()
@@ -225,7 +225,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
     return webTestClient.post().uri("/assessments")
       .bodyValue(dto)
       .header(RequestData.USER_AREA_HEADER_NAME, "WWS")
-      .headers(setAuthorisation())
+      .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
       .exchange()
       .expectStatus().isOk
       .expectBody<AssessmentDto>()
@@ -235,7 +235,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
 
   private fun fetchAssessmentSubject(assessmentUuid: UUID?): AssessmentSubjectDto? {
     val subject = webTestClient.get().uri("/assessments/$assessmentUuid/subject")
-      .headers(setAuthorisation())
+      .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
       .exchange()
       .expectStatus().isOk
       .expectBody<AssessmentSubjectDto>()
@@ -246,7 +246,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
 
   private fun fetchEpisodes(assessmentUuid: UUID?): List<AssessmentEpisodeDto>? {
     return webTestClient.get().uri("/assessments/$assessmentUuid/episodes")
-      .headers(setAuthorisation())
+      .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
       .exchange()
       .expectStatus().isOk
       .expectBody<List<AssessmentEpisodeDto>>()

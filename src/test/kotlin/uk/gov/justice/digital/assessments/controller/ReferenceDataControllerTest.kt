@@ -222,7 +222,7 @@ class ReferenceDataControllerTest : IntegrationTest() {
 
     private fun fetchCurrentEpisode(assessmentGuid: String): AssessmentEpisodeDto {
       return webTestClient.get().uri("/assessments/$assessmentGuid/episodes/current")
-        .headers(setAuthorisation())
+        .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
         .exchange()
         .expectStatus().isOk
         .expectBody<AssessmentEpisodeDto>()
