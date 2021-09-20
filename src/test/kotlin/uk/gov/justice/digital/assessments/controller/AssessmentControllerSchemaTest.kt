@@ -27,7 +27,7 @@ class AssessmentControllerSchemaTest : IntegrationTest() {
   @Test
   fun `get all reference questions and answers for assessment schema code`() {
     val groups = webTestClient.get().uri("/assessments/schema/ROSH")
-      .headers(setAuthorisation())
+      .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
       .exchange()
       .expectStatus().isOk
       .expectBody<GroupWithContentsDto>()
@@ -71,7 +71,7 @@ class AssessmentControllerSchemaTest : IntegrationTest() {
   @Test
   fun `section for top-level group for an assessment by assessment schema code`() {
     val assessmentGroup = webTestClient.get().uri("/assessments/schema/RSR/summary")
-      .headers(setAuthorisation())
+      .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
       .exchange()
       .expectStatus().isOk
       .expectBody<GroupSectionsDto>()
