@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.assessments.api
 
 import io.swagger.v3.oas.annotations.media.Schema
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import java.time.LocalDateTime
 import java.util.UUID
@@ -10,8 +11,8 @@ data class OasysAssessmentEpisodeDto(
   @Schema(description = "Episode UUID", example = "0e5e0848-6ab0-4b1b-a354-f7894913d8e4")
   val episodeUuid: UUID? = null,
 
-  @Schema(description = "Assessment UUID foreign key", example = "1234")
-  val assessmentUuid: UUID? = null,
+  @Schema(description = "Assessment where an episode belongs to")
+  val assessment: AssessmentDto? = null,
 
   @Schema(description = "Associated OASys assessment ID (OASysSetPK)", example = "1234")
   val oasysAssessmentId: Long? = null,
@@ -32,12 +33,15 @@ data class OasysAssessmentEpisodeDto(
     ): OasysAssessmentEpisodeDto {
       return OasysAssessmentEpisodeDto(
         episode.episodeUuid,
-        episode.assessment?.assessmentUuid,
+        episode.assessment.toAssessmentDto(),
         episode.oasysSetPk,
         episode.createdDate,
         episode.endDate,
         answers
       )
+    }
+    private fun AssessmentEntity?.toAssessmentDto(): AssessmentDto? {
+      return this?.let { AssessmentDto(it.assessmentUuid, it.createdDate, it.completedDate) }
     }
   }
 }

@@ -85,7 +85,6 @@ class AssessmentControllerCreateTest : IntegrationTest() {
         .returnResult()
         .responseBody
 
-      assertThat(assessment?.assessmentId).isNotNull
       assertThat(assessment?.assessmentUuid).isNotNull
       assertThat(assessment?.createdDate).isEqualToIgnoringMinutes(LocalDateTime.now())
 
@@ -177,7 +176,6 @@ class AssessmentControllerCreateTest : IntegrationTest() {
         .returnResult()
         .responseBody
 
-      assertThat(assessment?.assessmentId).isNotNull
       assertThat(assessment?.assessmentUuid).isNotNull
       assertThat(assessment?.createdDate).isEqualToIgnoringMinutes(LocalDateTime.now())
     }
@@ -189,7 +187,6 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       val existingAssessment = createDeliusAssessment(existingCrn, existingEventId)
       val assessmentDto = createDeliusAssessment(existingCrn, existingEventId)
 
-      assertThat(assessmentDto?.assessmentId).isEqualTo(existingAssessment?.assessmentId)
       assertThat(assessmentDto?.assessmentUuid).isEqualTo(existingAssessment?.assessmentUuid)
       assertThat(assessmentDto?.createdDate).isEqualTo(existingAssessment?.createdDate)
     }

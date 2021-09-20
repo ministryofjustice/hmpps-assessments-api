@@ -9,9 +9,6 @@ import java.util.UUID
 
 data class AssessmentEpisodeDto(
 
-  @Schema(description = "Episode primary key", example = "1234")
-  val episodeId: Long? = null,
-
   @Schema(description = "Episode UUID", example = "0e5e0848-6ab0-4b1b-a354-f7894913d8e4")
   val episodeUuid: UUID? = null,
 
@@ -72,7 +69,6 @@ data class AssessmentEpisodeDto(
       predictors: Collection<PredictorScoresDto> = emptyList(),
     ): AssessmentEpisodeDto {
       return AssessmentEpisodeDto(
-        episode.episodeId,
         episode.episodeUuid,
         episode.assessment?.assessmentUuid,
         episode.oasysSetPk,

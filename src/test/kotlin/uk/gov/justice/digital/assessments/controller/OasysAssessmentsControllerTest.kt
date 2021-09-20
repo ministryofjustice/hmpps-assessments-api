@@ -7,6 +7,7 @@ import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.context.jdbc.SqlConfig
 import org.springframework.test.context.jdbc.SqlGroup
 import org.springframework.test.web.reactive.server.expectBody
+import uk.gov.justice.digital.assessments.api.AssessmentDto
 import uk.gov.justice.digital.assessments.api.EpisodeOasysAnswerDto
 import uk.gov.justice.digital.assessments.api.OasysAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
@@ -41,8 +42,10 @@ class OasysAssessmentsControllerTest : IntegrationTest() {
 
     assertThat(latestClosedEpisode).isNotNull
     assertThat(latestClosedEpisode.episodeUuid).isEqualTo(UUID.fromString("f7765470-efd5-4589-8fdd-4570360e5289"))
-    assertThat(latestClosedEpisode.assessmentUuid).isEqualTo(
-      UUID.fromString("49c8d211-68dc-4692-a6e2-d58468127356")
+    assertThat(latestClosedEpisode.assessment).isEqualTo(
+      AssessmentDto(
+        UUID.fromString("49c8d211-68dc-4692-a6e2-d58468127356"), LocalDateTime.of(2019, 11, 14, 9, 0)
+      )
     )
     assertThat(latestClosedEpisode.created).isEqualTo(
       LocalDateTime.of(2019, 11, 14, 9, 0)

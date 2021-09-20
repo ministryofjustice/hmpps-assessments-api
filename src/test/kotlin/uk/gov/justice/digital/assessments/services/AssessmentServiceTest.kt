@@ -80,6 +80,7 @@ class AssessmentServiceTest {
       val assessment: AssessmentEntity = mockk()
       every { assessment.assessmentUuid } returns assessmentUuid
       every { assessment.assessmentId } returns 0
+      val episodeUuid1 = UUID.randomUUID()
       every {
         assessment.newEpisode(
           "Change of Circs",
@@ -93,6 +94,7 @@ class AssessmentServiceTest {
         )
       } returns AssessmentEpisodeEntity(
         episodeId = episodeId1,
+        episodeUuid = episodeUuid1,
         assessment = assessment,
         createdDate = LocalDateTime.now(),
         assessmentSchemaCode = AssessmentSchemaCode.ROSH,
@@ -119,7 +121,7 @@ class AssessmentServiceTest {
       )
 
       assertThat(episodeDto.assessmentUuid).isEqualTo(assessmentUuid)
-      assertThat(episodeDto.episodeId).isEqualTo(episodeId1)
+      assertThat(episodeDto.episodeUuid).isEqualTo(episodeUuid1)
     }
 
     @Test
@@ -161,6 +163,7 @@ class AssessmentServiceTest {
 
     @Test
     fun `get latest assessment episode`() {
+      val episodeUuid2 = UUID.randomUUID()
       val assessment = AssessmentEntity(
         assessmentId = assessmentId,
         episodes = mutableListOf(
@@ -173,6 +176,7 @@ class AssessmentServiceTest {
           ),
           AssessmentEpisodeEntity(
             episodeId = episodeId2,
+            episodeUuid= episodeUuid2,
             changeReason = "Change of Circs 2",
             createdDate = LocalDateTime.now(),
             assessmentSchemaCode = AssessmentSchemaCode.ROSH
@@ -183,7 +187,7 @@ class AssessmentServiceTest {
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
 
       val episodeDto = assessmentsService.getCurrentAssessmentEpisode(assessmentUuid)
-      assertThat(episodeDto.episodeId).isEqualTo(episodeId2)
+      assertThat(episodeDto.episodeUuid).isEqualTo(episodeUuid2)
     }
 
     @Test
