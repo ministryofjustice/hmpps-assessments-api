@@ -25,7 +25,7 @@ import java.util.UUID
     executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
   )
 )
-@AutoConfigureWebTestClient(timeout = "600000")
+@AutoConfigureWebTestClient
 class OasysAssessmentsControllerTest : IntegrationTest() {
 
   @Test
