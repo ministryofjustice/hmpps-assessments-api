@@ -8,12 +8,6 @@ class SubjectDto(
   @Schema(description = "Subject UUID", example = "0e5e0848-6ab0-4b1b-a354-f7894913d8e4")
   val subjectUuid: UUID = UUID.randomUUID(),
 
-  @Schema(description = "Source of subject data", example = "DELIUS")
-  val source: String,
-
-  @Schema(description = "Source of subject data id", example = "123")
-  val sourceId: String,
-
   @Schema(description = "Subject name", example = "Gary Hart")
   val name: String? = null,
 

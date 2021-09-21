@@ -37,8 +37,6 @@ data class AssessmentDto(
       return this?.let {
         SubjectDto(
           it.subjectUuid,
-          it.source,
-          it.sourceId,
           it.name,
           it.pnc,
           it.crn,
@@ -49,5 +47,3 @@ data class AssessmentDto(
     }
   }
 }
-
-
