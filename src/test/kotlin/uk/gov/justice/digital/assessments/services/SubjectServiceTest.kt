@@ -25,9 +25,7 @@ class SubjectServiceTest {
     val subject = SubjectEntity(
       oasysOffenderPk = 1L,
       dateOfBirth = LocalDate.of(1989, 1, 1),
-      crn = "X1345",
-      source = "DELIUS",
-      sourceId = "128647"
+      crn = "X1345"
     )
     every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns AssessmentEntity(
       subject_ = mutableListOf(

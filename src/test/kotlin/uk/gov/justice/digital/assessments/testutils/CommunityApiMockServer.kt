@@ -7,9 +7,6 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.http.HttpHeader
 import com.github.tomakehurst.wiremock.http.HttpHeaders
-import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityConvictionDto
-import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenceDetail
-import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenceDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.IDs
 import uk.gov.justice.digital.assessments.restclient.communityapi.OffenderAlias
@@ -34,6 +31,15 @@ class CommunityApiMockServer : WireMockServer(9096) {
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
             .withBody(mapToJson(offenderDto("X1346")))
+        )
+    )
+
+    stubFor(
+      WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/DX5678A/all"))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withBody(mapToJson(offenderDto("DX5678A")))
         )
     )
 
@@ -97,13 +103,21 @@ class CommunityApiMockServer : WireMockServer(9096) {
             .withBody(convictionsJson)
         )
     )
+    stubFor(
+      WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/DX5678A/convictions"))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withBody(convictionsJson)
+        )
+    )
 
     stubFor(
       WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/X1355/convictions"))
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
-            .withBody(mapToJson(listOf(convictionDto())))
+            .withBody(convictionsJson)
         )
     )
   }
@@ -119,7 +133,7 @@ class CommunityApiMockServer : WireMockServer(9096) {
     )
   }
 
-  internal fun mapToJson(dto: Any): String {
+  private fun mapToJson(dto: Any): String {
     return objectMapper.writeValueAsString(dto)
   }
 
@@ -148,146 +162,80 @@ class CommunityApiMockServer : WireMockServer(9096) {
     )
   }
 
-  private fun convictionDto(): CommunityConvictionDto {
-    return CommunityConvictionDto(
-      convictionId = 2500000001,
-      index = 1,
-      offences = listOf(
-        CommunityOffenceDto(
-          offenceId = "M2500000001",
-          mainOffence = true,
-          detail = CommunityOffenceDetail(
-            mainCategoryCode = "116",
-            mainCategoryDescription = "Fishery Laws",
-            subCategoryCode = "00",
-            subCategoryDescription = "Fishery Laws",
-          )
-        )
-      )
-    )
-  }
-
   private val convictionsJson = """[
     {
-      "convictionId": 2500000001,
-      "index": "1",
-      "active": true,
-      "inBreach": false,
-      "failureToComplyCount": 0,
-      "awaitingPsr": true,
-      "referralDate": "2014-08-25",
-      "offences": [
-        {
-          "offenceId": "M2500000001",
-          "mainOffence": true,
-          "detail": {
-            "code": "11600",
-            "description": "Fishery Laws - 11600",
-            "mainCategoryCode": "116",
-            "mainCategoryDescription": "Fishery Laws",
-            "mainCategoryAbbreviation": "Fishery Laws",
-            "ogrsOffenceCategory": "Other offence",
-            "subCategoryCode": "00",
-            "subCategoryDescription": "Fishery Laws",
-            "form20Code": "91"
-          },
-          "offenceDate": "2013-08-25T00:00:00",
-          "offenceCount": 1,
-          "offenderId": 2500000501,
-          "createdDatetime": "1900-01-01T00:00:00",
-          "lastUpdatedDatetime": "1900-01-01T00:00:00"
+        "convictionId": 2500000223,
+        "index": "1",
+        "active": true,
+        "inBreach": false,
+        "failureToComplyCount": 0,
+        "awaitingPsr": false,
+        "referralDate": "2013-10-26",
+        "offences": [
+            {
+                "offenceId": "M2500000223",
+                "mainOffence": true,
+                "detail": {
+                    "code": "04600",
+                    "description": "Stealing from shops and stalls (shoplifting) - 04600",
+                    "mainCategoryCode": "046",
+                    "mainCategoryDescription": "Stealing from shops and stalls (shoplifting)",
+                    "mainCategoryAbbreviation": "Stealing from shops and stalls (shoplifting)",
+                    "ogrsOffenceCategory": "Theft (Non-motor)",
+                    "subCategoryCode": "00",
+                    "subCategoryDescription": "Stealing from shops and stalls (shoplifting)",
+                    "form20Code": "52"
+                },
+                "offenceDate": "2013-03-06T00:00:00",
+                "offenceCount": 1,
+                "offenderId": 2500000784,
+                "createdDatetime": "1900-01-01T00:00:00",
+                "lastUpdatedDatetime": "1900-01-01T00:00:00"
+            }
+        ],
+        "sentence": {
+            "sentenceId": 2500000179,
+            "description": "CJA - Community Order",
+            "originalLength": 12,
+            "originalLengthUnits": "Months",
+            "defaultLength": 12,
+            "lengthInDays": 365,
+            "unpaidWork": {
+                "minutesOrdered": 6000,
+                "minutesCompleted": 0,
+                "appointments": {
+                    "total": 0,
+                    "attended": 0,
+                    "acceptableAbsences": 0,
+                    "unacceptableAbsences": 0,
+                    "noOutcomeRecorded": 0
+                },
+                "status": "Being Worked"
+            },
+            "startDate": "2014-08-25",
+            "sentenceType": {
+                "code": "SP",
+                "description": "CJA - Community Order"
+            },
+            "failureToComplyLimit": 2
+        },
+        "latestCourtAppearanceOutcome": {
+            "code": "201",
+            "description": "CJA - Community Order"
+        },
+        "courtAppearance": {
+            "courtAppearanceId": 2500000265,
+            "appearanceDate": "2013-10-26T00:00:00",
+            "courtCode": "CWMBMC",
+            "courtName": "Cwmbran Magistrates Court",
+            "appearanceType": {
+                "code": "S",
+                "description": "Sentence"
+            },
+            "crn": "D001305"
         }
-    ],
-    "latestCourtAppearanceOutcome": {
-      "code": "101",
-      "description": "Adjourned - Pre-Sentence Report"
-    },
-    "courtAppearance": {
-      "courtAppearanceId": 2500000001,
-      "appearanceDate": "2014-09-08T00:00:00",
-      "courtCode": "BRRWCC",
-      "courtName": "Barrow Crown Court",
-      "appearanceType": {
-          "code": "T",
-          "description": "Trial/Adjournment"
-      },
-      "crn": "D001022"
     }
-    },
-    {
-      "convictionId": 2500000002,
-      "index": "2",
-      "active": true,
-      "inBreach": false,
-      "failureToComplyCount": 0,
-      "awaitingPsr": false,
-      "referralDate": "2014-08-25",
-      "offences": [
-        {
-          "offenceId": "M2500000002",
-          "mainOffence": true,
-          "detail": {
-            "code": "11600",
-            "description": "Fishery Laws - 11600",
-            "mainCategoryCode": "116",
-            "mainCategoryDescription": "Fishery Laws",
-            "mainCategoryAbbreviation": "Fishery Laws",
-            "ogrsOffenceCategory": "Other offence",
-            "subCategoryCode": "00",
-            "subCategoryDescription": "Fishery Laws",
-            "form20Code": "91"
-          },
-          "offenceDate": "2013-08-25T00:00:00",
-          "offenceCount": 1,
-          "offenderId": 2500000501,
-          "createdDatetime": "1900-01-01T00:00:00",
-          "lastUpdatedDatetime": "1900-01-01T00:00:00"
-        }
-      ],
-      "sentence": {
-        "sentenceId": 2500000000,
-        "description": "CJA - Community Order",
-        "originalLength": 12,
-        "originalLengthUnits": "Months",
-        "defaultLength": 12,
-        "lengthInDays": 365,
-        "unpaidWork": {
-          "minutesOrdered": 6000,
-          "minutesCompleted": 0,
-          "appointments": {
-            "total": 13,
-            "attended": 0,
-            "acceptableAbsences": 0,
-            "unacceptableAbsences": 0,
-            "noOutcomeRecorded": 13
-          },
-        "status": "Being Worked"
-        },
-        "startDate": "2014-08-25",
-        "sentenceType": {
-          "code": "SP",
-          "description": "CJA - Community Order"
-        },
-      "failureToComplyLimit": 2
-      },
-      "latestCourtAppearanceOutcome": {
-        "code": "201",
-        "description": "CJA - Community Order"
-      },
-      "courtAppearance": {
-        "courtAppearanceId": 2500000002,
-        "appearanceDate": "2014-08-25T00:00:00",
-        "courtCode": "ALLSHF",
-        "courtName": "Alloa Sheriff's Court",
-        "appearanceType": {
-          "code": "S",
-          "description": "Sentence"
-        },
-        "crn": "D001022"
-      }
-  }
-]
-"""
+]"""
 
   private val primaryIdsJson = """
     {

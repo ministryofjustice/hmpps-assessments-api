@@ -97,9 +97,7 @@ class OasysAssessmentUpdateServiceITTest() : IntegrationTest() {
             SubjectEntity(
               oasysOffenderPk = 1L,
               dateOfBirth = LocalDate.of(1989, 1, 1),
-              crn = "X1345",
-              source = "DELIUS",
-              sourceId = "128647"
+              crn = "X1345"
             )
           )
         ),

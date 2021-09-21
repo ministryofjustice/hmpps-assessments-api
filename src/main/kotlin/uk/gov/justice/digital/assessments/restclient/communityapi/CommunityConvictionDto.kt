@@ -1,12 +1,13 @@
 package uk.gov.justice.digital.assessments.restclient.communityapi
 
+import com.fasterxml.jackson.annotation.JsonCreator
 import java.time.LocalDate
 import javax.persistence.EntityNotFoundException
 
-data class CommunityConvictionDto(
+data class CommunityConvictionDto @JsonCreator constructor(
   val convictionId: Long? = null,
+  val sentence: Sentence? = null,
   val offences: List<CommunityOffenceDto>? = null,
-  val convictionDate: LocalDate? = null,
   val index: Long
 )
 
@@ -31,4 +32,8 @@ class CommunityOffenceDetail(
   val mainCategoryDescription: String,
   val subCategoryCode: String,
   val subCategoryDescription: String
+)
+
+class Sentence(
+  val startDate: LocalDate
 )

@@ -49,8 +49,6 @@ class OasysAssessmentServiceTest {
       oasysOffenderPk = 1L,
       dateOfBirth = LocalDate.of(1989, 1, 1),
       crn = crn,
-      source = "DELIUS",
-      sourceId = "128647",
       assessment = assessment
     )
     every { subjectRepository.findByCrn(crn) } returns subject

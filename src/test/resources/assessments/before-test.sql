@@ -10,10 +10,10 @@ INSERT INTO hmppsassessmentsapi.assessment  (assessment_uuid, created_date) VALU
 ('29c8d211-68dc-4692-a6e2-d58468127356', '2021-01-01 00:00'),
 ('49c8d211-68dc-4692-a6e2-d58468127356', '2019-11-14 09:00');
 
-INSERT INTO hmppsassessmentsapi.subject (subject_uuid, source, source_id, name, pnc, crn, date_of_birth, gender, created_date, assessment_uuid) VALUES
-('a4e73a2c-3f1c-4f83-88b6-dd3ce1b78530', 'COURT', 'courtCode|caseNumber', 'John Smith', 'dummy-pnc', 'X1346', '2001-01-01', 'MALE', '2019-11-14 08:30', '19c8d211-68dc-4692-a6e2-d58468127056'),
-('a5e74a2c-3f1c-4f83-88b6-dd3ce1b78531', 'COURT', 'courtCode|caseNumber2', 'Peter Smith', 'dummy-pnc', 'X1349', '2001-01-01', 'MALE', '2019-11-14 08:30', '29c8d211-68dc-4692-a6e2-d58468127356'),
-('a6e74a2c-3f4c-4f83-88b6-dd3ce1b78531', 'COURT', 'courtCode|caseNumber3', 'Paul Smith', 'dummy-pnc', 'X1355', '2001-01-01', 'MALE', '2019-11-14 08:30', '49c8d211-68dc-4692-a6e2-d58468127356');
+INSERT INTO hmppsassessmentsapi.subject (subject_uuid, name, pnc, crn, date_of_birth, gender, created_date, assessment_uuid) VALUES
+('a4e73a2c-3f1c-4f83-88b6-dd3ce1b78530', 'John Smith', 'dummy-pnc', 'X1346', '2001-01-01', 'MALE', '2019-11-14 08:30', '19c8d211-68dc-4692-a6e2-d58468127056'),
+('a5e74a2c-3f1c-4f83-88b6-dd3ce1b78531', 'Peter Smith', 'dummy-pnc', 'X1349', '2001-01-01', 'MALE', '2019-11-14 08:30', '29c8d211-68dc-4692-a6e2-d58468127356'),
+('a6e74a2c-3f4c-4f83-88b6-dd3ce1b78531', 'Paul Smith', 'dummy-pnc', 'X1355', '2001-01-01', 'MALE', '2019-11-14 08:30', '49c8d211-68dc-4692-a6e2-d58468127356');
 
 INSERT INTO hmppsassessmentsapi.assessed_episode  (episode_uuid, user_id, created_date, end_date, change_reason, assessment_schema_code, assessment_uuid, answers) VALUES
 ('d7aafe55-0cff-4f20-a57a-b66d79eb9c91', 'USER1', '2019-11-14 09:00', '2019-11-14 12:00','Change of Circs', 'ROSH','2e020e78-a81c-407f-bc78-e5f284e237e5', '{}'),
@@ -36,10 +36,10 @@ INSERT INTO hmppsassessmentsapi.assessment  (assessment_uuid, created_date) VALU
 ('6082265e-885d-4526-b713-77e59b70691e', '2020-1-14 09:00'),
 ('aa47e6c4-e41f-467c-95e7-fcf5ffd422f5', '2020-1-14 09:00');
 
-INSERT INTO hmppsassessmentsapi.subject (subject_uuid, source, source_id, name, oasys_offender_pk, pnc, crn, date_of_birth, gender, created_date, assessment_uuid) VALUES
-('7bce2323-fefa-42eb-b622-ec65747aae56', 'COURT', 'courtCode|caseNumber2', 'John Smith', 1, 'dummy-pnc', 'X1345', '2001-01-01', 'MALE', '2019-11-14 08:30', 'e399ed1b-0e77-4c68-8bbc-d2f0befece84'),
-('1146f644-dfb9-4e6d-9446-1be089538480', 'COURT', 'courtCode|caseNumber3', 'John Smith', 12345, 'dummy-pnc', 'dummy-crn-1', '1928-08-01', 'MALE', '2019-11-14 08:30', '6082265e-885d-4526-b713-77e59b70691e'),
-('f6023241-ba22-47e4-bc7d-f7adfde4276c', 'COURT', 'courtCode|caseNumber3', 'John Smith', 5, 'dummy-pnc', 'dummy-crn-2', '1928-08-01', 'MALE', '2019-11-14 08:30', 'aa47e6c4-e41f-467c-95e7-fcf5ffd422f5');
+INSERT INTO hmppsassessmentsapi.subject (subject_uuid, name, oasys_offender_pk, pnc, crn, date_of_birth, gender, created_date, assessment_uuid) VALUES
+('7bce2323-fefa-42eb-b622-ec65747aae56', 'John Smith', 1, 'dummy-pnc', 'X1345', '2001-01-01', 'MALE', '2019-11-14 08:30', 'e399ed1b-0e77-4c68-8bbc-d2f0befece84'),
+('1146f644-dfb9-4e6d-9446-1be089538480', 'John Smith', 12345, 'dummy-pnc', 'dummy-crn-1', '1928-08-01', 'MALE', '2019-11-14 08:30', '6082265e-885d-4526-b713-77e59b70691e'),
+('f6023241-ba22-47e4-bc7d-f7adfde4276c', 'John Smith', 5, 'dummy-pnc', 'dummy-crn-2', '1928-08-01', 'MALE', '2019-11-14 08:30', 'aa47e6c4-e41f-467c-95e7-fcf5ffd422f5');
 
 INSERT INTO hmppsassessmentsapi.assessed_episode  (episode_uuid, user_id, assessment_schema_code, oasys_set_pk, created_date, end_date, change_reason, assessment_uuid, answers) VALUES
 ('163cf020-ff53-4dc6-a15c-e93e8537d347', 'USER1', 'RSR', 1, '2021-01-01 00:00', null, 'More Change of Circs', 'e399ed1b-0e77-4c68-8bbc-d2f0befece84', '{"total_sanctions": ["10"], "any_sexual_offences": ["YES"],"current_sexual_offence": ["YES"],"current_offence_victim_stranger": ["YES"], "completed_interview": ["YES"], "date_first_sanction": ["2020-01-01"], "age_first_conviction": ["23"], "earliest_release_date": ["2021-11-01"], "total_violent_offences": ["8"], "date_current_conviction": ["2020-12-18"], "total_non_sexual_offences": [], "total_sexual_offences_adult": [5], "total_sexual_offences_child": [3], "most_recent_sexual_offence_date": ["2020-12-11"], "total_sexual_offences_child_image": [2], "total_non_contact_sexual_offences": [2], "binge_drinking": ["SIGNIFICANT_PROBLEMS"], "previous_arson": ["YES"], "use_of_alcohol": ["SIGNIFICANT_PROBLEMS"],"previous_robbery": ["YES"], "previous_wounding": ["YES"], "impulsivity_issues": ["SOME_PROBLEMS"],"previous_kidnapping": ["YES"],"temper_control_issues": ["SIGNIFICANT_PROBLEMS"], "unemployed_on_release": ["NOT_AVAILABLE_FOR_WORK"], "current_sexual_offence": ["YES"], "previous_murder_attempt": ["YES"], "previous_offence_weapon": ["YES"], "previous_criminal_damage": ["YES"], "evidence_domestic_violence": ["YES"], "previous_possession_firearm": ["YES"],"previous_aggravated_burglary": ["YES"], "perpetrator_domestic_violence": ["perpetrator"], "pro_criminal_attitudes": ["SOME_PROBLEMS"], "current_relationship_with_partner": ["SIGNIFICANT_PROBLEMS"]}'),
@@ -47,8 +47,8 @@ INSERT INTO hmppsassessmentsapi.assessed_episode  (episode_uuid, user_id, assess
 ('4f99ea18-6559-460e-9693-68f0f5e5bebc', 'USER1', 'ROSH', 1, '2019-11-14 09:00', null, 'More Change of Circs', 'aa47e6c4-e41f-467c-95e7-fcf5ffd422f5', '{}');
 
 /* Existing Delius Subject */
-INSERT INTO hmppsassessmentsapi.subject (subject_uuid, source, source_id, name, pnc, crn, date_of_birth, gender, created_date, assessment_uuid) VALUES
-('362aae3c-852d-4a39-80f4-f41adc249bae', 'DELIUS', '12345', 'John Smith', 'dummy-pnc', 'CRN1', '1928-08-01', 'MALE', '2019-11-14 08:30', '19c8d211-68dc-4692-a6e2-d58468127056');
+INSERT INTO hmppsassessmentsapi.subject (subject_uuid, name, pnc, crn, date_of_birth, gender, created_date, assessment_uuid) VALUES
+('362aae3c-852d-4a39-80f4-f41adc249bae', 'John Smith', 'dummy-pnc', 'CRN1', '1928-08-01', 'MALE', '2019-11-14 08:30', '19c8d211-68dc-4692-a6e2-d58468127056');
 
 INSERT INTO hmppsassessmentsschemas.grouping (group_uuid, group_code, heading, subheading, help_text, group_start, group_end)
 VALUES ('fb777be0-a183-4c83-8209-e7871df9c547', 'children_at_risk_of_serious_harm_test', 'Children at Risk of Serious Harm', null, null, '2020-11-30 14:50:00', null);
@@ -58,3 +58,7 @@ VALUES ('23c3e984-54c7-480f-b06c-7d000e2fb87c', 'question_code_for_test', '2020-
 
 INSERT INTO hmppsassessmentsschemas.question_group (question_group_uuid, content_uuid, content_type, group_uuid, display_order, mandatory, validation, read_only)
 VALUES ('c093a4ea-46a2-4b98-89cc-6bacaad4d401', '23c3e984-54c7-480f-b06c-7d000e2fb87c', 'question', 'fb777be0-a183-4c83-8209-e7871df9c547', 3, true, '{"mandatory":{"errorMessage":"Enter name","errorSummary":"Enter name"}}', false);
+
+/* Existing Court Subject */
+INSERT INTO hmppsassessmentsapi.subject (subject_uuid, name, pnc, crn, date_of_birth, gender, created_date, assessment_uuid) VALUES
+('85a1a9de-9afe-4b49-97b1-0d37fd89eee5', 'John Smith', 'dummy-pnc', 'DX12340A', '1928-08-01', 'MALE', '2019-11-14 08:30', '19c8d211-68dc-4692-a6e2-d58468127056');

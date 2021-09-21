@@ -42,20 +42,11 @@ data class AssessmentEpisodeDto(
   @Schema(description = "Results of predictors")
   val predictors: Collection<PredictorScoresDto> = emptyList(),
 
-  @Schema(description = "Offence category code")
-  val offenceCode: String? = null,
-
-  @Schema(description = "Description for offence category code")
-  val codeDescription: String? = null,
-
-  @Schema(description = "Offence sub-category code")
-  val offenceSubCode: String? = null,
-
-  @Schema(description = "Description for offence sub-category code")
-  val subCodeDescription: String? = null,
+  @Schema(description = "Offence codes")
+  val offence: OffenceDto,
 
   @Schema(description = "Tables associated with this episode")
-  val tables: Tables = mutableMapOf(),
+  val tables: Tables = mutableMapOf()
 ) {
   companion object {
 
@@ -80,11 +71,8 @@ data class AssessmentEpisodeDto(
         errors?.pageErrors,
         errors?.assessmentErrors,
         predictors,
-        episode.offenceCode,
-        episode.codeDescription,
-        episode.offenceSubCode,
-        episode.subCodeDescription,
-        episode.tables ?: mutableMapOf(),
+        OffenceDto.from(episode.offence),
+        episode.tables ?: mutableMapOf()
       )
     }
   }

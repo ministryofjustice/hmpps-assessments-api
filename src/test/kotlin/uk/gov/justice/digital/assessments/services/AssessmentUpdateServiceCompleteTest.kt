@@ -92,9 +92,7 @@ class AssessmentUpdateServiceCompleteTest {
     val subject = SubjectEntity(
       oasysOffenderPk = 9999,
       dateOfBirth = LocalDate.of(1989, 1, 1),
-      crn = "X1345",
-      source = "DELIUS",
-      sourceId = "128647"
+      crn = "X1345"
     )
     val episodes = mutableListOf<AssessmentEpisodeEntity>()
     val assessment = AssessmentEntity(

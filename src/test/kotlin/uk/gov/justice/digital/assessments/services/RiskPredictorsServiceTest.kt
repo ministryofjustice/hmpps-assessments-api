@@ -554,9 +554,7 @@ class RiskPredictorsServiceTest {
         oasysOffenderPk = 9999,
         dateOfBirth = LocalDate.of(2001, 1, 1),
         gender = "MALE",
-        crn = "X1345",
-        source = "DELIUS",
-        sourceId = "128647"
+        crn = "X1345"
       )
 
       assertThrows<EntityNotFoundException> {
@@ -596,9 +594,7 @@ class RiskPredictorsServiceTest {
         oasysOffenderPk = 9999,
         dateOfBirth = LocalDate.of(2001, 1, 1),
         gender = "FEMALE",
-        crn = "X1345",
-        source = "DELIUS",
-        sourceId = "128647"
+        crn = "X1345"
       )
 
       val results = predictorService.getPredictorResults(assessmentEpisode, final)
@@ -668,9 +664,7 @@ class RiskPredictorsServiceTest {
         oasysOffenderPk = 9999,
         dateOfBirth = LocalDate.of(2001, 1, 1),
         gender = "FEMALE",
-        crn = "X1345",
-        source = "DELIUS",
-        sourceId = "128647"
+        crn = "X1345"
       )
 
       val results = predictorService.getPredictorResults(episodeUuid, final)
