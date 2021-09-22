@@ -151,23 +151,14 @@ class AssessmentService(
     if (eventId == null || crn.isNullOrEmpty() || assessmentSchemaCode == null) {
       throw IllegalStateException("Unable to create OASys Assessment with assessment type: $assessmentSchemaCode, eventId: $eventId, crn: $crn")
     }
-<<<<<<< Updated upstream
     val arnAssessment = getOrCreateAssessment(crn, eventId)
-=======
-     val arnAssessment = getOrCreateAssessment(crn, eventId)
->>>>>>> Stashed changes
     val (oasysOffenderPk, oasysSetPK) = oasysAssessmentUpdateService.createOffenderAndOasysAssessment(
       crn = crn,
       deliusEventId = eventId,
       assessmentSchemaCode = assessmentSchemaCode
     )
-<<<<<<< Updated upstream
     // set oasysOffenderPk in Subject
     // subjectRepository.save(arnAssessment.subject(oasysOffenderPk = oasysOffenderPk))
-=======
-    //set oasysOffenderPk in Subject
-    //subjectRepository.save(arnAssessment.subject(oasysOffenderPk = oasysOffenderPk))
->>>>>>> Stashed changes
     createPrepopulatedEpisode(
       arnAssessment,
       "",
