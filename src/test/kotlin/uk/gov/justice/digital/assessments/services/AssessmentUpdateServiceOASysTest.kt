@@ -505,7 +505,7 @@ class AssessmentUpdateServiceOASysTest {
     val assessment = AssessmentEntity(
       assessmentId = assessmentId,
       episodes = episodes,
-      subject_ = mutableListOf(subject)
+      subject = subject
     )
 
     episodes.add(
@@ -537,13 +537,12 @@ class AssessmentUpdateServiceOASysTest {
       answers = answers,
       createdDate = LocalDateTime.now(),
       assessment = AssessmentEntity(
-        subject_ = mutableListOf(
-          SubjectEntity(
-            oasysOffenderPk = 1,
-            subjectUuid = UUID.randomUUID(),
-            dateOfBirth = LocalDate.of(1989, 1, 1),
-            crn = "X1345"
-          )
+        subject =
+        SubjectEntity(
+          oasysOffenderPk = 1,
+          subjectUuid = UUID.randomUUID(),
+          dateOfBirth = LocalDate.of(1989, 1, 1),
+          crn = "X1345"
         )
       )
     )

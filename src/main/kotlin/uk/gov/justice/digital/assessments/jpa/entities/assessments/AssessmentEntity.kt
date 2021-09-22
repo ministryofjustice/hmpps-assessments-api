@@ -3,17 +3,17 @@ package uk.gov.justice.digital.assessments.jpa.entities.assessments
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.utils.RequestData
 import java.io.Serializable
-import java.lang.IllegalStateException
 import java.time.LocalDateTime
 import java.util.UUID
 import javax.persistence.CascadeType
 import javax.persistence.Column
 import javax.persistence.Entity
-import javax.persistence.EntityNotFoundException
 import javax.persistence.FetchType
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
+import javax.persistence.JoinColumn
+import javax.persistence.ManyToOne
 import javax.persistence.OneToMany
 import javax.persistence.Table
 
@@ -38,10 +38,10 @@ class AssessmentEntity(
   @OneToMany(mappedBy = "assessment", cascade = [CascadeType.ALL])
   val episodes: MutableList<AssessmentEpisodeEntity> = mutableListOf(),
 
-  @OneToMany(mappedBy = "assessment", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
-  private val subject_: MutableList<SubjectEntity> = mutableListOf()
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "subject_uuid", referencedColumnName = "subject_uuid")
+  val subject: SubjectEntity? = null,
 ) : Serializable {
-  val subject get() = this.subject_.firstOrNull()
 
   fun getCurrentEpisode(): AssessmentEpisodeEntity? {
     return episodes.firstOrNull { !it.isClosed() }
@@ -73,12 +73,5 @@ class AssessmentEntity(
     )
     episodes.add(newEpisode)
     return newEpisode
-  }
-
-  fun addSubject(newSubject: SubjectEntity): SubjectEntity {
-    if (subject != null)
-      throw IllegalStateException("Can not add another subject to assessment $assessmentUuid")
-    subject_.add(newSubject)
-    return newSubject
   }
 }

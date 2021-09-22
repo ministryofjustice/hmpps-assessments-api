@@ -1,11 +1,11 @@
 SET search_path TO hmppsassessmentsapi;
 
-INSERT INTO assessment (assessment_uuid, created_date, completed_date )
-VALUES ('fb6b7c33-07fc-4c4c-a009-8d60f66952c4', '2021-01-01 08:11:53.177108', null)
-ON CONFLICT DO NOTHING;
+insert into subject (subject_uuid, name, pnc, crn, date_of_birth, gender, created_date, oasys_offender_pk) values
+('fac28f68-0012-46b9-8de8-6ff2bdbe1c22', 'Gary Hart', null, 'X259950', '1977-08-15', 'MALE', '2021-07-12 16:42:06', 7308807)
+    ON CONFLICT DO NOTHING;
 
-insert into subject (subject_uuid, name, pnc, crn, date_of_birth, gender, created_date, assessment_uuid, oasys_offender_pk) values
-('fac28f68-0012-46b9-8de8-6ff2bdbe1c22', 'Gary Hart', null, 'X259950', '1977-08-15', 'MALE', '2021-07-12 16:42:06', 'fb6b7c33-07fc-4c4c-a009-8d60f66952c4', 7308807)
+INSERT INTO assessment (assessment_uuid, subject_uuid, created_date, completed_date )
+VALUES ('fb6b7c33-07fc-4c4c-a009-8d60f66952c4', 'fac28f68-0012-46b9-8de8-6ff2bdbe1c22', '2021-01-01 08:11:53.177108', null)
 ON CONFLICT DO NOTHING;
 
 INSERT INTO offence (offence_uuid, source, source_id, offence_code, code_description, offence_subcode, subcode_description, sentence_date)
@@ -17,12 +17,12 @@ VALUES ('7231b3e7-f002-4a53-b398-fcd34c1d3e97', 'AALONSO', '2021-01-01 08:11:53.
 ON CONFLICT DO NOTHING;
 
 -- RSR assessment
-INSERT INTO assessment (assessment_uuid, created_date, completed_date )
-VALUES ('6f3f2c4a-38ac-49ce-b790-70bc170fe553', '2021-01-01 08:11:53.177108', null)
+insert into subject (subject_uuid, name, pnc, crn, date_of_birth, gender, created_date) values
+('087bdec0-98de-4c86-af3d-2d05ff978007', 'Gary Hart', null, 'X259951', '1977-08-15', 'MALE', '2021-07-12 16:42:06')
 ON CONFLICT DO NOTHING;
 
-insert into subject (subject_uuid, name, pnc, crn, date_of_birth, gender, created_date, assessment_uuid) values
-('087bdec0-98de-4c86-af3d-2d05ff978007', 'Gary Hart', null, 'X259951', '1977-08-15', 'MALE', '2021-07-12 16:42:06', '6f3f2c4a-38ac-49ce-b790-70bc170fe553')
+INSERT INTO assessment (assessment_uuid, subject_uuid, created_date, completed_date )
+VALUES ('6f3f2c4a-38ac-49ce-b790-70bc170fe553', '087bdec0-98de-4c86-af3d-2d05ff978007', '2021-01-01 08:11:53.177108', null)
 ON CONFLICT DO NOTHING;
 
 INSERT INTO offence (offence_uuid, source, source_id, offence_code, code_description, offence_subcode, subcode_description, sentence_date)

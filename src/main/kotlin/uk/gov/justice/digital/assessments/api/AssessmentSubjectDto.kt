@@ -5,11 +5,8 @@ import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.Period
-import java.util.UUID
 
 class AssessmentSubjectDto(
-  @Schema(description = "Assessment UUID", example = "0e5e0848-6ab0-4b1b-a354-f7894913d8e4")
-  val assessmentUuid: UUID? = null,
 
   @Schema(description = "Subject name", example = "John Smith")
   val name: String? = null,
@@ -35,7 +32,6 @@ class AssessmentSubjectDto(
     fun from(subject: SubjectEntity?): AssessmentSubjectDto? {
       if (subject == null) return null
       return AssessmentSubjectDto(
-        subject.assessment?.assessmentUuid,
         subject.name,
         subject.pnc,
         subject.crn,

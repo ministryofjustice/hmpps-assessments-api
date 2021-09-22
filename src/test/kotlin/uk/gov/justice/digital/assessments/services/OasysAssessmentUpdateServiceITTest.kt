@@ -32,7 +32,7 @@ class OasysAssessmentUpdateServiceITTest() : IntegrationTest() {
   @Test
   fun `Trying to push to Create OASys Assessment that should not be pushed into Oasys returns null`() {
     val returnAssessmentPk =
-      oasysAssessmentUpdateService.createOasysAssessment(
+      oasysAssessmentUpdateService.createOffenderAndOasysAssessment(
         crn = "DX12340A",
         assessmentSchemaCode = AssessmentSchemaCode.RSR
       )
@@ -59,7 +59,7 @@ class OasysAssessmentUpdateServiceITTest() : IntegrationTest() {
   @Test
   fun `Trying to push to Create OASys Assessment that should be pushed into Oasys returns the assessment and offender created`() {
     val returnAssessmentPk =
-      oasysAssessmentUpdateService.createOasysAssessment(
+      oasysAssessmentUpdateService.createOffenderAndOasysAssessment(
         crn = "DX12340A",
         assessmentSchemaCode = AssessmentSchemaCode.ROSH
       )
@@ -93,12 +93,11 @@ class OasysAssessmentUpdateServiceITTest() : IntegrationTest() {
       AssessmentEpisodeEntity(
         episodeUuid = episodeUuid,
         assessment = AssessmentEntity(
-          subject_ = mutableListOf(
-            SubjectEntity(
-              oasysOffenderPk = 1L,
-              dateOfBirth = LocalDate.of(1989, 1, 1),
-              crn = "X1345"
-            )
+          subject =
+          SubjectEntity(
+            oasysOffenderPk = 1L,
+            dateOfBirth = LocalDate.of(1989, 1, 1),
+            crn = "X1345"
           )
         ),
         episodeId = episodeId2,

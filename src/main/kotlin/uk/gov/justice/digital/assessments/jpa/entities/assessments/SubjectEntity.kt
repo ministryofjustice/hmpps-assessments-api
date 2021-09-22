@@ -6,11 +6,11 @@ import java.time.LocalDateTime
 import java.util.UUID
 import javax.persistence.Column
 import javax.persistence.Entity
+import javax.persistence.FetchType
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
-import javax.persistence.JoinColumn
-import javax.persistence.ManyToOne
+import javax.persistence.OneToMany
 import javax.persistence.Table
 
 @Entity
@@ -45,7 +45,11 @@ class SubjectEntity(
   @Column(name = "created_date")
   val createdDate: LocalDateTime? = LocalDateTime.now(),
 
-  @ManyToOne
-  @JoinColumn(name = "assessment_uuid", referencedColumnName = "assessment_uuid")
-  val assessment: AssessmentEntity? = null,
-) : Serializable
+  @OneToMany(mappedBy = "subject", fetch = FetchType.LAZY)
+  val assessments: Collection<AssessmentEntity>? = emptyList(),
+) : Serializable {
+
+  fun getCurrentAssessment(): AssessmentEntity? {
+    return assessments?.maxByOrNull { it.createdDate }
+  }
+}

@@ -26,6 +26,7 @@ import uk.gov.justice.digital.assessments.restclient.courtcaseapi.CourtCase
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import uk.gov.justice.digital.assessments.utils.RequestData
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.UUID
 
 @ExtendWith(MockKExtension::class)
@@ -77,7 +78,13 @@ class AssessmentServiceCreateTest {
     fun `create new offender with new assessment from delius event id and crn`() {
       every { subjectRepository.findByCrn(crn) } returns null
       every { offenderService.getOffender("X12345") } returns OffenderDto(dateOfBirth = LocalDate.of(1989, 1, 1))
-      every { oasysAssessmentUpdateService.createOasysAssessment(crn, eventId, assessmentSchemaCode) } returns Pair(
+      every {
+        oasysAssessmentUpdateService.createOffenderAndOasysAssessment(
+          crn,
+          eventId,
+          assessmentSchemaCode
+        )
+      } returns Pair(
         oasysOffenderPk,
         oasysSetPk
       )
@@ -88,6 +95,13 @@ class AssessmentServiceCreateTest {
         subCodeDescription = "Sub-code description"
       )
       every { episodeService.prepopulate(any()) } returnsArgument 0
+      every { subjectRepository.save(any()) } returns SubjectEntity(
+        name = "name",
+        pnc = "PNC",
+        crn = "X12345",
+        dateOfBirth = LocalDate.of(1989, 1, 1),
+        createdDate = LocalDateTime.now(),
+      )
       every { assessmentRepository.save(any()) } returns AssessmentEntity(assessmentId = assessmentId)
 
       assessmentsService.createNewAssessment(
@@ -104,10 +118,25 @@ class AssessmentServiceCreateTest {
     fun `return existing assessment from delius event id and crn if one already exists`() {
       every { subjectRepository.findByCrn(crn) } returns
         SubjectEntity(
-          assessment = AssessmentEntity(assessmentId = assessmentId, assessmentUuid = assessmentUuid),
+          assessments = listOf(AssessmentEntity(assessmentId = assessmentId, assessmentUuid = assessmentUuid)),
           dateOfBirth = LocalDate.of(1989, 1, 1),
-          crn = "X1345"
+          crn = crn
         )
+      every { offenderService.getOffence(crn, eventId) } returns OffenceDto(
+        offenceCode = "Code",
+        codeDescription = "Code description",
+        offenceSubCode = "Sub-code",
+        subCodeDescription = "Sub-code description"
+      )
+      every { episodeService.prepopulate(any()) } returnsArgument 0
+
+      every {
+        oasysAssessmentUpdateService.createOffenderAndOasysAssessment(
+          crn,
+          eventId,
+          assessmentSchemaCode
+        )
+      } returns Pair(oasysOffenderPk, oasysSetPk)
 
       val assessmentDto =
         assessmentsService.createNewAssessment(
@@ -151,13 +180,20 @@ class AssessmentServiceCreateTest {
     @Test
     fun `create new assessment from court`() {
       every { subjectRepository.findByCrn(crn) } returns null
+      every { subjectRepository.save(any()) } returns SubjectEntity(
+        name = "name",
+        pnc = "PNC",
+        crn = crn,
+        dateOfBirth = LocalDate.of(1989, 1, 1),
+        createdDate = LocalDateTime.now(),
+      )
       every { assessmentRepository.save(any()) } returns AssessmentEntity(assessmentId = assessmentId)
       every { courtCaseRestClient.getCourtCase(courtCode, caseNumber) } returns CourtCase(
         crn = crn,
         defendantDob = LocalDate.of(1989, 1, 1)
       )
       every {
-        oasysAssessmentUpdateService.createOasysAssessment(
+        oasysAssessmentUpdateService.createOffenderAndOasysAssessment(
           crn = crn,
           assessmentSchemaCode = assessmentSchemaCode
         )
@@ -186,7 +222,7 @@ class AssessmentServiceCreateTest {
     @Test
     fun `return existing assessment if one exists from court`() {
       every { subjectRepository.findByCrn(crn) } returns SubjectEntity(
-        assessment = AssessmentEntity(assessmentId = 1),
+        assessments = listOf(AssessmentEntity(assessmentId = 1)),
         dateOfBirth = LocalDate.of(1989, 1, 1),
         crn = "X1345"
       )

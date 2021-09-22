@@ -88,7 +88,6 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(assessment?.createdDate).isEqualToIgnoringMinutes(LocalDateTime.now())
 
       val subject = fetchAssessmentSubject(assessment?.assessmentUuid)
-      assertThat(subject?.assessmentUuid).isEqualTo(assessment?.assessmentUuid)
       assertThat(subject?.name).isEqualTo("John Smith")
       assertThat(subject?.dob).isEqualTo("1979-08-18")
       assertThat(subject?.crn).isEqualTo("DX5678A")
@@ -117,7 +116,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
         .returnResult()
         .responseBody
 
-      assertThat(assessment?.assessmentUuid).isEqualTo(UUID.fromString("19c8d211-68dc-4692-a6e2-d58468127056"))
+      assertThat(assessment?.assessmentUuid).isEqualTo(UUID.fromString("2e020e28-a21c-207f-bc78-e5f284e237e5"))
     }
   }
 
