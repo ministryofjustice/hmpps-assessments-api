@@ -15,29 +15,11 @@ import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.context.jdbc.SqlConfig
 import org.springframework.test.context.jdbc.SqlGroup
 import org.springframework.transaction.annotation.Transactional
-<<<<<<< Updated upstream
 import uk.gov.justice.digital.assessments.api.CreateAssessmentDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import uk.gov.justice.digital.assessments.utils.RequestData
-=======
-import uk.gov.justice.digital.assessments.api.AssessmentDto
-import uk.gov.justice.digital.assessments.api.AssessmentEpisodeDto
-import uk.gov.justice.digital.assessments.api.CreateAssessmentDto
-import uk.gov.justice.digital.assessments.api.PredictorScoresDto
-import uk.gov.justice.digital.assessments.api.Score
-import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
-import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
-import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.PredictorSubType
-import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.ScoreLevel
-import uk.gov.justice.digital.assessments.services.dto.PredictorType
-import uk.gov.justice.digital.assessments.testutils.IntegrationTest
-import uk.gov.justice.digital.assessments.utils.RequestData
-import java.math.BigDecimal
-import java.util.UUID
->>>>>>> Stashed changes
 
 @SqlGroup(
   Sql(
