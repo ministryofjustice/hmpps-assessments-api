@@ -7,9 +7,6 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.http.HttpHeader
 import com.github.tomakehurst.wiremock.http.HttpHeaders
-import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityConvictionDto
-import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenceDetail
-import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenceDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.IDs
 import uk.gov.justice.digital.assessments.restclient.communityapi.OffenderAlias
