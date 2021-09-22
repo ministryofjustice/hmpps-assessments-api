@@ -50,7 +50,6 @@ class AssessmentControllerTest : IntegrationTest() {
     fun `get the subject details for an assessment`() {
       val subject = fetchAssessmentSubject("19c8d211-68dc-4692-a6e2-d58468127056")
 
-      assertThat(subject.assessmentUuid).isEqualTo(UUID.fromString("19c8d211-68dc-4692-a6e2-d58468127056"))
       assertThat(subject.name).isEqualTo("John Smith")
       assertThat(subject.dob).isEqualTo("2001-01-01")
       assertThat(subject.age).isEqualTo(20)

@@ -329,7 +329,7 @@ class AssessmentService(
         sentenceDate = offence?.sentenceDate
       )
     )
-    episodeService.prepopulate(episode)
+    episodeService.prepopulatAssessmentControllerTest.ke(episode)
     log.info("New episode episode with id:${episode.episodeId} and uuid:${episode.episodeUuid} created for assessment ${assessment.assessmentUuid}")
     return episode
   }
