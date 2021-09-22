@@ -157,8 +157,7 @@ class AssessmentService(
       deliusEventId = eventId,
       assessmentSchemaCode = assessmentSchemaCode
     )
-    // set oasysOffenderPk in Subject
-    // subjectRepository.save(arnAssessment.subject(oasysOffenderPk = oasysOffenderPk))
+    subjectRepository.save(arnAssessment.subject?.copy(oasysOffenderPk = oasysOffenderPk))
     createPrepopulatedEpisode(
       arnAssessment,
       "",

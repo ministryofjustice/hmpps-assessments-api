@@ -15,7 +15,7 @@ import javax.persistence.Table
 
 @Entity
 @Table(name = "subject", schema = "hmppsassessmentsapi")
-class SubjectEntity(
+data class SubjectEntity(
   @Id
   @Column(name = "subject_id")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
