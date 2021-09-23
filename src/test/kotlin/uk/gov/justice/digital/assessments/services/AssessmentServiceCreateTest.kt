@@ -245,8 +245,9 @@ class AssessmentServiceCreateTest {
         )
       } returns Pair(oasysOffenderPk, oasysSetPk)
 
-      val updatedSubject = subject.copy(oasysOffenderPk = oasysOffenderPk)
+      val updatedSubject = subjectEntity.copy(oasysOffenderPk = oasysOffenderPk)
       every { subjectRepository.save(updatedSubject) } returns updatedSubject
+      every { episodeService.prepopulate(any()) } returnsArgument 0
 
       assessmentsService.createNewAssessment(
         CreateAssessmentDto(
