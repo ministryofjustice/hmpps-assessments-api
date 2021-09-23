@@ -175,7 +175,7 @@ class AssessmentServiceTest {
           ),
           AssessmentEpisodeEntity(
             episodeId = episodeId2,
-            episodeUuid= episodeUuid2,
+            episodeUuid = episodeUuid2,
             changeReason = "Change of Circs 2",
             createdDate = LocalDateTime.now(),
             assessmentSchemaCode = AssessmentSchemaCode.ROSH

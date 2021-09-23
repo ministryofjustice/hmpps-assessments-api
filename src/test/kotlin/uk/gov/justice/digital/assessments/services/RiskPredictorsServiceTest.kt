@@ -12,6 +12,7 @@ import org.junit.jupiter.api.assertThrows
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.OffenceEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.PredictorEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.PredictorFieldMappingEntity
@@ -522,7 +523,8 @@ class RiskPredictorsServiceTest {
     answers = answers,
     createdDate = LocalDateTime.now(),
     assessment = assessment,
-    assessmentSchemaCode = AssessmentSchemaCode.RSR
+    assessmentSchemaCode = AssessmentSchemaCode.RSR,
+    offence = OffenceEntity(offenceCode = "138", offenceSubCode = "00", sentenceDate = LocalDate.now())
   )
 
   private val assessmentEpisodeNoAnswers = AssessmentEpisodeEntity(
@@ -700,6 +702,27 @@ class RiskPredictorsServiceTest {
           )
         )
       )
+    }
+
+    @Test
+    fun `returns predictor scores for the assessment episode throw exception when offence is missing in episode`() {
+      val final = false
+      every { episodeRepository.findByEpisodeUuid(episodeUuid) } returns assessmentEpisode.copy(offence = null)
+      every { assessmentSchemaService.getPredictorsForAssessment(AssessmentSchemaCode.RSR) } returns predictors
+
+      every {
+        subjectService.getSubjectForAssessment(assessment.assessmentUuid)
+      } returns SubjectEntity(
+        oasysOffenderPk = 9999,
+        dateOfBirth = LocalDate.of(2001, 1, 1),
+        gender = "FEMALE",
+        crn = "X1345"
+      )
+
+      assertThrows<EntityNotFoundException> {
+        predictorService.getPredictorResults(episodeUuid, final)
+      }
+
     }
   }
 
