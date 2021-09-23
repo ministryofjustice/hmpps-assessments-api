@@ -12,6 +12,7 @@ import org.junit.jupiter.api.assertThrows
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.OffenceEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.PredictorEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.PredictorFieldMappingEntity
@@ -522,7 +523,8 @@ class RiskPredictorsServiceTest {
     answers = answers,
     createdDate = LocalDateTime.now(),
     assessment = assessment,
-    assessmentSchemaCode = AssessmentSchemaCode.RSR
+    assessmentSchemaCode = AssessmentSchemaCode.RSR,
+    offence = OffenceEntity(offenceCode = "138", offenceSubCode = "00", sentenceDate = LocalDate.now())
   )
 
   private val assessmentEpisodeNoAnswers = AssessmentEpisodeEntity(

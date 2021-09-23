@@ -1,5 +1,6 @@
 -- noinspection SqlResolveForFile
 DELETE FROM hmppsassessmentsapi.assessed_episode WHERE true;
+DELETE FROM hmppsassessmentsapi.offence WHERE true;
 DELETE FROM hmppsassessmentsapi.subject WHERE true;
 DELETE FROM hmppsassessmentsapi.assessment WHERE true;
 
@@ -18,12 +19,20 @@ INSERT INTO hmppsassessmentsapi.subject (subject_id, subject_uuid, name, pnc, cr
 (4, 'a2bb4345-beba-4806-b719-6cc4ae52ee43', 'John Smith', 'dummy-pnc', 'dummy-crn-4', '1928-08-01', 'MALE', '2019-11-14 08:30', '80fd9a2a-59dd-4783-8cac-1689a0464437'),
 (5, '36afe601-a2d9-4e32-b921-1c20fd0befef', 'John Smith', 'dummy-pnc', 'dummy-crn-5', '1928-08-01', 'MALE', '2019-11-14 08:30', '8177b6c7-1b20-459b-b6ee-0aeeb2f16857');
 
-INSERT INTO hmppsassessmentsapi.assessed_episode  (episode_id, episode_uuid, user_id, created_date, end_date, change_reason, assessment_schema_code, assessment_uuid, answers, oasys_set_pk) VALUES
-(1, '8efd9267-e399-48f1-9402-51a08e245f3b', 'USER1', '2019-11-14 09:00', null,'Change of Circs', 'ROSH', '2e020e78-a81c-407f-bc78-e5f284e237e5', '{}', 1),
-(2, 'de1b50ed-90c7-45f5-9dea-5161cec94137', 'USER1', '2019-11-14 09:00', null,'Change of Circs', 'ROSH', 'bbbae903-7803-4206-800c-2d3b81116d5c', '{}', 2),
-(3, 'b5ade371-1f87-46a1-b784-eb35f6c45e6b', 'USER1', '2019-11-14 09:00', null,'Change of Circs', 'ROSH', 'bd5e5a88-c0ac-4f55-9c08-b8e8bdd9568c', '{}', 3),
-(4, 'd26658e9-73bf-421c-9de7-a57b602d43e0', 'USER1', '2019-11-14 09:00', null,'Change of Circs', 'ROSH', '80fd9a2a-59dd-4783-8cac-1689a0464437', '{}', 4),
-(5, '060714ba-dea2-4a1b-bfa6-c07e4934d365', 'USER1', '2019-11-14 09:00', null,'Change of Circs', 'ROSH', '8177b6c7-1b20-459b-b6ee-0aeeb2f16857', '{}', 5);
+INSERT INTO hmppsassessmentsapi.offence (offence_uuid, source, source_id, offence_code, code_description, offence_subcode, subcode_description)
+VALUES
+('111323d1-1e0f-42f3-b5b5-f44b0e5bcb18', 'DELIUS', 1, '046', 'Stealing from shops and stalls (shoplifting)', '00', 'Stealing from shops and stalls (shoplifting)'),
+('222323d1-1e0f-42f3-b5b5-f44b0e5bcb18', 'DELIUS', 1, '047', 'Arson', '01', 'Arson'),
+('333323d1-1e0f-42f3-b5b5-f44b0e5bcb18', 'DELIUS', 1, '048', 'Sexual offence', '02', 'Sexual offence'),
+('444323d1-1e0f-42f3-b5b5-f44b0e5bcb18', 'DELIUS', 1, '049', 'Sexual assault', '03', 'Sexual assault'),
+('555323d1-1e0f-42f3-b5b5-f44b0e5bcb18', 'DELIUS', 1, '050', 'Burglary', '04', 'Burglary');
+
+INSERT INTO hmppsassessmentsapi.assessed_episode  (episode_id, episode_uuid, user_id, created_date, end_date, change_reason, assessment_schema_code, assessment_uuid, answers, oasys_set_pk, offence_uuid) VALUES
+(1, '8efd9267-e399-48f1-9402-51a08e245f3b', 'USER1', '2019-11-14 09:00', null,'Change of Circs', 'ROSH', '2e020e78-a81c-407f-bc78-e5f284e237e5', '{}', 1, '111323d1-1e0f-42f3-b5b5-f44b0e5bcb18'),
+(2, 'de1b50ed-90c7-45f5-9dea-5161cec94137', 'USER1', '2019-11-14 09:00', null,'Change of Circs', 'ROSH', 'bbbae903-7803-4206-800c-2d3b81116d5c', '{}', 2, '222323d1-1e0f-42f3-b5b5-f44b0e5bcb18'),
+(3, 'b5ade371-1f87-46a1-b784-eb35f6c45e6b', 'USER1', '2019-11-14 09:00', null,'Change of Circs', 'ROSH', 'bd5e5a88-c0ac-4f55-9c08-b8e8bdd9568c', '{}', 3, '333323d1-1e0f-42f3-b5b5-f44b0e5bcb18'),
+(4, 'd26658e9-73bf-421c-9de7-a57b602d43e0', 'USER1', '2019-11-14 09:00', null,'Change of Circs', 'ROSH', '80fd9a2a-59dd-4783-8cac-1689a0464437', '{}', 4, '444323d1-1e0f-42f3-b5b5-f44b0e5bcb18'),
+(5, '060714ba-dea2-4a1b-bfa6-c07e4934d365', 'USER1', '2019-11-14 09:00', null,'Change of Circs', 'ROSH', '8177b6c7-1b20-459b-b6ee-0aeeb2f16857', '{}', 5, '555323d1-1e0f-42f3-b5b5-f44b0e5bcb18');
 
 INSERT INTO hmppsassessmentsschemas.question_schema (question_schema_uuid, question_code, question_start, question_end, answer_type, answer_schema_group_uuid, question_text, question_help_text, external_source, reference_data_category) VALUES
 ('2fe94330-22c4-4a6e-a494-9f53dc2139c6', '30.1', '2019-11-14 08:30', null, 'freetext', null, 'LDU', null, null, null),

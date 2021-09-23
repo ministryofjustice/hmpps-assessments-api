@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.assessments.api.Answers
 import uk.gov.justice.digital.assessments.api.PredictorScoresDto
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.OffenceEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.PredictorFieldMappingEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.EpisodeRepository
 import uk.gov.justice.digital.assessments.restclient.AssessRisksAndNeedsApiRestClient
@@ -77,19 +78,19 @@ class RiskPredictorsService(
     predictorType: PredictorType,
     answers: Answers,
   ): PredictorScoresDto {
-    val assessmentUuid = episode.assessment?.assessmentUuid
-      ?: throw EntityNotFoundException("Episode ${episode.episodeUuid} is not associated with an assessment")
+    val assessmentUuid = getEpisodeAssessmentUuid(episode)
     val offender = subjectService.getSubjectForAssessment(assessmentUuid)
     val crn = offender.crn
     if (offender.gender == null) throw PredictorCalculationException("The risk predictors calculation failed for crn $crn: gender must not be null")
     log.info("Getting Predictor Score for crn $crn and type $predictorType")
     val hasCompletedInterview = getRequiredAnswer(answers, "completed_interview").toBoolean()
+    val offence = getEpisodeOffence(episode)
     val offenderAndOffencesDto = OffenderAndOffencesDto(
       crn = crn,
       gender = Gender.valueOf(offender.gender!!),
       dob = offender.dateOfBirth,
       assessmentDate = episode.createdDate,
-      currentOffence = CurrentOffence("138", "00"),
+      currentOffence = CurrentOffence(offence.offenceCode!!, offence.offenceSubCode!!),
       dateOfFirstSanction = getRequiredAnswer(answers, "date_first_sanction"),
       totalOffences = getRequiredAnswer(answers, "total_sanctions").toInt(),
       totalViolentOffences = getRequiredAnswer(answers, "total_violent_offences").toInt(),
@@ -117,6 +118,19 @@ class RiskPredictorsService(
       episode.episodeUuid
     )
       .toRiskPredictorScores(crn)
+  }
+
+  private fun getEpisodeOffence(episode: AssessmentEpisodeEntity): OffenceEntity {
+    val offence = episode.offence
+    if (offence == null || offence.offenceCode.isNullOrEmpty() || offence.offenceSubCode.isNullOrEmpty()) {
+      throw EntityNotFoundException("Episode ${episode.episodeUuid} should be associated with an offence and contain both offence code and subcode")
+    }
+    return offence
+  }
+
+  private fun getEpisodeAssessmentUuid(episode: AssessmentEpisodeEntity): UUID {
+    return episode.assessment?.assessmentUuid
+      ?: throw EntityNotFoundException("Episode ${episode.episodeUuid} is not associated with an assessment")
   }
 
   private fun getDynamicScoringOffences(

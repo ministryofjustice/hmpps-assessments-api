@@ -21,8 +21,8 @@ class AssessRisksAndNeedsApiMockServer : WireMockServer(9007) {
               "\"dob\" : [ 2001, 1, 1 ]," +
               "\"assessmentDate\" : [ 2021, 1, 1, 0, 0 ]," +
               "\"currentOffence\" : {" +
-              "    \"offenceCode\" : \"138\"," +
-              "    \"offenceSubcode\" : \"00\"" +
+              "    \"offenceCode\" : \"054\"," +
+              "    \"offenceSubcode\" : \"09\"" +
               "}," +
               "\"dateOfFirstSanction\" : \"2020-01-01\"," +
               "\"totalOffences\" : 10," +
@@ -81,7 +81,9 @@ class AssessRisksAndNeedsApiMockServer : WireMockServer(9007) {
   fun stubGetRSRPredictorsForOffenderAndOffencesWithCurrentOffences(
     final: Boolean,
     episodeUuid: UUID,
-    crn: String
+    crn: String,
+    offenceCode: String = "138",
+    offenceSubCode: String = "00"
   ) {
     stubFor(
       WireMock.post(WireMock.urlEqualTo("/risks/predictors/RSR?final=$final&source=ASSESSMENTS_API&sourceId=$episodeUuid"))
@@ -93,8 +95,8 @@ class AssessRisksAndNeedsApiMockServer : WireMockServer(9007) {
               "\"dob\" : [ 2001, 1, 1 ]," +
               "\"assessmentDate\" : [ 2021, 1, 1, 0, 0 ]," +
               "\"currentOffence\" : {" +
-              "    \"offenceCode\" : \"138\"," +
-              "    \"offenceSubcode\" : \"00\"" +
+              "    \"offenceCode\" : \"$offenceCode\"," +
+              "    \"offenceSubcode\" : \"$offenceSubCode\"" +
               "}," +
               "\"dateOfFirstSanction\" : \"2020-01-01\"," +
               "\"totalOffences\" : 10," +

@@ -30,5 +30,5 @@ VALUES ('90f2b674-ae1c-488d-8b85-0251708ef6b6', 'AALONSO', '2021-01-01 08:11:53.
 ON CONFLICT DO NOTHING;
 
 INSERT INTO offence (offence_uuid, source, source_id, offence_code, code_description, offence_subcode, subcode_description)
-VALUES ('877323d1-1e0f-42f3-b5b5-f44b0e5bcb18', 'DELIUS', 1, '046', 'Stealing from shops and stalls (shoplifting)', '00', 'Stealing from shops and stalls (shoplifting)')
+VALUES ('877323d1-1e0f-42f3-b5b5-f44b0e5bcb19', 'DELIUS', 1, '046', 'Stealing from shops and stalls (shoplifting)', '01', 'Stealing')
     ON CONFLICT DO NOTHING;

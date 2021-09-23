@@ -82,7 +82,7 @@ class AssessmentUpdateServiceITTest() : IntegrationTest() {
     assessRisksAndNeedsApiMockServer.stubGetRSRPredictorsForOffenderAndOffencesWithCurrentOffences(
       final,
       assessmentEpisode?.episodeUuid!!,
-      "X1349"
+      "X1349", "052", "07"
     )
 
     val updateAssessmentResponse =
