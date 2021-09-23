@@ -29,8 +29,8 @@ import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.Prev
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.RiskPredictorsDto
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.Score
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.ScoreLevel
-import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.ScoreType
 import uk.gov.justice.digital.assessments.services.dto.PredictorType
+import uk.gov.justice.digital.assessments.services.dto.ScoreType
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -722,7 +722,6 @@ class RiskPredictorsServiceTest {
       assertThrows<EntityNotFoundException> {
         predictorService.getPredictorResults(episodeUuid, final)
       }
-
     }
   }
 

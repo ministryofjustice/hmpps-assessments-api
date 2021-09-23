@@ -21,8 +21,8 @@ import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.Prob
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.RiskPredictorsDto
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.Score
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.ScoreLevel
-import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.ScoreType
 import uk.gov.justice.digital.assessments.services.dto.PredictorType
+import uk.gov.justice.digital.assessments.services.dto.ScoreType
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import java.math.BigDecimal
 import java.time.LocalDate

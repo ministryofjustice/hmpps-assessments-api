@@ -12,6 +12,7 @@ import uk.gov.justice.digital.assessments.api.Score
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.PredictorSubType
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.ScoreLevel
 import uk.gov.justice.digital.assessments.services.dto.PredictorType
+import uk.gov.justice.digital.assessments.services.dto.ScoreType
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import java.math.BigDecimal
 import java.util.UUID
@@ -48,6 +49,7 @@ class RiskPredictorsControllerTest : IntegrationTest() {
       listOf(
         PredictorScoresDto(
           type = PredictorType.RSR,
+          scoreType = ScoreType.STATIC,
           scores = mapOf(
             PredictorSubType.RSR.name to Score(
               level = ScoreLevel.HIGH.name,
