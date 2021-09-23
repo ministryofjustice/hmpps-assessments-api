@@ -129,7 +129,13 @@ class AssessmentServiceCreateTest {
         subCodeDescription = "Sub-code description"
       )
       every { episodeService.prepopulate(any()) } returnsArgument 0
-
+      every { subjectRepository.save(any()) } returns SubjectEntity(
+        name = "name",
+        pnc = "PNC",
+        crn = crn,
+        dateOfBirth = LocalDate.of(1989, 1, 1),
+        createdDate = LocalDateTime.now(),
+      )
       every {
         oasysAssessmentUpdateService.createOffenderAndOasysAssessment(
           crn,

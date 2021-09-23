@@ -286,14 +286,15 @@ class AssessmentService(
     offender: OffenderDto,
     eventId: Long,
   ): AssessmentEntity {
-    val subject = SubjectEntity(
-      name = "${offender.firstName} ${offender.surname}",
-      pnc = offender.pncNumber,
-      crn = crn,
-      dateOfBirth = offender.dateOfBirth,
-      createdDate = LocalDateTime.now(),
+    val subjectEntity = subjectRepository.save(
+      SubjectEntity(
+        name = "${offender.firstName} ${offender.surname}",
+        pnc = offender.pncNumber,
+        crn = crn,
+        dateOfBirth = offender.dateOfBirth,
+        createdDate = LocalDateTime.now(),
+      )
     )
-    val subjectEntity = subjectRepository.save(subject)
     val assessment = AssessmentEntity(subject = subjectEntity)
     log.info("About to save assessment: ${assessment.assessmentUuid}")
     val newAssessment = assessmentRepository.save(assessment)

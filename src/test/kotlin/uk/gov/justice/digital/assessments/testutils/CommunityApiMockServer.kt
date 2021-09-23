@@ -26,11 +26,19 @@ class CommunityApiMockServer : WireMockServer(9096) {
         )
     )
     stubFor(
+      WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/DX12340F/all"))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withBody(mapToJson(offenderDto("DX12340F")))
+        )
+    )
+    stubFor(
       WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/X1355/all"))
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
-            .withBody(mapToJson(offenderDto("X1346")))
+            .withBody(mapToJson(offenderDto("X1355")))
         )
     )
     stubFor(
@@ -38,7 +46,7 @@ class CommunityApiMockServer : WireMockServer(9096) {
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
-            .withBody(mapToJson(offenderDto("X1346")))
+            .withBody(mapToJson(offenderDto("X1356")))
         )
     )
 

@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.assessments.api.CreateAssessmentDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
+import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRepository
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import uk.gov.justice.digital.assessments.utils.RequestData
 
@@ -39,6 +40,9 @@ class AssessmentServiceITTest() : IntegrationTest() {
 
   @Autowired
   internal lateinit var assessmentRepository: AssessmentRepository
+
+  @Autowired
+  internal lateinit var subjectRepository: SubjectRepository
 
   @BeforeEach
   fun init() {
@@ -78,5 +82,55 @@ class AssessmentServiceITTest() : IntegrationTest() {
     assertThat(assessmentEntity?.subject?.oasysOffenderPk).isEqualTo(1L)
     assertThat(assessmentEntity?.episodes).hasSize(1)
     assertThat(assessmentEntity?.episodes?.get(0)?.oasysSetPk).isEqualTo(1L)
+  }
+
+  @Test
+  fun `Trying to create assessment twice only creates one assessment and returns previously created second time`() {
+
+    val crn = "X1356"
+    val assessmentResponse =
+      assessmentService.createNewAssessment(
+        CreateAssessmentDto(
+          deliusEventId = 1L,
+          crn = crn,
+          assessmentSchemaCode = AssessmentSchemaCode.ROSH
+        )
+      )
+    val assessmentUuid = assessmentResponse.assessmentUuid
+    assertThat(assessmentUuid).isNotNull
+    assertThat(assessmentResponse.subject).isNotNull
+    assertThat(assessmentResponse.subject?.crn).isEqualTo(crn)
+
+    val assessmentSecondResponse =
+      assessmentService.createNewAssessment(
+        CreateAssessmentDto(
+          deliusEventId = 1L,
+          crn = crn,
+          assessmentSchemaCode = AssessmentSchemaCode.ROSH
+        )
+      )
+
+    assertThat(assessmentSecondResponse.assessmentUuid).isEqualTo(assessmentUuid)
+    assertThat(assessmentResponse.subject).isNotNull
+    assertThat(assessmentResponse.subject?.crn).isEqualTo(crn)
+  }
+
+  @Test
+  fun `Trying to create assessment throws error from oasys amd rollback`() {
+
+    val crn = "DX12340F"
+
+    try {
+      assessmentService.createNewAssessment(
+        CreateAssessmentDto(
+          deliusEventId = 1L,
+          crn = crn,
+          assessmentSchemaCode = AssessmentSchemaCode.ROSH
+        )
+      )
+    } catch (e: Exception) {
+    }
+    val subject = subjectRepository.findByCrn(crn)
+    assertThat(subject).isNull()
   }
 }
