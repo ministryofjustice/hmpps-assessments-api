@@ -1,12 +1,13 @@
 package uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi
 
 import uk.gov.justice.digital.assessments.services.dto.PredictorType
+import uk.gov.justice.digital.assessments.services.dto.ScoreType
 import java.math.BigDecimal
 
 data class RiskPredictorsDto(
   val calculatedAt: String,
   val type: PredictorType,
-  val scoreType: ScoreType?,
+  val scoreType: ScoreType,
   val scores: Map<PredictorSubType, Score>,
   val errors: List<String> = emptyList()
 )
@@ -22,16 +23,6 @@ enum class ScoreLevel(val type: String) {
 
   companion object {
     fun findByType(type: String): ScoreLevel? {
-      return values().firstOrNull { value -> value.type == type }
-    }
-  }
-}
-
-enum class ScoreType(val type: String) {
-  STATIC("Static"), DYNAMIC("Dynamic");
-
-  companion object {
-    fun findByType(type: String): ScoreType? {
       return values().firstOrNull { value -> value.type == type }
     }
   }

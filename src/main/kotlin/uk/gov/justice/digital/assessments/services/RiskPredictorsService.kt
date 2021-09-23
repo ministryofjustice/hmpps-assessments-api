@@ -175,6 +175,7 @@ class RiskPredictorsService(
     if (this == null) throw PredictorCalculationException("The risk predictors calculation failed for crn $crn")
     return PredictorScoresDto(
       type = this.type,
+      scoreType = this.scoreType,
       scores = this.toRiskPredictorsScores()
     )
   }
