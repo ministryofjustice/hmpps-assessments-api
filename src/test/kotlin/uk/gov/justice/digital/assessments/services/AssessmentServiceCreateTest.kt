@@ -227,15 +227,26 @@ class AssessmentServiceCreateTest {
 
     @Test
     fun `return existing assessment if one exists from court`() {
-      every { subjectRepository.findByCrn(crn) } returns SubjectEntity(
-        assessments = listOf(AssessmentEntity(assessmentId = 1)),
+      val subjectEntity = SubjectEntity(
         dateOfBirth = LocalDate.of(1989, 1, 1),
-        crn = "X1345"
+        crn = crn
       )
+      val assessment = AssessmentEntity(assessmentId = 1, subject = subjectEntity)
+      val subject = subjectEntity.copy(assessments = listOf(assessment))
+      every { subjectRepository.findByCrn(crn) } returns subject
       every { courtCaseRestClient.getCourtCase(courtCode, existingCaseNumber) } returns CourtCase(
         defendantDob = LocalDate.now(),
         crn = crn
       )
+      every {
+        oasysAssessmentUpdateService.createOffenderAndOasysAssessment(
+          crn = crn,
+          assessmentSchemaCode = assessmentSchemaCode
+        )
+      } returns Pair(oasysOffenderPk, oasysSetPk)
+
+      val updatedSubject = subject.copy(oasysOffenderPk = oasysOffenderPk)
+      every { subjectRepository.save(updatedSubject) } returns updatedSubject
 
       assessmentsService.createNewAssessment(
         CreateAssessmentDto(
@@ -245,7 +256,7 @@ class AssessmentServiceCreateTest {
         )
       )
 
-      verify(exactly = 0) { assessmentRepository.save(any()) }
+      verify(exactly = 1) { subjectRepository.save(updatedSubject) }
       verify(exactly = 0) { assessmentRepository.save(any()) }
     }
   }

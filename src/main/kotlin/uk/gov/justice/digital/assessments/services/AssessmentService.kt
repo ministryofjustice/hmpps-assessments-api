@@ -194,26 +194,29 @@ class AssessmentService(
     val courtCase = courtCaseClient.getCourtCase(courtCode, caseNumber)
       ?: throw EntityNotFoundException("No court case found for $courtCode, $caseNumber")
     val crn = courtCase.crn ?: throw EntityNotFoundException("No CRN found for $courtCode, $caseNumber")
-    val existingSubject = subjectRepository.findByCrn(crn)
-    if (existingSubject != null) {
-      log.info("Existing assessment ${existingSubject.getCurrentAssessment()?.assessmentUuid} found for court $courtCode, case $caseNumber")
-      return AssessmentDto.from(existingSubject.getCurrentAssessment())
-    }
 
+    val arnAssessment = getOrCreateCourtAssessment(
+      crn,
+      courtCase,
+      courtCode,
+      caseNumber,
+    )
     val (oasysOffenderPk, oasysSetPK) = oasysAssessmentUpdateService.createOffenderAndOasysAssessment(
       crn = courtCase.crn,
       assessmentSchemaCode = assessmentSchemaCode
     )
-
-    return createCourtAssessmentWithPrepopulatedEpisode(
-      courtCase,
-      oasysOffenderPk,
+    subjectRepository.save(arnAssessment.subject?.copy(oasysOffenderPk = oasysOffenderPk))
+    createPrepopulatedEpisode(
+      arnAssessment,
+      "Court Request",
       oasysSetPK,
-      courtCode,
-      caseNumber,
       assessmentSchemaCode,
-      crn
+      crn,
+      courtSource,
+      courtSourceId(courtCode, caseNumber)
     )
+
+    return AssessmentDto.from(arnAssessment)
   }
 
   private fun matchAnswers(
@@ -247,11 +250,9 @@ class AssessmentService(
 
   private fun subjectFromCourtCase(
     courtCase: CourtCase,
-    oasysOffenderPk: Long?
   ): SubjectEntity {
     return SubjectEntity(
       name = courtCase.defendantName,
-      oasysOffenderPk = oasysOffenderPk,
       pnc = courtCase.pnc,
       crn = courtCase.crn ?: "",
       dateOfBirth = courtCase.defendantDob,
@@ -259,26 +260,28 @@ class AssessmentService(
     )
   }
 
-  private fun createCourtAssessmentWithPrepopulatedEpisode(
+  private fun getOrCreateCourtAssessment(
+    crn: String,
     courtCase: CourtCase,
-    oasysOffenderPk: Long?,
-    oasysSetPK: Long?,
     courtCode: String,
     caseNumber: String,
-    assessmentSchemaCode: AssessmentSchemaCode,
-    crn: String,
-  ): AssessmentDto {
-    val sourceId = courtSourceId(courtCode, caseNumber)
-    val subject = subjectFromCourtCase(courtCase, oasysOffenderPk)
-    subjectRepository.save(subject)
-    val assessment = AssessmentEntity(
-      createdDate = LocalDateTime.now(),
-      subject = subject
-    )
-    createPrepopulatedEpisode(assessment, "Court Request", oasysSetPK, assessmentSchemaCode, crn, courtSource, sourceId)
-    val newAssessment = AssessmentDto.from(assessmentRepository.save(assessment))
-    log.info("New assessment ${assessment.assessmentUuid} created for court $courtCode, case $caseNumber")
-    return newAssessment
+  ): AssessmentEntity {
+    val existingSubject = subjectRepository.findByCrn(crn)
+    return if (existingSubject != null) {
+      log.info("Existing assessment ${existingSubject.getCurrentAssessment()?.assessmentUuid} found for court $courtCode, case $caseNumber")
+      existingSubject.getCurrentAssessment()
+        ?: throw EntityNotFoundException("Subject $existingSubject doesn't belong to any assessment")
+    } else {
+      val subject = subjectRepository.save(subjectFromCourtCase(courtCase))
+      val assessment = AssessmentEntity(
+        createdDate = LocalDateTime.now(),
+        subject = subject
+      )
+      log.info("About to save court assessment: ${assessment.assessmentUuid}")
+      val newAssessment = assessmentRepository.save(assessment)
+      log.info("New assessment ${assessment.assessmentUuid} created for court $courtCode, case $caseNumber")
+      newAssessment
+    }
   }
 
   private fun createDeliusAssessment(
@@ -296,7 +299,7 @@ class AssessmentService(
       )
     )
     val assessment = AssessmentEntity(subject = subjectEntity)
-    log.info("About to save assessment: ${assessment.assessmentUuid}")
+    log.info("About to save delius assessment: ${assessment.assessmentUuid}")
     val newAssessment = assessmentRepository.save(assessment)
     log.info("New assessment ${assessment.assessmentUuid} created for Delius event ID: $eventId, CRN: $crn")
     return newAssessment
