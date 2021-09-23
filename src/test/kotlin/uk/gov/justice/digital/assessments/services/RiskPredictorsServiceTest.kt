@@ -703,6 +703,27 @@ class RiskPredictorsServiceTest {
         )
       )
     }
+
+    @Test
+    fun `returns predictor scores for the assessment episode throw exception when offence is missing in episode`() {
+      val final = false
+      every { episodeRepository.findByEpisodeUuid(episodeUuid) } returns assessmentEpisode.copy(offence = null)
+      every { assessmentSchemaService.getPredictorsForAssessment(AssessmentSchemaCode.RSR) } returns predictors
+
+      every {
+        subjectService.getSubjectForAssessment(assessment.assessmentUuid)
+      } returns SubjectEntity(
+        oasysOffenderPk = 9999,
+        dateOfBirth = LocalDate.of(2001, 1, 1),
+        gender = "FEMALE",
+        crn = "X1345"
+      )
+
+      assertThrows<EntityNotFoundException> {
+        predictorService.getPredictorResults(episodeUuid, final)
+      }
+
+    }
   }
 
   private fun offenderAndOffencesDto() = OffenderAndOffencesDto(

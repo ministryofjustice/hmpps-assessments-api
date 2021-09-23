@@ -13,7 +13,6 @@ import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.EnumType
 import javax.persistence.Enumerated
-import javax.persistence.FetchType
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
@@ -27,7 +26,7 @@ import javax.persistence.Table
   TypeDef(name = "json", typeClass = JsonStringType::class),
   TypeDef(name = "jsonb", typeClass = JsonBinaryType::class)
 )
-class AssessmentEpisodeEntity(
+data class AssessmentEpisodeEntity(
 
   @Id
   @Column(name = "episode_id")
