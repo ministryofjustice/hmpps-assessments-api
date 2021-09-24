@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
 import java.util.UUID
 
-class SubjectDto(
+data class SubjectDto(
   @Schema(description = "Subject UUID", example = "0e5e0848-6ab0-4b1b-a354-f7894913d8e4")
   val subjectUuid: UUID = UUID.randomUUID(),
 

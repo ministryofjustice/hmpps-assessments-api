@@ -9,8 +9,5 @@ CREATE TABLE IF NOT EXISTS subject
     pnc                 TEXT            NULL,
     crn                 VARCHAR(255)    NOT NULL UNIQUE,
     date_of_birth       DATE            NOT NULL,
-    created_date        TIMESTAMP       NOT NULL,
-    assessment_uuid     UUID            NOT NULL,
-    FOREIGN KEY (assessment_uuid)
-        REFERENCES assessment(assessment_uuid)
+    created_date        TIMESTAMP       NOT NULL
 );

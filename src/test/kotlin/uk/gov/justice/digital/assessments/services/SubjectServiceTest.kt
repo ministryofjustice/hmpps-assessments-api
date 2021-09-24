@@ -27,11 +27,7 @@ class SubjectServiceTest {
       dateOfBirth = LocalDate.of(1989, 1, 1),
       crn = "X1345"
     )
-    every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns AssessmentEntity(
-      subject_ = mutableListOf(
-        subject
-      )
-    )
+    every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns AssessmentEntity(subject = subject)
 
     assertThat(subjectService.getSubjectForAssessment(assessmentUuid)).isEqualTo(subject)
   }
@@ -50,7 +46,7 @@ class SubjectServiceTest {
     val assessmentUuid = UUID.randomUUID()
 
     every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns AssessmentEntity(
-      subject_ = mutableListOf()
+      subject = null
     )
 
     assertThrows<EntityNotFoundException> { (subjectService.getSubjectForAssessment(assessmentUuid)) }

@@ -91,7 +91,7 @@ class OasysAssessmentUpdateService(
     return AssessmentEpisodeUpdateErrors.mapOasysErrors(episode, null, oasysUpdateResult)
   }
 
-  fun createOasysAssessment(
+  fun createOffenderAndOasysAssessment(
     crn: String?,
     deliusEventId: Long? = null,
     assessmentSchemaCode: AssessmentSchemaCode?

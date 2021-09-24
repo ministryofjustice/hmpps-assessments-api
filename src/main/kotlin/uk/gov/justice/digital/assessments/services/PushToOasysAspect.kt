@@ -18,7 +18,7 @@ class PushToOasysAspect() {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
   }
 
-  @Around("execution(* uk.gov.justice.digital.assessments.services.OasysAssessmentUpdateService.createOasysAssessment(..))")
+  @Around("execution(* uk.gov.justice.digital.assessments.services.OasysAssessmentUpdateService.createOffenderAndOasysAssessment(..))")
   @Throws(Throwable::class)
   fun aroundPushToOasysMethods(joinPoint: ProceedingJoinPoint): Pair<Long?, Long?> {
     val signature: MethodSignature = joinPoint.signature as MethodSignature

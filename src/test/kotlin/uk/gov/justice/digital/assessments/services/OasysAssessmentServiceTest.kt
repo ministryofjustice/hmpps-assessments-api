@@ -49,7 +49,7 @@ class OasysAssessmentServiceTest {
       oasysOffenderPk = 1L,
       dateOfBirth = LocalDate.of(1989, 1, 1),
       crn = crn,
-      assessment = assessment
+      assessments = listOf(assessment)
     )
     every { subjectRepository.findByCrn(crn) } returns subject
 

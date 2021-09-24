@@ -22,6 +22,26 @@ class AssessmentUpdateMockServer : WireMockServer(9003) {
 
     stubFor(
       WireMock.post(WireMock.urlEqualTo("/offenders"))
+        .withRequestBody(equalToJson("{ \"crn\": \"X1356\", \"areaCode\" : \"WWS\", \"oasysUserCode\" : \"STUARTWHITLAM\", \"deliusEvent\" : 1}", true, true))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withBody(createOffenderJson)
+        )
+    )
+
+    stubFor(
+      WireMock.post(WireMock.urlEqualTo("/offenders"))
+        .withRequestBody(equalToJson("{ \"crn\": \"CRN1\", \"areaCode\" : \"WWS\", \"oasysUserCode\" : \"STUARTWHITLAM\", \"deliusEvent\" : 12345}", true, true))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withBody(createOffenderJson)
+        )
+    )
+
+    stubFor(
+      WireMock.post(WireMock.urlEqualTo("/offenders"))
         .withRequestBody(equalToJson("{ \"crn\": \"DX12340B\" }", true, true))
         .willReturn(
           WireMock.aResponse()
@@ -87,6 +107,16 @@ class AssessmentUpdateMockServer : WireMockServer(9003) {
     stubFor(
       WireMock.post(WireMock.urlEqualTo("/assessments"))
         .withRequestBody(equalToJson("{ \"offenderPk\": 1, \"assessmentType\": \"SHORT_FORM_PSR\" }", true, true))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withBody(createAssessmentJson)
+        )
+    )
+
+    stubFor(
+      WireMock.post(WireMock.urlEqualTo("/assessments"))
+        .withRequestBody(equalToJson("{ \"offenderPk\": 1, \"areaCode\" : \"WWS\",\"oasysUserCode\" : \"STUARTWHITLAM\",\"assessmentType\": \"SOMETHING_IN_OASYS\" ,\"teamCode\" : null,\"assessorCode\" : null}", true, true))
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
