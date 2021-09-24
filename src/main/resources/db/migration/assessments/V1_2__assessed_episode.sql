@@ -14,6 +14,5 @@ CREATE TABLE IF NOT EXISTS assessed_episode
     offence_uuid          UUID,
     answers               JSONB,
     tables                JSONB,
-    FOREIGN KEY (assessment_uuid)
-        REFERENCES assessment (assessment_uuid)
+    FOREIGN KEY (assessment_uuid) REFERENCES assessment (assessment_uuid)
 );
