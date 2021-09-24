@@ -1,8 +1,8 @@
 -- noinspection SqlResolveForFile
 DELETE FROM hmppsassessmentsapi.assessed_episode WHERE true;
 DELETE FROM hmppsassessmentsapi.offence WHERE true;
-DELETE FROM hmppsassessmentsapi.subject WHERE true;
 DELETE FROM hmppsassessmentsapi.assessment WHERE true;
+DELETE FROM hmppsassessmentsapi.subject WHERE true;
 
 /* Assessment with Episodes */
 INSERT INTO hmppsassessmentsapi.subject (subject_uuid, name, pnc, crn, date_of_birth, gender, created_date) VALUES
