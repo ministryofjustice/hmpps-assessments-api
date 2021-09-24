@@ -5,6 +5,6 @@ CREATE TABLE IF NOT EXISTS assessment
     subject_uuid            UUID        NOT NULL,
     created_date            TIMESTAMP       NOT NULL,
     completed_date          TIMESTAMP,
-    UNIQUE (assessment_uuid, subject_uuid),
+    UNIQUE (assessment_uuid),
     FOREIGN KEY (subject_uuid) REFERENCES subject (subject_uuid)
 );
