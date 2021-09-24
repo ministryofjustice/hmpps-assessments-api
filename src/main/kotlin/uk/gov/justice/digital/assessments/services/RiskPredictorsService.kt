@@ -82,7 +82,7 @@ class RiskPredictorsService(
     val offender = subjectService.getSubjectForAssessment(assessmentUuid)
     val crn = offender.crn
     if (offender.gender == null) throw PredictorCalculationException("The risk predictors calculation failed for crn $crn: gender must not be null")
-    log.info("Getting Predictor Score for crn $crn and type $predictorType")
+    log.info("Getting Predictor Score for crn $crn and type $predictorType and answers: $answers")
     val hasCompletedInterview = getRequiredAnswer(answers, "completed_interview").toBoolean()
     val offence = getEpisodeOffence(episode)
     val offenderAndOffencesDto = OffenderAndOffencesDto(
