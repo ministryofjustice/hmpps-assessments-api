@@ -1,6 +1,6 @@
-INSERT INTO assessment_schema (assessment_schema_id, assessment_schema_uuid, assessment_schema_code, oasys_assessment_type, oasys_create_assessment_at, assessment_name)
+INSERT INTO assessment_schema (assessment_schema_uuid, assessment_schema_code, oasys_assessment_type, oasys_create_assessment_at, assessment_name)
 VALUES
-(0, '51c2e87e-a540-4027-8f5a-e6c80511332f', 'ROSH', 'SHORT_FORM_PSR', 'START', 'Pre-Sentence Assessment');
+('51c2e87e-a540-4027-8f5a-e6c80511332f', 'ROSH', 'SHORT_FORM_PSR', 'START', 'Pre-Sentence Assessment');
 
 INSERT INTO answer_schema_group (answer_schema_group_uuid, answer_schema_group_code, group_start, group_end)
 VALUES ('887f4528-06d1-4247-8bc3-5e679222baa6', 'yes-no', '2020-11-30 14:50:00', null),
@@ -801,5 +801,5 @@ VALUES ('9905a862-94a0-434a-b5ae-ff7b9a77c7c4', '33923c1e-e3ba-4c02-ba42-3b8d828
 ('6aea7808-dccc-4ed9-971f-f9fc4c01602d', '9a8d6d8e-ac11-4ff5-b4e6-9553fd462851', 'RMP', null, 'RM17', false);
 
 
-INSERT INTO assessment_schema_groups(assessment_schema_group_id, assessment_schema_uuid, group_uuid)
-VALUES (0, '51c2e87e-a540-4027-8f5a-e6c80511332f', '65a3924c-4130-4140-b7f4-cc39a52603bb');
+INSERT INTO assessment_schema_groups(assessment_schema_uuid, group_uuid)
+VALUES ('51c2e87e-a540-4027-8f5a-e6c80511332f', '65a3924c-4130-4140-b7f4-cc39a52603bb');
