@@ -83,7 +83,7 @@ class QuestionControllerTest : IntegrationTest() {
     val triggerQuestion =
       questions.find { (it as GroupQuestionDto).questionId.toString() == "58d3efd1-65a1-439b-952f-b2826ffa5e71" } as GroupQuestionDto
     assertThat(triggerQuestion.conditional).isFalse
-    assertThat(triggerQuestion.questionText).isEqualTo("Have they ever committed a sexual offence?")
+    assertThat(triggerQuestion.questionText).isEqualTo("Have they ever committed a sexual or sexually motivated offence?")
 
     val yesAnswer = triggerQuestion.answerSchemas?.find { it.value == "YES" }
     assertThat(yesAnswer?.conditionals?.size).isEqualTo(6)
