@@ -3,15 +3,27 @@ VALUES
 ('9c318330-091a-4a97-842f-1146df9e9703', 'UPW', 'SOMETHING_IN_OASYS', 'END', 'Unpaid Work Assessment');
 
 INSERT INTO answer_schema_group (answer_schema_group_uuid, answer_schema_group_code, group_start, group_end)
-VALUES ('8067ff6e-7400-4d1e-ae2a-87dee7e124ec', 'yes-noillcomebacklater', '2020-11-30 14:50:00', null);
+VALUES
+('8067ff6e-7400-4d1e-ae2a-87dee7e124ec', 'yes-noillcomebacklater', '2021-09-27 14:50:00', null),
+('2a82f463-97d1-4de4-8601-23fca9215c17', 'individual-mixed-femaleonly', '2021-09-27 14:50:00', null);
 
 INSERT INTO answer_schema (answer_schema_uuid, answer_schema_code, answer_schema_group_uuid, answer_start, answer_end, value, text)
 VALUES
 ('51c9db72-9c69-4377-818c-b107572eab33', 'yes', '8067ff6e-7400-4d1e-ae2a-87dee7e124ec', '2021-09-27 14:50:00', null, 'YES', 'Yes'),
-('70ca6d84-730d-45b2-b531-1d8d13fefadc', 'no_ill_come_back_later', '8067ff6e-7400-4d1e-ae2a-87dee7e124ec', '2021-09-27 14:50:00', null, 'NO_ILL_COME_BACK_LATER', 'No, I’ll come back later');
+('70ca6d84-730d-45b2-b531-1d8d13fefadc', 'no_ill_come_back_later', '8067ff6e-7400-4d1e-ae2a-87dee7e124ec', '2021-09-27 14:50:00', null, 'NO_ILL_COME_BACK_LATER', 'No, I’ll come back later'),
+('e8689a6c-2b53-4d6c-b9bf-3bbb0b4a6f85', 'individual', '2a82f463-97d1-4de4-8601-23fca9215c17', '2021-09-27 14:50:00', null, 'INDIVIDUAL', 'Individual'),
+('dfaaa874-928b-4bd8-987a-5cdac16e8dba', 'mixed_group', '2a82f463-97d1-4de4-8601-23fca9215c17', '2021-09-27 14:50:00', null, 'MIXED_GROUP', 'Mixed group'),
+('66646d01-19a5-4b9f-bfaf-a2f162897336', 'female_only_group', '2a82f463-97d1-4de4-8601-23fca9215c17', '2021-09-27 14:50:00', null, 'FEMALE_ONLY_GROUP', 'Female only group')
+;
 
 INSERT INTO grouping (group_uuid, group_code, heading, subheading, help_text, group_start, group_end)
 VALUES ('ccd1ae9f-fcd9-41eb-88d9-d28945ed79b4', 'upw_assessment', 'Unpaid Work Assessment', null, null, '2021-09-27 14:50:00', null),
+       ('2bd35476-ac9b-4f15-ac7d-ea6943ccc120', 'upw_diversity_section', 'Risk section', null, null, '2021-09-27 14:50:00', null),
+       ('667e9967-275f-4d23-bd02-7b5e3f3e1647', 'upw_cultural_info', 'Cultural or Religious adjustments', null, null, '2021-09-27 14:50:00', null),
+       ('d633d6e1-e252-4c09-a21c-c8cc558bce12', 'upw_placement_preferences', 'Placement preferences', null, null, '2021-09-27 14:50:00', null),
+       ('b9114d94-2500-456e-8d2e-777703dfd6bc', 'upw_placement_gender_preferences', 'Placement preferences based on gender identity', null, null, '2021-09-27 14:50:00', null),
+       ('b7b11bf3-836b-4cba-8723-f2aa08b66eab', 'upw_maturity_assessment', 'Placement preferences based on gender identity', null, null, '2021-09-27 14:50:00', null),
+       ('95000412-07cb-49aa-8821-6712880e3097', 'upw_risk_section', 'Risk section', null, null, '2021-09-27 14:50:00', null),
        ('1255f7c4-81fe-494c-b269-38f7261cb68c', 'upw_risk_of_harm_community', 'Risk of harm in the community', null, null, '2021-09-27 14:50:00', null),
        ('e2106fd9-8aea-4ecb-a437-a13c1e3c6703', 'upw_managing_risk', 'Managing risk', null, null, '2021-09-27 14:50:00', null)
 ;
@@ -21,6 +33,18 @@ VALUES ('9c318330-091a-4a97-842f-1146df9e9703', 'ccd1ae9f-fcd9-41eb-88d9-d28945e
 
 INSERT INTO question_schema (question_schema_uuid, question_code, question_start, question_end, answer_type, answer_schema_group_uuid, question_text, question_help_text, external_source, reference_data_category)
 VALUES
+('5cefd241-cc51-4128-a343-cb7c438a9048', 'upw_cultural_religious_adjustment', '2021-09-27 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Cultural or religious adjustments?', null, null, null),
+('e7f8205b-1f2a-4578-943c-154d2a6ee11e', 'upw_cultural_religious_adjustment_details', '2021-09-27 14:50:00', null, 'freetext', null, 'Give details', null, null, null),
+('0238fbc4-e488-4e1e-858d-856532d1cf56', 'upw_cultural_religious_adjustment_complete', '2021-09-27 14:50:00', null, 'radio', '8067ff6e-7400-4d1e-ae2a-87dee7e124ec', 'Mark this section as complete?', '', null, null),
+('4b62bf80-9801-49cd-b3da-fe8961571302', 'upw_placement_preference', '2021-09-27 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Does the individual have any placement preferences?', null, null, null),
+('56da5e97-a871-4ac8-ad1e-5ca6001633d2', 'upw_placement_preferences', '2020-11-30 14:50:00', null, 'checkbox', '2a82f463-97d1-4de4-8601-23fca9215c17', null, null, null, 'PLACEMENT_PREFERENCES'),
+('d1d849fe-1240-49db-bf60-692967a9e55e', 'upw_placement_preference_complete', '2021-09-27 14:50:00', null, 'radio', '8067ff6e-7400-4d1e-ae2a-87dee7e124ec', 'Mark this section as complete?', '', null, null),
+('b2af0358-56fb-4e45-be76-b661ce829138', 'upw_placement_preference_by_gender_details', '2021-09-27 14:50:00', null, 'freetext', null, 'Discuss placement options with the individual, based on their gender identity', 'Record their preference and the details of the conversation.', null, null),
+('980f7936-682c-4174-91b6-3dcfc684c494', 'upw_placement_preference_by_gender_complete', '2021-09-27 14:50:00', null, 'radio', '8067ff6e-7400-4d1e-ae2a-87dee7e124ec', 'Mark this section as complete?', '', null, null),
+
+('3fb1a17b-6657-4239-b020-512fa8f57a52', 'upw_maturity_assessment_details', '2021-09-27 14:50:00', null, 'freetext', null, 'Maturity assessment', 'What action needs to be taken to support engagement or compliance with the community payback requirement?', null, null),
+('7f4435a1-3d39-4758-aa56-67989e54d7d2', 'upw_maturity_assessment_details_complete', '2021-09-27 14:50:00', null, 'radio', '8067ff6e-7400-4d1e-ae2a-87dee7e124ec', 'Mark this section as complete?', '', null, null),
+
 ('30851ffd-90a3-430d-8239-0386076de177', 'upw_violent_offences', '2021-09-27 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Violent offences?', null, null, null),
 ('9feb81fc-3437-4762-88e1-b147db676c66', 'upw_violent_offences_details', '2021-09-27 14:50:00', null, 'freetext', null, 'Give details', null, null, null),
 ('6d18c3e9-a921-4b3b-aad3-a1c1f68d51c9', 'upw_frequent_dishonesty', '2021-09-27 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Frequent Dishonesty?', null, null, null),
@@ -56,8 +80,32 @@ VALUES
 
 INSERT INTO question_group (question_group_uuid, content_uuid, content_type, group_uuid, display_order, mandatory, validation, read_only)
 VALUES
-('85ede91e-95bb-4b47-b732-4b05d794a041', '1255f7c4-81fe-494c-b269-38f7261cb68c', 'group', 'ccd1ae9f-fcd9-41eb-88d9-d28945ed79b4', 1, true, null, false),
-('4c02f821-a3b2-4b29-8238-4b4ed26e2108', 'e2106fd9-8aea-4ecb-a437-a13c1e3c6703', 'group', 'ccd1ae9f-fcd9-41eb-88d9-d28945ed79b4', 2, true, null, false),
+('711caebc-2f8a-410b-9cd1-daf348410896', '2bd35476-ac9b-4f15-ac7d-ea6943ccc120', 'group', 'ccd1ae9f-fcd9-41eb-88d9-d28945ed79b4', 1, true, null, false),
+('4204cf4b-814f-4cad-a311-1e7854f6edbe', '95000412-07cb-49aa-8821-6712880e3097', 'group', 'ccd1ae9f-fcd9-41eb-88d9-d28945ed79b4', 2, true, null, false),
+-- Diversity top sections
+('667e9967-275f-4d23-bd02-7b5e3f3e1647', '667e9967-275f-4d23-bd02-7b5e3f3e1647', 'group', '2bd35476-ac9b-4f15-ac7d-ea6943ccc120', 1, true, null, false),
+('d633d6e1-e252-4c09-a21c-c8cc558bce12', 'd633d6e1-e252-4c09-a21c-c8cc558bce12', 'group', '2bd35476-ac9b-4f15-ac7d-ea6943ccc120', 2, true, null, false),
+('b9114d94-2500-456e-8d2e-777703dfd6bc', 'b9114d94-2500-456e-8d2e-777703dfd6bc', 'group', '2bd35476-ac9b-4f15-ac7d-ea6943ccc120', 3, true, null, false),
+('b7b11bf3-836b-4cba-8723-f2aa08b66eab', 'b7b11bf3-836b-4cba-8723-f2aa08b66eab', 'group', '2bd35476-ac9b-4f15-ac7d-ea6943ccc120', 4, true, null, false),
+-- Diversity sections
+('e8ea62cc-5a36-455c-8b36-0ececd678a1a', '5cefd241-cc51-4128-a343-cb7c438a9048', 'question', '667e9967-275f-4d23-bd02-7b5e3f3e1647', 1, true, null, false),
+('48c305cb-c7d6-439e-adfc-661f834af036', 'e7f8205b-1f2a-4578-943c-154d2a6ee11e', 'question', '667e9967-275f-4d23-bd02-7b5e3f3e1647', 2, true, null, false),
+('589dd2af-9bcf-48d5-9817-a6fe8b62c66e', '0238fbc4-e488-4e1e-858d-856532d1cf56', 'question', '667e9967-275f-4d23-bd02-7b5e3f3e1647', 3, true, null, false),
+
+('190fa474-0119-45e4-8105-0aaa44e11d63', '4b62bf80-9801-49cd-b3da-fe8961571302', 'question', 'd633d6e1-e252-4c09-a21c-c8cc558bce12', 1, true, null, false),
+('042d5308-c05b-49dd-896f-1a95e33d0ef4', '56da5e97-a871-4ac8-ad1e-5ca6001633d2', 'question', 'd633d6e1-e252-4c09-a21c-c8cc558bce12', 2, true, null, false),
+('c8191d97-33c8-4e70-b564-24c240269dee', 'd1d849fe-1240-49db-bf60-692967a9e55e', 'question', 'd633d6e1-e252-4c09-a21c-c8cc558bce12', 3, true, null, false),
+
+('252d7687-e94d-40e5-a3b9-139d95d846d4', 'b2af0358-56fb-4e45-be76-b661ce829138', 'question', 'b9114d94-2500-456e-8d2e-777703dfd6bc', 1, true, null, false),
+('c27531b1-0729-4cc9-9557-4475b6f3b3f2', '980f7936-682c-4174-91b6-3dcfc684c494', 'question', 'b9114d94-2500-456e-8d2e-777703dfd6bc', 2, true, null, false),
+
+('0ac554bb-cc99-473c-b7c4-b026cc5b7e35', '3fb1a17b-6657-4239-b020-512fa8f57a52', 'question', 'b7b11bf3-836b-4cba-8723-f2aa08b66eab', 1, true, null, false),
+('fa4ea30a-3549-451a-b6c5-d157f642ab3b', '7f4435a1-3d39-4758-aa56-67989e54d7d2', 'question', 'b7b11bf3-836b-4cba-8723-f2aa08b66eab', 2, true, null, false),
+
+-- Risk top sections
+('85ede91e-95bb-4b47-b732-4b05d794a041', '1255f7c4-81fe-494c-b269-38f7261cb68c', 'group', '95000412-07cb-49aa-8821-6712880e3097', 1, true, null, false),
+('4c02f821-a3b2-4b29-8238-4b4ed26e2108', 'e2106fd9-8aea-4ecb-a437-a13c1e3c6703', 'group', '95000412-07cb-49aa-8821-6712880e3097', 2, true, null, false),
+-- Risk sections
 ('2c750777-45d0-4b96-8715-c8c20f4aa563', '30851ffd-90a3-430d-8239-0386076de177', 'question', '1255f7c4-81fe-494c-b269-38f7261cb68c', 1, true, null, false),
 ('5dd4651d-10ed-4dbe-8765-093ae2d85d09', '9feb81fc-3437-4762-88e1-b147db676c66', 'question', '1255f7c4-81fe-494c-b269-38f7261cb68c', 2, true, null, false),
 ('cda82f8a-7405-4059-8df0-e062d60ace97', '6d18c3e9-a921-4b3b-aad3-a1c1f68d51c9', 'question', '1255f7c4-81fe-494c-b269-38f7261cb68c', 3, true, null, false),
