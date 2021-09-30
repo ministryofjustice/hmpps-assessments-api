@@ -24,7 +24,7 @@ class QuestionGroupRepositoryTest(@Autowired val questionGroupRepository: Questi
   @Test
   fun `list group summaries`() {
     val groupSummaries = questionGroupRepository.listGroups()
-    assertThat(groupSummaries).hasSize(43)
+    assertThat(groupSummaries).hasSize(48)
 
     val groupInfo = groupSummaries.find { it.groupCode == "risk_to_others" }
 
