@@ -114,7 +114,7 @@ class QuestionControllerTest : IntegrationTest() {
       .returnResult()
       .responseBody
 
-    assertThat(groupSummaries).hasSize(48)
+    assertThat(groupSummaries).hasSize(51)
 
     val groupInfo = groupSummaries?.find { it.groupCode == "risk_to_others" }
 
