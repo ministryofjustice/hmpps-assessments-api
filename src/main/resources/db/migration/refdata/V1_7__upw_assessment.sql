@@ -30,7 +30,10 @@ VALUES ('ccd1ae9f-fcd9-41eb-88d9-d28945ed79b4', 'upw_assessment', 'Unpaid Work A
        ('6f8bcf8b-bf9c-4410-9111-07d94d32864a', 'upw_disabilities_and_mental_health', 'Disabilities and mental health', null, null, '2021-09-27 14:50:00', null),
        ('dfa7b0e0-75a0-4117-ae0c-143c6ed97370', 'upw_other_health_issues', 'Other health issues', null, null, '2021-09-27 14:50:00', null),
        ('5460f64f-4bcb-40bc-a91d-0e90a4ea6a9b', 'upw_travel_information', 'Travel information', null, null, '2021-09-27 14:50:00', null),
-       ('28d07199-ceed-473f-8584-156b018d967a', 'upw_caring_commitments', 'Caring commitments', null, null, '2021-09-27 14:50:00', null)
+       ('28d07199-ceed-473f-8584-156b018d967a', 'upw_caring_commitments', 'Caring commitments', null, null, '2021-09-27 14:50:00', null),
+       ('9cbfc1ad-a054-44ab-9827-fd1b429ef31d', 'upw_employment_education_skills_section', 'Employment, education and skills section', null, null, '2021-09-27 14:50:00', null),
+       ('5f29f9f8-5926-4056-aa91-53369a5df9c6', 'upw_employment_education_skills', 'Employment, education and skills', null, null, '2021-09-27 14:50:00', null),
+       ('31520ae0-dea2-482a-9b3c-ebade83863e6', 'upw_employment_training', 'Training & employment opportunities', null, null, '2021-09-27 14:50:00', null)
 ;
 
 INSERT INTO assessment_schema_groups(assessment_schema_uuid, group_uuid)
@@ -107,7 +110,21 @@ VALUES
 
 ('1661fcd6-996c-449f-aaa5-69451424be74', 'upw_caring_commitments', '2021-09-27 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Are there carer commitments?', '', null, null),
 ('bd383ed7-ba4a-42da-abc0-aacd8ff3e14f', 'upw_caring_commitments_details', '2021-09-27 14:50:00', null, 'freetext', null, 'Give details', null, null, null),
-('7f7896f3-62b2-455a-9565-08538085ced5', 'upw_caring_commitments_complete', '2021-09-27 14:50:00', null, 'radio', '8067ff6e-7400-4d1e-ae2a-87dee7e124ec', 'Mark this section as complete?', '', null, null)
+('7f7896f3-62b2-455a-9565-08538085ced5', 'upw_caring_commitments_complete', '2021-09-27 14:50:00', null, 'radio', '8067ff6e-7400-4d1e-ae2a-87dee7e124ec', 'Mark this section as complete?', '', null, null),
+
+('548f23e4-7975-46bf-b801-26d1c81738f4', 'upw_reading_writing_difficulties', '2021-09-27 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Does the individual have any difficulties with reading or writing?', '', null, null),
+('0e3e35d4-2dbc-4234-8fa0-2f7d7a0f5409', 'upw_reading_writing_difficulties_details', '2021-09-27 14:50:00', null, 'freetext', null, 'Give details', null, null, null),
+('594ecb57-e8f5-4cda-b0d3-05abe8e01c30', 'upw_work_skills', '2021-09-27 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Does the individual have any work skills or experience that could be used while carrying out Community Payback?', '', null, null),
+('59236813-d351-4fe9-a150-8b9e40e11248', 'upw_work_skills_details', '2021-09-27 14:50:00', null, 'freetext', null, 'Give details', null, null, null),
+('620e586c-5573-40b1-bf35-9df68bc97bf8', 'upw_future_work_plans', '2021-09-27 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Does the individual have future work plans that could be supported through a Community Payback placement?', 'For example: retail, gardening etc', null, null),
+('6b738b3c-b935-4aff-b56f-e62d0c74fe0a', 'upw_future_work_plans_details', '2021-09-27 14:50:00', null, 'freetext', null, 'Give details', null, null, null),
+('e2529cda-e57b-44c6-bf08-466caf8be43d', 'upw_employment_education_skills_complete', '2021-09-27 14:50:00', null, 'radio', '8067ff6e-7400-4d1e-ae2a-87dee7e124ec', 'Mark this section as complete?', '', null, null),
+
+('d2a47e6c-06eb-4ebd-abe2-786edd916acd', 'upw_education_training_need', '2021-09-27 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Does the individual have an education, training or employment-related need?', '', null, null),
+('4fce15f3-6d62-4ade-aa26-b0fc886e28cb', 'upw_education_training_need_details', '2021-09-27 14:50:00', null, 'freetext', null, 'Give details', null, null, null),
+('c0371601-e15b-48c4-a736-a59cbf804669', 'upw_individual_commitment', '2021-09-27 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Does the individual agree to use the maximum entitlement of their hours on this activity?', '', null, null),
+('4dfb15ae-0d58-4672-98ec-494773e9a701', 'upw_individual_commitment_details', '2021-09-27 14:50:00', null, 'freetext', null, 'Give details', null, null, null),
+('315db0b1-66ac-4a3e-93bb-f9b7545fddb4', 'upw_employment_training_complete', '2021-09-27 14:50:00', null, 'radio', '8067ff6e-7400-4d1e-ae2a-87dee7e124ec', 'Mark this section as complete?', '', null, null)
 ;
 
 
@@ -116,6 +133,7 @@ VALUES
 ('711caebc-2f8a-410b-9cd1-daf348410896', '2bd35476-ac9b-4f15-ac7d-ea6943ccc120', 'group', 'ccd1ae9f-fcd9-41eb-88d9-d28945ed79b4', 1, true, null, false),
 ('4204cf4b-814f-4cad-a311-1e7854f6edbe', '95000412-07cb-49aa-8821-6712880e3097', 'group', 'ccd1ae9f-fcd9-41eb-88d9-d28945ed79b4', 2, true, null, false),
 ('92785dc3-2c38-4066-8b3a-ef9fd0094a57', '76a2b2a9-69c9-42c1-8d79-46294790b212', 'group', 'ccd1ae9f-fcd9-41eb-88d9-d28945ed79b4', 3, true, null, false),
+('6de51fe3-89b6-4488-b931-27fd8530dacd', '9cbfc1ad-a054-44ab-9827-fd1b429ef31d', 'group', 'ccd1ae9f-fcd9-41eb-88d9-d28945ed79b4', 3, true, null, false),
 
 -- Diversity top sections
 ('d46d6b16-6851-45fc-a4e9-28bfcadef3b0', '667e9967-275f-4d23-bd02-7b5e3f3e1647', 'group', '2bd35476-ac9b-4f15-ac7d-ea6943ccc120', 1, true, null, false),
@@ -206,6 +224,23 @@ VALUES
 
 ('c1d55159-1ceb-4204-9575-c8d41e91ff7f', '1661fcd6-996c-449f-aaa5-69451424be74', 'question', '28d07199-ceed-473f-8584-156b018d967a', 1, true, null, false),
 ('9bdc6f50-2601-4a31-8a05-2341dbf4af6e', 'bd383ed7-ba4a-42da-abc0-aacd8ff3e14f', 'question', '28d07199-ceed-473f-8584-156b018d967a', 2, true, null, false),
-('27eb851d-4272-4498-890c-d84e93ac1c35', '7f7896f3-62b2-455a-9565-08538085ced5', 'question', '28d07199-ceed-473f-8584-156b018d967a', 3, true, null, false)
-;
+('27eb851d-4272-4498-890c-d84e93ac1c35', '7f7896f3-62b2-455a-9565-08538085ced5', 'question', '28d07199-ceed-473f-8584-156b018d967a', 3, true, null, false),
 
+-- Employment, education and skills information top sections
+('6ace857b-c4c7-44af-b958-583facb7bdee', '5f29f9f8-5926-4056-aa91-53369a5df9c6', 'group', '9cbfc1ad-a054-44ab-9827-fd1b429ef31d', 1, true, null, false),
+('737d98d3-0652-489c-a34a-d7b9905ab7a8', '31520ae0-dea2-482a-9b3c-ebade83863e6', 'group', '9cbfc1ad-a054-44ab-9827-fd1b429ef31d', 2, true, null, false),
+-- Employment, education and skills information sections
+('69067e81-fea8-4e83-971f-378c633233c5', '548f23e4-7975-46bf-b801-26d1c81738f4', 'question', '5f29f9f8-5926-4056-aa91-53369a5df9c6', 1, true, null, false),
+('62052a2a-a0cc-4ab5-aca9-b61cb06bd91c', '0e3e35d4-2dbc-4234-8fa0-2f7d7a0f5409', 'question', '5f29f9f8-5926-4056-aa91-53369a5df9c6', 2, true, null, false),
+('207e9b28-6655-44f7-8065-f8cb287a3d53', '594ecb57-e8f5-4cda-b0d3-05abe8e01c30', 'question', '5f29f9f8-5926-4056-aa91-53369a5df9c6', 3, true, null, false),
+('00459dc9-3bb1-49cc-9224-fa299e2c223f', '59236813-d351-4fe9-a150-8b9e40e11248', 'question', '5f29f9f8-5926-4056-aa91-53369a5df9c6', 4, true, null, false),
+('d92772a2-110c-4cbf-90d3-52ed1b232d43', '620e586c-5573-40b1-bf35-9df68bc97bf8', 'question', '5f29f9f8-5926-4056-aa91-53369a5df9c6', 5, true, null, false),
+('6d8f3b4f-5792-451a-be8a-f9e143029c76', '6b738b3c-b935-4aff-b56f-e62d0c74fe0a', 'question', '5f29f9f8-5926-4056-aa91-53369a5df9c6', 6, true, null, false),
+('19cb87ee-38b3-4daf-b352-8f2ab1942c00', 'e2529cda-e57b-44c6-bf08-466caf8be43d', 'question', '5f29f9f8-5926-4056-aa91-53369a5df9c6', 7, true, null, false),
+
+('ec5e8ce6-97a6-4989-bf30-2183ead9377a', 'd2a47e6c-06eb-4ebd-abe2-786edd916acd', 'question', '31520ae0-dea2-482a-9b3c-ebade83863e6', 1, true, null, false),
+('c9180c1d-a57a-4d2c-a5c1-7cb57ba0b02e', '4fce15f3-6d62-4ade-aa26-b0fc886e28cb', 'question', '31520ae0-dea2-482a-9b3c-ebade83863e6', 2, true, null, false),
+('12c511f4-1a7b-4819-b458-283ce104ac69', 'c0371601-e15b-48c4-a736-a59cbf804669', 'question', '31520ae0-dea2-482a-9b3c-ebade83863e6', 3, true, null, false),
+('92759422-b14d-4054-9a63-e97d747604eb', '4dfb15ae-0d58-4672-98ec-494773e9a701', 'question', '31520ae0-dea2-482a-9b3c-ebade83863e6', 4, true, null, false),
+('8773d9f1-b8df-49f4-b6ea-6d4b41dcf723', '315db0b1-66ac-4a3e-93bb-f9b7545fddb4', 'question', '31520ae0-dea2-482a-9b3c-ebade83863e6', 5, true, null, false)
+;
