@@ -64,7 +64,9 @@ class QuestionService(
           val questionSchema = getGroupQuestion(it, dependencies)
           listOf(questionSchema)
         }
-        "group" -> { flattenQuestionsForGroup(it.contentUuid, dependencies) }
+        "group" -> {
+          flattenQuestionsForGroup(it.contentUuid, dependencies)
+        }
         else -> emptyList()
       }
     }
