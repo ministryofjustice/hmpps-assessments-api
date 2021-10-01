@@ -149,7 +149,7 @@ class AssessmentService(
     assessmentSchemaCode: AssessmentSchemaCode?
   ): AssessmentDto {
     if (eventId == null || crn.isNullOrEmpty() || assessmentSchemaCode == null) {
-      throw IllegalStateException("Unable to create OASys Assessment with assessment type: $assessmentSchemaCode, eventId: $eventId, crn: $crn")
+      throw IllegalStateException("Unable to create Assessment with assessment type: $assessmentSchemaCode, eventId: $eventId, crn: $crn")
     }
     val arnAssessment = getOrCreateAssessment(crn, eventId)
     val (oasysOffenderPk, oasysSetPK) = oasysAssessmentUpdateService.createOffenderAndOasysAssessment(

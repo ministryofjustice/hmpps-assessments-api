@@ -5,7 +5,12 @@ VALUES
 INSERT INTO answer_schema_group (answer_schema_group_uuid, answer_schema_group_code, group_start, group_end)
 VALUES
 ('8067ff6e-7400-4d1e-ae2a-87dee7e124ec', 'yes-noillcomebacklater', '2021-09-27 14:50:00', null),
-('2a82f463-97d1-4de4-8601-23fca9215c17', 'individual-mixed-femaleonly', '2021-09-27 14:50:00', null);
+('2a82f463-97d1-4de4-8601-23fca9215c17', 'individual-mixed-femaleonly', '2021-09-27 14:50:00', null),
+('7816fe5c-3beb-46d1-b2af-4a0a8f30aca0', 'individualavailability', '2021-09-27 14:50:00', null),
+('9fc83177-fd89-4755-89a5-69d0892cd25d', 'male-female', '2021-09-27 14:50:00', null),
+('37943ca1-b977-410a-9e5a-75c2ab032abb', 'xs-s-m-l-xl-xxl-xxxl', '2021-09-27 14:50:00', null),
+('ffe5ecbf-1669-46c9-b40f-4ac82dba0629', '3-4-5-6-7-8-9-10-11-12-13-14', '2021-09-27 14:50:00', null)
+;
 
 INSERT INTO answer_schema (answer_schema_uuid, answer_schema_code, answer_schema_group_uuid, answer_start, answer_end, value, text)
 VALUES
@@ -13,7 +18,51 @@ VALUES
 ('70ca6d84-730d-45b2-b531-1d8d13fefadc', 'no_ill_come_back_later', '8067ff6e-7400-4d1e-ae2a-87dee7e124ec', '2021-09-27 14:50:00', null, 'NO_ILL_COME_BACK_LATER', 'No, I’ll come back later'),
 ('e8689a6c-2b53-4d6c-b9bf-3bbb0b4a6f85', 'individual', '2a82f463-97d1-4de4-8601-23fca9215c17', '2021-09-27 14:50:00', null, 'INDIVIDUAL', 'Individual'),
 ('dfaaa874-928b-4bd8-987a-5cdac16e8dba', 'mixed_group', '2a82f463-97d1-4de4-8601-23fca9215c17', '2021-09-27 14:50:00', null, 'MIXED_GROUP', 'Mixed group'),
-('66646d01-19a5-4b9f-bfaf-a2f162897336', 'female_only_group', '2a82f463-97d1-4de4-8601-23fca9215c17', '2021-09-27 14:50:00', null, 'FEMALE_ONLY_GROUP', 'Female only group')
+('66646d01-19a5-4b9f-bfaf-a2f162897336', 'female_only_group', '2a82f463-97d1-4de4-8601-23fca9215c17', '2021-09-27 14:50:00', null, 'FEMALE_ONLY_GROUP', 'Female only group'),
+('034a8964-7a54-4773-8224-87bb6c6a5ed8', 'monday_morning', '7816fe5c-3beb-46d1-b2af-4a0a8f30aca0', '2021-09-27 14:50:00', null, 'MONDAY_MORNING', ''),
+('78384548-62df-403f-99bb-4dd267ee0cc2', 'monday_afternoon', '7816fe5c-3beb-46d1-b2af-4a0a8f30aca0', '2021-09-27 14:50:00', null, 'MONDAY_AFTERNOON', ''),
+('74103423-a881-4572-810b-6993d58ff443', 'monday_evening', '7816fe5c-3beb-46d1-b2af-4a0a8f30aca0', '2021-09-27 14:50:00', null, 'MONDAY_EVENING', ''),
+('53acdc58-94ab-4049-8ebf-c4b2ba08f4f5', 'tuesday_morning', '7816fe5c-3beb-46d1-b2af-4a0a8f30aca0', '2021-09-27 14:50:00', null, 'TUESDAY_MORNING', ''),
+('bb7226bc-a231-43a7-a272-2d4d9a9d3d0b', 'tuesday_afternoon', '7816fe5c-3beb-46d1-b2af-4a0a8f30aca0', '2021-09-27 14:50:00', null, 'TUESDAY_AFTERNOON', ''),
+('5ed93e3e-67d6-402f-8de9-3b86d94d4f24', 'tuesday_evening', '7816fe5c-3beb-46d1-b2af-4a0a8f30aca0', '2021-09-27 14:50:00', null, 'TUESDAY_EVENING', ''),
+('4ab83101-e739-4618-b010-6983652585ae', 'wednesday_morning', '7816fe5c-3beb-46d1-b2af-4a0a8f30aca0', '2021-09-27 14:50:00', null, 'WEDNESDAY_MORNING', ''),
+('2d2fd1e4-2998-45ad-a7cf-e88f8570b4c2', 'wednesday_afternoon', '7816fe5c-3beb-46d1-b2af-4a0a8f30aca0', '2021-09-27 14:50:00', null, 'WEDNESDAY_AFTERNOON', ''),
+('f2147823-0211-4f05-bff7-84b445145d51', 'wednesday_evening', '7816fe5c-3beb-46d1-b2af-4a0a8f30aca0', '2021-09-27 14:50:00', null, 'WEDNESDAY_EVENING', ''),
+('4479a057-3159-49c5-9599-180f36428a78', 'thursday_morning', '7816fe5c-3beb-46d1-b2af-4a0a8f30aca0', '2021-09-27 14:50:00', null, 'THURSDAY_MORNING', ''),
+('1893becf-bf31-4697-b15e-d992dbf1812a', 'thursday_afternoon', '7816fe5c-3beb-46d1-b2af-4a0a8f30aca0', '2021-09-27 14:50:00', null, 'THURSDAY_AFTERNOON', ''),
+('a87c0229-1a9e-48a1-a319-d7a5101b0f43', 'thursday_evening', '7816fe5c-3beb-46d1-b2af-4a0a8f30aca0', '2021-09-27 14:50:00', null, 'THURSDAY_EVENING', ''),
+('29fdfd16-700c-4196-9c6e-58bf695e55f0', 'friday_morning', '7816fe5c-3beb-46d1-b2af-4a0a8f30aca0', '2021-09-27 14:50:00', null, 'FRIDAY_MORNING', ''),
+('d7ac7df6-d922-41a5-8b5d-379dca5250c7', 'friday_afternoon', '7816fe5c-3beb-46d1-b2af-4a0a8f30aca0', '2021-09-27 14:50:00', null, 'FRIDAY_AFTERNOON', ''),
+('d202e29b-ec9e-4192-98a4-345b07c653f1', 'friday_evening', '7816fe5c-3beb-46d1-b2af-4a0a8f30aca0', '2021-09-27 14:50:00', null, 'FRIDAY_EVENING', ''),
+('c3b508b5-0241-4c67-8d87-9fe364290c2d', 'saturday_morning', '7816fe5c-3beb-46d1-b2af-4a0a8f30aca0', '2021-09-27 14:50:00', null, 'SATURDAY_MORNING', ''),
+('59bb90b0-6216-4920-bc3b-b47a62bda837', 'saturday_afternoon', '7816fe5c-3beb-46d1-b2af-4a0a8f30aca0', '2021-09-27 14:50:00', null, 'SATURDAY_AFTERNOON', ''),
+('c072a9ff-fbda-42ae-a5e6-b79616b3bc55', 'saturday_evening', '7816fe5c-3beb-46d1-b2af-4a0a8f30aca0', '2021-09-27 14:50:00', null, 'SATURDAY_EVENING', ''),
+('6398406e-f323-474a-a5aa-cb65a1da75c7', 'sunday_morning', '7816fe5c-3beb-46d1-b2af-4a0a8f30aca0', '2021-09-27 14:50:00', null, 'SUNDAY_MORNING', ''),
+('0acb7955-6e01-4bd6-b47f-438b87db4cc0', 'sunday_afternoon', '7816fe5c-3beb-46d1-b2af-4a0a8f30aca0', '2021-09-27 14:50:00', null, 'SUNDAY_AFTERNOON', ''),
+('976e41ce-ef5b-431f-8cc7-cd5ea2d8c619', 'sunday_evening', '7816fe5c-3beb-46d1-b2af-4a0a8f30aca0', '2021-09-27 14:50:00', null, 'SUNDAY_EVENING', ''),
+('b34622fb-6c97-488e-8e13-96f2f43bbecf', 'male', '9fc83177-fd89-4755-89a5-69d0892cd25d', '2021-09-27 14:50:00', null, 'MALE', 'Male'),
+('623581c2-9b99-4421-8a96-df51f0136e06', 'female', '9fc83177-fd89-4755-89a5-69d0892cd25d', '2021-09-27 14:50:00', null, 'FEMALE', 'Female'),
+
+('bb427a45-d7d4-44a3-8b68-de2428fd92ea', 'xs',  '37943ca1-b977-410a-9e5a-75c2ab032abb', '2021-09-27 14:50:00', null, 'XS', 'X-Small'),
+('afe91b9f-0d1d-43ab-9dbe-7b81a73d67fa', 's',   '37943ca1-b977-410a-9e5a-75c2ab032abb', '2021-09-27 14:50:00', null, 'S', 'Small'),
+('d0d33422-17fd-4c9c-a90b-df4bab850363', 'm',   '37943ca1-b977-410a-9e5a-75c2ab032abb', '2021-09-27 14:50:00', null, 'M', 'Medium'),
+('121bd2a4-b57a-4ac5-b2bf-a676767dc264', 'l',   '37943ca1-b977-410a-9e5a-75c2ab032abb', '2021-09-27 14:50:00', null, 'L', 'Large'),
+('c51f6a7f-e8be-4147-a479-24f9019d30c2', 'xl',  '37943ca1-b977-410a-9e5a-75c2ab032abb', '2021-09-27 14:50:00', null, 'XL', 'X-Large'),
+('b1942513-23fa-4800-96bf-4933edef3cfa', 'xxl', '37943ca1-b977-410a-9e5a-75c2ab032abb', '2021-09-27 14:50:00', null, 'XXL', 'XX-Large'),
+('924c187c-5904-436a-9670-205d0b7dc646', 'xxxl','37943ca1-b977-410a-9e5a-75c2ab032abb', '2021-09-27 14:50:00', null, 'XXXL', 'XXX-Large'),
+
+('aead43e0-ee10-4271-ba01-83a35428e996', '3', 'ffe5ecbf-1669-46c9-b40f-4ac82dba0629', '2021-09-27 14:50:00', null, '3', 'Size 3'),
+('442d529a-750e-46e1-a7ec-869645c147c8', '4', 'ffe5ecbf-1669-46c9-b40f-4ac82dba0629', '2021-09-27 14:50:00', null, '4', 'Size 4'),
+('794f872a-5348-450f-a84c-b5a3d9ecdd9f', '5', 'ffe5ecbf-1669-46c9-b40f-4ac82dba0629', '2021-09-27 14:50:00', null, '5', 'Size 5'),
+('5e715a2e-b394-46b6-9cd1-bcf8009e66a4', '6', 'ffe5ecbf-1669-46c9-b40f-4ac82dba0629', '2021-09-27 14:50:00', null, '6', 'Size 6'),
+('fbf22a78-bb07-44ca-813c-78ff4f09cdd3', '7', 'ffe5ecbf-1669-46c9-b40f-4ac82dba0629', '2021-09-27 14:50:00', null, '7', 'Size 7'),
+('1e1c93be-d8a9-4257-8f9c-096af3ea7887', '8', 'ffe5ecbf-1669-46c9-b40f-4ac82dba0629', '2021-09-27 14:50:00', null, '8', 'Size 8'),
+('5f6c70df-8f7e-4f69-813a-3b197a5366f4', '9', 'ffe5ecbf-1669-46c9-b40f-4ac82dba0629', '2021-09-27 14:50:00', null, '9', 'Size 9'),
+('e97658a5-5526-4d54-84ad-d4f562076cb7', '10', 'ffe5ecbf-1669-46c9-b40f-4ac82dba0629', '2021-09-27 14:50:00', null, '10', 'Size 10'),
+('caec7137-e7a7-4e48-aa42-fc2ec84df89d', '11', 'ffe5ecbf-1669-46c9-b40f-4ac82dba0629', '2021-09-27 14:50:00', null, '11', 'Size 11'),
+('8ee47349-1a3d-4b03-a802-87f43765a6af', '12', 'ffe5ecbf-1669-46c9-b40f-4ac82dba0629', '2021-09-27 14:50:00', null, '12', 'Size 12'),
+('caf6773d-50b2-4fa5-a802-333b37298b95', '13', 'ffe5ecbf-1669-46c9-b40f-4ac82dba0629', '2021-09-27 14:50:00', null, '13', 'Size 13'),
+('90e91ab7-9919-409b-81a9-21ef4c62e2d1', '14', 'ffe5ecbf-1669-46c9-b40f-4ac82dba0629', '2021-09-27 14:50:00', null, '14', 'Size 14')
 ;
 
 INSERT INTO grouping (group_uuid, group_code, heading, subheading, help_text, group_start, group_end)
@@ -33,7 +82,11 @@ VALUES ('ccd1ae9f-fcd9-41eb-88d9-d28945ed79b4', 'upw_assessment', 'Unpaid Work A
        ('28d07199-ceed-473f-8584-156b018d967a', 'upw_caring_commitments', 'Caring commitments', null, null, '2021-09-27 14:50:00', null),
        ('9cbfc1ad-a054-44ab-9827-fd1b429ef31d', 'upw_employment_education_skills_section', 'Employment, education and skills section', null, null, '2021-09-27 14:50:00', null),
        ('5f29f9f8-5926-4056-aa91-53369a5df9c6', 'upw_employment_education_skills', 'Employment, education and skills', null, null, '2021-09-27 14:50:00', null),
-       ('31520ae0-dea2-482a-9b3c-ebade83863e6', 'upw_employment_training', 'Training & employment opportunities', null, null, '2021-09-27 14:50:00', null)
+       ('31520ae0-dea2-482a-9b3c-ebade83863e6', 'upw_employment_training', 'Training & employment opportunities', null, null, '2021-09-27 14:50:00', null),
+       ('b0238dcb-e12a-4d07-9986-7214139942d1', 'upw_placement_details_section', 'Placement details section', null, null, '2021-09-27 14:50:00', null),
+       ('1519998a-ec33-45bb-8bb8-1e16ab9256ed', 'upw_intensive_working', 'Intensive working', null, null, '2021-09-27 14:50:00', null),
+       ('dfd0c068-c53b-4769-bdb4-7cac7078515a', 'upw_availability_community_payback', 'Availability for Community Payback work', null, null, '2021-09-27 14:50:00', null),
+       ('b0c6ed29-cde6-46a2-8c99-f26de7711a85', 'upw_working_equipment', 'Equipment', null, null, '2021-09-27 14:50:00', null)
 ;
 
 INSERT INTO assessment_schema_groups(assessment_schema_uuid, group_uuid)
@@ -45,7 +98,7 @@ VALUES
 ('e7f8205b-1f2a-4578-943c-154d2a6ee11e', 'upw_cultural_religious_adjustment_details', '2021-09-27 14:50:00', null, 'freetext', null, 'Give details', null, null, null),
 ('0238fbc4-e488-4e1e-858d-856532d1cf56', 'upw_cultural_religious_adjustment_complete', '2021-09-27 14:50:00', null, 'radio', '8067ff6e-7400-4d1e-ae2a-87dee7e124ec', 'Mark this section as complete?', '', null, null),
 ('4b62bf80-9801-49cd-b3da-fe8961571302', 'upw_placement_preference', '2021-09-27 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Does the individual have any placement preferences?', null, null, null),
-('56da5e97-a871-4ac8-ad1e-5ca6001633d2', 'upw_placement_preferences', '2020-11-30 14:50:00', null, 'checkbox', '2a82f463-97d1-4de4-8601-23fca9215c17', null, null, null, 'PLACEMENT_PREFERENCES'),
+('56da5e97-a871-4ac8-ad1e-5ca6001633d2', 'upw_placement_preferences', '2021-09-27 14:50:00', null, 'checkbox', '2a82f463-97d1-4de4-8601-23fca9215c17', null, null, null, 'PLACEMENT_PREFERENCES'),
 ('d1d849fe-1240-49db-bf60-692967a9e55e', 'upw_placement_preference_complete', '2021-09-27 14:50:00', null, 'radio', '8067ff6e-7400-4d1e-ae2a-87dee7e124ec', 'Mark this section as complete?', '', null, null),
 ('b2af0358-56fb-4e45-be76-b661ce829138', 'upw_placement_preference_by_gender_details', '2021-09-27 14:50:00', null, 'freetext', null, 'Discuss placement options with the individual, based on their gender identity', 'Record their preference and the details of the conversation.', null, null),
 ('980f7936-682c-4174-91b6-3dcfc684c494', 'upw_placement_preference_by_gender_complete', '2021-09-27 14:50:00', null, 'radio', '8067ff6e-7400-4d1e-ae2a-87dee7e124ec', 'Mark this section as complete?', '', null, null),
@@ -124,9 +177,24 @@ VALUES
 ('4fce15f3-6d62-4ade-aa26-b0fc886e28cb', 'upw_education_training_need_details', '2021-09-27 14:50:00', null, 'freetext', null, 'Give details', null, null, null),
 ('c0371601-e15b-48c4-a736-a59cbf804669', 'upw_individual_commitment', '2021-09-27 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Does the individual agree to use the maximum entitlement of their hours on this activity?', '', null, null),
 ('4dfb15ae-0d58-4672-98ec-494773e9a701', 'upw_individual_commitment_details', '2021-09-27 14:50:00', null, 'freetext', null, 'Give details', null, null, null),
-('315db0b1-66ac-4a3e-93bb-f9b7545fddb4', 'upw_employment_training_complete', '2021-09-27 14:50:00', null, 'radio', '8067ff6e-7400-4d1e-ae2a-87dee7e124ec', 'Mark this section as complete?', '', null, null)
-;
+('315db0b1-66ac-4a3e-93bb-f9b7545fddb4', 'upw_employment_training_complete', '2021-09-27 14:50:00', null, 'radio', '8067ff6e-7400-4d1e-ae2a-87dee7e124ec', 'Mark this section as complete?', '', null, null),
 
+('e7d21b47-6653-48be-845e-8a28f529bf9e', 'upw_eligibility_intensive_working', '2021-09-27 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Is the individual eligible for intensive working?', '', null, null),
+('303568a9-7f7c-42ac-a7e9-cc78531528af', 'upw_eligibility_intensive_working_details', '2021-09-27 14:50:00', null, 'freetext', null, 'Give details', null, null, null),
+('d097ddde-337a-4777-a34b-ff3ab15cb698', 'upw_recommended_hours_start_order', '2021-09-27 14:50:00', null, 'numeric', null, 'Recommended hours per week in addition to statutory minimum, at the start of the order', '7 hours is the standard working day. Maximum of 21 additional hours per week.', null, null),
+('fbf62e33-03c3-4893-8ff6-92aa05827c40', 'upw_recommended_hours_midpoint_order', '2021-09-27 14:50:00', null, 'numeric', null, 'Recommended hours per week in addition to statutory minimum, at the midpoint of the order', '7 hours is the standard working day. Maximum of 21 additional hours per week.', null, null),
+('6beae16e-7f58-4270-8e2c-f88aa5ca9fd4', 'upw_twenty_eight_hours_working_week_details', '2021-09-27 14:50:00', null, 'freetext', null, 'At what point should the individual be expected to reach a 28-hour working week?', '', null, null),
+('fbee7d2a-3c6a-4aa7-bf7f-067674f07a8e', 'upw_eligibility_intensive_working_complete', '2021-09-27 14:50:00', null, 'radio', '8067ff6e-7400-4d1e-ae2a-87dee7e124ec', 'Mark this section as complete?', '', null, null),
+
+('7816fe5c-3beb-46d1-b2af-4a0a8f30aca0', 'upw_individual_availability', '2021-09-27 14:50:00', null, 'checkbox', '7816fe5c-3beb-46d1-b2af-4a0a8f30aca0', 'When is the individual available for  work?', null, null, 'INDIVIDUAL_AVAILABILITY'),
+('54c8c012-847d-44c7-b9d0-3f45874c96b5', 'upw_individual_availability_details', '2021-09-27 14:50:00', null, 'freetext', null, 'Additional availability information [Optional]', null, null, null),
+('b75f9b88-6e52-4543-a280-18866938d1bc', 'upw_individual_availability_complete', '2021-09-27 14:50:00', null, 'radio', '8067ff6e-7400-4d1e-ae2a-87dee7e124ec', 'Mark this section as complete?', '', null, null),
+
+('97258aa2-be8b-4a7a-a9e5-67c9c1965274', 'upw_male_female_clothing', '2021-09-27 14:50:00', null, 'radio', '9fc83177-fd89-4755-89a5-69d0892cd25d', 'Male or female clothing required?', null, null, 'CLOTHING'),
+('fe4efc12-0a84-4875-a90f-317e96e320b5', 'upw_waterproof_clothing', '2021-09-27 14:50:00', null, 'radio', '37943ca1-b977-410a-9e5a-75c2ab032abb', 'Waterproof clothing', null, null, 'WATERPROOF_CLOTHING'),
+('451f6e52-a314-4e7d-83ca-afd8dfc6dc43', 'upw_footwear_size', '2021-09-27 14:50:00', null, 'dropdown', 'ffe5ecbf-1669-46c9-b40f-4ac82dba0629', 'Footwear', 'Size (UK)', null, 'FOOTWEAR_SIZE'),
+('5b1046e3-53f1-44d8-97db-5fd543f4382c', 'upw_equipment_complete', '2021-09-27 14:50:00', null, 'radio', '8067ff6e-7400-4d1e-ae2a-87dee7e124ec', 'Mark this section as complete?', '', null, null)
+;
 
 INSERT INTO question_group (question_group_uuid, content_uuid, content_type, group_uuid, display_order, mandatory, validation, read_only)
 VALUES
@@ -134,6 +202,7 @@ VALUES
 ('4204cf4b-814f-4cad-a311-1e7854f6edbe', '95000412-07cb-49aa-8821-6712880e3097', 'group', 'ccd1ae9f-fcd9-41eb-88d9-d28945ed79b4', 2, true, null, false),
 ('92785dc3-2c38-4066-8b3a-ef9fd0094a57', '76a2b2a9-69c9-42c1-8d79-46294790b212', 'group', 'ccd1ae9f-fcd9-41eb-88d9-d28945ed79b4', 3, true, null, false),
 ('6de51fe3-89b6-4488-b931-27fd8530dacd', '9cbfc1ad-a054-44ab-9827-fd1b429ef31d', 'group', 'ccd1ae9f-fcd9-41eb-88d9-d28945ed79b4', 3, true, null, false),
+('02410525-acd4-4b88-aa0c-1760c0fabe97', 'b0238dcb-e12a-4d07-9986-7214139942d1', 'group', 'ccd1ae9f-fcd9-41eb-88d9-d28945ed79b4', 4, true, null, false),
 
 -- Diversity top sections
 ('d46d6b16-6851-45fc-a4e9-28bfcadef3b0', '667e9967-275f-4d23-bd02-7b5e3f3e1647', 'group', '2bd35476-ac9b-4f15-ac7d-ea6943ccc120', 1, true, null, false),
@@ -242,5 +311,26 @@ VALUES
 ('c9180c1d-a57a-4d2c-a5c1-7cb57ba0b02e', '4fce15f3-6d62-4ade-aa26-b0fc886e28cb', 'question', '31520ae0-dea2-482a-9b3c-ebade83863e6', 2, true, null, false),
 ('12c511f4-1a7b-4819-b458-283ce104ac69', 'c0371601-e15b-48c4-a736-a59cbf804669', 'question', '31520ae0-dea2-482a-9b3c-ebade83863e6', 3, true, null, false),
 ('92759422-b14d-4054-9a63-e97d747604eb', '4dfb15ae-0d58-4672-98ec-494773e9a701', 'question', '31520ae0-dea2-482a-9b3c-ebade83863e6', 4, true, null, false),
-('8773d9f1-b8df-49f4-b6ea-6d4b41dcf723', '315db0b1-66ac-4a3e-93bb-f9b7545fddb4', 'question', '31520ae0-dea2-482a-9b3c-ebade83863e6', 5, true, null, false)
+('8773d9f1-b8df-49f4-b6ea-6d4b41dcf723', '315db0b1-66ac-4a3e-93bb-f9b7545fddb4', 'question', '31520ae0-dea2-482a-9b3c-ebade83863e6', 5, true, null, false),
+
+-- Placement details top sections
+('379fb07a-c20d-42a4-bf08-12833ac04b2e', '1519998a-ec33-45bb-8bb8-1e16ab9256ed', 'group', 'b0238dcb-e12a-4d07-9986-7214139942d1', 1, true, null, false),
+('6116ed3c-abc0-4f63-bc4f-be7264200c17', 'dfd0c068-c53b-4769-bdb4-7cac7078515a', 'group', 'b0238dcb-e12a-4d07-9986-7214139942d1', 2, true, null, false),
+('a5cc654b-3680-4aac-a948-812ca7b75263', 'b0c6ed29-cde6-46a2-8c99-f26de7711a85', 'group', 'b0238dcb-e12a-4d07-9986-7214139942d1', 3, true, null, false),
+-- Placement details questions
+('5176e9d8-87c1-4e44-ac12-dbe8f51c65d9', 'e7d21b47-6653-48be-845e-8a28f529bf9e', 'question', '1519998a-ec33-45bb-8bb8-1e16ab9256ed', 1, true, null, false),
+('04015a85-a4e9-45f8-b66b-1cbff39e7e0e', '303568a9-7f7c-42ac-a7e9-cc78531528af', 'question', '1519998a-ec33-45bb-8bb8-1e16ab9256ed', 2, true, null, false),
+('e6be94bf-13f1-46ca-825b-a1e2de3acd4b', 'd097ddde-337a-4777-a34b-ff3ab15cb698', 'question', '1519998a-ec33-45bb-8bb8-1e16ab9256ed', 3, true, null, false),
+('7979c64e-5d1c-4ea6-99b1-a0a10c760cef', 'fbf62e33-03c3-4893-8ff6-92aa05827c40', 'question', '1519998a-ec33-45bb-8bb8-1e16ab9256ed', 4, true, null, false),
+('7dfd0ef9-5b9b-4f2f-952f-66488ff40fd6', '6beae16e-7f58-4270-8e2c-f88aa5ca9fd4', 'question', '1519998a-ec33-45bb-8bb8-1e16ab9256ed', 5, true, null, false),
+('d5d2a5b2-fdfe-4eae-8881-3a4d6693f607', 'fbee7d2a-3c6a-4aa7-bf7f-067674f07a8e', 'question', '1519998a-ec33-45bb-8bb8-1e16ab9256ed', 6, true, null, false),
+
+('78347a79-9d9a-4236-bd3a-1beaefce0864', '7816fe5c-3beb-46d1-b2af-4a0a8f30aca0', 'question', 'dfd0c068-c53b-4769-bdb4-7cac7078515a', 1, true, null, false),
+('3d70670b-5012-4043-9472-0ba356f66dd3', '54c8c012-847d-44c7-b9d0-3f45874c96b5', 'question', 'dfd0c068-c53b-4769-bdb4-7cac7078515a', 2, true, null, false),
+('330969da-8d66-4a06-8c15-1e813851d7c2', 'b75f9b88-6e52-4543-a280-18866938d1bc', 'question', 'dfd0c068-c53b-4769-bdb4-7cac7078515a', 3, true, null, false),
+
+('c7694b99-f276-40f1-bb11-260a8d671b04', '97258aa2-be8b-4a7a-a9e5-67c9c1965274', 'question', 'b0c6ed29-cde6-46a2-8c99-f26de7711a85', 1, true, null, false),
+('0433da52-d48e-4030-acd2-faee54d5b622', 'fe4efc12-0a84-4875-a90f-317e96e320b5', 'question', 'b0c6ed29-cde6-46a2-8c99-f26de7711a85', 2, true, null, false),
+('b624a6c4-88b6-4253-9df0-5599a0d201ff', '451f6e52-a314-4e7d-83ca-afd8dfc6dc43', 'question', 'b0c6ed29-cde6-46a2-8c99-f26de7711a85', 3, true, null, false),
+('e073f4f8-288b-40d4-8236-3ec6a5fbc1fd', '5b1046e3-53f1-44d8-97db-5fd543f4382c', 'question', 'b0c6ed29-cde6-46a2-8c99-f26de7711a85', 4, true, null, false)
 ;
