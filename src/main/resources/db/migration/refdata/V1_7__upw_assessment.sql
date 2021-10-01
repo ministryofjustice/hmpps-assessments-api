@@ -86,7 +86,8 @@ VALUES ('ccd1ae9f-fcd9-41eb-88d9-d28945ed79b4', 'upw_assessment', 'Unpaid Work A
        ('b0238dcb-e12a-4d07-9986-7214139942d1', 'upw_placement_details_section', 'Placement details section', null, null, '2021-09-27 14:50:00', null),
        ('1519998a-ec33-45bb-8bb8-1e16ab9256ed', 'upw_intensive_working', 'Intensive working', null, null, '2021-09-27 14:50:00', null),
        ('dfd0c068-c53b-4769-bdb4-7cac7078515a', 'upw_availability_community_payback', 'Availability for Community Payback work', null, null, '2021-09-27 14:50:00', null),
-       ('b0c6ed29-cde6-46a2-8c99-f26de7711a85', 'upw_working_equipment', 'Equipment', null, null, '2021-09-27 14:50:00', null)
+       ('b0c6ed29-cde6-46a2-8c99-f26de7711a85', 'upw_working_equipment', 'Equipment', null, null, '2021-09-27 14:50:00', null),
+       ('d674dfba-4e09-4673-9049-b5e1ee13285f', 'upw_declaration_section', 'Declaration section', null, null, '2021-09-27 14:50:00', null)
 ;
 
 INSERT INTO assessment_schema_groups(assessment_schema_uuid, group_uuid)
@@ -193,7 +194,9 @@ VALUES
 ('97258aa2-be8b-4a7a-a9e5-67c9c1965274', 'upw_male_female_clothing', '2021-09-27 14:50:00', null, 'radio', '9fc83177-fd89-4755-89a5-69d0892cd25d', 'Male or female clothing required?', null, null, 'CLOTHING'),
 ('fe4efc12-0a84-4875-a90f-317e96e320b5', 'upw_waterproof_clothing', '2021-09-27 14:50:00', null, 'radio', '37943ca1-b977-410a-9e5a-75c2ab032abb', 'Waterproof clothing', null, null, 'WATERPROOF_CLOTHING'),
 ('451f6e52-a314-4e7d-83ca-afd8dfc6dc43', 'upw_footwear_size', '2021-09-27 14:50:00', null, 'dropdown', 'ffe5ecbf-1669-46c9-b40f-4ac82dba0629', 'Footwear', 'Size (UK)', null, 'FOOTWEAR_SIZE'),
-('5b1046e3-53f1-44d8-97db-5fd543f4382c', 'upw_equipment_complete', '2021-09-27 14:50:00', null, 'radio', '8067ff6e-7400-4d1e-ae2a-87dee7e124ec', 'Mark this section as complete?', '', null, null)
+('5b1046e3-53f1-44d8-97db-5fd543f4382c', 'upw_equipment_complete', '2021-09-27 14:50:00', null, 'radio', '8067ff6e-7400-4d1e-ae2a-87dee7e124ec', 'Mark this section as complete?', '', null, null),
+
+('7beed4f4-0f3b-4b16-85f0-90377a350f1e', 'upw_declaration_confirmation', '2021-09-27 14:50:00', null, 'checkbox', null, 'I confirm the individual has received details of their Community Payback Induction Session', null, null, '')
 ;
 
 INSERT INTO question_group (question_group_uuid, content_uuid, content_type, group_uuid, display_order, mandatory, validation, read_only)
@@ -203,6 +206,7 @@ VALUES
 ('92785dc3-2c38-4066-8b3a-ef9fd0094a57', '76a2b2a9-69c9-42c1-8d79-46294790b212', 'group', 'ccd1ae9f-fcd9-41eb-88d9-d28945ed79b4', 3, true, null, false),
 ('6de51fe3-89b6-4488-b931-27fd8530dacd', '9cbfc1ad-a054-44ab-9827-fd1b429ef31d', 'group', 'ccd1ae9f-fcd9-41eb-88d9-d28945ed79b4', 3, true, null, false),
 ('02410525-acd4-4b88-aa0c-1760c0fabe97', 'b0238dcb-e12a-4d07-9986-7214139942d1', 'group', 'ccd1ae9f-fcd9-41eb-88d9-d28945ed79b4', 4, true, null, false),
+('60cff2ba-42b8-4ef0-a14d-7de5a27da664', 'd674dfba-4e09-4673-9049-b5e1ee13285f', 'group', 'ccd1ae9f-fcd9-41eb-88d9-d28945ed79b4', 5, true, null, false),
 
 -- Diversity top sections
 ('d46d6b16-6851-45fc-a4e9-28bfcadef3b0', '667e9967-275f-4d23-bd02-7b5e3f3e1647', 'group', '2bd35476-ac9b-4f15-ac7d-ea6943ccc120', 1, true, null, false),
@@ -332,5 +336,9 @@ VALUES
 ('c7694b99-f276-40f1-bb11-260a8d671b04', '97258aa2-be8b-4a7a-a9e5-67c9c1965274', 'question', 'b0c6ed29-cde6-46a2-8c99-f26de7711a85', 1, true, null, false),
 ('0433da52-d48e-4030-acd2-faee54d5b622', 'fe4efc12-0a84-4875-a90f-317e96e320b5', 'question', 'b0c6ed29-cde6-46a2-8c99-f26de7711a85', 2, true, null, false),
 ('b624a6c4-88b6-4253-9df0-5599a0d201ff', '451f6e52-a314-4e7d-83ca-afd8dfc6dc43', 'question', 'b0c6ed29-cde6-46a2-8c99-f26de7711a85', 3, true, null, false),
-('e073f4f8-288b-40d4-8236-3ec6a5fbc1fd', '5b1046e3-53f1-44d8-97db-5fd543f4382c', 'question', 'b0c6ed29-cde6-46a2-8c99-f26de7711a85', 4, true, null, false)
+('e073f4f8-288b-40d4-8236-3ec6a5fbc1fd', '5b1046e3-53f1-44d8-97db-5fd543f4382c', 'question', 'b0c6ed29-cde6-46a2-8c99-f26de7711a85', 4, true, null, false),
+
+-- Declaration section questions
+('f9f4330f-9420-491c-b566-7f3a2d3f5dbf', '7beed4f4-0f3b-4b16-85f0-90377a350f1e', 'question', 'd674dfba-4e09-4673-9049-b5e1ee13285f', 1, true, null, false)
+  
 ;
