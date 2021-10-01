@@ -8,7 +8,8 @@ VALUES
 ('2a82f463-97d1-4de4-8601-23fca9215c17', 'individual-mixed-femaleonly', '2021-09-27 14:50:00', null),
 ('7816fe5c-3beb-46d1-b2af-4a0a8f30aca0', 'individualavailability', '2021-09-27 14:50:00', null),
 ('9fc83177-fd89-4755-89a5-69d0892cd25d', 'male-female', '2021-09-27 14:50:00', null),
-('37943ca1-b977-410a-9e5a-75c2ab032abb', 'xs-s-m-l-xl-xxl-xxxl', '2021-09-27 14:50:00', null)
+('37943ca1-b977-410a-9e5a-75c2ab032abb', 'xs-s-m-l-xl-xxl-xxxl', '2021-09-27 14:50:00', null),
+('ffe5ecbf-1669-46c9-b40f-4ac82dba0629', '3-4-5-6-7-8-9-10-11', '2021-09-27 14:50:00', null)
 ;
 
 INSERT INTO answer_schema (answer_schema_uuid, answer_schema_code, answer_schema_group_uuid, answer_start, answer_end, value, text)
@@ -48,7 +49,17 @@ VALUES
 ('121bd2a4-b57a-4ac5-b2bf-a676767dc264', 'l',   '37943ca1-b977-410a-9e5a-75c2ab032abb', '2021-09-27 14:50:00', null, 'L', 'Large'),
 ('c51f6a7f-e8be-4147-a479-24f9019d30c2', 'xl',  '37943ca1-b977-410a-9e5a-75c2ab032abb', '2021-09-27 14:50:00', null, 'XL', 'X-Large'),
 ('b1942513-23fa-4800-96bf-4933edef3cfa', 'xxl', '37943ca1-b977-410a-9e5a-75c2ab032abb', '2021-09-27 14:50:00', null, 'XXL', 'XX-Large'),
-('924c187c-5904-436a-9670-205d0b7dc646', 'xxxl','37943ca1-b977-410a-9e5a-75c2ab032abb', '2021-09-27 14:50:00', null, 'XXXL', 'XXX-Large')
+('924c187c-5904-436a-9670-205d0b7dc646', 'xxxl','37943ca1-b977-410a-9e5a-75c2ab032abb', '2021-09-27 14:50:00', null, 'XXXL', 'XXX-Large'),
+
+('aead43e0-ee10-4271-ba01-83a35428e996', '3', 'ffe5ecbf-1669-46c9-b40f-4ac82dba0629', '2021-09-27 14:50:00', null, '3', 'Size 3'),
+('442d529a-750e-46e1-a7ec-869645c147c8', '4', 'ffe5ecbf-1669-46c9-b40f-4ac82dba0629', '2021-09-27 14:50:00', null, '4', 'Size 4'),
+('794f872a-5348-450f-a84c-b5a3d9ecdd9f', '5', 'ffe5ecbf-1669-46c9-b40f-4ac82dba0629', '2021-09-27 14:50:00', null, '5', 'Size 5'),
+('5e715a2e-b394-46b6-9cd1-bcf8009e66a4', '6', 'ffe5ecbf-1669-46c9-b40f-4ac82dba0629', '2021-09-27 14:50:00', null, '6', 'Size 6'),
+('fbf22a78-bb07-44ca-813c-78ff4f09cdd3', '7', 'ffe5ecbf-1669-46c9-b40f-4ac82dba0629', '2021-09-27 14:50:00', null, '7', 'Size 7'),
+('1e1c93be-d8a9-4257-8f9c-096af3ea7887', '8', 'ffe5ecbf-1669-46c9-b40f-4ac82dba0629', '2021-09-27 14:50:00', null, '8', 'Size 8'),
+('5f6c70df-8f7e-4f69-813a-3b197a5366f4', '9', 'ffe5ecbf-1669-46c9-b40f-4ac82dba0629', '2021-09-27 14:50:00', null, '9', 'Size 9'),
+('e97658a5-5526-4d54-84ad-d4f562076cb7', '10', 'ffe5ecbf-1669-46c9-b40f-4ac82dba0629', '2021-09-27 14:50:00', null, '10', 'Size 10'),
+('caec7137-e7a7-4e48-aa42-fc2ec84df89d', '11', 'ffe5ecbf-1669-46c9-b40f-4ac82dba0629', '2021-09-27 14:50:00', null, '11', 'Size 11')
 ;
 
 INSERT INTO grouping (group_uuid, group_code, heading, subheading, help_text, group_start, group_end)
@@ -178,6 +189,7 @@ VALUES
 
 ('97258aa2-be8b-4a7a-a9e5-67c9c1965274', 'upw_male_female_clothing', '2021-09-27 14:50:00', null, 'radio', '9fc83177-fd89-4755-89a5-69d0892cd25d', 'Male or female clothing required?', null, null, 'CLOTHING'),
 ('fe4efc12-0a84-4875-a90f-317e96e320b5', 'upw_waterproof_clothing', '2021-09-27 14:50:00', null, 'radio', '37943ca1-b977-410a-9e5a-75c2ab032abb', 'Waterproof clothing', null, null, 'WATERPROOF_CLOTHING'),
+('451f6e52-a314-4e7d-83ca-afd8dfc6dc43', 'upw_footwear_size', '2021-09-27 14:50:00', null, 'dropdown', 'ffe5ecbf-1669-46c9-b40f-4ac82dba0629', 'Footwear', 'Size (UK)', null, 'FOOTWEAR_SIZE'),
 ('5b1046e3-53f1-44d8-97db-5fd543f4382c', 'upw_equipment_complete', '2021-09-27 14:50:00', null, 'radio', '8067ff6e-7400-4d1e-ae2a-87dee7e124ec', 'Mark this section as complete?', '', null, null)
 ;
 
@@ -316,5 +328,6 @@ VALUES
 
 ('c7694b99-f276-40f1-bb11-260a8d671b04', '97258aa2-be8b-4a7a-a9e5-67c9c1965274', 'question', 'b0c6ed29-cde6-46a2-8c99-f26de7711a85', 1, true, null, false),
 ('0433da52-d48e-4030-acd2-faee54d5b622', 'fe4efc12-0a84-4875-a90f-317e96e320b5', 'question', 'b0c6ed29-cde6-46a2-8c99-f26de7711a85', 2, true, null, false),
-('e073f4f8-288b-40d4-8236-3ec6a5fbc1fd', '5b1046e3-53f1-44d8-97db-5fd543f4382c', 'question', 'b0c6ed29-cde6-46a2-8c99-f26de7711a85', 3, true, null, false)
+('b624a6c4-88b6-4253-9df0-5599a0d201ff', '451f6e52-a314-4e7d-83ca-afd8dfc6dc43', 'question', 'b0c6ed29-cde6-46a2-8c99-f26de7711a85', 3, true, null, false),
+('e073f4f8-288b-40d4-8236-3ec6a5fbc1fd', '5b1046e3-53f1-44d8-97db-5fd543f4382c', 'question', 'b0c6ed29-cde6-46a2-8c99-f26de7711a85', 4, true, null, false)
 ;
