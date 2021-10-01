@@ -9,7 +9,7 @@ VALUES
 ('7816fe5c-3beb-46d1-b2af-4a0a8f30aca0', 'individualavailability', '2021-09-27 14:50:00', null),
 ('9fc83177-fd89-4755-89a5-69d0892cd25d', 'male-female', '2021-09-27 14:50:00', null),
 ('37943ca1-b977-410a-9e5a-75c2ab032abb', 'xs-s-m-l-xl-xxl-xxxl', '2021-09-27 14:50:00', null),
-('ffe5ecbf-1669-46c9-b40f-4ac82dba0629', '3-4-5-6-7-8-9-10-11', '2021-09-27 14:50:00', null)
+('ffe5ecbf-1669-46c9-b40f-4ac82dba0629', '3-4-5-6-7-8-9-10-11-12-13-14', '2021-09-27 14:50:00', null)
 ;
 
 INSERT INTO answer_schema (answer_schema_uuid, answer_schema_code, answer_schema_group_uuid, answer_start, answer_end, value, text)
@@ -59,7 +59,10 @@ VALUES
 ('1e1c93be-d8a9-4257-8f9c-096af3ea7887', '8', 'ffe5ecbf-1669-46c9-b40f-4ac82dba0629', '2021-09-27 14:50:00', null, '8', 'Size 8'),
 ('5f6c70df-8f7e-4f69-813a-3b197a5366f4', '9', 'ffe5ecbf-1669-46c9-b40f-4ac82dba0629', '2021-09-27 14:50:00', null, '9', 'Size 9'),
 ('e97658a5-5526-4d54-84ad-d4f562076cb7', '10', 'ffe5ecbf-1669-46c9-b40f-4ac82dba0629', '2021-09-27 14:50:00', null, '10', 'Size 10'),
-('caec7137-e7a7-4e48-aa42-fc2ec84df89d', '11', 'ffe5ecbf-1669-46c9-b40f-4ac82dba0629', '2021-09-27 14:50:00', null, '11', 'Size 11')
+('caec7137-e7a7-4e48-aa42-fc2ec84df89d', '11', 'ffe5ecbf-1669-46c9-b40f-4ac82dba0629', '2021-09-27 14:50:00', null, '11', 'Size 11'),
+('8ee47349-1a3d-4b03-a802-87f43765a6af', '12', 'ffe5ecbf-1669-46c9-b40f-4ac82dba0629', '2021-09-27 14:50:00', null, '12', 'Size 12'),
+('caf6773d-50b2-4fa5-a802-333b37298b95', '13', 'ffe5ecbf-1669-46c9-b40f-4ac82dba0629', '2021-09-27 14:50:00', null, '13', 'Size 13'),
+('90e91ab7-9919-409b-81a9-21ef4c62e2d1', '14', 'ffe5ecbf-1669-46c9-b40f-4ac82dba0629', '2021-09-27 14:50:00', null, '14', 'Size 14')
 ;
 
 INSERT INTO grouping (group_uuid, group_code, heading, subheading, help_text, group_start, group_end)
