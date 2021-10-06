@@ -30,7 +30,8 @@ class RiskPredictorsService(
   private val assessmentSchemaService: AssessmentSchemaService,
   private val subjectService: SubjectService,
   private val episodeRepository: EpisodeRepository,
-  private val assessRisksAndNeedsApiRestClient: AssessRisksAndNeedsApiRestClient
+  private val assessRisksAndNeedsApiRestClient: AssessRisksAndNeedsApiRestClient,
+  private val offenderService: OffenderService
 ) {
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
@@ -39,6 +40,7 @@ class RiskPredictorsService(
   fun getPredictorResults(episodeUuid: UUID, final: Boolean = false): List<PredictorScoresDto> {
     val episode = episodeRepository.findByEpisodeUuid(episodeUuid)
       ?: throw EntityNotFoundException("Episode with $episodeUuid not found")
+    episode.assessment?.subject?.crn?.let { offenderService.validateUserAccess(it) }
     return getPredictorResults(episode)
   }
 

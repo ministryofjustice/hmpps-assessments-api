@@ -6,11 +6,11 @@ DELETE FROM hmppsassessmentsapi.subject WHERE true;
 
 /* Assessment with Episodes */
 INSERT INTO hmppsassessmentsapi.subject (subject_uuid, name, pnc, crn, date_of_birth, gender, created_date) VALUES
-('a4e73a2c-3f1c-4f83-88b6-dd3ce1b78530', 'John Smith', 'dummy-pnc', 'dummy-crn-1', '1928-08-01', 'MALE', '2019-11-14 08:30'),
-('bf1979c5-518a-4300-80f2-189981182e5f', 'John Smith', 'dummy-pnc', 'dummy-crn-2', '1928-08-01', 'MALE', '2019-11-14 08:30'),
-('f0c3c497-b0b8-4fe1-9749-2f686b3b1aa0', 'John Smith', 'dummy-pnc', 'dummy-crn-3', '1928-08-01', 'MALE', '2019-11-14 08:30'),
-('a2bb4345-beba-4806-b719-6cc4ae52ee43', 'John Smith', 'dummy-pnc', 'dummy-crn-4', '1928-08-01', 'MALE', '2019-11-14 08:30'),
-('36afe601-a2d9-4e32-b921-1c20fd0befef', 'John Smith', 'dummy-pnc', 'dummy-crn-5', '1928-08-01', 'MALE', '2019-11-14 08:30');
+('a4e73a2c-3f1c-4f83-88b6-dd3ce1b78530', 'John Smith', 'dummy-pnc', 'X13561', '1928-08-01', 'MALE', '2019-11-14 08:30'),
+('bf1979c5-518a-4300-80f2-189981182e5f', 'John Smith', 'dummy-pnc', 'X13562', '1928-08-01', 'MALE', '2019-11-14 08:30'),
+('f0c3c497-b0b8-4fe1-9749-2f686b3b1aa0', 'John Smith', 'dummy-pnc', 'X13563', '1928-08-01', 'MALE', '2019-11-14 08:30'),
+('a2bb4345-beba-4806-b719-6cc4ae52ee43', 'John Smith', 'dummy-pnc', 'X13564', '1928-08-01', 'MALE', '2019-11-14 08:30'),
+('36afe601-a2d9-4e32-b921-1c20fd0befef', 'John Smith', 'dummy-pnc', 'X13565', '1928-08-01', 'MALE', '2019-11-14 08:30');
 
 INSERT INTO hmppsassessmentsapi.assessment  (assessment_uuid, subject_uuid, created_date) VALUES
 ('2e020e78-a81c-407f-bc78-e5f284e237e5', 'a4e73a2c-3f1c-4f83-88b6-dd3ce1b78530', '2019-11-14 09:00'),

@@ -7,6 +7,7 @@ import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.context.jdbc.SqlConfig
 import org.springframework.test.context.jdbc.SqlGroup
 import org.springframework.test.web.reactive.server.expectBody
+import uk.gov.justice.digital.assessments.api.ErrorResponse
 import uk.gov.justice.digital.assessments.api.PredictorScoresDto
 import uk.gov.justice.digital.assessments.api.Score
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.PredictorSubType
@@ -73,5 +74,23 @@ class RiskPredictorsControllerTest : IntegrationTest() {
         )
       )
     )
+  }
+
+  @Test
+  fun `should return forbidden when user does not have LAO permissions for offender`() {
+
+    val episodeUuid = UUID.fromString("3df6172f-a931-4fb9-a595-46868893b4ed")
+    val final = false
+    assessRisksAndNeedsApiMockServer.stubGetRSRPredictorsForOffenderAndOffences(final, episodeUuid)
+
+    webTestClient.get().uri("/risks/predictors/episodes/$episodeUuid?final=$final")
+      .headers(setAuthorisation())
+      .exchange()
+      .expectStatus().isForbidden
+      .expectBody<ErrorResponse>()
+      .consumeWith {
+        Assertions.assertThat(it.responseBody?.status).isEqualTo(403)
+        Assertions.assertThat(it.responseBody?.reason).isEqualTo("LAO_PERMISSION")
+      }
   }
 }

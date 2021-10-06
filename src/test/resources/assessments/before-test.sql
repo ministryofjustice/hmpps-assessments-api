@@ -49,11 +49,22 @@ INSERT INTO hmppsassessmentsapi.subject (subject_uuid, name, pnc, crn, date_of_b
 INSERT INTO hmppsassessmentsapi.assessment  (assessment_uuid, subject_uuid, created_date) VALUES
 ('f9a07b3f-91b7-45a7-a5ca-2d98cf1147d8', 'a5e75a5c-5f1c-5f83-55b6-dd5ce1b75530', '2020-1-14 09:00');
 
+/* Invalid LAO rules assessment */
+INSERT INTO hmppsassessmentsapi.subject (subject_uuid, name, pnc, crn, date_of_birth, gender, created_date) VALUES
+('f9d551b4-602e-4dfa-bf4d-32d67a3914af', 'John Smith', 'dummy-pnc', 'OX1348', '2001-01-01', 'MALE', '2019-11-14 08:30');
+
+INSERT INTO hmppsassessmentsapi.assessment  (assessment_uuid, subject_uuid, created_date) VALUES
+('6e60784e-584e-4762-952d-d7288e31d4f4', 'f9d551b4-602e-4dfa-bf4d-32d67a3914af', '2020-1-14 09:00');
+
+INSERT INTO hmppsassessmentsapi.assessed_episode  (episode_uuid, user_id, assessment_schema_code, oasys_set_pk, created_date, end_date, change_reason, assessment_uuid, answers, offence_uuid) VALUES
+('3df6172f-a931-4fb9-a595-46868893b4ed', 'USER1', 'RSR', 1, '2021-01-01 00:00', null, 'More Change of Circs', '6e60784e-584e-4762-952d-d7288e31d4f4', '{}', '111111d1-1e0f-42f3-b5b5-f44b0e5bcb18');
+
+
 /* Episodes to complete */
 INSERT INTO hmppsassessmentsapi.subject (subject_uuid, name, oasys_offender_pk, pnc, crn, date_of_birth, gender, created_date) VALUES
 ('7bce2323-fefa-42eb-b622-ec65747aae56', 'John Smith', 1, 'dummy-pnc', 'X1345', '2001-01-01', 'MALE', '2019-11-14 08:30'),
-('1146f644-dfb9-4e6d-9446-1be089538480', 'John Smith', 12345, 'dummy-pnc', 'dummy-crn-1', '1928-08-01', 'MALE', '2019-11-14 08:30'),
-('f6023241-ba22-47e4-bc7d-f7adfde4276c', 'John Smith', 5, 'dummy-pnc', 'dummy-crn-2', '1928-08-01', 'MALE', '2019-11-14 08:30');
+('1146f644-dfb9-4e6d-9446-1be089538480', 'John Smith', 12345, 'dummy-pnc', 'X134698', '1928-08-01', 'MALE', '2019-11-14 08:30'),
+('f6023241-ba22-47e4-bc7d-f7adfde4276c', 'John Smith', 5, 'dummy-pnc', 'X134699', '1928-08-01', 'MALE', '2019-11-14 08:30');
 
 INSERT INTO hmppsassessmentsapi.assessment  (assessment_uuid, subject_uuid, created_date) VALUES
 ('e399ed1b-0e77-4c68-8bbc-d2f0befece84', '7bce2323-fefa-42eb-b622-ec65747aae56', '2020-1-14 09:00'),

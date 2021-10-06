@@ -3,6 +3,7 @@ package uk.gov.justice.digital.assessments.services
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.slf4j.MDC
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
@@ -19,8 +20,10 @@ import uk.gov.justice.digital.assessments.api.CreateAssessmentDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRepository
+import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiForbiddenException
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import uk.gov.justice.digital.assessments.utils.RequestData
+import java.util.UUID
 
 @SqlGroup(
   Sql(
@@ -116,7 +119,7 @@ class AssessmentServiceITTest() : IntegrationTest() {
   }
 
   @Test
-  fun `Trying to create assessment throws error from oasys amd rollback`() {
+  fun `Trying to create assessment throws error from oasys and rollback`() {
 
     val crn = "DX12340F"
 
@@ -132,5 +135,30 @@ class AssessmentServiceITTest() : IntegrationTest() {
     }
     val subject = subjectRepository.findByCrn(crn)
     assertThat(subject).isNull()
+  }
+
+  @Test
+  fun `Trying to create assessment with invalid LAO access throws error `() {
+
+    val crn = "OX123456"
+    val exception = assertThrows<ExternalApiForbiddenException> {
+      assessmentService.createNewAssessment(
+        CreateAssessmentDto(
+          deliusEventId = 1L,
+          crn = crn,
+          assessmentSchemaCode = AssessmentSchemaCode.ROSH
+        )
+      )
+    }
+    assertThat(exception.moreInfo).containsAll(listOf("excluded", "restricted"))
+  }
+
+  @Test
+  fun `Trying to get assessment with invalid LAO access throws error `() {
+
+    val exception = assertThrows<ExternalApiForbiddenException> {
+      assessmentService.getAssessmentByUuid(UUID.fromString("6e60784e-584e-4762-952d-d7288e31d4f4"))
+    }
+    assertThat(exception.moreInfo).containsAll(listOf("excluded", "restricted"))
   }
 }

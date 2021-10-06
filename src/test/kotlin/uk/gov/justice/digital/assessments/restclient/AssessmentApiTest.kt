@@ -60,7 +60,7 @@ class AssessmentApiTest : IntegrationTest() {
     org.junit.jupiter.api.Assertions.assertEquals(exception.client, ExternalService.ASSESSMENTS_API)
     org.junit.jupiter.api.Assertions.assertEquals(
       exception.moreInfo,
-      "STUART WHITLAM in Warwickshire is currently doing an assessment on this offender, created on 12/04/2021."
+      listOf("STUART WHITLAM in Warwickshire is currently doing an assessment on this offender, created on 12/04/2021.")
     )
     org.junit.jupiter.api.Assertions.assertEquals(exception.reason, ExceptionReason.OASYS_PERMISSION)
   }

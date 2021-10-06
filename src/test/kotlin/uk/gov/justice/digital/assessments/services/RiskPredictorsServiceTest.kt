@@ -42,9 +42,10 @@ class RiskPredictorsServiceTest {
   private val subjectService: SubjectService = mockk()
   private val episodeRepository: EpisodeRepository = mockk()
   private val assessRisksAndNeedsApiRestClient: AssessRisksAndNeedsApiRestClient = mockk()
+  private val offenderService: OffenderService = mockk()
 
   private val predictorService =
-    RiskPredictorsService(assessmentSchemaService, subjectService, episodeRepository, assessRisksAndNeedsApiRestClient)
+    RiskPredictorsService(assessmentSchemaService, subjectService, episodeRepository, assessRisksAndNeedsApiRestClient, offenderService)
 
   private val testQuestion1 = QuestionSchemaEntity(
     questionSchemaId = 1,
@@ -542,6 +543,7 @@ class RiskPredictorsServiceTest {
     every {
       assessRisksAndNeedsApiRestClient.getRiskPredictors(any(), any(), final, episodeUuid)
     } returns null
+    every { offenderService.validateUserAccess(any()) } returns mockk()
   }
 
   @Nested

@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
@@ -26,6 +27,7 @@ class RiskPredictorsController(val riskPredictorsService: RiskPredictorsService)
       ApiResponse(responseCode = "200", description = "OK")
     ]
   )
+  @PreAuthorize("hasRole('ROLE_PROBATION')")
   fun calculateRiskPredictorsForEpisode(
     @Parameter(description = "Episode UUID", required = true, example = "90f2b674-ae1c-488d-8b85-0251708ef6b6")
     @PathVariable episodeUuid: UUID,

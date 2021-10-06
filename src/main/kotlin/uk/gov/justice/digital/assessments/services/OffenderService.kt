@@ -8,6 +8,7 @@ import uk.gov.justice.digital.assessments.api.OffenderDto
 import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
+import uk.gov.justice.digital.assessments.utils.RequestData
 
 @Service
 class OffenderService(
@@ -38,6 +39,10 @@ class OffenderService(
     val conviction = convictions.find { it.index == eventId }
       ?: throw EntityNotFoundException("Could not get conviction for crn: $crn, event ID: $eventId")
     return OffenceDto.from(conviction)
+  }
+
+  fun validateUserAccess(crn: String) {
+    communityApiRestClient.verifyUserAccess(crn, RequestData.getUserName())
   }
 
 //  fun getOffenderAddress(crn: String): Address? {

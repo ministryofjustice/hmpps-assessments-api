@@ -80,6 +80,7 @@ class AssessmentServiceTest {
     fun `create new episode`() {
       val assessment: AssessmentEntity = mockk()
       every { assessment.assessmentUuid } returns assessmentUuid
+      every { offenderService.validateUserAccess(crn) } returns mockk()
       every { assessment.assessmentId } returns 0
       val episodeUuid1 = UUID.randomUUID()
       every {
@@ -182,7 +183,6 @@ class AssessmentServiceTest {
           )
         )
       )
-
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
 
       val episodeDto = assessmentsService.getCurrentAssessmentEpisode(assessmentUuid)
@@ -191,7 +191,6 @@ class AssessmentServiceTest {
 
     @Test
     fun `get current episode throws exception if assessment does not exist`() {
-
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns null
 
       assertThatThrownBy { assessmentsService.getCurrentAssessmentEpisode(assessmentUuid) }
@@ -201,7 +200,6 @@ class AssessmentServiceTest {
 
     @Test
     fun `get current episode throws exception if no current episode exists`() {
-
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns null
 
       assertThatThrownBy { assessmentsService.getCurrentAssessmentEpisode(assessmentUuid) }
@@ -235,7 +233,6 @@ class AssessmentServiceTest {
           )
         )
       )
-
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
 
       val result = assessmentsService.getCurrentAssessmentCodedAnswers(assessmentUuid)
@@ -281,7 +278,6 @@ class AssessmentServiceTest {
           ),
         )
       )
-
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
       val result = assessmentsService.getCurrentAssessmentCodedAnswers(assessmentUuid)
       assertThat(result.answers["Q1"]?.first()?.answerSchemaUuid).isEqualTo(answer1Uuid)
@@ -323,7 +319,6 @@ class AssessmentServiceTest {
           ),
         )
       )
-
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
 
       val result = assessmentsService.getCurrentAssessmentCodedAnswers(assessmentUuid)
@@ -349,7 +344,6 @@ class AssessmentServiceTest {
           )
         )
       )
-
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
       val result = assessmentsService.getCurrentAssessmentCodedAnswers(assessmentUuid)
 
