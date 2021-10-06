@@ -84,8 +84,8 @@ class RiskPredictorsService(
 
     val gson = Gson()
     val offenderString: String = gson.toJson(offender)
-    println("Offender received from subject service: $offenderString")
-
+    log.info("Offender received from subject service: $offenderString")
+    
     val crn = offender.crn
     if (offender.gender == null) throw PredictorCalculationException("The risk predictors calculation failed for crn $crn: gender must not be null")
     log.info("Getting Predictor Score for crn $crn and type $predictorType and answers: $answers")
