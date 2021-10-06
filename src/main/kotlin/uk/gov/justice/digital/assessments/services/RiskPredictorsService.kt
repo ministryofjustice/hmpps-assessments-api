@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.assessments.services
 
+import com.microsoft.applicationinsights.core.dependencies.google.gson.Gson
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -80,6 +81,11 @@ class RiskPredictorsService(
   ): PredictorScoresDto {
     val assessmentUuid = getEpisodeAssessmentUuid(episode)
     val offender = subjectService.getSubjectForAssessment(assessmentUuid)
+
+    val gson = Gson()
+    val offenderString: String = gson.toJson(offender)
+    println("Offender received from subject service: $offenderString")
+
     val crn = offender.crn
     if (offender.gender == null) throw PredictorCalculationException("The risk predictors calculation failed for crn $crn: gender must not be null")
     log.info("Getting Predictor Score for crn $crn and type $predictorType and answers: $answers")
