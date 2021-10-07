@@ -28,7 +28,7 @@ class OffenderStubServiceTest {
   private val communityApiRestClient: CommunityApiRestClient = mockk()
   private val assessmentUpdateRestClient: AssessmentUpdateRestClient = mockk()
   private val assessmentApiRestClient: AssessmentApiRestClient = mockk()
-  private val offenderStubService = OffenderStubService(assessmentApiRestClient, communityApiRestClient, assessmentUpdateRestClient)
+  private val offenderStubService = OffenderStubService(assessmentApiRestClient, communityApiRestClient, assessmentUpdateRestClient, "D001055,D001056")
 
   @Test
   fun `return offender`() {
@@ -83,7 +83,7 @@ class OffenderStubServiceTest {
         gender = "Male",
         dateOfBirth = LocalDate.of(2000, 1, 1),
         areaCode = "WWS"
-      )
+      ),
     )
   }
 
@@ -108,6 +108,24 @@ class OffenderStubServiceTest {
         areaCode = "WWS"
       ),
       OffenderStubDto(
+        crn = "D001055",
+        pnc = "12345",
+        familyName = "familyname",
+        forename1 = "forename",
+        gender = "Male",
+        dateOfBirth = LocalDate.of(2000, 1, 1),
+        areaCode = "WWS"
+      ),
+      OffenderStubDto(
+        crn = "D001056",
+        pnc = "12345",
+        familyName = "familyname",
+        forename1 = "forename",
+        gender = "Male",
+        dateOfBirth = LocalDate.of(2000, 1, 1),
+        areaCode = "WWS"
+      ),
+      OffenderStubDto(
         crn = "D001057",
         pnc = "12345",
         familyName = "familyname",
@@ -115,7 +133,7 @@ class OffenderStubServiceTest {
         gender = "Male",
         dateOfBirth = LocalDate.of(2000, 1, 1),
         areaCode = "WWS"
-      )
+      ),
     )
   }
 

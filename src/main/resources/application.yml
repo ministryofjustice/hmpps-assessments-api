@@ -139,3 +139,6 @@ assessment-api:
 
 assess-risks-and-needs-api:
   base-url: http://localhost:9080
+
+stub:
+  restricted: ""
