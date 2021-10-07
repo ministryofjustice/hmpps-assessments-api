@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.assessments.utils.offenderStubResource
 
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.assessments.restclient.AssessmentApiRestClient
@@ -14,7 +15,8 @@ const val AREA_CODE = "WWS"
 class OffenderStubService(
   val assessmentApiRestClient: AssessmentApiRestClient,
   val communityApiRestClient: CommunityApiRestClient,
-  val assessmentUpdateRestClient: AssessmentUpdateRestClient
+  val assessmentUpdateRestClient: AssessmentUpdateRestClient,
+  @Value("\${stub.restricted}") val restrictedCrns: String = "",
 ) {
 
   fun createStub(): OffenderStubDto {
@@ -22,7 +24,7 @@ class OffenderStubService(
     val existingStubs = assessmentApiRestClient.getOffenderStubs()
     val stubsSize = existingStubs.size
     val communityOffenders = communityApiRestClient.getPrimaryIds(stubsSize.div(100))
-    val unusedId = communityOffenders?.firstOrNull { !checkForUsedCrn(it.crn, existingStubs) }
+    val unusedId = communityOffenders?.firstOrNull { !checkForUsedCrn(it.crn, existingStubs) && !checkForRestrictedCrn(it.crn) }
       ?: throw EntityNotFoundException("Could not get unused CRN from Community API.")
     val newOffenderStubDto = generateOffenderStubDto(unusedId.crn)
     assessmentUpdateRestClient.createOasysOffenderStub(newOffenderStubDto)
@@ -44,6 +46,11 @@ class OffenderStubService(
 
   fun checkForUsedCrn(crn: String?, existingStubs: List<OffenderStubDto>): Boolean {
     return existingStubs.any { it.crn == crn }
+  }
+
+  fun checkForRestrictedCrn(crn: String?): Boolean {
+    val restricted = restrictedCrns.split(',')
+    return restricted.any { it == crn }
   }
 }
 
