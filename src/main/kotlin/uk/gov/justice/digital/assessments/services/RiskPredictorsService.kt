@@ -146,7 +146,7 @@ class RiskPredictorsService(
         "current_relationship_with_partner"
       ).toProblemsLevel(),
       evidenceOfDomesticViolence = getNonRequiredAnswer(answers, "evidence_domestic_violence").toBoolean(),
-      isPerpetrator = getNonRequiredAnswer(answers, "perpetrator_domestic_violence").toPerpetratorBoolean(),
+      isPerpetrator = getNonRequiredAnswer(answers, "perpetrator_domestic_violence").tempPerpetratorBoolean(getNonRequiredAnswer(answers, "evidence_domestic_violence").toBoolean()),
       alcoholUseIssues = getNonRequiredAnswer(answers, "use_of_alcohol").toProblemsLevel(),
       bingeDrinkingIssues = getNonRequiredAnswer(answers, "binge_drinking").toProblemsLevel(),
       impulsivityIssues = getNonRequiredAnswer(answers, "impulsivity_issues").toProblemsLevel(),
@@ -222,6 +222,14 @@ class RiskPredictorsService(
 
   fun String?.toPerpetratorBoolean(): Boolean? {
     return if (this == null) null else this == "perpetrator"
+  }
+
+  fun String?.tempPerpetratorBoolean(domViolence: Boolean?): Boolean? {
+    return if (domViolence == true) {
+      true
+    }else{
+      null
+    }
   }
 
   fun String.toBoolean(): Boolean {
