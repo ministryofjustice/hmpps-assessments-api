@@ -81,6 +81,8 @@ class CommunityApiRestClient {
   fun getPrimaryIds(page: Int): List<PrimaryId>? {
     val pageSize = 100
     val path = "/secure/offenders/primaryIdentifiers?includeActiveOnly=true&page=$page&size=$pageSize"
+    log.info("Retrieving CRNs from $path")
+
     val offendersPage = webClient
       .get(path)
       .retrieve()
