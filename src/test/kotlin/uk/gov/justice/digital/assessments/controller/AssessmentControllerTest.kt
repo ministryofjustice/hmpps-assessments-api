@@ -43,6 +43,9 @@ class AssessmentControllerTest : IntegrationTest() {
   val assessmentUuid = "2e020e78-a81c-407f-bc78-e5f284e237e5"
   val episodeId = "current"
 
+  val laoFailureAssessmentUuid = "6e60784e-584e-4762-952d-d7288e31d4f4"
+  val laoFailureEpisodeUuid = "3df6172f-a931-4fb9-a595-46868893b4ed"
+
   @Nested
   @DisplayName("fetching subject")
   inner class FetchingSubject {
@@ -55,6 +58,19 @@ class AssessmentControllerTest : IntegrationTest() {
       assertThat(subject.age).isEqualTo(20)
       assertThat(subject.crn).isEqualTo("X1346")
       assertThat(subject.pnc).isEqualTo("dummy-pnc")
+    }
+
+    @Test
+    fun `get the subject details for an assessment returns forbidden when user does not have LAO permission`() {
+      webTestClient.get().uri("/assessments/$laoFailureAssessmentUuid/subject")
+        .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
+        .exchange()
+        .expectStatus().isForbidden
+        .expectBody<ErrorResponse>()
+        .consumeWith {
+          assertThat(it.responseBody?.status).isEqualTo(403)
+          assertThat(it.responseBody?.reason).isEqualTo("LAO_PERMISSION")
+        }
     }
   }
 
@@ -94,6 +110,34 @@ class AssessmentControllerTest : IntegrationTest() {
         .exchange()
         .expectStatus().isNotFound
     }
+
+    @Test
+    fun `get episodes returns forbidden when user does not have LAO permission`() {
+
+      webTestClient.get().uri("/assessments/$laoFailureAssessmentUuid/episodes")
+        .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
+        .exchange()
+        .expectStatus().isForbidden
+        .expectBody<ErrorResponse>()
+        .consumeWith {
+          assertThat(it.responseBody?.status).isEqualTo(403)
+          assertThat(it.responseBody?.reason).isEqualTo("LAO_PERMISSION")
+        }
+    }
+
+    @Test
+    fun `get current episode returns forbidden when user does not have LAO permission`() {
+
+      webTestClient.get().uri("/assessments/$laoFailureAssessmentUuid/episodes/current")
+        .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
+        .exchange()
+        .expectStatus().isForbidden
+        .expectBody<ErrorResponse>()
+        .consumeWith {
+          assertThat(it.responseBody?.status).isEqualTo(403)
+          assertThat(it.responseBody?.reason).isEqualTo("LAO_PERMISSION")
+        }
+    }
   }
 
   @Nested
@@ -119,6 +163,25 @@ class AssessmentControllerTest : IntegrationTest() {
       assertThat(episode?.answers).containsKey(newQuestionCode)
 
       Verify.singleAnswer(episode?.answers?.get(newQuestionCode)!!, "new free text")
+    }
+
+    @Test
+    fun `updates episode answers returns forbidden when user does not have LAO permission`() {
+      val newQuestionCode = "question_code"
+      val updateEpisodeDto = UpdateAssessmentEpisodeDto(
+        mapOf(newQuestionCode to listOf("new free text"))
+      )
+      val episode =
+        webTestClient.post().uri("/assessments/$laoFailureAssessmentUuid/episodes/$laoFailureEpisodeUuid")
+          .bodyValue(updateEpisodeDto)
+          .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
+          .exchange()
+          .expectStatus().isForbidden
+          .expectBody<ErrorResponse>()
+          .consumeWith {
+            assertThat(it.responseBody?.status).isEqualTo(403)
+            assertThat(it.responseBody?.reason).isEqualTo("LAO_PERMISSION")
+          }
     }
 
     @Test
@@ -513,6 +576,20 @@ class AssessmentControllerTest : IntegrationTest() {
         .consumeWith {
           assertThat(it.responseBody?.status).isEqualTo(400)
           assertThat(it.responseBody?.developerMessage).isEqualTo("Area Code Header is mandatory")
+        }
+    }
+
+    @Test
+    fun `should return forbidden when user does not have LAO permission for offender`() {
+      val roshAssessmentUuid = UUID.fromString("aa47e6c4-e41f-467c-95e7-fcf5ffd422f5")
+      webTestClient.post().uri("/assessments/$laoFailureAssessmentUuid/complete")
+        .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
+        .exchange()
+        .expectStatus().isForbidden
+        .expectBody<ErrorResponse>()
+        .consumeWith {
+          assertThat(it.responseBody?.status).isEqualTo(403)
+          assertThat(it.responseBody?.reason).isEqualTo("LAO_PERMISSION")
         }
     }
   }

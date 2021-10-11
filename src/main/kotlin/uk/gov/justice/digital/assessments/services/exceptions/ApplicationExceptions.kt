@@ -8,6 +8,7 @@ import uk.gov.justice.digital.assessments.services.exceptions.ExceptionReason.OA
 enum class ExceptionReason {
   OASYS_PERMISSION,
   DUPLICATE_OFFENDER_RECORD,
+  LAO_PERMISSION
 }
 
 // Internal Service Exceptions
@@ -52,7 +53,7 @@ class ExternalApiForbiddenException(
   val method: HttpMethod,
   val url: String,
   val client: ExternalService,
-  val moreInfo: String? = null,
+  val moreInfo: List<String> = emptyList(),
   val reason: ExceptionReason? = null
 ) : RuntimeException(msg)
 

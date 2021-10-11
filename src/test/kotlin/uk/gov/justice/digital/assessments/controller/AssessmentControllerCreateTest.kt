@@ -156,6 +156,26 @@ class AssessmentControllerCreateTest : IntegrationTest() {
     }
 
     @Test
+    fun `should return forbidden when user does not have LAO permissions on offender`() {
+      webTestClient.post().uri("/assessments")
+        .bodyValue(
+          CreateAssessmentDto(
+            crn = "OX1232456",
+            deliusEventId = eventID,
+            assessmentSchemaCode = AssessmentSchemaCode.ROSH
+          )
+        )
+        .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
+        .exchange()
+        .expectStatus().isForbidden
+        .expectBody<ErrorResponse>()
+        .consumeWith {
+          assertThat(it.responseBody?.status).isEqualTo(403)
+          assertThat(it.responseBody?.reason).isEqualTo("LAO_PERMISSION")
+        }
+    }
+
+    @Test
     fun `creating a new assessment from crn and delius event id returns assessment`() {
 
       val dto = CreateAssessmentDto(

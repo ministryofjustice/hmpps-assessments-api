@@ -69,7 +69,7 @@ class OASysUpdateClientTest : IntegrationTest() {
     assertEquals(exception.client, ExternalService.ASSESSMENTS_API)
     assertEquals(
       exception.moreInfo,
-      "STUART WHITLAM in Warwickshire is currently doing an assessment on this offender, created on 12/04/2021."
+      listOf("STUART WHITLAM in Warwickshire is currently doing an assessment on this offender, created on 12/04/2021.")
     )
     assertEquals(exception.reason, ExceptionReason.OASYS_PERMISSION)
   }
@@ -126,7 +126,7 @@ class OASysUpdateClientTest : IntegrationTest() {
     assertEquals(exception.client, ExternalService.ASSESSMENTS_API)
     assertEquals(
       exception.moreInfo,
-      "STUART WHITLAM in Warwickshire is currently doing an assessment on this offender, created on 12/04/2021."
+      listOf("STUART WHITLAM in Warwickshire is currently doing an assessment on this offender, created on 12/04/2021.")
     )
     assertEquals(exception.reason, ExceptionReason.OASYS_PERMISSION)
   }
@@ -174,7 +174,9 @@ class OASysUpdateClientTest : IntegrationTest() {
     assertEquals(exception.client, ExternalService.ASSESSMENTS_API)
     assertEquals(
       exception.moreInfo,
-      "STUART WHITLAM in Warwickshire is currently doing an assessment on this offender, created on 12/04/2021."
+      listOf(
+        "STUART WHITLAM in Warwickshire is currently doing an assessment on this offender, created on 12/04/2021."
+      )
     )
     assertEquals(exception.reason, ExceptionReason.OASYS_PERMISSION)
   }
@@ -209,7 +211,7 @@ class OASysUpdateClientTest : IntegrationTest() {
     assertEquals(exception.client, ExternalService.ASSESSMENTS_API)
     assertEquals(
       exception.moreInfo,
-      "STUART WHITLAM in Warwickshire is currently doing an assessment on this offender, created on 12/04/2021."
+      listOf("STUART WHITLAM in Warwickshire is currently doing an assessment on this offender, created on 12/04/2021.")
     )
     assertEquals(exception.reason, ExceptionReason.OASYS_PERMISSION)
   }

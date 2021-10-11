@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.slf4j.MDC
+import org.springframework.http.HttpMethod
 import uk.gov.justice.digital.assessments.api.CreateAssessmentDto
 import uk.gov.justice.digital.assessments.api.OffenceDto
 import uk.gov.justice.digital.assessments.api.OffenderDto
@@ -22,8 +23,10 @@ import uk.gov.justice.digital.assessments.jpa.entities.refdata.OasysAssessmentTy
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRepository
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
+import uk.gov.justice.digital.assessments.restclient.ExternalService
 import uk.gov.justice.digital.assessments.restclient.courtcaseapi.CourtCase
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
+import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiForbiddenException
 import uk.gov.justice.digital.assessments.utils.RequestData
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -77,6 +80,7 @@ class AssessmentServiceCreateTest {
     @Test
     fun `create new offender with new assessment from delius event id and crn`() {
       every { subjectRepository.findByCrn(crn) } returns null
+      every { offenderService.validateUserAccess("X12345") } returns mockk()
       every { offenderService.getOffender("X12345") } returns OffenderDto(dateOfBirth = LocalDate.of(1989, 1, 1))
       every {
         oasysAssessmentUpdateService.createOffenderAndOasysAssessment(
@@ -116,6 +120,7 @@ class AssessmentServiceCreateTest {
 
     @Test
     fun `return existing assessment from delius event id and crn if one already exists`() {
+      every { offenderService.validateUserAccess("X12345") } returns mockk()
       every { subjectRepository.findByCrn(crn) } returns
         SubjectEntity(
           assessments = listOf(AssessmentEntity(assessmentId = assessmentId, assessmentUuid = assessmentUuid)),
@@ -159,6 +164,7 @@ class AssessmentServiceCreateTest {
     @Test
     fun `throw exception if offender is not returned from Delius`() {
       every { subjectRepository.findByCrn(crn) } returns null
+      every { offenderService.validateUserAccess("X12345") } returns mockk()
       every { offenderService.getOffender("X12345") } throws EntityNotFoundException("")
 
       assertThrows<EntityNotFoundException> {
@@ -170,6 +176,26 @@ class AssessmentServiceCreateTest {
           )
         )
       }
+
+      verify(exactly = 0) { assessmentRepository.save(any()) }
+    }
+
+    @Test
+    fun `throw exception if offender is LAO and user is excluded in Delius`() {
+      every { offenderService.validateUserAccess("X12345") } throws ExternalApiForbiddenException(
+        "User does not have permission to access offender with CRN $crn", HttpMethod.GET, "", ExternalService.COMMUNITY_API
+      )
+
+      val exception = assertThrows<ExternalApiForbiddenException> {
+        assessmentsService.createNewAssessment(
+          CreateAssessmentDto(
+            deliusEventId = eventId,
+            crn = crn,
+            assessmentSchemaCode = assessmentSchemaCode
+          )
+        )
+      }
+      assertThat(exception.message).isEqualTo("User does not have permission to access offender with CRN $crn")
       verify(exactly = 0) { assessmentRepository.save(any()) }
     }
   }

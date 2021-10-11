@@ -77,6 +77,7 @@ abstract class IntegrationTest {
     communityApiMockServer.resetAll()
     communityApiMockServer.stubGetOffender()
     communityApiMockServer.stubGetConvictions()
+    communityApiMockServer.stubGetUserAccess()
     assessmentApiMockServer.stubGetAssessment()
     assessRisksAndNeedsApiMockServer.resetAll()
   }
@@ -88,7 +89,7 @@ abstract class IntegrationTest {
 
   internal fun setAuthorisation(
     user: String = "offender-assessment-api",
-    roles: List<String> = listOf()
+    roles: List<String> = listOf("ROLE_PROBATION")
   ): (HttpHeaders) -> Unit {
     val token = jwtHelper.createJwt(
       subject = user,

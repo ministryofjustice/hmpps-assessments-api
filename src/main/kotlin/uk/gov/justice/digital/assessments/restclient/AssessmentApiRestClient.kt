@@ -173,7 +173,7 @@ class AssessmentApiRestClient {
               method = method,
               url = url,
               client = ExternalService.ASSESSMENTS_API,
-              moreInfo = error.payload?.permissions?.get(0)?.returnMessage,
+              moreInfo = listOfNotNull(error.payload?.permissions?.get(0)?.returnMessage),
               reason = ExceptionReason.OASYS_PERMISSION
             )
           }

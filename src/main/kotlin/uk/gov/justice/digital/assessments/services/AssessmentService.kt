@@ -72,6 +72,9 @@ class AssessmentService(
     val assessment = getAssessmentByUuid(assessmentUuid)
     val crn = assessment.subject?.crn
       ?: throw EntityNotFoundException("No CRN found for subject for assessment $assessmentUuid")
+
+    offenderService.validateUserAccess(crn)
+
     val episode = createPrepopulatedEpisode(
       assessment,
       reason,
@@ -90,7 +93,7 @@ class AssessmentService(
       ?: throw EntityNotFoundException("No subject found for $assessmentUuid")
   }
 
-  fun getAssessmentEpisodes(assessmentUuid: UUID): Collection<AssessmentEpisodeDto>? {
+  fun getAssessmentEpisodes(assessmentUuid: UUID): Collection<AssessmentEpisodeDto> {
     val assessment = getAssessmentByUuid(assessmentUuid)
     log.info("Found ${assessment.episodes.size} for assessment $assessmentUuid")
     return AssessmentEpisodeDto.from(assessment.episodes)
@@ -171,6 +174,7 @@ class AssessmentService(
   }
 
   private fun getOrCreateAssessment(crn: String, eventId: Long): AssessmentEntity {
+    offenderService.validateUserAccess(crn)
     val existingSubject = subjectRepository.findByCrn(crn)
     return if (existingSubject != null) {
       log.info("Existing assessment ${existingSubject.getCurrentAssessment()?.assessmentUuid} found for delius event id: $eventId, crn: $crn")
@@ -244,8 +248,10 @@ class AssessmentService(
   }
 
   fun getAssessmentByUuid(assessmentUuid: UUID): AssessmentEntity {
-    return assessmentRepository.findByAssessmentUuid(assessmentUuid)
+    val assessment = assessmentRepository.findByAssessmentUuid(assessmentUuid)
       ?: throw EntityNotFoundException("Assessment $assessmentUuid not found")
+    assessment.subject?.crn?.let { offenderService.validateUserAccess(it) }
+    return assessment
   }
 
   private fun subjectFromCourtCase(
