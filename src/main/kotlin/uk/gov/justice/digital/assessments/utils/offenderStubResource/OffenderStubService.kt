@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.assessments.utils.offenderStubResource
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
@@ -11,6 +13,7 @@ import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundExce
 
 const val AREA_CODE = "WWS"
 const val EVENT_ID = 1L
+const val PAGE_SIZE = 200
 
 @Service
 @Profile("dev", "test")
@@ -26,7 +29,8 @@ class OffenderStubService(
 
     val existingStubs = assessmentApiRestClient.getOffenderStubs()
     val stubsSize = existingStubs.size
-    val communityOffenders = communityApiRestClient.getPrimaryIds(stubsSize.div(100))
+    log.info("Found $stubsSize existing offender stubs")
+    val communityOffenders = communityApiRestClient.getPrimaryIds(stubsSize.div(PAGE_SIZE), PAGE_SIZE)
     val unusedId = communityOffenders?.firstOrNull { !checkForUsedCrn(it.crn, existingStubs) && !checkForRestrictedCrn(it.crn) }
       ?: throw EntityNotFoundException("Could not get unused CRN from Community API.")
     val offenceDetail = offenderService.getOffence(unusedId.crn, EVENT_ID)
@@ -55,6 +59,10 @@ class OffenderStubService(
   fun checkForRestrictedCrn(crn: String?): Boolean {
     val restricted = restrictedCrns.split(',')
     return restricted.any { it == crn }
+  }
+
+  companion object {
+    val log: Logger = LoggerFactory.getLogger(this::class.java)
   }
 }
 
