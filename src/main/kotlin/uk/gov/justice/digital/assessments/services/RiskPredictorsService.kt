@@ -229,7 +229,7 @@ class RiskPredictorsService(
   fun String?.tempPerpetratorBoolean(domViolence: Boolean?): Boolean? {
     return if (domViolence == true) {
       true
-    }else{
+    } else {
       null
     }
   }

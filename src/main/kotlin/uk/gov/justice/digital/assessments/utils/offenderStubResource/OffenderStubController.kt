@@ -20,7 +20,7 @@ class OffenderStubController(val offenderStubService: OffenderStubService) {
       ApiResponse(responseCode = "200", description = "OK")
     ]
   )
-  fun createNewStub(): OffenderStubDto {
+  fun createNewStub(): OffenderAndOffenceStubDto {
     return offenderStubService.createStub()
   }
 }
