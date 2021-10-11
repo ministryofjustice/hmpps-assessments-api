@@ -6,29 +6,33 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.assessments.restclient.AssessmentApiRestClient
 import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient
 import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
+import uk.gov.justice.digital.assessments.services.OffenderService
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 
 const val AREA_CODE = "WWS"
+const val EVENT_ID = 1L
 
 @Service
 @Profile("dev", "test")
 class OffenderStubService(
   val assessmentApiRestClient: AssessmentApiRestClient,
   val communityApiRestClient: CommunityApiRestClient,
+  val offenderService: OffenderService,
   val assessmentUpdateRestClient: AssessmentUpdateRestClient,
   @Value("\${stub.restricted}") val restrictedCrns: String = "",
 ) {
 
-  fun createStub(): OffenderStubDto {
+  fun createStub(): OffenderAndOffenceStubDto {
 
     val existingStubs = assessmentApiRestClient.getOffenderStubs()
     val stubsSize = existingStubs.size
     val communityOffenders = communityApiRestClient.getPrimaryIds(stubsSize.div(100))
     val unusedId = communityOffenders?.firstOrNull { !checkForUsedCrn(it.crn, existingStubs) && !checkForRestrictedCrn(it.crn) }
       ?: throw EntityNotFoundException("Could not get unused CRN from Community API.")
+    val offenceDetail = offenderService.getOffence(unusedId.crn, EVENT_ID)
     val newOffenderStubDto = generateOffenderStubDto(unusedId.crn)
     assessmentUpdateRestClient.createOasysOffenderStub(newOffenderStubDto)
-    return newOffenderStubDto
+    return OffenderAndOffenceStubDto.from(newOffenderStubDto, offenceDetail)
   }
 
   fun generateOffenderStubDto(crn: String): OffenderStubDto {

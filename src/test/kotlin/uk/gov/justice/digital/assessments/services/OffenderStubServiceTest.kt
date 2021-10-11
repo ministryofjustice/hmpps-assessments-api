@@ -6,16 +6,19 @@ import io.mockk.junit5.MockKExtension
 import io.mockk.justRun
 import io.mockk.mockk
 import io.mockk.verify
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
+import uk.gov.justice.digital.assessments.api.OffenceDto
 import uk.gov.justice.digital.assessments.restclient.AssessmentApiRestClient
 import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient
 import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.IDs
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
+import uk.gov.justice.digital.assessments.utils.offenderStubResource.OffenderAndOffenceStubDto
 import uk.gov.justice.digital.assessments.utils.offenderStubResource.OffenderStubDto
 import uk.gov.justice.digital.assessments.utils.offenderStubResource.OffenderStubService
 import uk.gov.justice.digital.assessments.utils.offenderStubResource.PrimaryId
@@ -28,20 +31,24 @@ class OffenderStubServiceTest {
   private val communityApiRestClient: CommunityApiRestClient = mockk()
   private val assessmentUpdateRestClient: AssessmentUpdateRestClient = mockk()
   private val assessmentApiRestClient: AssessmentApiRestClient = mockk()
-  private val offenderStubService = OffenderStubService(assessmentApiRestClient, communityApiRestClient, assessmentUpdateRestClient, "D001055,D001056")
+  private val offenderService: OffenderService = mockk()
+  private val offenderStubService = OffenderStubService(assessmentApiRestClient, communityApiRestClient, offenderService, assessmentUpdateRestClient, "D001055,D001056")
 
   @Test
-  fun `return offender`() {
+  fun `return offender and offence codes`() {
+    val crn = "D001057"
     every { assessmentApiRestClient.getOffenderStubs() } returns offenderStubs()
     every { communityApiRestClient.getPrimaryIds(0) } returns primaryIdentifiers()
-    every { communityApiRestClient.getOffender("D001057") } returns communityOffenderDto()
+    every { communityApiRestClient.getOffender(crn) } returns communityOffenderDto()
+    every { offenderService.getOffence(crn, 1) } returns offenceDto()
     justRun { assessmentUpdateRestClient.createOasysOffenderStub(any()) }
-    offenderStubService.createStub()
+
+    val offenderOffenceDetails = offenderStubService.createStub()
 
     verify(exactly = 1) {
       assessmentUpdateRestClient.createOasysOffenderStub(
         OffenderStubDto(
-          crn = "D001057",
+          crn = crn,
           pnc = "A/1234560BA",
           familyName = "Smith",
           forename1 = "John",
@@ -51,6 +58,22 @@ class OffenderStubServiceTest {
         )
       )
     }
+    assertThat(offenderOffenceDetails).isEqualTo(
+      OffenderAndOffenceStubDto(
+        crn = crn,
+        pnc = "A/1234560BA",
+        familyName = "Smith",
+        forename1 = "John",
+        dateOfBirth = LocalDate.of(1979, 8, 18),
+        gender = "F",
+        areaCode = "WWS",
+        offenceCode = "046",
+        codeDescription = "Stealing from shops and stalls (shoplifting)",
+        offenceSubCode = "00",
+        subCodeDescription = "Stealing from shops and stalls (shoplifting)",
+        sentenceDate = LocalDate.of(2014, 8, 25)
+      )
+    )
   }
 
   @Test
@@ -164,6 +187,16 @@ class OffenderStubServiceTest {
         crn = "D001057",
         pncNumber = "A/1234560BA"
       )
+    )
+  }
+
+  private fun offenceDto(): OffenceDto {
+    return OffenceDto(
+      offenceCode = "046",
+      codeDescription = "Stealing from shops and stalls (shoplifting)",
+      offenceSubCode = "00",
+      subCodeDescription = "Stealing from shops and stalls (shoplifting)",
+      sentenceDate = LocalDate.of(2014, 8, 25)
     )
   }
 }
