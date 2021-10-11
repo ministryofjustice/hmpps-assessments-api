@@ -48,7 +48,7 @@ data class AssessmentEpisodeEntity(
   val oasysSetPk: Long? = null,
 
   @Column(name = "user_id")
-  val userId: String? = null,
+  var userId: String? = null,
 
   @Column(name = "created_date")
   val createdDate: LocalDateTime = LocalDateTime.now(),
