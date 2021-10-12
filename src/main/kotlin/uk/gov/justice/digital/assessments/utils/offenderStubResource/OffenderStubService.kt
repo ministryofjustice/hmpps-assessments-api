@@ -22,6 +22,7 @@ class OffenderStubService(
   val offenderService: OffenderService,
   val assessmentUpdateRestClient: AssessmentUpdateRestClient,
   @Value("\${stub.restricted}") val restrictedCrns: String = "",
+  @Value("\${stub.offset}") val offset: Int = 0,
 ) {
   companion object {
     const val PAGE_SIZE = 100
@@ -30,8 +31,9 @@ class OffenderStubService(
   fun createStub(): OffenderAndOffenceStubDto {
 
     val existingStubs = assessmentApiRestClient.getOffenderStubs()
-    val stubsSize = existingStubs.size
+    var stubsSize = existingStubs.size
     log.info("Found $stubsSize existing offender stubs")
+    stubsSize += offset
     val communityOffenders = communityApiRestClient.getPrimaryIds(stubsSize.div(PAGE_SIZE), PAGE_SIZE)
     val unusedId = communityOffenders?.firstOrNull { !checkForUsedCrn(it.crn, existingStubs) && !checkForRestrictedCrn(it.crn) }
       ?: throw EntityNotFoundException("Could not get unused CRN from Community API.")

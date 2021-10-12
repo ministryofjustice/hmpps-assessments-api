@@ -22,6 +22,7 @@ env:
   ASSESS_RISKS_AND_NEEDS_API_BASE_URL: https://assess-risks-and-needs-dev.hmpps.service.justice.gov.uk/
   SPRING_PROFILES_ACTIVE: "logstash,postgres,dev"
   STUB_RESTRICTED: "D002593"
+  STUB_OFFSET: 200
 
 gotenberg:
   replicaCount: 1
