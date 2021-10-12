@@ -31,7 +31,7 @@ class OffenderStubService(
 
   fun createStub(): OffenderAndOffenceStubDto {
     val existingStubs = assessmentApiRestClient.getOffenderStubs()
-    val stubsSize = existingStubs.size
+    var stubsSize = existingStubs.size
     log.info("Found $stubsSize existing offender stubs")
     val unusedId = getUnusedCrn(stubsSize, existingStubs)
     val offenceDetail = offenderService.getOffence(unusedId.crn, EVENT_ID)
