@@ -146,6 +146,6 @@ env:
     value: {{ .Values.env.STUB_RESTRICTED }}
 
   - name: STUB_OFFSET
-    value: {{ .Values.env.STUB_OFFSET }}
+    value: {{ .Values.env.STUB_OFFSET | quote }}
 
 {{- end -}}
