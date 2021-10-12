@@ -454,7 +454,7 @@ class AssessmentControllerTest : IntegrationTest() {
       val episode = webTestClient.post().uri(endpoint)
         .contentType(MediaType.APPLICATION_JSON)
         .bodyValue(jsonString)
-        .headers(setAuthorisation(user, roles = listOf("ROLE_PROBATION")))
+        .headers(setAuthorisation(fullName = user, roles = listOf("ROLE_PROBATION")))
         .exchange()
         .expectStatus().isOk
         .expectBody<AssessmentEpisodeDto>()
