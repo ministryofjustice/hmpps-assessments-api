@@ -302,6 +302,7 @@ class AssessmentService(
         crn = crn,
         dateOfBirth = offender.dateOfBirth,
         createdDate = LocalDateTime.now(),
+        gender = offender.gender,
       )
     )
     val assessment = AssessmentEntity(subject = subjectEntity)
