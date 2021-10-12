@@ -13,7 +13,7 @@ import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundExce
 
 const val AREA_CODE = "WWS"
 const val EVENT_ID = 1L
-const val PAGE_SIZE = 200
+const val PAGE_SIZE = 100
 
 @Service
 @Profile("dev", "test")
