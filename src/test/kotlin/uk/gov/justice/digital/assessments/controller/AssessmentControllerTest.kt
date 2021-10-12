@@ -504,7 +504,7 @@ class AssessmentControllerTest : IntegrationTest() {
 
       val assessmentEpisode = webTestClient.post().uri("/assessments/$assessmentUuid/complete")
         .header(RequestData.USER_AREA_HEADER_NAME, "WWS")
-        .headers(setAuthorisation(user = "NEWUSER", roles = listOf("ROLE_PROBATION")))
+        .headers(setAuthorisation(fullName = "NEW USER", roles = listOf("ROLE_PROBATION")))
         .exchange()
         .expectStatus().isOk
         .expectBody<AssessmentEpisodeDto>()
@@ -512,7 +512,7 @@ class AssessmentControllerTest : IntegrationTest() {
         .responseBody
       assertThat(assessmentEpisode?.assessmentUuid).isEqualTo(assessmentUuid)
       assertThat(assessmentEpisode?.ended).isEqualToIgnoringMinutes(LocalDateTime.now())
-      assertThat(assessmentEpisode?.userFullName).isEqualTo("NEWUSER")
+      assertThat(assessmentEpisode?.userFullName).isEqualTo("NEW USER")
       assertThat(assessmentEpisode?.predictors).isEqualTo(
         listOf(
           PredictorScoresDto(

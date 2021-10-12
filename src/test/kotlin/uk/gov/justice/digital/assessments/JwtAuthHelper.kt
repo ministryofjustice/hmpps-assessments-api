@@ -28,6 +28,7 @@ class JwtAuthHelper {
 
   fun createJwt(
     subject: String,
+    fullName: String = "Full Name",
     scope: List<String>? = listOf(),
     roles: List<String>? = listOf(),
     expiryTime: Duration = Duration.ofHours(1),
@@ -35,7 +36,7 @@ class JwtAuthHelper {
   ): String {
     val claims = HashMap<String, Any>()
     claims["user_name"] = subject
-    claims["name"] = "Full Name"
+    claims["name"] = fullName
     claims["auth_source"] = "delius"
     claims["user_id"] = "1"
     claims["client_id"] = "offender-assessment-api"
