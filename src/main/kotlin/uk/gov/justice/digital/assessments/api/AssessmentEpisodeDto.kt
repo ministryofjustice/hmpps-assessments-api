@@ -28,7 +28,7 @@ data class AssessmentEpisodeDto(
   val ended: LocalDateTime? = null,
 
   @Schema(description = "Created/Updated by user", example = "USER1")
-  val user: String? = null,
+  val userId: String? = null,
 
   @Schema(description = "Answers associated with this episode")
   val answers: Answers = emptyMap(),

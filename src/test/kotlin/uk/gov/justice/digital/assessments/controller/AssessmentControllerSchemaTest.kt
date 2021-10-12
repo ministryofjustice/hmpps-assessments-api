@@ -9,7 +9,7 @@ import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import java.util.UUID
 
-@AutoConfigureWebTestClient(timeout = "36000000")
+@AutoConfigureWebTestClient
 class AssessmentControllerSchemaTest : IntegrationTest() {
   private val assessmentGroupUuid = "b89429c8-9e3e-4989-b886-9caed4ed0a30"
   private val groupUuid = "5d37254e-d956-488e-89be-1eaec8758ef7"

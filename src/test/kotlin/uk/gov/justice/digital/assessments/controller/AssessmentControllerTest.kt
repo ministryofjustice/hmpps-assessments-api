@@ -38,7 +38,7 @@ import java.util.UUID
     executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
   )
 )
-@AutoConfigureWebTestClient(timeout = "600000")
+@AutoConfigureWebTestClient
 class AssessmentControllerTest : IntegrationTest() {
   val assessmentUuid = "2e020e78-a81c-407f-bc78-e5f284e237e5"
   val episodeId = "current"
@@ -386,7 +386,7 @@ class AssessmentControllerTest : IntegrationTest() {
       )
 
       Verify.singleAnswer(episode.answers[questionCode]!!, expectedAnswer)
-      assertThat(episode.user).isEqualTo("USERNAME")
+      assertThat(episode.userId).isEqualTo("USERNAME")
     }
 
     private fun addTableRowFromJson(tableName: String, jsonString: String): AssessmentEpisodeDto {
@@ -512,7 +512,7 @@ class AssessmentControllerTest : IntegrationTest() {
         .responseBody
       assertThat(assessmentEpisode?.assessmentUuid).isEqualTo(assessmentUuid)
       assertThat(assessmentEpisode?.ended).isEqualToIgnoringMinutes(LocalDateTime.now())
-      assertThat(assessmentEpisode?.user).isEqualTo("NEWUSER")
+      assertThat(assessmentEpisode?.userId).isEqualTo("NEWUSER")
       assertThat(assessmentEpisode?.predictors).isEqualTo(
         listOf(
           PredictorScoresDto(
