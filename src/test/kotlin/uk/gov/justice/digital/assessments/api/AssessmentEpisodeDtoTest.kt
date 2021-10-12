@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.OffenceEntity
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -38,7 +39,7 @@ class AssessmentEpisodeDtoTest {
       assessmentEntity,
       AssessmentSchemaCode.ROSH,
       1L,
-      "USER",
+      AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
       LocalDateTime.of(2019, 8, 1, 8, 0),
       null,
       "Change of Circs",

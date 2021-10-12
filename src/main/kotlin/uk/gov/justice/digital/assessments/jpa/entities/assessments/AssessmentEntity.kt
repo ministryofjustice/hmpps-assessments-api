@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.assessments.jpa.entities.assessments
 
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
-import uk.gov.justice.digital.assessments.utils.RequestData
 import java.io.Serializable
 import java.time.LocalDateTime
 import java.util.UUID
@@ -56,7 +55,8 @@ class AssessmentEntity(
     changeReason: String,
     oasysSetPk: Long? = null,
     assessmentSchemaCode: AssessmentSchemaCode,
-    offence: OffenceEntity?
+    offence: OffenceEntity?,
+    author: AuthorEntity
   ): AssessmentEpisodeEntity {
     val currentEpisode = getCurrentEpisode()
     if (currentEpisode != null) {
@@ -66,7 +66,7 @@ class AssessmentEntity(
       assessment = this,
       createdDate = LocalDateTime.now(),
       changeReason = changeReason,
-      userName = RequestData.getUserName(),
+      author = author,
       oasysSetPk = oasysSetPk,
       assessmentSchemaCode = assessmentSchemaCode,
       offence = offence

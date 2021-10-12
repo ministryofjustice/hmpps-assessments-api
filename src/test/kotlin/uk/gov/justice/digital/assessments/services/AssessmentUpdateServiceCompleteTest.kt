@@ -12,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.OasysAssessmentType
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
@@ -31,6 +32,7 @@ class AssessmentUpdateServiceCompleteTest {
   private val riskPredictorsService: RiskPredictorsService = mockk()
   private val oasysAssessmentUpdateService: OasysAssessmentUpdateService = mockk()
   private val assessmentService: AssessmentService = mockk()
+  private val authorService: AuthorService = mockk()
 
   private val assessmentUpdateService = AssessmentUpdateService(
     assessmentRepository,
@@ -39,6 +41,7 @@ class AssessmentUpdateServiceCompleteTest {
     riskPredictorsService,
     oasysAssessmentUpdateService,
     assessmentService,
+    authorService
   )
 
   @BeforeEach
@@ -56,6 +59,8 @@ class AssessmentUpdateServiceCompleteTest {
       oasysAssessmentUpdateService.completeOASysAssessment(assessmentEpisode, 9999)
     } returns AssessmentEpisodeUpdateErrors()
     every { riskPredictorsService.getPredictorResults(assessmentEpisode, true) } returns emptyList()
+    val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
+    every { authorService.getOrCreateAuthor() } returns author
 
     val episode = assessmentUpdateService.closeEpisode(assessmentEpisode)
 
@@ -78,6 +83,8 @@ class AssessmentUpdateServiceCompleteTest {
       answerErrors = mutableMapOf("question_code" to mutableListOf("error"))
     )
     every { riskPredictorsService.getPredictorResults(assessmentEpisode, true) } returns emptyList()
+    val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
+    every { authorService.getOrCreateAuthor() } returns author
 
     val episode = assessmentUpdateService.closeEpisode(assessmentEpisode)
 
@@ -110,6 +117,7 @@ class AssessmentUpdateServiceCompleteTest {
         changeReason = "Change of Circs 2",
         oasysSetPk = 7777,
         createdDate = LocalDateTime.now(),
+        author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
       )
     )
     return assessment

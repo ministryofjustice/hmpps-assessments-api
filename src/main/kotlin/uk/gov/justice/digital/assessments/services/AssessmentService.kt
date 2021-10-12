@@ -31,6 +31,7 @@ import java.util.UUID
 class AssessmentService(
   private val assessmentRepository: AssessmentRepository,
   private val subjectRepository: SubjectRepository,
+  private val authorService: AuthorService,
   private val questionService: QuestionService,
   private val episodeService: EpisodeService,
   private val courtCaseClient: CourtCaseRestClient,
@@ -325,6 +326,7 @@ class AssessmentService(
     if (source == deliusSource) {
       offence = getEpisodeOffence(crn, eventId.toLong())
     }
+    val author = authorService.getOrCreateAuthor()
     val episode = assessment.newEpisode(
       reason,
       oasysSetPk = oasysSetPK,
@@ -337,7 +339,8 @@ class AssessmentService(
         offenceSubCode = offence?.offenceSubCode,
         subCodeDescription = offence?.subCodeDescription,
         sentenceDate = offence?.sentenceDate
-      )
+      ),
+      author
     )
     episodeService.prepopulate(episode)
     log.info("New episode episode with id:${episode.episodeId} and uuid:${episode.episodeUuid} created for assessment ${assessment.assessmentUuid}")

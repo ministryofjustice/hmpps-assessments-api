@@ -8,11 +8,11 @@ import uk.gov.justice.digital.assessments.api.Answers
 import uk.gov.justice.digital.assessments.api.AssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.TableRows
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.EpisodeRepository
 import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
-import uk.gov.justice.digital.assessments.utils.RequestData
 import java.util.UUID
 
 @Service
@@ -23,6 +23,7 @@ class AssessmentUpdateService(
   private val riskPredictorsService: RiskPredictorsService,
   private val oasysAssessmentUpdateService: OasysAssessmentUpdateService,
   private val assessmentService: AssessmentService,
+  private val authorService: AuthorService,
 ) {
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
@@ -51,7 +52,8 @@ class AssessmentUpdateService(
     if (episode.isClosed()) throw UpdateClosedEpisodeException("Cannot update closed Episode ${episode.episodeUuid} for assessment ${episode.assessment?.assessmentUuid}")
 
     episode.updateEpisodeAnswers(updatedEpisodeAnswers)
-    episode.userName = RequestData.getUserName()
+    episode.author = authorService.getOrCreateAuthor()
+
     log.info("Updated episode ${episode.episodeUuid} with ${updatedEpisodeAnswers.size} answer(s) for assessment ${episode.assessment?.assessmentUuid}")
 
     val oasysResult = oasysAssessmentUpdateService.updateOASysAssessment(episode, updatedEpisodeAnswers)
@@ -78,7 +80,8 @@ class AssessmentUpdateService(
     episode: AssessmentEpisodeEntity
   ): AssessmentEpisodeDto {
     val offenderPk: Long? = episode.assessment?.subject?.oasysOffenderPk
-    episode.userName = RequestData.getUserName()
+    episode.author = authorService.getOrCreateAuthor()
+
     val oasysResult = oasysAssessmentUpdateService.completeOASysAssessment(episode, offenderPk)
     if (oasysResult?.hasErrors() == true) {
       log.info("Unable to close episode ${episode.episodeUuid} for assessment ${episode.assessment?.assessmentUuid} with OASys restclient")

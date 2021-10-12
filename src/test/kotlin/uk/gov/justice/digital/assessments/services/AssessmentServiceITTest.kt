@@ -58,6 +58,8 @@ class AssessmentServiceITTest() : IntegrationTest() {
     MDC.put(RequestData.USER_AREA_HEADER, "WWS")
     MDC.put(RequestData.USER_ID_HEADER, "1")
     MDC.put(RequestData.USER_NAME_HEADER, "SWITHLAM")
+    MDC.put(RequestData.USER_FULL_NAME_HEADER, "Stuart Withlam")
+    MDC.put(RequestData.USER_AUTH_SOURCE_HEADER, "delius")
   }
 
   @Test

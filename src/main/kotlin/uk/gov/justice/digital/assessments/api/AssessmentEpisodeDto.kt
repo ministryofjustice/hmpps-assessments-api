@@ -27,8 +27,8 @@ data class AssessmentEpisodeDto(
   @Schema(description = "Episode end timestamp", example = "2020-01-02T16:00:00")
   val ended: LocalDateTime? = null,
 
-  @Schema(description = "Created/Updated by user", example = "USER1")
-  val userId: String? = null,
+  @Schema(description = "Created/Updated by user", example = "Name surname")
+  val userFullName: String? = null,
 
   @Schema(description = "Answers associated with this episode")
   val answers: Answers = emptyMap(),
@@ -69,7 +69,7 @@ data class AssessmentEpisodeDto(
         episode.changeReason,
         episode.createdDate,
         episode.endDate,
-        episode.userName,
+        episode.author.userFullName,
         episode.answers ?: mutableMapOf(),
         errors?.errors,
         errors?.pageErrors,

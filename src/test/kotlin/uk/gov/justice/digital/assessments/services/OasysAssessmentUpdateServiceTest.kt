@@ -15,6 +15,7 @@ import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerSchemaGroupEntity
@@ -100,7 +101,8 @@ class OasysAssessmentUpdateServiceTest() {
     val episode = AssessmentEpisodeEntity(
       oasysSetPk = oasysSetPk,
       createdDate = LocalDateTime.now(),
-      assessmentSchemaCode = AssessmentSchemaCode.ROSH
+      assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+      author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
     )
     val update = mapOf(questionCode1 to listOf("YES"))
 
@@ -157,7 +159,9 @@ class OasysAssessmentUpdateServiceTest() {
   @Test
   fun `Update oasys assessment returns errors when offender null`() {
     val assessmentEpisode = AssessmentEpisodeEntity(
-      episodeId = 128, assessmentSchemaCode = AssessmentSchemaCode.ROSH
+      episodeId = 128,
+      assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+      author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
     )
     val update = UpdateAssessmentEpisodeDto(answers = mapOf(questionCode1 to listOf("Updated")))
     val updateAssessmentResponse =
@@ -169,7 +173,10 @@ class OasysAssessmentUpdateServiceTest() {
   @Test
   fun `Complete oasys assessment returns errors when offender null`() {
     val assessmentEpisode = AssessmentEpisodeEntity(
-      episodeId = 128, assessmentSchemaCode = AssessmentSchemaCode.ROSH
+      episodeId = 128,
+      assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+      author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
+
     )
     val completeAssessmentResponse =
       oasysAssessmentUpdateService.completeOASysAssessment(assessmentEpisode, null)
@@ -232,9 +239,10 @@ class OasysAssessmentUpdateServiceTest() {
           oasysOffenderPk = 1,
           subjectUuid = UUID.randomUUID(),
           dateOfBirth = LocalDate.of(1989, 1, 1),
-          crn = "X1345"
+          crn = "X1345",
         )
-      )
+      ),
+      author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
     )
   }
 

@@ -13,6 +13,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.Answers
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.OasysAssessmentType
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.EpisodeRepository
@@ -30,6 +31,7 @@ class AssessmentUpdateServiceTest {
   private val assessmentSchemaService: AssessmentSchemaService = mockk()
   private val oasysAssessmentUpdateService: OasysAssessmentUpdateService = mockk()
   private val assessmentService: AssessmentService = mockk()
+  private val authorService: AuthorService = mockk()
 
   private val assessmentUpdateService = AssessmentUpdateService(
     assessmentRepository,
@@ -38,6 +40,7 @@ class AssessmentUpdateServiceTest {
     riskPredictorsService,
     oasysAssessmentUpdateService,
     assessmentService,
+    authorService
   )
 
   private val assessmentUuid = UUID.randomUUID()
@@ -78,6 +81,8 @@ class AssessmentUpdateServiceTest {
         )
       } returns AssessmentEpisodeUpdateErrors()
       every { assessmentRepository.save(any()) } returns null
+      val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
+      every { authorService.getOrCreateAuthor() } returns author
 
       val episodeDto = assessmentUpdateService.updateEpisode(assessment.episodes.first(), updatedAnswers)
 
@@ -114,6 +119,9 @@ class AssessmentUpdateServiceTest {
       } returns AssessmentEpisodeUpdateErrors()
       every { assessmentRepository.save(any()) } returns null
 
+      val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
+      every { authorService.getOrCreateAuthor() } returns author
+
       val episodeDto = assessmentUpdateService.updateEpisode(assessment.episodes.first(), updatedAnswers)
 
       assertThat(episodeDto.answers).hasSize(1)
@@ -144,6 +152,9 @@ class AssessmentUpdateServiceTest {
       } returns AssessmentEpisodeUpdateErrors()
       every { assessmentRepository.save(any()) } returns null
 
+      val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
+      every { authorService.getOrCreateAuthor() } returns author
+
       val episodeDto = assessmentUpdateService.updateEpisode(assessment.episodes.first(), updatedAnswers)
 
       assertThat(episodeDto.answers).hasSize(1)
@@ -169,7 +180,8 @@ class AssessmentUpdateServiceTest {
             ),
             assessment = AssessmentEntity(assessmentUuid = assessmentUuid),
             createdDate = LocalDateTime.now(),
-            assessmentSchemaCode = AssessmentSchemaCode.ROSH
+            assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+            author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
           )
         )
       )
@@ -197,7 +209,8 @@ class AssessmentUpdateServiceTest {
           changeReason = "Change of Circs 2",
           answers = answers,
           createdDate = LocalDateTime.now(),
-          assessmentSchemaCode = AssessmentSchemaCode.ROSH
+          assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+          author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
         ),
       )
     )

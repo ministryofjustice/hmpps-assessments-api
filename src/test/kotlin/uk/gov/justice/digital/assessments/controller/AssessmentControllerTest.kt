@@ -386,7 +386,7 @@ class AssessmentControllerTest : IntegrationTest() {
       )
 
       Verify.singleAnswer(episode.answers[questionCode]!!, expectedAnswer)
-      assertThat(episode.userId).isEqualTo("USERNAME")
+      assertThat(episode.userFullName).isEqualTo("USERNAME")
     }
 
     private fun addTableRowFromJson(tableName: String, jsonString: String): AssessmentEpisodeDto {
@@ -512,7 +512,7 @@ class AssessmentControllerTest : IntegrationTest() {
         .responseBody
       assertThat(assessmentEpisode?.assessmentUuid).isEqualTo(assessmentUuid)
       assertThat(assessmentEpisode?.ended).isEqualToIgnoringMinutes(LocalDateTime.now())
-      assertThat(assessmentEpisode?.userId).isEqualTo("NEWUSER")
+      assertThat(assessmentEpisode?.userFullName).isEqualTo("NEWUSER")
       assertThat(assessmentEpisode?.predictors).isEqualTo(
         listOf(
           PredictorScoresDto(

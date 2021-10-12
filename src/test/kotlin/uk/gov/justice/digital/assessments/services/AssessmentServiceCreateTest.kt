@@ -18,9 +18,11 @@ import uk.gov.justice.digital.assessments.api.OffenceDto
 import uk.gov.justice.digital.assessments.api.OffenderDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.OasysAssessmentType
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
+import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AuthorRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRepository
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import uk.gov.justice.digital.assessments.restclient.ExternalService
@@ -37,6 +39,7 @@ import java.util.UUID
 class AssessmentServiceCreateTest {
   private val assessmentRepository: AssessmentRepository = mockk()
   private val subjectRepository: SubjectRepository = mockk()
+  private val authorService: AuthorService = mockk()
   private val questionService: QuestionService = mockk()
   private val courtCaseRestClient: CourtCaseRestClient = mockk()
   private val episodeService: EpisodeService = mockk()
@@ -47,6 +50,7 @@ class AssessmentServiceCreateTest {
   private val assessmentsService = AssessmentService(
     assessmentRepository,
     subjectRepository,
+    authorService,
     questionService,
     episodeService,
     courtCaseRestClient,
@@ -107,6 +111,8 @@ class AssessmentServiceCreateTest {
         createdDate = LocalDateTime.now(),
       )
       every { assessmentRepository.save(any()) } returns AssessmentEntity(assessmentId = assessmentId)
+      val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
+      every { authorService.getOrCreateAuthor() } returns author
 
       assessmentsService.createNewAssessment(
         CreateAssessmentDto(
@@ -148,6 +154,8 @@ class AssessmentServiceCreateTest {
           assessmentSchemaCode
         )
       } returns Pair(oasysOffenderPk, oasysSetPk)
+      val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
+      every { authorService.getOrCreateAuthor() } returns author
 
       val assessmentDto =
         assessmentsService.createNewAssessment(
@@ -238,6 +246,8 @@ class AssessmentServiceCreateTest {
         subCodeDescription = "Sub-code description"
       )
       every { episodeService.prepopulate(any()) } returnsArgument 0
+      val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
+      every { authorService.getOrCreateAuthor() } returns author
 
       assessmentsService.createNewAssessment(
         CreateAssessmentDto(
@@ -274,6 +284,8 @@ class AssessmentServiceCreateTest {
       val updatedSubject = subjectEntity.copy(oasysOffenderPk = oasysOffenderPk)
       every { subjectRepository.save(updatedSubject) } returns updatedSubject
       every { episodeService.prepopulate(any()) } returnsArgument 0
+      val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
+      every { authorService.getOrCreateAuthor() } returns author
 
       assessmentsService.createNewAssessment(
         CreateAssessmentDto(

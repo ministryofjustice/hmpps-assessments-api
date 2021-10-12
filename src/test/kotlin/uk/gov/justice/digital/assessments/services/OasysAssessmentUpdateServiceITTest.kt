@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
 import uk.gov.justice.digital.assessments.services.dto.AssessmentEpisodeUpdateErrors
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
@@ -106,6 +107,7 @@ class OasysAssessmentUpdateServiceITTest() : IntegrationTest() {
         assessmentSchemaCode = AssessmentSchemaCode.ROSH,
         answers = mutableMapOf(),
         createdDate = LocalDateTime.now(),
+        author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
       )
     )
   )
@@ -121,6 +123,7 @@ class OasysAssessmentUpdateServiceITTest() : IntegrationTest() {
         assessmentSchemaCode = AssessmentSchemaCode.RSR,
         answers = mutableMapOf(),
         createdDate = LocalDateTime.now(),
+        author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
       )
     )
   )
