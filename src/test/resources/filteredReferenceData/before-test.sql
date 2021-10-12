@@ -27,7 +27,7 @@ VALUES
 ('444323d1-1e0f-42f3-b5b5-f44b0e5bcb18', 'DELIUS', 1, '049', 'Sexual assault', '03', 'Sexual assault'),
 ('555323d1-1e0f-42f3-b5b5-f44b0e5bcb18', 'DELIUS', 1, '050', 'Burglary', '04', 'Burglary');
 
-INSERT INTO hmppsassessmentsapi.assessed_episode  (episode_uuid, user_id, created_date, end_date, change_reason, assessment_schema_code, assessment_uuid, answers, oasys_set_pk, offence_uuid) VALUES
+INSERT INTO hmppsassessmentsapi.assessed_episode  (episode_uuid, user_name, created_date, end_date, change_reason, assessment_schema_code, assessment_uuid, answers, oasys_set_pk, offence_uuid) VALUES
 ('8efd9267-e399-48f1-9402-51a08e245f3b', 'USER1', '2019-11-14 09:00', null,'Change of Circs', 'ROSH', '2e020e78-a81c-407f-bc78-e5f284e237e5', '{}', 1, '111323d1-1e0f-42f3-b5b5-f44b0e5bcb18'),
 ('de1b50ed-90c7-45f5-9dea-5161cec94137', 'USER1', '2019-11-14 09:00', null,'Change of Circs', 'ROSH', 'bbbae903-7803-4206-800c-2d3b81116d5c', '{}', 2, '222323d1-1e0f-42f3-b5b5-f44b0e5bcb18'),
 ('b5ade371-1f87-46a1-b784-eb35f6c45e6b', 'USER1', '2019-11-14 09:00', null,'Change of Circs', 'ROSH', 'bd5e5a88-c0ac-4f55-9c08-b8e8bdd9568c', '{}', 3, '333323d1-1e0f-42f3-b5b5-f44b0e5bcb18'),

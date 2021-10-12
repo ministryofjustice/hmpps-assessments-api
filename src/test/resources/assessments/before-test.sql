@@ -31,7 +31,7 @@ VALUES
 ('222222d1-1e0f-42f3-b5b5-f44b0e5bcb18', 'DELIUS', 1, '054', 'Offence with weapon', '09', 'Offence with weapon'),
 ('333333d1-1e0f-42f3-b5b5-f44b0e5bcb18', 'DELIUS', 1, '054', 'Offence with weapon', '09', 'Offence with weapon');
 
-INSERT INTO hmppsassessmentsapi.assessed_episode  (episode_uuid, user_id, created_date, end_date, change_reason, assessment_schema_code, assessment_uuid, answers, offence_uuid) VALUES
+INSERT INTO hmppsassessmentsapi.assessed_episode  (episode_uuid, user_name, created_date, end_date, change_reason, assessment_schema_code, assessment_uuid, answers, offence_uuid) VALUES
 ('d7aafe55-0cff-4f20-a57a-b66d79eb9c91', 'USER1', '2019-11-14 09:00', '2019-11-14 12:00','Change of Circs', 'ROSH','2e020e78-a81c-407f-bc78-e5f284e237e5', '{}', '111323d1-1e0f-42f3-b5b5-f44b0e5bcb18'),
 ('f3569440-efd5-4289-8fdd-4560360e5259', 'USER1', '2019-11-14 09:00', null,'More Change of Circs', 'ROSH', '2e020e78-a81c-407f-bc78-e5f284e237e5', '{}', '222323d1-1e0f-42f3-b5b5-f44b0e5bcb18'),
 ('f3569440-efd5-4289-8fdd-4560360e5279', 'USER1', '2019-11-14 09:00', null,'Change', 'RSR', '19c8d211-68dc-4692-a6e2-d58468127056', '{}', '333323d1-1e0f-42f3-b5b5-f44b0e5bcb18'),
@@ -56,7 +56,7 @@ INSERT INTO hmppsassessmentsapi.subject (subject_uuid, name, pnc, crn, date_of_b
 INSERT INTO hmppsassessmentsapi.assessment  (assessment_uuid, subject_uuid, created_date) VALUES
 ('6e60784e-584e-4762-952d-d7288e31d4f4', 'f9d551b4-602e-4dfa-bf4d-32d67a3914af', '2020-1-14 09:00');
 
-INSERT INTO hmppsassessmentsapi.assessed_episode  (episode_uuid, user_id, assessment_schema_code, oasys_set_pk, created_date, end_date, change_reason, assessment_uuid, answers, offence_uuid) VALUES
+INSERT INTO hmppsassessmentsapi.assessed_episode  (episode_uuid, user_name, assessment_schema_code, oasys_set_pk, created_date, end_date, change_reason, assessment_uuid, answers, offence_uuid) VALUES
 ('3df6172f-a931-4fb9-a595-46868893b4ed', 'USER1', 'RSR', 1, '2021-01-01 00:00', null, 'More Change of Circs', '6e60784e-584e-4762-952d-d7288e31d4f4', '{}', '111111d1-1e0f-42f3-b5b5-f44b0e5bcb18');
 
 
@@ -71,7 +71,7 @@ INSERT INTO hmppsassessmentsapi.assessment  (assessment_uuid, subject_uuid, crea
 ('6082265e-885d-4526-b713-77e59b70691e', '1146f644-dfb9-4e6d-9446-1be089538480', '2020-1-14 09:00'),
 ('aa47e6c4-e41f-467c-95e7-fcf5ffd422f5', 'f6023241-ba22-47e4-bc7d-f7adfde4276c', '2020-1-14 09:00');
 
-INSERT INTO hmppsassessmentsapi.assessed_episode  (episode_uuid, user_id, assessment_schema_code, oasys_set_pk, created_date, end_date, change_reason, assessment_uuid, answers, offence_uuid) VALUES
+INSERT INTO hmppsassessmentsapi.assessed_episode  (episode_uuid, user_name, assessment_schema_code, oasys_set_pk, created_date, end_date, change_reason, assessment_uuid, answers, offence_uuid) VALUES
 ('163cf020-ff53-4dc6-a15c-e93e8537d347', 'USER1', 'RSR', 1, '2021-01-01 00:00', null, 'More Change of Circs', 'e399ed1b-0e77-4c68-8bbc-d2f0befece84', '{"total_sanctions": ["10"], "any_sexual_offences": ["YES"],"current_sexual_offence": ["YES"],"current_offence_victim_stranger": ["YES"], "completed_interview": ["YES"], "date_first_sanction": ["2020-01-01"], "age_first_conviction": ["23"], "earliest_release_date": ["2021-11-01"], "total_violent_offences": ["8"], "date_current_conviction": ["2020-12-18"], "total_non_sexual_offences": [], "total_sexual_offences_adult": [5], "total_sexual_offences_child": [3], "most_recent_sexual_offence_date": ["2020-12-11"], "total_sexual_offences_child_image": [2], "total_non_contact_sexual_offences": [2], "binge_drinking": ["SIGNIFICANT_PROBLEMS"], "previous_arson": ["YES"], "use_of_alcohol": ["SIGNIFICANT_PROBLEMS"],"previous_robbery": ["YES"], "previous_wounding": ["YES"], "impulsivity_issues": ["SOME_PROBLEMS"],"previous_kidnapping": ["YES"],"temper_control_issues": ["SIGNIFICANT_PROBLEMS"], "unemployed_on_release": ["NOT_AVAILABLE_FOR_WORK"], "current_sexual_offence": ["YES"], "previous_murder_attempt": ["YES"], "previous_offence_weapon": ["YES"], "previous_criminal_damage": ["YES"], "evidence_domestic_violence": ["YES"], "previous_possession_firearm": ["YES"],"previous_aggravated_burglary": ["YES"], "perpetrator_domestic_violence": ["perpetrator"], "pro_criminal_attitudes": ["SOME_PROBLEMS"], "current_relationship_with_partner": ["SIGNIFICANT_PROBLEMS"]}', '111111d1-1e0f-42f3-b5b5-f44b0e5bcb18'),
 ('461994f9-86b9-4177-8412-de8dbb18415b', 'USER1', 'ROSH', 5678, '2019-11-14 09:00', '2019-11-14 12:00', 'More Change of Circs', '6082265e-885d-4526-b713-77e59b70691e', '{}', '222222d1-1e0f-42f3-b5b5-f44b0e5bcb18'),
 ('4f99ea18-6559-460e-9693-68f0f5e5bebc', 'USER1', 'ROSH', 1, '2019-11-14 09:00', null, 'More Change of Circs', 'aa47e6c4-e41f-467c-95e7-fcf5ffd422f5', '{}', '333333d1-1e0f-42f3-b5b5-f44b0e5bcb18');

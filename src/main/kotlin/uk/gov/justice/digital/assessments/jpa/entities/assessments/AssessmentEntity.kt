@@ -66,7 +66,7 @@ class AssessmentEntity(
       assessment = this,
       createdDate = LocalDateTime.now(),
       changeReason = changeReason,
-      userId = RequestData.getUserName(),
+      userName = RequestData.getUserName(),
       oasysSetPk = oasysSetPk,
       assessmentSchemaCode = assessmentSchemaCode,
       offence = offence

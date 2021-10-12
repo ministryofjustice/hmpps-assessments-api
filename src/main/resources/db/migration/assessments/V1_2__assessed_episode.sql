@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS assessed_episode
 (
     episode_id            SERIAL       PRIMARY KEY,
     episode_uuid          UUID         UNIQUE,
-    user_id               TEXT         NOT NULL,
+    user_name               TEXT         NOT NULL,
     assessment_schema_code VARCHAR(50) NOT NULL,
     oasys_set_pk          BIGINT       NULL,
     created_date          TIMESTAMP    NOT NULL,

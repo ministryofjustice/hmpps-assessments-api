@@ -69,7 +69,7 @@ data class AssessmentEpisodeDto(
         episode.changeReason,
         episode.createdDate,
         episode.endDate,
-        episode.userId,
+        episode.userName,
         episode.answers ?: mutableMapOf(),
         errors?.errors,
         errors?.pageErrors,

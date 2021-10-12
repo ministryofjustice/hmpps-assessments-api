@@ -51,7 +51,7 @@ class AssessmentUpdateService(
     if (episode.isClosed()) throw UpdateClosedEpisodeException("Cannot update closed Episode ${episode.episodeUuid} for assessment ${episode.assessment?.assessmentUuid}")
 
     episode.updateEpisodeAnswers(updatedEpisodeAnswers)
-    episode.userId = RequestData.getUserName()
+    episode.userName = RequestData.getUserName()
     log.info("Updated episode ${episode.episodeUuid} with ${updatedEpisodeAnswers.size} answer(s) for assessment ${episode.assessment?.assessmentUuid}")
 
     val oasysResult = oasysAssessmentUpdateService.updateOASysAssessment(episode, updatedEpisodeAnswers)
@@ -78,7 +78,7 @@ class AssessmentUpdateService(
     episode: AssessmentEpisodeEntity
   ): AssessmentEpisodeDto {
     val offenderPk: Long? = episode.assessment?.subject?.oasysOffenderPk
-    episode.userId = RequestData.getUserName()
+    episode.userName = RequestData.getUserName()
     val oasysResult = oasysAssessmentUpdateService.completeOASysAssessment(episode, offenderPk)
     if (oasysResult?.hasErrors() == true) {
       log.info("Unable to close episode ${episode.episodeUuid} for assessment ${episode.assessment?.assessmentUuid} with OASys restclient")
