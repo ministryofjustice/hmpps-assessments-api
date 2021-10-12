@@ -28,19 +28,23 @@ class OffenderStubService(
     const val PAGE_SIZE = 100
     val log: Logger = LoggerFactory.getLogger(this::class.java)
   }
-  fun createStub(): OffenderAndOffenceStubDto {
 
+  fun createStub(): OffenderAndOffenceStubDto {
     val existingStubs = assessmentApiRestClient.getOffenderStubs()
     var stubsSize = existingStubs.size
     log.info("Found $stubsSize existing offender stubs")
-    stubsSize += offset
-    val communityOffenders = communityApiRestClient.getPrimaryIds(stubsSize.div(PAGE_SIZE), PAGE_SIZE)
-    val unusedId = communityOffenders?.firstOrNull { !checkForUsedCrn(it.crn, existingStubs) && !checkForRestrictedCrn(it.crn) }
-      ?: throw EntityNotFoundException("Could not get unused CRN from Community API.")
+    val unusedId = getUnusedCrn(stubsSize, existingStubs)
     val offenceDetail = offenderService.getOffence(unusedId.crn, EVENT_ID)
     val newOffenderStubDto = generateOffenderStubDto(unusedId.crn)
     assessmentUpdateRestClient.createOasysOffenderStub(newOffenderStubDto)
     return OffenderAndOffenceStubDto.from(newOffenderStubDto, offenceDetail)
+  }
+
+  private fun getUnusedCrn(stubsSize: Int, existingStubs: List<OffenderStubDto>): PrimaryId {
+    val pageNumber = (stubsSize + offset).div(PAGE_SIZE)
+    val communityOffenders = communityApiRestClient.getPrimaryIds(pageNumber, PAGE_SIZE)
+    return communityOffenders?.firstOrNull { !checkForUsedCrn(it.crn, existingStubs) && !checkForRestrictedCrn(it.crn) }
+      ?: throw EntityNotFoundException("Could not get unused CRN from Community API.")
   }
 
   fun generateOffenderStubDto(crn: String): OffenderStubDto {

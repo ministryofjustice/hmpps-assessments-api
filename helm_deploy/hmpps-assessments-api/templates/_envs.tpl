@@ -142,4 +142,10 @@ env:
   - name: INGRESS_URL
     value: 'https://{{ .Values.ingress.host }}'
 
+  - name: STUB_RESTRICTED
+    value: {{ .Values.env.STUB_RESTRICTED }}
+
+  - name: STUB_OFFSET
+    value: {{ .Values.env.STUB_OFFSET }}
+
 {{- end -}}
