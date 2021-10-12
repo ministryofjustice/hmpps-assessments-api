@@ -33,12 +33,13 @@ class OffenderStubServiceTest {
   private val assessmentApiRestClient: AssessmentApiRestClient = mockk()
   private val offenderService: OffenderService = mockk()
   private val offenderStubService = OffenderStubService(assessmentApiRestClient, communityApiRestClient, offenderService, assessmentUpdateRestClient, "D001055,D001056")
+  private val pageSize = OffenderStubService.PAGE_SIZE
 
   @Test
   fun `return offender and offence codes`() {
     val crn = "D001057"
     every { assessmentApiRestClient.getOffenderStubs() } returns offenderStubs()
-    every { communityApiRestClient.getPrimaryIds(0, 200) } returns primaryIdentifiers()
+    every { communityApiRestClient.getPrimaryIds(0, pageSize) } returns primaryIdentifiers()
     every { communityApiRestClient.getOffender(crn) } returns communityOffenderDto()
     every { offenderService.getOffence(crn, 1) } returns offenceDto()
     justRun { assessmentUpdateRestClient.createOasysOffenderStub(any()) }
@@ -79,7 +80,7 @@ class OffenderStubServiceTest {
   @Test
   fun `return offender throws exception for no unused CRNs`() {
     every { assessmentApiRestClient.getOffenderStubs() } returns allOffenderStubs()
-    every { communityApiRestClient.getPrimaryIds(0, 200) } returns primaryIdentifiers()
+    every { communityApiRestClient.getPrimaryIds(0, pageSize) } returns primaryIdentifiers()
 
     assertThrows<EntityNotFoundException> { offenderStubService.createStub() }
 

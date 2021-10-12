@@ -13,7 +13,6 @@ import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundExce
 
 const val AREA_CODE = "WWS"
 const val EVENT_ID = 1L
-const val PAGE_SIZE = 200
 
 @Service
 @Profile("dev", "test")
@@ -24,7 +23,10 @@ class OffenderStubService(
   val assessmentUpdateRestClient: AssessmentUpdateRestClient,
   @Value("\${stub.restricted}") val restrictedCrns: String = "",
 ) {
-
+  companion object {
+    const val PAGE_SIZE = 100
+    val log: Logger = LoggerFactory.getLogger(this::class.java)
+  }
   fun createStub(): OffenderAndOffenceStubDto {
 
     val existingStubs = assessmentApiRestClient.getOffenderStubs()
@@ -59,10 +61,6 @@ class OffenderStubService(
   fun checkForRestrictedCrn(crn: String?): Boolean {
     val restricted = restrictedCrns.split(',')
     return restricted.any { it == crn }
-  }
-
-  companion object {
-    val log: Logger = LoggerFactory.getLogger(this::class.java)
   }
 }
 
