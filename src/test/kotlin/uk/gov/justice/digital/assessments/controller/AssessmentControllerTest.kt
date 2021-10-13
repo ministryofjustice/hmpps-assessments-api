@@ -381,14 +381,17 @@ class AssessmentControllerTest : IntegrationTest() {
       val episode = updateFromJson(
         "/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259",
         questionCode,
-        jsonString
+        jsonString,
+        "USERNAME"
       )
 
       Verify.singleAnswer(episode.answers[questionCode]!!, expectedAnswer)
+      assertThat(episode.userFullName).isEqualTo("USERNAME")
     }
 
     private fun addTableRowFromJson(tableName: String, jsonString: String): AssessmentEpisodeDto {
-      val endpoint = "/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259/table/children_at_risk_of_serious_harm_test"
+      val endpoint =
+        "/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259/table/children_at_risk_of_serious_harm_test"
 
       val episode = webTestClient.post().uri(endpoint)
         .contentType(MediaType.APPLICATION_JSON)
@@ -445,12 +448,13 @@ class AssessmentControllerTest : IntegrationTest() {
     private fun updateFromJson(
       endpoint: String,
       questionCode: String,
-      jsonString: String
+      jsonString: String,
+      user: String
     ): AssessmentEpisodeDto {
       val episode = webTestClient.post().uri(endpoint)
         .contentType(MediaType.APPLICATION_JSON)
         .bodyValue(jsonString)
-        .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
+        .headers(setAuthorisation(fullName = user, roles = listOf("ROLE_PROBATION")))
         .exchange()
         .expectStatus().isOk
         .expectBody<AssessmentEpisodeDto>()
@@ -500,7 +504,7 @@ class AssessmentControllerTest : IntegrationTest() {
 
       val assessmentEpisode = webTestClient.post().uri("/assessments/$assessmentUuid/complete")
         .header(RequestData.USER_AREA_HEADER_NAME, "WWS")
-        .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
+        .headers(setAuthorisation(fullName = "NEW USER", roles = listOf("ROLE_PROBATION")))
         .exchange()
         .expectStatus().isOk
         .expectBody<AssessmentEpisodeDto>()
@@ -508,6 +512,7 @@ class AssessmentControllerTest : IntegrationTest() {
         .responseBody
       assertThat(assessmentEpisode?.assessmentUuid).isEqualTo(assessmentUuid)
       assertThat(assessmentEpisode?.ended).isEqualToIgnoringMinutes(LocalDateTime.now())
+      assertThat(assessmentEpisode?.userFullName).isEqualTo("NEW USER")
       assertThat(assessmentEpisode?.predictors).isEqualTo(
         listOf(
           PredictorScoresDto(

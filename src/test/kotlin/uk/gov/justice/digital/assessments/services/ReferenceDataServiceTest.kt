@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.OASysMappingEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
@@ -34,6 +35,7 @@ private val episode = AssessmentEpisodeEntity(
   oasysSetPk = 123456,
   assessmentSchemaCode = AssessmentSchemaCode.ROSH,
   createdDate = LocalDateTime.now(),
+  author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
 )
 private val assessment = AssessmentEntity(episodes = mutableListOf(episode))
 private val referenceDataElement = RefElementDto("code", "short description", "long description")

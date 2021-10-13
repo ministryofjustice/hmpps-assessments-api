@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.OasysAssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
@@ -28,6 +29,7 @@ class AssessmentUpdateServiceTablesTest {
   private val assessmentSchemaService: AssessmentSchemaService = mockk()
   private val oasysAssessmentUpdateService: OasysAssessmentUpdateService = mockk()
   private val assessmentService: AssessmentService = mockk()
+  private val authorService: AuthorService = mockk()
 
   private val assessmentUpdateService = AssessmentUpdateService(
     assessmentRepository,
@@ -36,6 +38,7 @@ class AssessmentUpdateServiceTablesTest {
     riskPredictorsService,
     oasysAssessmentUpdateService,
     assessmentService,
+    authorService
   )
 
   private val tableName = "test_table"
@@ -60,7 +63,8 @@ class AssessmentUpdateServiceTablesTest {
   private val assessmentEpisode = AssessmentEpisodeEntity(
     episodeId = 1L,
     episodeUuid = episodeUuid,
-    assessmentSchemaCode = AssessmentSchemaCode.ROSH
+    assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+    author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
   )
 
   @BeforeEach
@@ -174,7 +178,8 @@ class AssessmentUpdateServiceTablesTest {
             "second_question" to listOf("second_answer"),
           )
         )
-      )
+      ),
+      author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
     )
 
     val requestBody = UpdateAssessmentEpisodeDto(
@@ -211,6 +216,7 @@ class AssessmentUpdateServiceTablesTest {
       episodeId = 1L,
       episodeUuid = episodeUuid,
       assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+      author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
       tables = mutableMapOf(
         tableName to mutableListOf(
           mapOf(
@@ -254,6 +260,7 @@ class AssessmentUpdateServiceTablesTest {
       episodeId = 1L,
       episodeUuid = episodeUuid,
       assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+      author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
       tables = mutableMapOf(
         tableName to mutableListOf(
           mapOf(
@@ -300,6 +307,7 @@ class AssessmentUpdateServiceTablesTest {
       episodeId = 1L,
       episodeUuid = episodeUuid,
       assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+      author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
       tables = mutableMapOf(
         tableName to mutableListOf(
           mapOf(

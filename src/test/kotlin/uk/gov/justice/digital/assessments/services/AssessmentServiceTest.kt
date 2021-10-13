@@ -13,12 +13,14 @@ import uk.gov.justice.digital.assessments.api.OffenceDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.OffenceEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerSchemaGroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
+import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AuthorRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRepository
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
@@ -31,6 +33,7 @@ import java.util.UUID
 class AssessmentServiceTest {
   private val assessmentRepository: AssessmentRepository = mockk()
   private val subjectRepository: SubjectRepository = mockk()
+  private val authorService: AuthorService = mockk()
   private val questionService: QuestionService = mockk()
   private val courtCaseRestClient: CourtCaseRestClient = mockk()
   private val episodeService: EpisodeService = mockk()
@@ -40,6 +43,7 @@ class AssessmentServiceTest {
   private val assessmentsService = AssessmentService(
     assessmentRepository,
     subjectRepository,
+    authorService,
     questionService,
     episodeService,
     courtCaseRestClient,
@@ -83,11 +87,14 @@ class AssessmentServiceTest {
       every { offenderService.validateUserAccess(crn) } returns mockk()
       every { assessment.assessmentId } returns 0
       val episodeUuid1 = UUID.randomUUID()
+      val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
+      every { authorService.getOrCreateAuthor() } returns author
       every {
         assessment.newEpisode(
           "Change of Circs",
           assessmentSchemaCode = assessmentSchemaCode,
-          offence = any()
+          offence = any(),
+          author = author
         )
       } returns AssessmentEpisodeEntity(
         episodeId = episodeId1,
@@ -101,7 +108,8 @@ class AssessmentServiceTest {
           offenceSubCode = offenceSubCode,
           subCodeDescription = subCodeDescription,
           sentenceDate = LocalDate.of(2000, 1, 1)
-        )
+        ),
+        author = author,
       )
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
       every { assessment.subject } returns SubjectEntity(crn = crn, dateOfBirth = LocalDate.now())
@@ -133,14 +141,22 @@ class AssessmentServiceTest {
             episodeId = episodeId1,
             changeReason = "Change of Circs 1",
             createdDate = LocalDateTime.now(),
-            assessmentSchemaCode = AssessmentSchemaCode.ROSH
-
+            assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+            author = AuthorEntity(
+              userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"
+            ),
           ),
           AssessmentEpisodeEntity(
             episodeId = episodeId2,
             changeReason = "Change of Circs 2",
             createdDate = LocalDateTime.now(),
-            assessmentSchemaCode = AssessmentSchemaCode.ROSH
+            assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+            author = AuthorEntity(
+              userId = "1",
+              userName = "USER",
+              userAuthSource = "source",
+              userFullName = "full name"
+            ),
           )
         )
       )
@@ -172,14 +188,26 @@ class AssessmentServiceTest {
             changeReason = "Change of Circs 1",
             createdDate = LocalDateTime.now(),
             endDate = LocalDateTime.now().minusDays(1),
-            assessmentSchemaCode = AssessmentSchemaCode.ROSH
+            assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+            author = AuthorEntity(
+              userId = "1",
+              userName = "USER",
+              userAuthSource = "source",
+              userFullName = "full name"
+            ),
           ),
           AssessmentEpisodeEntity(
             episodeId = episodeId2,
             episodeUuid = episodeUuid2,
             changeReason = "Change of Circs 2",
             createdDate = LocalDateTime.now(),
-            assessmentSchemaCode = AssessmentSchemaCode.ROSH
+            assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+            author = AuthorEntity(
+              userId = "1",
+              userName = "USER",
+              userAuthSource = "source",
+              userFullName = "full name"
+            ),
           )
         )
       )
@@ -223,13 +251,25 @@ class AssessmentServiceTest {
             episodeId = episodeId1,
             answers = mutableMapOf(questionCode1 to listOf("YES")),
             createdDate = LocalDateTime.now(),
-            assessmentSchemaCode = AssessmentSchemaCode.ROSH
+            assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+            author = AuthorEntity(
+              userId = "1",
+              userName = "USER",
+              userAuthSource = "source",
+              userFullName = "full name"
+            ),
           ),
           AssessmentEpisodeEntity(
             episodeId = episodeId2,
             answers = mutableMapOf(questionCode2 to listOf("NO")),
             createdDate = LocalDateTime.now(),
-            assessmentSchemaCode = AssessmentSchemaCode.ROSH
+            assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+            author = AuthorEntity(
+              userId = "1",
+              userName = "USER",
+              userAuthSource = "source",
+              userFullName = "full name"
+            ),
           )
         )
       )
@@ -256,7 +296,13 @@ class AssessmentServiceTest {
               questionCode1 to listOf("YES")
             ),
             createdDate = LocalDateTime.now(),
-            assessmentSchemaCode = AssessmentSchemaCode.ROSH
+            assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+            author = AuthorEntity(
+              userId = "1",
+              userName = "USER",
+              userAuthSource = "source",
+              userFullName = "full name"
+            ),
           ),
           AssessmentEpisodeEntity(
             episodeId = episodeId3,
@@ -265,7 +311,13 @@ class AssessmentServiceTest {
               questionCode2 to listOf("MAYBE")
             ),
             createdDate = LocalDateTime.now(),
-            assessmentSchemaCode = AssessmentSchemaCode.ROSH
+            assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+            author = AuthorEntity(
+              userId = "1",
+              userName = "USER",
+              userAuthSource = "source",
+              userFullName = "full name"
+            ),
           ),
           AssessmentEpisodeEntity(
             episodeId = episodeId2,
@@ -274,7 +326,13 @@ class AssessmentServiceTest {
               questionCode2 to listOf("NO")
             ),
             createdDate = LocalDateTime.now(),
-            assessmentSchemaCode = AssessmentSchemaCode.ROSH
+            assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+            author = AuthorEntity(
+              userId = "1",
+              userName = "USER",
+              userAuthSource = "source",
+              userFullName = "full name"
+            ),
           ),
         )
       )
@@ -297,7 +355,13 @@ class AssessmentServiceTest {
               questionCode1 to listOf("YES")
             ),
             createdDate = LocalDateTime.now(),
-            assessmentSchemaCode = AssessmentSchemaCode.ROSH
+            assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+            author = AuthorEntity(
+              userId = "1",
+              userName = "USER",
+              userAuthSource = "source",
+              userFullName = "full name"
+            ),
           ),
           AssessmentEpisodeEntity(
             episodeId = episodeId3,
@@ -306,7 +370,13 @@ class AssessmentServiceTest {
               questionCode2 to listOf("NO")
             ),
             createdDate = LocalDateTime.now(),
-            assessmentSchemaCode = AssessmentSchemaCode.ROSH
+            assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+            author = AuthorEntity(
+              userId = "1",
+              userName = "USER",
+              userAuthSource = "source",
+              userFullName = "full name"
+            ),
           ),
           AssessmentEpisodeEntity(
             episodeId = episodeId2,
@@ -315,7 +385,13 @@ class AssessmentServiceTest {
               questionCode2 to listOf("MAYBE")
             ),
             createdDate = LocalDateTime.now(),
-            assessmentSchemaCode = AssessmentSchemaCode.ROSH
+            assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+            author = AuthorEntity(
+              userId = "1",
+              userName = "USER",
+              userAuthSource = "source",
+              userFullName = "full name"
+            ),
           ),
         )
       )
@@ -340,7 +416,13 @@ class AssessmentServiceTest {
               questionCode3 to listOf("free text")
             ),
             createdDate = LocalDateTime.now(),
-            assessmentSchemaCode = AssessmentSchemaCode.ROSH
+            assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+            author = AuthorEntity(
+              userId = "1",
+              userName = "USER",
+              userAuthSource = "source",
+              userFullName = "full name"
+            ),
           )
         )
       )
@@ -365,7 +447,13 @@ class AssessmentServiceTest {
               questionCode1 to listOf("NO")
             ),
             createdDate = LocalDateTime.now(),
-            assessmentSchemaCode = AssessmentSchemaCode.ROSH
+            assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+            author = AuthorEntity(
+              userId = "1",
+              userName = "USER",
+              userAuthSource = "source",
+              userFullName = "full name"
+            ),
           )
         )
       )

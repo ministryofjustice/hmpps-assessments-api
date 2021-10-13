@@ -24,6 +24,8 @@ class RequestData(excludeUris: String?) : HandlerInterceptor {
     MDC.clear()
     MDC.put(USER_NAME_HEADER, initialiseUserName(request))
     MDC.put(USER_ID_HEADER, initialiseUserId(request))
+    MDC.put(USER_AUTH_SOURCE_HEADER, initialiseAuthSource(request))
+    MDC.put(USER_FULL_NAME_HEADER, initialiseFullName(request))
     MDC.put(USER_AREA_HEADER, request.getHeader(USER_AREA_HEADER_NAME))
 
     if (excludeUriRegex.matcher(request.requestURI).matches()) {
@@ -58,7 +60,8 @@ class RequestData(excludeUris: String?) : HandlerInterceptor {
   }
 
   private fun initialiseUserName(request: HttpServletRequest): String? {
-    val userName: String? = if (request.userPrincipal != null) request.userPrincipal.name else null
+    val userName: String? =
+      if (request.userPrincipal != null) (request.userPrincipal as AuthAwareAuthenticationToken).principal.userName else null
     return if (userName.isNullOrEmpty()) null else userName
   }
 
@@ -68,12 +71,26 @@ class RequestData(excludeUris: String?) : HandlerInterceptor {
     return if (userId.isNullOrEmpty()) null else userId
   }
 
+  private fun initialiseFullName(request: HttpServletRequest): String? {
+    val userName: String? =
+      if (request.userPrincipal != null) (request.userPrincipal as AuthAwareAuthenticationToken).principal.name else null
+    return if (userName.isNullOrEmpty()) null else userName
+  }
+
+  private fun initialiseAuthSource(request: HttpServletRequest): String? {
+    val authSource: String? =
+      if (request.userPrincipal != null) (request.userPrincipal as AuthAwareAuthenticationToken).principal.authSource else null
+    return if (authSource.isNullOrEmpty()) null else authSource
+  }
+
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
     const val SKIP_LOGGING = "skipLogging"
     const val REQUEST_DURATION = "duration"
     const val RESPONSE_STATUS = "status"
     const val USER_NAME_HEADER = "userName"
+    const val USER_AUTH_SOURCE_HEADER = "authSource"
+    const val USER_FULL_NAME_HEADER = "userFullName"
     const val USER_ID_HEADER = "userId"
     const val USER_AREA_HEADER = "userArea"
     const val USER_AREA_HEADER_NAME = "x-user-area"
@@ -89,6 +106,14 @@ class RequestData(excludeUris: String?) : HandlerInterceptor {
 
     fun getUserName(): String {
       return MDC.get(USER_NAME_HEADER) ?: throw UserIsMandatoryException("User Name is mandatory to access this method")
+    }
+
+    fun getUserFullName(): String? {
+      return MDC.get(USER_FULL_NAME_HEADER)
+    }
+
+    fun getUserAuthSource(): String? {
+      return MDC.get(USER_AUTH_SOURCE_HEADER)
     }
   }
 }

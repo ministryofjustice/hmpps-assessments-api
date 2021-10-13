@@ -9,6 +9,7 @@ import uk.gov.justice.digital.assessments.api.OasysAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRepository
 import java.time.LocalDate
@@ -29,14 +30,16 @@ class OasysAssessmentServiceTest {
       changeReason = "Change of Circs 2",
       createdDate = LocalDateTime.now(),
       endDate = LocalDateTime.now(),
-      assessmentSchemaCode = AssessmentSchemaCode.ROSH
+      assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+      author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
     )
     val episode1 = AssessmentEpisodeEntity(
       episodeId = 456,
       changeReason = "Change of Circs 1",
       createdDate = LocalDateTime.now().minusDays(1),
       endDate = LocalDateTime.now().minusDays(1),
-      assessmentSchemaCode = AssessmentSchemaCode.ROSH
+      assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+      author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
     )
     val assessment = AssessmentEntity(
       assessmentId = 1232,

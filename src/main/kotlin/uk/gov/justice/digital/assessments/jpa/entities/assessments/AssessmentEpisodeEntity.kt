@@ -47,8 +47,9 @@ data class AssessmentEpisodeEntity(
   @Column(name = "oasys_set_pk")
   val oasysSetPk: Long? = null,
 
-  @Column(name = "user_id")
-  val userId: String? = null,
+  @ManyToOne(cascade = [CascadeType.ALL])
+  @JoinColumn(name = "author_uuid", referencedColumnName = "author_uuid")
+  var author: AuthorEntity,
 
   @Column(name = "created_date")
   val createdDate: LocalDateTime = LocalDateTime.now(),

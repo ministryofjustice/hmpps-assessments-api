@@ -15,6 +15,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.Answers
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerSchemaGroupEntity
@@ -45,6 +46,7 @@ class AssessmentUpdateServiceOASysTest {
   private val assessmentSchemaService: AssessmentSchemaService = mockk()
   private val oasysAssessmentUpdateService: OasysAssessmentUpdateService = mockk()
   private val assessmentService: AssessmentService = mockk()
+  private val authorService: AuthorService = mockk()
 
   private val assessmentsUpdateService = AssessmentUpdateService(
     assessmentRepository,
@@ -53,6 +55,7 @@ class AssessmentUpdateServiceOASysTest {
     riskPredictorsService,
     oasysAssessmentUpdateService,
     assessmentService,
+    authorService
   )
 
   private val assessmentId = 1L
@@ -129,7 +132,8 @@ class AssessmentUpdateServiceOASysTest {
     val episode = AssessmentEpisodeEntity(
       answers = answers,
       createdDate = LocalDateTime.now(),
-      assessmentSchemaCode = AssessmentSchemaCode.ROSH
+      assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+      author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
     )
     val questions = QuestionSchemaEntities(
       listOf(
@@ -214,6 +218,7 @@ class AssessmentUpdateServiceOASysTest {
         createdDate = LocalDateTime.now(),
         assessmentSchemaCode = AssessmentSchemaCode.ROSH,
         tables = tables,
+        author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
       )
       val oasysAnswers = OasysAnswers.from(episode, testMapper)
 
@@ -253,6 +258,7 @@ class AssessmentUpdateServiceOASysTest {
         createdDate = LocalDateTime.now(),
         assessmentSchemaCode = AssessmentSchemaCode.ROSH,
         tables = tables,
+        author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
       )
 
       val oasysAnswers = OasysAnswers.from(episode, testMapper)
@@ -297,6 +303,7 @@ class AssessmentUpdateServiceOASysTest {
         createdDate = LocalDateTime.now(),
         assessmentSchemaCode = AssessmentSchemaCode.ROSH,
         tables = tables,
+        author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
       )
 
       val oasysAnswers = OasysAnswers.from(episode, testMapper)
@@ -330,7 +337,8 @@ class AssessmentUpdateServiceOASysTest {
       assessmentSchemaCode = AssessmentSchemaCode.ROSH,
       createdDate = LocalDateTime.now(),
       oasysSetPk = oasysSetPk,
-      assessment = assessment
+      assessment = assessment,
+      author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
     )
 
     every {
@@ -367,6 +375,9 @@ class AssessmentUpdateServiceOASysTest {
     } returns oasysError
     // Christ, what a lot of set up
 
+    val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
+    every { authorService.getOrCreateAuthor() } returns author
+
     // Apply the update
     val updatedAnswers = UpdateAssessmentEpisodeDto(
       mapOf(existingQuestionCode to listOf("fruit loops", "custard"))
@@ -401,6 +412,8 @@ class AssessmentUpdateServiceOASysTest {
     } returns AssessmentEpisodeUpdateErrors()
     every { questionService.getAllQuestions() } returns setupQuestionCodes()
     every { assessmentRepository.save(any()) } returns mockk()
+    val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
+    every { authorService.getOrCreateAuthor() } returns author
 
     val updatedEpisode = assessmentsUpdateService.updateEpisode(assessmentEpisode, update)
 
@@ -517,7 +530,8 @@ class AssessmentUpdateServiceOASysTest {
         assessmentSchemaCode = AssessmentSchemaCode.ROSH,
         changeReason = "Change of Circs 2",
         oasysSetPk = 7777,
-        answers = answers
+        answers = answers,
+        author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
       )
     )
 
@@ -544,7 +558,8 @@ class AssessmentUpdateServiceOASysTest {
           dateOfBirth = LocalDate.of(1989, 1, 1),
           crn = "X1345"
         )
-      )
+      ),
+      author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
     )
   }
 }

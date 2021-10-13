@@ -89,10 +89,12 @@ abstract class IntegrationTest {
 
   internal fun setAuthorisation(
     user: String = "offender-assessment-api",
+    fullName: String = "Full Name",
     roles: List<String> = listOf("ROLE_PROBATION")
   ): (HttpHeaders) -> Unit {
     val token = jwtHelper.createJwt(
       subject = user,
+      fullName = fullName,
       scope = listOf("read"),
       expiryTime = Duration.ofHours(1L),
       roles = roles
