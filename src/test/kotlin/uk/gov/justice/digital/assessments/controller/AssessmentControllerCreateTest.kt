@@ -176,6 +176,28 @@ class AssessmentControllerCreateTest : IntegrationTest() {
     }
 
     @Test
+    fun `creating a new UPW assessment from crn and delius event id returns assessment`() {
+
+      val dto = CreateAssessmentDto(
+        crn = crn,
+        deliusEventId = eventID,
+        assessmentSchemaCode = AssessmentSchemaCode.UPW
+      )
+      val assessment = webTestClient.post().uri("/assessments")
+        .bodyValue(dto)
+        .header(RequestData.USER_AREA_HEADER_NAME, "WWS")
+        .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
+        .exchange()
+        .expectStatus().isOk
+        .expectBody<AssessmentDto>()
+        .returnResult()
+        .responseBody
+
+      assertThat(assessment?.assessmentUuid).isNotNull
+      assertThat(assessment?.createdDate).isEqualToIgnoringMinutes(LocalDateTime.now())
+    }
+
+    @Test
     fun `creating a new assessment from crn and delius event id returns assessment`() {
 
       val dto = CreateAssessmentDto(

@@ -7,15 +7,19 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
+import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
+import uk.gov.justice.digital.assessments.services.dto.ExternalSource
 import uk.gov.justice.digital.assessments.services.dto.ExternalSourceQuestionSchemaDto
+import uk.gov.justice.digital.assessments.services.exceptions.CrnIsMandatoryException
 import java.lang.StringBuilder
 
 @Service
 @Transactional("refDataTransactionManager")
 class EpisodeService(
   private val questionService: QuestionService,
-  private val courtCaseRestClient: CourtCaseRestClient
+  private val courtCaseRestClient: CourtCaseRestClient,
+  private val communityApiRestClient: CommunityApiRestClient,
 ) {
   fun prepopulate(
     episode: AssessmentEpisodeEntity,
@@ -59,7 +63,8 @@ class EpisodeService(
   private fun loadSource(episode: AssessmentEpisodeEntity, sourceName: String?): JsonObject? {
     try {
       val rawJson = when (sourceName) {
-        "COURT" -> loadFromCourtCase(episode)
+        ExternalSource.COURT.name -> loadFromCourtCase(episode)
+        ExternalSource.DELIUS.name -> loadFromDelius(episode)
         else -> return null
       }
       return Parser.default().parse(StringBuilder(rawJson)) as JsonObject
@@ -69,9 +74,14 @@ class EpisodeService(
   }
 
   private fun loadFromCourtCase(episode: AssessmentEpisodeEntity): String? {
-    if (episode.offence?.source != "COURT") return null
+    if (episode.offence?.source != ExternalSource.COURT.name) return null
     val (courtCode, caseNumber) = episode.offence?.sourceId!!.split('|')
     return courtCaseRestClient.getCourtCaseJson(courtCode, caseNumber)
+  }
+
+  private fun loadFromDelius(episode: AssessmentEpisodeEntity): String? {
+    val crn = episode?.assessment?.subject?.crn ?: throw CrnIsMandatoryException("Crn not found for episode ${episode.episodeUuid}")
+    return communityApiRestClient.getOffenderJson(crn)
   }
 
   private fun answerFormat(rawAnswer: String, format: String?): String {

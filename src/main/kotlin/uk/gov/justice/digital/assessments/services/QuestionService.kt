@@ -226,13 +226,16 @@ class QuestionSchemaEntities(
   operator fun get(questionCode: String) = questions[questionCode]
 
   fun withExternalSource(assessmentSchemaCode: AssessmentSchemaCode): List<ExternalSourceQuestionSchemaDto> {
-    return questions.values.filter { !it.externalSources.isEmpty() }.map { it.toQuestionSchemaDto(assessmentSchemaCode) }
+    return questions.values
+      .filter { !it.externalSources.isEmpty() }
+      .filter { it.externalSources.any { source -> source.assessmentSchemaCode == assessmentSchemaCode } }
+      .map { it.toQuestionSchemaDto(assessmentSchemaCode) }
   }
 
   private fun QuestionSchemaEntity.toQuestionSchemaDto(assessmentSchemaCode: AssessmentSchemaCode): ExternalSourceQuestionSchemaDto {
     val source = this.externalSources.filter { it.assessmentSchemaCode == assessmentSchemaCode }
     if (source.size != 1) throw MultipleExternalSourcesException("Multiple External sources assigned to the same question ${this.questionCode} and assessment code $assessmentSchemaCode")
-    val externalSourceForAssessment = this.externalSources.first()
+    val externalSourceForAssessment = source.first()
     return ExternalSourceQuestionSchemaDto(
       this.questionCode,
       externalSourceForAssessment.externalSource,
