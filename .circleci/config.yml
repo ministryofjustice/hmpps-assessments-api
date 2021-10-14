@@ -11,7 +11,7 @@ parameters:
 executors:
   java:
     docker:
-      - image: circleci/openjdk:16-jdk
+      - image: circleci/openjdk:16.0
         environment:
           _JAVA_OPTIONS: -Xmx1024m -XX:ParallelGCThreads=2 -XX:ConcGCThreads=2 -XX:ParallelGCThreads=2 -Djava.util.concurrent.ForkJoinPool.common.parallelism=2 -Dorg.gradle.daemon=false
       - image: circleci/redis:latest
