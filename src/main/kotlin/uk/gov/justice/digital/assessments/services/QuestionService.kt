@@ -10,6 +10,7 @@ import uk.gov.justice.digital.assessments.api.GroupSummaryDto
 import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
 import uk.gov.justice.digital.assessments.api.QuestionSchemaDto
 import uk.gov.justice.digital.assessments.api.TableQuestionDto
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.GroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionGroupEntity
@@ -19,7 +20,9 @@ import uk.gov.justice.digital.assessments.jpa.repositories.refdata.GroupReposito
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.OASysMappingRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.QuestionGroupRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.QuestionSchemaRepository
+import uk.gov.justice.digital.assessments.services.dto.ExternalSourceQuestionSchemaDto
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
+import uk.gov.justice.digital.assessments.services.exceptions.MultipleExternalSourcesException
 import java.util.UUID
 
 @Service
@@ -64,7 +67,9 @@ class QuestionService(
           val questionSchema = getGroupQuestion(it, dependencies)
           listOf(questionSchema)
         }
-        "group" -> { flattenQuestionsForGroup(it.contentUuid, dependencies) }
+        "group" -> {
+          flattenQuestionsForGroup(it.contentUuid, dependencies)
+        }
         else -> emptyList()
       }
     }
@@ -220,8 +225,20 @@ class QuestionSchemaEntities(
 
   operator fun get(questionCode: String) = questions[questionCode]
 
-  fun withExternalSource(): List<QuestionSchemaEntity> {
-    return questions.values.filter { it.externalSource != null }
+  fun withExternalSource(assessmentSchemaCode: AssessmentSchemaCode): List<ExternalSourceQuestionSchemaDto> {
+    return questions.values.filter { !it.externalSources.isEmpty() }.map { it.toQuestionSchemaDto(assessmentSchemaCode) }
+  }
+
+  private fun QuestionSchemaEntity.toQuestionSchemaDto(assessmentSchemaCode: AssessmentSchemaCode): ExternalSourceQuestionSchemaDto {
+    val source = this.externalSources.filter { it.assessmentSchemaCode == assessmentSchemaCode }
+    if (source.size != 1) throw MultipleExternalSourcesException("Multiple External sources assigned to the same question ${this.questionCode} and assessment code $assessmentSchemaCode")
+    val externalSourceForAssessment = this.externalSources.first()
+    return ExternalSourceQuestionSchemaDto(
+      this.questionCode,
+      externalSourceForAssessment.externalSource,
+      externalSourceForAssessment.jsonPathField,
+      externalSourceForAssessment.fieldType
+    )
   }
 
   fun forOasysMapping(

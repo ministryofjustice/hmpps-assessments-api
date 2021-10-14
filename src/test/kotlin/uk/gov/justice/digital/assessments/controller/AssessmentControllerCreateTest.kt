@@ -33,7 +33,7 @@ import java.util.UUID
     executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
   )
 )
-@AutoConfigureWebTestClient
+@AutoConfigureWebTestClient(timeout = "3600000")
 class AssessmentControllerCreateTest : IntegrationTest() {
 
   @Nested

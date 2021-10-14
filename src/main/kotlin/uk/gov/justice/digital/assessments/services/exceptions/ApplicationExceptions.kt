@@ -19,6 +19,7 @@ class OasysAssessmentTypeMappingMissing(msg: String?) : RuntimeException(msg)
 class UserAreaHeaderIsMandatoryException(msg: String?) : RuntimeException(msg)
 class UserIsMandatoryException(msg: String?) : RuntimeException(msg)
 class PredictorCalculationException(msg: String?) : RuntimeException(msg)
+class MultipleExternalSourcesException(msg: String?) : RuntimeException(msg)
 
 class OASysUserPermissionException(
   msg: String?,

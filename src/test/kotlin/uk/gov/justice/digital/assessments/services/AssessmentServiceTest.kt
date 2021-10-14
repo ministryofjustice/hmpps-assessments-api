@@ -20,7 +20,6 @@ import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerSchemaEntit
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerSchemaGroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
-import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AuthorRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRepository
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
@@ -119,7 +118,7 @@ class AssessmentServiceTest {
         offenceSubCode = offenceSubCode,
         subCodeDescription = subCodeDescription
       )
-      every { episodeService.prepopulate(any()) } returnsArgument 0
+      every { episodeService.prepopulate(any(), assessmentSchemaCode) } returnsArgument 0
 
       val episodeDto = assessmentsService.createNewEpisode(
         assessmentUuid,
