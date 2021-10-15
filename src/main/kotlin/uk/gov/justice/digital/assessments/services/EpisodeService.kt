@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.assessments.services
 
+import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import com.beust.klaxon.lookup
@@ -29,10 +30,9 @@ class EpisodeService(
     if (questionsToPopulate.isEmpty())
       return episode
 
-    val sources = questionsToPopulate.groupBy { it ->
-      it.externalSource
-    }
-    sources.forEach { prepopulateFromSource(episode, it.key, it.value) }
+    questionsToPopulate
+      .groupBy { it.externalSource }
+      .forEach { prepopulateFromSource(episode, it.key, it.value) }
 
     return episode
   }
@@ -52,7 +52,8 @@ class EpisodeService(
     source: JsonObject,
     question: ExternalSourceQuestionSchemaDto
   ) {
-    val rawAnswer = source.lookup<String?>(question.jsonPathField).firstOrNull() ?: return
+    val rawAnswer = source.lookup<String>(question.jsonPathField)
+    if (rawAnswer.isEmpty()) return
 
     val answer = answerFormat(rawAnswer, question.fieldType)
     episode.answers?.let {
@@ -80,16 +81,18 @@ class EpisodeService(
   }
 
   private fun loadFromDelius(episode: AssessmentEpisodeEntity): String? {
-    val crn = episode?.assessment?.subject?.crn ?: throw CrnIsMandatoryException("Crn not found for episode ${episode.episodeUuid}")
+    val crn = episode?.assessment?.subject?.crn
+      ?: throw CrnIsMandatoryException("Crn not found for episode ${episode.episodeUuid}")
     return communityApiRestClient.getOffenderJson(crn)
   }
 
-  private fun answerFormat(rawAnswer: String, format: String?): String {
+  private fun answerFormat(rawAnswer: JsonArray<String>, format: String?): String {
     return when (format) {
-      "date" -> rawAnswer.split('T')[0]
-      "time" -> rawAnswer.split('T')[1]
-      "toUpper" -> rawAnswer.uppercase()
-      else -> rawAnswer
+      "date" -> rawAnswer.first().split('T')[0]
+      "time" -> rawAnswer.first().split('T')[1]
+      "toUpper" -> rawAnswer.first().uppercase()
+      "array" -> rawAnswer.joinToString(" ")
+      else -> rawAnswer.first()
     }
   }
 }

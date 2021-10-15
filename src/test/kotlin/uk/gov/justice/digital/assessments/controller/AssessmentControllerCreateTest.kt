@@ -176,7 +176,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
     }
 
     @Test
-    fun `creating a new UPW assessment from crn and delius event id returns assessment`() {
+    fun `creating a new UPW assessment from crn and delius event id returns assessment with prepopulated Delius answers`() {
 
       val dto = CreateAssessmentDto(
         crn = crn,
@@ -194,7 +194,8 @@ class AssessmentControllerCreateTest : IntegrationTest() {
         .responseBody
 
       assertThat(assessment?.assessmentUuid).isNotNull
-      assertThat(assessment?.createdDate).isEqualToIgnoringMinutes(LocalDateTime.now())
+      assertThat(assessment?.episodes).hasSize(1)
+      assertThat(assessment.episodes?.first()?.answers?.get("family_name")).isEqualTo(listOf("firstMiddleName secondMiddleName"))
     }
 
     @Test

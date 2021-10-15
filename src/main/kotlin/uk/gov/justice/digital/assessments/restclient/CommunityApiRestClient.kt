@@ -25,11 +25,11 @@ class CommunityApiRestClient {
   internal lateinit var webClient: AuthenticatingRestClient
 
   fun getOffender(crn: String): CommunityOffenderDto? {
-    return getOffender(crn, CommunityOffenderDto::class.java);
+    return getOffender(crn, CommunityOffenderDto::class.java)
   }
 
   fun getOffenderJson(crn: String): String? {
-    return getOffender(crn, String::class.java);
+    return getOffender(crn, String::class.java)
   }
 
   private fun <T> getOffender(crn: String, elementClass: Class<T>): T? {

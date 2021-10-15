@@ -237,7 +237,7 @@ class QuestionSchemaEntities(
     if (source.size != 1) throw MultipleExternalSourcesException("Multiple External sources assigned to the same question ${this.questionCode} and assessment code $assessmentSchemaCode")
     val externalSourceForAssessment = source.first()
     return ExternalSourceQuestionSchemaDto(
-      this.questionCode,
+      externalSourceForAssessment.questionSchema.questionCode,
       externalSourceForAssessment.externalSource,
       externalSourceForAssessment.jsonPathField,
       externalSourceForAssessment.fieldType

@@ -40,6 +40,6 @@ class ExternalSourceQuestionMappingEntity(
   val fieldType: String,
 
   @ManyToOne
-  @JoinColumn(name = "question_schema_uuid", referencedColumnName = "question_schema_uuid")
-  val questionSchema: QuestionSchemaEntity? = null,
+  @JoinColumn(name = "question_code", referencedColumnName = "question_code")
+  val questionSchema: QuestionSchemaEntity,
 ) : Serializable
