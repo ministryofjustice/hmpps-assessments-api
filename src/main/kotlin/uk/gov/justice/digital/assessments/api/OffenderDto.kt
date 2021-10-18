@@ -25,7 +25,7 @@ data class OffenderDto(
         offenderId = communityOffenderDto.offenderId,
         firstName = communityOffenderDto.firstName,
         surname = communityOffenderDto.surname,
-        dateOfBirth = communityOffenderDto.dateOfBirth,
+        dateOfBirth = LocalDate.parse(communityOffenderDto.dateOfBirth),
         gender = communityOffenderDto.gender,
         crn = communityOffenderDto.otherIds?.crn,
         pncNumber = communityOffenderDto.otherIds?.pncNumber,

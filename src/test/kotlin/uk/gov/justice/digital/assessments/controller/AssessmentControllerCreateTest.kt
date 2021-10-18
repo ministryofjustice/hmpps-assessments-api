@@ -195,7 +195,14 @@ class AssessmentControllerCreateTest : IntegrationTest() {
 
       assertThat(assessment?.assessmentUuid).isNotNull
       assertThat(assessment?.episodes).hasSize(1)
-      assertThat(assessment.episodes?.first()?.answers?.get("family_name")).isEqualTo(listOf("firstMiddleName secondMiddleName"))
+      val answers = assessment.episodes?.first()?.answers
+      assertThat(answers?.get("first_name")).isEqualTo(listOf("John"))
+      assertThat(answers?.get("first_name_aliases")).isEqualTo(listOf("John", "Jonny"))
+      assertThat(answers?.get("family_name")).isEqualTo(listOf("Smith"))
+      assertThat(answers?.get("family_name_aliases")).isEqualTo(listOf("Smithy"))
+      assertThat(answers?.get("dob")).isEqualTo(listOf("1979-08-18"))
+      assertThat(answers?.get("dob_aliases")).isEqualTo(listOf("1979-09-18"))
+      assertThat(answers?.get("crn")).isEqualTo(listOf("DX5678A"))
     }
 
     @Test

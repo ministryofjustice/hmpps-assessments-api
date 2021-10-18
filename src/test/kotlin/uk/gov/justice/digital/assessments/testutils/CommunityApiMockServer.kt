@@ -10,7 +10,6 @@ import com.github.tomakehurst.wiremock.http.HttpHeaders
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.IDs
 import uk.gov.justice.digital.assessments.restclient.communityapi.OffenderAlias
-import java.time.LocalDate
 
 class CommunityApiMockServer : WireMockServer(9096) {
 
@@ -235,7 +234,7 @@ class CommunityApiMockServer : WireMockServer(9096) {
       middleNames = listOf("firstMiddleName", "secondMiddleName"),
       surname = "Smith",
       previousSurname = null,
-      dateOfBirth = LocalDate.of(1979, 8, 18),
+      dateOfBirth = "1979-08-18",
       gender = "F",
       otherIds = IDs(
         crn = crn,
@@ -244,7 +243,8 @@ class CommunityApiMockServer : WireMockServer(9096) {
       offenderAliases = listOf(
         OffenderAlias(
           firstName = "John",
-          surname = "Smithy"
+          surname = "Smithy",
+          dateOfBirth = "1979-09-18"
         ),
         OffenderAlias(
           firstName = "Jonny"

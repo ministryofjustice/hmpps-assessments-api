@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.assessments.services
 
-import com.beust.klaxon.JsonArray
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import com.beust.klaxon.lookup
@@ -52,12 +51,12 @@ class EpisodeService(
     source: JsonObject,
     question: ExternalSourceQuestionSchemaDto
   ) {
-    val rawAnswer = source.lookup<String>(question.jsonPathField)
-    if (rawAnswer.isEmpty()) return
+    val rawAnswers = source.lookup<Object>(question.jsonPathField).filterNotNull()
+    if (rawAnswers.isEmpty()) return
 
-    val answer = answerFormat(rawAnswer, question.fieldType)
+    val answer = answerFormat(rawAnswers, question.fieldType)
     episode.answers?.let {
-      it[question.questionCode] = listOf(answer)
+      it[question.questionCode] = answer
     }
   }
 
@@ -86,13 +85,13 @@ class EpisodeService(
     return communityApiRestClient.getOffenderJson(crn)
   }
 
-  private fun answerFormat(rawAnswer: JsonArray<String>, format: String?): String {
+  private fun answerFormat(rawAnswer: List<Object>, format: String?): List<String> {
     return when (format) {
-      "date" -> rawAnswer.first().split('T')[0]
-      "time" -> rawAnswer.first().split('T')[1]
-      "toUpper" -> rawAnswer.first().uppercase()
-      "array" -> rawAnswer.joinToString(" ")
-      else -> rawAnswer.first()
+      "date" -> listOf(rawAnswer.first().toString().split('T')[0])
+      "time" -> listOf(rawAnswer.first().toString().split('T')[1])
+      "toUpper" -> listOf(rawAnswer.first().toString().uppercase())
+      "array" -> rawAnswer as List<String>
+      else -> listOf(rawAnswer.first().toString())
     }
   }
 }

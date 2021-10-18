@@ -240,7 +240,7 @@ class OffenderStubServiceTest {
       middleNames = listOf("firstMiddleName", "secondMiddleName"),
       surname = "Smith",
       previousSurname = null,
-      dateOfBirth = LocalDate.of(1979, 8, 18),
+      dateOfBirth = "1979-08-18",
       gender = "F",
       otherIds = IDs(
         crn = "D001057",

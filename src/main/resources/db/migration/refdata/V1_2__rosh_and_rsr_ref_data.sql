@@ -105,6 +105,7 @@ VALUES ('1ea17930-d467-44c0-9e72-517747618acb', 'heading_personal_details', '202
 ('2d6f7515-dd03-4cfc-b365-6739e1251498', 'first_name', '2020-11-30 14:50:00', null, 'freetext', null, 'First name or names', null, 'COURT:name.forename1', null),
 ('6b04e69d-4ffd-46c6-869a-1f4005979848', 'first_name_aliases', '2020-11-30 14:50:00', null, 'freetext', null, 'First name (aliases)', null, null, null),
 ('83612e87-a57c-4b20-ab6d-76148e61a37b', 'dob', '2020-11-30 14:50:00', null, 'date', null, 'Date of birth', null, 'COURT:defendantDob:date', null),
+('592ea182-6e24-48f9-b17a-5ab874421261', 'dob_aliases', '2020-11-30 14:50:00', null, 'date', null, 'Date of birth (aliases)', null, null, null),
 ('1067e31c-99e4-4f9e-93ae-8e7ccbc07776', 'age', '2020-11-30 14:50:00', null, 'numeric', null, 'Age', null, null, null),
 ('36c52415-8790-424b-bb9b-d329e0ef4183', 'divider_1', '2020-11-30 14:50:00', null, 'presentation: divider', null, null, null, null, null),
 ('6ce641b7-5aaf-4c9f-aa0b-9c2cab42cfdb', 'heading_record_details', '2020-11-30 14:50:00', null, 'presentation: heading', null, 'Record details', null, null, null),

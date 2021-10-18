@@ -10,6 +10,7 @@ import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient
 import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
 import uk.gov.justice.digital.assessments.services.OffenderService
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
+import java.time.LocalDate
 
 const val AREA_CODE = "WWS"
 const val EVENT_ID = 1L
@@ -67,7 +68,7 @@ class OffenderStubService(
       pnc = offender?.otherIds?.pncNumber,
       forename1 = offender?.firstName,
       familyName = offender?.surname,
-      dateOfBirth = offender?.dateOfBirth,
+      dateOfBirth = offender?.dateOfBirth.let { LocalDate.parse(offender?.dateOfBirth) },
       gender = offender?.gender,
       areaCode = AREA_CODE
     )
