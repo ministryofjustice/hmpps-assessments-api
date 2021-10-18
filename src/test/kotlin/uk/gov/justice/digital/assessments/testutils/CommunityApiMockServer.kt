@@ -244,7 +244,8 @@ class CommunityApiMockServer : WireMockServer(9096) {
       offenderAliases = listOf(
         OffenderAlias(
           firstName = "John",
-          surname = "Smithy"
+          surname = "Smithy",
+          dateOfBirth = "2021-21-12"
         ),
         OffenderAlias(
           firstName = "Jonny"
