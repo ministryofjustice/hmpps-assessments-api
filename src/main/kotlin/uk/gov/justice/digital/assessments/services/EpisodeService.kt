@@ -89,9 +89,6 @@ class EpisodeService(
     return when (format) {
       "date" -> listOf(rawAnswer.first().toString().split('T')[0])
       "time" -> listOf(rawAnswer.first().toString().split('T')[1])
-      "yyyy-mm-dd" -> listOf(
-        "${rawAnswer[0]}-${rawAnswer[1]}-${rawAnswer[2]}"
-      )
       "toUpper" -> listOf(rawAnswer.first().toString().uppercase())
       "array" -> rawAnswer as List<String>
       else -> listOf(rawAnswer.first().toString())

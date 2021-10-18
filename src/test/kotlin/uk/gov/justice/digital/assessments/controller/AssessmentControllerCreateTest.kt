@@ -200,8 +200,8 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(answers?.get("first_name_aliases")).isEqualTo(listOf("John", "Jonny"))
       assertThat(answers?.get("family_name")).isEqualTo(listOf("Smith"))
       assertThat(answers?.get("family_name_aliases")).isEqualTo(listOf("Smithy"))
-      assertThat(answers?.get("dob")).isEqualTo(listOf("1979-8-18"))
-      assertThat(answers?.get("dob_aliases")).isEqualTo(listOf("2021-21-12"))
+      assertThat(answers?.get("dob")).isEqualTo(listOf("1979-08-18"))
+      assertThat(answers?.get("dob_aliases")).isEqualTo(listOf("1979-09-18"))
       assertThat(answers?.get("crn")).isEqualTo(listOf("DX5678A"))
     }
 

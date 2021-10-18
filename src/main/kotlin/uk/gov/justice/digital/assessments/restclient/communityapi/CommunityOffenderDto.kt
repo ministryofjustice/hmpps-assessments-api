@@ -1,14 +1,12 @@
 package uk.gov.justice.digital.assessments.restclient.communityapi
 
-import java.time.LocalDate
-
 data class CommunityOffenderDto(
   var offenderId: Long? = null,
   val firstName: String? = null,
   val middleNames: List<String>? = null,
   val surname: String? = null,
   val previousSurname: String? = null,
-  val dateOfBirth: LocalDate,
+  val dateOfBirth: String,
   val gender: String? = null,
   val otherIds: IDs? = null,
   val offenderAliases: List<OffenderAlias>? = null
