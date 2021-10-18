@@ -216,6 +216,7 @@ class AssessmentApiRestClient {
   }
 
   fun getOffenderStubs(): List<OffenderStubDto> {
+    log.info("Client retrieving offender stubs from OASys")
     val url = "/offender/stub"
     val offenderStubs = webClient
       .get(url)
