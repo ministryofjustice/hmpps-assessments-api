@@ -101,7 +101,7 @@ class AssessmentServiceCreateTest {
         offenceSubCode = "Sub-code",
         subCodeDescription = "Sub-code description"
       )
-      every { episodeService.prepopulate(any()) } returnsArgument 0
+      every { episodeService.prepopulate(any(), assessmentSchemaCode) } returnsArgument 0
       every { subjectRepository.save(any()) } returns SubjectEntity(
         name = "name",
         pnc = "PNC",
@@ -138,7 +138,7 @@ class AssessmentServiceCreateTest {
         offenceSubCode = "Sub-code",
         subCodeDescription = "Sub-code description"
       )
-      every { episodeService.prepopulate(any()) } returnsArgument 0
+      every { episodeService.prepopulate(any(), assessmentSchemaCode) } returnsArgument 0
       every { subjectRepository.save(any()) } returns SubjectEntity(
         name = "name",
         pnc = "PNC",
@@ -244,7 +244,7 @@ class AssessmentServiceCreateTest {
         offenceSubCode = "Sub-code",
         subCodeDescription = "Sub-code description"
       )
-      every { episodeService.prepopulate(any()) } returnsArgument 0
+      every { episodeService.prepopulate(any(), assessmentSchemaCode) } returnsArgument 0
       val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
       every { authorService.getOrCreateAuthor() } returns author
 
@@ -282,7 +282,7 @@ class AssessmentServiceCreateTest {
 
       val updatedSubject = subjectEntity.copy(oasysOffenderPk = oasysOffenderPk)
       every { subjectRepository.save(updatedSubject) } returns updatedSubject
-      every { episodeService.prepopulate(any()) } returnsArgument 0
+      every { episodeService.prepopulate(any(), assessmentSchemaCode) } returnsArgument 0
       val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
       every { authorService.getOrCreateAuthor() } returns author
 

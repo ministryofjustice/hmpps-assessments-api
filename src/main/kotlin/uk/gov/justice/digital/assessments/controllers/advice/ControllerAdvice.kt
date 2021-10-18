@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
 import uk.gov.justice.digital.assessments.api.ErrorResponse
+import uk.gov.justice.digital.assessments.services.exceptions.CrnIsMandatoryException
 import uk.gov.justice.digital.assessments.services.exceptions.DuplicateOffenderRecordException
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiAuthorisationException
@@ -18,6 +19,7 @@ import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiEntityN
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiForbiddenException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiInvalidRequestException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiUnknownException
+import uk.gov.justice.digital.assessments.services.exceptions.MultipleExternalSourcesException
 import uk.gov.justice.digital.assessments.services.exceptions.OASysUserPermissionException
 import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
 import uk.gov.justice.digital.assessments.services.exceptions.UserAreaHeaderIsMandatoryException
@@ -144,6 +146,20 @@ class ControllerAdvice {
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   fun handle(e: UserAreaHeaderIsMandatoryException): ResponseEntity<ErrorResponse?> {
     log.info("UserAreaHeaderIsMandatoryException: {}", e.message)
+    return ResponseEntity(ErrorResponse(status = 400, developerMessage = e.message), HttpStatus.BAD_REQUEST)
+  }
+
+  @ExceptionHandler(MultipleExternalSourcesException::class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  fun handle(e: MultipleExternalSourcesException): ResponseEntity<ErrorResponse?> {
+    log.info("MultipleExternalSourcesException: {}", e.message)
+    return ResponseEntity(ErrorResponse(status = 400, developerMessage = e.message), HttpStatus.BAD_REQUEST)
+  }
+
+  @ExceptionHandler(CrnIsMandatoryException::class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  fun handle(e: CrnIsMandatoryException): ResponseEntity<ErrorResponse?> {
+    log.info("CrnIsMandatoryException: {}", e.message)
     return ResponseEntity(ErrorResponse(status = 400, developerMessage = e.message), HttpStatus.BAD_REQUEST)
   }
 

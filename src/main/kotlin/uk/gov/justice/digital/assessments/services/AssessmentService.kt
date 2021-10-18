@@ -23,6 +23,7 @@ import uk.gov.justice.digital.assessments.jpa.repositories.assessments.Assessmen
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRepository
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import uk.gov.justice.digital.assessments.restclient.courtcaseapi.CourtCase
+import uk.gov.justice.digital.assessments.services.dto.ExternalSource
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import java.time.LocalDateTime
 import java.util.UUID
@@ -40,8 +41,6 @@ class AssessmentService(
 ) {
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
-    const val courtSource = "COURT"
-    const val deliusSource = "DELIUS"
   }
 
   @Transactional("assessmentsTransactionManager")
@@ -81,7 +80,7 @@ class AssessmentService(
       reason,
       assessmentSchemaCode = assessmentSchemaCode,
       crn = crn,
-      source = deliusSource,
+      source = ExternalSource.DELIUS.name,
       eventId = eventId.toString()
     )
     log.info("New episode created for assessment $assessmentUuid")
@@ -168,7 +167,7 @@ class AssessmentService(
       oasysSetPK,
       assessmentSchemaCode,
       crn,
-      deliusSource,
+      ExternalSource.DELIUS.name,
       eventId.toString()
     )
     return AssessmentDto.from(arnAssessment)
@@ -217,7 +216,7 @@ class AssessmentService(
       oasysSetPK,
       assessmentSchemaCode,
       crn,
-      courtSource,
+      ExternalSource.COURT.name,
       courtSourceId(courtCode, caseNumber)
     )
 
@@ -323,7 +322,7 @@ class AssessmentService(
     eventId: String
   ): AssessmentEpisodeEntity {
     var offence: OffenceDto? = null
-    if (source == deliusSource) {
+    if (source == ExternalSource.DELIUS.name) {
       offence = getEpisodeOffence(crn, eventId.toLong())
     }
     val author = authorService.getOrCreateAuthor()
@@ -342,7 +341,7 @@ class AssessmentService(
       ),
       author
     )
-    episodeService.prepopulate(episode)
+    episodeService.prepopulate(episode, assessmentSchemaCode)
     log.info("New episode episode with id:${episode.episodeId} and uuid:${episode.episodeUuid} created for assessment ${assessment.assessmentUuid}")
     return episode
   }
