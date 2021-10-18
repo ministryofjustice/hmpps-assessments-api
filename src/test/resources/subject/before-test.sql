@@ -1,8 +1,11 @@
 -- noinspection SqlResolveForFile
 set schema hmppsassessmentsapi;
 
-delete from assessment where true;
-delete from subject where true;
+DELETE FROM assessed_episode WHERE true;
+DELETE FROM author WHERE true;
+DELETE FROM offence WHERE true;
+DELETE FROM assessment WHERE true;
+DELETE FROM subject WHERE true;
 
 insert into subject (subject_uuid, name, pnc, crn, date_of_birth, gender, created_date) values
 ('a4e73a2c-3f1c-4f83-88b6-dd3ce1b78530', 'John Smith', 'dummy-pnc', 'dummy-crn-1', '1928-08-01', 'MALE', '2019-11-14 08:30'),

@@ -33,7 +33,7 @@ import java.util.UUID
     executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
   )
 )
-@AutoConfigureWebTestClient
+@AutoConfigureWebTestClient(timeout = "3600000")
 class AssessmentControllerCreateTest : IntegrationTest() {
 
   @Nested
@@ -173,6 +173,29 @@ class AssessmentControllerCreateTest : IntegrationTest() {
           assertThat(it.responseBody?.status).isEqualTo(403)
           assertThat(it.responseBody?.reason).isEqualTo("LAO_PERMISSION")
         }
+    }
+
+    @Test
+    fun `creating a new UPW assessment from crn and delius event id returns assessment with prepopulated Delius answers`() {
+
+      val dto = CreateAssessmentDto(
+        crn = crn,
+        deliusEventId = eventID,
+        assessmentSchemaCode = AssessmentSchemaCode.UPW
+      )
+      val assessment = webTestClient.post().uri("/assessments")
+        .bodyValue(dto)
+        .header(RequestData.USER_AREA_HEADER_NAME, "WWS")
+        .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
+        .exchange()
+        .expectStatus().isOk
+        .expectBody<AssessmentDto>()
+        .returnResult()
+        .responseBody
+
+      assertThat(assessment?.assessmentUuid).isNotNull
+      assertThat(assessment?.episodes).hasSize(1)
+      assertThat(assessment.episodes?.first()?.answers?.get("family_name")).isEqualTo(listOf("firstMiddleName secondMiddleName"))
     }
 
     @Test

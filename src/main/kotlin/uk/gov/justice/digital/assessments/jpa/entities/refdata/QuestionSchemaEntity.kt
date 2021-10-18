@@ -29,8 +29,8 @@ class QuestionSchemaEntity(
   @Column(name = "question_code")
   val questionCode: String,
 
-  @Column(name = "external_source")
-  val externalSource: String? = null,
+  @OneToMany(mappedBy = "questionSchema", fetch = FetchType.LAZY)
+  val externalSources: Collection<ExternalSourceQuestionMappingEntity> = emptyList(),
 
   @Column(name = "question_start")
   val questionStartDate: LocalDateTime? = null,

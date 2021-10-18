@@ -23,7 +23,7 @@ class QuestionSchemaDtoTest {
       1L,
       UUID.randomUUID(),
       "SupervisionId",
-      null,
+      emptyList(),
       LocalDateTime.of(2019, 8, 1, 8, 0),
       LocalDateTime.of(2020, 8, 1, 8, 0),
       "Freetext",

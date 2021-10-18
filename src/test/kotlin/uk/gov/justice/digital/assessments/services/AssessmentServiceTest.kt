@@ -118,7 +118,7 @@ class AssessmentServiceTest {
         offenceSubCode = offenceSubCode,
         subCodeDescription = subCodeDescription
       )
-      every { episodeService.prepopulate(any()) } returnsArgument 0
+      every { episodeService.prepopulate(any(), assessmentSchemaCode) } returnsArgument 0
 
       val episodeDto = assessmentsService.createNewEpisode(
         assessmentUuid,

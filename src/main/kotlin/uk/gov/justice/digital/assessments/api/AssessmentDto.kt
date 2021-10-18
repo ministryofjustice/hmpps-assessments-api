@@ -18,7 +18,10 @@ data class AssessmentDto(
   val completedDate: LocalDateTime? = null,
 
   @Schema(description = "subject")
-  val subject: SubjectDto? = null
+  val subject: SubjectDto? = null,
+
+  @Schema(description = "assessment episodes")
+  val episodes: Collection<AssessmentEpisodeDto>? = emptyList()
 
 ) {
 
@@ -29,7 +32,8 @@ data class AssessmentDto(
         assessment?.assessmentUuid,
         assessment?.createdDate,
         assessment?.completedDate,
-        assessment?.subject.toSubjectDto()
+        assessment?.subject.toSubjectDto(),
+        assessment?.let { AssessmentEpisodeDto.from(it.episodes) }
       )
     }
 

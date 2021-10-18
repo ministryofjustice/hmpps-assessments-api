@@ -179,7 +179,7 @@ class OffenderStubServiceTest {
     return CommunityOffenderDto(
       offenderId = 101L,
       firstName = "John",
-      middleNames = null,
+      middleNames = listOf("firstMiddleName", "secondMiddleName"),
       surname = "Smith",
       previousSurname = null,
       dateOfBirth = LocalDate.of(1979, 8, 18),
