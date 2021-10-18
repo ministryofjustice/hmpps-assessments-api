@@ -71,7 +71,6 @@ VALUES ('ccd1ae9f-fcd9-41eb-88d9-d28945ed79b4', 'upw_assessment', 'Unpaid Work A
        ('667e9967-275f-4d23-bd02-7b5e3f3e1647', 'upw_cultural_info', 'Cultural or Religious adjustments', null, null, '2021-09-27 14:50:00', null),
        ('d633d6e1-e252-4c09-a21c-c8cc558bce12', 'upw_placement_preferences', 'Placement preferences', null, null, '2021-09-27 14:50:00', null),
        ('b9114d94-2500-456e-8d2e-777703dfd6bc', 'upw_placement_gender_preferences', 'Placement preferences based on gender identity', null, null, '2021-09-27 14:50:00', null),
-       ('b7b11bf3-836b-4cba-8723-f2aa08b66eab', 'upw_maturity_assessment', 'Placement preferences based on gender identity', null, null, '2021-09-27 14:50:00', null),
        ('95000412-07cb-49aa-8821-6712880e3097', 'upw_risk_section', 'Risk section', null, null, '2021-09-27 14:50:00', null),
        ('1255f7c4-81fe-494c-b269-38f7261cb68c', 'upw_risk_of_harm_community', 'Risk of harm in the community', null, null, '2021-09-27 14:50:00', null),
        ('e2106fd9-8aea-4ecb-a437-a13c1e3c6703', 'upw_managing_risk', 'Managing risk', null, null, '2021-09-27 14:50:00', null),
@@ -107,21 +106,26 @@ VALUES
 ('3fb1a17b-6657-4239-b020-512fa8f57a52', 'upw_maturity_assessment_details', '2021-09-27 14:50:00', null, 'textarea', null, 'Maturity assessment', 'What action needs to be taken to support engagement or compliance with the community payback requirement?', null, null),
 ('7f4435a1-3d39-4758-aa56-67989e54d7d2', 'upw_maturity_assessment_details_complete', '2021-09-27 14:50:00', null, 'radio', '8067ff6e-7400-4d1e-ae2a-87dee7e124ec', 'Mark this section as complete?', '', null, null),
 
+('816fc7fe-030b-47cf-9fae-a56a6216a162', 'upw_history_sexual_offending', '2021-09-27 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'History of sexual offending?', null, null, null),
+('a80651d6-1ae1-4fd4-95c6-8104f194d756', 'upw_history_sexual_offending_details', '2021-09-27 14:50:00', null, 'textarea', null, 'Give details', null, null, null),
+('08b35618-f0b6-466e-93e1-712e5e5c3f58', 'upw_poses_risk_to_children', '2021-09-27 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Individual poses a risk to children?', null, null, null),
+('a342a2fb-b5d8-410b-a6ef-f99bfe3da532', 'upw_poses_risk_to_children_details', '2021-09-27 14:50:00', null, 'textarea', null, 'Give details', null, null, null),
 ('30851ffd-90a3-430d-8239-0386076de177', 'upw_violent_offences', '2021-09-27 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Violent offences?', null, null, null),
 ('9feb81fc-3437-4762-88e1-b147db676c66', 'upw_violent_offences_details', '2021-09-27 14:50:00', null, 'textarea', null, 'Give details', null, null, null),
-('6d18c3e9-a921-4b3b-aad3-a1c1f68d51c9', 'upw_frequent_dishonesty', '2021-09-27 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Frequent Dishonesty?', null, null, null),
-('34db66d2-e95b-4ff5-b82d-d1c99fd8b80b', 'upw_frequent_dishonesty_details', '2021-09-27 14:50:00', null, 'textarea', null, 'Give details', null, null, null),
+('6d18c3e9-a921-4b3b-aad3-a1c1f68d51c9', 'upw_acquisitive_offending', '2021-09-27 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'History of acquisitive offending?', null, null, null),
+('34db66d2-e95b-4ff5-b82d-d1c99fd8b80b', 'upw_acquisitive_offending_details', '2021-09-27 14:50:00', null, 'textarea', null, 'Give details', null, null, null),
 ('2ef3e974-245e-485a-9dfb-2107fdde53a7', 'upw_sgo_identifier', '2021-09-27 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Has the individual been involved in serious group offending (SGO)?', null, null, null),
 ('3f964fd8-4677-4658-bddd-00ebeedcb932', 'upw_sgo_identifier_details', '2021-09-27 14:50:00', null, 'textarea', null, 'Give details', null, null, null),
 ('832e7462-f9db-4b01-832c-71ad21e5d70a', 'upw_control_issues', '2021-09-27 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Control issues or disruptive behaviour?', null, null, null),
 ('77451565-e9a3-47f2-880d-53f9db3e7225', 'upw_control_issues_details', '2021-09-27 14:50:00', null, 'textarea', null, 'Give details', null, null, null),
-('b446b9db-d57a-4a29-9674-37099bdf1a00', 'upw_hate_based_behaviour', '2021-09-27 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Hate-based behaviour?', 'For example, homophobic or racially motivated', null, null),
+('b446b9db-d57a-4a29-9674-37099bdf1a00', 'upw_hate_based_behaviour', '2021-09-27 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'History of hate-based attitudes or behaviours?', 'For example, homophobic or racially motivated', null, null),
 ('6ee5fa07-767d-46a5-8b56-dd05b7f21f45', 'upw_hate_based_behaviour_details', '2021-09-27 14:50:00', null, 'textarea', null, 'Give details', null, null, null),
 ('cc19e283-3ece-4f4b-af2f-c9f2b71e4947', 'upw_high_profile_person', '2021-09-27 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Is the individual vulnerable because they are a high-profile person?', 'For example, they are prominent on social media or are well-known in a particular area.', null, null),
 ('11f2b571-209d-49b0-b650-0ab7b6b0cde7', 'upw_high_profile_person_details', '2021-09-27 14:50:00', null, 'textarea', null, 'Give details', null, null, null),
-('1f72a9d5-da65-4d9e-a49e-5e1150198ee6', 'upw_additional_rosh_info', '2021-09-27 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Additional risk of harm assessment information?', '', null, null),
+('1f72a9d5-da65-4d9e-a49e-5e1150198ee6', 'upw_additional_rosh_info', '2021-09-27 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Additional risk assessment information relevant to Community Payback?', '', null, null),
 ('1fcbd1c4-1458-4bb2-a3bd-c02cc0e996dd', 'upw_additional_rosh_info_details', '2021-09-27 14:50:00', null, 'textarea', null, 'Give details', null, null, null),
 ('e457d288-aa0e-4000-8906-140bbd9d5b17', 'upw_rosh_community_complete', '2021-09-27 14:50:00', null, 'radio', '8067ff6e-7400-4d1e-ae2a-87dee7e124ec', 'Mark this section as complete?', '', null, null),
+
 ('42a18789-c039-4fe4-87f0-9943fde800ad', 'upw_location_exclusion_criteria', '2021-09-27 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Location restricted by victim exclusion criteria?', '', null, null),
 ('e3807492-5efa-4576-af84-d6d0957a6b95', 'upw_location_exclusion_criteria_details', '2021-09-27 14:50:00', null, 'textarea', null, 'Give details', null, null, null),
 ('1a6e8d30-99da-4c65-bcc6-986f0b39780a', 'upw_restricted_placement', '2021-09-27 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Close supervision or restricted placement recommended?', '', null, null),
@@ -139,6 +143,7 @@ VALUES
 ('3300e680-11c3-4069-8b38-081576553931', 'upw_alcohol_drug_issues', '2021-09-27 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Alcohol or drug issues with health and safety impact?', '', null, null),
 ('7318f4d3-068f-4e62-bbf8-cc430c096dd7', 'upw_alcohol_drug_issues_details', '2021-09-27 14:50:00', null, 'textarea', null, 'Give details', null, null, null),
 ('e8cc7779-498e-494b-8280-8cb088b3c6e9', 'upw_managing_risk_complete', '2021-09-27 14:50:00', null, 'radio', '8067ff6e-7400-4d1e-ae2a-87dee7e124ec', 'Mark this section as complete?', '', null, null),
+
 ('d35335af-4747-4842-8fbc-42ddca5bc78c', 'upw_disabilities', '2021-09-27 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Do any of the above affect the individual’s ability to engage with Community Payback?', '', null, null),
 ('c773474d-d5b1-4747-a866-b6e6bd42c96e', 'upw_disabilities_details', '2021-09-27 14:50:00', null, 'textarea', null, 'Suggest  adjustments, if known [optional]', null, null, null),
 ('69e64e83-ce81-4796-8907-84b5dfac59f3', 'upw_disabilities_complete', '2021-09-27 14:50:00', null, 'radio', '8067ff6e-7400-4d1e-ae2a-87dee7e124ec', 'Mark this section as complete?', '', null, null),
@@ -212,7 +217,7 @@ VALUES
 ('d46d6b16-6851-45fc-a4e9-28bfcadef3b0', '667e9967-275f-4d23-bd02-7b5e3f3e1647', 'group', '2bd35476-ac9b-4f15-ac7d-ea6943ccc120', 1, true, null, false),
 ('17f91134-825f-4311-b57e-bf70fad072a1', 'd633d6e1-e252-4c09-a21c-c8cc558bce12', 'group', '2bd35476-ac9b-4f15-ac7d-ea6943ccc120', 2, true, null, false),
 ('d070ae03-0c39-49e6-bb7a-c068bda7c1b4', 'b9114d94-2500-456e-8d2e-777703dfd6bc', 'group', '2bd35476-ac9b-4f15-ac7d-ea6943ccc120', 3, true, null, false),
-('52c9ef41-1931-42ae-9459-5d03877ec514', 'b7b11bf3-836b-4cba-8723-f2aa08b66eab', 'group', '2bd35476-ac9b-4f15-ac7d-ea6943ccc120', 4, true, null, false),
+
 -- Diversity sections
 ('e8ea62cc-5a36-455c-8b36-0ececd678a1a', '5cefd241-cc51-4128-a343-cb7c438a9048', 'question', '667e9967-275f-4d23-bd02-7b5e3f3e1647', 1, true, null, false),
 ('48c305cb-c7d6-439e-adfc-661f834af036', 'e7f8205b-1f2a-4578-943c-154d2a6ee11e', 'question', '667e9967-275f-4d23-bd02-7b5e3f3e1647', 2, true, null, false),
@@ -225,13 +230,14 @@ VALUES
 ('252d7687-e94d-40e5-a3b9-139d95d846d4', 'b2af0358-56fb-4e45-be76-b661ce829138', 'question', 'b9114d94-2500-456e-8d2e-777703dfd6bc', 1, true, null, false),
 ('c27531b1-0729-4cc9-9557-4475b6f3b3f2', '980f7936-682c-4174-91b6-3dcfc684c494', 'question', 'b9114d94-2500-456e-8d2e-777703dfd6bc', 2, true, null, false),
 
-('0ac554bb-cc99-473c-b7c4-b026cc5b7e35', '3fb1a17b-6657-4239-b020-512fa8f57a52', 'question', 'b7b11bf3-836b-4cba-8723-f2aa08b66eab', 1, true, null, false),
-('fa4ea30a-3549-451a-b6c5-d157f642ab3b', '7f4435a1-3d39-4758-aa56-67989e54d7d2', 'question', 'b7b11bf3-836b-4cba-8723-f2aa08b66eab', 2, true, null, false),
-
 -- Risk top sections
 ('85ede91e-95bb-4b47-b732-4b05d794a041', '1255f7c4-81fe-494c-b269-38f7261cb68c', 'group', '95000412-07cb-49aa-8821-6712880e3097', 1, true, null, false),
 ('4c02f821-a3b2-4b29-8238-4b4ed26e2108', 'e2106fd9-8aea-4ecb-a437-a13c1e3c6703', 'group', '95000412-07cb-49aa-8821-6712880e3097', 2, true, null, false),
 -- Risk sections
+('9ae10d74-46a1-454c-abe6-f5d74668cd1c', '816fc7fe-030b-47cf-9fae-a56a6216a162', 'question', '1255f7c4-81fe-494c-b269-38f7261cb68c', 1, true, null, false),
+('50c220e8-95c1-4380-8718-af9f3bac7084', 'a80651d6-1ae1-4fd4-95c6-8104f194d756', 'question', '1255f7c4-81fe-494c-b269-38f7261cb68c', 1, true, null, false),
+('22ba0af4-6b42-41d1-b084-a14100c44966', '08b35618-f0b6-466e-93e1-712e5e5c3f58', 'question', '1255f7c4-81fe-494c-b269-38f7261cb68c', 1, true, null, false),
+('57ff02c9-eb22-4045-920e-67f4b989fc84', 'a342a2fb-b5d8-410b-a6ef-f99bfe3da532', 'question', '1255f7c4-81fe-494c-b269-38f7261cb68c', 1, true, null, false),
 ('2c750777-45d0-4b96-8715-c8c20f4aa563', '30851ffd-90a3-430d-8239-0386076de177', 'question', '1255f7c4-81fe-494c-b269-38f7261cb68c', 1, true, null, false),
 ('5dd4651d-10ed-4dbe-8765-093ae2d85d09', '9feb81fc-3437-4762-88e1-b147db676c66', 'question', '1255f7c4-81fe-494c-b269-38f7261cb68c', 2, true, null, false),
 ('cda82f8a-7405-4059-8df0-e062d60ace97', '6d18c3e9-a921-4b3b-aad3-a1c1f68d51c9', 'question', '1255f7c4-81fe-494c-b269-38f7261cb68c', 3, true, null, false),
@@ -345,3 +351,4 @@ INSERT INTO question_dependency (subject_question_uuid, trigger_question_uuid, t
 VALUES
     ('e7f8205b-1f2a-4578-943c-154d2a6ee11e', '5cefd241-cc51-4128-a343-cb7c438a9048', 'YES', '2020-11-30 14:50:00', true),
     ('56da5e97-a871-4ac8-ad1e-5ca6001633d2', '4b62bf80-9801-49cd-b3da-fe8961571302', 'YES', '2020-11-30 14:50:00', true);
+
