@@ -22,6 +22,7 @@ import uk.gov.justice.digital.assessments.utils.offenderStubResource.OffenderAnd
 import uk.gov.justice.digital.assessments.utils.offenderStubResource.OffenderStubDto
 import uk.gov.justice.digital.assessments.utils.offenderStubResource.OffenderStubService
 import uk.gov.justice.digital.assessments.utils.offenderStubResource.PrimaryId
+import uk.gov.justice.digital.assessments.utils.offenderStubResource.StubAlreadyExistsException
 import java.time.LocalDate
 
 @ExtendWith(MockKExtension::class)
@@ -44,7 +45,7 @@ class OffenderStubServiceTest {
     every { offenderService.getOffence(crn, 1) } returns offenceDto()
     justRun { assessmentUpdateRestClient.createOasysOffenderStub(any()) }
 
-    val offenderOffenceDetails = offenderStubService.createStub()
+    val offenderOffenceDetails = offenderStubService.createOffenderAndOffenceStub()
 
     verify(exactly = 1) {
       assessmentUpdateRestClient.createOasysOffenderStub(
@@ -82,7 +83,64 @@ class OffenderStubServiceTest {
     every { assessmentApiRestClient.getOffenderStubs() } returns allOffenderStubs()
     every { communityApiRestClient.getPrimaryIds(0, pageSize) } returns primaryIdentifiers()
 
-    assertThrows<EntityNotFoundException> { offenderStubService.createStub() }
+    assertThrows<EntityNotFoundException> { offenderStubService.createOffenderAndOffenceStub() }
+
+    verify { assessmentUpdateRestClient wasNot Called }
+    verify(exactly = 0) { communityApiRestClient.getOffender(any()) }
+  }
+
+  @Test
+  fun `create offender stub from crn`() {
+    val crn = "newCrn"
+    every { assessmentApiRestClient.getOffenderStubs() } returns offenderStubs()
+    every { communityApiRestClient.getOffender(crn) } returns communityOffenderDto().copy(
+      otherIds = IDs(
+        crn = crn,
+        pncNumber = "A/1234560BA"
+      )
+    )
+    every { offenderService.getOffence(crn, 1) } returns offenceDto()
+    justRun { assessmentUpdateRestClient.createOasysOffenderStub(any()) }
+
+    val offenderOffenceDetails = offenderStubService.createStubFromCrn(crn)
+
+    verify(exactly = 1) {
+      assessmentUpdateRestClient.createOasysOffenderStub(
+        OffenderStubDto(
+          crn = crn,
+          pnc = "A/1234560BA",
+          familyName = "Smith",
+          forename1 = "John",
+          gender = "F",
+          dateOfBirth = LocalDate.of(1979, 8, 18),
+          areaCode = "WWS"
+        )
+      )
+    }
+    assertThat(offenderOffenceDetails).isEqualTo(
+      OffenderAndOffenceStubDto(
+        crn = crn,
+        pnc = "A/1234560BA",
+        familyName = "Smith",
+        forename1 = "John",
+        dateOfBirth = LocalDate.of(1979, 8, 18),
+        gender = "F",
+        areaCode = "WWS",
+        offenceCode = "046",
+        codeDescription = "Stealing from shops and stalls (shoplifting)",
+        offenceSubCode = "00",
+        subCodeDescription = "Stealing from shops and stalls (shoplifting)",
+        sentenceDate = LocalDate.of(2014, 8, 25)
+      )
+    )
+  }
+
+  @Test
+  fun `throws exception when offender stub already exists with CRN`() {
+    val crn = "D001022"
+    every { assessmentApiRestClient.getOffenderStubs() } returns allOffenderStubs()
+
+    assertThrows<StubAlreadyExistsException> { offenderStubService.createStubFromCrn(crn) }
 
     verify { assessmentUpdateRestClient wasNot Called }
     verify(exactly = 0) { communityApiRestClient.getOffender(any()) }
