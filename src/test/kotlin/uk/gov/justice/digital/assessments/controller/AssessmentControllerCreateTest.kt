@@ -203,6 +203,11 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(answers?.get("dob")).isEqualTo(listOf("1979-08-18"))
       assertThat(answers?.get("dob_aliases")).isEqualTo(listOf("1979-09-18"))
       assertThat(answers?.get("crn")).isEqualTo(listOf("DX5678A"))
+      assertThat(answers?.get("pnc")).isEqualTo(listOf("A/1234560BA"))
+      assertThat(answers?.get("ethnicity")).isEqualTo(listOf("Asian"))
+      assertThat(answers?.get("gender")).isEqualTo(listOf("F"))
+      assertThat(answers?.get("email_addresses")).isEqualTo(listOf("address1@gmail.com", "address2@gmail.com"))
+
     }
 
     @Test
