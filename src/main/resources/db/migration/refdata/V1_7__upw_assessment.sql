@@ -9,7 +9,8 @@ VALUES
 ('7816fe5c-3beb-46d1-b2af-4a0a8f30aca0', 'individualavailability', '2021-09-27 14:50:00', null),
 ('9fc83177-fd89-4755-89a5-69d0892cd25d', 'male-female', '2021-09-27 14:50:00', null),
 ('37943ca1-b977-410a-9e5a-75c2ab032abb', 'xs-s-m-l-xl-xxl-xxxl', '2021-09-27 14:50:00', null),
-('ffe5ecbf-1669-46c9-b40f-4ac82dba0629', '3-4-5-6-7-8-9-10-11-12-13-14', '2021-09-27 14:50:00', null)
+('ffe5ecbf-1669-46c9-b40f-4ac82dba0629', '3-4-5-6-7-8-9-10-11-12-13-14', '2021-09-27 14:50:00', null),
+('550579fe-9d3d-4130-9210-6b60ec0dec5e', 'fulltime-parttime-no', '2021-09-27 14:50:00', null)
 ;
 
 INSERT INTO answer_schema (answer_schema_uuid, answer_schema_code, answer_schema_group_uuid, answer_start, answer_end, value, text)
@@ -62,7 +63,12 @@ VALUES
 ('caec7137-e7a7-4e48-aa42-fc2ec84df89d', '11', 'ffe5ecbf-1669-46c9-b40f-4ac82dba0629', '2021-09-27 14:50:00', null, '11', 'Size 11'),
 ('8ee47349-1a3d-4b03-a802-87f43765a6af', '12', 'ffe5ecbf-1669-46c9-b40f-4ac82dba0629', '2021-09-27 14:50:00', null, '12', 'Size 12'),
 ('caf6773d-50b2-4fa5-a802-333b37298b95', '13', 'ffe5ecbf-1669-46c9-b40f-4ac82dba0629', '2021-09-27 14:50:00', null, '13', 'Size 13'),
-('90e91ab7-9919-409b-81a9-21ef4c62e2d1', '14', 'ffe5ecbf-1669-46c9-b40f-4ac82dba0629', '2021-09-27 14:50:00', null, '14', 'Size 14')
+('90e91ab7-9919-409b-81a9-21ef4c62e2d1', '14', 'ffe5ecbf-1669-46c9-b40f-4ac82dba0629', '2021-09-27 14:50:00', null, '14', 'Size 14'),
+
+
+('f606340b-8413-4012-b11d-ba3c26d02f0d', 'fulltime_education_employment', '550579fe-9d3d-4130-9210-6b60ec0dec5e', '2021-09-27 14:50:00', null, 'FULLTIME_EDUCATION_EMPLOYMENT', 'Full-time education or employment'),
+('a8a1df6a-a48b-4904-a11b-a5e179205b30', 'parttime_education_employment', '550579fe-9d3d-4130-9210-6b60ec0dec5e', '2021-09-27 14:50:00', null, 'PARTTIME_EDUCATION_EMPLOYMENT', 'Part-time education or employment'),
+('e57e81aa-f5b1-4bde-9c16-410ccc5d9391', 'no', '550579fe-9d3d-4130-9210-6b60ec0dec5e', '2021-09-27 14:50:00', null, 'NO', 'No')
 ;
 
 INSERT INTO grouping (group_uuid, group_code, heading, subheading, help_text, group_start, group_end)
@@ -171,8 +177,12 @@ VALUES
 ('bd383ed7-ba4a-42da-abc0-aacd8ff3e14f', 'upw_caring_commitments_details', '2021-09-27 14:50:00', null, 'textarea', null, 'Give details', null, null, null),
 ('7f7896f3-62b2-455a-9565-08538085ced5', 'upw_caring_commitments_complete', '2021-09-27 14:50:00', null, 'radio', '8067ff6e-7400-4d1e-ae2a-87dee7e124ec', 'Mark this section as complete?', '', null, null),
 
-('548f23e4-7975-46bf-b801-26d1c81738f4', 'upw_reading_writing_difficulties', '2021-09-27 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Does the individual have any difficulties with reading or writing?', '', null, null),
-('0e3e35d4-2dbc-4234-8fa0-2f7d7a0f5409', 'upw_reading_writing_difficulties_details', '2021-09-27 14:50:00', null, 'textarea', null, 'Give details', null, null, null),
+('01704ebe-886e-4d66-805d-9b84e529783c', 'upw_employment_education', '2021-09-27 14:50:00', null, 'radio', '550579fe-9d3d-4130-9210-6b60ec0dec5e', 'Is the individual in employment or education?', '', null, null),
+('1bb85754-aee6-4bb7-885b-5f1d010541a5', 'upw_employment_education_details_fulltime', '2021-09-27 14:50:00', null, 'textarea', null, 'Employment or education details (working days, hours etc)', null, null, true),
+('2ac6d05f-b8a3-4cdc-9cdc-3feaa05f62d1', 'upw_employment_education_details_parttime', '2021-09-27 14:50:00', null, 'textarea', null, 'Employment or education details (working days, hours etc)', null, null, true),
+
+('548f23e4-7975-46bf-b801-26d1c81738f4', 'upw_reading_writing_difficulties', '2021-09-27 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Does the individual have any difficulties with reading, writing or numbers?', '', null, null),
+('0e3e35d4-2dbc-4234-8fa0-2f7d7a0f5409', 'upw_reading_writing_difficulties_details', '2021-09-27 14:50:00', null, 'textarea', null, 'Give details', null, null, true),
 ('594ecb57-e8f5-4cda-b0d3-05abe8e01c30', 'upw_work_skills', '2021-09-27 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Does the individual have any work skills or experience that could be used while carrying out Community Payback?', '', null, null),
 ('59236813-d351-4fe9-a150-8b9e40e11248', 'upw_work_skills_details', '2021-09-27 14:50:00', null, 'textarea', null, 'Give details', null, null, null),
 ('620e586c-5573-40b1-bf35-9df68bc97bf8', 'upw_future_work_plans', '2021-09-27 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Does the individual have future work plans that could be supported through a Community Payback placement?', 'For example: retail, gardening etc', null, null),
@@ -309,6 +319,9 @@ VALUES
 ('6ace857b-c4c7-44af-b958-583facb7bdee', '5f29f9f8-5926-4056-aa91-53369a5df9c6', 'group', '9cbfc1ad-a054-44ab-9827-fd1b429ef31d', 1, true, null, false),
 ('737d98d3-0652-489c-a34a-d7b9905ab7a8', '31520ae0-dea2-482a-9b3c-ebade83863e6', 'group', '9cbfc1ad-a054-44ab-9827-fd1b429ef31d', 2, true, null, false),
 -- Employment, education and skills information sections
+('7c80f8e0-ae58-47af-a6bd-403e026031aa', '01704ebe-886e-4d66-805d-9b84e529783c', 'question', '5f29f9f8-5926-4056-aa91-53369a5df9c6', 1, true, null, false),
+('bba3d108-b9ac-436c-a933-9ee10f984701', '1bb85754-aee6-4bb7-885b-5f1d010541a5', 'question', '5f29f9f8-5926-4056-aa91-53369a5df9c6', 1, true, null, false),
+('39c2cd02-895f-4cc0-b005-553321c03233', '2ac6d05f-b8a3-4cdc-9cdc-3feaa05f62d1', 'question', '5f29f9f8-5926-4056-aa91-53369a5df9c6', 1, true, null, false),
 ('69067e81-fea8-4e83-971f-378c633233c5', '548f23e4-7975-46bf-b801-26d1c81738f4', 'question', '5f29f9f8-5926-4056-aa91-53369a5df9c6', 1, true, null, false),
 ('62052a2a-a0cc-4ab5-aca9-b61cb06bd91c', '0e3e35d4-2dbc-4234-8fa0-2f7d7a0f5409', 'question', '5f29f9f8-5926-4056-aa91-53369a5df9c6', 2, true, null, false),
 ('207e9b28-6655-44f7-8065-f8cb287a3d53', '594ecb57-e8f5-4cda-b0d3-05abe8e01c30', 'question', '5f29f9f8-5926-4056-aa91-53369a5df9c6', 3, true, null, false),
