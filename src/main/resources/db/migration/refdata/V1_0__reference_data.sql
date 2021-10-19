@@ -35,7 +35,6 @@ CREATE TABLE IF NOT EXISTS question_schema
     question_schema_id       SERIAL PRIMARY KEY,
     question_schema_uuid     UUID      NOT NULL UNIQUE,
     question_code            VARCHAR(255) NOT NULL UNIQUE,
-    external_source          TEXT,
     question_start           TIMESTAMP NOT NULL,
     question_end             TIMESTAMP,
     answer_type              TEXT      NOT NULL,

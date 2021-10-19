@@ -8,8 +8,11 @@ import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.http.HttpHeader
 import com.github.tomakehurst.wiremock.http.HttpHeaders
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
+import uk.gov.justice.digital.assessments.restclient.communityapi.ContactDetails
 import uk.gov.justice.digital.assessments.restclient.communityapi.IDs
 import uk.gov.justice.digital.assessments.restclient.communityapi.OffenderAlias
+import uk.gov.justice.digital.assessments.restclient.communityapi.OffenderProfile
+import uk.gov.justice.digital.assessments.restclient.communityapi.Phone
 
 class CommunityApiMockServer : WireMockServer(9096) {
 
@@ -249,7 +252,14 @@ class CommunityApiMockServer : WireMockServer(9096) {
         OffenderAlias(
           firstName = "Jonny"
         )
-      )
+      ),
+      contactDetails = ContactDetails(
+        emailAddresses = listOf("address1@gmail.com", "address2@gmail.com"),
+        phoneNumbers = listOf(
+          Phone("1838893", "MOBILE")
+        )
+      ),
+      offenderProfile = OffenderProfile(ethnicity = "Asian")
     )
   }
 
