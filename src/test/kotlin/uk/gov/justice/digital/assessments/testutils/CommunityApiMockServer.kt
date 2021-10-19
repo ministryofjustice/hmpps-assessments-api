@@ -253,9 +253,12 @@ class CommunityApiMockServer : WireMockServer(9096) {
           firstName = "Jonny"
         )
       ),
-      contactDetails = ContactDetails(emailAddresses = listOf("address1@gmail.com", "address2@gmail.com"), phoneNumbers = listOf(
-        Phone("1838893", "MOBILE")
-      )),
+      contactDetails = ContactDetails(
+        emailAddresses = listOf("address1@gmail.com", "address2@gmail.com"),
+        phoneNumbers = listOf(
+          Phone("1838893", "MOBILE")
+        )
+      ),
       offenderProfile = OffenderProfile(ethnicity = "Asian")
     )
   }
