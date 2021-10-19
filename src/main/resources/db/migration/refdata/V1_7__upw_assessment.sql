@@ -181,7 +181,7 @@ VALUES
 ('1bb85754-aee6-4bb7-885b-5f1d010541a5', 'upw_employment_education_details_fulltime', '2021-09-27 14:50:00', null, 'textarea', null, 'Employment or education details (working days, hours etc)', null, null, true),
 ('2ac6d05f-b8a3-4cdc-9cdc-3feaa05f62d1', 'upw_employment_education_details_parttime', '2021-09-27 14:50:00', null, 'textarea', null, 'Employment or education details (working days, hours etc)', null, null, true),
 
-('548f23e4-7975-46bf-b801-26d1c81738f4', 'upw_reading_writing_difficulties', '2021-09-27 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Does the individual have any difficulties with reading, writing or numbers?', '', null, null),
+('548f23e4-7975-46bf-b801-26d1c81738f4', 'upw_reading_writing_difficulties', '2021-09-27 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Does the individual have any difficulties with reading, writing or numbers?', '', null, true),
 ('0e3e35d4-2dbc-4234-8fa0-2f7d7a0f5409', 'upw_reading_writing_difficulties_details', '2021-09-27 14:50:00', null, 'textarea', null, 'Give details', null, null, true),
 ('594ecb57-e8f5-4cda-b0d3-05abe8e01c30', 'upw_work_skills', '2021-09-27 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Does the individual have any work skills or experience that could be used while carrying out Community Payback?', '', null, null),
 ('59236813-d351-4fe9-a150-8b9e40e11248', 'upw_work_skills_details', '2021-09-27 14:50:00', null, 'textarea', null, 'Give details', null, null, null),
