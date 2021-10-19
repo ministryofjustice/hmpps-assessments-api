@@ -91,6 +91,7 @@ class EpisodeService(
       "time" -> listOf(rawAnswer.first().toString().split('T')[1])
       "toUpper" -> listOf(rawAnswer.first().toString().uppercase())
       "array" -> rawAnswer as List<String>
+      "nested_array" -> rawAnswer.first() as List<String>
       else -> listOf(rawAnswer.first().toString())
     }
   }
