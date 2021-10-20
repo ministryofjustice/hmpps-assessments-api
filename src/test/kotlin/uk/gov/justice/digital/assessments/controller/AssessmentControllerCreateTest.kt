@@ -207,6 +207,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(answers?.get("ethnicity")).isEqualTo(listOf("Asian"))
       assertThat(answers?.get("gender")).isEqualTo(listOf("F"))
       assertThat(answers?.get("email_addresses")).isEqualTo(listOf("address1@gmail.com", "address2@gmail.com"))
+      assertThat(answers?.get("mobile_phone_number")).isEqualTo(listOf("1838893"))
     }
 
     @Test
