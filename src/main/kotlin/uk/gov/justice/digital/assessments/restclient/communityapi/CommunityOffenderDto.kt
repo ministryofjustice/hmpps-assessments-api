@@ -15,7 +15,17 @@ data class CommunityOffenderDto(
 )
 
 class OffenderProfile(
-  val ethnicity: String? = null
+  val ethnicity: String? = null,
+  val disabilities: List<Disability>? = null
+)
+
+class Disability(
+  val disabilityType: DisabilityType,
+)
+
+class DisabilityType(
+  val code: String? = null,
+  val description: String? = null
 )
 
 data class ContactDetails(

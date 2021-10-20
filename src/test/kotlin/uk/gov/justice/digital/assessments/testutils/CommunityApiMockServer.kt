@@ -9,6 +9,8 @@ import com.github.tomakehurst.wiremock.http.HttpHeader
 import com.github.tomakehurst.wiremock.http.HttpHeaders
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.ContactDetails
+import uk.gov.justice.digital.assessments.restclient.communityapi.Disability
+import uk.gov.justice.digital.assessments.restclient.communityapi.DisabilityType
 import uk.gov.justice.digital.assessments.restclient.communityapi.IDs
 import uk.gov.justice.digital.assessments.restclient.communityapi.OffenderAlias
 import uk.gov.justice.digital.assessments.restclient.communityapi.OffenderProfile
@@ -259,7 +261,14 @@ class CommunityApiMockServer : WireMockServer(9096) {
           Phone("1838893", "MOBILE")
         )
       ),
-      offenderProfile = OffenderProfile(ethnicity = "Asian")
+      offenderProfile = OffenderProfile(
+        ethnicity = "Asian",
+        disabilities = listOf(Disability(DisabilityType("LA", "learning disability")),
+          Disability(DisabilityType("LD", "learning difficulties")),
+          Disability(DisabilityType("D", "general health")),
+          Disability(DisabilityType("D01", "mental health")),
+          Disability(DisabilityType("MI", "mental illness")))
+      )
     )
   }
 
