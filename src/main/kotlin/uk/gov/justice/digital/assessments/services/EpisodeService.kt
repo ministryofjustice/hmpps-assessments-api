@@ -52,8 +52,10 @@ class EpisodeService(
   ) {
 
     val answer = answerFormat(source, question.jsonPathField, question.fieldType)
-    episode.answers?.let {
-      it[question.questionCode] = answer
+    answer?.let {
+      episode.answers?.let {
+        it[question.questionCode] = answer
+      }
     }
   }
 
@@ -82,14 +84,24 @@ class EpisodeService(
     return communityApiRestClient.getOffenderJson(crn)
   }
 
-  private fun answerFormat(source: DocumentContext, jsonPathField: String?, fieldType: String?): List<String> {
-    return when (fieldType) {
-      "varchar" -> listOf(source.read<Object>(jsonPathField).toString())
-      "date" -> listOf((source.read<JSONArray>(jsonPathField).filterNotNull() as List<String>).first().toString().split('T')[0])
-      "time" -> listOf((source.read<JSONArray>(jsonPathField).filterNotNull() as List<String>).first().toString().split('T')[1])
-      "toUpper" -> listOf((source.read<JSONArray>(jsonPathField).filterNotNull() as List<String>).first().toString().uppercase())
-      "array" -> (source.read<JSONArray>(jsonPathField).filterNotNull() as List<String>)
-      else -> listOf((source.read<JSONArray>(jsonPathField).filterNotNull() as List<String>).first().toString())
+  private fun answerFormat(source: DocumentContext, jsonPathField: String?, fieldType: String?): List<String>? {
+    try {
+      return when (fieldType) {
+        "varchar" -> listOf(source.read<Object>(jsonPathField).toString())
+        "date" -> listOf(
+          (source.read<JSONArray>(jsonPathField).filterNotNull() as List<String>).first().toString().split('T')[0]
+        )
+        "time" -> listOf(
+          (source.read<JSONArray>(jsonPathField).filterNotNull() as List<String>).first().toString().split('T')[1]
+        )
+        "toUpper" -> listOf(
+          (source.read<JSONArray>(jsonPathField).filterNotNull() as List<String>).first().toString().uppercase()
+        )
+        "array" -> (source.read<JSONArray>(jsonPathField).filterNotNull() as List<String>)
+        else -> listOf((source.read<JSONArray>(jsonPathField).filterNotNull() as List<String>).first().toString())
+      }
+    } catch (e: Exception) {
+      return null
     }
   }
 }
