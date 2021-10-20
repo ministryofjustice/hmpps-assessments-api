@@ -263,11 +263,13 @@ class CommunityApiMockServer : WireMockServer(9096) {
       ),
       offenderProfile = OffenderProfile(
         ethnicity = "Asian",
-        disabilities = listOf(Disability(DisabilityType("LA", "learning disability")),
+        disabilities = listOf(
+          Disability(DisabilityType("LA", "learning disability")),
           Disability(DisabilityType("LD", "learning difficulties")),
           Disability(DisabilityType("D", "general health")),
           Disability(DisabilityType("D01", "mental health")),
-          Disability(DisabilityType("MI", "mental illness")))
+          Disability(DisabilityType("MI", "mental illness"))
+        )
       )
     )
   }
