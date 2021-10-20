@@ -171,7 +171,7 @@ VALUES
 ('fb0d6e10-9a10-40e4-8ebc-ffcb2c46ffbb', 'upw_pregnancy', '2021-09-27 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Pregnant or recently given birth?', '', null),
 ('c9e7ff29-a9bf-47ea-81b2-c0a8f025ade8', 'upw_pregnancy_details', '2021-09-27 14:50:00', null, 'textarea', null, 'Give details', null, null),
 ('155e1596-9f83-4e0a-8fa7-e36f9ed2b2e5', 'upw_health_issues_complete', '2021-09-27 14:50:00', null, 'radio', '8067ff6e-7400-4d1e-ae2a-87dee7e124ec', 'Mark this section as complete?', '', null),
-('d403b86e-cdcc-41c9-b3cb-8780d361986e', 'upw_gp_name', '2021-09-27 14:50:00', null, 'freetext', null, 'Give details', null, null),
+('d403b86e-cdcc-41c9-b3cb-8780d361986e', 'upw_gp_name', '2021-09-27 14:50:00', null, 'freetext', null, 'Name', null, null),
 ('9b7a4455-5bdf-4e28-af57-f2fdbfb54805', 'upw_gp_address_building_name', '2021-09-27 14:50:00', null, 'freetext', null, 'Building name', null, null),
 ('b869ab87-bd5d-4df0-b563-a3830bf7d364', 'upw_gp_address_house_number', '2021-09-27 14:50:00', null, 'freetext', null, 'House number', null, null),
 ('2d8430b1-475d-4120-8e34-27db208fbc0d', 'upw_gp_address_street_name', '2021-09-27 14:50:00', null, 'freetext', null, 'Street name', null, null),
@@ -179,7 +179,7 @@ VALUES
 ('f78e069b-3b77-44bf-a698-ae0392e918b5', 'upw_gp_address_town_or_city', '2021-09-27 14:50:00', null, 'freetext', null, 'Town/city', null, null),
 ('80c3c97d-02dc-4d5c-ab3c-fff2f33b0b63', 'upw_gp_address_county', '2021-09-27 14:50:00', null, 'freetext', null, 'County', null, null),
 ('333088a1-ce0a-4365-b4db-f594e34bcfb5', 'upw_gp_address_postcode', '2021-09-27 14:50:00', null, 'freetext', null, 'Postcode', null, null),
-('7e3f0e77-7e91-4b11-928b-97e79390fe7f', 'upw_gp_phone_number', '2021-09-27 14:50:00', null, 'freetext', null, 'Give details', null, null),
+('7e3f0e77-7e91-4b11-928b-97e79390fe7f', 'upw_gp_phone_number', '2021-09-27 14:50:00', null, 'freetext', null, 'Phone number', null, null),
 
 ('20a3e6c7-f4a3-4598-ab49-c9cea084921a', 'upw_travel_information', '2021-09-27 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Does the individual have any travel issues that will affect their placement?', '', null),
 ('c47786e4-0c3d-4ea4-b81c-8547254ab12a', 'upw_travel_information_details', '2021-09-27 14:50:00', null, 'textarea', null, 'Give details', null, null),
