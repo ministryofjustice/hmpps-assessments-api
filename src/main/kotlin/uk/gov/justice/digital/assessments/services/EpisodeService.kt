@@ -1,8 +1,8 @@
 package uk.gov.justice.digital.assessments.services
 
-import com.beust.klaxon.JsonObject
-import com.beust.klaxon.Parser
-import com.beust.klaxon.lookup
+import com.jayway.jsonpath.DocumentContext
+import com.jayway.jsonpath.JsonPath
+import net.minidev.json.JSONArray
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
@@ -12,7 +12,6 @@ import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import uk.gov.justice.digital.assessments.services.dto.ExternalSource
 import uk.gov.justice.digital.assessments.services.dto.ExternalSourceQuestionSchemaDto
 import uk.gov.justice.digital.assessments.services.exceptions.CrnIsMandatoryException
-import java.lang.StringBuilder
 
 @Service
 @Transactional("refDataTransactionManager")
@@ -48,26 +47,26 @@ class EpisodeService(
 
   private fun prepopulateQuestion(
     episode: AssessmentEpisodeEntity,
-    source: JsonObject,
+    source: DocumentContext,
     question: ExternalSourceQuestionSchemaDto
   ) {
-    val rawAnswers = source.lookup<Object>(question.jsonPathField).filterNotNull()
-    if (rawAnswers.isEmpty()) return
 
-    val answer = answerFormat(rawAnswers, question.fieldType)
-    episode.answers?.let {
-      it[question.questionCode] = answer
+    val answer = answerFormat(source, question.jsonPathField, question.fieldType)
+    answer?.let {
+      episode.answers?.let {
+        it[question.questionCode] = answer
+      }
     }
   }
 
-  private fun loadSource(episode: AssessmentEpisodeEntity, sourceName: String?): JsonObject? {
+  private fun loadSource(episode: AssessmentEpisodeEntity, sourceName: String?): DocumentContext? {
     try {
       val rawJson = when (sourceName) {
         ExternalSource.COURT.name -> loadFromCourtCase(episode)
         ExternalSource.DELIUS.name -> loadFromDelius(episode)
         else -> return null
       }
-      return Parser.default().parse(StringBuilder(rawJson)) as JsonObject
+      return JsonPath.parse(rawJson)
     } catch (e: Exception) {
       return null
     }
@@ -85,14 +84,24 @@ class EpisodeService(
     return communityApiRestClient.getOffenderJson(crn)
   }
 
-  private fun answerFormat(rawAnswer: List<Object>, format: String?): List<String> {
-    return when (format) {
-      "date" -> listOf(rawAnswer.first().toString().split('T')[0])
-      "time" -> listOf(rawAnswer.first().toString().split('T')[1])
-      "toUpper" -> listOf(rawAnswer.first().toString().uppercase())
-      "array" -> rawAnswer as List<String>
-      "nested_array" -> rawAnswer.first() as List<String>
-      else -> listOf(rawAnswer.first().toString())
+  private fun answerFormat(source: DocumentContext, jsonPathField: String?, fieldType: String?): List<String>? {
+    try {
+      return when (fieldType) {
+        "varchar" -> listOf(source.read<Object>(jsonPathField).toString())
+        "date" -> listOf(
+          (source.read<JSONArray>(jsonPathField).filterNotNull() as List<String>).first().toString().split('T')[0]
+        )
+        "time" -> listOf(
+          (source.read<JSONArray>(jsonPathField).filterNotNull() as List<String>).first().toString().split('T')[1]
+        )
+        "toUpper" -> listOf(
+          (source.read<JSONArray>(jsonPathField).filterNotNull() as List<String>).first().toString().uppercase()
+        )
+        "array" -> (source.read<JSONArray>(jsonPathField).filterNotNull() as List<String>)
+        else -> listOf((source.read<JSONArray>(jsonPathField).filterNotNull() as List<String>).first().toString())
+      }
+    } catch (e: Exception) {
+      return null
     }
   }
 }

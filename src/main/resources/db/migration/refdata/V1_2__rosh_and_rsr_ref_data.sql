@@ -112,6 +112,7 @@ VALUES ('1ea17930-d467-44c0-9e72-517747618acb', 'heading_personal_details', '202
 ('70348c31-66aa-4e10-b0a5-4644e7fb85ff', 'gender', '2020-11-30 14:50:00', null, 'dropdown', '701e4016-3447-40d2-a9fb-cc5e7490fe70', 'Gender', null, 'GENDER'),
 ('d3951b8a-b250-4cf9-816b-91a438449c95', 'ethnicity', '2020-11-30 14:50:00', null, 'freetext', null, 'ETHNICITY', null, null),
 ('5732b512-97c1-47d5-b7b8-beb3d6cfdec6', 'email_addresses', '2020-11-30 14:50:00', null, 'freetext', null, 'EMAIL', null, null),
+('d635526a-df5e-4651-ad6c-b061e5949f36', 'mobile_phone_number', '2020-11-30 14:50:00', null, 'freetext', null, 'Mobile phone number', null, null),
 ('49ec3bae-2726-4a43-84de-0e63e9f98bb1', 'pnc', '2020-11-30 14:50:00', null, 'freetext', null, 'PNC', null, null),
 ('bbb91ec0-140a-4e2f-a28b-31cad3545c5b', 'cro', '2020-11-30 14:50:00', null, 'freetext', null, 'Criminal Records Office (CRO) Number', null, null),
 ('a7ceb029-04d0-48f9-91de-8e2afbd5f47a', 'pcrn', '2020-11-30 14:50:00', null, 'freetext', null, 'Probation Case Reference Number', null, null),
