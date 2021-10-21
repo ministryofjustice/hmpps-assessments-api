@@ -208,6 +208,14 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(answers?.get("gender")).isEqualTo(listOf("F"))
       assertThat(answers?.get("email_addresses")).isEqualTo(listOf("address1@gmail.com", "address2@gmail.com"))
       assertThat(answers?.get("mobile_phone_number")).isEqualTo(listOf("1838893"))
+      assertThat(answers?.get("telephone_number")).isEqualTo(listOf("0123456999"))
+      assertThat(answers?.get("main_address_building_name")).isEqualTo(listOf("HMPPS Digital Studio"))
+      assertThat(answers?.get("main_address_house_number")).isEqualTo(listOf("32"))
+      assertThat(answers?.get("main_address_street_name")).isEqualTo(listOf("Scotland Street"))
+      assertThat(answers?.get("main_address_district")).isEqualTo(listOf("Sheffield City Centre"))
+      assertThat(answers?.get("main_address_town_city")).isEqualTo(listOf("Sheffield"))
+      assertThat(answers?.get("main_address_county")).isEqualTo(listOf("South Yorkshire"))
+      assertThat(answers?.get("main_address_postcode")).isEqualTo(listOf("S3 7BS"))
 
       assertThat(answers?.get("upw_physical_disability")).isEqualTo(listOf("D", "D02", "RM", "RC", "PC", "VI", "HD"))
       assertThat(answers?.get("upw_physical_disability_details")).isEqualTo(

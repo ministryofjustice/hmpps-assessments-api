@@ -25,13 +25,22 @@ VALUES
 ('14796ba9-8f3a-48ee-b8b0-87f36b5c2e9e', 'family_name_aliases', 'UPW', 'DELIUS', '$.offenderAliases[*].[''surname''])', 'array'),
 ('c8e38291-dbc1-432e-a248-94f2a8bd653a', 'dob', 'UPW', 'DELIUS', 'dateOfBirth', 'varchar'),
 ('f9916f57-d398-43f1-a14d-9a5796d766d2', 'dob_aliases', 'UPW', 'DELIUS', '$.offenderAliases[*].[''dateOfBirth''])', 'array'),
+('', 'main_address_building_name', 'UPW', 'DELIUS', '$.contactDetails.addresses[?(@.status.code==''M'')].buildingName', null),
+('', 'main_address_house_number', 'UPW', 'DELIUS', '$.contactDetails.addresses[?(@.status.code==''M'')].addressNumber', null),
+('', 'main_address_street_name', 'UPW', 'DELIUS', '$.contactDetails.addresses[?(@.status.code==''M'')].streetName', null),
+('', 'main_address_district', 'UPW', 'DELIUS', '$.contactDetails.addresses[?(@.status.code==''M'')].addressNumber', null),
+('', 'main_address_town_city', 'UPW', 'DELIUS', '$.contactDetails.addresses[?(@.status.code==''M'')].streetName', null),
+('', 'main_address_county', 'UPW', 'DELIUS', '$.contactDetails.addresses[?(@.status.code==''M'')].addressNumber', null),
+('', 'main_address_postcode', 'UPW', 'DELIUS', '$.contactDetails.addresses[?(@.status.code==''M'')].streetName', null),
+
+
 ('7b21ad52-a2b5-4ef2-aa11-bebb4f7ac52a', 'crn', 'UPW', 'DELIUS', 'otherIds.crn', 'varchar'),
 ('861bb639-61cf-4663-a2ef-55851135e8c5', 'pnc', 'UPW', 'DELIUS', 'otherIds.pncNumber', 'varchar'),
 ('2ee48b0b-3677-4a97-ab77-27d99053ef61', 'ethnicity', 'UPW', 'DELIUS', 'offenderProfile.ethnicity', 'varchar'),
 ('ebc6c624-eec2-48c8-86a2-6fe5bb52b84d', 'gender', 'UPW', 'DELIUS', 'gender', 'varchar'),
 ('7a129e3a-fe40-4138-9832-643404982a2c', 'email_addresses', 'UPW', 'DELIUS', '$.contactDetails.emailAddresses[*]', 'array'),
 ('4eb108ac-bbb7-416b-8d05-64283bdc6df5', 'mobile_phone_number', 'UPW', 'DELIUS', '$.contactDetails.phoneNumbers[?(@.type==''MOBILE'')].number', 'array'),
-
+('be7794a5-1025-4ee5-bf36-c49fa5cc2acf', 'telephone_number', 'UPW', 'DELIUS', '$contactDetails.addresses[?(@.status.code==''M'')].telephoneNumber', 'array'),
 ('0a9efa70-9f42-41ff-96da-a814bed4befe', 'upw_physical_disability', 'UPW', 'DELIUS', '$.offenderProfile.disabilities[?(@.disabilityType.code==''D''|| @.disabilityType.code==''D02'' || @.disabilityType.code==''RM'' || @.disabilityType.code==''RC'' || @.disabilityType.code==''PC'' || @.disabilityType.code==''VI'' || @.disabilityType.code==''HD'')].disabilityType.code', 'array'),
 ('a9258dbd-9b16-4511-95c3-52aa7a95f948', 'upw_physical_disability_details', 'UPW', 'DELIUS', '$.offenderProfile.disabilities[?(@.disabilityType.code==''D''|| @.disabilityType.code==''D02'' || @.disabilityType.code==''RM'' || @.disabilityType.code==''RC'' || @.disabilityType.code==''PC'' || @.disabilityType.code==''VI'' || @.disabilityType.code==''HD'')].disabilityType.description', 'array'),
 ('d6920b7b-927e-407a-b96c-a738d92b0bee', 'upw_learning_disability', 'UPW', 'DELIUS', '$.offenderProfile.disabilities[?(@.disabilityType.code==''LA'')].disabilityType.code', 'array'),
