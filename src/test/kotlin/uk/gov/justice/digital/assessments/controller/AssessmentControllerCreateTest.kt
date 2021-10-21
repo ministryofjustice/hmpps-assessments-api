@@ -209,10 +209,30 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(answers?.get("email_addresses")).isEqualTo(listOf("address1@gmail.com", "address2@gmail.com"))
       assertThat(answers?.get("mobile_phone_number")).isEqualTo(listOf("1838893"))
 
+      assertThat(answers?.get("upw_physical_disability")).isEqualTo(listOf("D", "D02", "RM", "RC", "PC", "VI", "HD"))
+      assertThat(answers?.get("upw_physical_disability_details")).isEqualTo(
+        listOf(
+          "general health",
+          "physical health concerns",
+          "reduced mobility",
+          "reduced physical capacity",
+          "progressive condition",
+          "visual impairment",
+          "hearing difficulties"
+        )
+      )
       assertThat(answers?.get("upw_learning_disability")).isEqualTo(listOf("LA"))
       assertThat(answers?.get("upw_learning_disability_details")).isEqualTo(listOf("learning disability"))
       assertThat(answers?.get("upw_learning_difficulty")).isEqualTo(listOf("LD"))
       assertThat(answers?.get("upw_learning_difficulty_details")).isEqualTo(listOf("learning difficulties"))
+      assertThat(answers?.get("upw_mental_health_condition")).isEqualTo(listOf("D", "D01", "MI"))
+      assertThat(answers?.get("upw_mental_health_condition_details")).isEqualTo(
+        listOf(
+          "general health",
+          "mental health",
+          "mental illness"
+        )
+      )
     }
 
     @Test
