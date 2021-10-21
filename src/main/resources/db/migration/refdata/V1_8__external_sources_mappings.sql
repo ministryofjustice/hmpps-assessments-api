@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS external_source_question_mapping(
     question_code                           VARCHAR(255) NOT NULL,
     assessment_schema_code                  VARCHAR(50) NOT NULL,
     external_source                         VARCHAR(50) NOT NULL,
-    json_path_field                         VARCHAR(100) NOT NULL,
+    json_path_field                         VARCHAR(1024) NOT NULL,
     field_type                              VARCHAR(50),
     FOREIGN KEY (assessment_schema_code) REFERENCES assessment_schema (assessment_schema_code),
     FOREIGN KEY (question_code) REFERENCES question_schema (question_code)
@@ -30,8 +30,14 @@ VALUES
 ('2ee48b0b-3677-4a97-ab77-27d99053ef61', 'ethnicity', 'UPW', 'DELIUS', 'offenderProfile.ethnicity', 'varchar'),
 ('ebc6c624-eec2-48c8-86a2-6fe5bb52b84d', 'gender', 'UPW', 'DELIUS', 'gender', 'varchar'),
 ('7a129e3a-fe40-4138-9832-643404982a2c', 'email_addresses', 'UPW', 'DELIUS', '$.contactDetails.emailAddresses[*]', 'array'),
-('4eb108ac-bbb7-416b-8d05-64283bdc6df5', 'mobile_phone_number', 'UPW', 'DELIUS', '$.contactDetails.phoneNumbers[?(@.type==''MOBILE'')].number', 'array')
+('4eb108ac-bbb7-416b-8d05-64283bdc6df5', 'mobile_phone_number', 'UPW', 'DELIUS', '$.contactDetails.phoneNumbers[?(@.type==''MOBILE'')].number', 'array'),
 
+('0a9efa70-9f42-41ff-96da-a814bed4befe', 'upw_physical_disability', 'UPW', 'DELIUS', '$.offenderProfile.disabilities[?(@.disabilityType.code==''D''|| @.disabilityType.code==''D02'' || @.disabilityType.code==''RM'' || @.disabilityType.code==''RC'' || @.disabilityType.code==''PC'' || @.disabilityType.code==''VI'' || @.disabilityType.code==''HD'')].disabilityType.code', 'array'),
+('a9258dbd-9b16-4511-95c3-52aa7a95f948', 'upw_physical_disability_details', 'UPW', 'DELIUS', '$.offenderProfile.disabilities[?(@.disabilityType.code==''D''|| @.disabilityType.code==''D02'' || @.disabilityType.code==''RM'' || @.disabilityType.code==''RC'' || @.disabilityType.code==''PC'' || @.disabilityType.code==''VI'' || @.disabilityType.code==''HD'')].disabilityType.description', 'array'),
+('d6920b7b-927e-407a-b96c-a738d92b0bee', 'upw_learning_disability', 'UPW', 'DELIUS', '$.offenderProfile.disabilities[?(@.disabilityType.code==''LA'')].disabilityType.code', 'array'),
+('27a0cc22-a876-4123-9a34-56363d4ce24f', 'upw_learning_disability_details', 'UPW', 'DELIUS', '$.offenderProfile.disabilities[?(@.disabilityType.code==''LA'')].disabilityType.description', 'array'),
+('7cad64f6-898d-4e2f-a466-6d660b76380b', 'upw_learning_difficulty', 'UPW', 'DELIUS', '$.offenderProfile.disabilities[?(@.disabilityType.code==''LD'')].disabilityType.code', 'array'),
+('0a8f5e55-1223-4912-94a7-7fad8dc28368', 'upw_learning_difficulty_details', 'UPW', 'DELIUS', '$.offenderProfile.disabilities[?(@.disabilityType.code==''LD'')].disabilityType.description', 'array'),
+('12be7d28-b20e-43f3-ba3b-3d0fd302e63a', 'upw_mental_health_condition', 'UPW', 'DELIUS', '$.offenderProfile.disabilities[?(@.disabilityType.code==''D''|| @.disabilityType.code==''D01'' || @.disabilityType.code==''MI'')].disabilityType.code', 'array'),
+('031e620a-b49a-4371-931b-6d6e05c3af4d', 'upw_mental_health_condition_details', 'UPW', 'DELIUS', '$.offenderProfile.disabilities[?(@.disabilityType.code==''D''|| @.disabilityType.code==''D01'' || @.disabilityType.code==''MI'')].disabilityType.description', 'array')
 ;
-
-
