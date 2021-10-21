@@ -10,7 +10,8 @@ VALUES
 ('9fc83177-fd89-4755-89a5-69d0892cd25d', 'male-female', '2021-09-27 14:50:00', null),
 ('37943ca1-b977-410a-9e5a-75c2ab032abb', 'xs-s-m-l-xl-xxl-xxxl', '2021-09-27 14:50:00', null),
 ('ffe5ecbf-1669-46c9-b40f-4ac82dba0629', '3-4-5-6-7-8-9-10-11-12-13-14', '2021-09-27 14:50:00', null),
-('550579fe-9d3d-4130-9210-6b60ec0dec5e', 'fulltime-parttime-no', '2021-09-27 14:50:00', null)
+('550579fe-9d3d-4130-9210-6b60ec0dec5e', 'fulltime-parttime-no', '2021-09-27 14:50:00', null),
+('4e3cc956-41d6-47c1-a4d8-c084251fadb5', 'gender_identity', '2021-09-27 14:50:00', null)
 ;
 
 INSERT INTO answer_schema (answer_schema_uuid, answer_schema_code, answer_schema_group_uuid, answer_start, answer_end, value, text)
@@ -43,6 +44,11 @@ VALUES
 ('976e41ce-ef5b-431f-8cc7-cd5ea2d8c619', 'sunday_evening', '7816fe5c-3beb-46d1-b2af-4a0a8f30aca0', '2021-09-27 14:50:00', null, 'SUNDAY_EVENING', 'Sunday evening'),
 ('b34622fb-6c97-488e-8e13-96f2f43bbecf', 'male', '9fc83177-fd89-4755-89a5-69d0892cd25d', '2021-09-27 14:50:00', null, 'MALE', 'Male'),
 ('623581c2-9b99-4421-8a96-df51f0136e06', 'female', '9fc83177-fd89-4755-89a5-69d0892cd25d', '2021-09-27 14:50:00', null, 'FEMALE', 'Female'),
+('b6d5e728-7e5b-4382-972f-31c3c66337cf', 'male', '4e3cc956-41d6-47c1-a4d8-c084251fadb5', '2021-09-27 14:50:00', null, 'FEMALE', 'Male'),
+('07a9ca67-1296-45fb-8fb1-79139198f3e9', 'female', '4e3cc956-41d6-47c1-a4d8-c084251fadb5', '2021-09-27 14:50:00', null, 'FEMALE', 'Female'),
+('3619f489-0e17-4702-a05c-a356836aeb79', 'non_binary', '4e3cc956-41d6-47c1-a4d8-c084251fadb5', '2021-09-27 14:50:00', null, 'NONE_BINARY', 'Non-binary'),
+('f0e680b7-9bea-45aa-ab44-a8c6371dab66', 'prefer_to_self_describe', '4e3cc956-41d6-47c1-a4d8-c084251fadb5', '2021-09-27 14:50:00', null, 'PREFER_TO_SELF_DESCRIBE', 'Prefer to self-describe'),
+('aa69c244-5c48-47cd-9fb3-c41ca027909c', 'prefer_no_to_say', '4e3cc956-41d6-47c1-a4d8-c084251fadb5', '2021-09-27 14:50:00', null, 'PREFER_NOT_TO_SAY', 'Prefer not to say'),
 
 ('bb427a45-d7d4-44a3-8b68-de2428fd92ea', 'xs',  '37943ca1-b977-410a-9e5a-75c2ab032abb', '2021-09-27 14:50:00', null, 'XS', 'X-Small'),
 ('afe91b9f-0d1d-43ab-9dbe-7b81a73d67fa', 's',   '37943ca1-b977-410a-9e5a-75c2ab032abb', '2021-09-27 14:50:00', null, 'S', 'Small'),
@@ -71,6 +77,7 @@ VALUES
 
 INSERT INTO grouping (group_uuid, group_code, heading, subheading, help_text, group_start, group_end)
 VALUES ('ccd1ae9f-fcd9-41eb-88d9-d28945ed79b4', 'upw_assessment', 'Unpaid Work Assessment', null, null, '2021-09-27 14:50:00', null),
+       ('84026fe4-7966-4bfc-b9b2-04b93fe878bf', 'upw_individuals_details', 'Individual''s details', null, null, '2021-09-27 14:50:00', null),
        ('2bd35476-ac9b-4f15-ac7d-ea6943ccc120', 'upw_diversity_section', 'Diversity section', null, null, '2021-09-27 14:50:00', null),
        ('667e9967-275f-4d23-bd02-7b5e3f3e1647', 'upw_cultural_info', 'Cultural or Religious adjustments', null, null, '2021-09-27 14:50:00', null),
        ('d633d6e1-e252-4c09-a21c-c8cc558bce12', 'upw_placement_preferences', 'Placement preferences', null, null, '2021-09-27 14:50:00', null),
@@ -98,6 +105,32 @@ VALUES ('9c318330-091a-4a97-842f-1146df9e9703', 'ccd1ae9f-fcd9-41eb-88d9-d28945e
 
 INSERT INTO question_schema (question_schema_uuid, question_code, question_start, question_end, answer_type, answer_schema_group_uuid, question_text, question_help_text, reference_data_category)
 VALUES
+('2c88800c-1566-4019-9be1-1c1dfc67d4fb', 'gender_identity', '2021-09-27 14:50:00', null, 'radio', '4e3cc956-41d6-47c1-a4d8-c084251fadb5', 'Gender identity', null, null),
+('ec955765-01ad-420c-938f-b17ec81e3454', 'sex_change', '2021-09-27 14:50:00', null, 'radio', 'a2a6d156-4a70-41cf-989c-2857b4b2e625', 'Has the individual gone through any part of a process to change the sex they were assigned at birth to the gender they now identify with, or do they intend to?', null, null),
+('e9bf8cef-8923-419b-a5e8-c45e43eafada', 'sex_change_details', '2021-09-27 14:50:00', null, 'textarea', null, 'Give details and discuss placement options with the individual, based on their gender identity. Record their preference and the details of the conversation.', null, null),
+('d8afc82d-f5ea-435a-bffe-0ab3552c7b56', 'intersex_or_dsd', '2021-09-27 14:50:00', null, 'radio', 'a2a6d156-4a70-41cf-989c-2857b4b2e625', 'Is the individual intersex or do they have a Difference in Sexual Development (DSD)?', null, null),
+('2e9b7f55-2724-456c-b0cb-9d8326b90cf4', 'transgender', '2021-09-27 14:50:00', null, 'radio', 'a2a6d156-4a70-41cf-989c-2857b4b2e625', 'Do they consider themselves to be transgender or have a transgender history?', 'This could include their name, appearance, the way they dress, taking hormones, or having gender-confrming surgery.', null),
+('2a2abf23-61c9-407c-b34c-797153cc19bb', 'contact_address_building_name', '2021-09-27 14:50:00', null, 'freetext', null, 'Building name', null, null),
+('76b357de-4059-4078-8dd9-dfa16cf2c880', 'contact_address_house_number', '2021-09-27 14:50:00', null, 'freetext', null, 'House number', null, null),
+('ddfd77bf-d429-4311-a330-9c69df4dae1c', 'contact_address_street_name', '2021-09-27 14:50:00', null, 'freetext', null, 'Street name', null, null),
+('d7da609f-a0e0-4539-8a43-2f0b2587ff6c', 'contact_address_district', '2021-09-27 14:50:00', null, 'freetext', null, 'District', null, null),
+('5202c7de-5fc7-4132-af7b-28a02ac5e330', 'contact_address_town_or_city', '2021-09-27 14:50:00', null, 'freetext', null, 'Town/City', null, null),
+('da1105e2-6df4-4d08-a656-f2551cbb5c74', 'contact_address_county', '2021-09-27 14:50:00', null, 'freetext', null, 'County', null, null),
+('c788ed5a-98e5-42a3-97f1-c6beefc324ee', 'contact_address_postcode', '2021-09-27 14:50:00', null, 'freetext', null, 'Postcode', null, null),
+('3ce8f782-e8ca-48ff-9579-20b01dd79430', 'contact_phone_number', '2021-09-27 14:50:00', null, 'freetext', null, 'Phone number', null, null),
+('2b4c0adf-547b-4d09-8be4-ea852f25ca8f', 'contact_mobile_phone_number', '2021-09-27 14:50:00', null, 'freetext', null, 'Phone number', null, null),
+('70eb1db7-4e68-4a59-b40c-7ce00f9c0aec', 'emergency_contact_name', '2021-09-27 14:50:00', null, 'freetext', null, 'Name', null, null),
+('5805283b-d81e-4053-8e5f-b3d3247e7c58', 'emergency_contact_relationship', '2021-09-27 14:50:00', null, 'freetext', null, 'Relationship to the individual', null, null),
+('9a2a0e8d-2e1c-45e6-84e8-e05c7d4f4b3a', 'emergency_contact_address_building_name', '2021-09-27 14:50:00', null, 'freetext', null, 'Building name', null, null),
+('4e5d9a55-36da-4063-9188-40e3f6e324de', 'emergency_contact_address_house_number', '2021-09-27 14:50:00', null, 'freetext', null, 'House number', null, null),
+('242951c6-1b11-4b9e-b86c-b30aa550f2a8', 'emergency_contact_address_street_name', '2021-09-27 14:50:00', null, 'freetext', null, 'Street name', null, null),
+('b798aafb-c90c-4477-801f-78648a35b537', 'emergency_contact_address_district', '2021-09-27 14:50:00', null, 'freetext', null, 'District', null, null),
+('3d7c78eb-5fe9-42ca-9353-e0e4722f97d9', 'emergency_contact_address_town_or_city', '2021-09-27 14:50:00', null, 'freetext', null, 'Town/City', null, null),
+('3b6e2dcc-311c-46ed-8bbf-7076cf1a704c', 'emergency_contact_address_county', '2021-09-27 14:50:00', null, 'freetext', null, 'County', null, null),
+('ea4f4c75-f39f-4f4a-8bf8-5babc5c2ed2b', 'emergency_contact_address_postcode', '2021-09-27 14:50:00', null, 'freetext', null, 'Postcode', null, null),
+('19c1ef38-d5d9-4d0a-8b45-ee344fd1b56d', 'emergency_contact_phone_number', '2021-09-27 14:50:00', null, 'freetext', null, 'Phone number', null, null),
+('07334e88-94ab-4121-ad51-1b9ae050a3cd', 'emergency_contact_mobile_phone_number', '2021-09-27 14:50:00', null, 'freetext', null, 'Phone number', null, null),
+
 ('5cefd241-cc51-4128-a343-cb7c438a9048', 'upw_cultural_religious_adjustment', '2021-09-27 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Cultural or religious adjustments?', null, null),
 ('e7f8205b-1f2a-4578-943c-154d2a6ee11e', 'upw_cultural_religious_adjustment_details', '2021-09-27 14:50:00', null, 'textarea', null, 'Give details', null, null),
 ('0238fbc4-e488-4e1e-858d-856532d1cf56', 'upw_cultural_religious_adjustment_complete', '2021-09-27 14:50:00', null, 'radio', '8067ff6e-7400-4d1e-ae2a-87dee7e124ec', 'Mark this section as complete?', '', null),
@@ -148,13 +181,13 @@ VALUES
 ('7318f4d3-068f-4e62-bbf8-cc430c096dd7', 'upw_alcohol_drug_issues_details', '2021-09-27 14:50:00', null, 'textarea', null, 'Give details', null, null),
 ('e8cc7779-498e-494b-8280-8cb088b3c6e9', 'upw_managing_risk_complete', '2021-09-27 14:50:00', null, 'radio', '8067ff6e-7400-4d1e-ae2a-87dee7e124ec', 'Mark this section as complete?', '', null),
 
-('7503ab1a-ea03-41f3-8d0a-b75da9830909', 'upw_physical_disability', '2021-09-27 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Physical disability', '', null),
+('7503ab1a-ea03-41f3-8d0a-b75da9830909', 'upw_physical_disability', '2021-09-27 14:50:00', null, 'textarea', null, 'Physical disability', null, null),
 ('4a97f15f-1a1e-44d5-83f7-ef5b2ad67246', 'upw_physical_disability_details', '2021-09-27 14:50:00', null, 'textarea', null, 'Give details', null, null),
-('ce7451a2-5f75-42a8-95ad-377dee4d99bf', 'upw_learning_disability', '2021-09-27 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Learning disability', '', null),
+('ce7451a2-5f75-42a8-95ad-377dee4d99bf', 'upw_learning_disability', '2021-09-27 14:50:00', null, 'textarea', null, 'Learning disability', null, null),
 ('637efa3b-264b-42f5-91d3-2985576e9614', 'upw_learning_disability_details', '2021-09-27 14:50:00', null, 'textarea', null, 'Give details', null, null),
-('5c70e49d-92e1-4ee3-b934-380dca6e326a', 'upw_learning_difficulty', '2021-09-27 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Learning difficulty', '', null),
+('5c70e49d-92e1-4ee3-b934-380dca6e326a', 'upw_learning_difficulty', '2021-09-27 14:50:00', null, 'textarea', null, 'Learning difficulty', null, null),
 ('3c73385e-fafb-4df8-a668-8a8ab2e90625', 'upw_learning_difficulty_details', '2021-09-27 14:50:00', null, 'textarea', null, 'Give details', null, null),
-('a349c303-b5e3-4c72-9540-fb17c1b6753a', 'upw_mental_health_condition', '2021-09-27 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Mental health condition', '', null),
+('a349c303-b5e3-4c72-9540-fb17c1b6753a', 'upw_mental_health_condition', '2021-09-27 14:50:00', null, 'textarea', null, 'Mental health condition', null, null),
 ('c97bb3af-993d-45f3-a349-27ba547310c6', 'upw_mental_health_condition_details', '2021-09-27 14:50:00', null, 'textarea', null, 'Give details', null, null),
 ('d35335af-4747-4842-8fbc-42ddca5bc78c', 'upw_disabilities', '2021-09-27 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Do any of the above affect the individual’s ability to engage with Community Payback?', '', null),
 ('c773474d-d5b1-4747-a866-b6e6bd42c96e', 'upw_disabilities_details', '2021-09-27 14:50:00', null, 'textarea', null, 'Suggest  adjustments, if known [optional]', null, null),
@@ -236,6 +269,35 @@ VALUES
 ('6de51fe3-89b6-4488-b931-27fd8530dacd', '9cbfc1ad-a054-44ab-9827-fd1b429ef31d', 'group', 'ccd1ae9f-fcd9-41eb-88d9-d28945ed79b4', 3, true, null, false),
 ('02410525-acd4-4b88-aa0c-1760c0fabe97', 'b0238dcb-e12a-4d07-9986-7214139942d1', 'group', 'ccd1ae9f-fcd9-41eb-88d9-d28945ed79b4', 4, true, null, false),
 ('60cff2ba-42b8-4ef0-a14d-7de5a27da664', 'd674dfba-4e09-4673-9049-b5e1ee13285f', 'group', 'ccd1ae9f-fcd9-41eb-88d9-d28945ed79b4', 5, true, null, false),
+
+-- Individual's Details
+('b2fec820-e7bf-49fe-85dd-5588818fbc91', '6b04e69d-4ffd-46c6-869a-1f4005979848', 'question', '667e9967-275f-4d23-bd02-7b5e3f3e1647', 1, true, null, false),
+('b67f7814-41b6-4656-acfa-b9cfdaccb4a9', '81cbd5f5-f8ec-430e-b18a-c48fdf660216', 'question', '667e9967-275f-4d23-bd02-7b5e3f3e1647', 2, true, null, false),
+('ef376643-e250-4ab3-bbc5-9019a8a4a7f5', '2c88800c-1566-4019-9be1-1c1dfc67d4fb', 'question', '667e9967-275f-4d23-bd02-7b5e3f3e1647', 3, true, null, false),
+('941aafe9-a267-472d-bd78-5bce7ea97aeb', 'ec955765-01ad-420c-938f-b17ec81e3454', 'question', '667e9967-275f-4d23-bd02-7b5e3f3e1647', 4, true, null, false),
+('e7855713-4ddf-4f53-9534-cf582de20b24', 'e9bf8cef-8923-419b-a5e8-c45e43eafada', 'question', '667e9967-275f-4d23-bd02-7b5e3f3e1647', 5, true, null, false),
+('781bce3b-25b2-4778-b744-a089d18d7ec1', 'd8afc82d-f5ea-435a-bffe-0ab3552c7b56', 'question', '667e9967-275f-4d23-bd02-7b5e3f3e1647', 6, true, null, false),
+('55e82ecf-ed8b-499a-9ff7-3c729e9e04ec', '2e9b7f55-2724-456c-b0cb-9d8326b90cf4', 'question', '667e9967-275f-4d23-bd02-7b5e3f3e1647', 7, true, null, false),
+('4f1080e4-4ff1-4649-a0ab-a2324d987d6a', '2a2abf23-61c9-407c-b34c-797153cc19bb', 'question', '667e9967-275f-4d23-bd02-7b5e3f3e1647', 8, true, null, false),
+('9082ed87-1a55-4a9e-84c3-5aad7ca3969f', '76b357de-4059-4078-8dd9-dfa16cf2c880', 'question', '667e9967-275f-4d23-bd02-7b5e3f3e1647', 9, true, null, false),
+('bdc9b154-ecd8-4ff6-b69a-22900fc5f711', 'ddfd77bf-d429-4311-a330-9c69df4dae1c', 'question', '667e9967-275f-4d23-bd02-7b5e3f3e1647', 10, true, null, false),
+('ce3267b6-f388-4958-844d-715e7b290206', 'd7da609f-a0e0-4539-8a43-2f0b2587ff6c', 'question', '667e9967-275f-4d23-bd02-7b5e3f3e1647', 11, true, null, false),
+('448a00f9-473c-44aa-b1c9-d9fa66f39598', '5202c7de-5fc7-4132-af7b-28a02ac5e330', 'question', '667e9967-275f-4d23-bd02-7b5e3f3e1647', 12, true, null, false),
+('f7c4410d-777a-4f7d-9f47-fed029e41f27', 'da1105e2-6df4-4d08-a656-f2551cbb5c74', 'question', '667e9967-275f-4d23-bd02-7b5e3f3e1647', 13, true, null, false),
+('07ab845c-3388-4fef-b9fd-94611fcc8112', 'c788ed5a-98e5-42a3-97f1-c6beefc324ee', 'question', '667e9967-275f-4d23-bd02-7b5e3f3e1647', 14, true, null, false),
+('57003e3c-8e99-4691-aa3d-a68c2a4350f2', '3ce8f782-e8ca-48ff-9579-20b01dd79430', 'question', '667e9967-275f-4d23-bd02-7b5e3f3e1647', 15, true, null, false),
+('3d77f975-8802-4859-b956-576dfb6e9146', '2b4c0adf-547b-4d09-8be4-ea852f25ca8f', 'question', '667e9967-275f-4d23-bd02-7b5e3f3e1647', 16, true, null, false),
+('86b6e2cd-9106-4d1e-b56e-bb5566f78c54', '70eb1db7-4e68-4a59-b40c-7ce00f9c0aec', 'question', '667e9967-275f-4d23-bd02-7b5e3f3e1647', 17, true, null, false),
+('c79f264e-94d0-4dd2-af4b-ca349fa75fb8', '5805283b-d81e-4053-8e5f-b3d3247e7c58', 'question', '667e9967-275f-4d23-bd02-7b5e3f3e1647', 18, true, null, false),
+('cac1aeb2-5875-4d0f-9836-8175a4a80eaf', '9a2a0e8d-2e1c-45e6-84e8-e05c7d4f4b3a', 'question', '667e9967-275f-4d23-bd02-7b5e3f3e1647', 19, true, null, false),
+('00f32083-766d-4e03-a129-93683cbaeab1', '4e5d9a55-36da-4063-9188-40e3f6e324de', 'question', '667e9967-275f-4d23-bd02-7b5e3f3e1647', 20, true, null, false),
+('44253af3-ff95-4af8-a913-b439119aca22', '242951c6-1b11-4b9e-b86c-b30aa550f2a8', 'question', '667e9967-275f-4d23-bd02-7b5e3f3e1647', 21, true, null, false),
+('460f01e7-c0f6-482b-bb6f-2bd2093d5f1d', 'b798aafb-c90c-4477-801f-78648a35b537', 'question', '667e9967-275f-4d23-bd02-7b5e3f3e1647', 22, true, null, false),
+('6ab49a7c-be0d-40bc-9a95-03b50dc437c2', '3d7c78eb-5fe9-42ca-9353-e0e4722f97d9', 'question', '667e9967-275f-4d23-bd02-7b5e3f3e1647', 23, true, null, false),
+('70ea8e61-8ae6-4074-85b6-3fb5b93a74fb', '3b6e2dcc-311c-46ed-8bbf-7076cf1a704c', 'question', '667e9967-275f-4d23-bd02-7b5e3f3e1647', 24, true, null, false),
+('1f997391-d2af-4f2b-bc9a-c4648d929828', 'ea4f4c75-f39f-4f4a-8bf8-5babc5c2ed2b', 'question', '667e9967-275f-4d23-bd02-7b5e3f3e1647', 25, true, null, false),
+('e817401a-9bd3-4433-9a2e-e5579924cf76', '19c1ef38-d5d9-4d0a-8b45-ee344fd1b56d', 'question', '667e9967-275f-4d23-bd02-7b5e3f3e1647', 26, true, null, false),
+('6c0d75cb-6c03-49d6-8ed8-4054c1b7b8f3', '07334e88-94ab-4121-ad51-1b9ae050a3cd', 'question', '667e9967-275f-4d23-bd02-7b5e3f3e1647', 27, true, null, false),
 
 -- Diversity top sections
 ('d46d6b16-6851-45fc-a4e9-28bfcadef3b0', '667e9967-275f-4d23-bd02-7b5e3f3e1647', 'group', '2bd35476-ac9b-4f15-ac7d-ea6943ccc120', 1, true, null, false),
