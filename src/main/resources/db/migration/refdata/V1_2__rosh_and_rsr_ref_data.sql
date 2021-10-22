@@ -120,6 +120,8 @@ VALUES ('1ea17930-d467-44c0-9e72-517747618acb', 'heading_personal_details', '202
 ('96904c2b-7288-43fa-8cce-278e15899945', 'main_address_town_city', '2020-11-30 14:50:00', null, 'freetext', null, 'Main Address Town/City', null, null),
 ('1f282ce9-ce47-405f-9a89-fe7202aa4461', 'main_address_county', '2020-11-30 14:50:00', null, 'freetext', null, 'Main Address Street county', null, null),
 ('9244eab2-ce3b-4906-878b-5813ab48491b', 'main_address_postcode', '2020-11-30 14:50:00', null, 'freetext', null, 'Main Address Postcode', null, null),
+('f08e99c0-37e0-4404-938c-5ad97bc96def', 'language', '2020-11-30 14:50:00', null, 'freetext', null, 'Offender Primary Language', null, null),
+('b990ae07-5dbd-48d7-93f9-5a1c0a262da7', 'requires_interpreter', '2020-11-30 14:50:00', null, 'freetext', null, 'Offender requires interpreter', null, null),
 ('49ec3bae-2726-4a43-84de-0e63e9f98bb1', 'pnc', '2020-11-30 14:50:00', null, 'freetext', null, 'PNC', null, null),
 ('bbb91ec0-140a-4e2f-a28b-31cad3545c5b', 'cro', '2020-11-30 14:50:00', null, 'freetext', null, 'Criminal Records Office (CRO) Number', null, null),
 ('a7ceb029-04d0-48f9-91de-8e2afbd5f47a', 'pcrn', '2020-11-30 14:50:00', null, 'freetext', null, 'Probation Case Reference Number', null, null),

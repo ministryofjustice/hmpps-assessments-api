@@ -36,6 +36,8 @@ VALUES
 ('861bb639-61cf-4663-a2ef-55851135e8c5', 'pnc', 'UPW', 'DELIUS', 'otherIds.pncNumber', 'varchar'),
 ('2ee48b0b-3677-4a97-ab77-27d99053ef61', 'ethnicity', 'UPW', 'DELIUS', 'offenderProfile.ethnicity', 'varchar'),
 ('ebc6c624-eec2-48c8-86a2-6fe5bb52b84d', 'gender', 'UPW', 'DELIUS', 'gender', 'varchar'),
+('6638e173-9ab9-4078-a6cc-2af97ae7dbde', 'language', 'UPW', 'DELIUS', '$.offenderProfile.offenderLanguages.primaryLanguage', 'varchar'),
+('406e1725-2e8c-411e-972b-f8661f4ce539', 'requires_interpreter', 'UPW', 'DELIUS', '$.offenderProfile.offenderLanguages.requiresInterpreter', 'varchar'),
 ('7a129e3a-fe40-4138-9832-643404982a2c', 'email_addresses', 'UPW', 'DELIUS', '$.contactDetails.emailAddresses[*]', 'array'),
 ('4eb108ac-bbb7-416b-8d05-64283bdc6df5', 'mobile_phone_number', 'UPW', 'DELIUS', '$.contactDetails.phoneNumbers[?(@.type==''MOBILE'')].number', 'array'),
 ('be7794a5-1025-4ee5-bf36-c49fa5cc2acf', 'telephone_number', 'UPW', 'DELIUS', '$.contactDetails.addresses[?(@.status.code==''M'')].telephoneNumber', 'array'),

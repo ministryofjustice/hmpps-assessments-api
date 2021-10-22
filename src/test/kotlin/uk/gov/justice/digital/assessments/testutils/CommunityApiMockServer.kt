@@ -15,6 +15,7 @@ import uk.gov.justice.digital.assessments.restclient.communityapi.Disability
 import uk.gov.justice.digital.assessments.restclient.communityapi.DisabilityType
 import uk.gov.justice.digital.assessments.restclient.communityapi.IDs
 import uk.gov.justice.digital.assessments.restclient.communityapi.OffenderAlias
+import uk.gov.justice.digital.assessments.restclient.communityapi.OffenderLanguages
 import uk.gov.justice.digital.assessments.restclient.communityapi.OffenderProfile
 import uk.gov.justice.digital.assessments.restclient.communityapi.Phone
 
@@ -305,7 +306,8 @@ class CommunityApiMockServer : WireMockServer(9096) {
           Disability(DisabilityType("LD", "learning difficulties")),
           Disability(DisabilityType("D01", "mental health")),
           Disability(DisabilityType("MI", "mental illness"))
-        )
+        ),
+        offenderLanguages = OffenderLanguages("French", true)
       )
     )
   }
