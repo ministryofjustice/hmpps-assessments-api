@@ -12,6 +12,7 @@ import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import uk.gov.justice.digital.assessments.services.dto.ExternalSource
 import uk.gov.justice.digital.assessments.services.dto.ExternalSourceQuestionSchemaDto
 import uk.gov.justice.digital.assessments.services.exceptions.CrnIsMandatoryException
+import uk.gov.justice.digital.assessments.services.exceptions.ExternalSourceEndpointIsMandatoryException
 
 @Service
 @Transactional("refDataTransactionManager")
@@ -30,7 +31,9 @@ class EpisodeService(
 
     questionsToPopulate
       .groupBy { it.externalSource }
-      .forEach { prepopulateFromSource(episode, it.key, it.value) }
+      .forEach {
+        prepopulateFromSource(episode, it.key, it.value)
+      }
 
     return episode
   }
@@ -40,9 +43,13 @@ class EpisodeService(
     sourceName: String?,
     questions: List<ExternalSourceQuestionSchemaDto>
   ) {
-    val source = loadSource(episode, sourceName) ?: return
 
-    questions.forEach { prepopulateQuestion(episode, source, it) }
+    val questionsByExternalSourceEndpoint = questions.groupBy { it.externalSourceEndpoint }
+
+    questionsByExternalSourceEndpoint.forEach { it ->
+      val source = loadSource(episode, sourceName, it.key) ?: return
+      questions.forEach { prepopulateQuestion(episode, source, it) }
+    }
   }
 
   private fun prepopulateQuestion(
@@ -59,11 +66,11 @@ class EpisodeService(
     }
   }
 
-  private fun loadSource(episode: AssessmentEpisodeEntity, sourceName: String?): DocumentContext? {
+  private fun loadSource(episode: AssessmentEpisodeEntity, sourceName: String?, sourceEndpoint: String?): DocumentContext? {
     try {
       val rawJson = when (sourceName) {
         ExternalSource.COURT.name -> loadFromCourtCase(episode)
-        ExternalSource.DELIUS.name -> loadFromDelius(episode)
+        ExternalSource.DELIUS.name -> loadFromDelius(episode, sourceEndpoint)
         else -> return null
       }
       return JsonPath.parse(rawJson)
@@ -78,10 +85,12 @@ class EpisodeService(
     return courtCaseRestClient.getCourtCaseJson(courtCode, caseNumber)
   }
 
-  private fun loadFromDelius(episode: AssessmentEpisodeEntity): String? {
+  private fun loadFromDelius(episode: AssessmentEpisodeEntity, sourceEndpoint: String?): String? {
     val crn = episode?.assessment?.subject?.crn
       ?: throw CrnIsMandatoryException("Crn not found for episode ${episode.episodeUuid}")
-    return communityApiRestClient.getOffenderJson(crn)
+    val externalSourceEndpoint = sourceEndpoint
+      ?: throw ExternalSourceEndpointIsMandatoryException("External source endpoint is mandatory for episode ${episode.episodeUuid}")
+    return communityApiRestClient.getOffenderJson(crn, externalSourceEndpoint)
   }
 
   private fun answerFormat(source: DocumentContext, jsonPathField: String?, fieldType: String?): List<String>? {

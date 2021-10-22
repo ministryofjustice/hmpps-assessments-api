@@ -39,6 +39,9 @@ class ExternalSourceQuestionMappingEntity(
   @Column(name = "field_type")
   val fieldType: String,
 
+  @Column(name = "external_source_endpoint")
+  val externalSourceEndpoint: String,
+
   @ManyToOne
   @JoinColumn(name = "question_code", referencedColumnName = "question_code")
   val questionSchema: QuestionSchemaEntity,
