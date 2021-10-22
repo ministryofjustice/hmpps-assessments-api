@@ -17,7 +17,7 @@ data class CommunityOffenderDto(
 data class OffenderProfile(
   val ethnicity: String? = null,
   val disabilities: List<Disability>? = null,
-  val offenderLanguages: OffenderLanguages?= null,
+  val offenderLanguages: OffenderLanguages? = null,
 )
 
 data class OffenderLanguages(val primaryLanguage: String, val requiresInterpreter: Boolean)

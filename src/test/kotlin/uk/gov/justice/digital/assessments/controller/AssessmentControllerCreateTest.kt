@@ -243,7 +243,6 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       )
       assertThat(answers?.get("language")).isEqualTo(listOf("French"))
       assertThat(answers?.get("requires_interpreter")).isEqualTo(listOf("true"))
-
     }
 
     @Test
