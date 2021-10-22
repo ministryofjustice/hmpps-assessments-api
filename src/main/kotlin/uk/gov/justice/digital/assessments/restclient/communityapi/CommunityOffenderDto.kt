@@ -40,7 +40,7 @@ data class ContactDetails(
 data class Address(
   val addressNumber: String? = null,
   val buildingName: String? = null,
-  val status: AddressStatus? = null,
+  val status: Type? = null,
   val county: String? = null,
   val district: String? = null,
   val postcode: String? = null,
@@ -49,7 +49,7 @@ data class Address(
   val telephoneNumber: String? = null,
 )
 
-data class AddressStatus(
+data class Type(
   val code: String? = null,
   val description: String? = null,
 )

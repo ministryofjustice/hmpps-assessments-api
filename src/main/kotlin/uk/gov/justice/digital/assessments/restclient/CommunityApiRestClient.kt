@@ -25,16 +25,16 @@ class CommunityApiRestClient {
   internal lateinit var webClient: AuthenticatingRestClient
 
   fun getOffender(crn: String): CommunityOffenderDto? {
-    return getOffender(crn, CommunityOffenderDto::class.java)
+    return getOffender(offenderCrn = crn, elementClass = CommunityOffenderDto::class.java)
   }
 
-  fun getOffenderJson(crn: String): String? {
-    return getOffender(crn, String::class.java)
+  fun getOffenderJson(crn: String, externalSourceEndpoint: String): String? {
+    return getOffender(crn, externalSourceEndpoint, String::class.java)
   }
 
-  private fun <T> getOffender(crn: String, elementClass: Class<T>): T? {
-    log.info("Client retrieving offender details for crn: $crn")
-    val path = "secure/offenders/crn/$crn/all"
+  private fun <T> getOffender(offenderCrn: String, externalPath: String? = null, elementClass: Class<T>): T? {
+    log.info("Client retrieving offender details for crn: $offenderCrn")
+    val path = externalPath?.let { it.replace("\$crn", offenderCrn) } ?: "secure/offenders/crn/$offenderCrn/all"
     return webClient
       .get(path)
       .retrieve()
@@ -48,7 +48,7 @@ class CommunityApiRestClient {
       }
       .onStatus(HttpStatus::is5xxServerError) {
         handle5xxError(
-          "Failed to retrieve offender details for crn: $crn",
+          "Failed to retrieve offender details for crn: $offenderCrn",
           HttpMethod.GET,
           path,
           ExternalService.COMMUNITY_API
@@ -56,7 +56,7 @@ class CommunityApiRestClient {
       }
       .bodyToMono(elementClass)
       .block().also {
-        log.info("Offender for crn: $crn, found in ${ExternalService.COMMUNITY_API.name}")
+        log.info("Offender for crn: $offenderCrn, found in ${ExternalService.COMMUNITY_API.name}")
       }
   }
 

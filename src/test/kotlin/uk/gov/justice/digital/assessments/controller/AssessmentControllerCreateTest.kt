@@ -33,7 +33,7 @@ import java.util.UUID
     executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
   )
 )
-@AutoConfigureWebTestClient
+@AutoConfigureWebTestClient(timeout = "6000000")
 class AssessmentControllerCreateTest : IntegrationTest() {
 
   @Nested
@@ -243,6 +243,18 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       )
       assertThat(answers?.get("language")).isEqualTo(listOf("French"))
       assertThat(answers?.get("requires_interpreter")).isEqualTo(listOf("true"))
+
+      assertThat(answers?.get("emergency_contact_details_name")).isEqualTo(listOf("Brian"))
+      assertThat(answers?.get("emergency_contact_details_relationship")).isEqualTo(listOf("Father"))
+      assertThat(answers?.get("emergency_contact_details_mobile_number")).isEqualTo(listOf("07333567890"))
+      assertThat(answers?.get("emergency_contact_details_address_building_name")).isEqualTo(listOf("HMPPS Studio"))
+      assertThat(answers?.get("emergency_contact_details_address_house_number")).isEqualTo(listOf("36"))
+      assertThat(answers?.get("emergency_contact_details_address_street_name")).isEqualTo(listOf("Fifth Street"))
+      assertThat(answers?.get("emergency_contact_details_address_district")).isEqualTo(listOf("South City Centre"))
+      assertThat(answers?.get("emergency_contact_details_address_town_city")).isEqualTo(listOf("London"))
+      assertThat(answers?.get("emergency_contact_details_address_county")).isEqualTo(listOf("South London"))
+      assertThat(answers?.get("emergency_contact_details_address_postcode")).isEqualTo(listOf("S4 7BS"))
+      assertThat(answers?.get("emergency_contact_details_address_telephone_number")).isEqualTo(listOf("0133456789"))
     }
 
     @Test

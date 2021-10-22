@@ -240,7 +240,8 @@ class QuestionSchemaEntities(
       externalSourceForAssessment.questionSchema.questionCode,
       externalSourceForAssessment.externalSource,
       externalSourceForAssessment.jsonPathField,
-      externalSourceForAssessment.fieldType
+      externalSourceForAssessment.fieldType,
+      externalSourceForAssessment.externalSourceEndpoint
     )
   }
 
