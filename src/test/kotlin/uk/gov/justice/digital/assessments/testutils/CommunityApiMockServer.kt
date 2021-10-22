@@ -8,8 +8,9 @@ import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.http.HttpHeader
 import com.github.tomakehurst.wiremock.http.HttpHeaders
 import uk.gov.justice.digital.assessments.restclient.communityapi.Address
-import uk.gov.justice.digital.assessments.restclient.communityapi.AddressStatus
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
+import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderPersonalContactsDto
+import uk.gov.justice.digital.assessments.restclient.communityapi.Contact
 import uk.gov.justice.digital.assessments.restclient.communityapi.ContactDetails
 import uk.gov.justice.digital.assessments.restclient.communityapi.Disability
 import uk.gov.justice.digital.assessments.restclient.communityapi.DisabilityType
@@ -18,10 +19,22 @@ import uk.gov.justice.digital.assessments.restclient.communityapi.OffenderAlias
 import uk.gov.justice.digital.assessments.restclient.communityapi.OffenderLanguages
 import uk.gov.justice.digital.assessments.restclient.communityapi.OffenderProfile
 import uk.gov.justice.digital.assessments.restclient.communityapi.Phone
+import uk.gov.justice.digital.assessments.restclient.communityapi.Type
 
 class CommunityApiMockServer : WireMockServer(9096) {
 
   private val objectMapper: ObjectMapper = jacksonObjectMapper().registerModules(JavaTimeModule())
+
+  fun stubGetOffenderPersonalContacts() {
+    stubFor(
+      WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/DX5678A/personalContacts"))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withBody(mapToJson(personalContactsDto()))
+        )
+    )
+  }
 
   fun stubGetOffender() {
     stubFor(
@@ -235,6 +248,29 @@ class CommunityApiMockServer : WireMockServer(9096) {
     return objectMapper.writeValueAsString(dto)
   }
 
+  private fun personalContactsDto(): CommunityOffenderPersonalContactsDto {
+    return CommunityOffenderPersonalContactsDto(
+      contacts = listOf(
+        Contact(
+          firstName = "Brian",
+          relationship = "Father",
+          mobileNumber = "07333567890",
+          relationshipType = Type("ME", "Emergency contact"),
+          address = Address(
+            addressNumber = "36",
+            buildingName = "HMPPS Studio",
+            county = "South London",
+            district = "South City Centre",
+            postcode = "S4 7BS",
+            streetName = "Fifth Street",
+            telephoneNumber = "0133456789",
+            town = "London"
+          )
+        )
+      )
+    )
+  }
+
   private fun offenderDto(crn: String): CommunityOffenderDto {
     return CommunityOffenderDto(
       offenderId = 101L,
@@ -270,7 +306,7 @@ class CommunityApiMockServer : WireMockServer(9096) {
             county = "South Yorkshire",
             district = "Sheffield City Centre",
             postcode = "S3 7BS",
-            status = AddressStatus(
+            status = Type(
               code = "M", description = "Main address"
             ),
             streetName = "Scotland Street",
@@ -283,7 +319,7 @@ class CommunityApiMockServer : WireMockServer(9096) {
             county = "South London",
             district = "London City Centre",
             postcode = "S3 8BS",
-            status = AddressStatus(
+            status = Type(
               code = "O", description = "Some description"
             ),
             streetName = "Pink Street",
