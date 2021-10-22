@@ -7,6 +7,8 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.http.HttpHeader
 import com.github.tomakehurst.wiremock.http.HttpHeaders
+import uk.gov.justice.digital.assessments.restclient.communityapi.Address
+import uk.gov.justice.digital.assessments.restclient.communityapi.AddressStatus
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.ContactDetails
 import uk.gov.justice.digital.assessments.restclient.communityapi.Disability
@@ -259,6 +261,34 @@ class CommunityApiMockServer : WireMockServer(9096) {
         emailAddresses = listOf("address1@gmail.com", "address2@gmail.com"),
         phoneNumbers = listOf(
           Phone("1838893", "MOBILE")
+        ),
+        addresses = listOf(
+          Address(
+            addressNumber = "32",
+            buildingName = "HMPPS Digital Studio",
+            county = "South Yorkshire",
+            district = "Sheffield City Centre",
+            postcode = "S3 7BS",
+            status = AddressStatus(
+              code = "M", description = "Main address"
+            ),
+            streetName = "Scotland Street",
+            telephoneNumber = "0123456999",
+            town = "Sheffield"
+          ),
+          Address(
+            addressNumber = "33",
+            buildingName = "HMPPS Digital Studio 2",
+            county = "South London",
+            district = "London City Centre",
+            postcode = "S3 8BS",
+            status = AddressStatus(
+              code = "O", description = "Some description"
+            ),
+            streetName = "Pink Street",
+            telephoneNumber = "0123456998",
+            town = "London"
+          )
         )
       ),
       offenderProfile = OffenderProfile(

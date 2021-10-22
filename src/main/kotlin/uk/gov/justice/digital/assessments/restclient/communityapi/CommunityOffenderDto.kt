@@ -14,26 +14,44 @@ data class CommunityOffenderDto(
   val offenderProfile: OffenderProfile? = null
 )
 
-class OffenderProfile(
+data class OffenderProfile(
   val ethnicity: String? = null,
   val disabilities: List<Disability>? = null
 )
 
-class Disability(
+data class Disability(
   val disabilityType: DisabilityType,
 )
 
-class DisabilityType(
+data class DisabilityType(
   val code: String? = null,
   val description: String? = null
 )
 
 data class ContactDetails(
   val emailAddresses: List<String>? = null,
-  val phoneNumbers: List<Phone>? = null
+  val phoneNumbers: List<Phone>? = null,
+  val addresses: List<Address>? = null
 )
 
-class Phone(
+data class Address(
+  val addressNumber: String? = null,
+  val buildingName: String? = null,
+  val status: AddressStatus? = null,
+  val county: String? = null,
+  val district: String? = null,
+  val postcode: String? = null,
+  val streetName: String? = null,
+  val town: String? = null,
+  val telephoneNumber: String? = null,
+)
+
+data class AddressStatus(
+  val code: String? = null,
+  val description: String? = null,
+)
+
+data class Phone(
   val number: String? = null,
   val type: String? = null
 )
