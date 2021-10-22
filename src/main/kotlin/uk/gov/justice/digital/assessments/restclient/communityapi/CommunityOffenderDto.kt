@@ -20,7 +20,7 @@ data class OffenderProfile(
   val offenderLanguages: OffenderLanguages? = null,
 )
 
-data class OffenderLanguages(val primaryLanguage: String, val requiresInterpreter: Boolean)
+data class OffenderLanguages(val primaryLanguage: String? = null, val requiresInterpreter: Boolean)
 
 data class Disability(
   val disabilityType: DisabilityType,
