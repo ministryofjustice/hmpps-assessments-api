@@ -48,7 +48,7 @@ class EpisodeService(
 
     questionsByExternalSourceEndpoint.forEach { it ->
       val source = loadSource(episode, sourceName, it.key) ?: return
-      questions.forEach { prepopulateQuestion(episode, source, it) }
+      it.value.forEach { prepopulateQuestion(episode, source, it) }
     }
   }
 
