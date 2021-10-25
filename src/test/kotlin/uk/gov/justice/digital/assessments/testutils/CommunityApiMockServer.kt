@@ -23,6 +23,64 @@ class CommunityApiMockServer : WireMockServer(9096) {
 
   private val objectMapper: ObjectMapper = jacksonObjectMapper().registerModules(JavaTimeModule())
 
+  fun stubGetOffenderRegistrations() {
+    stubFor(
+      WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/DX5678A/registrations"))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withBody(
+              "{" +
+                "    \"registrations\": [" +
+                "        {" +
+                "            \"registrationId\": 2500233278," +
+                "            \"offenderId\": 2500275961," +
+                "            \"register\": {" +
+                "                \"code\": \"5\"," +
+                "                \"description\": \"Public Protection\"" +
+                "            }," +
+                "            \"type\": {" +
+                "                \"code\": \"MAPP\"," +
+                "                \"description\": \"MAPPA\"" +
+                "            }," +
+                "            \"riskColour\": \"Red\"," +
+                "            \"startDate\": \"2021-10-10\"," +
+                "            \"nextReviewDate\": \"2022-01-10\"," +
+                "            \"reviewPeriodMonths\": 3," +
+                "            \"notes\": \"Please Note - Category 3 offenders require multi-agency management at Level 2 or 3 and should not be recorded at Level 1.\"," +
+                "            \"registeringTeam\": {" +
+                "                \"code\": \"N07UTS\"," +
+                "                \"description\": \"Tiering Service\"" +
+                "            }," +
+                "            \"registeringOfficer\": {" +
+                "                \"code\": \"N07UTSO\"," +
+                "                \"forenames\": \"Tiering\"," +
+                "                \"surname\": \"Service\"," +
+                "                \"unallocated\": false" +
+                "            }," +
+                "            \"registeringProbationArea\": {" +
+                "                \"code\": \"N07\"," +
+                "                \"description\": \"NPS London\"" +
+                "            }," +
+                "            \"registerLevel\": {" +
+                "                \"code\": \"M0\"," +
+                "                \"description\": \"MAPPA Nominal (level to be determined)\"" +
+                "            }," +
+                "            \"registerCategory\": {" +
+                "                \"code\": \"X9\"," +
+                "                \"description\": \"All - Category to be determined\"" +
+                "            }," +
+                "            \"warnUser\": false," +
+                "            \"active\": true," +
+                "            \"numberOfPreviousDeregistrations\": 0" +
+                "        }" +
+                "    ]" +
+                "}"
+            )
+        )
+    )
+  }
+
   fun stubGetOffenderPersonalCircumstances() {
     stubFor(
       WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/DX5678A/personalCircumstances"))
