@@ -77,6 +77,7 @@ abstract class IntegrationTest {
     communityApiMockServer.resetAll()
     communityApiMockServer.stubGetOffender()
     communityApiMockServer.stubGetOffenderPersonalContacts()
+    communityApiMockServer.stubGetOffenderPersonalCircumstances()
     communityApiMockServer.stubGetConvictions()
     communityApiMockServer.stubGetUserAccess()
     assessmentApiMockServer.stubGetAssessment()

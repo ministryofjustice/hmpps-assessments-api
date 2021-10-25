@@ -23,6 +23,228 @@ class CommunityApiMockServer : WireMockServer(9096) {
 
   private val objectMapper: ObjectMapper = jacksonObjectMapper().registerModules(JavaTimeModule())
 
+  fun stubGetOffenderPersonalCircumstances() {
+    stubFor(
+      WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/DX5678A/personalCircumstances"))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withBody(
+              "{" +
+                "    \"personalCircumstances\": [" +
+                "       {" +
+                "            \"personalCircumstanceId\": 2500178503," +
+                "            \"offenderId\": 2500275961," +
+                "            \"personalCircumstanceType\": {" +
+                "                \"code\": \"G\"," +
+                "                \"description\": \"Literacy and Numeracy\"" +
+                "            }," +
+                "            \"personalCircumstanceSubType\": {" +
+                "                \"code\": \"G01\"," +
+                "                \"description\": \"Reading/Literacy Concerns\"" +
+                "            }," +
+                "            \"startDate\": \"2021-08-09\"," +
+                "            \"probationArea\": {" +
+                "                \"code\": \"N07\"," +
+                "                \"description\": \"NPS London\"" +
+                "            }," +
+                "            \"notes\": \"Cannot read\"," +
+                "            \"evidenced\": true," +
+                "            \"createdDatetime\": \"2021-10-25T12:08:42\"," +
+                "            \"lastUpdatedDatetime\": \"2021-10-25T12:08:42\"" +
+                "        }," +
+                "        {" +
+                "            \"personalCircumstanceId\": 2500178003," +
+                "            \"offenderId\": 2500275961," +
+                "            \"personalCircumstanceType\": {" +
+                "                \"code\": \"D\"," +
+                "                \"description\": \"General Health\"" +
+                "            }," +
+                "            \"personalCircumstanceSubType\": {" +
+                "                \"code\": \"D03\"," +
+                "                \"description\": \"Allergies\"" +
+                "            }," +
+                "            \"startDate\": \"2021-10-03\"," +
+                "            \"probationArea\": {" +
+                "                \"code\": \"N07\"," +
+                "                \"description\": \"NPS London\"" +
+                "            }," +
+                "            \"notes\": \"Nut Allergy\"," +
+                "            \"evidenced\": true," +
+                "            \"createdDatetime\": \"2021-10-22T09:26:44\"," +
+                "            \"lastUpdatedDatetime\": \"2021-10-22T09:26:44\"" +
+                "        }," +
+                "        {" +
+                "            \"personalCircumstanceId\": 2500177526," +
+                "            \"offenderId\": 2500275961," +
+                "            \"personalCircumstanceType\": {" +
+                "                \"code\": \"A\"," +
+                "                \"description\": \"Accommodation\"" +
+                "            }," +
+                "            \"personalCircumstanceSubType\": {" +
+                "                \"code\": \"A03\"," +
+                "                \"description\": \"Transient/short term accommodation\"" +
+                "            }," +
+                "            \"startDate\": \"2021-04-26\"," +
+                "            \"evidenced\": true," +
+                "            \"createdDatetime\": \"2021-10-21T14:58:23\"," +
+                "            \"lastUpdatedDatetime\": \"2021-10-21T14:58:23\"" +
+                "        }," +
+                "        {" +
+                "            \"personalCircumstanceId\": 2500177525," +
+                "            \"offenderId\": 2500275961," +
+                "            \"personalCircumstanceType\": {" +
+                "                \"code\": \"B\"," +
+                "                \"description\": \"Employment\"" +
+                "            }," +
+                "            \"personalCircumstanceSubType\": {" +
+                "                \"code\": \"B01C\"," +
+                "                \"description\": \"Full-time employed (30 or more hours per week)\"" +
+                "            }," +
+                "            \"startDate\": \"2021-10-12\"," +
+                "            \"endDate\": \"2022-03-18\"," +
+                "            \"probationArea\": {" +
+                "                \"code\": \"N07\"," +
+                "                \"description\": \"NPS London\"" +
+                "            }," +
+                "            \"evidenced\": false," +
+                "            \"createdDatetime\": \"2021-10-21T14:53:10\"," +
+                "            \"lastUpdatedDatetime\": \"2021-10-21T14:53:10\"" +
+                "        }," +
+                "        {" +
+                "            \"personalCircumstanceId\": 2500177535," +
+                "            \"offenderId\": 2500275961," +
+                "            \"personalCircumstanceType\": {" +
+                "                \"code\": \"B\"," +
+                "                \"description\": \"Employment\"" +
+                "            }," +
+                "            \"personalCircumstanceSubType\": {" +
+                "                \"code\": \"B02C\"," +
+                "                \"description\": \"Part-time employed (15 hours per week)\"" +
+                "            }," +
+                "            \"startDate\": \"2021-10-12\"," +
+                "            \"endDate\": \"2022-03-18\"," +
+                "            \"probationArea\": {" +
+                "                \"code\": \"N07\"," +
+                "                \"description\": \"NPS London\"" +
+                "            }," +
+                "            \"evidenced\": false," +
+                "            \"createdDatetime\": \"2021-10-21T14:53:10\"," +
+                "            \"lastUpdatedDatetime\": \"2021-10-21T14:53:10\"" +
+                "        }," +
+                "        {" +
+                "            \"personalCircumstanceId\": 2500177545," +
+                "            \"offenderId\": 2500275961," +
+                "            \"personalCircumstanceType\": {" +
+                "                \"code\": \"B\"," +
+                "                \"description\": \"Employment\"" +
+                "            }," +
+                "            \"personalCircumstanceSubType\": {" +
+                "                \"code\": \"B09A\"," +
+                "                \"description\": \"Not employed\"" +
+                "            }," +
+                "            \"startDate\": \"2021-10-12\"," +
+                "            \"endDate\": \"2022-03-18\"," +
+                "            \"probationArea\": {" +
+                "                \"code\": \"N07\"," +
+                "                \"description\": \"NPS London\"" +
+                "            }," +
+                "            \"evidenced\": false," +
+                "            \"createdDatetime\": \"2021-10-21T14:53:10\"," +
+                "            \"lastUpdatedDatetime\": \"2021-10-21T14:53:10\"" +
+                "        }," +
+                "        {" +
+                "            \"personalCircumstanceId\": 2500177524," +
+                "            \"offenderId\": 2500275961," +
+                "            \"personalCircumstanceType\": {" +
+                "                \"code\": \"I\"," +
+                "                \"description\": \"Dependents\"" +
+                "            }," +
+                "            \"personalCircumstanceSubType\": {" +
+                "                \"code\": \"I02\"," +
+                "                \"description\": \"Is a Primary Carer\"" +
+                "            }," +
+                "            \"startDate\": \"2021-10-04\"," +
+                "            \"endDate\": \"2022-03-02\"," +
+                "            \"probationArea\": {" +
+                "                \"code\": \"N07\"," +
+                "                \"description\": \"NPS London\"" +
+                "            }," +
+                "            \"notes\": \"Primary Carer\"," +
+                "            \"evidenced\": true," +
+                "            \"createdDatetime\": \"2021-10-21T14:52:46\"," +
+                "            \"lastUpdatedDatetime\": \"2021-10-21T14:52:46\"" +
+                "        }," +
+                "        {" +
+                "            \"personalCircumstanceId\": 2500177523," +
+                "            \"offenderId\": 2500275961," +
+                "            \"personalCircumstanceType\": {" +
+                "                \"code\": \"OCA\"," +
+                "                \"description\": \"Offender is carer of adult with care & sup't needs\"" +
+                "            }," +
+                "            \"personalCircumstanceSubType\": {" +
+                "                \"code\": \"OCA04\"," +
+                "                \"description\": \"Carer Support Plan in Place\"" +
+                "            }," +
+                "            \"startDate\": \"2021-10-03\"," +
+                "            \"endDate\": \"2022-01-20\"," +
+                "            \"probationArea\": {" +
+                "                \"code\": \"N07\"," +
+                "                \"description\": \"NPS London\"" +
+                "            }," +
+                "            \"notes\": \"testtest\"," +
+                "            \"evidenced\": true," +
+                "            \"createdDatetime\": \"2021-10-21T14:51:44\"," +
+                "            \"lastUpdatedDatetime\": \"2021-10-21T14:52:10\"" +
+                "        }," +
+                "        {" +
+                "            \"personalCircumstanceId\": 2500177522," +
+                "            \"offenderId\": 2500275961," +
+                "            \"personalCircumstanceType\": {" +
+                "                \"code\": \"H\"," +
+                "                \"description\": \"Relationship\"" +
+                "            }," +
+                "            \"personalCircumstanceSubType\": {" +
+                "                \"code\": \"H03\"," +
+                "                \"description\": \"Divorced / Dissolved\"" +
+                "            }," +
+                "            \"startDate\": \"2021-10-03\"," +
+                "            \"endDate\": \"2021-10-21\"," +
+                "            \"probationArea\": {" +
+                "                \"code\": \"N07\"," +
+                "                \"description\": \"NPS London\"" +
+                "            }," +
+                "            \"evidenced\": true," +
+                "            \"createdDatetime\": \"2021-10-21T14:51:06\"," +
+                "            \"lastUpdatedDatetime\": \"2021-10-21T14:51:06\"" +
+                "        }," +
+                "        {" +
+                "            \"personalCircumstanceId\": 2500177517," +
+                "            \"offenderId\": 2500275961," +
+                "            \"personalCircumstanceType\": {" +
+                "                \"code\": \"PM\"," +
+                "                \"description\": \"Pregnancy/Maternity\"" +
+                "            }," +
+                "            \"personalCircumstanceSubType\": {" +
+                "                \"code\": \"D06\"," +
+                "                \"description\": \"Pregnancy\"" +
+                "            }," +
+                "            \"startDate\": \"2021-10-17\"," +
+                "            \"probationArea\": {" +
+                "                \"code\": \"N07\"," +
+                "                \"description\": \"NPS London\"" +
+                "            }," +
+                "            \"evidenced\": true," +
+                "            \"createdDatetime\": \"2021-10-21T11:32:33\"," +
+                "            \"lastUpdatedDatetime\": \"2021-10-21T11:32:33\"" +
+                "        }" +
+                "    ]" +
+                "}"
+            )
+        )
+    )
+  }
+
   fun stubGetOffenderPersonalContacts() {
     stubFor(
       WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/DX5678A/personalContacts"))
