@@ -268,12 +268,18 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(answers?.get("gp_contact_details_address_postcode")).isEqualTo(listOf("E5 7BS"))
       assertThat(answers?.get("gp_contact_details_address_telephone_number")).isEqualTo(listOf("0233456789"))
 
-      assertThat(answers?.get("allergies")).isEqualTo(listOf("Nut Allergy"))
+      assertThat(answers?.get("allergies")).isEqualTo(listOf("Allergies"))
+      assertThat(answers?.get("allergies_notes")).isEqualTo(listOf("Nut Allergy"))
       assertThat(answers?.get("pregnancy")).isEqualTo(listOf("Pregnancy"))
-      assertThat(answers?.get("carer_commitments")).isEqualTo(listOf("Primary Carer"))
+      assertThat(answers?.get("pregnancy_notes")).isEqualTo(null)
+      assertThat(answers?.get("carer_commitments")).isEqualTo(listOf("Is a Primary Carer"))
+      assertThat(answers?.get("carer_commitments_notes")).isEqualTo(listOf("Primary Carer"))
       assertThat(answers?.get("full_time_employment_or_education")).isEqualTo(listOf("Full-time employed (30 or more hours per week)"))
+      assertThat(answers?.get("full_time_employment_or_education_notes")).isEqualTo(null)
       assertThat(answers?.get("part_time_employment_or_education")).isEqualTo(listOf("Part-time employed (15 hours per week)"))
+      assertThat(answers?.get("part_time_employment_or_education notes")).isEqualTo(null)
       assertThat(answers?.get("not_in_employment_or_education")).isEqualTo(listOf("Not employed"))
+      assertThat(answers?.get("not_in_employment_or_education_notes")).isEqualTo(null)
     }
 
     @Test
