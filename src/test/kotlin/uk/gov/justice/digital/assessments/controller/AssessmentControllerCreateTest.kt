@@ -267,7 +267,6 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(answers?.get("gp_contact_details_address_county")).isEqualTo(listOf("East London"))
       assertThat(answers?.get("gp_contact_details_address_postcode")).isEqualTo(listOf("E5 7BS"))
       assertThat(answers?.get("gp_contact_details_address_telephone_number")).isEqualTo(listOf("0233456789"))
-
     }
 
     @Test
