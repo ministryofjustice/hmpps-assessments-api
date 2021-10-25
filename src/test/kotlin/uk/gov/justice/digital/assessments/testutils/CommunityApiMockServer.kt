@@ -9,8 +9,6 @@ import com.github.tomakehurst.wiremock.http.HttpHeader
 import com.github.tomakehurst.wiremock.http.HttpHeaders
 import uk.gov.justice.digital.assessments.restclient.communityapi.Address
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
-import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderPersonalContactsDto
-import uk.gov.justice.digital.assessments.restclient.communityapi.Contact
 import uk.gov.justice.digital.assessments.restclient.communityapi.ContactDetails
 import uk.gov.justice.digital.assessments.restclient.communityapi.Disability
 import uk.gov.justice.digital.assessments.restclient.communityapi.DisabilityType
@@ -31,7 +29,51 @@ class CommunityApiMockServer : WireMockServer(9096) {
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
-            .withBody(mapToJson(personalContactsDto()))
+            .withBody(
+              "[" +
+                "{" +
+                "\"personalContactId\": 2500124492, " +
+                "\"relationship\": \"Father\", " +
+                "\"startDate\": \"2021-10-22T00:00:00\", " +
+                "\"title\": \"Mr\", " +
+                "\"firstName\": \"Brian\", " +
+                "\"surname\": \"Contact\", " +
+                "\"gender\": \"Male\", " +
+                "\"mobileNumber\": \"07333567890\", " +
+                "\"relationshipType\": { " +
+                "\"code\": \"ME\", " +
+                "\"description\": \"Emergency Contact\" " +
+                "},  " +
+                "\"createdDatetime\": \"2021-10-22T10:24:14\",  " +
+                "\"lastUpdatedDatetime\": \"2021-10-22T10:24:14\",  " +
+                "\"address\": {" +
+                "\"addressNumber\": \"36\",  " +
+                "\"buildingName\": \"HMPPS Studio\", " +
+                "\"county\": \"South London\",  " +
+                "\"district\": \"South City Centre\"," +
+                "\"postcode\": \"S4 7BS\",  " +
+                "\"streetName\": \"Fifth Street\"," +
+                "\"telephoneNumber\": \"0133456789\", " +
+                "\"town\": \"London\" " +
+                "}   " +
+                "},    " +
+                "{   " +
+                "\"personalContactId\": 2500123992, " +
+                "\"relationship\": \"Family Doctor\", " +
+                "\"startDate\": \"2021-10-21T00:00:00\", " +
+                "\"title\": \"Dr\", " +
+                "\"firstName\": \"Nick\", " +
+                "\"surname\": \"Riviera\", " +
+                "\"gender\": \"Male\", " +
+                "\"relationshipType\": { " +
+                "\"code\": \"RT02\", " +
+                "\"description\": \"GP\" " +
+                "}, " +
+                "\"createdDatetime\": \"2021-10-21T15:02:53\", " +
+                "\"lastUpdatedDatetime\": \"2021-10-21T15:02:53\", " +
+                "\"address\": {}     " +
+                "}]"
+            )
         )
     )
   }
@@ -246,29 +288,6 @@ class CommunityApiMockServer : WireMockServer(9096) {
 
   private fun mapToJson(dto: Any): String {
     return objectMapper.writeValueAsString(dto)
-  }
-
-  private fun personalContactsDto(): CommunityOffenderPersonalContactsDto {
-    return CommunityOffenderPersonalContactsDto(
-      contacts = listOf(
-        Contact(
-          firstName = "Brian",
-          relationship = "Father",
-          mobileNumber = "07333567890",
-          relationshipType = Type("ME", "Emergency contact"),
-          address = Address(
-            addressNumber = "36",
-            buildingName = "HMPPS Studio",
-            county = "South London",
-            district = "South City Centre",
-            postcode = "S4 7BS",
-            streetName = "Fifth Street",
-            telephoneNumber = "0133456789",
-            town = "London"
-          )
-        )
-      )
-    )
   }
 
   private fun offenderDto(crn: String): CommunityOffenderDto {
