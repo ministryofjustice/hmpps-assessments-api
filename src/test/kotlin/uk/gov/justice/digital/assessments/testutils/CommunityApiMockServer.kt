@@ -71,7 +71,16 @@ class CommunityApiMockServer : WireMockServer(9096) {
                 "}, " +
                 "\"createdDatetime\": \"2021-10-21T15:02:53\", " +
                 "\"lastUpdatedDatetime\": \"2021-10-21T15:02:53\", " +
-                "\"address\": {}     " +
+                "\"address\": {" +
+                "\"addressNumber\": \"38\",  " +
+                "\"buildingName\": \"The practice\", " +
+                "\"county\": \"East London\",  " +
+                "\"district\": \"East City Centre\"," +
+                "\"postcode\": \"E5 7BS\",  " +
+                "\"streetName\": \"East Street\"," +
+                "\"telephoneNumber\": \"0233456789\", " +
+                "\"town\": \"Bristol\" " +
+                "}     " +
                 "}]"
             )
         )

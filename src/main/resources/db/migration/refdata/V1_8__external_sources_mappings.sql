@@ -61,5 +61,34 @@ VALUES
 ('86d4a8e6-f51b-49c2-9d01-5f452729f752', 'emergency_contact_details_address_town_city', 'UPW', 'DELIUS', '$[?(@.relationshipType.code==''ME'')].address.town', null, 'secure/offenders/crn/$crn/personalContacts'),
 ('c635434d-4c24-4780-995d-a7d44a55dada', 'emergency_contact_details_address_county', 'UPW', 'DELIUS', '$[?(@.relationshipType.code==''ME'')].address.county', null, 'secure/offenders/crn/$crn/personalContacts'),
 ('6f8bd761-dc11-4c72-b2ab-5e1ee8a0038f', 'emergency_contact_details_address_postcode', 'UPW', 'DELIUS', '$[?(@.relationshipType.code==''ME'')].address.postcode', null, 'secure/offenders/crn/$crn/personalContacts'),
-('f7318c93-0929-4a10-bd6a-1f7e4674dc11', 'emergency_contact_details_address_telephone_number', 'UPW', 'DELIUS', '$[?(@.relationshipType.code==''ME'')].address.telephoneNumber', null, 'secure/offenders/crn/$crn/personalContacts')
+('f7318c93-0929-4a10-bd6a-1f7e4674dc11', 'emergency_contact_details_address_telephone_number', 'UPW', 'DELIUS', '$[?(@.relationshipType.code==''ME'')].address.telephoneNumber', null, 'secure/offenders/crn/$crn/personalContacts'),
+
+('57099ea6-37e0-441e-9d05-ca840d225261', 'gp_contact_details_name', 'UPW', 'DELIUS', '$[?(@.relationshipType.code==''RT02'')].firstName', null, 'secure/offenders/crn/$crn/personalContacts'),
+('fa4783d1-2901-40a3-95fd-9b8f2099e6ad', 'gp_contact_details_relationship', 'UPW', 'DELIUS', '$[?(@.relationshipType.code==''RT02'')].relationship', null, 'secure/offenders/crn/$crn/personalContacts'),
+('3c6aba83-af6c-423f-b573-216227331f9b', 'gp_contact_details_mobile_number', 'UPW', 'DELIUS', '$[?(@.relationshipType.code==''RT02'')].mobileNumber', null, 'secure/offenders/crn/$crn/personalContacts'),
+('8b7c2dac-620a-4fd9-9f78-016ed53511a4', 'gp_contact_details_address_building_name', 'UPW', 'DELIUS', '$[?(@.relationshipType.code==''RT02'')].address.buildingName', null, 'secure/offenders/crn/$crn/personalContacts'),
+('873c2901-6f23-4a7f-b230-fafba2819faf', 'gp_contact_details_address_house_number', 'UPW', 'DELIUS', '$[?(@.relationshipType.code==''RT02'')].address.addressNumber', null, 'secure/offenders/crn/$crn/personalContacts'),
+('b1c76706-8634-43c9-8c70-67b78976d672', 'gp_contact_details_address_street_name', 'UPW', 'DELIUS', '$[?(@.relationshipType.code==''RT02'')].address.streetName', null, 'secure/offenders/crn/$crn/personalContacts'),
+('4283f9e3-0ec5-4f40-831c-0c93160d5c43', 'gp_contact_details_address_district', 'UPW', 'DELIUS', '$[?(@.relationshipType.code==''RT02'')].address.district', null, 'secure/offenders/crn/$crn/personalContacts'),
+('7501f047-2836-4bb8-8e03-54ab40543a8b', 'gp_contact_details_address_town_city', 'UPW', 'DELIUS', '$[?(@.relationshipType.code==''RT02'')].address.town', null, 'secure/offenders/crn/$crn/personalContacts'),
+('926c91e1-d020-4b16-9040-acd9b0dc1d53', 'gp_contact_details_address_county', 'UPW', 'DELIUS', '$[?(@.relationshipType.code==''RT02'')].address.county', null, 'secure/offenders/crn/$crn/personalContacts'),
+('7762598e-dc3c-41a4-8546-38444c0ef708', 'gp_contact_details_address_postcode', 'UPW', 'DELIUS', '$[?(@.relationshipType.code==''RT02'')].address.postcode', null, 'secure/offenders/crn/$crn/personalContacts'),
+('7802580e-fa85-4998-966e-cc29e58f04a5', 'gp_contact_details_address_telephone_number', 'UPW', 'DELIUS', '$[?(@.relationshipType.code==''RT02'')].address.telephoneNumber', null, 'secure/offenders/crn/$crn/personalContacts'),
+
+('f4a45236-87c9-457b-b9a3-78db3384e870', 'allergies', 'UPW', 'DELIUS', '$.personalCircumstances[?(@.personalCircumstanceType.code==''D'' && @.personalCircumstanceSubType.code==''D03'')].notes', null, 'secure/offenders/crn/{crn}/personalCircumstances'),
+('581060dd-12d5-4f07-bca5-ef1526316dae', 'pregnancy', 'UPW', 'DELIUS', '$.personalCircumstances[?(@.personalCircumstanceType.code==''D'' && @.personalCircumstanceSubType.code==''D06'')].notes', null, 'secure/offenders/crn/{crn}/personalCircumstances')
 ;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
