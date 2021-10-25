@@ -255,6 +255,18 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(answers?.get("emergency_contact_details_address_county")).isEqualTo(listOf("South London"))
       assertThat(answers?.get("emergency_contact_details_address_postcode")).isEqualTo(listOf("S4 7BS"))
       assertThat(answers?.get("emergency_contact_details_address_telephone_number")).isEqualTo(listOf("0133456789"))
+
+      assertThat(answers?.get("gp_contact_details_name")).isEqualTo(listOf("Nick"))
+      assertThat(answers?.get("gp_contact_details_relationship")).isEqualTo(listOf("Family Doctor"))
+      assertThat(answers?.get("gp_contact_details_mobile_number")).isEqualTo(null)
+      assertThat(answers?.get("gp_contact_details_address_building_name")).isEqualTo(listOf("The practice"))
+      assertThat(answers?.get("gp_contact_details_address_house_number")).isEqualTo(listOf("38"))
+      assertThat(answers?.get("gp_contact_details_address_street_name")).isEqualTo(listOf("East Street"))
+      assertThat(answers?.get("gp_contact_details_address_district")).isEqualTo(listOf("East City Centre"))
+      assertThat(answers?.get("gp_contact_details_address_town_city")).isEqualTo(listOf("Bristol"))
+      assertThat(answers?.get("gp_contact_details_address_county")).isEqualTo(listOf("East London"))
+      assertThat(answers?.get("gp_contact_details_address_postcode")).isEqualTo(listOf("E5 7BS"))
+      assertThat(answers?.get("gp_contact_details_address_telephone_number")).isEqualTo(listOf("0233456789"))
     }
 
     @Test
