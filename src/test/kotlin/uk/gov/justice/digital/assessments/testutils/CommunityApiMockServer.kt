@@ -32,6 +32,27 @@ class CommunityApiMockServer : WireMockServer(9096) {
             .withBody(
               "{" +
                 "    \"personalCircumstances\": [" +
+                "       {" +
+                "            \"personalCircumstanceId\": 2500178503," +
+                "            \"offenderId\": 2500275961," +
+                "            \"personalCircumstanceType\": {" +
+                "                \"code\": \"G\"," +
+                "                \"description\": \"Literacy and Numeracy\"" +
+                "            }," +
+                "            \"personalCircumstanceSubType\": {" +
+                "                \"code\": \"G01\"," +
+                "                \"description\": \"Reading/Literacy Concerns\"" +
+                "            }," +
+                "            \"startDate\": \"2021-08-09\"," +
+                "            \"probationArea\": {" +
+                "                \"code\": \"N07\"," +
+                "                \"description\": \"NPS London\"" +
+                "            }," +
+                "            \"notes\": \"Cannot read\"," +
+                "            \"evidenced\": true," +
+                "            \"createdDatetime\": \"2021-10-25T12:08:42\"," +
+                "            \"lastUpdatedDatetime\": \"2021-10-25T12:08:42\"" +
+                "        }," +
                 "        {" +
                 "            \"personalCircumstanceId\": 2500178003," +
                 "            \"offenderId\": 2500275961," +
