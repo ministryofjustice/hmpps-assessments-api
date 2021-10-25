@@ -78,17 +78,3 @@ VALUES
 ('f4a45236-87c9-457b-b9a3-78db3384e870', 'allergies', 'UPW', 'DELIUS', '$.personalCircumstances[?(@.personalCircumstanceType.code==''D'' && @.personalCircumstanceSubType.code==''D03'')].notes', null, 'secure/offenders/crn/{crn}/personalCircumstances'),
 ('581060dd-12d5-4f07-bca5-ef1526316dae', 'pregnancy', 'UPW', 'DELIUS', '$.personalCircumstances[?(@.personalCircumstanceType.code==''D'' && @.personalCircumstanceSubType.code==''D06'')].notes', null, 'secure/offenders/crn/{crn}/personalCircumstances')
 ;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
