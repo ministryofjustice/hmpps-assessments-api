@@ -259,7 +259,12 @@ VALUES
 ('451f6e52-a314-4e7d-83ca-afd8dfc6dc43', 'upw_footwear_size', '2021-09-27 14:50:00', null, 'dropdown', 'ffe5ecbf-1669-46c9-b40f-4ac82dba0629', 'Footwear', 'Size (UK)', 'FOOTWEAR_SIZE'),
 ('5b1046e3-53f1-44d8-97db-5fd543f4382c', 'upw_equipment_complete', '2021-09-27 14:50:00', null, 'radio', '8067ff6e-7400-4d1e-ae2a-87dee7e124ec', 'Mark this section as complete?', '', null),
 
-('7beed4f4-0f3b-4b16-85f0-90377a350f1e', 'upw_declaration_confirmation', '2021-09-27 14:50:00', null, 'checkbox', null, 'I confirm the individual has received details of their Community Payback Induction Session', null, '')
+('7beed4f4-0f3b-4b16-85f0-90377a350f1e', 'upw_declaration_confirmation', '2021-09-27 14:50:00', null, 'checkbox', null, 'I confirm the individual has received details of their Community Payback Induction Session', null, ''),
+
+('0f4e7e92-dd26-4b12-be34-abd5c2c86f68', 'mappa_nominal_description', '2020-11-30 14:50:00', null, 'freetext', null, 'MAPPA Nominal', null, null),
+('c52856fc-34af-4538-9a48-5d017ed0babf', 'mappa_nominal_category', '2020-11-30 14:50:00', null, 'freetext', null, 'Category', null, null),
+('ab62b978-b081-40e9-aa11-32d7374a9a4a', 'mappa_nominal_level', '2020-11-30 14:50:00', null, 'freetext', null, 'Level', null, null)
+
 ;
 
 INSERT INTO question_group (question_group_uuid, content_uuid, content_type, group_uuid, display_order, mandatory, validation, read_only)
