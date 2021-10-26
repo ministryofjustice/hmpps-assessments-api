@@ -278,8 +278,8 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(answers?.get("part_time_employment_or_education notes")).isEqualTo(null)
       assertThat(answers?.get("not_in_employment_or_education")).isEqualTo(listOf("Not employed"))
       assertThat(answers?.get("not_in_employment_or_education_notes")).isEqualTo(null)
-      assertThat(answers?.get("difficulties_literacy_numeracy")).isEqualTo(listOf("Reading/Literacy Concerns"))
-      assertThat(answers?.get("difficulties_literacy_numeracy_notes")).isEqualTo(listOf("Cannot read"))
+      assertThat(answers?.get("upw_reading_writing_difficulties")).isEqualTo(listOf("YES"))
+      assertThat(answers?.get("upw_reading_writing_difficulties_details")).isEqualTo(listOf("Cannot read"))
 
       assertThat(answers?.get("mappa_nominal_description")).isEqualTo(listOf("MAPPA"))
       assertThat(answers?.get("mappa_nominal_category")).isEqualTo(listOf("X9"))

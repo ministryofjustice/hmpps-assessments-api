@@ -119,8 +119,6 @@ VALUES ('1ea17930-d467-44c0-9e72-517747618acb', 'heading_personal_details', '202
 ('dccf99f6-e670-4a36-af6c-1ff45761f408', 'part_time_employment_or_education_notes', '2020-11-30 14:50:00', null, 'freetext', null, 'Part-time employment or education notes', null, null),
 ('6a7a6559-9fbf-418d-ac31-4962bd55930a', 'not_in_employment_or_education', '2020-11-30 14:50:00', null, 'freetext', null, 'Not in employment or education', null, null),
 ('0adbdb67-8033-46f8-b64b-856f6a5cced5', 'not_in_employment_or_education_notes', '2020-11-30 14:50:00', null, 'freetext', null, 'Not in employment or education notes', null, null),
-('68f470ef-af26-47ce-a97c-48f3220bcfb2', 'difficulties_literacy_numeracy', '2020-11-30 14:50:00', null, 'freetext', null, 'Does the Service User have any difficulties with reading and/or writing?', null, null),
-('38e79f1b-cfdd-487f-a409-f167e22bb4b8', 'difficulties_literacy_numeracy_notes', '2020-11-30 14:50:00', null, 'freetext', null, 'Does the Service User have any difficulties with reading and/or writing? - notes', null, null),
 ('0f4e7e92-dd26-4b12-be34-abd5c2c86f68', 'mappa_nominal_description', '2020-11-30 14:50:00', null, 'freetext', null, 'MAPPA Nominal', null, null),
 ('c52856fc-34af-4538-9a48-5d017ed0babf', 'mappa_nominal_category', '2020-11-30 14:50:00', null, 'freetext', null, 'Category', null, null),
 ('ab62b978-b081-40e9-aa11-32d7374a9a4a', 'mappa_nominal_level', '2020-11-30 14:50:00', null, 'freetext', null, 'Level', null, null),
