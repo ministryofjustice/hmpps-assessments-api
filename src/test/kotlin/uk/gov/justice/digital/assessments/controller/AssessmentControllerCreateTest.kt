@@ -266,9 +266,9 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(answers?.get("upw_gp_address_postcode")).isEqualTo(listOf("E5 7BS"))
       assertThat(answers?.get("upw_gp_phone_number")).isEqualTo(listOf("0233456789"))
 
-      assertThat(answers?.get("upw_allergies")).isEqualTo(listOf("Yes"))
+      assertThat(answers?.get("upw_allergies")).isEqualTo(listOf("YES"))
       assertThat(answers?.get("upw_allergies_details")).isEqualTo(listOf("Nut Allergy"))
-      assertThat(answers?.get("upw_pregnancy")).isEqualTo(listOf("No"))
+      assertThat(answers?.get("upw_pregnancy")).isEqualTo(listOf("NO"))
       assertThat(answers?.get("upw_pregnancy_details")).isEqualTo(null)
       assertThat(answers?.get("upw_caring_commitments")).isEqualTo(listOf("Is a Primary Carer"))
       assertThat(answers?.get("upw_caring_commitments_details")).isEqualTo(listOf("Primary Carer"))
