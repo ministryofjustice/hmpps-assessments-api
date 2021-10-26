@@ -66,7 +66,11 @@ class EpisodeService(
     }
   }
 
-  private fun loadSource(episode: AssessmentEpisodeEntity, sourceName: String?, sourceEndpoint: String?): DocumentContext? {
+  private fun loadSource(
+    episode: AssessmentEpisodeEntity,
+    sourceName: String?,
+    sourceEndpoint: String?
+  ): DocumentContext? {
     try {
       val rawJson = when (sourceName) {
         ExternalSource.COURT.name -> loadFromCourtCase(episode)
@@ -107,10 +111,19 @@ class EpisodeService(
           (source.read<JSONArray>(jsonPathField).filterNotNull() as List<String>).first().toString().uppercase()
         )
         "array" -> (source.read<JSONArray>(jsonPathField).filterNotNull() as List<String>)
+        "yesno" -> {
+          if ((source.read<JSONArray>(jsonPathField).filterNotNull() as List<String>).size > 0)
+            listOf("Yes")
+          else
+            listOf("No")
+        }
         else -> listOf((source.read<JSONArray>(jsonPathField).filterNotNull() as List<String>).first().toString())
       }
     } catch (e: Exception) {
-      return null
+      return when (fieldType) {
+        "yesno" -> listOf("No")
+        else -> null
+      }
     }
   }
 }

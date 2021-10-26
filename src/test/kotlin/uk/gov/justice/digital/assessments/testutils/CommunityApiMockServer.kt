@@ -275,26 +275,6 @@ class CommunityApiMockServer : WireMockServer(9096) {
                 "            \"evidenced\": true," +
                 "            \"createdDatetime\": \"2021-10-21T14:51:06\"," +
                 "            \"lastUpdatedDatetime\": \"2021-10-21T14:51:06\"" +
-                "        }," +
-                "        {" +
-                "            \"personalCircumstanceId\": 2500177517," +
-                "            \"offenderId\": 2500275961," +
-                "            \"personalCircumstanceType\": {" +
-                "                \"code\": \"PM\"," +
-                "                \"description\": \"Pregnancy/Maternity\"" +
-                "            }," +
-                "            \"personalCircumstanceSubType\": {" +
-                "                \"code\": \"D06\"," +
-                "                \"description\": \"Pregnancy\"" +
-                "            }," +
-                "            \"startDate\": \"2021-10-17\"," +
-                "            \"probationArea\": {" +
-                "                \"code\": \"N07\"," +
-                "                \"description\": \"NPS London\"" +
-                "            }," +
-                "            \"evidenced\": true," +
-                "            \"createdDatetime\": \"2021-10-21T11:32:33\"," +
-                "            \"lastUpdatedDatetime\": \"2021-10-21T11:32:33\"" +
                 "        }" +
                 "    ]" +
                 "}"
