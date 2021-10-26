@@ -270,7 +270,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(answers?.get("upw_allergies_details")).isEqualTo(listOf("Nut Allergy"))
       assertThat(answers?.get("upw_pregnancy")).isEqualTo(listOf("NO"))
       assertThat(answers?.get("upw_pregnancy_details")).isEqualTo(null)
-      assertThat(answers?.get("upw_caring_commitments")).isEqualTo(listOf("Is a Primary Carer"))
+      assertThat(answers?.get("upw_caring_commitments")).isEqualTo(listOf("YES"))
       assertThat(answers?.get("upw_caring_commitments_details")).isEqualTo(listOf("Primary Carer"))
       assertThat(answers?.get("full_time_employment_or_education")).isEqualTo(listOf("Full-time employed (30 or more hours per week)"))
       assertThat(answers?.get("full_time_employment_or_education_notes")).isEqualTo(null)
