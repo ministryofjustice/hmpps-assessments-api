@@ -113,15 +113,15 @@ class EpisodeService(
         "array" -> (source.read<JSONArray>(jsonPathField).filterNotNull() as List<String>)
         "yesno" -> {
           if ((source.read<JSONArray>(jsonPathField).filterNotNull() as List<String>).size > 0)
-            listOf("Yes")
+            listOf("YES")
           else
-            listOf("No")
+            listOf("NO")
         }
         else -> listOf((source.read<JSONArray>(jsonPathField).filterNotNull() as List<String>).first().toString())
       }
     } catch (e: Exception) {
       return when (fieldType) {
-        "yesno" -> listOf("No")
+        "yesno" -> listOf("NO")
         else -> null
       }
     }
