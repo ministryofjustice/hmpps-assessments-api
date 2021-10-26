@@ -605,7 +605,8 @@ class CommunityApiMockServer : WireMockServer(9096) {
       contactDetails = ContactDetails(
         emailAddresses = listOf("address1@gmail.com", "address2@gmail.com"),
         phoneNumbers = listOf(
-          Phone("1838893", "MOBILE")
+          Phone("1838893", "MOBILE"),
+          Phone("0123456999", "TELEPHONE")
         ),
         addresses = listOf(
           Address(

@@ -111,7 +111,6 @@ VALUES ('1ea17930-d467-44c0-9e72-517747618acb', 'heading_personal_details', '202
 ('6ce641b7-5aaf-4c9f-aa0b-9c2cab42cfdb', 'heading_record_details', '2020-11-30 14:50:00', null, 'presentation: heading', null, 'Record details', null, null),
 ('70348c31-66aa-4e10-b0a5-4644e7fb85ff', 'gender', '2020-11-30 14:50:00', null, 'dropdown', '701e4016-3447-40d2-a9fb-cc5e7490fe70', 'Gender', null, 'GENDER'),
 ('d3951b8a-b250-4cf9-816b-91a438449c95', 'ethnicity', '2020-11-30 14:50:00', null, 'freetext', null, 'ETHNICITY', null, null),
-('5732b512-97c1-47d5-b7b8-beb3d6cfdec6', 'email_addresses', '2020-11-30 14:50:00', null, 'freetext', null, 'EMAIL', null, null),
 ('f08e99c0-37e0-4404-938c-5ad97bc96def', 'language', '2020-11-30 14:50:00', null, 'freetext', null, 'Offender Primary Language', null, null),
 ('b990ae07-5dbd-48d7-93f9-5a1c0a262da7', 'requires_interpreter', '2020-11-30 14:50:00', null, 'freetext', null, 'Offender requires interpreter', null, null),
 ('a127328c-7159-4ca0-9104-08950e59a843', 'allergies', '2020-11-30 14:50:00', null, 'freetext', null, 'Allergies', null, null),
