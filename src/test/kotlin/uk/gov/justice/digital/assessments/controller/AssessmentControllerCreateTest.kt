@@ -206,7 +206,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(answers?.get("pnc")).isEqualTo(listOf("A/1234560BA"))
       assertThat(answers?.get("ethnicity")).isEqualTo(listOf("Asian"))
       assertThat(answers?.get("gender_identity")).isEqualTo(listOf("F"))
-      assertThat(answers?.get("email_addresses")).isEqualTo(listOf("address1@gmail.com", "address2@gmail.com"))
+      assertThat(answers?.get("contact_email_addresses")).isEqualTo(listOf("address1@gmail.com", "address2@gmail.com"))
       assertThat(answers?.get("contact_mobile_phone_number")).isEqualTo(listOf("1838893"))
       assertThat(answers?.get("contact_phone_number")).isEqualTo(listOf("0123456999"))
       assertThat(answers?.get("contact_address_building_name")).isEqualTo(listOf("HMPPS Digital Studio"))
