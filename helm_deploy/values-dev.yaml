@@ -24,9 +24,6 @@ env:
   STUB_RESTRICTED: "D002593"
   STUB_OFFSET: "200"
 
-gotenberg:
-  replicaCount: 1
-
 ingress:
   enabled: true
   enable_allow_list: true
