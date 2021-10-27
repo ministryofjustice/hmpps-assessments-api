@@ -3,7 +3,3 @@ appVersion: "1.0"
 description: Helm chart for the HMPPS Assessments API
 name: hmpps-assessments-api
 version: 0.1.0
-
-dependencies:
-  - name: gotenberg
-    version: 0.1.0
