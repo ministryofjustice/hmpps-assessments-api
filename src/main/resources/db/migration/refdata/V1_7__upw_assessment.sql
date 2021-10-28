@@ -11,7 +11,8 @@ VALUES
 ('37943ca1-b977-410a-9e5a-75c2ab032abb', 'xs-s-m-l-xl-xxl-xxxl', '2021-09-27 14:50:00', null),
 ('ffe5ecbf-1669-46c9-b40f-4ac82dba0629', '3-4-5-6-7-8-9-10-11-12-13-14', '2021-09-27 14:50:00', null),
 ('550579fe-9d3d-4130-9210-6b60ec0dec5e', 'fulltime-parttime-no', '2021-09-27 14:50:00', null),
-('4e3cc956-41d6-47c1-a4d8-c084251fadb5', 'gender_identity', '2021-09-27 14:50:00', null)
+('4e3cc956-41d6-47c1-a4d8-c084251fadb5', 'gender_identity', '2021-09-27 14:50:00', null),
+('43e3b4e5-8e5e-4bbf-96c0-24b35ae2a613', 'declaration', '2021-09-27 14:50:00', null)
 ;
 
 INSERT INTO answer_schema (answer_schema_uuid, answer_schema_code, answer_schema_group_uuid, answer_start, answer_end, value, text)
@@ -49,6 +50,7 @@ VALUES
 ('3619f489-0e17-4702-a05c-a356836aeb79', 'non_binary', '4e3cc956-41d6-47c1-a4d8-c084251fadb5', '2021-09-27 14:50:00', null, 'NONE_BINARY', 'Non-binary'),
 ('f0e680b7-9bea-45aa-ab44-a8c6371dab66', 'prefer_to_self_describe', '4e3cc956-41d6-47c1-a4d8-c084251fadb5', '2021-09-27 14:50:00', null, 'PREFER_TO_SELF_DESCRIBE', 'Prefer to self-describe'),
 ('aa69c244-5c48-47cd-9fb3-c41ca027909c', 'prefer_no_to_say', '4e3cc956-41d6-47c1-a4d8-c084251fadb5', '2021-09-27 14:50:00', null, 'PREFER_NOT_TO_SAY', 'Prefer not to say'),
+('4f121212-5a7f-4ddf-9286-0843b9cdd913', 'signed', '43e3b4e5-8e5e-4bbf-96c0-24b35ae2a613', '2021-09-27 14:50:00', null, 'SIGNED', 'Sign declaration'),
 
 ('bb427a45-d7d4-44a3-8b68-de2428fd92ea', 'xs',  '37943ca1-b977-410a-9e5a-75c2ab032abb', '2021-09-27 14:50:00', null, 'XS', 'X-Small'),
 ('afe91b9f-0d1d-43ab-9dbe-7b81a73d67fa', 's',   '37943ca1-b977-410a-9e5a-75c2ab032abb', '2021-09-27 14:50:00', null, 'S', 'Small'),
@@ -261,7 +263,7 @@ VALUES
 ('451f6e52-a314-4e7d-83ca-afd8dfc6dc43', 'upw_footwear_size', '2021-09-27 14:50:00', null, 'dropdown', 'ffe5ecbf-1669-46c9-b40f-4ac82dba0629', 'Footwear', 'Size (UK)', 'FOOTWEAR_SIZE'),
 ('5b1046e3-53f1-44d8-97db-5fd543f4382c', 'upw_equipment_complete', '2021-09-27 14:50:00', null, 'radio', '8067ff6e-7400-4d1e-ae2a-87dee7e124ec', 'Mark this section as complete?', '', null),
 
-('7beed4f4-0f3b-4b16-85f0-90377a350f1e', 'upw_declaration_confirmation', '2021-09-27 14:50:00', null, 'checkbox', null, 'I confirm the individual has received details of their Community Payback Induction Session', null, ''),
+('7beed4f4-0f3b-4b16-85f0-90377a350f1e', 'upw_declaration_confirmation', '2021-09-27 14:50:00', null, 'checkbox', '43e3b4e5-8e5e-4bbf-96c0-24b35ae2a613', 'I confirm the individual has received details of their Community Payback Induction Session', null, ''),
 
 ('0f4e7e92-dd26-4b12-be34-abd5c2c86f68', 'mappa_nominal_description', '2020-11-30 14:50:00', null, 'freetext', null, 'MAPPA Nominal', null, null),
 ('c52856fc-34af-4538-9a48-5d017ed0babf', 'mappa_nominal_category', '2020-11-30 14:50:00', null, 'freetext', null, 'Category', null, null),
