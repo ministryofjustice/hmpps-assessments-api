@@ -287,7 +287,7 @@ class AssessmentUpdateService(
         episode.episodeUuid,
         episode.assessment.subject?.crn,
         episode.author,
-        mapOf("AssignedFrom" to currentAuthor.userName, "assignedTo" to episode.author.userName)
+        mapOf("assignedFrom" to currentAuthor.userName, "assignedTo" to episode.author.userName)
       )
     }
   }
