@@ -132,7 +132,7 @@ VALUES
 ('3b6e2dcc-311c-46ed-8bbf-7076cf1a704c', 'emergency_contact_address_county', '2021-09-27 14:50:00', null, 'freetext', null, 'County', null, null),
 ('ea4f4c75-f39f-4f4a-8bf8-5babc5c2ed2b', 'emergency_contact_address_postcode', '2021-09-27 14:50:00', null, 'freetext', null, 'Postcode', null, null),
 ('19c1ef38-d5d9-4d0a-8b45-ee344fd1b56d', 'emergency_contact_phone_number', '2021-09-27 14:50:00', null, 'freetext', null, 'Phone number', null, null),
-('07334e88-94ab-4121-ad51-1b9ae050a3cd', 'emergency_contact_mobile_phone_number', '2021-09-27 14:50:00', null, 'freetext', null, 'Phone number', null, null),
+('07334e88-94ab-4121-ad51-1b9ae050a3cd', 'emergency_contact_mobile_phone_number', '2021-09-27 14:50:00', null, 'freetext', null, 'Mobile phone number', null, null),
 ('c8a72834-64e9-41dd-a23d-52ea0f60ed64', 'upw_individual_details_complete', '2021-09-27 14:50:00', null, 'radio', '8067ff6e-7400-4d1e-ae2a-87dee7e124ec', 'Mark this section as complete?', '', null),
 
 ('5cefd241-cc51-4128-a343-cb7c438a9048', 'upw_cultural_religious_adjustment', '2021-09-27 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Cultural or religious adjustments?', null, null),
