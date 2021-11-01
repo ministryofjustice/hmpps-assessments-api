@@ -59,7 +59,8 @@ class AssessmentEntityTest {
           changeReason = "Change of Circs",
           createdDate = LocalDateTime.now(),
           assessmentSchemaCode = AssessmentSchemaCode.ROSH,
-          author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
+          author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
+          assessment = AssessmentEntity()
         )
       )
     )
@@ -92,6 +93,7 @@ class AssessmentEntityTest {
           createdDate = LocalDateTime.now(),
           assessmentSchemaCode = AssessmentSchemaCode.ROSH,
           author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
+          assessment = AssessmentEntity()
         )
       )
     )
@@ -112,6 +114,7 @@ class AssessmentEntityTest {
           endDate = LocalDateTime.now().minusDays(1),
           assessmentSchemaCode = AssessmentSchemaCode.ROSH,
           author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
+          assessment = AssessmentEntity()
         )
       )
     )

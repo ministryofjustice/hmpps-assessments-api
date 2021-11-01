@@ -9,7 +9,7 @@ import java.util.UUID
 data class AssessmentDto(
 
   @Schema(description = "Assessment UUID", example = "0e5e0848-6ab0-4b1b-a354-f7894913d8e4")
-  val assessmentUuid: UUID? = null,
+  val assessmentUuid: UUID,
 
   @Schema(description = "Created Date", example = "2020-01-02T16:00:00")
   val createdDate: LocalDateTime? = null,
@@ -27,13 +27,13 @@ data class AssessmentDto(
 
   companion object {
 
-    fun from(assessment: AssessmentEntity?): AssessmentDto {
+    fun from(assessment: AssessmentEntity): AssessmentDto {
       return AssessmentDto(
-        assessment?.assessmentUuid,
-        assessment?.createdDate,
-        assessment?.completedDate,
-        assessment?.subject.toSubjectDto(),
-        assessment?.let { AssessmentEpisodeDto.from(it.episodes) }
+        assessment.assessmentUuid,
+        assessment.createdDate,
+        assessment.completedDate,
+        assessment.subject.toSubjectDto(),
+        assessment.let { AssessmentEpisodeDto.from(it.episodes) }
       )
     }
 

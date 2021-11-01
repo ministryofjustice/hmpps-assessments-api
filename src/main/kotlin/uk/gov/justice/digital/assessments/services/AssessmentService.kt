@@ -22,6 +22,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEnt
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRepository
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
+import uk.gov.justice.digital.assessments.restclient.audit.AuditType
 import uk.gov.justice.digital.assessments.restclient.courtcaseapi.CourtCase
 import uk.gov.justice.digital.assessments.services.dto.ExternalSource
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
@@ -37,7 +38,8 @@ class AssessmentService(
   private val episodeService: EpisodeService,
   private val courtCaseClient: CourtCaseRestClient,
   private val oasysAssessmentUpdateService: OasysAssessmentUpdateService,
-  private val offenderService: OffenderService
+  private val offenderService: OffenderService,
+  private val auditService: AuditService
 ) {
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
@@ -82,6 +84,13 @@ class AssessmentService(
       crn = crn,
       source = ExternalSource.DELIUS.name,
       eventId = eventId.toString()
+    )
+    auditService.createAuditEvent(
+      AuditType.ARN_ASSESSMENT_CREATED,
+      assessmentUuid,
+      episode.episodeUuid,
+      crn,
+      episode.author
     )
     log.info("New episode created for assessment $assessmentUuid")
     return AssessmentEpisodeDto.from(episode)
@@ -161,7 +170,7 @@ class AssessmentService(
       assessmentSchemaCode = assessmentSchemaCode
     )
     subjectRepository.save(arnAssessment.subject?.copy(oasysOffenderPk = oasysOffenderPk))
-    createPrepopulatedEpisode(
+    val episode = createPrepopulatedEpisode(
       arnAssessment,
       "",
       oasysSetPK,
@@ -169,6 +178,13 @@ class AssessmentService(
       crn,
       ExternalSource.DELIUS.name,
       eventId.toString()
+    )
+    auditService.createAuditEvent(
+      AuditType.ARN_ASSESSMENT_CREATED,
+      arnAssessment.assessmentUuid,
+      episode.episodeUuid,
+      crn,
+      episode.author
     )
     return AssessmentDto.from(arnAssessment)
   }
@@ -210,7 +226,7 @@ class AssessmentService(
       assessmentSchemaCode = assessmentSchemaCode
     )
     subjectRepository.save(arnAssessment.subject?.copy(oasysOffenderPk = oasysOffenderPk))
-    createPrepopulatedEpisode(
+    val episode = createPrepopulatedEpisode(
       arnAssessment,
       "Court Request",
       oasysSetPK,
@@ -219,7 +235,13 @@ class AssessmentService(
       ExternalSource.COURT.name,
       courtSourceId(courtCode, caseNumber)
     )
-
+    auditService.createAuditEvent(
+      AuditType.ARN_ASSESSMENT_CREATED,
+      arnAssessment.assessmentUuid,
+      episode.episodeUuid,
+      crn,
+      episode.author
+    )
     return AssessmentDto.from(arnAssessment)
   }
 

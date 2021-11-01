@@ -38,7 +38,7 @@ data class AssessmentEpisodeEntity(
 
   @ManyToOne
   @JoinColumn(name = "assessment_uuid", referencedColumnName = "assessment_uuid")
-  val assessment: AssessmentEntity? = null,
+  val assessment: AssessmentEntity,
 
   @Column(name = "assessment_schema_code")
   @Enumerated(EnumType.STRING)

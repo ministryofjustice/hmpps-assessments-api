@@ -36,6 +36,7 @@ private val episode = AssessmentEpisodeEntity(
   assessmentSchemaCode = AssessmentSchemaCode.ROSH,
   createdDate = LocalDateTime.now(),
   author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
+  assessment = AssessmentEntity()
 )
 private val assessment = AssessmentEntity(episodes = mutableListOf(episode))
 private val referenceDataElement = RefElementDto("code", "short description", "long description")

@@ -2,7 +2,9 @@ package uk.gov.justice.digital.assessments.services
 
 import io.mockk.every
 import io.mockk.junit5.MockKExtension
+import io.mockk.justRun
 import io.mockk.mockk
+import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.DisplayName
@@ -22,6 +24,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEnt
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRepository
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
+import uk.gov.justice.digital.assessments.restclient.audit.AuditType
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -38,6 +41,7 @@ class AssessmentServiceTest {
   private val episodeService: EpisodeService = mockk()
   private val offenderService: OffenderService = mockk()
   private val oasysAssessmentUpdateService: OasysAssessmentUpdateService = mockk()
+  private val auditService: AuditService = mockk()
 
   private val assessmentsService = AssessmentService(
     assessmentRepository,
@@ -47,7 +51,8 @@ class AssessmentServiceTest {
     episodeService,
     courtCaseRestClient,
     oasysAssessmentUpdateService,
-    offenderService
+    offenderService,
+    auditService
   )
 
   private val assessmentUuid = UUID.randomUUID()
@@ -82,6 +87,7 @@ class AssessmentServiceTest {
     @Test
     fun `create new episode`() {
       val assessment: AssessmentEntity = mockk()
+      justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
       every { assessment.assessmentUuid } returns assessmentUuid
       every { offenderService.validateUserAccess(crn) } returns mockk()
       every { assessment.assessmentId } returns 0
@@ -129,6 +135,17 @@ class AssessmentServiceTest {
 
       assertThat(episodeDto.assessmentUuid).isEqualTo(assessmentUuid)
       assertThat(episodeDto.episodeUuid).isEqualTo(episodeUuid1)
+
+      verify(exactly = 1) {
+        auditService.createAuditEvent(
+          AuditType.ARN_ASSESSMENT_CREATED,
+          assessmentUuid,
+          episodeDto.episodeUuid,
+          crn,
+          any(),
+          any()
+        )
+      }
     }
 
     @Test
@@ -144,6 +161,7 @@ class AssessmentServiceTest {
             author = AuthorEntity(
               userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"
             ),
+            assessment = AssessmentEntity()
           ),
           AssessmentEpisodeEntity(
             episodeId = episodeId2,
@@ -156,6 +174,7 @@ class AssessmentServiceTest {
               userAuthSource = "source",
               userFullName = "full name"
             ),
+            assessment = AssessmentEntity()
           )
         )
       )
@@ -194,6 +213,7 @@ class AssessmentServiceTest {
               userAuthSource = "source",
               userFullName = "full name"
             ),
+            assessment = AssessmentEntity()
           ),
           AssessmentEpisodeEntity(
             episodeId = episodeId2,
@@ -207,6 +227,7 @@ class AssessmentServiceTest {
               userAuthSource = "source",
               userFullName = "full name"
             ),
+            assessment = AssessmentEntity()
           )
         )
       )
@@ -257,6 +278,7 @@ class AssessmentServiceTest {
               userAuthSource = "source",
               userFullName = "full name"
             ),
+            assessment = AssessmentEntity()
           ),
           AssessmentEpisodeEntity(
             episodeId = episodeId2,
@@ -269,6 +291,7 @@ class AssessmentServiceTest {
               userAuthSource = "source",
               userFullName = "full name"
             ),
+            assessment = AssessmentEntity()
           )
         )
       )
@@ -302,6 +325,7 @@ class AssessmentServiceTest {
               userAuthSource = "source",
               userFullName = "full name"
             ),
+            assessment = AssessmentEntity()
           ),
           AssessmentEpisodeEntity(
             episodeId = episodeId3,
@@ -317,6 +341,7 @@ class AssessmentServiceTest {
               userAuthSource = "source",
               userFullName = "full name"
             ),
+            assessment = AssessmentEntity()
           ),
           AssessmentEpisodeEntity(
             episodeId = episodeId2,
@@ -332,6 +357,7 @@ class AssessmentServiceTest {
               userAuthSource = "source",
               userFullName = "full name"
             ),
+            assessment = AssessmentEntity()
           ),
         )
       )
@@ -361,6 +387,7 @@ class AssessmentServiceTest {
               userAuthSource = "source",
               userFullName = "full name"
             ),
+            assessment = AssessmentEntity()
           ),
           AssessmentEpisodeEntity(
             episodeId = episodeId3,
@@ -376,6 +403,7 @@ class AssessmentServiceTest {
               userAuthSource = "source",
               userFullName = "full name"
             ),
+            assessment = AssessmentEntity()
           ),
           AssessmentEpisodeEntity(
             episodeId = episodeId2,
@@ -391,6 +419,7 @@ class AssessmentServiceTest {
               userAuthSource = "source",
               userFullName = "full name"
             ),
+            assessment = AssessmentEntity()
           ),
         )
       )
@@ -422,6 +451,7 @@ class AssessmentServiceTest {
               userAuthSource = "source",
               userFullName = "full name"
             ),
+            assessment = AssessmentEntity()
           )
         )
       )
@@ -453,6 +483,7 @@ class AssessmentServiceTest {
               userAuthSource = "source",
               userFullName = "full name"
             ),
+            assessment = AssessmentEntity()
           )
         )
       )

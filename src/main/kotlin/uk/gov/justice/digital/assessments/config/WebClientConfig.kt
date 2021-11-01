@@ -34,6 +34,9 @@ class WebClientConfig {
   @Value("\${community-api.base-url}")
   private lateinit var communityApiBaseUrl: String
 
+  @Value("\${audit.base-url}")
+  private lateinit var auditBaseUrl: String
+
   @Value("\${feature.flags.disable-auth:false}")
   private val disableAuthentication = false
 
@@ -89,6 +92,15 @@ class WebClientConfig {
     return AuthenticatingRestClient(
       webClientFactory(communityApiBaseUrl, authorizedClientManager, bufferByteSize),
       "community-api-client",
+      disableAuthentication
+    )
+  }
+
+  @Bean
+  fun auditWebClient(authorizedClientManager: OAuth2AuthorizedClientManager): AuthenticatingRestClient {
+    return AuthenticatingRestClient(
+      webClientFactory(auditBaseUrl, authorizedClientManager, bufferByteSize),
+      "audit-client",
       disableAuthentication
     )
   }

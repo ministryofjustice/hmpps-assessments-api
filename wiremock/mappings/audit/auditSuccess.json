@@ -1,0 +1,17 @@
+{
+  "id": "4e842519-78b0-4449-b2b5-535ee1b81543",
+  "request": {
+    "method": "POST",
+    "urlPathPattern": "/audit",
+    "bodyPatterns" : [ {
+      "equalToJson" : "",
+      "ignoreExtraElements" : true
+    } ]
+  },
+  "response": {
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "status": 200
+    }
+}

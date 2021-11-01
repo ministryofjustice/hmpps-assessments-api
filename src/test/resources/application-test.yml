@@ -46,3 +46,6 @@ community-api:
 
 assess-risks-and-needs-api:
   base-url: http://localhost:9007
+
+audit:
+  base-url: http://localhost:9008

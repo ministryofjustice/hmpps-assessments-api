@@ -3,6 +3,7 @@ package uk.gov.justice.digital.assessments.services
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.slf4j.MDC
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
 import org.springframework.security.core.GrantedAuthority
@@ -24,6 +25,7 @@ import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.Scor
 import uk.gov.justice.digital.assessments.services.dto.PredictorType
 import uk.gov.justice.digital.assessments.services.dto.ScoreType
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
+import uk.gov.justice.digital.assessments.utils.RequestData
 import java.math.BigDecimal
 import java.util.UUID
 
@@ -54,6 +56,11 @@ class AssessmentUpdateServiceITTest() : IntegrationTest() {
       .build()
     val authorities: Collection<GrantedAuthority> = AuthorityUtils.createAuthorityList("SCOPE_read")
     SecurityContextHolder.getContext().authentication = JwtAuthenticationToken(jwt, authorities)
+    MDC.put(RequestData.USER_AREA_HEADER, "WWS")
+    MDC.put(RequestData.USER_ID_HEADER, "1")
+    MDC.put(RequestData.USER_NAME_HEADER, "SWITHLAM")
+    MDC.put(RequestData.USER_FULL_NAME_HEADER, "Stuart Withlam")
+    MDC.put(RequestData.USER_AUTH_SOURCE_HEADER, "delius")
   }
 
   @Test

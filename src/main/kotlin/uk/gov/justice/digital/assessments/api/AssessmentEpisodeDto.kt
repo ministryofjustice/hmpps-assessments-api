@@ -13,7 +13,7 @@ data class AssessmentEpisodeDto(
   val episodeUuid: UUID? = null,
 
   @Schema(description = "Assessment UUID foreign key", example = "1234")
-  val assessmentUuid: UUID? = null,
+  val assessmentUuid: UUID,
 
   @Schema(description = "Associated OASys assessment ID (OASysSetPK)", example = "1234")
   val oasysAssessmentId: Long? = null,
@@ -64,7 +64,7 @@ data class AssessmentEpisodeDto(
     ): AssessmentEpisodeDto {
       return AssessmentEpisodeDto(
         episode.episodeUuid,
-        episode.assessment?.assessmentUuid,
+        episode.assessment.assessmentUuid,
         episode.oasysSetPk,
         episode.changeReason,
         episode.createdDate,

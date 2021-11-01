@@ -11,7 +11,7 @@ import javax.persistence.Table
 
 @Entity
 @Table(name = "author", schema = "hmppsassessmentsapi")
-class AuthorEntity(
+data class AuthorEntity(
   @Id
   @Column(name = "author_id")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
