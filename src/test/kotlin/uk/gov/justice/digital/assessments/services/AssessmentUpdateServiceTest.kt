@@ -208,7 +208,7 @@ class AssessmentUpdateServiceTest {
           episode.episodeUuid,
           any(),
           author,
-          mapOf("AssignedFrom" to "USER", "assignedTo" to author.userName)
+          mapOf("assignedFrom" to "USER", "assignedTo" to author.userName)
         )
       }
     }

@@ -92,7 +92,7 @@ env:
         key: API_CLIENT_SECRET
 
   - name: AUDIT_BASE_URL
-    value: "{{ .Values.env.AUDIT_CLIENT_BASE_URL }}"
+    value: "{{ .Values.env.AUDIT_BASE_URL }}"
 
   - name: AUDIT_CLIENT_ID
     valueFrom:
