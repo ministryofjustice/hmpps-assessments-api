@@ -40,6 +40,7 @@ abstract class IntegrationTest {
     internal val communityApiMockServer = CommunityApiMockServer()
     internal val assessmentApiMockServer = AssessmentApiMockServer()
     internal val assessRisksAndNeedsApiMockServer = AssessRisksAndNeedsApiMockServer()
+    internal val auditApiMockServer = AuditMockServer()
 
     @BeforeAll
     @JvmStatic
@@ -49,6 +50,7 @@ abstract class IntegrationTest {
       communityApiMockServer.start()
       assessmentApiMockServer.start()
       assessRisksAndNeedsApiMockServer.start()
+      auditApiMockServer.start()
     }
 
     @AfterAll
@@ -59,6 +61,7 @@ abstract class IntegrationTest {
       communityApiMockServer.stop()
       assessmentApiMockServer.stop()
       assessRisksAndNeedsApiMockServer.stop()
+      auditApiMockServer.stop()
     }
   }
 
@@ -83,6 +86,7 @@ abstract class IntegrationTest {
     communityApiMockServer.stubGetUserAccess()
     assessmentApiMockServer.stubGetAssessment()
     assessRisksAndNeedsApiMockServer.resetAll()
+    auditApiMockServer.stubAuditEvents()
   }
 
   @AfterEach

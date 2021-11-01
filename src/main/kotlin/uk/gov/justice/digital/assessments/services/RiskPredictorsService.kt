@@ -40,7 +40,7 @@ class RiskPredictorsService(
   fun getPredictorResults(episodeUuid: UUID, final: Boolean = false): List<PredictorScoresDto> {
     val episode = episodeRepository.findByEpisodeUuid(episodeUuid)
       ?: throw EntityNotFoundException("Episode with $episodeUuid not found")
-    episode.assessment?.subject?.crn?.let { offenderService.validateUserAccess(it) }
+    episode.assessment.subject?.crn?.let { offenderService.validateUserAccess(it) }
     return getPredictorResults(episode)
   }
 
@@ -131,8 +131,7 @@ class RiskPredictorsService(
   }
 
   private fun getEpisodeAssessmentUuid(episode: AssessmentEpisodeEntity): UUID {
-    return episode.assessment?.assessmentUuid
-      ?: throw EntityNotFoundException("Episode ${episode.episodeUuid} is not associated with an assessment")
+    return episode.assessment.assessmentUuid
   }
 
   private fun getDynamicScoringOffences(

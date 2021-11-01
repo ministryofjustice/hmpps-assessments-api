@@ -30,7 +30,7 @@ class OasysAssessmentUpdateService(
     episode: AssessmentEpisodeEntity,
     updatedEpisodeAnswers: Answers,
   ): AssessmentEpisodeUpdateErrors {
-    val offenderPk = episode.assessment?.subject?.oasysOffenderPk
+    val offenderPk = episode.assessment.subject?.oasysOffenderPk
     if (episode.oasysSetPk == null || offenderPk == null) {
       val errorMessage =
         "Unable to update OASys Assessment with keys type: ${episode.assessmentSchemaCode} oasysSet: ${episode.oasysSetPk} offenderPk: $offenderPk, values cant be null"

@@ -32,6 +32,7 @@ class OasysAssessmentServiceTest {
       endDate = LocalDateTime.now(),
       assessmentSchemaCode = AssessmentSchemaCode.ROSH,
       author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
+      assessment = AssessmentEntity()
     )
     val episode1 = AssessmentEpisodeEntity(
       episodeId = 456,
@@ -40,6 +41,7 @@ class OasysAssessmentServiceTest {
       endDate = LocalDateTime.now().minusDays(1),
       assessmentSchemaCode = AssessmentSchemaCode.ROSH,
       author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
+      assessment = AssessmentEntity()
     )
     val assessment = AssessmentEntity(
       assessmentId = 1232,

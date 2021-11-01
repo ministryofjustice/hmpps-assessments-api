@@ -90,7 +90,7 @@ class EpisodeService(
   }
 
   private fun loadFromDelius(episode: AssessmentEpisodeEntity, sourceEndpoint: String?): String? {
-    val crn = episode?.assessment?.subject?.crn
+    val crn = episode.assessment.subject?.crn
       ?: throw CrnIsMandatoryException("Crn not found for episode ${episode.episodeUuid}")
     val externalSourceEndpoint = sourceEndpoint
       ?: throw ExternalSourceEndpointIsMandatoryException("External source endpoint is mandatory for episode ${episode.episodeUuid}")

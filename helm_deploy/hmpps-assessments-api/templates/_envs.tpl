@@ -91,6 +91,21 @@ env:
         name: {{ template "app.name" . }}
         key: API_CLIENT_SECRET
 
+  - name: AUDIT_BASE_URL
+    value: "{{ .Values.env.AUDIT_CLIENT_BASE_URL }}"
+
+  - name: AUDIT_CLIENT_ID
+    valueFrom:
+      secretKeyRef:
+        name: {{ template "app.name" . }}
+        key: API_CLIENT_ID
+
+  - name: AUDIT_CLIENT_SECRET
+    valueFrom:
+      secretKeyRef:
+        name: {{ template "app.name" . }}
+        key: API_CLIENT_SECRET
+
   - name: DATABASE_USERNAME
     valueFrom:
       secretKeyRef:

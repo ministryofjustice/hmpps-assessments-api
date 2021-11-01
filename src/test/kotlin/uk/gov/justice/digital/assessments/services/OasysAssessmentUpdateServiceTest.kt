@@ -103,6 +103,7 @@ class OasysAssessmentUpdateServiceTest() {
       createdDate = LocalDateTime.now(),
       assessmentSchemaCode = AssessmentSchemaCode.ROSH,
       author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
+      assessment = AssessmentEntity()
     )
     val update = mapOf(questionCode1 to listOf("YES"))
 
@@ -162,6 +163,7 @@ class OasysAssessmentUpdateServiceTest() {
       episodeId = 128,
       assessmentSchemaCode = AssessmentSchemaCode.ROSH,
       author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
+      assessment = AssessmentEntity()
     )
     val update = UpdateAssessmentEpisodeDto(answers = mapOf(questionCode1 to listOf("Updated")))
     val updateAssessmentResponse =
@@ -176,7 +178,7 @@ class OasysAssessmentUpdateServiceTest() {
       episodeId = 128,
       assessmentSchemaCode = AssessmentSchemaCode.ROSH,
       author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
-
+      assessment = AssessmentEntity()
     )
     val completeAssessmentResponse =
       oasysAssessmentUpdateService.completeOASysAssessment(assessmentEpisode, null)

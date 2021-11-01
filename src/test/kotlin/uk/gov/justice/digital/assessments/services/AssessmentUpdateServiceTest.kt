@@ -1,7 +1,9 @@
 package uk.gov.justice.digital.assessments.services
 
 import io.mockk.every
+import io.mockk.justRun
 import io.mockk.mockk
+import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeEach
@@ -17,6 +19,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.OasysAssessmentType
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.EpisodeRepository
+import uk.gov.justice.digital.assessments.restclient.audit.AuditType
 import uk.gov.justice.digital.assessments.services.dto.AssessmentEpisodeUpdateErrors
 import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
 import uk.gov.justice.digital.assessments.testutils.Verify
@@ -32,6 +35,7 @@ class AssessmentUpdateServiceTest {
   private val oasysAssessmentUpdateService: OasysAssessmentUpdateService = mockk()
   private val assessmentService: AssessmentService = mockk()
   private val authorService: AuthorService = mockk()
+  private val auditService: AuditService = mockk()
 
   private val assessmentUpdateService = AssessmentUpdateService(
     assessmentRepository,
@@ -40,7 +44,7 @@ class AssessmentUpdateServiceTest {
     riskPredictorsService,
     oasysAssessmentUpdateService,
     assessmentService,
-    authorService
+    authorService, auditService
   )
 
   private val assessmentUuid = UUID.randomUUID()
@@ -73,7 +77,7 @@ class AssessmentUpdateServiceTest {
           newQuestionCode to listOf("trousers")
         )
       )
-
+      justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
       every {
         oasysAssessmentUpdateService.updateOASysAssessment(
           assessment.episodes.first(),
@@ -110,7 +114,7 @@ class AssessmentUpdateServiceTest {
           existingQuestionCode to listOf("new free text")
         )
       )
-
+      justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
       every {
         oasysAssessmentUpdateService.updateOASysAssessment(
           assessment.episodes.first(),
@@ -132,6 +136,84 @@ class AssessmentUpdateServiceTest {
     }
 
     @Test
+    fun `audit updating answers without author change`() {
+      val answers = mutableMapOf(
+        existingQuestionCode to listOf("free text")
+      )
+      val assessment = assessmentEntity(answers)
+      val newQuestionCode = "new_question_code"
+      val updatedAnswers = UpdateAssessmentEpisodeDto(
+        mutableMapOf(
+          newQuestionCode to listOf("trousers")
+        )
+      )
+      justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
+      every {
+        oasysAssessmentUpdateService.updateOASysAssessment(any(), any())
+      } returns AssessmentEpisodeUpdateErrors()
+      every { assessmentRepository.save(any()) } returns null
+      val author = AuthorEntity(authorUuid = UUID.randomUUID(), userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
+      every { authorService.getOrCreateAuthor() } returns author
+
+      val episode = assessmentUpdateService.updateEpisode(assessment.episodes.first(), updatedAnswers)
+      verify(exactly = 1) {
+        auditService.createAuditEvent(
+          AuditType.ARN_ASSESSMENT_UPDATED,
+          episode.assessmentUuid,
+          episode.episodeUuid,
+          any(),
+          author,
+          any()
+        )
+      }
+    }
+
+    @Test
+    fun `audit updating answers with author change`() {
+      val answers = mutableMapOf(
+        existingQuestionCode to listOf("free text")
+      )
+      val assessment = assessmentEntity(answers)
+      val newQuestionCode = "new_question_code"
+      val updatedAnswers = UpdateAssessmentEpisodeDto(
+        mutableMapOf(
+          newQuestionCode to listOf("trousers")
+        )
+      )
+      justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
+      every {
+        oasysAssessmentUpdateService.updateOASysAssessment(any(), any())
+      } returns AssessmentEpisodeUpdateErrors()
+      every { assessmentRepository.save(any()) } returns null
+      val author = AuthorEntity(authorUuid = UUID.randomUUID(), userId = "2", userName = "USER2", userAuthSource = "source", userFullName = "full name 2")
+      every { authorService.getOrCreateAuthor() } returns author
+
+      val episode = assessmentUpdateService.updateEpisode(assessment.episodes.first(), updatedAnswers)
+
+      verify(exactly = 1) {
+        auditService.createAuditEvent(
+          AuditType.ARN_ASSESSMENT_UPDATED,
+          episode.assessmentUuid,
+          episode.episodeUuid,
+          any(),
+          author,
+          null
+        )
+      }
+
+      verify(exactly = 1) {
+        auditService.createAuditEvent(
+          AuditType.ARN_ASSESSMENT_REASSIGNED,
+          episode.assessmentUuid,
+          episode.episodeUuid,
+          any(),
+          author,
+          mapOf("AssignedFrom" to "USER", "assignedTo" to author.userName)
+        )
+      }
+    }
+
+    @Test
     fun `remove answers for an existing question for an episode`() {
       val answers = mutableMapOf(
         existingQuestionCode to listOf("free text", "fruit loops", "biscuits")
@@ -143,7 +225,7 @@ class AssessmentUpdateServiceTest {
           existingQuestionCode to listOf("fruit loops", "custard")
         )
       )
-
+      justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
       every {
         oasysAssessmentUpdateService.updateOASysAssessment(
           assessment.episodes.first(),
@@ -181,7 +263,12 @@ class AssessmentUpdateServiceTest {
             assessment = AssessmentEntity(assessmentUuid = assessmentUuid),
             createdDate = LocalDateTime.now(),
             assessmentSchemaCode = AssessmentSchemaCode.ROSH,
-            author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
+            author = AuthorEntity(
+              userId = "1",
+              userName = "USER",
+              userAuthSource = "source",
+              userFullName = "full name"
+            ),
           )
         )
       )
@@ -211,6 +298,7 @@ class AssessmentUpdateServiceTest {
           createdDate = LocalDateTime.now(),
           assessmentSchemaCode = AssessmentSchemaCode.ROSH,
           author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
+          assessment = AssessmentEntity()
         ),
       )
     )

@@ -2,6 +2,7 @@ package uk.gov.justice.digital.assessments.services
 
 import io.mockk.every
 import io.mockk.junit5.MockKExtension
+import io.mockk.justRun
 import io.mockk.mockk
 import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
@@ -25,6 +26,7 @@ import uk.gov.justice.digital.assessments.jpa.repositories.assessments.Assessmen
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRepository
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import uk.gov.justice.digital.assessments.restclient.ExternalService
+import uk.gov.justice.digital.assessments.restclient.audit.AuditType
 import uk.gov.justice.digital.assessments.restclient.courtcaseapi.CourtCase
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiForbiddenException
@@ -45,6 +47,7 @@ class AssessmentServiceCreateTest {
   private val offenderService: OffenderService = mockk()
   private val oasysAssessmentUpdateService: OasysAssessmentUpdateService = mockk()
   private val assessmentSchemaService: AssessmentSchemaService = mockk()
+  private val auditService: AuditService = mockk()
 
   private val assessmentsService = AssessmentService(
     assessmentRepository,
@@ -54,7 +57,8 @@ class AssessmentServiceCreateTest {
     episodeService,
     courtCaseRestClient,
     oasysAssessmentUpdateService,
-    offenderService
+    offenderService,
+    auditService
   )
 
   private val assessmentUuid = UUID.randomUUID()
@@ -82,6 +86,7 @@ class AssessmentServiceCreateTest {
   inner class CreatingDeliusAssessments {
     @Test
     fun `create new offender with new assessment from delius event id and crn`() {
+      justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
       every { subjectRepository.findByCrn(crn) } returns null
       every { offenderService.validateUserAccess("X12345") } returns mockk()
       every { offenderService.getOffender("X12345") } returns OffenderDto(dateOfBirth = LocalDate.of(1989, 1, 1))
@@ -125,6 +130,7 @@ class AssessmentServiceCreateTest {
 
     @Test
     fun `return existing assessment from delius event id and crn if one already exists`() {
+      justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
       every { offenderService.validateUserAccess("X12345") } returns mockk()
       every { subjectRepository.findByCrn(crn) } returns
         SubjectEntity(
@@ -205,6 +211,59 @@ class AssessmentServiceCreateTest {
       assertThat(exception.message).isEqualTo("User does not have permission to access offender with CRN $crn")
       verify(exactly = 0) { assessmentRepository.save(any()) }
     }
+
+    @Test
+    fun `audit create assessment from delius`() {
+      justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
+      every { subjectRepository.findByCrn(crn) } returns null
+      every { offenderService.validateUserAccess("X12345") } returns mockk()
+      every { offenderService.getOffender("X12345") } returns OffenderDto(dateOfBirth = LocalDate.of(1989, 1, 1))
+      every {
+        oasysAssessmentUpdateService.createOffenderAndOasysAssessment(
+          crn,
+          eventId,
+          assessmentSchemaCode
+        )
+      } returns Pair(
+        oasysOffenderPk,
+        oasysSetPk
+      )
+      every { offenderService.getOffence(crn, eventId) } returns OffenceDto(
+        offenceCode = "Code",
+        codeDescription = "Code description",
+        offenceSubCode = "Sub-code",
+        subCodeDescription = "Sub-code description"
+      )
+      every { episodeService.prepopulate(any(), assessmentSchemaCode) } returnsArgument 0
+      every { subjectRepository.save(any()) } returns SubjectEntity(
+        name = "name",
+        pnc = "PNC",
+        crn = "X12345",
+        dateOfBirth = LocalDate.of(1989, 1, 1),
+        createdDate = LocalDateTime.now(),
+      )
+      every { assessmentRepository.save(any()) } returns AssessmentEntity(assessmentId = assessmentId)
+      val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
+      every { authorService.getOrCreateAuthor() } returns author
+
+      val assessment = assessmentsService.createNewAssessment(
+        CreateAssessmentDto(
+          deliusEventId = eventId,
+          crn = crn,
+          assessmentSchemaCode = assessmentSchemaCode
+        )
+      )
+      verify(exactly = 1) {
+        auditService.createAuditEvent(
+          AuditType.ARN_ASSESSMENT_CREATED,
+          assessment.assessmentUuid,
+          assessment.episodes?.first()?.episodeUuid,
+          crn,
+          any(),
+          any()
+        )
+      }
+    }
   }
 
   @Nested
@@ -218,6 +277,7 @@ class AssessmentServiceCreateTest {
 
     @Test
     fun `create new assessment from court`() {
+      justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
       every { subjectRepository.findByCrn(crn) } returns null
       every { subjectRepository.save(any()) } returns SubjectEntity(
         name = "name",
@@ -268,6 +328,7 @@ class AssessmentServiceCreateTest {
       )
       val assessment = AssessmentEntity(assessmentId = 1, subject = subjectEntity)
       val subject = subjectEntity.copy(assessments = listOf(assessment))
+      justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
       every { subjectRepository.findByCrn(crn) } returns subject
       every { courtCaseRestClient.getCourtCase(courtCode, existingCaseNumber) } returns CourtCase(
         defendantDob = LocalDate.now(),
@@ -296,6 +357,58 @@ class AssessmentServiceCreateTest {
 
       verify(exactly = 1) { subjectRepository.save(updatedSubject) }
       verify(exactly = 0) { assessmentRepository.save(any()) }
+    }
+
+    @Test
+    fun `audit create assessment from court`() {
+      justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
+      every { subjectRepository.findByCrn(crn) } returns null
+      every { subjectRepository.save(any()) } returns SubjectEntity(
+        name = "name",
+        pnc = "PNC",
+        crn = crn,
+        dateOfBirth = LocalDate.of(1989, 1, 1),
+        createdDate = LocalDateTime.now(),
+      )
+      every { assessmentRepository.save(any()) } returns AssessmentEntity(assessmentId = assessmentId)
+      every { courtCaseRestClient.getCourtCase(courtCode, caseNumber) } returns CourtCase(
+        crn = crn,
+        defendantDob = LocalDate.of(1989, 1, 1)
+      )
+      every {
+        oasysAssessmentUpdateService.createOffenderAndOasysAssessment(
+          crn = crn,
+          assessmentSchemaCode = assessmentSchemaCode
+        )
+      } returns Pair(oasysOffenderPk, oasysSetPk)
+
+      every { offenderService.getOffence(crn, eventId) } returns OffenceDto(
+        offenceCode = "Code",
+        codeDescription = "Code description",
+        offenceSubCode = "Sub-code",
+        subCodeDescription = "Sub-code description"
+      )
+      every { episodeService.prepopulate(any(), assessmentSchemaCode) } returnsArgument 0
+      val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
+      every { authorService.getOrCreateAuthor() } returns author
+
+      val assessment = assessmentsService.createNewAssessment(
+        CreateAssessmentDto(
+          courtCode = courtCode,
+          caseNumber = caseNumber,
+          assessmentSchemaCode = assessmentSchemaCode
+        )
+      )
+      verify(exactly = 1) {
+        auditService.createAuditEvent(
+          AuditType.ARN_ASSESSMENT_CREATED,
+          assessment.assessmentUuid,
+          assessment.episodes?.first()?.episodeUuid,
+          crn,
+          any(),
+          any()
+        )
+      }
     }
   }
 }

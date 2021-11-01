@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.OasysAssessmentType
@@ -30,6 +31,7 @@ class AssessmentUpdateServiceTablesTest {
   private val oasysAssessmentUpdateService: OasysAssessmentUpdateService = mockk()
   private val assessmentService: AssessmentService = mockk()
   private val authorService: AuthorService = mockk()
+  private val auditService: AuditService = mockk()
 
   private val assessmentUpdateService = AssessmentUpdateService(
     assessmentRepository,
@@ -38,7 +40,8 @@ class AssessmentUpdateServiceTablesTest {
     riskPredictorsService,
     oasysAssessmentUpdateService,
     assessmentService,
-    authorService
+    authorService,
+    auditService
   )
 
   private val tableName = "test_table"
@@ -65,6 +68,7 @@ class AssessmentUpdateServiceTablesTest {
     episodeUuid = episodeUuid,
     assessmentSchemaCode = AssessmentSchemaCode.ROSH,
     author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
+    assessment = AssessmentEntity()
   )
 
   @BeforeEach
@@ -180,6 +184,7 @@ class AssessmentUpdateServiceTablesTest {
         )
       ),
       author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
+      assessment = AssessmentEntity()
     )
 
     val requestBody = UpdateAssessmentEpisodeDto(
@@ -217,6 +222,7 @@ class AssessmentUpdateServiceTablesTest {
       episodeUuid = episodeUuid,
       assessmentSchemaCode = AssessmentSchemaCode.ROSH,
       author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
+      assessment = AssessmentEntity(),
       tables = mutableMapOf(
         tableName to mutableListOf(
           mapOf(
@@ -261,6 +267,7 @@ class AssessmentUpdateServiceTablesTest {
       episodeUuid = episodeUuid,
       assessmentSchemaCode = AssessmentSchemaCode.ROSH,
       author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
+      assessment = AssessmentEntity(),
       tables = mutableMapOf(
         tableName to mutableListOf(
           mapOf(
@@ -308,6 +315,7 @@ class AssessmentUpdateServiceTablesTest {
       episodeUuid = episodeUuid,
       assessmentSchemaCode = AssessmentSchemaCode.ROSH,
       author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
+      assessment = AssessmentEntity(),
       tables = mutableMapOf(
         tableName to mutableListOf(
           mapOf(
