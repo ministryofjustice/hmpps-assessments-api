@@ -51,12 +51,14 @@ class AuditServiceTest {
         who = RequestData.getUserName(),
         service = serviceName,
         `when` = Instant.now(clock),
-        details = AuditDetail(
-          crn = crn,
-          assessmentUuid = assessmentUUID,
-          episodeUuid = episodeUUID,
-          author = authorEntity,
-          null
+        details = objectMapper.writeValueAsString(
+          AuditDetail(
+            crn = crn,
+            assessmentUuid = assessmentUUID,
+            episodeUuid = episodeUUID,
+            author = authorEntity,
+            null
+          )
         )
       )
       justRun { auditRestClient.createAuditEvent(capture(actualAuditEvent)) }
@@ -75,18 +77,20 @@ class AuditServiceTest {
         who = RequestData.getUserName(),
         service = serviceName,
         `when` = Instant.now(clock),
-        details = AuditDetail(
-          crn = crn,
-          assessmentUuid = assessmentUUID,
-          episodeUuid = episodeUUID,
-          author = authorEntity,
-          additionalDetails = """{"allocatedFrom":"user 1"}"""
+        details = objectMapper.writeValueAsString(
+          AuditDetail(
+            crn = crn,
+            assessmentUuid = assessmentUUID,
+            episodeUuid = episodeUUID,
+            author = authorEntity,
+            additionalDetails = mapOf("allocatedFrom" to "user 1")
+          )
         )
       )
 
       justRun { auditRestClient.createAuditEvent(capture(actualAuditEvent)) }
       auditService.createAuditEvent(auditType, assessmentUUID, episodeUUID, crn, authorEntity, mapOf("allocatedFrom" to "user 1"))
-      assertThat(expectedAuditEvent).isEqualTo(actualAuditEvent.captured)
+      assertThat(actualAuditEvent.captured).isEqualTo(expectedAuditEvent)
     }
   }
 
@@ -100,14 +104,17 @@ class AuditServiceTest {
         who = RequestData.getUserName(),
         service = serviceName,
         `when` = Instant.now(clock),
-        details = AuditDetail(
-          crn = crn,
-          assessmentUuid = assessmentUUID,
-          episodeUuid = episodeUUID,
-          author = authorEntity,
-          null
+        details = objectMapper.writeValueAsString(
+          AuditDetail(
+            crn = crn,
+            assessmentUuid = assessmentUUID,
+            episodeUuid = episodeUUID,
+            author = authorEntity,
+            null
+          )
         )
       )
+
       every { auditRestClient.createAuditEvent(capture(actualAuditEvent)) } throws AuditFailureException("An error occurred")
       assertDoesNotThrow {
         auditService.createAuditEvent(auditType, assessmentUUID, episodeUUID, crn, authorEntity, null)
