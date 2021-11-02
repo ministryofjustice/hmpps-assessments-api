@@ -29,19 +29,21 @@ class AuditService(
     val log: Logger = LoggerFactory.getLogger(this::class.java)
   }
 
-  fun createAuditEvent(auditType: AuditType, assessmentUUID: UUID, episodeUUID: UUID?, crn: String?, author: AuthorEntity?, additionalDetails: Any? = null) {
+  fun createAuditEvent(auditType: AuditType, assessmentUUID: UUID, episodeUUID: UUID?, crn: String?, author: AuthorEntity?, additionalDetails: Map<String, Any>? = null) {
 
     val auditEvent = AuditEvent(
       what = auditType.name,
       who = RequestData.getUserName(),
       service = serviceName,
       `when` = Instant.now(clock),
-      details = AuditDetail(
-        crn = crn,
-        assessmentUuid = assessmentUUID,
-        episodeUuid = episodeUUID,
-        author = author,
-        if (additionalDetails != null) mapper.writeValueAsString(additionalDetails) else null
+      details = mapper.writeValueAsString(
+        AuditDetail(
+          crn = crn,
+          assessmentUuid = assessmentUUID,
+          episodeUuid = episodeUUID,
+          author = author,
+          additionalDetails
+        )
       )
     )
     // Initially log audit failures as errors,

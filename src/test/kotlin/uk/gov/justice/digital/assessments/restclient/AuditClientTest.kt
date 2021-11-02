@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.assessments.restclient
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
@@ -16,25 +17,28 @@ import java.util.UUID
 class AuditClientTest : IntegrationTest() {
   @Autowired
   internal lateinit var auditClient: AuditRestClient
+  private val mapper = ObjectMapper()
 
   val auditEvent = AuditEvent(
     what = AuditType.ARN_ASSESSMENT_CREATED.name,
     who = "user@justice.gov.uk",
     service = "hmpps-assessments-api",
     `when` = Instant.now(),
-    details = AuditDetail(
-      "X123456C",
-      UUID.randomUUID(),
-      UUID.randomUUID(),
-      AuthorEntity(
-        1,
+    details = mapper.writeValueAsString(
+      AuditDetail(
+        "X123456C",
         UUID.randomUUID(),
-        "user id",
-        "AUser",
-        "DELIUS",
-        "Full Name"
-      ),
-      null
+        UUID.randomUUID(),
+        AuthorEntity(
+          1,
+          UUID.randomUUID(),
+          "user id",
+          "AUser",
+          "DELIUS",
+          "Full Name"
+        ),
+        null
+      )
     )
   )
 

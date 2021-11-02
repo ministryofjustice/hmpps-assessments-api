@@ -9,7 +9,7 @@ data class AuditEvent(
   val `when`: Instant,
   val who: String?,
   val service: String?,
-  val details: AuditDetail
+  val details: String?
 )
 
 data class AuditDetail(

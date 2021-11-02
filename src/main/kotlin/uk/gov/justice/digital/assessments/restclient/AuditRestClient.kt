@@ -28,7 +28,7 @@ class AuditRestClient {
   fun createAuditEvent(
     auditEvent: AuditEvent
   ) {
-    AssessRisksAndNeedsApiRestClient.log.info("Submitting audit event ${auditEvent.what} for CRN ${auditEvent.details.crn}")
+    AssessRisksAndNeedsApiRestClient.log.info("Submitting audit event ${auditEvent.what} for User ${auditEvent.who}")
     val path = "$auditPathTemplate/audit"
     webClient.post(path, auditEvent)
       .retrieve()
@@ -37,10 +37,10 @@ class AuditRestClient {
         Mono.error(
           AuditFailureException(
             "Failed to Audit event ${auditEvent.what} " +
-              "for CRN: ${auditEvent.details.crn} by user ${auditEvent.who} for reason ${it.message}"
+              "for User ${auditEvent.who} by user ${auditEvent.who} for reason ${it.message}"
           )
         )
       }
-      .block().also { log.info("Audited event ${auditEvent.what} for CRN ${auditEvent.details.crn}") }
+      .block().also { log.info("Audited event ${auditEvent.what} for User ${auditEvent.who}") }
   }
 }
