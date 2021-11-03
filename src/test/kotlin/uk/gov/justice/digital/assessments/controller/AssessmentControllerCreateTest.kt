@@ -274,10 +274,6 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(answers?.get("upw_caring_commitments_details")).isEqualTo(listOf("Primary Carer"))
       assertThat(answers?.get("upw_reading_writing_difficulties")).isEqualTo(listOf("YES"))
       assertThat(answers?.get("upw_reading_writing_difficulties_details")).isEqualTo(listOf("Cannot read"))
-
-      assertThat(answers?.get("mappa_nominal_description")).isEqualTo(listOf("MAPPA"))
-      assertThat(answers?.get("mappa_nominal_category")).isEqualTo(listOf("X9"))
-      assertThat(answers?.get("mappa_nominal_level")).isEqualTo(listOf("M0"))
     }
 
     @Test

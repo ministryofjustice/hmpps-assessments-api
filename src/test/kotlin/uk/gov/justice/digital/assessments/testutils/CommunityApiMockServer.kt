@@ -9,6 +9,9 @@ import com.github.tomakehurst.wiremock.http.HttpHeader
 import com.github.tomakehurst.wiremock.http.HttpHeaders
 import uk.gov.justice.digital.assessments.restclient.communityapi.Address
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
+import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityRegistration
+import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityRegistrationElement
+import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityRegistrations
 import uk.gov.justice.digital.assessments.restclient.communityapi.ContactDetails
 import uk.gov.justice.digital.assessments.restclient.communityapi.Disability
 import uk.gov.justice.digital.assessments.restclient.communityapi.DisabilityType
@@ -22,64 +25,6 @@ import uk.gov.justice.digital.assessments.restclient.communityapi.Type
 class CommunityApiMockServer : WireMockServer(9096) {
 
   private val objectMapper: ObjectMapper = jacksonObjectMapper().registerModules(JavaTimeModule())
-
-  fun stubGetOffenderRegistrations() {
-    stubFor(
-      WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/DX5678A/registrations"))
-        .willReturn(
-          WireMock.aResponse()
-            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
-            .withBody(
-              "{" +
-                "    \"registrations\": [" +
-                "        {" +
-                "            \"registrationId\": 2500233278," +
-                "            \"offenderId\": 2500275961," +
-                "            \"register\": {" +
-                "                \"code\": \"5\"," +
-                "                \"description\": \"Public Protection\"" +
-                "            }," +
-                "            \"type\": {" +
-                "                \"code\": \"MAPP\"," +
-                "                \"description\": \"MAPPA\"" +
-                "            }," +
-                "            \"riskColour\": \"Red\"," +
-                "            \"startDate\": \"2021-10-10\"," +
-                "            \"nextReviewDate\": \"2022-01-10\"," +
-                "            \"reviewPeriodMonths\": 3," +
-                "            \"notes\": \"Please Note - Category 3 offenders require multi-agency management at Level 2 or 3 and should not be recorded at Level 1.\"," +
-                "            \"registeringTeam\": {" +
-                "                \"code\": \"N07UTS\"," +
-                "                \"description\": \"Tiering Service\"" +
-                "            }," +
-                "            \"registeringOfficer\": {" +
-                "                \"code\": \"N07UTSO\"," +
-                "                \"forenames\": \"Tiering\"," +
-                "                \"surname\": \"Service\"," +
-                "                \"unallocated\": false" +
-                "            }," +
-                "            \"registeringProbationArea\": {" +
-                "                \"code\": \"N07\"," +
-                "                \"description\": \"NPS London\"" +
-                "            }," +
-                "            \"registerLevel\": {" +
-                "                \"code\": \"M0\"," +
-                "                \"description\": \"MAPPA Nominal (level to be determined)\"" +
-                "            }," +
-                "            \"registerCategory\": {" +
-                "                \"code\": \"X9\"," +
-                "                \"description\": \"All - Category to be determined\"" +
-                "            }," +
-                "            \"warnUser\": false," +
-                "            \"active\": true," +
-                "            \"numberOfPreviousDeregistrations\": 0" +
-                "        }" +
-                "    ]" +
-                "}"
-            )
-        )
-    )
-  }
 
   fun stubGetOffenderPersonalCircumstances() {
     stubFor(
@@ -432,6 +377,95 @@ class CommunityApiMockServer : WireMockServer(9096) {
 
     stubFor(
       WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/invalidNotKnow/all"))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withStatus(422)
+            .withBody("{\"status\":\"422\",\"developerMessage\":\"unprocessable\"}")
+        )
+    )
+  }
+
+  fun stubGetOffenderRegistrations() {
+    stubFor(
+      WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/DX12340A/registrations"))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withBody(
+              mapToJson(
+                CommunityRegistrations(
+                  listOf(
+                    CommunityRegistration(
+                      active = true,
+                      warnUser = true,
+                      riskColour = "Red",
+                      registerCategory = CommunityRegistrationElement("M2", "MAPPA Cat 2"),
+                      registerLevel = CommunityRegistrationElement("M1", "MAPPA Level 1"),
+                      type = CommunityRegistrationElement("MAPP", "MAPPA")
+                    ),
+                    CommunityRegistration(
+                      active = true,
+                      warnUser = true,
+                      riskColour = "Red",
+                      registerCategory = CommunityRegistrationElement("RC12", "Hate Crime - Disability"),
+                      type = CommunityRegistrationElement("IRMO", "Hate Crime"),
+                    ),
+                    CommunityRegistration(
+                      active = true,
+                      warnUser = false,
+                      riskColour = "Red",
+                      type = CommunityRegistrationElement("RHRH", "High RoSH")
+                    ),
+                  )
+                )
+              )
+            )
+        )
+    )
+
+    stubFor(
+      WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/invalidNotFound/registrations"))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withStatus(404)
+            .withBody("{\"status\":\"404\",\"developerMessage\":\"The offender is not found\"}")
+        )
+    )
+
+    stubFor(
+      WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/invalidBadRequest/registrations"))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withStatus(400)
+            .withBody("{\"status\":\"400\",\"developerMessage\":\"Invalid CRN invalidBadRequest\"}")
+        )
+    )
+
+    stubFor(
+      WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/invalidUnauthorized/registrations"))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withStatus(401)
+            .withBody("{\"status\":\"401\",\"developerMessage\":\"Not authorised\"}")
+        )
+    )
+
+    stubFor(
+      WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/invalidForbidden/registrations"))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withStatus(403)
+            .withBody("{\"status\":\"403\",\"developerMessage\":\"Forbidden\"}")
+        )
+    )
+
+    stubFor(
+      WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/invalidNotKnow/registrations"))
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
