@@ -39,7 +39,7 @@ class JwtAuthHelper {
     claims["name"] = fullName
     claims["auth_source"] = "delius"
     claims["user_id"] = "1"
-    claims["client_id"] = "offender-assessment-api"
+    claims["client_id"] = "hmpps-assessments-api"
     if (!roles.isNullOrEmpty()) claims["authorities"] = roles
     if (!scope.isNullOrEmpty()) claims["scope"] = scope
     return Jwts.builder()
