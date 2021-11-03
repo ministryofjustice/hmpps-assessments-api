@@ -272,9 +272,6 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(answers?.get("upw_pregnancy_details")).isEqualTo(null)
       assertThat(answers?.get("upw_caring_commitments")).isEqualTo(listOf("YES"))
       assertThat(answers?.get("upw_caring_commitments_details")).isEqualTo(listOf("Primary Carer"))
-      assertThat(answers?.get("upw_employment_education_details_fulltime")).isEqualTo(listOf("B01C"))
-      assertThat(answers?.get("upw_employment_education_details_parttime")).isEqualTo(listOf("B02C"))
-      assertThat(answers?.get("upw_employment_education")).isEqualTo(listOf("B09A"))
       assertThat(answers?.get("upw_reading_writing_difficulties")).isEqualTo(listOf("YES"))
       assertThat(answers?.get("upw_reading_writing_difficulties_details")).isEqualTo(listOf("Cannot read"))
 
