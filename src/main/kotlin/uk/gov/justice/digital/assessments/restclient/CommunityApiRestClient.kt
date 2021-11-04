@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityConvictionDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
+import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityRegistrations
 import uk.gov.justice.digital.assessments.restclient.communityapi.UserAccessResponse
 import uk.gov.justice.digital.assessments.services.exceptions.ExceptionReason
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiForbiddenException
@@ -83,6 +84,32 @@ class CommunityApiRestClient {
         )
       }
       .bodyToMono(object : ParameterizedTypeReference<List<CommunityConvictionDto>>() {})
+      .block()
+  }
+
+  fun getRegistrations(crn: String): CommunityRegistrations? {
+    log.info("Client retrieving registrations for crn: $crn")
+    val path = "secure/offenders/crn/$crn/registrations"
+    return webClient
+      .get(path)
+      .retrieve()
+      .onStatus(HttpStatus::is4xxClientError) {
+        handle4xxError(
+          it,
+          HttpMethod.GET,
+          path,
+          ExternalService.COMMUNITY_API
+        )
+      }
+      .onStatus(HttpStatus::is5xxServerError) {
+        handle5xxError(
+          "Failed to retrieve registrations for crn: $crn",
+          HttpMethod.GET,
+          path,
+          ExternalService.COMMUNITY_API
+        )
+      }
+      .bodyToMono(object : ParameterizedTypeReference<CommunityRegistrations>() {})
       .block()
   }
 

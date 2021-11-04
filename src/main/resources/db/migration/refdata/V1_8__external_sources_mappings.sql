@@ -80,10 +80,5 @@ VALUES
 ('d48a7841-8398-4964-8fa9-30b932191296', 'upw_caring_commitments', 'UPW', 'DELIUS', '$.personalCircumstances[?(@.personalCircumstanceType.code==''I'')].personalCircumstanceSubType.description', 'yesno', 'secure/offenders/crn/$crn/personalCircumstances'),
 ('e2765bb6-5d2a-47c5-babb-d8cbd9842c26', 'upw_caring_commitments_details', 'UPW', 'DELIUS', '$.personalCircumstances[?(@.personalCircumstanceType.code==''I'')].notes', null, 'secure/offenders/crn/$crn/personalCircumstances'),
 ('cdd2f423-7805-4775-9ca2-ea23bf268365', 'upw_reading_writing_difficulties', 'UPW', 'DELIUS', '$.personalCircumstances[?(@.personalCircumstanceType.code==''G'')].personalCircumstanceSubType.description', 'yesno', 'secure/offenders/crn/$crn/personalCircumstances'),
-('6a65d799-3796-497c-b09d-8dab9822fb6c', 'upw_reading_writing_difficulties_details', 'UPW', 'DELIUS', '$.personalCircumstances[?(@.personalCircumstanceType.code==''G'')].notes', null, 'secure/offenders/crn/$crn/personalCircumstances'),
-
-('9cad42e2-be52-4efb-ac2e-98f2872eed6d', 'mappa_nominal_description', 'UPW', 'DELIUS', '$.registrations[?(@.type.code==''MAPP'')].type.description', null, 'secure/offenders/crn/$crn/registrations'),
-('72a47b79-e4d6-4a35-b9ab-c18b31726303', 'mappa_nominal_category', 'UPW', 'DELIUS', '$.registrations[?(@.type.code==''MAPP'')].registerCategory.code', null, 'secure/offenders/crn/$crn/registrations'),
-('55461397-4fac-48af-a00e-2f4a3d33316d', 'mappa_nominal_level', 'UPW', 'DELIUS', '$.registrations[?(@.type.code==''MAPP'')].registerLevel.code', null, 'secure/offenders/crn/$crn/registrations')
-
+('6a65d799-3796-497c-b09d-8dab9822fb6c', 'upw_reading_writing_difficulties_details', 'UPW', 'DELIUS', '$.personalCircumstances[?(@.personalCircumstanceType.code==''G'')].notes', null, 'secure/offenders/crn/$crn/personalCircumstances')
 ;

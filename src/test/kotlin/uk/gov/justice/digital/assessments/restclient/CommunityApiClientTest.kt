@@ -140,4 +140,52 @@ class CommunityApiClientTest : IntegrationTest() {
       }
     }
   }
+
+  @Nested
+  @DisplayName("get Delius offender registrations")
+  inner class GetDeliusOffenderRegistrations {
+
+    val crn = "DX12340A"
+
+    @Test
+    fun `returns registrations`() {
+      val response = communityApiRestClient.getRegistrations(crn)
+      assertThat(response?.registrations?.size).isEqualTo(3)
+    }
+
+    @Test
+    fun `get Delius Offender returns not found`() {
+      assertThrows<ExternalApiEntityNotFoundException> {
+        communityApiRestClient.getRegistrations("invalidNotFound")
+      }
+    }
+
+    @Test
+    fun `get Delius Offender returns bad request`() {
+      assertThrows<ExternalApiInvalidRequestException> {
+        communityApiRestClient.getRegistrations("invalidBadRequest")
+      }
+    }
+
+    @Test
+    fun `get Delius Offender returns unauthorised`() {
+      assertThrows<ExternalApiAuthorisationException> {
+        communityApiRestClient.getRegistrations("invalidUnauthorized")
+      }
+    }
+
+    @Test
+    fun `get Delius Offender returns forbidden`() {
+      assertThrows<ExternalApiForbiddenException> {
+        communityApiRestClient.getRegistrations("invalidForbidden")
+      }
+    }
+
+    @Test
+    fun `get Delius Offender returns unknown exception`() {
+      assertThrows<ExternalApiUnknownException> {
+        communityApiRestClient.getRegistrations("invalidNotKnow")
+      }
+    }
+  }
 }
