@@ -11,6 +11,7 @@ import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityRegistration
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityRegistrationElement
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityRegistrations
+import java.time.LocalDate
 
 class RisksServiceTest {
   private val communityApiRestClient: CommunityApiRestClient = mockk()
@@ -45,7 +46,8 @@ class RisksServiceTest {
             riskColour = "Red",
             registerCategory = CommunityRegistrationElement("M2", "MAPPA Cat 2"),
             registerLevel = CommunityRegistrationElement("M1", "MAPPA Level 1"),
-            type = CommunityRegistrationElement("MAPP", "MAPPA")
+            type = CommunityRegistrationElement("MAPP", "MAPPA"),
+            startDate = LocalDate.parse("2021-10-10"),
           ),
         )
       )
@@ -57,6 +59,7 @@ class RisksServiceTest {
       assertThat(registrations.mappa?.levelDescription).isEqualTo("MAPPA Level 1")
       assertThat(registrations.mappa?.category).isEqualTo("M2")
       assertThat(registrations.mappa?.categoryDescription).isEqualTo("MAPPA Cat 2")
+      assertThat(registrations.mappa?.startDate).isEqualTo(LocalDate.parse("2021-10-10"))
     }
 
     @Test
@@ -69,6 +72,7 @@ class RisksServiceTest {
             riskColour = "Red",
             registerCategory = CommunityRegistrationElement("RC12", "Hate Crime - Disability"),
             type = CommunityRegistrationElement("IRMO", "Hate Crime"),
+            startDate = LocalDate.parse("2021-10-10"),
           ),
         )
       )
@@ -88,12 +92,14 @@ class RisksServiceTest {
             riskColour = "Red",
             registerCategory = CommunityRegistrationElement("RC12", "Hate Crime - Disability"),
             type = CommunityRegistrationElement("IRMO", "Hate Crime"),
+            startDate = LocalDate.parse("2021-10-10"),
           ),
           CommunityRegistration(
             active = true,
             warnUser = false,
             riskColour = "Red",
-            type = CommunityRegistrationElement("RHRH", "High RoSH")
+            type = CommunityRegistrationElement("RHRH", "High RoSH"),
+            startDate = LocalDate.parse("2021-10-10"),
           ),
         )
       )

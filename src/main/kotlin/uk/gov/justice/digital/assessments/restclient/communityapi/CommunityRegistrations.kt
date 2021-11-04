@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.assessments.restclient.communityapi
 
+import java.time.LocalDate
+
 data class CommunityRegistrations(
   val registrations: Collection<CommunityRegistration> = emptyList()
 )
@@ -11,6 +13,7 @@ data class CommunityRegistration(
   val registerCategory: CommunityRegistrationElement? = null,
   val registerLevel: CommunityRegistrationElement? = null,
   val type: CommunityRegistrationElement,
+  val startDate: LocalDate,
 )
 
 class CommunityRegistrationElement(

@@ -21,6 +21,7 @@ import uk.gov.justice.digital.assessments.restclient.communityapi.OffenderLangua
 import uk.gov.justice.digital.assessments.restclient.communityapi.OffenderProfile
 import uk.gov.justice.digital.assessments.restclient.communityapi.Phone
 import uk.gov.justice.digital.assessments.restclient.communityapi.Type
+import java.time.LocalDate
 
 class CommunityApiMockServer : WireMockServer(9096) {
 
@@ -402,7 +403,8 @@ class CommunityApiMockServer : WireMockServer(9096) {
                       riskColour = "Red",
                       registerCategory = CommunityRegistrationElement("M2", "MAPPA Cat 2"),
                       registerLevel = CommunityRegistrationElement("M1", "MAPPA Level 1"),
-                      type = CommunityRegistrationElement("MAPP", "MAPPA")
+                      type = CommunityRegistrationElement("MAPP", "MAPPA"),
+                      startDate = LocalDate.parse("2021-10-10"),
                     ),
                     CommunityRegistration(
                       active = true,
@@ -410,12 +412,14 @@ class CommunityApiMockServer : WireMockServer(9096) {
                       riskColour = "Red",
                       registerCategory = CommunityRegistrationElement("RC12", "Hate Crime - Disability"),
                       type = CommunityRegistrationElement("IRMO", "Hate Crime"),
+                      startDate = LocalDate.parse("2021-10-10"),
                     ),
                     CommunityRegistration(
                       active = true,
                       warnUser = false,
                       riskColour = "Red",
-                      type = CommunityRegistrationElement("RHRH", "High RoSH")
+                      type = CommunityRegistrationElement("RHRH", "High RoSH"),
+                      startDate = LocalDate.parse("2021-10-10"),
                     ),
                   )
                 )
