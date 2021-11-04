@@ -1,12 +1,19 @@
 package uk.gov.justice.digital.assessments.testutils
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.http.HttpHeader
 import com.github.tomakehurst.wiremock.http.HttpHeaders
+import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.RiskInCommunityDto
+import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.RiskSummary
 import java.util.UUID
 
 class AssessRisksAndNeedsApiMockServer : WireMockServer(9007) {
+  private val objectMapper: ObjectMapper = jacksonObjectMapper().registerModules(JavaTimeModule())
+
   fun stubGetRSRPredictorsForOffenderAndOffences(
     final: Boolean,
     episodeUuid: UUID
@@ -152,6 +159,78 @@ class AssessRisksAndNeedsApiMockServer : WireMockServer(9007) {
     )
   }
 
+  fun stubGetRoshRiskSummary() {
+    stubFor(
+      WireMock.get(WireMock.urlEqualTo("/risks/crn/DX12340A/summary"))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withBody(
+              mapToJson(
+                RiskSummary(
+                  overallRiskLevel = "HIGH",
+                  RiskInCommunityDto(
+                    high = listOf("Public"),
+                    medium = listOf("Known adult", "Staff"),
+                    low = listOf("Children"),
+                  )
+                )
+              )
+            )
+        )
+    )
+
+    stubFor(
+      WireMock.get(WireMock.urlEqualTo("/risks/crn/invalidNotFound/summary"))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withStatus(404)
+            .withBody("{\"status\":\"404\",\"developerMessage\":\"The offender is not found\"}")
+        )
+    )
+
+    stubFor(
+      WireMock.get(WireMock.urlEqualTo("/risks/crn/invalidBadRequest/summary"))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withStatus(400)
+            .withBody("{\"status\":\"400\",\"developerMessage\":\"Invalid CRN invalidBadRequest\"}")
+        )
+    )
+
+    stubFor(
+      WireMock.get(WireMock.urlEqualTo("/risks/crn/invalidUnauthorized/summary"))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withStatus(401)
+            .withBody("{\"status\":\"401\",\"developerMessage\":\"Not authorised\"}")
+        )
+    )
+
+    stubFor(
+      WireMock.get(WireMock.urlEqualTo("/risks/crn/invalidForbidden/summary"))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withStatus(403)
+            .withBody("{\"status\":\"403\",\"developerMessage\":\"Forbidden\"}")
+        )
+    )
+
+    stubFor(
+      WireMock.get(WireMock.urlEqualTo("/risks/crn/invalidNotKnow/summary"))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withStatus(422)
+            .withBody("{\"status\":\"422\",\"developerMessage\":\"unprocessable\"}")
+        )
+    )
+  }
+
   val riskRsrPredictors =
     """{
         "algorithmVersion": 3,
@@ -165,4 +244,8 @@ class AssessRisksAndNeedsApiMockServer : WireMockServer(9007) {
           }
         }
     """.trimIndent()
+
+  private fun mapToJson(dto: Any): String {
+    return objectMapper.writeValueAsString(dto)
+  }
 }
