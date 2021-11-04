@@ -96,9 +96,11 @@ class RisksServiceTest {
           ),
           CommunityRegistration(
             active = true,
-            warnUser = false,
+            warnUser = true,
             riskColour = "Red",
-            type = CommunityRegistrationElement("RHRH", "High RoSH"),
+            registerCategory = CommunityRegistrationElement("M2", "MAPPA Cat 2"),
+            registerLevel = CommunityRegistrationElement("M1", "MAPPA Level 1"),
+            type = CommunityRegistrationElement("MAPP", "MAPPA"),
             startDate = LocalDate.parse("2021-10-10"),
           ),
         )
@@ -106,7 +108,6 @@ class RisksServiceTest {
 
       val registrations = risksService.getRegistrationsForAssessment(crn)
 
-      assertThat(registrations.mappa).isNull()
       assertThat(registrations.flags.size).isEqualTo(1)
       assertThat(registrations.flags.first().code).isEqualTo("IRMO")
       assertThat(registrations.flags.first().description).isEqualTo("Hate Crime")

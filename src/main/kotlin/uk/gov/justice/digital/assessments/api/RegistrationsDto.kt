@@ -5,7 +5,7 @@ import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityRegis
 import java.time.LocalDate
 
 // TODO: populate this list
-val flagsToInclude = listOf<String>("IRMO")
+val flagsToNotInclude = listOf("MAPP")
 
 data class RegistrationsDto(
   @Schema(description = "Mappa level and category", example = "{}")
@@ -21,7 +21,7 @@ data class RegistrationsDto(
       return RegistrationsDto(
         mappa?.let { Mappa(it.registerLevel?.code, it.registerLevel?.description, it.registerCategory?.code, it.registerCategory?.description, it.startDate) },
         registrations
-          .filter { it.active && flagsToInclude.contains(it.type.code) }
+          .filter { it.active && !flagsToNotInclude.contains(it.type.code) }
           .map { Flag(it.type.code, it.type.description, it.riskColour) }
       )
     }
