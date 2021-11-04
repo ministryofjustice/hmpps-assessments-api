@@ -9,6 +9,7 @@ import com.github.tomakehurst.wiremock.http.HttpHeader
 import com.github.tomakehurst.wiremock.http.HttpHeaders
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.RiskInCommunityDto
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.RiskSummary
+import java.time.LocalDate
 import java.util.UUID
 
 class AssessRisksAndNeedsApiMockServer : WireMockServer(9007) {
@@ -169,7 +170,8 @@ class AssessRisksAndNeedsApiMockServer : WireMockServer(9007) {
               mapToJson(
                 RiskSummary(
                   overallRiskLevel = "HIGH",
-                  RiskInCommunityDto(
+                  assessedOn = LocalDate.parse("2021-10-10"),
+                  riskInCommunity = RiskInCommunityDto(
                     high = listOf("Public"),
                     medium = listOf("Known adult", "Staff"),
                     low = listOf("Children"),

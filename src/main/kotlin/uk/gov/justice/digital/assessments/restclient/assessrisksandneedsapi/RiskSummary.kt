@@ -1,10 +1,12 @@
 package uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi
 
 import com.fasterxml.jackson.annotation.JsonProperty
+import java.time.LocalDate
 
 data class RiskSummary(
   val overallRiskLevel: String,
   val riskInCommunity: RiskInCommunityDto,
+  val assessedOn: LocalDate,
 )
 
 class RiskInCommunityDto(

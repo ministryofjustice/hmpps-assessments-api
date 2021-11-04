@@ -142,6 +142,7 @@ class AssessRisksAndNeedsApiClientTest : IntegrationTest() {
       assertThat(response?.riskInCommunity?.high).isEqualTo(listOf("Public"))
       assertThat(response?.riskInCommunity?.medium).isEqualTo(listOf("Known adult", "Staff"))
       assertThat(response?.riskInCommunity?.low).isEqualTo(listOf("Children"))
+      assertThat(response?.assessedOn).isEqualTo(LocalDate.parse("2021-10-10"))
     }
 
     @Test
