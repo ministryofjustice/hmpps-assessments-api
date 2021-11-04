@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.OffenderAndOffencesDto
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.RiskPredictorsDto
+import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.RiskSummary
 import uk.gov.justice.digital.assessments.services.dto.PredictorType
 import java.util.UUID
 
@@ -53,5 +54,34 @@ class AssessRisksAndNeedsApiRestClient {
       }
       .bodyToMono(RiskPredictorsDto::class.java)
       .block().also { log.info("Retrieve Risk Predictors $predictorType for crn ${offenderAndOffencesDto.crn}") }
+  }
+
+  fun getRoshRiskSummary(
+    crn: String,
+  ): RiskSummary? {
+    log.info("Fetching ROSH risk summary for crn $crn")
+    val path =
+      "/risks/crn/$crn/summary"
+    return webClient
+      .get(path)
+      .retrieve()
+      .onStatus(HttpStatus::is4xxClientError) {
+        handle4xxError(
+          it,
+          HttpMethod.POST,
+          path,
+          ExternalService.ASSESS_RISKS_AND_NEEDS_API
+        )
+      }
+      .onStatus(HttpStatus::is5xxServerError) {
+        handle5xxError(
+          "Failed to fetch ROSH risk summary for crn $crn",
+          HttpMethod.POST,
+          path,
+          ExternalService.ASSESS_RISKS_AND_NEEDS_API
+        )
+      }
+      .bodyToMono(RiskSummary::class.java)
+      .block().also { log.info("Fetched ROSH risk summary for crn $crn") }
   }
 }
