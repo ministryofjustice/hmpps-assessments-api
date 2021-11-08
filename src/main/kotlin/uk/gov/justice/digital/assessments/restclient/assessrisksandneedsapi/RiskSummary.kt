@@ -10,6 +10,8 @@ data class RiskSummary(
 )
 
 class RiskInCommunityDto(
+  @JsonProperty("VERY_HIGH")
+  val veryHigh: Collection<String> = emptyList(),
   @JsonProperty("HIGH")
   val high: Collection<String> = emptyList(),
   @JsonProperty("MEDIUM")
