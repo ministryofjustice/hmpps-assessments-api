@@ -129,7 +129,7 @@ class RisksServiceTest {
         assessedOn = LocalDate.parse("2021-10-10"),
         riskInCommunity = RiskInCommunityDto(
           high = listOf("Public"),
-          medium = listOf("Known adult", "Staff"),
+          medium = listOf("Known Adult", "Staff"),
           low = listOf("Children"),
         )
       )

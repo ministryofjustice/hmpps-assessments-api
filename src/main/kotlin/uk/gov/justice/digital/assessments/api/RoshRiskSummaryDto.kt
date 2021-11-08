@@ -6,7 +6,7 @@ import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.Risk
 import java.time.LocalDate
 
 fun getRiskLevel(riskInCommunityDto: RiskInCommunityDto, risk: String): String {
-  return if (riskInCommunityDto.high.contains(risk)) { "HIGH" } else if (riskInCommunityDto.medium.contains(risk)) { "MEDIUM" } else if (riskInCommunityDto.low.contains(risk)) { "LOW" } else { "NOT_KNOWN" }
+  return if (riskInCommunityDto.veryHigh.contains(risk)) { "VERY_HIGH" } else if (riskInCommunityDto.high.contains(risk)) { "HIGH" } else if (riskInCommunityDto.medium.contains(risk)) { "MEDIUM" } else if (riskInCommunityDto.low.contains(risk)) { "LOW" } else { "NOT_KNOWN" }
 }
 
 data class RoshRiskSummaryDto(
@@ -35,9 +35,8 @@ data class RoshRiskSummaryDto(
         lastUpdated = riskSummary.assessedOn,
         riskToChildrenInCommunity = getRiskLevel(riskSummary.riskInCommunity, "Children"),
         riskToPublicInCommunity = getRiskLevel(riskSummary.riskInCommunity, "Public"),
-        riskToKnownAdultInCommunity = getRiskLevel(riskSummary.riskInCommunity, "Known adult"),
+        riskToKnownAdultInCommunity = getRiskLevel(riskSummary.riskInCommunity, "Known Adult"),
         riskToStaffInCommunity = getRiskLevel(riskSummary.riskInCommunity, "Staff"),
-
       )
     }
   }
