@@ -12,7 +12,8 @@ VALUES
 ('ffe5ecbf-1669-46c9-b40f-4ac82dba0629', '3-4-5-6-7-8-9-10-11-12-13-14', '2021-09-27 14:50:00', null),
 ('550579fe-9d3d-4130-9210-6b60ec0dec5e', 'fulltime-parttime-no', '2021-09-27 14:50:00', null),
 ('4e3cc956-41d6-47c1-a4d8-c084251fadb5', 'gender_identity', '2021-09-27 14:50:00', null),
-('43e3b4e5-8e5e-4bbf-96c0-24b35ae2a613', 'declaration', '2021-09-27 14:50:00', null)
+('43e3b4e5-8e5e-4bbf-96c0-24b35ae2a613', 'declaration', '2021-09-27 14:50:00', null),
+('ddf0f766-e9ce-4e8c-89f9-35799174b0aa', 'pregnant', '2021-09-27 14:50:00', null)
 ;
 
 INSERT INTO answer_schema (answer_schema_uuid, answer_schema_code, answer_schema_group_uuid, answer_start, answer_end, value, text)
@@ -74,7 +75,11 @@ VALUES
 ('90e91ab7-9919-409b-81a9-21ef4c62e2d1', '14', 'ffe5ecbf-1669-46c9-b40f-4ac82dba0629', '2021-09-27 14:50:00', null, '14', 'Size 14'),
 ('f606340b-8413-4012-b11d-ba3c26d02f0d', 'fulltime_education_employment', '550579fe-9d3d-4130-9210-6b60ec0dec5e', '2021-09-27 14:50:00', null, 'FULLTIME_EDUCATION_EMPLOYMENT', 'Full-time education or employment'),
 ('a8a1df6a-a48b-4904-a11b-a5e179205b30', 'parttime_education_employment', '550579fe-9d3d-4130-9210-6b60ec0dec5e', '2021-09-27 14:50:00', null, 'PARTTIME_EDUCATION_EMPLOYMENT', 'Part-time education or employment'),
-('e57e81aa-f5b1-4bde-9c16-410ccc5d9391', 'no', '550579fe-9d3d-4130-9210-6b60ec0dec5e', '2021-09-27 14:50:00', null, 'NO', 'No')
+('e57e81aa-f5b1-4bde-9c16-410ccc5d9391', 'no', '550579fe-9d3d-4130-9210-6b60ec0dec5e', '2021-09-27 14:50:00', null, 'NO', 'No'),
+
+('c7629b3e-30c0-405a-9d7c-65888c9aca7a', 'pregnant', 'ddf0f766-e9ce-4e8c-89f9-35799174b0aa', '2021-09-27 14:50:00', null, 'PREGNANT', 'Pregnant'),
+('1fe45bcc-a7f2-4d7a-8d42-3ac5e995f527', 'recently_given_birth', 'ddf0f766-e9ce-4e8c-89f9-35799174b0aa', '2021-09-27 14:50:00', null, 'RECENTLY_GIVEN_BIRTH', 'Recently given birth'),
+('2bf5141a-9747-479e-8df1-167b2bedc0d1', 'no', 'ddf0f766-e9ce-4e8c-89f9-35799174b0aa', '2021-09-27 14:50:00', null, 'NO', 'No')
 ;
 
 INSERT INTO grouping (group_uuid, group_code, heading, subheading, help_text, group_start, group_end)
@@ -205,8 +210,9 @@ VALUES
 ('265ca722-9edd-4a6c-94c5-3d071582e952', 'upw_epilepsy_details', '2021-09-27 14:50:00', null, 'textarea', null, 'Give details', null, null),
 ('f79d4e3e-4855-4db2-9fec-7d628c2257ba', 'upw_other_health_issues', '2021-09-27 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Any other health issues?', '', null),
 ('7e8e8a40-426f-4489-8447-fbcd562d65fb', 'upw_other_health_issues_details', '2021-09-27 14:50:00', null, 'textarea', null, 'Give details', null, null),
-('fb0d6e10-9a10-40e4-8ebc-ffcb2c46ffbb', 'upw_pregnancy', '2021-09-27 14:50:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Pregnant or recently given birth?', '', null),
-('c9e7ff29-a9bf-47ea-81b2-c0a8f025ade8', 'upw_pregnancy_details', '2021-09-27 14:50:00', null, 'textarea', null, 'Give details', null, null),
+('fb0d6e10-9a10-40e4-8ebc-ffcb2c46ffbb', 'upw_pregnancy', '2021-09-27 14:50:00', null, 'radio', 'ddf0f766-e9ce-4e8c-89f9-35799174b0aa', 'Pregnant or recently given birth?', '', null),
+('c9e7ff29-a9bf-47ea-81b2-c0a8f025ade8', 'upw_pregnancy_pregnant_details', '2021-09-27 14:50:00', null, 'textarea', null, 'Give details', null, null),
+('19a1b4d8-0f85-4049-ba7b-127646c882d8', 'upw_pregnancy_recently_given_birth_details', '2021-09-27 14:50:00', null, 'textarea', null, 'Give details', null, null),
 ('155e1596-9f83-4e0a-8fa7-e36f9ed2b2e5', 'upw_health_issues_complete', '2021-09-27 14:50:00', null, 'radio', '8067ff6e-7400-4d1e-ae2a-87dee7e124ec', 'Mark this section as complete?', '', null),
 ('0ba4ef3e-8c40-4c1e-b267-a42afd07ee4e', 'upw_gp_details_complete', '2021-09-27 14:50:00', null, 'radio', '8067ff6e-7400-4d1e-ae2a-87dee7e124ec', 'Mark this section as complete?', '', null),
 ('d403b86e-cdcc-41c9-b3cb-8780d361986e', 'upw_gp_name', '2021-09-27 14:50:00', null, 'freetext', null, 'Name', null, null),
@@ -398,17 +404,18 @@ VALUES
 ('d26f777d-6122-4736-874c-b495044b3b4b', '7e8e8a40-426f-4489-8447-fbcd562d65fb', 'question', 'dfa7b0e0-75a0-4117-ae0c-143c6ed97370', 8, true, null, false),
 ('2d769cac-bd47-4155-b5e8-90e788730647', 'fb0d6e10-9a10-40e4-8ebc-ffcb2c46ffbb', 'question', 'dfa7b0e0-75a0-4117-ae0c-143c6ed97370', 9, true, null, false),
 ('9323811b-dec7-460c-9ec8-e5c93d0a9339', 'c9e7ff29-a9bf-47ea-81b2-c0a8f025ade8', 'question', 'dfa7b0e0-75a0-4117-ae0c-143c6ed97370', 10, true, null, false),
-('df14557b-3624-4ed8-879c-21fdb32fa154', '155e1596-9f83-4e0a-8fa7-e36f9ed2b2e5', 'question', 'dfa7b0e0-75a0-4117-ae0c-143c6ed97370', 11, true, null, false),
-('0baf4552-0cc5-498c-abe3-bbc6d7699365', '0ba4ef3e-8c40-4c1e-b267-a42afd07ee4e', 'question', 'dfa7b0e0-75a0-4117-ae0c-143c6ed97370', 12, true, null, false),
-('36e28f42-2c92-405e-9b71-993774be6323', 'd403b86e-cdcc-41c9-b3cb-8780d361986e', 'question', 'dfa7b0e0-75a0-4117-ae0c-143c6ed97370', 13, true, null, false),
-('11fdf8fa-06f2-4cb2-929a-891a1c33f0c3', '9b7a4455-5bdf-4e28-af57-f2fdbfb54805', 'question', 'dfa7b0e0-75a0-4117-ae0c-143c6ed97370', 14, false, null, false),
-('82d9a89b-ea86-46e4-bf50-0cb3e609ec23', 'b869ab87-bd5d-4df0-b563-a3830bf7d364', 'question', 'dfa7b0e0-75a0-4117-ae0c-143c6ed97370', 15, true, null, false),
-('58541b37-2778-4cd7-8844-bb95eb9558f4', '2d8430b1-475d-4120-8e34-27db208fbc0d', 'question', 'dfa7b0e0-75a0-4117-ae0c-143c6ed97370', 16, true, null, false),
-('07c45e48-065c-4d9f-9788-b89661a57279', '8e64be03-72df-4196-8684-a8f71fe51e76', 'question', 'dfa7b0e0-75a0-4117-ae0c-143c6ed97370', 17, false, null, false),
-('15bc1bb1-e6ac-4c5b-856c-933f5e15dac6', 'f78e069b-3b77-44bf-a698-ae0392e918b5', 'question', 'dfa7b0e0-75a0-4117-ae0c-143c6ed97370', 18, true, null, false),
-('6fdd980c-15e9-4633-a8c2-b76d1758ec24', '80c3c97d-02dc-4d5c-ab3c-fff2f33b0b63', 'question', 'dfa7b0e0-75a0-4117-ae0c-143c6ed97370', 19, true, null, false),
-('25ba6c70-adc7-4059-bf74-8997787ae067', '333088a1-ce0a-4365-b4db-f594e34bcfb5', 'question', 'dfa7b0e0-75a0-4117-ae0c-143c6ed97370', 20, true, null, false),
-('ccb19424-2582-42e5-b087-460f3752f525', '7e3f0e77-7e91-4b11-928b-97e79390fe7f', 'question', 'dfa7b0e0-75a0-4117-ae0c-143c6ed97370', 21, true, null, false),
+('a4e15ef5-3b9f-4088-97ee-cf73d8720606', '19a1b4d8-0f85-4049-ba7b-127646c882d8', 'question', 'dfa7b0e0-75a0-4117-ae0c-143c6ed97370', 11, true, null, false),
+('df14557b-3624-4ed8-879c-21fdb32fa154', '155e1596-9f83-4e0a-8fa7-e36f9ed2b2e5', 'question', 'dfa7b0e0-75a0-4117-ae0c-143c6ed97370', 12, true, null, false),
+('0baf4552-0cc5-498c-abe3-bbc6d7699365', '0ba4ef3e-8c40-4c1e-b267-a42afd07ee4e', 'question', 'dfa7b0e0-75a0-4117-ae0c-143c6ed97370', 13, true, null, false),
+('36e28f42-2c92-405e-9b71-993774be6323', 'd403b86e-cdcc-41c9-b3cb-8780d361986e', 'question', 'dfa7b0e0-75a0-4117-ae0c-143c6ed97370', 14, true, null, false),
+('11fdf8fa-06f2-4cb2-929a-891a1c33f0c3', '9b7a4455-5bdf-4e28-af57-f2fdbfb54805', 'question', 'dfa7b0e0-75a0-4117-ae0c-143c6ed97370', 15, false, null, false),
+('82d9a89b-ea86-46e4-bf50-0cb3e609ec23', 'b869ab87-bd5d-4df0-b563-a3830bf7d364', 'question', 'dfa7b0e0-75a0-4117-ae0c-143c6ed97370', 16, true, null, false),
+('58541b37-2778-4cd7-8844-bb95eb9558f4', '2d8430b1-475d-4120-8e34-27db208fbc0d', 'question', 'dfa7b0e0-75a0-4117-ae0c-143c6ed97370', 17, true, null, false),
+('07c45e48-065c-4d9f-9788-b89661a57279', '8e64be03-72df-4196-8684-a8f71fe51e76', 'question', 'dfa7b0e0-75a0-4117-ae0c-143c6ed97370', 18, false, null, false),
+('15bc1bb1-e6ac-4c5b-856c-933f5e15dac6', 'f78e069b-3b77-44bf-a698-ae0392e918b5', 'question', 'dfa7b0e0-75a0-4117-ae0c-143c6ed97370', 19, true, null, false),
+('6fdd980c-15e9-4633-a8c2-b76d1758ec24', '80c3c97d-02dc-4d5c-ab3c-fff2f33b0b63', 'question', 'dfa7b0e0-75a0-4117-ae0c-143c6ed97370', 20, true, null, false),
+('25ba6c70-adc7-4059-bf74-8997787ae067', '333088a1-ce0a-4365-b4db-f594e34bcfb5', 'question', 'dfa7b0e0-75a0-4117-ae0c-143c6ed97370', 21, true, null, false),
+('ccb19424-2582-42e5-b087-460f3752f525', '7e3f0e77-7e91-4b11-928b-97e79390fe7f', 'question', 'dfa7b0e0-75a0-4117-ae0c-143c6ed97370', 22, true, null, false),
 
 ('f5d7f236-202d-41ee-84d4-47ec40e00c51', '20a3e6c7-f4a3-4598-ab49-c9cea084921a', 'question', '5460f64f-4bcb-40bc-a91d-0e90a4ea6a9b', 1, true, null, false),
 ('ac274481-dbaa-4319-9612-c1c1033e25bf', 'c47786e4-0c3d-4ea4-b81c-8547254ab12a', 'question', '5460f64f-4bcb-40bc-a91d-0e90a4ea6a9b', 2, true, null, false),
