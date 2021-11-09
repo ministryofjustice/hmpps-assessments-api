@@ -87,6 +87,32 @@ class CommunityApiRestClient {
       .block()
   }
 
+  fun getConviction(crn: String, convictionId: Long): CommunityConvictionDto? {
+    log.info("Client retrieving conviction details for crn: $crn")
+    val path = "secure/offenders/crn/$crn/convictions/$convictionId"
+    return webClient
+      .get(path)
+      .retrieve()
+      .onStatus(HttpStatus::is4xxClientError) {
+        handle4xxError(
+          it,
+          HttpMethod.GET,
+          path,
+          ExternalService.COMMUNITY_API
+        )
+      }
+      .onStatus(HttpStatus::is5xxServerError) {
+        handle5xxError(
+          "Failed to retrieve conviction details for crn: $crn and conviction ID $convictionId",
+          HttpMethod.GET,
+          path,
+          ExternalService.COMMUNITY_API
+        )
+      }
+      .bodyToMono(CommunityConvictionDto::class.java)
+      .block()
+  }
+
   fun getRegistrations(crn: String): CommunityRegistrations? {
     log.info("Client retrieving registrations for crn: $crn")
     val path = "secure/offenders/crn/$crn/registrations"

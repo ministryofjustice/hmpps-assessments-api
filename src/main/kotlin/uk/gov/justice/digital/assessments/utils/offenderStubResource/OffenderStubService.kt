@@ -55,7 +55,7 @@ class OffenderStubService(
   }
 
   fun createOffenderAndOffenceStub(crn: String): OffenderAndOffenceStubDto {
-    val offenceDetail = offenderService.getOffence(crn, EVENT_ID)
+    val offenceDetail = offenderService.getOffenceFromConvictionIndex(crn, EVENT_ID)
     val newOffenderStubDto = createOffenderStubDto(crn)
     assessmentUpdateRestClient.createOasysOffenderStub(newOffenderStubDto)
     return OffenderAndOffenceStubDto.from(newOffenderStubDto, offenceDetail)

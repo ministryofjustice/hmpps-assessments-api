@@ -32,12 +32,19 @@ class OffenderService(
     return OffenderDto.from(communityOffenderDto)
   }
 
-  fun getOffence(crn: String, eventId: Long): OffenceDto {
+  fun getOffenceFromConvictionIndex(crn: String, eventId: Long): OffenceDto {
     log.info("Requesting offences for crn: $crn")
     val convictions = communityApiRestClient.getConvictions(crn)
       ?: throw EntityNotFoundException("Could not get convictions for crn: $crn")
     val conviction = convictions.find { it.index == eventId }
       ?: throw EntityNotFoundException("Could not get conviction for crn: $crn, event ID: $eventId")
+    return OffenceDto.from(conviction)
+  }
+
+  fun getOffenceFromConvictionId(crn: String, convictionId: Long): OffenceDto {
+    log.info("Requesting offences for crn: $crn")
+    val conviction = communityApiRestClient.getConviction(crn, convictionId)
+      ?: throw EntityNotFoundException("Could not get convictions for crn: $crn")
     return OffenceDto.from(conviction)
   }
 
