@@ -13,6 +13,6 @@ data class CreateAssessmentEpisodeDto(
   @Schema(description = "Assessment Schema Code", example = "ROSH")
   val assessmentSchemaCode: AssessmentSchemaCode,
 
-  @Schema(description = "Delius Event Type", example = "1234")
+  @Schema(description = "Delius Event Type", example = "EVENT_ID", required = false)
   val deliusEventType: DeliusEventType = DeliusEventType.EVENT_INDEX
 )
