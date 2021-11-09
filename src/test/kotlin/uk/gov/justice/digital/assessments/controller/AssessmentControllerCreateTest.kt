@@ -269,11 +269,62 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(answers?.get("upw_allergies")).isEqualTo(listOf("YES"))
       assertThat(answers?.get("upw_allergies_details")).isEqualTo(listOf("Nut Allergy"))
       assertThat(answers?.get("upw_pregnancy")).isEqualTo(listOf("NO"))
-      assertThat(answers?.get("upw_pregnancy_details")).isEqualTo(null)
+      assertThat(answers?.get("upw_pregnancy_pregnant_details")).isEqualTo(emptyList<String>())
       assertThat(answers?.get("upw_caring_commitments")).isEqualTo(listOf("YES"))
       assertThat(answers?.get("upw_caring_commitments_details")).isEqualTo(listOf("Primary Carer"))
       assertThat(answers?.get("upw_reading_writing_difficulties")).isEqualTo(listOf("YES"))
       assertThat(answers?.get("upw_reading_writing_difficulties_details")).isEqualTo(listOf("Cannot read"))
+    }
+
+    @Test
+    fun `should pre-populate answers with the 'mapped' type`() {
+
+      val dto = CreateAssessmentDto(
+        crn = "DX5678B",
+        deliusEventId = eventID,
+        assessmentSchemaCode = AssessmentSchemaCode.UPW
+      )
+      val assessment = webTestClient.post().uri("/assessments")
+        .bodyValue(dto)
+        .header(RequestData.USER_AREA_HEADER_NAME, "WWS")
+        .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
+        .exchange()
+        .expectStatus().isOk
+        .expectBody<AssessmentDto>()
+        .returnResult()
+        .responseBody
+
+      assertThat(assessment?.assessmentUuid).isNotNull
+      assertThat(assessment?.episodes).hasSize(1)
+      val answers = assessment.episodes?.first()?.answers
+      assertThat(answers?.get("upw_pregnancy")).isEqualTo(listOf("PREGNANT"))
+      assertThat(answers?.get("upw_pregnancy_pregnant_details")).isEqualTo(listOf("Some notes"))
+    }
+
+    @Test
+    fun `should pre-populate answers with the 'mapped' type and  when the 'ifEmpty' flag is set to 'true'`() {
+
+      val dto = CreateAssessmentDto(
+        crn = crn,
+        deliusEventId = eventID,
+        assessmentSchemaCode = AssessmentSchemaCode.UPW
+      )
+      val assessment = webTestClient.post().uri("/assessments")
+        .bodyValue(dto)
+        .header(RequestData.USER_AREA_HEADER_NAME, "WWS")
+        .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
+        .exchange()
+        .expectStatus().isOk
+        .expectBody<AssessmentDto>()
+        .returnResult()
+        .responseBody
+
+      assertThat(assessment?.assessmentUuid).isNotNull
+      assertThat(assessment?.episodes).hasSize(1)
+      val answers = assessment.episodes?.first()?.answers
+      assertThat(answers?.get("upw_pregnancy")).isEqualTo(listOf("NO"))
+      assertThat(answers?.get("upw_pregnancy_pregnant_details")).isEqualTo(emptyList<String>())
+      assertThat(answers?.get("upw_pregnancy_recently_given_birth_details")).isEqualTo(emptyList<String>())
     }
 
     @Test
