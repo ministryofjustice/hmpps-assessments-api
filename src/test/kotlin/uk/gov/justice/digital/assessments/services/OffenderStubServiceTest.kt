@@ -42,7 +42,7 @@ class OffenderStubServiceTest {
     every { assessmentApiRestClient.getOffenderStubs() } returns offenderStubs()
     every { communityApiRestClient.getPrimaryIds(0, pageSize) } returns primaryIdentifiers()
     every { communityApiRestClient.getOffender(crn) } returns communityOffenderDto()
-    every { offenderService.getOffence(crn, 1) } returns offenceDto()
+    every { offenderService.getOffenceFromConvictionIndex(crn, 1) } returns offenceDto()
     justRun { assessmentUpdateRestClient.createOasysOffenderStub(any()) }
 
     val offenderOffenceDetails = offenderStubService.createOffenderAndOffenceStub()
@@ -99,7 +99,7 @@ class OffenderStubServiceTest {
         pncNumber = "A/1234560BA"
       )
     )
-    every { offenderService.getOffence(crn, 1) } returns offenceDto()
+    every { offenderService.getOffenceFromConvictionIndex(crn, 1) } returns offenceDto()
     justRun { assessmentUpdateRestClient.createOasysOffenderStub(any()) }
 
     val offenderOffenceDetails = offenderStubService.createStubFromCrn(crn)

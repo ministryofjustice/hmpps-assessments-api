@@ -10,6 +10,7 @@ import uk.gov.justice.digital.assessments.api.AssessmentDto
 import uk.gov.justice.digital.assessments.api.AssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.api.AssessmentSubjectDto
 import uk.gov.justice.digital.assessments.api.CreateAssessmentDto
+import uk.gov.justice.digital.assessments.api.DeliusEventType
 import uk.gov.justice.digital.assessments.api.OffenceDto
 import uk.gov.justice.digital.assessments.api.OffenderDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
@@ -51,7 +52,8 @@ class AssessmentService(
       return createFromDelius(
         newAssessment.deliusEventId,
         newAssessment.crn,
-        newAssessment.assessmentSchemaCode
+        newAssessment.assessmentSchemaCode,
+        newAssessment.deliusEventType
       )
     }
     if (newAssessment.isCourtCase()) {
@@ -69,21 +71,22 @@ class AssessmentService(
     assessmentUuid: UUID,
     eventId: Long,
     reason: String,
-    assessmentSchemaCode: AssessmentSchemaCode
+    assessmentSchemaCode: AssessmentSchemaCode,
+    eventType: DeliusEventType
   ): AssessmentEpisodeDto {
     val assessment = getAssessmentByUuid(assessmentUuid)
     val crn = assessment.subject?.crn
       ?: throw EntityNotFoundException("No CRN found for subject for assessment $assessmentUuid")
 
     offenderService.validateUserAccess(crn)
-
+    val offence = getEpisodeOffence(eventType, crn, eventId)
     val episode = createPrepopulatedEpisode(
       assessment,
       reason,
       assessmentSchemaCode = assessmentSchemaCode,
-      crn = crn,
       source = ExternalSource.DELIUS.name,
-      eventId = eventId.toString()
+      eventId = eventId.toString(),
+      offence = offence
     )
     auditService.createAuditEvent(
       AuditType.ARN_ASSESSMENT_CREATED,
@@ -158,15 +161,17 @@ class AssessmentService(
   private fun createFromDelius(
     eventId: Long?,
     crn: String?,
-    assessmentSchemaCode: AssessmentSchemaCode?
+    assessmentSchemaCode: AssessmentSchemaCode?,
+    eventType: DeliusEventType
   ): AssessmentDto {
     if (eventId == null || crn.isNullOrEmpty() || assessmentSchemaCode == null) {
       throw IllegalStateException("Unable to create Assessment with assessment type: $assessmentSchemaCode, eventId: $eventId, crn: $crn")
     }
     val arnAssessment = getOrCreateAssessment(crn, eventId)
+    val offence = getEpisodeOffence(eventType, crn, eventId)
     val (oasysOffenderPk, oasysSetPK) = oasysAssessmentUpdateService.createOffenderAndOasysAssessment(
       crn = crn,
-      deliusEventId = eventId,
+      deliusEventId = offence.convictionIndex,
       assessmentSchemaCode = assessmentSchemaCode
     )
     subjectRepository.save(arnAssessment.subject?.copy(oasysOffenderPk = oasysOffenderPk))
@@ -175,9 +180,9 @@ class AssessmentService(
       "",
       oasysSetPK,
       assessmentSchemaCode,
-      crn,
       ExternalSource.DELIUS.name,
-      eventId.toString()
+      offence.convictionId.toString(),
+      offence
     )
     auditService.createAuditEvent(
       AuditType.ARN_ASSESSMENT_CREATED,
@@ -231,9 +236,9 @@ class AssessmentService(
       "Court Request",
       oasysSetPK,
       assessmentSchemaCode,
-      crn,
       ExternalSource.COURT.name,
-      courtSourceId(courtCode, caseNumber)
+      courtSourceId(courtCode, caseNumber),
+      null
     )
     auditService.createAuditEvent(
       AuditType.ARN_ASSESSMENT_CREATED,
@@ -339,14 +344,10 @@ class AssessmentService(
     reason: String,
     oasysSetPK: Long? = null,
     assessmentSchemaCode: AssessmentSchemaCode,
-    crn: String,
     source: String,
-    eventId: String
+    eventId: String,
+    offence: OffenceDto? = null
   ): AssessmentEpisodeEntity {
-    var offence: OffenceDto? = null
-    if (source == ExternalSource.DELIUS.name) {
-      offence = getEpisodeOffence(crn, eventId.toLong())
-    }
     val author = authorService.getOrCreateAuthor()
     val episode = assessment.newEpisode(
       reason,
@@ -368,10 +369,17 @@ class AssessmentService(
     return episode
   }
 
-  private fun getEpisodeOffence(crn: String, eventId: Long): OffenceDto {
-    return offenderService.getOffence(crn, eventId)
+  private fun getEpisodeOffence(
+    eventType: DeliusEventType,
+    crn: String,
+    eventId: Long
+  ): OffenceDto {
+    return if (eventType == DeliusEventType.EVENT_ID) {
+      offenderService.getOffenceFromConvictionId(crn, eventId)
+    } else {
+      offenderService.getOffenceFromConvictionIndex(crn, eventId)
+    }
   }
-
   private fun courtSourceId(courtCode: String?, caseNumber: String?): String {
     return "$courtCode|$caseNumber"
   }

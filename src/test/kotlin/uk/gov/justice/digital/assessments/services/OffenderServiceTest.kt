@@ -32,6 +32,7 @@ class OffenderServiceTest {
   private val oasysOffenderPk = 101L
   private val crn = "DX12340A"
   private val eventId = 1L
+  private val convictionId = 123456L
 
   @Test
   fun `return offender`() {
@@ -43,10 +44,12 @@ class OffenderServiceTest {
   }
 
   @Test
-  fun `return offence`() {
+  fun `return offence for convictions`() {
     every { communityApiRestClient.getConvictions(crn) } returns validCommunityConvictionsDto()
 
-    val offenceDto = offenderService.getOffence(crn, eventId)
+    val offenceDto = offenderService.getOffenceFromConvictionIndex(crn, eventId)
+    assertThat(offenceDto.convictionId).isEqualTo(636401162L)
+    assertThat(offenceDto.convictionIndex).isEqualTo(1)
     assertThat(offenceDto.offenceCode).isEqualTo("Code")
     assertThat(offenceDto.codeDescription).isEqualTo("Code description")
     assertThat(offenceDto.offenceSubCode).isEqualTo("Sub code")
@@ -54,6 +57,22 @@ class OffenderServiceTest {
 
     verify(exactly = 1) { communityApiRestClient.getConvictions(any()) }
   }
+
+  @Test
+  fun `return offence for conviction`() {
+    every { communityApiRestClient.getConviction(crn, convictionId) } returns validCommunityConvictionsDto()[0]
+
+    val offenceDto = offenderService.getOffenceFromConvictionId(crn, convictionId)
+    assertThat(offenceDto.convictionId).isEqualTo(636401162L)
+    assertThat(offenceDto.convictionIndex).isEqualTo(1)
+    assertThat(offenceDto.offenceCode).isEqualTo("Code")
+    assertThat(offenceDto.codeDescription).isEqualTo("Code description")
+    assertThat(offenceDto.offenceSubCode).isEqualTo("Sub code")
+    assertThat(offenceDto.subCodeDescription).isEqualTo("Sub code description")
+
+    verify(exactly = 1) { communityApiRestClient.getConviction(crn, convictionId) }
+  }
+
   // TODO from ARN-618: Fix offender service
 //  @Test
 //  fun `return offender and offence`() {

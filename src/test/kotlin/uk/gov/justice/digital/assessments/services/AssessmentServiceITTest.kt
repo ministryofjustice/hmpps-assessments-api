@@ -17,6 +17,7 @@ import org.springframework.test.context.jdbc.SqlConfig
 import org.springframework.test.context.jdbc.SqlGroup
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.assessments.api.CreateAssessmentDto
+import uk.gov.justice.digital.assessments.api.DeliusEventType
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRepository
@@ -37,7 +38,7 @@ import java.util.UUID
   )
 )
 @AutoConfigureWebTestClient
-class AssessmentServiceITTest() : IntegrationTest() {
+class AssessmentServiceITTest : IntegrationTest() {
   @Autowired
   internal lateinit var assessmentService: AssessmentService
 
@@ -87,6 +88,33 @@ class AssessmentServiceITTest() : IntegrationTest() {
     assertThat(assessmentEntity?.subject?.oasysOffenderPk).isEqualTo(1L)
     assertThat(assessmentEntity?.episodes).hasSize(1)
     assertThat(assessmentEntity?.episodes?.get(0)?.oasysSetPk).isEqualTo(1L)
+  }
+
+  @Test
+  @Transactional("assessmentsTransactionManager")
+  fun `Trying to create assessment and push to OASys with Delius Conviction ID`() {
+
+    val crn = "X1356"
+    val assessmentResponse =
+      assessmentService.createNewAssessment(
+        CreateAssessmentDto(
+          deliusEventId = 123456L,
+          crn = crn,
+          assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+          deliusEventType = DeliusEventType.EVENT_ID
+        )
+      )
+    assertThat(assessmentResponse.assessmentUuid).isNotNull
+    assertThat(assessmentResponse.subject).isNotNull
+    assertThat(assessmentResponse.subject?.crn).isEqualTo(crn)
+
+    val assessmentEntity = assessmentRepository.findByAssessmentUuid(assessmentResponse.assessmentUuid!!)
+    assertThat(assessmentEntity?.assessmentUuid).isEqualTo(assessmentResponse.assessmentUuid)
+    assertThat(assessmentEntity?.subject?.crn).isEqualTo(crn)
+    assertThat(assessmentEntity?.subject?.oasysOffenderPk).isEqualTo(1L)
+    assertThat(assessmentEntity?.episodes).hasSize(1)
+    assertThat(assessmentEntity?.episodes?.get(0)?.oasysSetPk).isEqualTo(1L)
+    assertThat(assessmentEntity?.episodes?.get(0)?.offence?.sourceId).isEqualTo("123456")
   }
 
   @Test

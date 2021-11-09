@@ -7,6 +7,13 @@ import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffen
 import java.time.LocalDate
 
 data class OffenceDto(
+
+  @Schema(description = "Conviction ID")
+  val convictionId: Long? = null,
+
+  @Schema(description = "Conviction Index")
+  val convictionIndex: Long? = null,
+
   @Schema(description = "Offence category code")
   val offenceCode: String? = null,
 
@@ -27,6 +34,8 @@ data class OffenceDto(
     fun from(convictionDto: CommunityConvictionDto): OffenceDto {
       val offence = getMainOffence(convictionDto.offences)
       return OffenceDto(
+        convictionId = convictionDto.convictionId,
+        convictionIndex = convictionDto.index,
         offenceCode = offence.detail?.mainCategoryCode,
         codeDescription = offence.detail?.mainCategoryDescription,
         offenceSubCode = offence.detail?.subCategoryCode,

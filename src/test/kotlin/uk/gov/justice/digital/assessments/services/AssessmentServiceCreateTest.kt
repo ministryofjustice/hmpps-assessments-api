@@ -15,6 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.slf4j.MDC
 import org.springframework.http.HttpMethod
 import uk.gov.justice.digital.assessments.api.CreateAssessmentDto
+import uk.gov.justice.digital.assessments.api.DeliusEventType
 import uk.gov.justice.digital.assessments.api.OffenceDto
 import uk.gov.justice.digital.assessments.api.OffenderDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
@@ -85,7 +86,7 @@ class AssessmentServiceCreateTest {
   @DisplayName("creating assessments from Delius")
   inner class CreatingDeliusAssessments {
     @Test
-    fun `create new offender with new assessment from delius event id and crn`() {
+    fun `create new offender with new assessment from delius event index and crn`() {
       justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
       every { subjectRepository.findByCrn(crn) } returns null
       every { offenderService.validateUserAccess("X12345") } returns mockk()
@@ -100,7 +101,9 @@ class AssessmentServiceCreateTest {
         oasysOffenderPk,
         oasysSetPk
       )
-      every { offenderService.getOffence(crn, eventId) } returns OffenceDto(
+      every { offenderService.getOffenceFromConvictionIndex(crn, eventId) } returns OffenceDto(
+        convictionId = 123,
+        convictionIndex = eventId,
         offenceCode = "Code",
         codeDescription = "Code description",
         offenceSubCode = "Sub-code",
@@ -129,6 +132,53 @@ class AssessmentServiceCreateTest {
     }
 
     @Test
+    fun `create new offender with new assessment from delius event ID and crn`() {
+      justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
+      every { subjectRepository.findByCrn(crn) } returns null
+      every { offenderService.validateUserAccess("X12345") } returns mockk()
+      every { offenderService.getOffender("X12345") } returns OffenderDto(dateOfBirth = LocalDate.of(1989, 1, 1))
+      every {
+        oasysAssessmentUpdateService.createOffenderAndOasysAssessment(
+          crn,
+          eventId,
+          assessmentSchemaCode
+        )
+      } returns Pair(
+        oasysOffenderPk,
+        oasysSetPk
+      )
+      every { offenderService.getOffenceFromConvictionId(crn, eventId) } returns OffenceDto(
+        convictionId = 123,
+        convictionIndex = eventId,
+        offenceCode = "Code",
+        codeDescription = "Code description",
+        offenceSubCode = "Sub-code",
+        subCodeDescription = "Sub-code description"
+      )
+      every { episodeService.prepopulate(any(), assessmentSchemaCode) } returnsArgument 0
+      every { subjectRepository.save(any()) } returns SubjectEntity(
+        name = "name",
+        pnc = "PNC",
+        crn = "X12345",
+        dateOfBirth = LocalDate.of(1989, 1, 1),
+        createdDate = LocalDateTime.now(),
+      )
+      every { assessmentRepository.save(any()) } returns AssessmentEntity(assessmentId = assessmentId)
+      val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
+      every { authorService.getOrCreateAuthor() } returns author
+
+      assessmentsService.createNewAssessment(
+        CreateAssessmentDto(
+          deliusEventId = eventId,
+          crn = crn,
+          assessmentSchemaCode = assessmentSchemaCode,
+          deliusEventType = DeliusEventType.EVENT_ID
+        )
+      )
+      verify(exactly = 1) { assessmentRepository.save(any()) }
+    }
+
+    @Test
     fun `return existing assessment from delius event id and crn if one already exists`() {
       justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
       every { offenderService.validateUserAccess("X12345") } returns mockk()
@@ -138,7 +188,9 @@ class AssessmentServiceCreateTest {
           dateOfBirth = LocalDate.of(1989, 1, 1),
           crn = crn
         )
-      every { offenderService.getOffence(crn, eventId) } returns OffenceDto(
+      every { offenderService.getOffenceFromConvictionIndex(crn, eventId) } returns OffenceDto(
+        convictionId = 123,
+        convictionIndex = eventId,
         offenceCode = "Code",
         codeDescription = "Code description",
         offenceSubCode = "Sub-code",
@@ -228,7 +280,9 @@ class AssessmentServiceCreateTest {
         oasysOffenderPk,
         oasysSetPk
       )
-      every { offenderService.getOffence(crn, eventId) } returns OffenceDto(
+      every { offenderService.getOffenceFromConvictionIndex(crn, eventId) } returns OffenceDto(
+        convictionId = 123,
+        convictionIndex = eventId,
         offenceCode = "Code",
         codeDescription = "Code description",
         offenceSubCode = "Sub-code",
@@ -298,7 +352,7 @@ class AssessmentServiceCreateTest {
         )
       } returns Pair(oasysOffenderPk, oasysSetPk)
 
-      every { offenderService.getOffence(crn, eventId) } returns OffenceDto(
+      every { offenderService.getOffenceFromConvictionIndex(crn, eventId) } returns OffenceDto(
         offenceCode = "Code",
         codeDescription = "Code description",
         offenceSubCode = "Sub-code",
@@ -382,7 +436,7 @@ class AssessmentServiceCreateTest {
         )
       } returns Pair(oasysOffenderPk, oasysSetPk)
 
-      every { offenderService.getOffence(crn, eventId) } returns OffenceDto(
+      every { offenderService.getOffenceFromConvictionIndex(crn, eventId) } returns OffenceDto(
         offenceCode = "Code",
         codeDescription = "Code description",
         offenceSubCode = "Sub-code",

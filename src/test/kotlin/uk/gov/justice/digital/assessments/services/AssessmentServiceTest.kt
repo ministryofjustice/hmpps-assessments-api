@@ -11,6 +11,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import uk.gov.justice.digital.assessments.api.DeliusEventType
 import uk.gov.justice.digital.assessments.api.OffenceDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
@@ -118,7 +119,7 @@ class AssessmentServiceTest {
       )
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
       every { assessment.subject } returns SubjectEntity(crn = crn, dateOfBirth = LocalDate.now())
-      every { offenderService.getOffence(crn, eventId) } returns OffenceDto(
+      every { offenderService.getOffenceFromConvictionIndex(crn, eventId) } returns OffenceDto(
         offenceCode = offenceCode,
         codeDescription = codeDescription,
         offenceSubCode = offenceSubCode,
@@ -130,7 +131,8 @@ class AssessmentServiceTest {
         assessmentUuid,
         eventId,
         "Change of Circs",
-        assessmentSchemaCode
+        assessmentSchemaCode,
+        DeliusEventType.EVENT_INDEX
       )
 
       assertThat(episodeDto.assessmentUuid).isEqualTo(assessmentUuid)
