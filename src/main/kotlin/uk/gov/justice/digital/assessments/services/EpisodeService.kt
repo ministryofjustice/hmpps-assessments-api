@@ -58,11 +58,9 @@ class EpisodeService(
     question: ExternalSourceQuestionSchemaDto
   ) {
 
-    val answer = answerFormat(source, question.jsonPathField, question.fieldType)
-    answer?.let {
-      episode.answers?.let {
-        it[question.questionCode] = answer
-      }
+    val answer = answerFormat(source, question).orEmpty()
+    episode.answers?.let {
+      it[question.questionCode] = it[question.questionCode].orEmpty().plus(answer).toSet().toList()
     }
   }
 
@@ -97,30 +95,39 @@ class EpisodeService(
     return communityApiRestClient.getOffenderJson(crn, externalSourceEndpoint)
   }
 
-  private fun answerFormat(source: DocumentContext, jsonPathField: String?, fieldType: String?): List<String>? {
+  private fun answerFormat(source: DocumentContext, question: ExternalSourceQuestionSchemaDto): List<String>? {
     try {
-      return when (fieldType) {
-        "varchar" -> listOf(source.read<Object>(jsonPathField).toString())
+      return when (question.fieldType) {
+        "varchar" -> listOf(source.read<Object>(question.jsonPathField).toString())
         "date" -> listOf(
-          (source.read<JSONArray>(jsonPathField).filterNotNull() as List<String>).first().toString().split('T')[0]
+          (source.read<JSONArray>(question.jsonPathField).filterNotNull() as List<String>).first().toString().split('T')[0]
         )
         "time" -> listOf(
-          (source.read<JSONArray>(jsonPathField).filterNotNull() as List<String>).first().toString().split('T')[1]
+          (source.read<JSONArray>(question.jsonPathField).filterNotNull() as List<String>).first().toString().split('T')[1]
         )
         "toUpper" -> listOf(
-          (source.read<JSONArray>(jsonPathField).filterNotNull() as List<String>).first().toString().uppercase()
+          (source.read<JSONArray>(question.jsonPathField).filterNotNull() as List<String>).first().toString().uppercase()
         )
-        "array" -> (source.read<JSONArray>(jsonPathField).filterNotNull() as List<String>)
+        "array" -> (source.read<JSONArray>(question.jsonPathField).filterNotNull() as List<String>)
         "yesno" -> {
-          if ((source.read<JSONArray>(jsonPathField).filterNotNull() as List<String>).size > 0)
+          if ((source.read<JSONArray>(question.jsonPathField).filterNotNull() as List<String>).size > 0)
             listOf("YES")
           else
             listOf("NO")
         }
-        else -> listOf((source.read<JSONArray>(jsonPathField).filterNotNull() as List<String>).first().toString())
+        "mapped" -> {
+          if (
+            !question.ifEmpty && (source.read<JSONArray>(question.jsonPathField).filterNotNull() as List<String>).size > 0 ||
+            question.ifEmpty && (source.read<JSONArray>(question.jsonPathField).filterNotNull() as List<String>).size == 0
+          )
+            listOf(question.mappedValue.orEmpty())
+          else
+            emptyList()
+        }
+        else -> listOf((source.read<JSONArray>(question.jsonPathField).filterNotNull() as List<String>).first().toString())
       }
     } catch (e: Exception) {
-      return when (fieldType) {
+      return when (question.fieldType) {
         "yesno" -> listOf("NO")
         else -> null
       }

@@ -42,6 +42,12 @@ class ExternalSourceQuestionMappingEntity(
   @Column(name = "external_source_endpoint")
   val externalSourceEndpoint: String,
 
+  @Column(name = "mapped_value")
+  val mappedValue: String? = null,
+
+  @Column(name = "if_empty")
+  val ifEmpty: Boolean = false,
+
   @ManyToOne
   @JoinColumn(name = "question_code", referencedColumnName = "question_code")
   val questionSchema: QuestionSchemaEntity,

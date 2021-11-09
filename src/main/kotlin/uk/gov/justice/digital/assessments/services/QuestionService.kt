@@ -22,7 +22,6 @@ import uk.gov.justice.digital.assessments.jpa.repositories.refdata.QuestionGroup
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.QuestionSchemaRepository
 import uk.gov.justice.digital.assessments.services.dto.ExternalSourceQuestionSchemaDto
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
-import uk.gov.justice.digital.assessments.services.exceptions.MultipleExternalSourcesException
 import java.util.UUID
 
 @Service
@@ -230,19 +229,22 @@ class QuestionSchemaEntities(
       .filter { !it.externalSources.isEmpty() }
       .filter { it.externalSources.any { source -> source.assessmentSchemaCode == assessmentSchemaCode } }
       .map { it.toQuestionSchemaDto(assessmentSchemaCode) }
+      .flatten()
   }
 
-  private fun QuestionSchemaEntity.toQuestionSchemaDto(assessmentSchemaCode: AssessmentSchemaCode): ExternalSourceQuestionSchemaDto {
+  private fun QuestionSchemaEntity.toQuestionSchemaDto(assessmentSchemaCode: AssessmentSchemaCode): List<ExternalSourceQuestionSchemaDto> {
     val source = this.externalSources.filter { it.assessmentSchemaCode == assessmentSchemaCode }
-    if (source.size != 1) throw MultipleExternalSourcesException("Multiple External sources assigned to the same question ${this.questionCode} and assessment code $assessmentSchemaCode")
-    val externalSourceForAssessment = source.first()
-    return ExternalSourceQuestionSchemaDto(
-      externalSourceForAssessment.questionSchema.questionCode,
-      externalSourceForAssessment.externalSource,
-      externalSourceForAssessment.jsonPathField,
-      externalSourceForAssessment.fieldType,
-      externalSourceForAssessment.externalSourceEndpoint
-    )
+    return source.map {
+      ExternalSourceQuestionSchemaDto(
+        it.questionSchema.questionCode,
+        it.externalSource,
+        it.jsonPathField,
+        it.fieldType,
+        it.externalSourceEndpoint,
+        it.mappedValue,
+        it.ifEmpty,
+      )
+    }
   }
 
   fun forOasysMapping(
