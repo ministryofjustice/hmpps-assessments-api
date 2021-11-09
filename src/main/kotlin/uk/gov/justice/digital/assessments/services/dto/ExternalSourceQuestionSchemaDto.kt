@@ -6,4 +6,6 @@ class ExternalSourceQuestionSchemaDto(
   val jsonPathField: String,
   val fieldType: String? = null,
   val externalSourceEndpoint: String? = null,
+  val mappedValue: String? = null,
+  val ifEmpty: Boolean,
 )
