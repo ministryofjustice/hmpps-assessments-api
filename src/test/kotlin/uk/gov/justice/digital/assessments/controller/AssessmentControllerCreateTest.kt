@@ -244,7 +244,8 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(answers?.get("language")).isEqualTo(listOf("French"))
       assertThat(answers?.get("requires_interpreter")).isEqualTo(listOf("true"))
 
-      assertThat(answers?.get("emergency_contact_name")).isEqualTo(listOf("Brian"))
+      assertThat(answers?.get("emergency_contact_first_name")).isEqualTo(listOf("Brian"))
+      assertThat(answers?.get("emergency_contact_family_name")).isEqualTo(listOf("Contact"))
       assertThat(answers?.get("emergency_contact_relationship")).isEqualTo(listOf("Father"))
       assertThat(answers?.get("emergency_contact_mobile_phone_number")).isEqualTo(listOf("07333567890"))
       assertThat(answers?.get("emergency_contact_address_building_name")).isEqualTo(listOf("HMPPS Studio"))
@@ -256,7 +257,8 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(answers?.get("emergency_contact_address_postcode")).isEqualTo(listOf("S4 7BS"))
       assertThat(answers?.get("emergency_contact_phone_number")).isEqualTo(listOf("0133456789"))
 
-      assertThat(answers?.get("upw_gp_name")).isEqualTo(listOf("Nick"))
+      assertThat(answers?.get("upw_gp_first_name")).isEqualTo(listOf("Nick"))
+      assertThat(answers?.get("upw_gp_family_name")).isEqualTo(listOf("Riviera"))
       assertThat(answers?.get("upw_gp_address_building_name")).isEqualTo(listOf("The practice"))
       assertThat(answers?.get("upw_gp_address_house_number")).isEqualTo(listOf("38"))
       assertThat(answers?.get("upw_gp_address_street_name")).isEqualTo(listOf("East Street"))

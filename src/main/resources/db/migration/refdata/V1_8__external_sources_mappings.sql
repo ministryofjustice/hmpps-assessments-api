@@ -53,7 +53,8 @@ VALUES
 ('12be7d28-b20e-43f3-ba3b-3d0fd302e63a', 'upw_mental_health_condition', 'UPW', 'DELIUS', '$.offenderProfile.disabilities[?(@.disabilityType.code==''D''|| @.disabilityType.code==''D01'' || @.disabilityType.code==''MI'')].disabilityType.code', 'array', 'secure/offenders/crn/$crn/all', null, false),
 ('031e620a-b49a-4371-931b-6d6e05c3af4d', 'upw_mental_health_condition_details', 'UPW', 'DELIUS', '$.offenderProfile.disabilities[?(@.disabilityType.code==''D''|| @.disabilityType.code==''D01'' || @.disabilityType.code==''MI'')].disabilityType.description', 'array', 'secure/offenders/crn/$crn/all', null, false),
 
-('8e219d36-6979-4018-8944-12777990910e', 'emergency_contact_name', 'UPW', 'DELIUS', '$[?(@.relationshipType.code==''ME'')].firstName', null, 'secure/offenders/crn/$crn/personalContacts', null, false),
+('8e219d36-6979-4018-8944-12777990910e', 'emergency_contact_first_name', 'UPW', 'DELIUS', '$[?(@.relationshipType.code==''ME'')].firstName', null, 'secure/offenders/crn/$crn/personalContacts', null, false),
+('46d7ffe0-705e-4027-95ed-359381b2f0d0', 'emergency_contact_family_name', 'UPW', 'DELIUS', '$[?(@.relationshipType.code==''ME'')].surname', null, 'secure/offenders/crn/$crn/personalContacts', null, false),
 ('9bad074d-bfe0-4bc3-ba2e-0a5573b5d174', 'emergency_contact_relationship', 'UPW', 'DELIUS', '$[?(@.relationshipType.code==''ME'')].relationship', null, 'secure/offenders/crn/$crn/personalContacts', null, false),
 ('c0483847-1e87-4061-a7bb-a44f615a0881', 'emergency_contact_mobile_phone_number', 'UPW', 'DELIUS', '$[?(@.relationshipType.code==''ME'')].mobileNumber', null, 'secure/offenders/crn/$crn/personalContacts', null, false),
 ('ef0a997e-66d5-40f4-958c-b4ed84c9807e', 'emergency_contact_address_building_name', 'UPW', 'DELIUS', '$[?(@.relationshipType.code==''ME'')].address.buildingName', null, 'secure/offenders/crn/$crn/personalContacts', null, false),
@@ -65,7 +66,8 @@ VALUES
 ('6f8bd761-dc11-4c72-b2ab-5e1ee8a0038f', 'emergency_contact_address_postcode', 'UPW', 'DELIUS', '$[?(@.relationshipType.code==''ME'')].address.postcode', null, 'secure/offenders/crn/$crn/personalContacts', null, false),
 ('f7318c93-0929-4a10-bd6a-1f7e4674dc11', 'emergency_contact_phone_number', 'UPW', 'DELIUS', '$[?(@.relationshipType.code==''ME'')].address.telephoneNumber', null, 'secure/offenders/crn/$crn/personalContacts', null, false),
 
-('57099ea6-37e0-441e-9d05-ca840d225261', 'upw_gp_name', 'UPW', 'DELIUS', '$[?(@.relationshipType.code==''RT02'')].firstName', null, 'secure/offenders/crn/$crn/personalContacts', null, false),
+('57099ea6-37e0-441e-9d05-ca840d225261', 'upw_gp_first_name', 'UPW', 'DELIUS', '$[?(@.relationshipType.code==''RT02'')].firstName', null, 'secure/offenders/crn/$crn/personalContacts', null, false),
+('a9ec6f88-58ad-4339-8969-3c27a62c85db', 'upw_gp_family_name', 'UPW', 'DELIUS', '$[?(@.relationshipType.code==''RT02'')].surname', null, 'secure/offenders/crn/$crn/personalContacts', null, false),
 ('8b7c2dac-620a-4fd9-9f78-016ed53511a4', 'upw_gp_address_building_name', 'UPW', 'DELIUS', '$[?(@.relationshipType.code==''RT02'')].address.buildingName', null, 'secure/offenders/crn/$crn/personalContacts', null, false),
 ('873c2901-6f23-4a7f-b230-fafba2819faf', 'upw_gp_address_house_number', 'UPW', 'DELIUS', '$[?(@.relationshipType.code==''RT02'')].address.addressNumber', null, 'secure/offenders/crn/$crn/personalContacts', null, false),
 ('b1c76706-8634-43c9-8c70-67b78976d672', 'upw_gp_address_street_name', 'UPW', 'DELIUS', '$[?(@.relationshipType.code==''RT02'')].address.streetName', null, 'secure/offenders/crn/$crn/personalContacts', null, false),
