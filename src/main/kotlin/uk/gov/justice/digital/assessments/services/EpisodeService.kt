@@ -113,7 +113,7 @@ class EpisodeService(
           if ((source.read<JSONArray>(question.jsonPathField).filterNotNull() as List<String>).size > 0)
             listOf("YES")
           else
-            listOf("NO")
+            null
         }
         "mapped" -> {
           if (
@@ -128,7 +128,7 @@ class EpisodeService(
       }
     } catch (e: Exception) {
       return when (question.fieldType) {
-        "yesno" -> listOf("NO")
+        "yesno" -> null
         else -> null
       }
     }
