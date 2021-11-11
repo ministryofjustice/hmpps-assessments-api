@@ -49,6 +49,7 @@ class AssessmentUpdateServiceOASysTest {
   private val assessmentService: AssessmentService = mockk()
   private val authorService: AuthorService = mockk()
   private val auditService: AuditService = mockk()
+  private val telemetryService: TelemetryService = mockk()
 
   private val assessmentsUpdateService = AssessmentUpdateService(
     assessmentRepository,
@@ -58,7 +59,8 @@ class AssessmentUpdateServiceOASysTest {
     oasysAssessmentUpdateService,
     assessmentService,
     authorService,
-    auditService
+    auditService,
+    telemetryService
   )
 
   private val assessmentId = 1L
@@ -333,6 +335,15 @@ class AssessmentUpdateServiceOASysTest {
     val question = makeQuestion(9, existingQuestionCode, "freetext", null, "section1", null, "Q1")
     every { questionService.getAllQuestions() } returns QuestionSchemaEntities(listOf(question))
     justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
+    justRun {
+      telemetryService.trackAssessmentEvent(
+        TelemetryEventType.ASSESSMENT_REALLOCATED,
+        any(),
+        any(),
+        any(),
+        any()
+      )
+    }
     val assessment = assessmentEntityWithOasysOffender(
       mutableMapOf(
         existingQuestionCode to listOf("free text", "fruit loops", "biscuits")
@@ -411,6 +422,15 @@ class AssessmentUpdateServiceOASysTest {
   fun `update episode calls updateOASysAssessment with the updated answers`() {
     val assessmentEpisode = setupEpisode()
     justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
+    justRun {
+      telemetryService.trackAssessmentEvent(
+        TelemetryEventType.ASSESSMENT_REALLOCATED,
+        any(),
+        any(),
+        any(),
+        any()
+      )
+    }
     every { questionService.getAllSectionQuestionsForQuestions(listOf(questionCode1)) } returns setupSectionQuestionCodes()
 
     val update = UpdateAssessmentEpisodeDto(answers = mapOf(questionCode1 to listOf("Updated")))

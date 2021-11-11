@@ -43,6 +43,7 @@ class AssessmentServiceTest {
   private val offenderService: OffenderService = mockk()
   private val oasysAssessmentUpdateService: OasysAssessmentUpdateService = mockk()
   private val auditService: AuditService = mockk()
+  private val telemetryService: TelemetryService = mockk()
 
   private val assessmentsService = AssessmentService(
     assessmentRepository,
@@ -53,7 +54,8 @@ class AssessmentServiceTest {
     courtCaseRestClient,
     oasysAssessmentUpdateService,
     offenderService,
-    auditService
+    auditService,
+    telemetryService
   )
 
   private val assessmentUuid = UUID.randomUUID()
@@ -89,6 +91,15 @@ class AssessmentServiceTest {
     fun `create new episode`() {
       val assessment: AssessmentEntity = mockk()
       justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
+      justRun {
+        telemetryService.trackAssessmentEvent(
+          TelemetryEventType.ASSESSMENT_CREATED,
+          any(),
+          any(),
+          any(),
+          any()
+        )
+      }
       every { assessment.assessmentUuid } returns assessmentUuid
       every { offenderService.validateUserAccess(crn) } returns mockk()
       every { assessment.assessmentId } returns 0

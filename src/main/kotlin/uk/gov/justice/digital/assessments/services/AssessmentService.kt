@@ -40,7 +40,8 @@ class AssessmentService(
   private val courtCaseClient: CourtCaseRestClient,
   private val oasysAssessmentUpdateService: OasysAssessmentUpdateService,
   private val offenderService: OffenderService,
-  private val auditService: AuditService
+  private val auditService: AuditService,
+  private val telemetryService: TelemetryService
 ) {
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
@@ -88,13 +89,7 @@ class AssessmentService(
       eventId = eventId.toString(),
       offence = offence
     )
-    auditService.createAuditEvent(
-      AuditType.ARN_ASSESSMENT_CREATED,
-      assessmentUuid,
-      episode.episodeUuid,
-      crn,
-      episode.author
-    )
+    auditAndLogCreateEpisode(assessmentUuid, episode, crn)
     log.info("New episode created for assessment $assessmentUuid")
     return AssessmentEpisodeDto.from(episode)
   }
@@ -184,13 +179,7 @@ class AssessmentService(
       offence.convictionId.toString(),
       offence
     )
-    auditService.createAuditEvent(
-      AuditType.ARN_ASSESSMENT_CREATED,
-      arnAssessment.assessmentUuid,
-      episode.episodeUuid,
-      crn,
-      episode.author
-    )
+    auditAndLogCreateEpisode(arnAssessment.assessmentUuid, episode, crn)
     return AssessmentDto.from(arnAssessment)
   }
 
@@ -240,13 +229,7 @@ class AssessmentService(
       courtSourceId(courtCode, caseNumber),
       null
     )
-    auditService.createAuditEvent(
-      AuditType.ARN_ASSESSMENT_CREATED,
-      arnAssessment.assessmentUuid,
-      episode.episodeUuid,
-      crn,
-      episode.author
-    )
+    auditAndLogCreateEpisode(arnAssessment.assessmentUuid, episode, crn)
     return AssessmentDto.from(arnAssessment)
   }
 
@@ -380,6 +363,28 @@ class AssessmentService(
       offenderService.getOffenceFromConvictionIndex(crn, eventId)
     }
   }
+
+  private fun auditAndLogCreateEpisode(
+    assessmentUuid: UUID,
+    episode: AssessmentEpisodeEntity,
+    crn: String
+  ) {
+    auditService.createAuditEvent(
+      AuditType.ARN_ASSESSMENT_CREATED,
+      assessmentUuid,
+      episode.episodeUuid,
+      crn,
+      episode.author
+    )
+    telemetryService.trackAssessmentEvent(
+      TelemetryEventType.ASSESSMENT_CREATED,
+      crn,
+      episode.author,
+      assessmentUuid,
+      episode.episodeUuid
+    )
+  }
+
   private fun courtSourceId(courtCode: String?, caseNumber: String?): String {
     return "$courtCode|$caseNumber"
   }

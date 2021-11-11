@@ -36,6 +36,7 @@ class AssessmentUpdateServiceTest {
   private val assessmentService: AssessmentService = mockk()
   private val authorService: AuthorService = mockk()
   private val auditService: AuditService = mockk()
+  private val telemetryService: TelemetryService = mockk()
 
   private val assessmentUpdateService = AssessmentUpdateService(
     assessmentRepository,
@@ -44,7 +45,9 @@ class AssessmentUpdateServiceTest {
     riskPredictorsService,
     oasysAssessmentUpdateService,
     assessmentService,
-    authorService, auditService
+    authorService,
+    auditService,
+    telemetryService
   )
 
   private val assessmentUuid = UUID.randomUUID()
