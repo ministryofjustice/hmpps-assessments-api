@@ -48,7 +48,7 @@ VALUES
 ('623581c2-9b99-4421-8a96-df51f0136e06', 'female', '9fc83177-fd89-4755-89a5-69d0892cd25d', '2021-09-27 14:50:00', null, 'FEMALE', 'Female'),
 ('b6d5e728-7e5b-4382-972f-31c3c66337cf', 'male', '4e3cc956-41d6-47c1-a4d8-c084251fadb5', '2021-09-27 14:50:00', null, 'MALE', 'Male'),
 ('07a9ca67-1296-45fb-8fb1-79139198f3e9', 'female', '4e3cc956-41d6-47c1-a4d8-c084251fadb5', '2021-09-27 14:50:00', null, 'FEMALE', 'Female'),
-('3619f489-0e17-4702-a05c-a356836aeb79', 'non_binary', '4e3cc956-41d6-47c1-a4d8-c084251fadb5', '2021-09-27 14:50:00', null, 'NONE_BINARY', 'Non-binary'),
+('3619f489-0e17-4702-a05c-a356836aeb79', 'non_binary', '4e3cc956-41d6-47c1-a4d8-c084251fadb5', '2021-09-27 14:50:00', null, 'NON_BINARY', 'Non-binary'),
 ('f0e680b7-9bea-45aa-ab44-a8c6371dab66', 'prefer_to_self_describe', '4e3cc956-41d6-47c1-a4d8-c084251fadb5', '2021-09-27 14:50:00', null, 'PREFER_TO_SELF_DESCRIBE', 'Prefer to self-describe'),
 ('aa69c244-5c48-47cd-9fb3-c41ca027909c', 'prefer_no_to_say', '4e3cc956-41d6-47c1-a4d8-c084251fadb5', '2021-09-27 14:50:00', null, 'PREFER_NOT_TO_SAY', 'Prefer not to say'),
 ('4f121212-5a7f-4ddf-9286-0843b9cdd913', 'signed', '43e3b4e5-8e5e-4bbf-96c0-24b35ae2a613', '2021-09-27 14:50:00', null, 'SIGNED', 'Sign declaration'),

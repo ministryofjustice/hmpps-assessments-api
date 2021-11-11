@@ -18,6 +18,7 @@ data class OffenderProfile(
   val ethnicity: String? = null,
   val disabilities: List<Disability>? = null,
   val offenderLanguages: OffenderLanguages? = null,
+  val genderIdentity: String? = null,
 )
 
 data class OffenderLanguages(val primaryLanguage: String? = null, val requiresInterpreter: Boolean)
