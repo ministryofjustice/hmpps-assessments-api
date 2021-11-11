@@ -635,7 +635,7 @@ class CommunityApiMockServer : WireMockServer(9096) {
       surname = "Smith",
       previousSurname = null,
       dateOfBirth = "1979-08-18",
-      gender = "F",
+      gender = "Male",
       otherIds = IDs(
         crn = crn,
         pncNumber = "A/1234560BA"
@@ -700,7 +700,8 @@ class CommunityApiMockServer : WireMockServer(9096) {
           Disability(DisabilityType("D01", "mental health")),
           Disability(DisabilityType("MI", "mental illness"))
         ),
-        offenderLanguages = OffenderLanguages("French", true)
+        offenderLanguages = OffenderLanguages("French", true),
+        genderIdentity = "Non-Binary",
       )
     )
   }
