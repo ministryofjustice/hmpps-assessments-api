@@ -41,7 +41,7 @@ VALUES
 ('ebc6c624-eec2-48c8-86a2-6fe5bb52b84d', 'gender', 'UPW', 'DELIUS', '$[?(@.gender == ''Male'')].gender', 'mapped', 'secure/offenders/crn/$crn/all', 'MALE', false),
 ('d6055026-7423-46ec-ab11-4c5af8893d37', 'gender', 'UPW', 'DELIUS', '$[?(@.gender == ''Female'')].gender', 'mapped', 'secure/offenders/crn/$crn/all', 'FEMALE', false),
 ('8539dca3-6086-463d-b57b-2dfd2b17ab1c', 'gender_identity', 'UPW', 'DELIUS', '$[?(@.offenderProfile.genderIdentity == ''Male'')].offenderProfile.genderIdentity', 'mapped', 'secure/offenders/crn/$crn/all', 'MALE', false),
-('5c657b13-3b31-4c68-8985-abdf3d8aa76b', 'gender_identity', 'UPW', 'DELIUS', '$[?(@.offenderProfile.genderIdentity == ''Female'')].offenderProfile.genderIdentity', 'mapped', 'secure/offenders/crn/$crn/all', 'MALE', false),
+('5c657b13-3b31-4c68-8985-abdf3d8aa76b', 'gender_identity', 'UPW', 'DELIUS', '$[?(@.offenderProfile.genderIdentity == ''Female'')].offenderProfile.genderIdentity', 'mapped', 'secure/offenders/crn/$crn/all', 'FEMALE', false),
 ('4bd0fba6-e5c3-4974-bbf2-7cdd43922294', 'gender_identity', 'UPW', 'DELIUS', '$[?(@.offenderProfile.genderIdentity == ''Non-Binary'')].offenderProfile.genderIdentity', 'mapped', 'secure/offenders/crn/$crn/all', 'NON_BINARY', false),
 ('43b3783a-5d53-481d-9322-6674d510a061', 'gender_identity', 'UPW', 'DELIUS', '$[?(@.offenderProfile.genderIdentity == ''Prefer not to say'')].offenderProfile.genderIdentity', 'mapped', 'secure/offenders/crn/$crn/all', 'PREFER_NOT_TO_SAY', false),
 ('8dd8fd74-1a67-4b2f-b8da-26aa58424f20', 'gender_identity', 'UPW', 'DELIUS', '$[?(@.offenderProfile.genderIdentity == ''Prefer to self-describe'')].offenderProfile.genderIdentity', 'mapped', 'secure/offenders/crn/$crn/all', 'PREFER_TO_SELF_DESCRIBE', false),
