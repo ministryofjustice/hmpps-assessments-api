@@ -623,6 +623,29 @@ class CommunityApiMockServer : WireMockServer(9096) {
     )
   }
 
+  fun stubUploadDocument() {
+    stubFor(
+      WireMock.post(WireMock.urlEqualTo("/secure/offenders/crn/X1355/convictions/2500000223/document"))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withStatus(201)
+            .withBody(
+              """
+              {
+                "id": 2500356804,
+                "documentName": "file.txt",
+                "crn": "X1355",
+                "dateLastModified": "2021-11-11T17:51:22",
+                "lastModifiedUser": "Name,User",
+                "creationDate": "2021-11-11T17:51:22"
+              }
+              """.trimIndent()
+            )
+        )
+    )
+  }
+
   private fun mapToJson(dto: Any): String {
     return objectMapper.writeValueAsString(dto)
   }
