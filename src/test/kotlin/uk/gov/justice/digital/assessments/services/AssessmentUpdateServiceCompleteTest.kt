@@ -36,6 +36,7 @@ class AssessmentUpdateServiceCompleteTest {
   private val assessmentService: AssessmentService = mockk()
   private val authorService: AuthorService = mockk()
   private val auditService: AuditService = mockk()
+  private val telemetryService: TelemetryService = mockk()
 
   private val assessmentUpdateService = AssessmentUpdateService(
     assessmentRepository,
@@ -45,7 +46,8 @@ class AssessmentUpdateServiceCompleteTest {
     oasysAssessmentUpdateService,
     assessmentService,
     authorService,
-    auditService
+    auditService,
+    telemetryService
   )
 
   @BeforeEach
@@ -57,6 +59,15 @@ class AssessmentUpdateServiceCompleteTest {
   fun `close episode`() {
     val assessment = assessmentEntity()
     justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
+    justRun {
+      telemetryService.trackAssessmentEvent(
+        TelemetryEventType.ASSESSMENT_COMPLETE,
+        any(),
+        any(),
+        any(),
+        any()
+      )
+    }
     every { assessmentRepository.findByAssessmentUuid(any()) } returns assessment
     every { episodeRepository.save(any()) } returns assessment.episodes[0]
     val assessmentEpisode = assessment.episodes.first()
@@ -80,6 +91,15 @@ class AssessmentUpdateServiceCompleteTest {
   fun `audit close episode`() {
     val assessment = assessmentEntity()
     justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
+    justRun {
+      telemetryService.trackAssessmentEvent(
+        TelemetryEventType.ASSESSMENT_COMPLETE,
+        any(),
+        any(),
+        any(),
+        any()
+      )
+    }
     every { assessmentRepository.findByAssessmentUuid(any()) } returns assessment
     every { episodeRepository.save(any()) } returns assessment.episodes[0]
     val assessmentEpisode = assessment.episodes.first()
@@ -99,6 +119,15 @@ class AssessmentUpdateServiceCompleteTest {
         assessment.subject?.crn,
         author,
         any()
+      )
+    }
+    verify(exactly = 1) {
+      telemetryService.trackAssessmentEvent(
+        TelemetryEventType.ASSESSMENT_COMPLETE,
+        assessment.subject?.crn!!,
+        author,
+        episode.assessmentUuid,
+        episode.episodeUuid!!
       )
     }
   }
