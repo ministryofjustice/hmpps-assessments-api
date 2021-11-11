@@ -80,7 +80,7 @@ class AssessmentServiceITTest : IntegrationTest() {
     assertThat(assessmentResponse.subject).isNotNull
     assertThat(assessmentResponse.subject?.crn).isEqualTo(crn)
 
-    val assessmentEntity = assessmentRepository.findByAssessmentUuid(assessmentResponse.assessmentUuid!!)
+    val assessmentEntity = assessmentRepository.findByAssessmentUuid(assessmentResponse.assessmentUuid)
     assertThat(assessmentEntity).isNotNull
     assertThat(assessmentEntity?.assessmentUuid).isEqualTo(assessmentResponse.assessmentUuid)
     assertThat(assessmentEntity?.subject).isNotNull
@@ -108,7 +108,7 @@ class AssessmentServiceITTest : IntegrationTest() {
     assertThat(assessmentResponse.subject).isNotNull
     assertThat(assessmentResponse.subject?.crn).isEqualTo(crn)
 
-    val assessmentEntity = assessmentRepository.findByAssessmentUuid(assessmentResponse.assessmentUuid!!)
+    val assessmentEntity = assessmentRepository.findByAssessmentUuid(assessmentResponse.assessmentUuid)
     assertThat(assessmentEntity?.assessmentUuid).isEqualTo(assessmentResponse.assessmentUuid)
     assertThat(assessmentEntity?.subject?.crn).isEqualTo(crn)
     assertThat(assessmentEntity?.subject?.oasysOffenderPk).isEqualTo(1L)

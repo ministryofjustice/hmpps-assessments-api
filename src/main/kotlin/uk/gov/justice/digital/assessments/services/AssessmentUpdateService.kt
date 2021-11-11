@@ -25,7 +25,8 @@ class AssessmentUpdateService(
   private val oasysAssessmentUpdateService: OasysAssessmentUpdateService,
   private val assessmentService: AssessmentService,
   private val authorService: AuthorService,
-  private val auditService: AuditService
+  private val auditService: AuditService,
+  private val telemetryService: TelemetryService
 ) {
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
@@ -92,13 +93,7 @@ class AssessmentUpdateService(
     } else {
       episode.close()
       episodeRepository.save(episode)
-      auditService.createAuditEvent(
-        AuditType.ARN_ASSESSMENT_COMPLETED,
-        episode.assessment.assessmentUuid,
-        episode.episodeUuid,
-        episode.assessment.subject?.crn,
-        episode.author
-      )
+      auditAndLogCloseAssessment(episode)
       log.info("Saved closed episode ${episode.episodeUuid} for assessment ${episode.assessment.assessmentUuid}")
     }
     val predictorResults = riskPredictorsService.getPredictorResults(episode = episode, final = true)
@@ -288,6 +283,34 @@ class AssessmentUpdateService(
         episode.assessment.subject?.crn,
         episode.author,
         mapOf("assignedFrom" to currentAuthor.userName, "assignedTo" to episode.author.userName)
+      )
+      episode.assessment.subject?.crn?.let {
+        telemetryService.trackAssessmentEvent(
+          TelemetryEventType.ASSESSMENT_REALLOCATED,
+          it,
+          episode.author,
+          episode.assessment.assessmentUuid,
+          episode.episodeUuid
+        )
+      }
+    }
+  }
+
+  private fun auditAndLogCloseAssessment(episode: AssessmentEpisodeEntity) {
+    auditService.createAuditEvent(
+      AuditType.ARN_ASSESSMENT_COMPLETED,
+      episode.assessment.assessmentUuid,
+      episode.episodeUuid,
+      episode.assessment.subject?.crn,
+      episode.author
+    )
+    episode.assessment.subject?.crn?.let {
+      telemetryService.trackAssessmentEvent(
+        TelemetryEventType.ASSESSMENT_COMPLETE,
+        it,
+        episode.author,
+        episode.assessment.assessmentUuid,
+        episode.episodeUuid
       )
     }
   }

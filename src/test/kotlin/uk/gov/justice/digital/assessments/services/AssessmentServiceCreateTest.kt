@@ -49,6 +49,7 @@ class AssessmentServiceCreateTest {
   private val oasysAssessmentUpdateService: OasysAssessmentUpdateService = mockk()
   private val assessmentSchemaService: AssessmentSchemaService = mockk()
   private val auditService: AuditService = mockk()
+  private val telemetryService: TelemetryService = mockk()
 
   private val assessmentsService = AssessmentService(
     assessmentRepository,
@@ -59,7 +60,8 @@ class AssessmentServiceCreateTest {
     courtCaseRestClient,
     oasysAssessmentUpdateService,
     offenderService,
-    auditService
+    auditService,
+    telemetryService
   )
 
   private val assessmentUuid = UUID.randomUUID()
@@ -88,6 +90,15 @@ class AssessmentServiceCreateTest {
     @Test
     fun `create new offender with new assessment from delius event index and crn`() {
       justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
+      justRun {
+        telemetryService.trackAssessmentEvent(
+          TelemetryEventType.ASSESSMENT_CREATED,
+          any(),
+          any(),
+          any(),
+          any()
+        )
+      }
       every { subjectRepository.findByCrn(crn) } returns null
       every { offenderService.validateUserAccess("X12345") } returns mockk()
       every { offenderService.getOffender("X12345") } returns OffenderDto(dateOfBirth = LocalDate.of(1989, 1, 1))
@@ -134,6 +145,15 @@ class AssessmentServiceCreateTest {
     @Test
     fun `create new offender with new assessment from delius event ID and crn`() {
       justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
+      justRun {
+        telemetryService.trackAssessmentEvent(
+          TelemetryEventType.ASSESSMENT_CREATED,
+          any(),
+          any(),
+          any(),
+          any()
+        )
+      }
       every { subjectRepository.findByCrn(crn) } returns null
       every { offenderService.validateUserAccess("X12345") } returns mockk()
       every { offenderService.getOffender("X12345") } returns OffenderDto(dateOfBirth = LocalDate.of(1989, 1, 1))
@@ -181,6 +201,15 @@ class AssessmentServiceCreateTest {
     @Test
     fun `return existing assessment from delius event id and crn if one already exists`() {
       justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
+      justRun {
+        telemetryService.trackAssessmentEvent(
+          TelemetryEventType.ASSESSMENT_CREATED,
+          any(),
+          any(),
+          any(),
+          any()
+        )
+      }
       every { offenderService.validateUserAccess("X12345") } returns mockk()
       every { subjectRepository.findByCrn(crn) } returns
         SubjectEntity(
@@ -248,7 +277,10 @@ class AssessmentServiceCreateTest {
     @Test
     fun `throw exception if offender is LAO and user is excluded in Delius`() {
       every { offenderService.validateUserAccess("X12345") } throws ExternalApiForbiddenException(
-        "User does not have permission to access offender with CRN $crn", HttpMethod.GET, "", ExternalService.COMMUNITY_API
+        "User does not have permission to access offender with CRN $crn",
+        HttpMethod.GET,
+        "",
+        ExternalService.COMMUNITY_API
       )
 
       val exception = assertThrows<ExternalApiForbiddenException> {
@@ -267,6 +299,15 @@ class AssessmentServiceCreateTest {
     @Test
     fun `audit create assessment from delius`() {
       justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
+      justRun {
+        telemetryService.trackAssessmentEvent(
+          TelemetryEventType.ASSESSMENT_CREATED,
+          any(),
+          any(),
+          any(),
+          any()
+        )
+      }
       every { subjectRepository.findByCrn(crn) } returns null
       every { offenderService.validateUserAccess("X12345") } returns mockk()
       every { offenderService.getOffender("X12345") } returns OffenderDto(dateOfBirth = LocalDate.of(1989, 1, 1))
@@ -317,6 +358,15 @@ class AssessmentServiceCreateTest {
           any()
         )
       }
+      verify(exactly = 1) {
+        telemetryService.trackAssessmentEvent(
+          TelemetryEventType.ASSESSMENT_CREATED,
+          crn,
+          author,
+          assessment.assessmentUuid,
+          assessment.episodes?.first()?.episodeUuid!!
+        )
+      }
     }
   }
 
@@ -332,6 +382,15 @@ class AssessmentServiceCreateTest {
     @Test
     fun `create new assessment from court`() {
       justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
+      justRun {
+        telemetryService.trackAssessmentEvent(
+          TelemetryEventType.ASSESSMENT_CREATED,
+          any(),
+          any(),
+          any(),
+          any()
+        )
+      }
       every { subjectRepository.findByCrn(crn) } returns null
       every { subjectRepository.save(any()) } returns SubjectEntity(
         name = "name",
@@ -383,6 +442,15 @@ class AssessmentServiceCreateTest {
       val assessment = AssessmentEntity(assessmentId = 1, subject = subjectEntity)
       val subject = subjectEntity.copy(assessments = listOf(assessment))
       justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
+      justRun {
+        telemetryService.trackAssessmentEvent(
+          TelemetryEventType.ASSESSMENT_CREATED,
+          any(),
+          any(),
+          any(),
+          any()
+        )
+      }
       every { subjectRepository.findByCrn(crn) } returns subject
       every { courtCaseRestClient.getCourtCase(courtCode, existingCaseNumber) } returns CourtCase(
         defendantDob = LocalDate.now(),
@@ -416,6 +484,15 @@ class AssessmentServiceCreateTest {
     @Test
     fun `audit create assessment from court`() {
       justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
+      justRun {
+        telemetryService.trackAssessmentEvent(
+          TelemetryEventType.ASSESSMENT_CREATED,
+          any(),
+          any(),
+          any(),
+          any()
+        )
+      }
       every { subjectRepository.findByCrn(crn) } returns null
       every { subjectRepository.save(any()) } returns SubjectEntity(
         name = "name",
@@ -461,6 +538,15 @@ class AssessmentServiceCreateTest {
           crn,
           any(),
           any()
+        )
+      }
+      verify(exactly = 1) {
+        telemetryService.trackAssessmentEvent(
+          TelemetryEventType.ASSESSMENT_CREATED,
+          crn,
+          author,
+          assessment.assessmentUuid,
+          assessment.episodes?.first()?.episodeUuid!!
         )
       }
     }
