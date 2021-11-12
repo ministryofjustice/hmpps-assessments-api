@@ -341,6 +341,7 @@ class AssessmentUpdateServiceOASysTest {
         any(),
         any(),
         any(),
+        any(),
         any()
       )
     }
@@ -425,6 +426,7 @@ class AssessmentUpdateServiceOASysTest {
     justRun {
       telemetryService.trackAssessmentEvent(
         TelemetryEventType.ASSESSMENT_REALLOCATED,
+        any(),
         any(),
         any(),
         any(),

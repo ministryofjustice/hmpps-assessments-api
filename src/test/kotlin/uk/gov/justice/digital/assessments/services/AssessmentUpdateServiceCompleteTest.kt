@@ -65,6 +65,7 @@ class AssessmentUpdateServiceCompleteTest {
         any(),
         any(),
         any(),
+        any(),
         any()
       )
     }
@@ -94,6 +95,7 @@ class AssessmentUpdateServiceCompleteTest {
     justRun {
       telemetryService.trackAssessmentEvent(
         TelemetryEventType.ASSESSMENT_COMPLETE,
+        any(),
         any(),
         any(),
         any(),
@@ -127,7 +129,8 @@ class AssessmentUpdateServiceCompleteTest {
         assessment.subject?.crn!!,
         author,
         episode.assessmentUuid,
-        episode.episodeUuid!!
+        episode.episodeUuid!!,
+        AssessmentSchemaCode.ROSH
       )
     }
   }

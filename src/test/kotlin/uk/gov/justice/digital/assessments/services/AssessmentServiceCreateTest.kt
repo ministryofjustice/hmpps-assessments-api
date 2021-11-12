@@ -97,6 +97,7 @@ class AssessmentServiceCreateTest {
           any(),
           any(),
           any(),
+          any(),
           any()
         )
       }
@@ -149,6 +150,7 @@ class AssessmentServiceCreateTest {
       justRun {
         telemetryService.trackAssessmentEvent(
           ASSESSMENT_CREATED,
+          any(),
           any(),
           any(),
           any(),
@@ -205,6 +207,7 @@ class AssessmentServiceCreateTest {
       justRun {
         telemetryService.trackAssessmentEvent(
           ASSESSMENT_CREATED,
+          any(),
           any(),
           any(),
           any(),
@@ -300,7 +303,7 @@ class AssessmentServiceCreateTest {
     @Test
     fun `audit create assessment from delius`() {
       justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
-      justRun { telemetryService.trackAssessmentEvent(ASSESSMENT_CREATED, any(), any(), any(), any()) }
+      justRun { telemetryService.trackAssessmentEvent(ASSESSMENT_CREATED, any(), any(), any(), any(), any()) }
       every { subjectRepository.findByCrn(crn) } returns null
       every { offenderService.validateUserAccess("X12345") } returns mockk()
       every { offenderService.getOffender("X12345") } returns OffenderDto(dateOfBirth = LocalDate.of(1989, 1, 1))
@@ -357,7 +360,8 @@ class AssessmentServiceCreateTest {
           crn,
           author,
           assessment.assessmentUuid,
-          assessment.episodes?.first()?.episodeUuid!!
+          assessment.episodes?.first()?.episodeUuid!!,
+          assessmentSchemaCode
         )
       }
     }
@@ -365,7 +369,7 @@ class AssessmentServiceCreateTest {
     @Test
     fun `do not audit existing assessment if one already exists`() {
       justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
-      justRun { telemetryService.trackAssessmentEvent(ASSESSMENT_CREATED, any(), any(), any(), any()) }
+      justRun { telemetryService.trackAssessmentEvent(ASSESSMENT_CREATED, any(), any(), any(), any(), any()) }
       every { offenderService.validateUserAccess("X12345") } returns mockk()
       val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
       val assessment = AssessmentEntity(
@@ -413,7 +417,7 @@ class AssessmentServiceCreateTest {
       )
       verify(exactly = 0) { assessmentRepository.save(any()) }
       verify(exactly = 0) { auditService.createAuditEvent(any(), any(), any(), any(), any()) }
-      verify(exactly = 0) { telemetryService.trackAssessmentEvent(any(), any(), any(), any(), any()) }
+      verify(exactly = 0) { telemetryService.trackAssessmentEvent(any(), any(), any(), any(), any(), any()) }
     }
   }
 
@@ -432,6 +436,7 @@ class AssessmentServiceCreateTest {
       justRun {
         telemetryService.trackAssessmentEvent(
           ASSESSMENT_CREATED,
+          any(),
           any(),
           any(),
           any(),
@@ -495,6 +500,7 @@ class AssessmentServiceCreateTest {
           any(),
           any(),
           any(),
+          any(),
           any()
         )
       }
@@ -534,6 +540,7 @@ class AssessmentServiceCreateTest {
       justRun {
         telemetryService.trackAssessmentEvent(
           ASSESSMENT_CREATED,
+          any(),
           any(),
           any(),
           any(),
@@ -593,7 +600,8 @@ class AssessmentServiceCreateTest {
           crn,
           author,
           assessment.assessmentUuid,
-          assessment.episodes?.first()?.episodeUuid!!
+          assessment.episodes?.first()?.episodeUuid!!,
+          assessmentSchemaCode
         )
       }
     }

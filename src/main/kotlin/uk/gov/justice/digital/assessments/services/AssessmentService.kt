@@ -384,7 +384,8 @@ class AssessmentService(
       crn,
       episode.author,
       assessmentUuid,
-      episode.episodeUuid
+      episode.episodeUuid,
+      episode.assessmentSchemaCode
     )
   }
 
