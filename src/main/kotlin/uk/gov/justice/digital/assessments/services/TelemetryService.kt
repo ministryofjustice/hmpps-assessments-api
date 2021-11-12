@@ -10,7 +10,7 @@ class TelemetryService(
   private val telemetryClient: TelemetryClient
 ) {
 
-  fun trackAssessmentEvent(event: TelemetryEventType, crn: String, author: AuthorEntity, assessmentUuid: UUID, episodeUuid: UUID) {
+  fun trackAssessmentEvent(event: TelemetryEventType, crn: String?, author: AuthorEntity, assessmentUuid: UUID, episodeUuid: UUID) {
     val properties = mapOf(
       "author" to author.userName,
       "crn" to crn,
