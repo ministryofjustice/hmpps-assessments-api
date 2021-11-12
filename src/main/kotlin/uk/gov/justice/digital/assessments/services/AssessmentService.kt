@@ -76,20 +76,20 @@ class AssessmentService(
     eventType: DeliusEventType
   ): AssessmentEpisodeDto {
     val assessment = getAssessmentByUuid(assessmentUuid)
-    val crn = assessment.subject?.crn
+    val subject = assessment.subject
       ?: throw EntityNotFoundException("No CRN found for subject for assessment $assessmentUuid")
 
-    offenderService.validateUserAccess(crn)
-    val offence = getEpisodeOffence(eventType, crn, eventId)
+    offenderService.validateUserAccess(subject.crn)
+    val offence = getEpisodeOffence(eventType, subject.crn, eventId)
     val episode = createPrepopulatedEpisode(
       assessment,
       reason,
       assessmentSchemaCode = assessmentSchemaCode,
       source = ExternalSource.DELIUS.name,
       eventId = eventId.toString(),
-      offence = offence
+      offence = offence,
+      subject = subject
     )
-    auditAndLogCreateEpisode(assessmentUuid, episode, crn)
     log.info("New episode created for assessment $assessmentUuid")
     return AssessmentEpisodeDto.from(episode)
   }
@@ -169,17 +169,17 @@ class AssessmentService(
       deliusEventId = offence.convictionIndex,
       assessmentSchemaCode = assessmentSchemaCode
     )
-    subjectRepository.save(arnAssessment.subject?.copy(oasysOffenderPk = oasysOffenderPk))
-    val episode = createPrepopulatedEpisode(
+    val subject = subjectRepository.save(arnAssessment.subject?.copy(oasysOffenderPk = oasysOffenderPk))
+    createPrepopulatedEpisode(
       arnAssessment,
       "",
       oasysSetPK,
       assessmentSchemaCode,
       ExternalSource.DELIUS.name,
       offence.convictionId.toString(),
-      offence
+      offence,
+      subject
     )
-    auditAndLogCreateEpisode(arnAssessment.assessmentUuid, episode, crn)
     return AssessmentDto.from(arnAssessment)
   }
 
@@ -219,17 +219,17 @@ class AssessmentService(
       crn = courtCase.crn,
       assessmentSchemaCode = assessmentSchemaCode
     )
-    subjectRepository.save(arnAssessment.subject?.copy(oasysOffenderPk = oasysOffenderPk))
-    val episode = createPrepopulatedEpisode(
+    val subject = subjectRepository.save(arnAssessment.subject?.copy(oasysOffenderPk = oasysOffenderPk))
+    createPrepopulatedEpisode(
       arnAssessment,
       "Court Request",
       oasysSetPK,
       assessmentSchemaCode,
       ExternalSource.COURT.name,
       courtSourceId(courtCode, caseNumber),
-      null
+      null,
+      subject
     )
-    auditAndLogCreateEpisode(arnAssessment.assessmentUuid, episode, crn)
     return AssessmentDto.from(arnAssessment)
   }
 
@@ -329,9 +329,11 @@ class AssessmentService(
     assessmentSchemaCode: AssessmentSchemaCode,
     source: String,
     eventId: String,
-    offence: OffenceDto? = null
+    offence: OffenceDto? = null,
+    subject: SubjectEntity?
   ): AssessmentEpisodeEntity {
     val author = authorService.getOrCreateAuthor()
+    val isNewEpisode = !assessment.hasCurrentEpisode()
     val episode = assessment.newEpisode(
       reason,
       oasysSetPk = oasysSetPK,
@@ -348,6 +350,7 @@ class AssessmentService(
       author
     )
     episodeService.prepopulate(episode, assessmentSchemaCode)
+    if (isNewEpisode) auditAndLogCreateEpisode(assessment.assessmentUuid, episode, subject?.crn)
     log.info("New episode episode with id:${episode.episodeId} and uuid:${episode.episodeUuid} created for assessment ${assessment.assessmentUuid}")
     return episode
   }
@@ -367,7 +370,7 @@ class AssessmentService(
   private fun auditAndLogCreateEpisode(
     assessmentUuid: UUID,
     episode: AssessmentEpisodeEntity,
-    crn: String
+    crn: String?
   ) {
     auditService.createAuditEvent(
       AuditType.ARN_ASSESSMENT_CREATED,
@@ -381,7 +384,8 @@ class AssessmentService(
       crn,
       episode.author,
       assessmentUuid,
-      episode.episodeUuid
+      episode.episodeUuid,
+      episode.assessmentSchemaCode
     )
   }
 

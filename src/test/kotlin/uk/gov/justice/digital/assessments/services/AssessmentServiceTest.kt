@@ -97,6 +97,7 @@ class AssessmentServiceTest {
           any(),
           any(),
           any(),
+          any(),
           any()
         )
       }
@@ -106,6 +107,7 @@ class AssessmentServiceTest {
       val episodeUuid1 = UUID.randomUUID()
       val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
       every { authorService.getOrCreateAuthor() } returns author
+      every { assessment.hasCurrentEpisode() } returns false
       every {
         assessment.newEpisode(
           "Change of Circs",

@@ -290,7 +290,8 @@ class AssessmentUpdateService(
           it,
           episode.author,
           episode.assessment.assessmentUuid,
-          episode.episodeUuid
+          episode.episodeUuid,
+          episode.assessmentSchemaCode
         )
       }
     }
@@ -310,7 +311,8 @@ class AssessmentUpdateService(
         it,
         episode.author,
         episode.assessment.assessmentUuid,
-        episode.episodeUuid
+        episode.episodeUuid,
+        episode.assessmentSchemaCode
       )
     }
   }

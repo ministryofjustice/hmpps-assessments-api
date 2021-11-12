@@ -46,6 +46,10 @@ class AssessmentEntity(
     return episodes.firstOrNull { !it.isClosed() }
   }
 
+  fun hasCurrentEpisode(): Boolean {
+    return episodes.indexOfFirst { !it.isClosed() } >= 0
+  }
+
   fun getLatestClosedEpisodeOfType(assessmentSchemaCode: AssessmentSchemaCode): AssessmentEpisodeEntity? {
     return episodes.filter { it.assessmentSchemaCode == assessmentSchemaCode && it.isClosed() }
       .maxByOrNull { it.endDate!! }

@@ -27,8 +27,9 @@ import uk.gov.justice.digital.assessments.jpa.repositories.assessments.Assessmen
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRepository
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import uk.gov.justice.digital.assessments.restclient.ExternalService
-import uk.gov.justice.digital.assessments.restclient.audit.AuditType
+import uk.gov.justice.digital.assessments.restclient.audit.AuditType.ARN_ASSESSMENT_CREATED
 import uk.gov.justice.digital.assessments.restclient.courtcaseapi.CourtCase
+import uk.gov.justice.digital.assessments.services.TelemetryEventType.ASSESSMENT_CREATED
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiForbiddenException
 import uk.gov.justice.digital.assessments.utils.RequestData
@@ -92,7 +93,8 @@ class AssessmentServiceCreateTest {
       justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
       justRun {
         telemetryService.trackAssessmentEvent(
-          TelemetryEventType.ASSESSMENT_CREATED,
+          ASSESSMENT_CREATED,
+          any(),
           any(),
           any(),
           any(),
@@ -147,7 +149,8 @@ class AssessmentServiceCreateTest {
       justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
       justRun {
         telemetryService.trackAssessmentEvent(
-          TelemetryEventType.ASSESSMENT_CREATED,
+          ASSESSMENT_CREATED,
+          any(),
           any(),
           any(),
           any(),
@@ -203,7 +206,8 @@ class AssessmentServiceCreateTest {
       justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
       justRun {
         telemetryService.trackAssessmentEvent(
-          TelemetryEventType.ASSESSMENT_CREATED,
+          ASSESSMENT_CREATED,
+          any(),
           any(),
           any(),
           any(),
@@ -299,15 +303,7 @@ class AssessmentServiceCreateTest {
     @Test
     fun `audit create assessment from delius`() {
       justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
-      justRun {
-        telemetryService.trackAssessmentEvent(
-          TelemetryEventType.ASSESSMENT_CREATED,
-          any(),
-          any(),
-          any(),
-          any()
-        )
-      }
+      justRun { telemetryService.trackAssessmentEvent(ASSESSMENT_CREATED, any(), any(), any(), any(), any()) }
       every { subjectRepository.findByCrn(crn) } returns null
       every { offenderService.validateUserAccess("X12345") } returns mockk()
       every { offenderService.getOffender("X12345") } returns OffenderDto(dateOfBirth = LocalDate.of(1989, 1, 1))
@@ -333,7 +329,7 @@ class AssessmentServiceCreateTest {
       every { subjectRepository.save(any()) } returns SubjectEntity(
         name = "name",
         pnc = "PNC",
-        crn = "X12345",
+        crn = crn,
         dateOfBirth = LocalDate.of(1989, 1, 1),
         createdDate = LocalDateTime.now(),
       )
@@ -350,7 +346,7 @@ class AssessmentServiceCreateTest {
       )
       verify(exactly = 1) {
         auditService.createAuditEvent(
-          AuditType.ARN_ASSESSMENT_CREATED,
+          ARN_ASSESSMENT_CREATED,
           assessment.assessmentUuid,
           assessment.episodes?.first()?.episodeUuid,
           crn,
@@ -360,13 +356,68 @@ class AssessmentServiceCreateTest {
       }
       verify(exactly = 1) {
         telemetryService.trackAssessmentEvent(
-          TelemetryEventType.ASSESSMENT_CREATED,
+          ASSESSMENT_CREATED,
           crn,
           author,
           assessment.assessmentUuid,
-          assessment.episodes?.first()?.episodeUuid!!
+          assessment.episodes?.first()?.episodeUuid!!,
+          assessmentSchemaCode
         )
       }
+    }
+
+    @Test
+    fun `do not audit existing assessment if one already exists`() {
+      justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
+      justRun { telemetryService.trackAssessmentEvent(ASSESSMENT_CREATED, any(), any(), any(), any(), any()) }
+      every { offenderService.validateUserAccess("X12345") } returns mockk()
+      val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
+      val assessment = AssessmentEntity(
+        assessmentId = assessmentId,
+        assessmentUuid = assessmentUuid
+      )
+      assessment.newEpisode("reason", 1, assessmentSchemaCode, null, author)
+
+      every { subjectRepository.findByCrn(crn) } returns
+        SubjectEntity(
+          assessments = listOf(assessment),
+          dateOfBirth = LocalDate.of(1989, 1, 1),
+          crn = crn
+        )
+      every { offenderService.getOffenceFromConvictionIndex(crn, eventId) } returns OffenceDto(
+        convictionId = 123,
+        convictionIndex = eventId,
+        offenceCode = "Code",
+        codeDescription = "Code description",
+        offenceSubCode = "Sub-code",
+        subCodeDescription = "Sub-code description"
+      )
+      every { episodeService.prepopulate(any(), assessmentSchemaCode) } returnsArgument 0
+      every { subjectRepository.save(any()) } returns SubjectEntity(
+        name = "name",
+        pnc = "PNC",
+        crn = crn,
+        dateOfBirth = LocalDate.of(1989, 1, 1),
+        createdDate = LocalDateTime.now(),
+      )
+      every {
+        oasysAssessmentUpdateService.createOffenderAndOasysAssessment(
+          crn,
+          eventId,
+          assessmentSchemaCode
+        )
+      } returns Pair(oasysOffenderPk, oasysSetPk)
+      every { authorService.getOrCreateAuthor() } returns author
+      assessmentsService.createNewAssessment(
+        CreateAssessmentDto(
+          deliusEventId = eventId,
+          crn = crn,
+          assessmentSchemaCode = assessmentSchemaCode
+        )
+      )
+      verify(exactly = 0) { assessmentRepository.save(any()) }
+      verify(exactly = 0) { auditService.createAuditEvent(any(), any(), any(), any(), any()) }
+      verify(exactly = 0) { telemetryService.trackAssessmentEvent(any(), any(), any(), any(), any(), any()) }
     }
   }
 
@@ -384,7 +435,8 @@ class AssessmentServiceCreateTest {
       justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
       justRun {
         telemetryService.trackAssessmentEvent(
-          TelemetryEventType.ASSESSMENT_CREATED,
+          ASSESSMENT_CREATED,
+          any(),
           any(),
           any(),
           any(),
@@ -444,7 +496,8 @@ class AssessmentServiceCreateTest {
       justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
       justRun {
         telemetryService.trackAssessmentEvent(
-          TelemetryEventType.ASSESSMENT_CREATED,
+          ASSESSMENT_CREATED,
+          any(),
           any(),
           any(),
           any(),
@@ -486,7 +539,8 @@ class AssessmentServiceCreateTest {
       justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
       justRun {
         telemetryService.trackAssessmentEvent(
-          TelemetryEventType.ASSESSMENT_CREATED,
+          ASSESSMENT_CREATED,
+          any(),
           any(),
           any(),
           any(),
@@ -532,7 +586,7 @@ class AssessmentServiceCreateTest {
       )
       verify(exactly = 1) {
         auditService.createAuditEvent(
-          AuditType.ARN_ASSESSMENT_CREATED,
+          ARN_ASSESSMENT_CREATED,
           assessment.assessmentUuid,
           assessment.episodes?.first()?.episodeUuid,
           crn,
@@ -542,11 +596,12 @@ class AssessmentServiceCreateTest {
       }
       verify(exactly = 1) {
         telemetryService.trackAssessmentEvent(
-          TelemetryEventType.ASSESSMENT_CREATED,
+          ASSESSMENT_CREATED,
           crn,
           author,
           assessment.assessmentUuid,
-          assessment.episodes?.first()?.episodeUuid!!
+          assessment.episodes?.first()?.episodeUuid!!,
+          assessmentSchemaCode
         )
       }
     }
