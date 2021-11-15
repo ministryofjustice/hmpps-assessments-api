@@ -494,6 +494,15 @@ class CommunityApiMockServer : WireMockServer(9096) {
     )
 
     stubFor(
+      WireMock.get(WireMock.urlPathMatching("/secure/offenders/crn/(?:X1|DX|CRN)[a-zA-Z0-9]*/convictions/123456"))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withBody(convictionJson)
+        )
+    )
+
+    stubFor(
       WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/invalidNotFound/convictions"))
         .willReturn(
           WireMock.aResponse()

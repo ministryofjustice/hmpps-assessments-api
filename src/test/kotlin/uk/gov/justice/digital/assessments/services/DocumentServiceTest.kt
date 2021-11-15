@@ -26,7 +26,7 @@ class DocumentServiceTest {
   private val documentService: DocumentService = DocumentService(assessmentService, offenderService, communityApiRestClient)
 
   @Test
-  fun `uploads a document to community-api`(){
+  fun `uploads a document to community-api`() {
     val episodeId = UUID.randomUUID()
     val assessmentId = UUID.randomUUID()
     val crn = "X1234A"
@@ -40,7 +40,6 @@ class DocumentServiceTest {
     every { communityApiRestClient.uploadDocumentToDelius(crn, convictionId, fileData) } returns UploadedUpwDocumentDto()
 
     documentService.uploadUpwDocument(assessmentId, episodeId, fileData)
-
   }
 
   private fun multiPartFile(): MultipartFile {
@@ -52,7 +51,7 @@ class DocumentServiceTest {
     )
   }
 
-  fun assessmentEpisode(crn: String, sourceId: String): AssessmentEpisodeEntity{
+  fun assessmentEpisode(crn: String, sourceId: String): AssessmentEpisodeEntity {
     return AssessmentEpisodeEntity(
       assessment = AssessmentEntity(
         subject = SubjectEntity(
