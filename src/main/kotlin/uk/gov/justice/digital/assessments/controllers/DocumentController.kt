@@ -3,7 +3,9 @@ package uk.gov.justice.digital.assessments.controllers
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
+import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.PathVariable
@@ -34,7 +36,8 @@ class DocumentController(val documentService: DocumentService) {
     @RequestParam("fileData") fileData: MultipartFile,
     @PathVariable episodeId: UUID,
     @PathVariable assessmentId: UUID
-  ): UploadedUpwDocumentDto? {
-    return documentService.uploadUpwDocument(episodeId, assessmentId, fileData)
+  ): ResponseEntity<UploadedUpwDocumentDto> {
+    val responseBody = documentService.uploadUpwDocument(assessmentId, episodeId, fileData)!!
+    return ResponseEntity(responseBody, HttpStatus.OK)
   }
 }

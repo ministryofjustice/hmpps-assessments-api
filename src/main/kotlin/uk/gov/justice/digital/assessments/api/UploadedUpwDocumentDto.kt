@@ -2,11 +2,11 @@ package uk.gov.justice.digital.assessments.api
 
 import java.time.LocalDateTime
 
-class UploadedUpwDocumentDto {
-  private val id: Long? = null
-  private val documentName: String? = null
-  private val crn: String? = null
-  private val dateLastModified: LocalDateTime? = null
-  private val lastModifiedUser: String? = null
-  private val creationDate: LocalDateTime? = null
-}
+data class UploadedUpwDocumentDto(
+  val id: Long? = null,
+  val documentName: String? = null,
+  val crn: String? = null,
+  val dateLastModified: LocalDateTime? = null,
+  val lastModifiedUser: String? = null,
+  val creationDate: LocalDateTime? = null,
+)

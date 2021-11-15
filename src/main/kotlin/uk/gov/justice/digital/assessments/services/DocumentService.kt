@@ -14,7 +14,6 @@ class DocumentService(
   val communityApiRestClient: CommunityApiRestClient
 ) {
   fun uploadUpwDocument(assessmentId: UUID, episodeId: UUID, fileData: MultipartFile): UploadedUpwDocumentDto? {
-
     val episode = assessmentService.getEpisode(assessmentId, episodeId)
     val eventId = episode.offence?.sourceId?.toLong()
       ?: throw EntityNotFoundException("Could not retrieve sourceId for assessment: $assessmentId, episode: $episode")
