@@ -91,16 +91,7 @@ class AssessmentServiceCreateTest {
     @Test
     fun `create new offender with new assessment from delius event index and crn`() {
       justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
-      justRun {
-        telemetryService.trackAssessmentEvent(
-          ASSESSMENT_CREATED,
-          any(),
-          any(),
-          any(),
-          any(),
-          any()
-        )
-      }
+      justRun { telemetryService.trackAssessmentEvent(ASSESSMENT_CREATED, any(), any(), any(), any(), any()) }
       every { subjectRepository.findByCrn(crn) } returns null
       every { offenderService.validateUserAccess("X12345") } returns mockk()
       every { offenderService.getOffender("X12345") } returns OffenderDto(dateOfBirth = LocalDate.of(1989, 1, 1))
@@ -204,16 +195,7 @@ class AssessmentServiceCreateTest {
     @Test
     fun `return existing assessment from delius event id and crn if one already exists`() {
       justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
-      justRun {
-        telemetryService.trackAssessmentEvent(
-          ASSESSMENT_CREATED,
-          any(),
-          any(),
-          any(),
-          any(),
-          any()
-        )
-      }
+      justRun { telemetryService.trackAssessmentEvent(ASSESSMENT_CREATED, any(), any(), any(), any(), any()) }
       every { offenderService.validateUserAccess("X12345") } returns mockk()
       every { subjectRepository.findByCrn(crn) } returns
         SubjectEntity(
@@ -257,6 +239,59 @@ class AssessmentServiceCreateTest {
         )
       assertThat(assessmentDto.assessmentUuid).isEqualTo(assessmentUuid)
       verify(exactly = 0) { assessmentRepository.save(any()) }
+    }
+
+    @Test
+    fun `do not prepopulate existing episode`() {
+      justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
+      justRun { telemetryService.trackAssessmentEvent(ASSESSMENT_CREATED, any(), any(), any(), any(), any()) }
+      every { offenderService.validateUserAccess("X12345") } returns mockk()
+      val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
+      every { authorService.getOrCreateAuthor() } returns author
+      val assessment = AssessmentEntity(
+        assessmentId = assessmentId,
+        assessmentUuid = assessmentUuid
+      )
+      assessment.newEpisode("reason", 1, assessmentSchemaCode, null, author)
+
+      every { subjectRepository.findByCrn(crn) } returns
+        SubjectEntity(
+          assessments = listOf(assessment),
+          dateOfBirth = LocalDate.of(1989, 1, 1),
+          crn = crn
+        )
+      every { offenderService.getOffenceFromConvictionIndex(crn, eventId) } returns OffenceDto(
+        convictionId = 123,
+        convictionIndex = eventId,
+        offenceCode = "Code",
+        codeDescription = "Code description",
+        offenceSubCode = "Sub-code",
+        subCodeDescription = "Sub-code description"
+      )
+      every { episodeService.prepopulate(any(), assessmentSchemaCode) } returnsArgument 0
+      every { subjectRepository.save(any()) } returns SubjectEntity(
+        name = "name",
+        pnc = "PNC",
+        crn = crn,
+        dateOfBirth = LocalDate.of(1989, 1, 1),
+        createdDate = LocalDateTime.now(),
+      )
+      every {
+        oasysAssessmentUpdateService.createOffenderAndOasysAssessment(
+          crn,
+          eventId,
+          assessmentSchemaCode
+        )
+      } returns Pair(oasysOffenderPk, oasysSetPk)
+
+      assessmentsService.createNewAssessment(
+        CreateAssessmentDto(
+          deliusEventId = eventId,
+          crn = crn,
+          assessmentSchemaCode = assessmentSchemaCode
+        )
+      )
+      verify(exactly = 0) { episodeService.prepopulate(any(), assessmentSchemaCode) }
     }
 
     @Test
@@ -392,7 +427,6 @@ class AssessmentServiceCreateTest {
         offenceSubCode = "Sub-code",
         subCodeDescription = "Sub-code description"
       )
-      every { episodeService.prepopulate(any(), assessmentSchemaCode) } returnsArgument 0
       every { subjectRepository.save(any()) } returns SubjectEntity(
         name = "name",
         pnc = "PNC",

@@ -349,8 +349,10 @@ class AssessmentService(
       ),
       author
     )
-    episodeService.prepopulate(episode, assessmentSchemaCode)
-    if (isNewEpisode) auditAndLogCreateEpisode(assessment.assessmentUuid, episode, subject?.crn)
+    if (isNewEpisode) {
+      episodeService.prepopulate(episode, assessmentSchemaCode)
+      auditAndLogCreateEpisode(assessment.assessmentUuid, episode, subject?.crn)
+    }
     log.info("New episode episode with id:${episode.episodeId} and uuid:${episode.episodeUuid} created for assessment ${assessment.assessmentUuid}")
     return episode
   }
