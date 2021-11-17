@@ -31,7 +31,7 @@ class DocumentController(val documentService: DocumentService) {
       ApiResponse(responseCode = "200", description = "OK")
     ]
   )
-  @PreAuthorize("hasRole('ROLE_COMMUNITY')")
+  @PreAuthorize("hasRole('ROLE_PROBATION')")
   fun uploadUPWDocument(
     @RequestParam("fileData") fileData: MultipartFile,
     @PathVariable episodeId: UUID,
