@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.assessments.services
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import uk.gov.justice.digital.assessments.api.UploadedUpwDocumentDto
@@ -20,8 +22,16 @@ class DocumentService(
 
     val crn = episode.assessment.subject?.crn
       ?: throw EntityNotFoundException("Could not retrieve crn for assessment: $assessmentId, episode: $episode")
-    val offenceWithConvictionId = offenderService.getOffenceFromConvictionIndex(crn, eventId)
 
-    return communityApiRestClient.uploadDocumentToDelius(crn, offenceWithConvictionId.convictionId!!, fileData)
+    val convictionId = offenderService.getOffenceFromConvictionIndex(crn, eventId).convictionId
+      ?: throw EntityNotFoundException("Could not get conviction ID for CRN $crn with event ID $eventId ")
+
+    log.info("Uploading document for CRN $crn with event ID $eventId")
+
+    return communityApiRestClient.uploadDocumentToDelius(crn, convictionId, fileData)
+  }
+
+  companion object {
+    val log: Logger = LoggerFactory.getLogger(this::class.java)
   }
 }
