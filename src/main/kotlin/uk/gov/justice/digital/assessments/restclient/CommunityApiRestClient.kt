@@ -5,9 +5,14 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.core.ParameterizedTypeReference
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
+import org.springframework.http.client.MultipartBodyBuilder
 import org.springframework.stereotype.Component
+import org.springframework.web.multipart.MultipartFile
+import uk.gov.justice.digital.assessments.api.UploadedUpwDocumentDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityConvictionDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityRegistrations
@@ -196,6 +201,33 @@ class CommunityApiRestClient {
       path,
       ExternalService.COMMUNITY_API
     )
+  }
+
+  fun uploadDocumentToDelius(crn: String, convictionId: Long, fileData: MultipartFile): UploadedUpwDocumentDto? {
+    val path = "/secure/offenders/crn/$crn/convictions/$convictionId/document"
+    val builder = MultipartBodyBuilder()
+    builder.part("fileData", fileData.resource)
+    return webClient
+      .post(path, builder.build())
+      .header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
+      .retrieve()
+      .onStatus(HttpStatus::is4xxClientError) {
+        handle4xxError(
+          it,
+          HttpMethod.POST,
+          path,
+          ExternalService.COMMUNITY_API
+        )
+      }
+      .onStatus(HttpStatus::is5xxServerError) {
+        handle5xxError(
+          "Failed to upload UPW document to community-api",
+          HttpMethod.POST, path,
+          ExternalService.COMMUNITY_API
+        )
+      }
+      .bodyToMono(UploadedUpwDocumentDto::class.java)
+      .block()
   }
 
   companion object {
