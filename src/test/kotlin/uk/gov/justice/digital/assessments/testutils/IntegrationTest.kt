@@ -109,6 +109,7 @@ abstract class IntegrationTest {
       expiryTime = Duration.ofHours(1L),
       roles = roles
     )
+
     return { it.set(HttpHeaders.AUTHORIZATION, "Bearer $token") }
   }
 }

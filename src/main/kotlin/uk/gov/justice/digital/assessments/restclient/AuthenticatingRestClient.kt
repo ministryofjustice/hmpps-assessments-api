@@ -4,7 +4,7 @@ import org.springframework.http.MediaType
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction.clientRegistrationId
 import org.springframework.web.reactive.function.client.WebClient
 
-class AuthenticatingRestClient(
+open class AuthenticatingRestClient(
   private val webClient: WebClient,
   private val oauthClient: String,
   private val disableAuth: Boolean

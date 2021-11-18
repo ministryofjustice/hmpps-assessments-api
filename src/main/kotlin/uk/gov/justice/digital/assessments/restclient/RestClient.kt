@@ -8,7 +8,7 @@ import org.springframework.util.MultiValueMap
 import org.springframework.web.reactive.function.client.WebClient
 import java.nio.charset.StandardCharsets
 
-class RestClient(
+open class RestClient(
   private val webClient: WebClient,
   private val oauth2ClientRegistrationId: String,
 ) {

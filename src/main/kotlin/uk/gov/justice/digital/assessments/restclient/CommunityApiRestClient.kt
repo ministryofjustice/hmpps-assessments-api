@@ -2,7 +2,6 @@ package uk.gov.justice.digital.assessments.restclient
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpHeaders
@@ -25,10 +24,9 @@ import uk.gov.justice.digital.assessments.utils.offenderStubResource.PrimaryId
 import javax.persistence.EntityNotFoundException
 
 @Component
-class CommunityApiRestClient {
-  @Autowired
-  @Qualifier("communityApiWebClient")
-  internal lateinit var webClient: AuthenticatingRestClient
+class CommunityApiRestClient (
+    @Qualifier("communityApiWebClient") private val webClient: AuthenticatingRestClient
+  ) {
 
   fun getOffender(crn: String): CommunityOffenderDto? {
     return getOffender(offenderCrn = crn, elementClass = CommunityOffenderDto::class.java)
