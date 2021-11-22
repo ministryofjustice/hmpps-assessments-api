@@ -7,7 +7,7 @@ import org.springframework.security.oauth2.client.endpoint.OAuth2ClientCredentia
 import org.springframework.util.MultiValueMap
 import java.util.Objects
 
-class CustomOAuth2ClientCredentialsGrantRequestEntityConverter: OAuth2ClientCredentialsGrantRequestEntityConverter() {
+class CustomOAuth2ClientCredentialsGrantRequestEntityConverter : OAuth2ClientCredentialsGrantRequestEntityConverter() {
   fun enhanceWithUsername(grantRequest: OAuth2ClientCredentialsGrantRequest?, username: String?): RequestEntity<Any> {
     val request = super.convert(grantRequest)
     val body = Objects.requireNonNull(request).body

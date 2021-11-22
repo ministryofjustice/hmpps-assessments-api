@@ -9,7 +9,7 @@ import com.google.gson.GsonBuilder
 class OAuthMockServer : WireMockServer(9010) {
   fun stubGrantToken() {
     stubFor(
-      WireMock.post(WireMock.urlEqualTo("/auth/oauth/token"))
+      WireMock.post(WireMock.urlPathMatching("/auth/oauth/token"))
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
