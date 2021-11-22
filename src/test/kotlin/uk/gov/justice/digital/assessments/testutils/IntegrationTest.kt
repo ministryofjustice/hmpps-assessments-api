@@ -41,6 +41,7 @@ abstract class IntegrationTest {
     internal val assessmentApiMockServer = AssessmentApiMockServer()
     internal val assessRisksAndNeedsApiMockServer = AssessRisksAndNeedsApiMockServer()
     internal val auditApiMockServer = AuditMockServer()
+    internal val oauthMockServer = OAuthMockServer()
 
     @BeforeAll
     @JvmStatic
@@ -51,6 +52,7 @@ abstract class IntegrationTest {
       assessmentApiMockServer.start()
       assessRisksAndNeedsApiMockServer.start()
       auditApiMockServer.start()
+      oauthMockServer.start()
     }
 
     @AfterAll
@@ -62,6 +64,7 @@ abstract class IntegrationTest {
       assessmentApiMockServer.stop()
       assessRisksAndNeedsApiMockServer.stop()
       auditApiMockServer.stop()
+      oauthMockServer.stop()
     }
   }
 
@@ -90,6 +93,7 @@ abstract class IntegrationTest {
     assessmentApiMockServer.stubGetAssessment()
     assessRisksAndNeedsApiMockServer.resetAll()
     auditApiMockServer.stubAuditEvents()
+    oauthMockServer.stubGrantToken()
   }
 
   @AfterEach

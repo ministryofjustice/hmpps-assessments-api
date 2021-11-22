@@ -104,13 +104,12 @@ class WebClientConfig {
   fun communityApiWebClient(
     clientRegistrationRepository: ClientRegistrationRepository,
     authorizedClientRepository: OAuth2AuthorizedClientRepository,
-  ): AuthenticatingRestClient {
-    val webClient = webClientFactory(
+  ): WebClient {
+    return webClientFactory(
       userContextAwareAuthorizedClientManager(clientRegistrationRepository, authorizedClientRepository),
-      communityApiBaseUrl
+      communityApiBaseUrl,
+      "community-api-client"
     )
-
-    return AuthenticatingRestClient(webClient, "community-api-client", disableAuthentication)
   }
 
   @Bean
@@ -128,9 +127,12 @@ class WebClientConfig {
   private fun webClientFactory(
     authorizedClientManager: OAuth2AuthorizedClientManager,
     baseUrl: String,
+    clientRegistrationId: String? = null,
   ): WebClient {
     val oauth2Client = ServletOAuth2AuthorizedClientExchangeFilterFunction(authorizedClientManager)
-
+    clientRegistrationId.let {
+      oauth2Client.setDefaultClientRegistrationId(it)
+    }
     val httpClient = HttpClient.create()
       .doOnConnected {
         it

@@ -11,6 +11,7 @@ import org.springframework.http.MediaType
 import org.springframework.http.client.MultipartBodyBuilder
 import org.springframework.stereotype.Component
 import org.springframework.web.multipart.MultipartFile
+import org.springframework.web.reactive.function.client.WebClient
 import uk.gov.justice.digital.assessments.api.UploadedUpwDocumentDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityConvictionDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
@@ -24,9 +25,10 @@ import uk.gov.justice.digital.assessments.utils.offenderStubResource.PrimaryId
 import javax.persistence.EntityNotFoundException
 
 @Component
-class CommunityApiRestClient (
-    @Qualifier("communityApiWebClient") private val webClient: AuthenticatingRestClient
-  ) {
+class CommunityApiRestClient(
+  @Qualifier("communityApiWebClient")
+  val webClient: WebClient
+) {
 
   fun getOffender(crn: String): CommunityOffenderDto? {
     return getOffender(offenderCrn = crn, elementClass = CommunityOffenderDto::class.java)
@@ -40,7 +42,8 @@ class CommunityApiRestClient (
     log.info("Client retrieving offender details for crn: $offenderCrn")
     val path = externalPath?.let { it.replace("\$crn", offenderCrn) } ?: "secure/offenders/crn/$offenderCrn/all"
     return webClient
-      .get(path)
+      .get()
+      .uri(path)
       .retrieve()
       .onStatus(HttpStatus::is4xxClientError) {
         handle4xxError(
@@ -68,7 +71,8 @@ class CommunityApiRestClient (
     log.info("Client retrieving conviction details for crn: $crn")
     val path = "secure/offenders/crn/$crn/convictions"
     return webClient
-      .get(path)
+      .get()
+      .uri(path)
       .retrieve()
       .onStatus(HttpStatus::is4xxClientError) {
         handle4xxError(
@@ -94,7 +98,8 @@ class CommunityApiRestClient (
     log.info("Client retrieving conviction details for crn: $crn")
     val path = "secure/offenders/crn/$crn/convictions/$convictionId"
     return webClient
-      .get(path)
+      .get()
+      .uri(path)
       .retrieve()
       .onStatus(HttpStatus::is4xxClientError) {
         handle4xxError(
@@ -120,7 +125,8 @@ class CommunityApiRestClient (
     log.info("Client retrieving registrations for crn: $crn")
     val path = "secure/offenders/crn/$crn/registrations"
     return webClient
-      .get(path)
+      .get()
+      .uri(path)
       .retrieve()
       .onStatus(HttpStatus::is4xxClientError) {
         handle4xxError(
@@ -147,7 +153,8 @@ class CommunityApiRestClient (
     log.info("Client retrieving CRNs from $path")
 
     val offendersPage = webClient
-      .get(path)
+      .get()
+      .uri(path)
       .retrieve()
       .bodyToMono(OffendersPage::class.java)
       .block()
@@ -161,7 +168,8 @@ class CommunityApiRestClient (
     log.info("Client retrieving LAO details for crn: $crn")
     val path = "/secure/offenders/crn/$crn/user/$deliusUsername/userAccess"
     return webClient
-      .get(path)
+      .get()
+      .uri(path)
       .retrieve()
       .onStatus({ it == HttpStatus.FORBIDDEN }, {
         it.bodyToMono(UserAccessResponse::class.java)
@@ -206,7 +214,9 @@ class CommunityApiRestClient (
     val builder = MultipartBodyBuilder()
     builder.part("fileData", fileData.resource)
     return webClient
-      .post(path, builder.build())
+      .post()
+      .uri(path)
+      .bodyValue(builder.build())
       .header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
       .retrieve()
       .onStatus(HttpStatus::is4xxClientError) {

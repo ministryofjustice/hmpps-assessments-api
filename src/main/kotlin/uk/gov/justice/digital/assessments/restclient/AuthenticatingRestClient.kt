@@ -7,7 +7,7 @@ import org.springframework.web.reactive.function.client.WebClient
 open class AuthenticatingRestClient(
   private val webClient: WebClient,
   private val oauthClient: String,
-  private val disableAuth: Boolean
+  private val disableAuth: Boolean,
 ) {
   fun get(path: String): WebClient.RequestHeadersSpec<*> {
     val request = webClient
