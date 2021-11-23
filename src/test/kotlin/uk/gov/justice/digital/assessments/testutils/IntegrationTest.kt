@@ -8,22 +8,31 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.http.HttpHeaders
+import org.springframework.mock.web.MockHttpServletRequest
+import org.springframework.mock.web.MockHttpSession
 import org.springframework.security.authentication.TestingAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.web.context.request.RequestContextHolder
+import org.springframework.web.context.request.ServletRequestAttributes
 import uk.gov.justice.digital.assessments.HmppsAssessmentApiApplication
 import uk.gov.justice.digital.assessments.JwtAuthHelper
 import uk.gov.justice.digital.assessments.redis.entities.UserDetails
 import java.time.Duration
 
 @Suppress("SpringJavaInjectionPointsAutowiringInspection")
+@ContextConfiguration
 @SpringBootTest(
   classes = [HmppsAssessmentApiApplication::class],
   webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 )
 @ActiveProfiles(profiles = ["test"])
 abstract class IntegrationTest {
+
+  var session: MockHttpSession? = null
+  var request: MockHttpServletRequest? = null
 
   @Autowired
   internal lateinit var webTestClient: WebTestClient
@@ -41,6 +50,7 @@ abstract class IntegrationTest {
     internal val assessmentApiMockServer = AssessmentApiMockServer()
     internal val assessRisksAndNeedsApiMockServer = AssessRisksAndNeedsApiMockServer()
     internal val auditApiMockServer = AuditMockServer()
+    internal val oauthMockServer = OAuthMockServer()
 
     @BeforeAll
     @JvmStatic
@@ -51,6 +61,7 @@ abstract class IntegrationTest {
       assessmentApiMockServer.start()
       assessRisksAndNeedsApiMockServer.start()
       auditApiMockServer.start()
+      oauthMockServer.start()
     }
 
     @AfterAll
@@ -62,6 +73,7 @@ abstract class IntegrationTest {
       assessmentApiMockServer.stop()
       assessRisksAndNeedsApiMockServer.stop()
       auditApiMockServer.stop()
+      oauthMockServer.stop()
     }
   }
 
@@ -90,11 +102,38 @@ abstract class IntegrationTest {
     assessmentApiMockServer.stubGetAssessment()
     assessRisksAndNeedsApiMockServer.resetAll()
     auditApiMockServer.stubAuditEvents()
+    oauthMockServer.stubGrantToken()
+    RequestContextHolder.getRequestAttributes()
+    startSession()
+    startRequest()
   }
 
   @AfterEach
   fun resetRedis() {
     redisTemplate.delete(redisTemplate.keys("*"))
+    endRequest()
+    endSession()
+  }
+
+  fun startSession() {
+    session = MockHttpSession()
+  }
+
+  fun endSession() {
+    session!!.clearAttributes()
+    session = null
+  }
+
+  fun startRequest() {
+    request = MockHttpServletRequest()
+    request!!.session = session
+    RequestContextHolder.setRequestAttributes(ServletRequestAttributes(request))
+  }
+
+  fun endRequest() {
+    (RequestContextHolder.getRequestAttributes() as ServletRequestAttributes).requestCompleted()
+    RequestContextHolder.resetRequestAttributes()
+    request = null
   }
 
   internal fun setAuthorisation(
@@ -109,6 +148,7 @@ abstract class IntegrationTest {
       expiryTime = Duration.ofHours(1L),
       roles = roles
     )
+
     return { it.set(HttpHeaders.AUTHORIZATION, "Bearer $token") }
   }
 }

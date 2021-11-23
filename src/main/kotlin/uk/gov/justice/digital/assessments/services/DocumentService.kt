@@ -26,7 +26,7 @@ class DocumentService(
     val convictionId = offenderService.getOffenceFromConvictionIndex(crn, eventId).convictionId
       ?: throw EntityNotFoundException("Could not get conviction ID for CRN $crn with event ID $eventId ")
 
-    log.info("Uploading document for CRN $crn with event ID $eventId")
+    log.info("Uploading document for CRN $crn with conviction ID $convictionId")
 
     return communityApiRestClient.uploadDocumentToDelius(crn, convictionId, fileData)
   }
