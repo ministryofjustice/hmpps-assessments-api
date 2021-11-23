@@ -218,6 +218,7 @@ class CommunityApiRestClient(
       .uri(path)
       .bodyValue(builder.build())
       .header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
+      .accept(MediaType.APPLICATION_JSON)
       .retrieve()
       .onStatus(HttpStatus::is4xxClientError) {
         handle4xxError(
