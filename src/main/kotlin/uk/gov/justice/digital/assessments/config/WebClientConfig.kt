@@ -2,7 +2,6 @@ package uk.gov.justice.digital.assessments.config
 
 import io.netty.handler.timeout.ReadTimeoutHandler
 import io.netty.handler.timeout.WriteTimeoutHandler
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
@@ -10,6 +9,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.oauth2.client.AuthorizedClientServiceOAuth2AuthorizedClientManager
 import org.springframework.security.oauth2.client.InMemoryOAuth2AuthorizedClientService
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager
@@ -26,7 +26,6 @@ import org.springframework.web.reactive.function.client.WebClient
 import reactor.netty.http.client.HttpClient
 import uk.gov.justice.digital.assessments.restclient.AuthenticatingRestClient
 import uk.gov.justice.digital.assessments.restclient.RestClient
-import uk.gov.justice.digital.assessments.utils.UserContext
 import java.time.Duration
 import java.util.concurrent.TimeUnit
 
@@ -103,27 +102,13 @@ class WebClientConfig {
     return RestClient(webClient, "assess-risks-and-needs-api-client")
   }
 
-//  @Bean(name = ["communityApiWebClient"])
-//  @RequestScope
-//  fun communityApiWebClient(
-//    clientRegistrationRepository: ClientRegistrationRepository,
-//    authorizedClientRepository: OAuth2AuthorizedClientRepository,
-//  ): WebClient {
-//    return webClientFactory(
-//      userContextAwareAuthorizedClientManager(clientRegistrationRepository, authorizedClientRepository),
-//      communityApiBaseUrl,
-//      "community-api-client"
-//    )
-//  }
-
-  @Bean
   fun communityAuthorizedClientManager(clients: ClientRegistrationRepository?): OAuth2AuthorizedClientManager? {
     val service: OAuth2AuthorizedClientService = InMemoryOAuth2AuthorizedClientService(clients)
     val manager = AuthorizedClientServiceOAuth2AuthorizedClientManager(clients, service)
 
     val defaultClientCredentialsTokenResponseClient = DefaultClientCredentialsTokenResponseClient()
 
-    val authentication = UserContext.getAuthentication()
+    val authentication = SecurityContextHolder.getContext().authentication
 
     defaultClientCredentialsTokenResponseClient.setRequestEntityConverter { grantRequest: OAuth2ClientCredentialsGrantRequest ->
       val converter = CustomOAuth2ClientCredentialsGrantRequestEntityConverter()
@@ -142,9 +127,13 @@ class WebClientConfig {
   }
 
   @RequestScope
-  @Bean(name = ["communityApiWebClient"])
-  fun webClient(@Autowired communityAuthorizedClientManager: OAuth2AuthorizedClientManager?): WebClient? {
-    val oauth2 = ServletOAuth2AuthorizedClientExchangeFilterFunction(communityAuthorizedClientManager)
+  @Bean
+  fun communityApiWebClient(clientRegistrationRepository: ClientRegistrationRepository): WebClient? {
+    val oauth2 = ServletOAuth2AuthorizedClientExchangeFilterFunction(
+      communityAuthorizedClientManager(
+        clientRegistrationRepository
+      )
+    )
     oauth2.setDefaultClientRegistrationId("community-api-client")
     return WebClient.builder()
       .apply(oauth2.oauth2Configuration())
@@ -210,34 +199,4 @@ class WebClientConfig {
 
     return authorizedClientManager
   }
-//
-//  private fun userContextAwareAuthorizedClientManager(
-//    clientRegistrationRepository: ClientRegistrationRepository,
-//    authorizedClientRepository: OAuth2AuthorizedClientRepository,
-//  ): AuthorizedClientServiceOAuth2AuthorizedClientManager {
-//    val defaultClientCredentialsTokenResponseClient = DefaultClientCredentialsTokenResponseClient()
-//
-//    val authentication = UserContext.getAuthentication()
-//
-//    defaultClientCredentialsTokenResponseClient.setRequestEntityConverter { grantRequest: OAuth2ClientCredentialsGrantRequest ->
-//      val converter = CustomOAuth2ClientCredentialsGrantRequestEntityConverter()
-//      val username = authentication.name
-//      converter.enhanceWithUsername(grantRequest, username)
-//    }
-
-//    val authorizedClientProvider = OAuth2AuthorizedClientProviderBuilder.builder()
-//      .clientCredentials { clientCredentialsGrantBuilder: OAuth2AuthorizedClientProviderBuilder.ClientCredentialsGrantBuilder ->
-//        clientCredentialsGrantBuilder.accessTokenResponseClient(defaultClientCredentialsTokenResponseClient)
-//      }
-//      .build()
-//
-//    val authorizedClientManager = AuthorizedClientServiceOAuth2AuthorizedClientManager(
-//      clientRegistrationRepository,
-//      authorizedClientRepository,
-//    )
-//
-//    authorizedClientManager.setAuthorizedClientProvider(authorizedClientProvider)
-//
-//    return authorizedClientManager
-//  }
 }
