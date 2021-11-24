@@ -581,7 +581,7 @@ class CommunityApiMockServer : WireMockServer(9096) {
 
   fun stubUploadDocument() {
     stubFor(
-      WireMock.post(WireMock.urlEqualTo("/secure/offenders/crn/X1355/convictions/2500000223/document"))
+      WireMock.post(WireMock.urlEqualTo("/secure/offenders/crn/X1355/convictions/1/document"))
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))

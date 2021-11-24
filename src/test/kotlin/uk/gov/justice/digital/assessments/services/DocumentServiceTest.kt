@@ -8,7 +8,6 @@ import org.springframework.http.HttpMethod
 import org.springframework.http.MediaType
 import org.springframework.mock.web.MockMultipartFile
 import org.springframework.web.multipart.MultipartFile
-import uk.gov.justice.digital.assessments.api.OffenceDto
 import uk.gov.justice.digital.assessments.api.UploadedUpwDocumentDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
@@ -35,13 +34,11 @@ class DocumentServiceTest {
     val episodeId = UUID.randomUUID()
     val assessmentId = UUID.randomUUID()
     val crn = "X1234A"
-    val eventId = 456L
     val convictionId = 987L
 
     val fileData = multiPartFile()
 
-    every { assessmentService.getEpisode(assessmentId, episodeId) } returns assessmentEpisode(crn, eventId.toString())
-    every { offenderService.getOffenceFromConvictionIndex(crn, eventId) } returns OffenceDto(convictionId = convictionId)
+    every { assessmentService.getEpisode(assessmentId, episodeId) } returns assessmentEpisode(crn, convictionId.toString())
     every { communityApiRestClient.uploadDocumentToDelius(crn, convictionId, fileData) } returns UploadedUpwDocumentDto()
 
     documentService.uploadUpwDocument(assessmentId, episodeId, fileData)
@@ -81,13 +78,11 @@ class DocumentServiceTest {
     val episodeId = UUID.randomUUID()
     val assessmentId = UUID.randomUUID()
     val crn = "X1234A"
-    val eventId = 456L
     val convictionId = 987L
 
     val fileData = multiPartFile()
 
-    every { assessmentService.getEpisode(assessmentId, episodeId) } returns assessmentEpisode(crn, eventId.toString())
-    every { offenderService.getOffenceFromConvictionIndex(crn, eventId) } returns OffenceDto(convictionId = convictionId)
+    every { assessmentService.getEpisode(assessmentId, episodeId) } returns assessmentEpisode(crn, convictionId.toString())
     every { communityApiRestClient.uploadDocumentToDelius(crn, convictionId, fileData) } throws ExternalApiUnknownException("Something went wrong", HttpMethod.POST, "/foo/bar", ExternalService.COMMUNITY_API)
 
     assertThrows<ExternalApiUnknownException> {
