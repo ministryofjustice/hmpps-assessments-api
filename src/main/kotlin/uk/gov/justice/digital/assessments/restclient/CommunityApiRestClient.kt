@@ -11,6 +11,7 @@ import org.springframework.http.MediaType
 import org.springframework.http.client.MultipartBodyBuilder
 import org.springframework.stereotype.Component
 import org.springframework.web.multipart.MultipartFile
+import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import uk.gov.justice.digital.assessments.api.UploadedUpwDocumentDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityConvictionDto
@@ -216,7 +217,7 @@ class CommunityApiRestClient(
     return webClient
       .post()
       .uri(path)
-      .bodyValue(builder.build())
+      .body(BodyInserters.fromMultipartData(builder.build()))
       .header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
       .accept(MediaType.APPLICATION_JSON)
       .retrieve()
