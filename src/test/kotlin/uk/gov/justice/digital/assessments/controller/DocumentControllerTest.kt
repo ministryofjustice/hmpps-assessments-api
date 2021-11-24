@@ -86,25 +86,6 @@ class DocumentControllerTest : IntegrationTest() {
   }
 
   @Test
-  fun `returns a 404 when unable to find the conviction ID for a given index`() {
-    val assessmentId = UUID.fromString("0ead1d46-274b-4e38-aefc-d054eb7cc1d5")
-    val episodeId = UUID.fromString("659cd2a7-bfa7-41be-8ac1-dddc005928d3")
-    val path = "/assessments/$assessmentId/episode/$episodeId/document"
-
-    val multipartBodyBuilder = MultipartBodyBuilder()
-    multipartBodyBuilder.part("fileData", multiPartFile().resource)
-
-    webTestClient.post()
-      .uri(path)
-      .contentType(MediaType.MULTIPART_FORM_DATA)
-      .headers(setAuthorisation(roles = listOf("ROLE_PROBATION", "ROLE_COMMUNITY")))
-      .body(BodyInserters.fromMultipartData(multipartBodyBuilder.build()))
-      .exchange()
-      .expectStatus()
-      .isNotFound
-  }
-
-  @Test
   fun `returns a 400 error when returned whilst uploading the document`() {
     val assessmentId = UUID.fromString("f9cc22cc-bad6-4a0a-9679-3e0f0b65d844")
     val episodeId = UUID.fromString("9d5d5859-edfd-4f08-ae08-3c1e333dfb74")

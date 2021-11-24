@@ -17,17 +17,13 @@ class DocumentService(
 ) {
   fun uploadUpwDocument(assessmentId: UUID, episodeId: UUID, fileData: MultipartFile): UploadedUpwDocumentDto? {
     val episode = assessmentService.getEpisode(assessmentId, episodeId)
-    val eventId = episode.offence?.sourceId?.toLong()
+    val convictionId = episode.offence?.sourceId?.toLong()
       ?: throw EntityNotFoundException("Could not retrieve sourceId for assessment: $assessmentId, episode: $episode")
 
     val crn = episode.assessment.subject?.crn
       ?: throw EntityNotFoundException("Could not retrieve crn for assessment: $assessmentId, episode: $episode")
 
-    val convictionId = offenderService.getOffenceFromConvictionIndex(crn, eventId).convictionId
-      ?: throw EntityNotFoundException("Could not get conviction ID for CRN $crn with event ID $eventId ")
-
     log.info("Uploading document for CRN $crn with conviction ID $convictionId")
-
     return communityApiRestClient.uploadDocumentToDelius(crn, convictionId, fileData)
   }
 
