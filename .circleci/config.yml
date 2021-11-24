@@ -59,7 +59,6 @@ workflows:
       - hmpps/deploy_env:
           name: deploy_dev
           env: "dev"
-          helm_additional_args: "--set ingress.secondaryAllowList=\"${INGRESS_ADDITIONAL_ALLOW_LIST}\""
           filters:
             branches:
               only:
@@ -75,7 +74,6 @@ workflows:
       - hmpps/deploy_env:
           name: deploy_preprod
           env: "preprod"
-          helm_additional_args: "--set ingress.secondaryAllowList=\"${INGRESS_ADDITIONAL_ALLOW_LIST}\""
           context:
             - hmpps-common-vars
             - hmpps-assessments-preprod
