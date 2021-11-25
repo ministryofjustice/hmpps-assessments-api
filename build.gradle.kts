@@ -1,8 +1,8 @@
 
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "3.3.8"
-  kotlin("plugin.spring") version "1.5.10"
-  kotlin("plugin.jpa") version "1.5.10"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "3.3.13"
+  kotlin("plugin.spring") version "1.5.31"
+  kotlin("plugin.jpa") version "1.5.31"
 }
 
 allOpen {
@@ -13,6 +13,10 @@ allOpen {
 
 configurations {
   implementation { exclude(mapOf("module" to "tomcat-jdbc")) }
+}
+
+dependencyCheck {
+  suppressionFiles.add("suppressions.xml")
 }
 
 dependencies {
