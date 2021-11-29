@@ -14,6 +14,7 @@ import uk.gov.justice.digital.assessments.jpa.repositories.assessments.Assessmen
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.EpisodeRepository
 import uk.gov.justice.digital.assessments.restclient.audit.AuditType
 import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
+import java.time.LocalDateTime
 import java.util.UUID
 
 @Service
@@ -58,6 +59,7 @@ class AssessmentUpdateService(
 
     val currentAuthor = episode.author
     episode.author = authorService.getOrCreateAuthor()
+    episode.lastEditedDate = LocalDateTime.now()
 
     log.info("Updated episode ${episode.episodeUuid} with ${updatedEpisodeAnswers.size} answer(s) for assessment ${episode.assessment.assessmentUuid}")
 
@@ -86,6 +88,7 @@ class AssessmentUpdateService(
   ): AssessmentEpisodeDto {
     val offenderPk: Long? = episode.assessment.subject?.oasysOffenderPk
     episode.author = authorService.getOrCreateAuthor()
+    episode.lastEditedDate = LocalDateTime.now()
 
     val oasysResult = oasysAssessmentUpdateService.completeOASysAssessment(episode, offenderPk)
     if (oasysResult?.hasErrors() == true) {
