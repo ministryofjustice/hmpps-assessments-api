@@ -71,6 +71,9 @@ data class AssessmentEpisodeEntity(
   @Type(type = "json")
   @Column(columnDefinition = "jsonb", name = "tables")
   var tables: Tables? = mutableMapOf(),
+
+  @Column(name = "last_edited_date")
+  var lastEditedDate: LocalDateTime = LocalDateTime.now(),
 ) {
   fun isClosed(): Boolean {
     return endDate != null

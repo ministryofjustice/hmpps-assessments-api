@@ -49,7 +49,10 @@ data class AssessmentEpisodeDto(
   val offence: OffenceDto,
 
   @Schema(description = "Tables associated with this episode")
-  val tables: Tables = mutableMapOf()
+  val tables: Tables = mutableMapOf(),
+
+  @Schema(description = "Date last edited")
+  val lastEditedDate: LocalDateTime? = null,
 ) {
   companion object {
 
@@ -76,7 +79,8 @@ data class AssessmentEpisodeDto(
         errors?.assessmentErrors,
         predictors,
         OffenceDto.from(episode.offence),
-        episode.tables ?: mutableMapOf()
+        episode.tables ?: mutableMapOf(),
+        episode.lastEditedDate,
       )
     }
   }
