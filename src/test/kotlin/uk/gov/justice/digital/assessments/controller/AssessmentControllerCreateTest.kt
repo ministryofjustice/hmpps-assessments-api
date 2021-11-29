@@ -218,8 +218,8 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(answers?.get("contact_address_county")).isEqualTo(listOf("South Yorkshire"))
       assertThat(answers?.get("contact_address_postcode")).isEqualTo(listOf("S3 7BS"))
 
-      assertThat(answers?.get("upw_physical_disability")).isEqualTo(listOf("D", "D02", "RM", "RC", "PC", "VI", "HD"))
-      assertThat(answers?.get("upw_physical_disability_details")).isEqualTo(
+      assertThat(answers?.get("physical_disability")).isEqualTo(listOf("D", "D02", "RM", "RC", "PC", "VI", "HD"))
+      assertThat(answers?.get("physical_disability_details")).isEqualTo(
         listOf(
           "general health",
           "physical health concerns",
@@ -230,12 +230,12 @@ class AssessmentControllerCreateTest : IntegrationTest() {
           "hearing difficulties"
         )
       )
-      assertThat(answers?.get("upw_learning_disability")).isEqualTo(listOf("LA"))
-      assertThat(answers?.get("upw_learning_disability_details")).isEqualTo(listOf("learning disability"))
-      assertThat(answers?.get("upw_learning_difficulty")).isEqualTo(listOf("LD"))
-      assertThat(answers?.get("upw_learning_difficulty_details")).isEqualTo(listOf("learning difficulties"))
-      assertThat(answers?.get("upw_mental_health_condition")).isEqualTo(listOf("D", "D01", "MI"))
-      assertThat(answers?.get("upw_mental_health_condition_details")).isEqualTo(
+      assertThat(answers?.get("learning_disability")).isEqualTo(listOf("LA"))
+      assertThat(answers?.get("learning_disability_details")).isEqualTo(listOf("learning disability"))
+      assertThat(answers?.get("learning_difficulty")).isEqualTo(listOf("LD"))
+      assertThat(answers?.get("learning_difficulty_details")).isEqualTo(listOf("learning difficulties"))
+      assertThat(answers?.get("mental_health_condition")).isEqualTo(listOf("D", "D01", "MI"))
+      assertThat(answers?.get("mental_health_condition_details")).isEqualTo(
         listOf(
           "general health",
           "mental health",
@@ -258,25 +258,25 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(answers?.get("emergency_contact_address_postcode")).isEqualTo(listOf("S4 7BS"))
       assertThat(answers?.get("emergency_contact_phone_number")).isEqualTo(listOf("0133456789"))
 
-      assertThat(answers?.get("upw_gp_first_name")).isEqualTo(listOf("Nick"))
-      assertThat(answers?.get("upw_gp_family_name")).isEqualTo(listOf("Riviera"))
-      assertThat(answers?.get("upw_gp_address_building_name")).isEqualTo(listOf("The practice"))
-      assertThat(answers?.get("upw_gp_address_house_number")).isEqualTo(listOf("38"))
-      assertThat(answers?.get("upw_gp_address_street_name")).isEqualTo(listOf("East Street"))
-      assertThat(answers?.get("upw_gp_address_district")).isEqualTo(listOf("East City Centre"))
-      assertThat(answers?.get("upw_gp_address_town_or_city")).isEqualTo(listOf("Bristol"))
-      assertThat(answers?.get("upw_gp_address_county")).isEqualTo(listOf("East London"))
-      assertThat(answers?.get("upw_gp_address_postcode")).isEqualTo(listOf("E5 7BS"))
-      assertThat(answers?.get("upw_gp_phone_number")).isEqualTo(listOf("0233456789"))
+      assertThat(answers?.get("gp_first_name")).isEqualTo(listOf("Nick"))
+      assertThat(answers?.get("gp_family_name")).isEqualTo(listOf("Riviera"))
+      assertThat(answers?.get("gp_address_building_name")).isEqualTo(listOf("The practice"))
+      assertThat(answers?.get("gp_address_house_number")).isEqualTo(listOf("38"))
+      assertThat(answers?.get("gp_address_street_name")).isEqualTo(listOf("East Street"))
+      assertThat(answers?.get("gp_address_district")).isEqualTo(listOf("East City Centre"))
+      assertThat(answers?.get("gp_address_town_or_city")).isEqualTo(listOf("Bristol"))
+      assertThat(answers?.get("gp_address_county")).isEqualTo(listOf("East London"))
+      assertThat(answers?.get("gp_address_postcode")).isEqualTo(listOf("E5 7BS"))
+      assertThat(answers?.get("gp_phone_number")).isEqualTo(listOf("0233456789"))
 
-      assertThat(answers?.get("upw_allergies")).isEqualTo(listOf("YES"))
-      assertThat(answers?.get("upw_allergies_details")).isEqualTo(listOf("Nut Allergy"))
-      assertThat(answers?.get("upw_pregnancy")).isEqualTo(listOf("NO"))
-      assertThat(answers?.get("upw_pregnancy_pregnant_details")).isEqualTo(emptyList<String>())
-      assertThat(answers?.get("upw_caring_commitments")).isEqualTo(listOf("YES"))
-      assertThat(answers?.get("upw_caring_commitments_details")).isEqualTo(listOf("Primary Carer"))
-      assertThat(answers?.get("upw_reading_writing_difficulties")).isEqualTo(listOf("YES"))
-      assertThat(answers?.get("upw_reading_writing_difficulties_details")).isEqualTo(listOf("Cannot read"))
+      assertThat(answers?.get("allergies")).isEqualTo(listOf("YES"))
+      assertThat(answers?.get("allergies_details")).isEqualTo(listOf("Nut Allergy"))
+      assertThat(answers?.get("pregnancy")).isEqualTo(listOf("NO"))
+      assertThat(answers?.get("pregnancy_pregnant_details")).isEqualTo(emptyList<String>())
+      assertThat(answers?.get("caring_commitments")).isEqualTo(listOf("YES"))
+      assertThat(answers?.get("caring_commitments_details")).isEqualTo(listOf("Primary Carer"))
+      assertThat(answers?.get("reading_writing_difficulties")).isEqualTo(listOf("YES"))
+      assertThat(answers?.get("reading_writing_difficulties_details")).isEqualTo(listOf("Cannot read"))
     }
 
     @Test
@@ -300,8 +300,8 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(assessment?.assessmentUuid).isNotNull
       assertThat(assessment?.episodes).hasSize(1)
       val answers = assessment.episodes?.first()?.answers
-      assertThat(answers?.get("upw_pregnancy")).isEqualTo(listOf("PREGNANT"))
-      assertThat(answers?.get("upw_pregnancy_pregnant_details")).isEqualTo(listOf("Some notes"))
+      assertThat(answers?.get("pregnancy")).isEqualTo(listOf("PREGNANT"))
+      assertThat(answers?.get("pregnancy_pregnant_details")).isEqualTo(listOf("Some notes"))
     }
 
     @Test
@@ -325,9 +325,9 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(assessment?.assessmentUuid).isNotNull
       assertThat(assessment?.episodes).hasSize(1)
       val answers = assessment.episodes?.first()?.answers
-      assertThat(answers?.get("upw_pregnancy")).isEqualTo(listOf("NO"))
-      assertThat(answers?.get("upw_pregnancy_pregnant_details")).isEqualTo(emptyList<String>())
-      assertThat(answers?.get("upw_pregnancy_recently_given_birth_details")).isEqualTo(emptyList<String>())
+      assertThat(answers?.get("pregnancy")).isEqualTo(listOf("NO"))
+      assertThat(answers?.get("pregnancy_pregnant_details")).isEqualTo(emptyList<String>())
+      assertThat(answers?.get("pregnancy_recently_given_birth_details")).isEqualTo(emptyList<String>())
     }
 
     @Test
