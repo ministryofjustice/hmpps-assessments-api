@@ -13,6 +13,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.assessments.TableRows
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.EpisodeRepository
 import uk.gov.justice.digital.assessments.restclient.audit.AuditType
+import uk.gov.justice.digital.assessments.services.exceptions.CannotCloseEpisodeException
 import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
 import java.time.LocalDateTime
 import java.util.UUID
@@ -53,7 +54,7 @@ class AssessmentUpdateService(
     episode: AssessmentEpisodeEntity,
     updatedEpisodeAnswers: Answers
   ): AssessmentEpisodeDto {
-    if (episode.isClosed()) throw UpdateClosedEpisodeException("Cannot update closed Episode ${episode.episodeUuid} for assessment ${episode.assessment?.assessmentUuid}")
+    if (episode.isComplete() || episode.isClosed()) throw UpdateClosedEpisodeException("Cannot update a closed or completed Episode ${episode.episodeUuid} for assessment ${episode.assessment?.assessmentUuid}")
 
     episode.updateEpisodeAnswers(updatedEpisodeAnswers)
 
@@ -83,7 +84,7 @@ class AssessmentUpdateService(
   }
 
   @Transactional("assessmentsTransactionManager")
-  fun closeEpisode(
+  fun completeEpisode(
     episode: AssessmentEpisodeEntity
   ): AssessmentEpisodeDto {
     val offenderPk: Long? = episode.assessment.subject?.oasysOffenderPk
@@ -92,17 +93,33 @@ class AssessmentUpdateService(
 
     val oasysResult = oasysAssessmentUpdateService.completeOASysAssessment(episode, offenderPk)
     if (oasysResult?.hasErrors() == true) {
-      log.info("Unable to close episode ${episode.episodeUuid} for assessment ${episode.assessment?.assessmentUuid} with OASys restclient")
+      log.info("Unable to complete episode ${episode.episodeUuid} for assessment ${episode.assessment?.assessmentUuid} with OASys restclient")
     } else {
-      episode.close()
+      episode.complete()
       episodeRepository.save(episode)
-      auditAndLogCloseAssessment(episode)
-      log.info("Saved closed episode ${episode.episodeUuid} for assessment ${episode.assessment.assessmentUuid}")
+      auditAndLogCompleteAssessment(episode)
+      log.info("Saved completed episode ${episode.episodeUuid} for assessment ${episode.assessment.assessmentUuid}")
     }
     val predictorResults = riskPredictorsService.getPredictorResults(episode = episode, final = true)
 
     log.info("Predictors for assessment ${episode.assessment.assessmentUuid} are $predictorResults")
     return AssessmentEpisodeDto.from(episode, oasysResult, predictorResults)
+  }
+
+  @Transactional("assessmentsTransactionManager")
+  fun closeEpisode(
+    episode: AssessmentEpisodeEntity
+  ): AssessmentEpisodeDto {
+    if (!episode.isComplete()) {
+      episode.author = authorService.getOrCreateAuthor()
+      episode.close()
+      episodeRepository.save(episode)
+
+      auditAndLogClosedAssessment(episode)
+      log.info("Closed episode ${episode.episodeUuid} for assessment ${episode.assessment.assessmentUuid}")
+    } else throw CannotCloseEpisodeException("Cannot close a completed episode", "Episode already completed on ${episode.endDate}")
+
+    return AssessmentEpisodeDto.from(episode)
   }
 
   private fun getTableFieldCodes(tableName: String): List<String> {
@@ -300,9 +317,29 @@ class AssessmentUpdateService(
     }
   }
 
-  private fun auditAndLogCloseAssessment(episode: AssessmentEpisodeEntity) {
+  private fun auditAndLogCompleteAssessment(episode: AssessmentEpisodeEntity) {
     auditService.createAuditEvent(
       AuditType.ARN_ASSESSMENT_COMPLETED,
+      episode.assessment.assessmentUuid,
+      episode.episodeUuid,
+      episode.assessment.subject?.crn,
+      episode.author
+    )
+    episode.assessment.subject?.crn?.let {
+      telemetryService.trackAssessmentEvent(
+        TelemetryEventType.ASSESSMENT_COMPLETE,
+        it,
+        episode.author,
+        episode.assessment.assessmentUuid,
+        episode.episodeUuid,
+        episode.assessmentSchemaCode
+      )
+    }
+  }
+
+  private fun auditAndLogClosedAssessment(episode: AssessmentEpisodeEntity) {
+    auditService.createAuditEvent(
+      AuditType.ARN_ASSESSMENT_CLOSED,
       episode.assessment.assessmentUuid,
       episode.episodeUuid,
       episode.assessment.subject?.crn,

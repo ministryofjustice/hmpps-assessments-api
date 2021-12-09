@@ -53,6 +53,9 @@ data class AssessmentEpisodeDto(
 
   @Schema(description = "Date last edited")
   val lastEditedDate: LocalDateTime? = null,
+
+  @Schema(description = "Date closed")
+  val closedDate: LocalDateTime? = null,
 ) {
   companion object {
 
@@ -81,6 +84,7 @@ data class AssessmentEpisodeDto(
         OffenceDto.from(episode.offence),
         episode.tables ?: mutableMapOf(),
         episode.lastEditedDate,
+        episode.closedDate,
       )
     }
   }

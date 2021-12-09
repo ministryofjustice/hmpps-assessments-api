@@ -251,7 +251,7 @@ class AssessmentUpdateServiceTest {
     }
 
     @Test
-    fun `do not update a closed episode`() {
+    fun `do not update a completed episode`() {
       val assessment = AssessmentEntity(
         assessmentId = assessmentId,
         episodes = mutableListOf(
@@ -285,7 +285,7 @@ class AssessmentUpdateServiceTest {
         )
       }
         .isInstanceOf(UpdateClosedEpisodeException::class.java)
-        .hasMessage("Cannot update closed Episode $episodeUuid for assessment $assessmentUuid")
+        .hasMessage("Cannot update a closed or completed Episode $episodeUuid for assessment $assessmentUuid")
     }
   }
 

@@ -74,12 +74,23 @@ data class AssessmentEpisodeEntity(
 
   @Column(name = "last_edited_date")
   var lastEditedDate: LocalDateTime = LocalDateTime.now(),
+
+  @Column(name = "closed_date")
+  var closedDate: LocalDateTime? = null,
 ) {
-  fun isClosed(): Boolean {
+  fun isComplete(): Boolean {
     return endDate != null
   }
 
-  fun close() {
+  fun complete() {
     endDate = LocalDateTime.now()
+  }
+
+  fun isClosed(): Boolean {
+    return closedDate != null
+  }
+
+  fun close() {
+    closedDate = LocalDateTime.now()
   }
 }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
 import uk.gov.justice.digital.assessments.api.ErrorResponse
+import uk.gov.justice.digital.assessments.services.exceptions.CannotCloseEpisodeException
 import uk.gov.justice.digital.assessments.services.exceptions.CrnIsMandatoryException
 import uk.gov.justice.digital.assessments.services.exceptions.DuplicateOffenderRecordException
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
@@ -186,6 +187,13 @@ class ControllerAdvice {
       ),
       HttpStatus.FORBIDDEN
     )
+  }
+
+  @ExceptionHandler(CannotCloseEpisodeException::class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  fun handle(e: CannotCloseEpisodeException): ResponseEntity<ErrorResponse?> {
+    log.info("CannotCloseEpisodeException: {}", e.message)
+    return ResponseEntity(ErrorResponse(status = 400, developerMessage = e.message), HttpStatus.BAD_REQUEST)
   }
 
   @ExceptionHandler(Exception::class)

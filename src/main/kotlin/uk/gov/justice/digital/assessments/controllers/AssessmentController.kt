@@ -147,6 +147,24 @@ class AssessmentController(
     return updateResponse(assessmentUpdateService.updateEpisode(episode, episodeAnswers))
   }
 
+  @RequestMapping(path = ["/assessments/{assessmentUuid}/episodes/{episodeUuid}/close"], method = [RequestMethod.GET])
+  @Operation(description = "Closes an episode")
+  @ApiResponses(
+    value = [
+      ApiResponse(responseCode = "200", description = "OK"),
+      ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
+      ApiResponse(responseCode = "422", description = "The update couldn't be processed")
+    ]
+  )
+  @PreAuthorize("hasRole('ROLE_PROBATION')")
+  fun closeAssessmentEpisode(
+    @Parameter(description = "Assessment UUID", required = true, example = "1234") @PathVariable assessmentUuid: UUID,
+    @Parameter(description = "Episode UUID", required = true) @PathVariable episodeUuid: UUID,
+  ): ResponseEntity<AssessmentEpisodeDto> {
+    val episode = assessmentService.getEpisode(assessmentUuid, episodeUuid)
+    return updateResponse(assessmentUpdateService.closeEpisode(episode))
+  }
+
   @RequestMapping(
     path = ["/assessments/{assessmentUuid}/episodes/current/table/{tableName}"],
     method = [RequestMethod.POST]
@@ -325,7 +343,7 @@ class AssessmentController(
     @Parameter(description = "Assessment UUID", required = true, example = "1234") @PathVariable assessmentUuid: UUID,
   ): ResponseEntity<AssessmentEpisodeDto> {
     val currentEpisode = assessmentService.getCurrentEpisode(assessmentUuid)
-    return updateResponse(assessmentUpdateService.closeEpisode(currentEpisode))
+    return updateResponse(assessmentUpdateService.completeEpisode(currentEpisode))
   }
 
   @RequestMapping(path = ["/assessments/schema/{assessmentSchemaCode}"], method = [RequestMethod.GET])
