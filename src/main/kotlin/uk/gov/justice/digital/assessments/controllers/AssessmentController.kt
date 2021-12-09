@@ -128,6 +128,30 @@ class AssessmentController(
     return assessmentService.getCurrentAssessmentEpisode(assessmentUuid)
   }
 
+  @RequestMapping(path = ["/assessments/{assessmentUuid}/episodes/{episodeUuid}"], method = [RequestMethod.GET])
+  @Operation(description = "Get an episode for an assessment")
+  @ApiResponses(
+    value = [
+      ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
+      ApiResponse(responseCode = "200", description = "OK")
+    ]
+  )
+  @PreAuthorize("hasRole('ROLE_PROBATION')")
+  fun getEpisodeForAssessment(
+    @Parameter(
+      description = "Assessment ID",
+      required = true,
+      example = "1234"
+    ) @PathVariable assessmentUuid: UUID,
+    @Parameter(
+      description = "Episode ID",
+      required = true,
+      example = "1234"
+    ) @PathVariable episodeUuid: UUID
+  ): AssessmentEpisodeDto {
+    return AssessmentEpisodeDto.from(assessmentService.getEpisode(assessmentUuid, episodeUuid))
+  }
+
   @RequestMapping(path = ["/assessments/{assessmentUuid}/episodes/{episodeUuid}"], method = [RequestMethod.POST])
   @Operation(description = "updates the answers for an episode")
   @ApiResponses(
