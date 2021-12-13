@@ -92,8 +92,8 @@ class AssessmentUpdateService(
     episode.lastEditedDate = LocalDateTime.now()
 
     val oasysResult = oasysAssessmentUpdateService.completeOASysAssessment(episode, offenderPk)
-    if (oasysResult?.hasErrors() == true) {
-      log.info("Unable to complete episode ${episode.episodeUuid} for assessment ${episode.assessment?.assessmentUuid} with OASys restclient")
+    if (oasysResult.hasErrors()) {
+      log.info("Unable to complete episode ${episode.episodeUuid} for assessment ${episode.assessment.assessmentUuid} with OASys restclient")
     } else {
       episode.complete()
       episodeRepository.save(episode)
@@ -347,7 +347,7 @@ class AssessmentUpdateService(
     )
     episode.assessment.subject?.crn?.let {
       telemetryService.trackAssessmentEvent(
-        TelemetryEventType.ASSESSMENT_COMPLETE,
+        TelemetryEventType.ASSESSMENT_CLOSED,
         it,
         episode.author,
         episode.assessment.assessmentUuid,
