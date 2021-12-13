@@ -94,7 +94,7 @@ class AssessmentUpdateServiceITTest() : IntegrationTest() {
     )
 
     val updateAssessmentResponse =
-      assessmentUpdateService.closeEpisode(assessmentEpisode)
+      assessmentUpdateService.completeEpisode(assessmentEpisode)
     assertThat(updateAssessmentResponse).isEqualTo(
       AssessmentEpisodeDto.from(
         assessmentEpisode,

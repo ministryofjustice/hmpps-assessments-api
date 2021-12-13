@@ -25,6 +25,7 @@ class TelemetryService(
 
 enum class TelemetryEventType(val eventName: String) {
   ASSESSMENT_CREATED("arnAssessmentCreated"),
+  ASSESSMENT_CLOSED("arnAssessmentClosed"),
   ASSESSMENT_REALLOCATED("arnAssessmentReallocated"),
   ASSESSMENT_COMPLETE("arnAssessmentCompleted")
 }

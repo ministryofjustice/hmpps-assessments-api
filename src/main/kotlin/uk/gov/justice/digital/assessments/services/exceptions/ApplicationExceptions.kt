@@ -37,6 +37,11 @@ class DuplicateOffenderRecordException(
   val reason: ExceptionReason = DUPLICATE_OFFENDER_RECORD
 ) : RuntimeException(msg)
 
+class CannotCloseEpisodeException(
+  msg: String?,
+  val extraInfoMessage: String? = null,
+) : RuntimeException(msg)
+
 // External Services Exceptions
 class ExternalApiEntityNotFoundException(
   msg: String,

@@ -43,15 +43,15 @@ class AssessmentEntity(
 ) : Serializable {
 
   fun getCurrentEpisode(): AssessmentEpisodeEntity? {
-    return episodes.firstOrNull { !it.isClosed() }
+    return episodes.firstOrNull { !it.isComplete() && !it.isClosed() }
   }
 
   fun hasCurrentEpisode(): Boolean {
-    return episodes.indexOfFirst { !it.isClosed() } >= 0
+    return episodes.indexOfFirst { !it.isComplete() && !it.isClosed() } >= 0
   }
 
   fun getLatestClosedEpisodeOfType(assessmentSchemaCode: AssessmentSchemaCode): AssessmentEpisodeEntity? {
-    return episodes.filter { it.assessmentSchemaCode == assessmentSchemaCode && it.isClosed() }
+    return episodes.filter { it.assessmentSchemaCode == assessmentSchemaCode && it.isComplete() }
       .maxByOrNull { it.endDate!! }
   }
 

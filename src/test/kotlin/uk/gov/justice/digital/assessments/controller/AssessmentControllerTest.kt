@@ -599,6 +599,64 @@ class AssessmentControllerTest : IntegrationTest() {
     }
   }
 
+  @Nested
+  @DisplayName("Closing assessment episodes")
+  inner class ClosingEpisodes {
+    private val assessmentUuid = UUID.fromString("e399ed1b-0e77-4c68-8bbc-d2f0befece84")
+    private val episodeUuid = UUID.fromString("163cf020-ff53-4dc6-a15c-e93e8537d347")
+
+    @Test
+    fun `access forbidden when no authority`() {
+      webTestClient.get().uri("/assessments/$assessmentUuid/episodes/$episodeUuid/close")
+        .header("Content-Type", "application/json")
+        .exchange()
+        .expectStatus().isUnauthorized
+    }
+
+    @Test
+    fun `close assessment episode returns episode`() {
+      val assessmentEpisode = webTestClient.get().uri("/assessments/$assessmentUuid/episodes/$episodeUuid/close")
+        .header(RequestData.USER_AREA_HEADER_NAME, "WWS")
+        .headers(setAuthorisation(fullName = "NEW USER", roles = listOf("ROLE_PROBATION")))
+        .exchange()
+        .expectStatus().isOk
+        .expectBody<AssessmentEpisodeDto>()
+        .returnResult()
+        .responseBody
+      assertThat(assessmentEpisode?.assessmentUuid).isEqualTo(assessmentUuid)
+      assertThat(assessmentEpisode?.closedDate).isEqualToIgnoringMinutes(LocalDateTime.now())
+      assertThat(assessmentEpisode?.userFullName).isEqualTo("NEW USER")
+    }
+
+    @Test
+    fun `should return bad request when no user area header is set when completing assessment`() {
+      val roshAssessmentUuid = UUID.fromString("aa47e6c4-e41f-467c-95e7-fcf5ffd422f5")
+      webTestClient.post().uri("/assessments/$roshAssessmentUuid/complete")
+        .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
+        .exchange()
+        .expectStatus().isBadRequest
+        .expectBody<ErrorResponse>()
+        .consumeWith {
+          assertThat(it.responseBody?.status).isEqualTo(400)
+          assertThat(it.responseBody?.developerMessage).isEqualTo("Area Code Header is mandatory")
+        }
+    }
+
+    @Test
+    fun `should return forbidden when user does not have LAO permission for offender`() {
+      val roshAssessmentUuid = UUID.fromString("aa47e6c4-e41f-467c-95e7-fcf5ffd422f5")
+      webTestClient.post().uri("/assessments/$laoFailureAssessmentUuid/complete")
+        .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
+        .exchange()
+        .expectStatus().isForbidden
+        .expectBody<ErrorResponse>()
+        .consumeWith {
+          assertThat(it.responseBody?.status).isEqualTo(403)
+          assertThat(it.responseBody?.reason).isEqualTo("LAO_PERMISSION")
+        }
+    }
+  }
+
   private fun fetchAssessmentSubject(assessmentUuid: String): AssessmentSubjectDto {
     val subject = webTestClient.get().uri("/assessments/$assessmentUuid/subject")
       .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
