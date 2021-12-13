@@ -92,7 +92,7 @@ class AssessmentUpdateService(
     episode.lastEditedDate = LocalDateTime.now()
 
     val oasysResult = oasysAssessmentUpdateService.completeOASysAssessment(episode, offenderPk)
-    if (oasysResult.hasErrors()) {
+    if (oasysResult?.hasErrors() == true) {
       log.info("Unable to complete episode ${episode.episodeUuid} for assessment ${episode.assessment.assessmentUuid} with OASys restclient")
     } else {
       episode.complete()

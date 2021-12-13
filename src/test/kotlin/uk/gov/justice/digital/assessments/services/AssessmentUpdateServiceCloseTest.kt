@@ -53,7 +53,7 @@ class AssessmentUpdateServiceCloseTest {
     justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
     justRun {
       telemetryService.trackAssessmentEvent(
-        TelemetryEventType.ASSESSMENT_COMPLETE,
+        TelemetryEventType.ASSESSMENT_CLOSED,
         any(),
         any(),
         any(),
@@ -82,7 +82,7 @@ class AssessmentUpdateServiceCloseTest {
     justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
     justRun {
       telemetryService.trackAssessmentEvent(
-        TelemetryEventType.ASSESSMENT_COMPLETE,
+        TelemetryEventType.ASSESSMENT_CLOSED,
         any(),
         any(),
         any(),
