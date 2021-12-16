@@ -3,6 +3,7 @@ package uk.gov.justice.digital.assessments.restclient
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
@@ -30,6 +31,7 @@ class CommunityApiRestClient(
   val webClient: WebClient
 ) {
 
+  @Cacheable("offender")
   fun getOffender(crn: String): CommunityOffenderDto? {
     return getOffender(offenderCrn = crn, elementClass = CommunityOffenderDto::class.java)
   }
@@ -121,6 +123,7 @@ class CommunityApiRestClient(
       .block()
   }
 
+  @Cacheable("riskRegistrations")
   fun getRegistrations(crn: String): CommunityRegistrations? {
     log.info("Client retrieving registrations for crn: $crn")
     val path = "secure/offenders/crn/$crn/registrations"
@@ -179,7 +182,7 @@ class CommunityApiRestClient(
     return offendersPage?.content ?: throw EntityNotFoundException("Failed to retrieve CRNs from Community API")
   }
 
-  // TODO:: This method needs to be cached
+  @Cacheable("verifyUserAccess")
   fun verifyUserAccess(crn: String, deliusUsername: String): UserAccessResponse {
     log.info("Client retrieving LAO details for crn: $crn")
     val path = "/secure/offenders/crn/$crn/user/$deliusUsername/userAccess"
