@@ -2,9 +2,10 @@ spring:
   application:
     name: hmpps-assessments-api
   cache:
-    cache-names: users
-    caffeine:
-      spec: expireAfterWrite=2m
+    type: redis
+    cache-names: verifyUserAccess, offender, roshRiskSummary, riskRegistrations
+    redis:
+      time-to-live: 300000
   security:
     oauth2:
       client:
