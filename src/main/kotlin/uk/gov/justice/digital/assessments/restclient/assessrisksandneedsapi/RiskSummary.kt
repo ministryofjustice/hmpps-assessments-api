@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.LocalDate
 
 data class RiskSummary(
-  val overallRiskLevel: String,
+  val overallRiskLevel: String?,
   val riskInCommunity: RiskInCommunityDto,
   val assessedOn: LocalDate,
 )
