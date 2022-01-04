@@ -12,8 +12,8 @@ metadata:
     heritage: {{ .Release.Service }}
   annotations:
     kubernetes.io/ingress.class: "nginx"
-    external-dns.alpha.kubernetes.io/set-identifier: {{ $fullName }}-{{ .Release.Namespace }}-blue
-    external-dns.alpha.kubernetes.io/aws-weight: "100"
+    external-dns.alpha.kubernetes.io/set-identifier: {{ $fullName }}-{{ .Release.Namespace }}-{{ .Values.ingress.identifier }}
+    external-dns.alpha.kubernetes.io/aws-weight: {{ .Values.ingress.weighting | quote }}
     {{ if .Values.ingress.enable_allow_list }}
     {{- $primaryAllowList := (include "app.joinListWithComma" .Values.allow_list) -}}
     {{ if $primaryAllowList }}nginx.ingress.kubernetes.io/whitelist-source-range: {{ $primaryAllowList | quote }}{{ end }}
