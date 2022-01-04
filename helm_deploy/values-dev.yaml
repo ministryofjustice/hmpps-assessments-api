@@ -31,6 +31,8 @@ ingress:
   host: api-dev.hmpps-assessments.service.justice.gov.uk
   cert_secret: hmpps-assessments-api-cert
   path: /
+  identifier: green
+  weighting: 0
 
 allow_list:
   office: "217.33.148.210/32"
