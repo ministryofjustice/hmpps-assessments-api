@@ -26,6 +26,9 @@ class AssessmentSubjectDto(
   @Schema(description = "Subject Record created Date", example = "2020-01-02T16:00:00")
   val createdDate: LocalDateTime? = null,
 ) {
+
+  // TODO: Refactor age so it's not calculated here using LocalDate.now()
+  // Instead calculate in the service from a current date that can be mocked out
   val age: Int? get() = dob?.let { Period.between(dob, LocalDate.now()).years }
 
   companion object {
