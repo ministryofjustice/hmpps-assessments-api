@@ -55,7 +55,7 @@ class AssessmentControllerTest : IntegrationTest() {
 
       assertThat(subject.name).isEqualTo("John Smith")
       assertThat(subject.dob).isEqualTo("2001-01-01")
-      assertThat(subject.age).isEqualTo(20)
+      assertThat(subject.age).isEqualTo(21)
       assertThat(subject.crn).isEqualTo("X1346")
       assertThat(subject.pnc).isEqualTo("dummy-pnc")
     }
