@@ -32,7 +32,7 @@ ingress:
   cert_secret: hmpps-assessments-api-cert
   path: /
   identifier: green
-  weighting: 0
+  weighting: 100
 
 allow_list:
   office: "217.33.148.210/32"
