@@ -94,6 +94,14 @@ workflows:
             - hmpps-assessments-prod
           requires:
             - request-prod-approval
+      - hmpps/deploy_env:
+          name: deploy_prod
+          env: "prod"
+          context:
+            - hmpps-common-vars
+            - hmpps-assessments-prod-live
+          requires:
+            - request-prod-approval
   security:
     triggers:
       - schedule:
