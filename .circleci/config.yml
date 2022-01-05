@@ -57,17 +57,6 @@ workflows:
               only:
                 - main
       - hmpps/deploy_env:
-          name: deploy_live_1_dev
-          env: "live-1-dev"
-          filters:
-            branches:
-              only:
-                - main
-          requires:
-            - validate
-            - helm_lint
-            - build_docker
-      - hmpps/deploy_env:
           name: deploy_dev
           env: "dev"
           context:
@@ -84,13 +73,21 @@ workflows:
       - request-preprod-approval:
           type: approval
           requires:
-            - deploy_live_1_dev
+            - deploy_dev
       - hmpps/deploy_env:
           name: deploy_live_1_preprod
           env: "live-1-preprod"
           context:
             - hmpps-common-vars
             - hmpps-assessments-preprod
+          requires:
+            - request-preprod-approval
+      - hmpps/deploy_env:
+          name: deploy_preprod
+          env: "preprod"
+          context:
+            - hmpps-common-vars
+            - hmpps-assessments-preprod-live
           requires:
             - request-preprod-approval
       - request-prod-approval:
