@@ -1,4 +1,4 @@
-FROM openjdk:16-slim AS builder
+FROM openjdk:17-slim AS builder
 
 ARG BUILD_NUMBER
 ENV BUILD_NUMBER ${BUILD_NUMBER:-1_0_0}
@@ -14,6 +14,7 @@ ARG BUILD_NUMBER
 ENV BUILD_NUMBER ${BUILD_NUMBER:-1_0_0}
 
 RUN apt-get update && \
+    apt-get upgrade -y && \
     apt-get install -y curl && \
     rm -rf /var/lib/apt/lists/*
 
