@@ -87,14 +87,6 @@ workflows:
           requires:
             - deploy_preprod
       - hmpps/deploy_env:
-          name: deploy_live_1_prod
-          env: "live-1-prod"
-          context:
-            - hmpps-common-vars
-            - hmpps-assessments-prod
-          requires:
-            - request-prod-approval
-      - hmpps/deploy_env:
           name: deploy_prod
           env: "prod"
           context:
