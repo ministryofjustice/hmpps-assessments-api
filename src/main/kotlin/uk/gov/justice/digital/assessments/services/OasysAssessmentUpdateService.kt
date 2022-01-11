@@ -94,7 +94,7 @@ class OasysAssessmentUpdateService(
   fun createOffenderAndOasysAssessment(
     crn: String?,
     deliusEventId: Long? = null,
-    assessmentSchemaCode: AssessmentSchemaCode?
+    assessmentSchemaCode: AssessmentSchemaCode
   ): Pair<Long?, Long?> {
     val oasysOffenderPk =
       crn?.let { assessmentUpdateRestClient.createOasysOffender(crn = crn, deliusEvent = deliusEventId) }
