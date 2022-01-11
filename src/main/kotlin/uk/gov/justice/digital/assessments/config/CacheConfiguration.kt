@@ -42,7 +42,7 @@ class CacheConfiguration {
   fun cacheManagerBuilderCustomizer(): RedisCacheManagerBuilderCustomizer? {
     return RedisCacheManagerBuilderCustomizer { builder: RedisCacheManagerBuilder ->
       run {
-        val oneDayTtl = defaultRedisCacheConfiguration()
+        val defaultConfigWithRefDataTtl = defaultRedisCacheConfiguration()
           .entryTtl(Duration.ofDays(referenceDataCacheTtlDays))
 
         arrayOf(
@@ -58,7 +58,7 @@ class CacheConfiguration {
           builder
             .withCacheConfiguration(
               it,
-              oneDayTtl
+              defaultConfigWithRefDataTtl
             )
         }
       }

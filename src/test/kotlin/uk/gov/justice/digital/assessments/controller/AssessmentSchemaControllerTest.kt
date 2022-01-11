@@ -113,18 +113,14 @@ class AssessmentSchemaControllerTest : IntegrationTest() {
 
   @Test
   fun `get flattened questions for assessment schema code`() {
+    val assessmentGroup = webTestClient.get().uri("/assessments/schema/RSR/questions")
+      .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
+      .exchange()
+      .expectStatus().isOk
+      .expectBody<List<GroupContentDto>>()
+      .returnResult()
+      .responseBody
 
-    repeat(10) {
-      println("yip")
-      val assessmentGroup = webTestClient.get().uri("/assessments/schema/RSR/questions")
-        .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
-        .exchange()
-        .expectStatus().isOk
-        .expectBody<List<GroupContentDto>>()
-        .returnResult()
-        .responseBody
-
-      assertThat(assessmentGroup).hasSize(44)
-    }
+    assertThat(assessmentGroup).hasSize(44)
   }
 }
