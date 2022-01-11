@@ -23,7 +23,6 @@ class AssessmentSchemaService(
     val log: Logger = LoggerFactory.getLogger(this::class.java)
   }
 
-
   fun getPredictorsForAssessment(assessmentSchemaCode: AssessmentSchemaCode?): List<PredictorEntity> {
     return assessmentSchemaRepository.findByAssessmentSchemaCode(assessmentSchemaCode!!)?.predictorEntities.orEmpty().toList()
   }

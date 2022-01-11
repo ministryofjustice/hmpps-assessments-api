@@ -70,6 +70,8 @@ spring:
     properties:
       hibernate:
         show_sql: false
+        cache:
+          use_query_cache: true
   redis:
     host: localhost
     port: 6379
@@ -117,10 +119,14 @@ graceful:
 
 logging:
   level:
-    org:
-      hibernate: INFO
+    root: INFO
+#    org:
+#      hibernate: DEBUG
+#    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+#    org.hibernate.loader.collection.plan.AbstractLoadPlanBasedCollectionInitializer: DEBUG
     uk:
-      gov: INFO
+      gov: DEBUG
   uris:
     exclude:
       regex: /health|/info|/ping|/swagger.*|/webjars/.*|/v2/api-docs
