@@ -7,6 +7,5 @@ import java.util.UUID
 
 @Repository
 interface QuestionSchemaRepository : JpaRepository<QuestionSchemaEntity, String> {
-
   fun findByQuestionSchemaUuid(questionSchemaId: UUID): QuestionSchemaEntity?
 }

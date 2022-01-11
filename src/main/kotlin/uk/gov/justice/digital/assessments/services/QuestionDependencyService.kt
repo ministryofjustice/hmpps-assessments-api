@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.assessments.services
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.assessments.api.ConditionalsSchemaDto
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionDependencyEntity
@@ -10,9 +12,14 @@ import java.util.UUID
 class QuestionDependencyService(
   private val questionDependencyRepository: QuestionDependencyRepository
 ) {
-  fun dependencies(): QuestionDependencies {
-    val qd = questionDependencyRepository.findAll()
+  companion object {
+    val log: Logger = LoggerFactory.getLogger(this::class.java)
+  }
 
+  fun dependencies(): QuestionDependencies {
+    log.debug("Getting all QuestionDependencies")
+    val qd = questionDependencyRepository.findAll()
+    log.debug("Getting all QuestionDependencies - end")
     return QuestionDependencies(qd)
   }
 }

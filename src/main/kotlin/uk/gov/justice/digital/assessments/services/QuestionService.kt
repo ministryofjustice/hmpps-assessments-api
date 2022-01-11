@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.assessments.services
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.assessments.api.CheckboxGroupDto
@@ -34,6 +36,9 @@ class QuestionService(
   private val oasysMappingRepository: OASysMappingRepository,
   private val questionDependencyService: QuestionDependencyService
 ) {
+  companion object {
+    val log: Logger = LoggerFactory.getLogger(this::class.java)
+  }
 
   fun getQuestionSchema(questionSchemaId: UUID): QuestionSchemaDto {
     val questionSchemaEntity = questionSchemaRepository.findByQuestionSchemaUuid(questionSchemaId)
@@ -100,6 +105,7 @@ class QuestionService(
     dependencies: QuestionDependencies,
     toDto: (GroupEntity, List<GroupContentDto>, QuestionGroupEntity?) -> GroupContentDto
   ): GroupContentDto {
+    log.debug("expandGroupContents {}", group.groupUuid)
     val groupContents = group.contents.sortedBy { it.displayOrder }
     if (groupContents.isEmpty()) throw EntityNotFoundException("Questions not found for Group: ${group.groupUuid}")
 
@@ -118,6 +124,7 @@ class QuestionService(
     question: QuestionGroupEntity,
     dependencies: QuestionDependencies
   ): GroupContentDto {
+    log.debug("getGroupQuestion {}", question.contentUuid)
     val questionEntity = questionSchemaRepository.findByQuestionSchemaUuid(question.contentUuid)
       ?: throw EntityNotFoundException("Could not get question ${question.contentUuid}")
 
@@ -202,6 +209,7 @@ class QuestionService(
   }
 
   private fun findByGroupUuid(uuid: UUID): GroupEntity {
+    log.debug("findByGroupUuid {}", uuid)
     return groupRepository.findByGroupUuid(uuid)
       ?: throw EntityNotFoundException("Group not found: $uuid")
   }
