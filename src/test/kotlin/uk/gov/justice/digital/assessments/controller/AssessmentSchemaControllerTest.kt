@@ -4,13 +4,14 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
 import org.springframework.test.web.reactive.server.expectBody
+import uk.gov.justice.digital.assessments.api.GroupContentDto
 import uk.gov.justice.digital.assessments.api.GroupSectionsDto
 import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import java.util.UUID
 
 @AutoConfigureWebTestClient
-class AssessmentControllerSchemaTest : IntegrationTest() {
+class AssessmentSchemaControllerTest : IntegrationTest() {
   private val assessmentGroupUuid = "b89429c8-9e3e-4989-b886-9caed4ed0a30"
   private val groupUuid = "5d37254e-d956-488e-89be-1eaec8758ef7"
   private val subgroupUuid = "5606da47-8f27-49a0-a943-0f2696f66186"
@@ -108,5 +109,18 @@ class AssessmentControllerSchemaTest : IntegrationTest() {
     assertThat(subsection3.groupId).isEqualTo(UUID.fromString(subgroupUuid3))
     assertThat(subsection3.groupCode).isEqualTo("rsr_needs")
     assertThat(subsection3.title).isEqualTo("Needs")
+  }
+
+  @Test
+  fun `get flattened questions for assessment schema code`() {
+    val assessmentGroup = webTestClient.get().uri("/assessments/schema/RSR/questions")
+      .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
+      .exchange()
+      .expectStatus().isOk
+      .expectBody<List<GroupContentDto>>()
+      .returnResult()
+      .responseBody
+
+    assertThat(assessmentGroup).hasSize(44)
   }
 }

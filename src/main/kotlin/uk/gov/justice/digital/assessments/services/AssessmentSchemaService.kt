@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.assessments.services
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.assessments.api.GroupContentDto
 import uk.gov.justice.digital.assessments.api.GroupSectionsDto
@@ -10,28 +12,34 @@ import uk.gov.justice.digital.assessments.jpa.entities.refdata.PredictorEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.AssessmentSchemaRepository
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import uk.gov.justice.digital.assessments.services.exceptions.OasysAssessmentTypeMappingMissing
+import java.util.UUID
 
 @Service
 class AssessmentSchemaService(
   private val assessmentSchemaRepository: AssessmentSchemaRepository,
   private val questionService: QuestionService
 ) {
+  companion object {
+    val log: Logger = LoggerFactory.getLogger(this::class.java)
+  }
+
 
   fun getPredictorsForAssessment(assessmentSchemaCode: AssessmentSchemaCode?): List<PredictorEntity> {
     return assessmentSchemaRepository.findByAssessmentSchemaCode(assessmentSchemaCode!!)?.predictorEntities.orEmpty().toList()
   }
 
   fun getAssessmentSchema(assessmentSchemaCode: AssessmentSchemaCode?): GroupWithContentsDto {
-    val assessmentSchemaGroupUuid =
-      assessmentSchemaRepository.findByAssessmentSchemaCode(assessmentSchemaCode!!)?.assessmentSchemaGroup?.group?.groupUuid
-        ?: throw EntityNotFoundException("Assessment Schema not found for assessmentSchemaCode $assessmentSchemaCode")
+    return questionService.getGroupContents(getAssessmentSchemaGroupUuid(assessmentSchemaCode))
+  }
 
-    return questionService.getGroupContents(assessmentSchemaGroupUuid)
+  private fun getAssessmentSchemaGroupUuid(assessmentSchemaCode: AssessmentSchemaCode?): UUID {
+    log.debug("getAssessmentSchemaGroupUuid - begin {}", assessmentSchemaCode)
+    return assessmentSchemaRepository.findByAssessmentSchemaCode(assessmentSchemaCode!!)?.assessmentSchemaGroup?.group?.groupUuid
+      ?: throw EntityNotFoundException("Assessment Schema not found for assessmentSchemaCode $assessmentSchemaCode")
   }
 
   fun getQuestionsForSchemaCode(assessmentSchemaCode: AssessmentSchemaCode?): List<GroupContentDto> {
-    val assessmentSchema = getAssessmentSchema(assessmentSchemaCode)
-    return questionService.getFlatQuestionsForGroup(assessmentSchema.groupId)
+    return questionService.getFlatQuestionsForGroup(getAssessmentSchemaGroupUuid(assessmentSchemaCode))
   }
 
   fun getAssessmentSchemaSummary(assessmentSchemaCode: AssessmentSchemaCode?): GroupSectionsDto {
