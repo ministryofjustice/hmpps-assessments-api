@@ -3,7 +3,7 @@ package uk.gov.justice.digital.assessments.services
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.assessments.api.GroupContentDto
+import uk.gov.justice.digital.assessments.api.GroupQuestionDto
 import uk.gov.justice.digital.assessments.api.GroupSectionsDto
 import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
@@ -37,7 +37,7 @@ class AssessmentSchemaService(
       ?: throw EntityNotFoundException("Assessment Schema not found for assessmentSchemaCode $assessmentSchemaCode")
   }
 
-  fun getQuestionsForSchemaCode(assessmentSchemaCode: AssessmentSchemaCode?): List<GroupContentDto> {
+  fun getQuestionsForSchemaCode(assessmentSchemaCode: AssessmentSchemaCode?): List<GroupQuestionDto> {
     return questionService.getFlatQuestionsForGroup(getAssessmentSchemaGroupUuid(assessmentSchemaCode))
   }
 

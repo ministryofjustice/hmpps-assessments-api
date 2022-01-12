@@ -7,6 +7,7 @@ import io.mockk.verify
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -23,7 +24,6 @@ import uk.gov.justice.digital.assessments.jpa.entities.refdata.OASysMappingEntit
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionDependencyEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionGroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEntity
-import uk.gov.justice.digital.assessments.jpa.repositories.refdata.AnswerSchemaRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.GroupRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.OASysMappingRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.QuestionGroupRepository
@@ -35,7 +35,6 @@ import java.util.UUID
 @DisplayName("Question Schema Service Tests")
 class QuestionServiceTest {
   private val questionSchemaRepository: QuestionSchemaRepository = mockk()
-  private val answerSchemaRepository: AnswerSchemaRepository = mockk()
   private val questionGroupRepository: QuestionGroupRepository = mockk()
   private val groupRepository: GroupRepository = mockk()
   private val oasysMappingRepository: OASysMappingRepository = mockk()
@@ -44,7 +43,6 @@ class QuestionServiceTest {
     questionSchemaRepository,
     questionGroupRepository,
     groupRepository,
-    answerSchemaRepository,
     oasysMappingRepository,
     dependencyService
   )
@@ -320,6 +318,7 @@ class QuestionServiceTest {
     assertThat(questionRef.questionId).isEqualTo(questionUuid)
   }
 
+  @Disabled("Table is no longer used")
   @Test
   fun `get group contents with table`() {
     every { groupRepository.findByGroupUuid(groupWithTableUuid) } returns groupWithTable
@@ -355,6 +354,7 @@ class QuestionServiceTest {
     assertThat(subgroupQuestionIds).contains(tableSubQuestion3Id, tableSubQuestion4Id)
   }
 
+  @Disabled("Removed as inline checkboxes no longer used")
   @Test
   fun `get group contents with inline-checkboxes`() {
     every { groupRepository.findByGroupUuid(groupWithCheckboxUuid) } returns groupWithCheckbox
@@ -609,7 +609,6 @@ class QuestionServiceTest {
     assertThat(result.size).isEqualTo(3)
     assertThat(
       result
-        .map { it as GroupQuestionDto }
         .map { it.questionId }
     ).contains(
       firstQuestion.questionSchemaUuid,
@@ -617,7 +616,6 @@ class QuestionServiceTest {
       thirdQuestion.questionSchemaUuid,
     )
     result
-      .map { it as GroupQuestionDto }
       .filter { it.questionId == secondQuestion.questionSchemaUuid }
       .forEach {
         assertThat(

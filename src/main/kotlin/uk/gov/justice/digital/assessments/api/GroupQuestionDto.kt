@@ -8,7 +8,7 @@ import java.util.UUID
 
 data class GroupQuestionDto(
   @Schema(description = "Reference Question Schema UUID", example = "0e5e0848-6ab0-4b1b-a354-f7894913d8e4")
-  val questionId: UUID?,
+  val questionId: UUID? = null,
 
   @Schema(description = "Reference Question Schema Code", example = "RSR_23")
   val questionCode: String? = null,
@@ -41,7 +41,7 @@ data class GroupQuestionDto(
   val referenceDataCategory: String? = null,
 
   @Schema(description = "Reference Data Targets")
-  val referenceDataTargets: Collection<ReferenceDataTargetDto>,
+  val referenceDataTargets: Collection<ReferenceDataTargetDto> = emptyList(),
 
   @Schema(description = "Reference Answer Schemas")
   val answerSchemas: Collection<AnswerSchemaDto>? = null,

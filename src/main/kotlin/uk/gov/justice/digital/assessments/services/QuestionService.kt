@@ -4,20 +4,16 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.assessments.api.CheckboxGroupDto
 import uk.gov.justice.digital.assessments.api.GroupContentDto
 import uk.gov.justice.digital.assessments.api.GroupQuestionDto
 import uk.gov.justice.digital.assessments.api.GroupSectionsDto
 import uk.gov.justice.digital.assessments.api.GroupSummaryDto
 import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
 import uk.gov.justice.digital.assessments.api.QuestionSchemaDto
-import uk.gov.justice.digital.assessments.api.TableQuestionDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.GroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionGroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEntity
-import uk.gov.justice.digital.assessments.jpa.repositories.refdata.AnswerSchemaRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.GroupRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.OASysMappingRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.QuestionGroupRepository
@@ -32,7 +28,6 @@ class QuestionService(
   private val questionSchemaRepository: QuestionSchemaRepository,
   private val questionGroupRepository: QuestionGroupRepository,
   private val groupRepository: GroupRepository,
-  private val answerSchemaRepository: AnswerSchemaRepository,
   private val oasysMappingRepository: OASysMappingRepository,
   private val questionDependencyService: QuestionDependencyService
 ) {
@@ -62,7 +57,7 @@ class QuestionService(
     return fetchGroupSections(findByGroupCode(groupCode))
   }
 
-  fun flattenQuestionsForGroup(groupUuid: UUID, dependencies: QuestionDependencies): List<GroupContentDto> {
+  fun flattenQuestionsForGroup(groupUuid: UUID, dependencies: QuestionDependencies): List<GroupQuestionDto> {
     val group = findByGroupUuid(groupUuid)
 
     return group.contents.flatMap {
@@ -79,7 +74,7 @@ class QuestionService(
     }
   }
 
-  fun getFlatQuestionsForGroup(groupUuid: UUID): List<GroupContentDto> {
+  fun getFlatQuestionsForGroup(groupUuid: UUID): List<GroupQuestionDto> {
     val dependencies = questionDependencyService.dependencies()
     return flattenQuestionsForGroup(groupUuid, dependencies)
   }
@@ -123,45 +118,15 @@ class QuestionService(
   private fun getGroupQuestion(
     question: QuestionGroupEntity,
     dependencies: QuestionDependencies
-  ): GroupContentDto {
+  ): GroupQuestionDto {
     log.debug("getGroupQuestion {}", question.contentUuid)
     val questionEntity = questionSchemaRepository.findByQuestionSchemaUuid(question.contentUuid)
       ?: throw EntityNotFoundException("Could not get question ${question.contentUuid}")
-
-    return when (questionEntity.answerType?.split(":")?.get(0)) {
-      "table" -> tableGroupQuestion(questionEntity, dependencies)
-      "inline-checkboxes" -> checkboxesGroupQuestion(questionEntity, dependencies)
-      else -> GroupQuestionDto.from(
-        questionEntity,
-        question,
-        dependencies
-      )
-    }
-  }
-
-  private fun tableGroupQuestion(
-    questionEntity: QuestionSchemaEntity,
-    dependencies: QuestionDependencies
-  ): TableQuestionDto {
-    val group = findGroup(questionEntity)
-    return expandGroupContents(group, null, dependencies, TableQuestionDto::from) as TableQuestionDto
-  }
-
-  private fun checkboxesGroupQuestion(
-    questionEntity: QuestionSchemaEntity,
-    dependencies: QuestionDependencies
-  ): CheckboxGroupDto {
-    val group = findGroup(questionEntity)
-    return expandGroupContents(group, null, dependencies, CheckboxGroupDto::from) as CheckboxGroupDto
-  }
-
-  private fun findGroup(
-    questionEntity: QuestionSchemaEntity
-  ): GroupEntity {
-    val groupName = questionEntity.answerType?.split(":")?.get(1)
-      ?: throw EntityNotFoundException("Could not get group name for question ${questionEntity.questionCode}")
-    return groupRepository.findByGroupCode(groupName)
-      ?: throw EntityNotFoundException("Could not find group $groupName for question ${questionEntity.questionCode}")
+    return GroupQuestionDto.from(
+      questionEntity,
+      question,
+      dependencies
+    )
   }
 
   private fun fetchGroupSections(
@@ -198,10 +163,6 @@ class QuestionService(
     }
 
     return QuestionSchemaEntities(allQuestions)
-  }
-
-  fun getAllAnswers(): List<AnswerSchemaEntity> {
-    return answerSchemaRepository.findAll()
   }
 
   private fun findByGroupCode(groupCode: String): GroupEntity {
