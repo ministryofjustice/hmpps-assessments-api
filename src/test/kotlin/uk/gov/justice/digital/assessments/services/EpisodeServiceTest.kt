@@ -9,10 +9,14 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import uk.gov.justice.digital.assessments.api.GroupQuestionDto
+import uk.gov.justice.digital.assessments.api.TableQuestionDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.TableRow
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.TableRows
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.Tables
 import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import java.time.LocalDateTime
@@ -76,25 +80,71 @@ class EpisodeServiceTest {
   }
 
   @Test
-  fun `copies answers from previous episode`() {
+  fun `copies answers and tables from previous episode`() {
     val schemaQuestions = listOf(
       GroupQuestionDto(questionCode = "question_1"),
       GroupQuestionDto(questionCode = "question_2"),
-      GroupQuestionDto(questionCode = "question_3"),
-      GroupQuestionDto(questionCode = "question_4"),
+      TableQuestionDto(tableCode = "table_1")
+    )
+
+    val tablerow1: TableRow = mutableMapOf(
+      "tablerow_1" to listOf("tablerow_answer_1"),
+      "tablerow_2" to listOf("tablerow_answer_2")
+    )
+
+    val tableRows1: TableRows = mutableListOf(
+      tablerow1
+    )
+
+    var table1: Tables = mutableMapOf(
+      "table_1" to tableRows1
+    )
+
+    val mixedPreviousEpisodes = listOf(
+      AssessmentEpisodeEntity(
+        episodeId = 2,
+        assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+        author = author,
+        assessment = AssessmentEntity(),
+        endDate = LocalDateTime.now().minusDays(1),
+        answers = mutableMapOf(
+          "question_1" to listOf("answer_1"),
+          "question_2" to listOf("answer_2")
+        )
+      ),
+      AssessmentEpisodeEntity(
+        episodeId = 3,
+        assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+        author = author,
+        assessment = AssessmentEntity(),
+        endDate = LocalDateTime.now().minusDays(2),
+        tables = table1
+      )
     )
     every { assessmentSchemaService.getQuestionsForSchemaCode(newEpisode.assessmentSchemaCode) } returns schemaQuestions
 
-    val result = episodeService.prepopulateFromPreviousEpisodes(newEpisode, previousEpisodes).answers
+    val result = episodeService.prepopulateFromPreviousEpisodes(newEpisode, mixedPreviousEpisodes)
 
     val expectedAnswers = mutableMapOf(
       "question_1" to listOf("answer_1"),
-      "question_2" to listOf("answer_2"),
-      "question_3" to listOf("answer_3"),
-      "question_4" to listOf("answer_4")
+      "question_2" to listOf("answer_2")
     )
 
-    assertThat(result).containsExactlyInAnyOrderEntriesOf(expectedAnswers)
+    val expectedTableRow: TableRow = mutableMapOf(
+      "tablerow_1" to listOf("tablerow_answer_1"),
+      "tablerow_2" to listOf("tablerow_answer_2")
+    )
+
+    val expectedTableRows: TableRows = mutableListOf(
+      expectedTableRow
+    )
+
+    var expectedTable1: Tables = mutableMapOf(
+      "table_1" to expectedTableRows
+    )
+
+    assertThat(result.answers).containsExactlyInAnyOrderEntriesOf(expectedAnswers)
+    assertThat(result.tables).containsExactlyInAnyOrderEntriesOf(expectedTable1)
   }
 
   @Test

@@ -10,6 +10,7 @@ import uk.gov.justice.digital.assessments.api.GroupSectionsDto
 import uk.gov.justice.digital.assessments.api.GroupSummaryDto
 import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
 import uk.gov.justice.digital.assessments.api.QuestionSchemaDto
+import uk.gov.justice.digital.assessments.api.TableQuestionDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.GroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionGroupEntity
@@ -57,7 +58,7 @@ class QuestionService(
     return fetchGroupSections(findByGroupCode(groupCode))
   }
 
-  fun flattenQuestionsForGroup(groupUuid: UUID, dependencies: QuestionDependencies): List<GroupQuestionDto> {
+  fun flattenQuestionsForGroup(groupUuid: UUID, dependencies: QuestionDependencies): List<GroupContentDto> {
     val group = findByGroupUuid(groupUuid)
 
     return group.contents.flatMap {
@@ -74,7 +75,7 @@ class QuestionService(
     }
   }
 
-  fun getFlatQuestionsForGroup(groupUuid: UUID): List<GroupQuestionDto> {
+  fun getFlatQuestionsForGroup(groupUuid: UUID): List<GroupContentDto> {
     val dependencies = questionDependencyService.dependencies()
     return flattenQuestionsForGroup(groupUuid, dependencies)
   }
@@ -118,15 +119,36 @@ class QuestionService(
   private fun getGroupQuestion(
     question: QuestionGroupEntity,
     dependencies: QuestionDependencies
-  ): GroupQuestionDto {
+  ): GroupContentDto {
     log.debug("getGroupQuestion {}", question.contentUuid)
     val questionEntity = questionSchemaRepository.findByQuestionSchemaUuid(question.contentUuid)
       ?: throw EntityNotFoundException("Could not get question ${question.contentUuid}")
-    return GroupQuestionDto.from(
-      questionEntity,
-      question,
-      dependencies
-    )
+
+    return when (questionEntity.answerType?.split(":")?.get(0)) {
+      "table" -> tableGroupQuestion(questionEntity, dependencies)
+      else -> GroupQuestionDto.from(
+        questionEntity,
+        question,
+        dependencies
+      )
+    }
+  }
+
+  private fun tableGroupQuestion(
+    questionEntity: QuestionSchemaEntity,
+    dependencies: QuestionDependencies
+  ): TableQuestionDto {
+    val group = findGroup(questionEntity)
+    return expandGroupContents(group, null, dependencies, TableQuestionDto::from) as TableQuestionDto
+  }
+
+  private fun findGroup(
+    questionEntity: QuestionSchemaEntity
+  ): GroupEntity {
+    val groupName = questionEntity.answerType?.split(":")?.get(1)
+      ?: throw EntityNotFoundException("Could not get group name for question ${questionEntity.questionCode}")
+    return groupRepository.findByGroupCode(groupName)
+      ?: throw EntityNotFoundException("Could not find group $groupName for question ${questionEntity.questionCode}")
   }
 
   private fun fetchGroupSections(

@@ -7,6 +7,8 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.assessments.api.GroupQuestionDto
+import uk.gov.justice.digital.assessments.api.TableQuestionDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
@@ -60,11 +62,24 @@ class EpisodeService(
 
     val schemaQuestionCodes =
       assessmentSchemaService.getQuestionsForSchemaCode(newEpisode.assessmentSchemaCode)
-        .map { it.questionCode }
+
+    val questionCodes = schemaQuestionCodes.filter { it is GroupQuestionDto }
+      .map { it as GroupQuestionDto }
+      .map { it.questionCode }
+
+    val tableCodes = schemaQuestionCodes.filter { it is TableQuestionDto }
+      .map { it as TableQuestionDto }
+      .map { it.tableCode }
+
     orderedPreviousEpisodes.forEach { episode ->
-      val relevantAnswers = episode.answers.filter { schemaQuestionCodes.contains(it.key) }
+      val relevantAnswers = episode.answers.filter { questionCodes.contains(it.key) }
       relevantAnswers.forEach {
         newEpisode.answers.putIfAbsent(it.key, it.value)
+      }
+
+      val relevantTables = episode.tables.filter { tableCodes.contains(it.key) }
+      relevantTables.forEach {
+        newEpisode.tables.putIfAbsent(it.key, it.value)
       }
     }
     return newEpisode

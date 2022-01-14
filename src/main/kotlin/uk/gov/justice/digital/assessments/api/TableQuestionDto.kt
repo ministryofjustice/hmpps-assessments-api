@@ -7,10 +7,10 @@ import java.util.UUID
 
 data class TableQuestionDto(
   @Schema(description = "Table Identifier", example = "<uuid>")
-  val tableId: UUID,
+  val tableId: UUID? = null,
 
   @Schema(description = "Table Code", example = "table-code-name")
-  val tableCode: String,
+  val tableCode: String? = null,
 
   @Schema(description = "Table Title", example = "Table of children")
   val title: String? = null,
@@ -31,7 +31,7 @@ data class TableQuestionDto(
   val validation: String? = null,
 
   @Schema(description = "Questions and Groups")
-  val contents: List<GroupContentDto>
+  val contents: List<GroupContentDto> = mutableListOf()
 ) : GroupContentDto {
   companion object {
     fun from(group: GroupEntity, contents: List<GroupContentDto>, parentGroup: QuestionGroupEntity? = null): TableQuestionDto {
