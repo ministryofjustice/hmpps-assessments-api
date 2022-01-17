@@ -93,5 +93,5 @@ VALUES
 ('d48a7841-8398-4964-8fa9-30b932191296', 'caring_commitments', 'UPW', 'DELIUS', '$.personalCircumstances[?(@.personalCircumstanceType.code==''I'')].personalCircumstanceSubType.description', 'yesno', 'secure/offenders/crn/$crn/personalCircumstances', null, false),
 ('e2765bb6-5d2a-47c5-babb-d8cbd9842c26', 'caring_commitments_details', 'UPW', 'DELIUS', '$.personalCircumstances[?(@.personalCircumstanceType.code==''I'')].notes', null, 'secure/offenders/crn/$crn/personalCircumstances', null, false),
 ('cdd2f423-7805-4775-9ca2-ea23bf268365', 'reading_writing_difficulties', 'UPW', 'DELIUS', '$.personalCircumstances[?(@.personalCircumstanceType.code==''G'')].personalCircumstanceSubType.description', 'yesno', 'secure/offenders/crn/$crn/personalCircumstances', null, false),
-('6a65d799-3796-497c-b09d-8dab9822fb6c', 'reading_writing_difficulties_details', 'UPW', 'DELIUS', '$.personalCircumstances[?(@.personalCircumstanceType.code==''G'')].notes', null, 'secure/offenders/crn/$crn/personalCircumstances', null, false)
+('6a65d799-3796-497c-b09d-8dab9822fb6c', 'reading_writing_difficulties_details', 'UPW', 'DELIUS', '$.personalCircumstances[?(@.personalCircumstanceType.code==''G'')].notes', null, 'secure/offenders/crn/$crn/personalCircumstances', null, false),
 ;

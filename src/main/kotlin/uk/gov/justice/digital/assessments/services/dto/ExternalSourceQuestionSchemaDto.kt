@@ -8,4 +8,5 @@ class ExternalSourceQuestionSchemaDto(
   val externalSourceEndpoint: String? = null,
   val mappedValue: String? = null,
   val ifEmpty: Boolean,
+  val parentQuestionCode: String? = null
 )

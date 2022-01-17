@@ -90,16 +90,40 @@ class EpisodeService(
     sourceName: String?,
     questions: List<ExternalSourceQuestionSchemaDto>
   ) {
+    // filter (partition) endpoints for tables and table rows
+    val (tableQuestions, notTableQuestions) = questions.partition{ it.fieldType == "table" || it.fieldType == "table_question" }
 
-    val questionsByExternalSourceEndpoint = questions.groupBy { it.externalSourceEndpoint }
-
-    questionsByExternalSourceEndpoint.forEach { it ->
-      val source = loadSource(episode, sourceName, it.key) ?: return
+    val questionsByExternalSourceEndpoint = notTableQuestions.groupBy { it.externalSourceEndpoint }
+    questionsByExternalSourceEndpoint.forEach {
+        it -> val source = loadSource(episode, sourceName, it.key) ?: return
       it.value.forEach {
         prepopulateQuestion(episode, source, it)
       }
     }
+    //TODO prepopulate tables
+    prepopulateQuestionTables(episode, sourceName, tableQuestions)
   }
+
+  private fun prepopulateQuestionTables(
+    episode: AssessmentEpisodeEntity,
+    sourceName: String?,
+    tableQuestions: List<ExternalSourceQuestionSchemaDto>
+  ) {
+    val (tables, tableQuestions) = tableQuestions.partition{ it.fieldType == "table" }
+    val questionCodes = tableQuestions.groupBy { it.parentQuestionCode }
+
+    tables.forEach {
+      val json = loadSource(episode, sourceName, it.questionCode) ?: return
+      //TODO use it.value to get the table name and then find the matching tables rows
+      val tableRows = questionCodes[it.questionCode]
+
+
+    }
+
+
+    TODO("Not yet implemented")
+  }
+
 
   private fun prepopulateQuestion(
     episode: AssessmentEpisodeEntity,

@@ -56,6 +56,7 @@ class CommunityApiMockServer : WireMockServer(9096) {
                 "            \"evidenced\": true," +
                 "            \"createdDatetime\": \"2021-10-25T12:08:42\"," +
                 "            \"lastUpdatedDatetime\": \"2021-10-25T12:08:42\"" +
+                "            \"isActive\": \"true\"" +
                 "        }," +
                 "        {" +
                 "            \"personalCircumstanceId\": 2500178003," +
@@ -77,6 +78,7 @@ class CommunityApiMockServer : WireMockServer(9096) {
                 "            \"evidenced\": true," +
                 "            \"createdDatetime\": \"2021-10-22T09:26:44\"," +
                 "            \"lastUpdatedDatetime\": \"2021-10-22T09:26:44\"" +
+                "            \"isActive\": \"true\"" +
                 "        }," +
                 "        {" +
                 "            \"personalCircumstanceId\": 2500177526," +
@@ -93,6 +95,7 @@ class CommunityApiMockServer : WireMockServer(9096) {
                 "            \"evidenced\": true," +
                 "            \"createdDatetime\": \"2021-10-21T14:58:23\"," +
                 "            \"lastUpdatedDatetime\": \"2021-10-21T14:58:23\"" +
+                "            \"isActive\": \"true\"" +
                 "        }," +
                 "        {" +
                 "            \"personalCircumstanceId\": 2500177525," +
@@ -114,6 +117,7 @@ class CommunityApiMockServer : WireMockServer(9096) {
                 "            \"evidenced\": false," +
                 "            \"createdDatetime\": \"2021-10-21T14:53:10\"," +
                 "            \"lastUpdatedDatetime\": \"2021-10-21T14:53:10\"" +
+                "            \"isActive\": \"true\"" +
                 "        }," +
                 "        {" +
                 "            \"personalCircumstanceId\": 2500177535," +
@@ -135,6 +139,7 @@ class CommunityApiMockServer : WireMockServer(9096) {
                 "            \"evidenced\": false," +
                 "            \"createdDatetime\": \"2021-10-21T14:53:10\"," +
                 "            \"lastUpdatedDatetime\": \"2021-10-21T14:53:10\"" +
+                "            \"isActive\": \"true\"" +
                 "        }," +
                 "        {" +
                 "            \"personalCircumstanceId\": 2500177545," +
@@ -156,6 +161,7 @@ class CommunityApiMockServer : WireMockServer(9096) {
                 "            \"evidenced\": false," +
                 "            \"createdDatetime\": \"2021-10-21T14:53:10\"," +
                 "            \"lastUpdatedDatetime\": \"2021-10-21T14:53:10\"" +
+                "            \"isActive\": \"true\"" +
                 "        }," +
                 "        {" +
                 "            \"personalCircumstanceId\": 2500177524," +
@@ -178,6 +184,7 @@ class CommunityApiMockServer : WireMockServer(9096) {
                 "            \"evidenced\": true," +
                 "            \"createdDatetime\": \"2021-10-21T14:52:46\"," +
                 "            \"lastUpdatedDatetime\": \"2021-10-21T14:52:46\"" +
+                "            \"isActive\": \"true\"" +
                 "        }," +
                 "        {" +
                 "            \"personalCircumstanceId\": 2500177523," +
@@ -200,6 +207,7 @@ class CommunityApiMockServer : WireMockServer(9096) {
                 "            \"evidenced\": true," +
                 "            \"createdDatetime\": \"2021-10-21T14:51:44\"," +
                 "            \"lastUpdatedDatetime\": \"2021-10-21T14:52:10\"" +
+                "            \"isActive\": \"true\"" +
                 "        }," +
                 "        {" +
                 "            \"personalCircumstanceId\": 2500177522," +
@@ -221,6 +229,7 @@ class CommunityApiMockServer : WireMockServer(9096) {
                 "            \"evidenced\": true," +
                 "            \"createdDatetime\": \"2021-10-21T14:51:06\"," +
                 "            \"lastUpdatedDatetime\": \"2021-10-21T14:51:06\"" +
+                "            \"isActive\": \"true\"" +
                 "        }" +
                 "    ]" +
                 "}"
@@ -258,6 +267,7 @@ class CommunityApiMockServer : WireMockServer(9096) {
                 "            \"evidenced\": true," +
                 "            \"createdDatetime\": \"2021-10-25T12:08:42\"," +
                 "            \"lastUpdatedDatetime\": \"2021-10-25T12:08:42\"" +
+                "            \"isActive\": \"true\"" +
                 "        }" +
                 "    ]" +
                 "}"
