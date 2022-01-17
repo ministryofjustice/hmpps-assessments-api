@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.assessments.api.CheckboxGroupDto
 import uk.gov.justice.digital.assessments.api.GroupContentDto
 import uk.gov.justice.digital.assessments.api.GroupQuestionDto
 import uk.gov.justice.digital.assessments.api.GroupSectionsDto
@@ -14,11 +13,9 @@ import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
 import uk.gov.justice.digital.assessments.api.QuestionSchemaDto
 import uk.gov.justice.digital.assessments.api.TableQuestionDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.GroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionGroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEntity
-import uk.gov.justice.digital.assessments.jpa.repositories.refdata.AnswerSchemaRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.GroupRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.OASysMappingRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.QuestionGroupRepository
@@ -33,7 +30,6 @@ class QuestionService(
   private val questionSchemaRepository: QuestionSchemaRepository,
   private val questionGroupRepository: QuestionGroupRepository,
   private val groupRepository: GroupRepository,
-  private val answerSchemaRepository: AnswerSchemaRepository,
   private val oasysMappingRepository: OASysMappingRepository,
   private val questionDependencyService: QuestionDependencyService
 ) {
@@ -135,7 +131,6 @@ class QuestionService(
 
     return when (questionEntity.answerType?.split(":")?.get(0)) {
       "table" -> tableGroupQuestion(questionEntity, dependencies)
-      "inline-checkboxes" -> checkboxesGroupQuestion(questionEntity, dependencies)
       else -> GroupQuestionDto.from(
         questionEntity,
         question,
@@ -150,14 +145,6 @@ class QuestionService(
   ): TableQuestionDto {
     val group = findGroup(questionEntity)
     return expandGroupContents(group, null, dependencies, TableQuestionDto::from) as TableQuestionDto
-  }
-
-  private fun checkboxesGroupQuestion(
-    questionEntity: QuestionSchemaEntity,
-    dependencies: QuestionDependencies
-  ): CheckboxGroupDto {
-    val group = findGroup(questionEntity)
-    return expandGroupContents(group, null, dependencies, CheckboxGroupDto::from) as CheckboxGroupDto
   }
 
   private fun findGroup(
@@ -203,10 +190,6 @@ class QuestionService(
     }
 
     return QuestionSchemaEntities(allQuestions)
-  }
-
-  fun getAllAnswers(): List<AnswerSchemaEntity> {
-    return answerSchemaRepository.findAll()
   }
 
   private fun findByGroupCode(groupCode: String): GroupEntity {

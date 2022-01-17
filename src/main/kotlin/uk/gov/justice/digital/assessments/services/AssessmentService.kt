@@ -138,7 +138,7 @@ class AssessmentService(
   ): MutableMap<String, Collection<AnswerSchemaDto>> {
     val answers: MutableMap<String, Collection<AnswerSchemaDto>> = mutableMapOf()
 
-    episode.answers?.forEach { episodeAnswer ->
+    episode.answers.forEach { episodeAnswer ->
       val question = questions[episodeAnswer.key]
         ?: throw IllegalStateException("Question not found for UUID ${episodeAnswer.key}")
 
@@ -350,7 +350,9 @@ class AssessmentService(
       author
     )
     if (isNewEpisode) {
-      episodeService.prepopulate(episode, assessmentSchemaCode)
+
+      episodeService.prepopulateFromExternalSources(episode, assessmentSchemaCode)
+      episodeService.prepopulateFromPreviousEpisodes(episode, assessment.episodes)
       auditAndLogCreateEpisode(assessment.assessmentUuid, episode, subject?.crn)
     }
     log.info("New episode episode with id:${episode.episodeId} and uuid:${episode.episodeUuid} created for assessment ${assessment.assessmentUuid}")

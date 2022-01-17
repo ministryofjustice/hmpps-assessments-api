@@ -3,8 +3,12 @@ package uk.gov.justice.digital.assessments.services
 import com.jayway.jsonpath.DocumentContext
 import com.jayway.jsonpath.JsonPath
 import net.minidev.json.JSONArray
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.assessments.api.GroupQuestionDto
+import uk.gov.justice.digital.assessments.api.TableQuestionDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
@@ -13,6 +17,7 @@ import uk.gov.justice.digital.assessments.services.dto.ExternalSource
 import uk.gov.justice.digital.assessments.services.dto.ExternalSourceQuestionSchemaDto
 import uk.gov.justice.digital.assessments.services.exceptions.CrnIsMandatoryException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalSourceEndpointIsMandatoryException
+import java.time.LocalDateTime
 
 @Service
 @Transactional("refDataTransactionManager")
@@ -20,8 +25,15 @@ class EpisodeService(
   private val questionService: QuestionService,
   private val courtCaseRestClient: CourtCaseRestClient,
   private val communityApiRestClient: CommunityApiRestClient,
+  private val assessmentSchemaService: AssessmentSchemaService
 ) {
-  fun prepopulate(
+
+  companion object {
+    val log: Logger = LoggerFactory.getLogger(this::class.java)
+    val cloneEpisodeOffset: Long = 55
+  }
+
+  fun prepopulateFromExternalSources(
     episode: AssessmentEpisodeEntity,
     assessmentSchemaCode: AssessmentSchemaCode
   ): AssessmentEpisodeEntity {
@@ -38,6 +50,41 @@ class EpisodeService(
     return episode
   }
 
+  fun prepopulateFromPreviousEpisodes(
+    newEpisode: AssessmentEpisodeEntity,
+    previousEpisodes: List<AssessmentEpisodeEntity>
+  ): AssessmentEpisodeEntity {
+
+    val orderedPreviousEpisodes = previousEpisodes.filter {
+      it.endDate?.isAfter(LocalDateTime.now().minusWeeks(cloneEpisodeOffset)) ?: false && it.isComplete()
+    }
+      .sortedByDescending { it.endDate }
+
+    val schemaQuestionCodes =
+      assessmentSchemaService.getQuestionsForSchemaCode(newEpisode.assessmentSchemaCode)
+
+    val questionCodes = schemaQuestionCodes.filter { it is GroupQuestionDto }
+      .map { it as GroupQuestionDto }
+      .map { it.questionCode }
+
+    val tableCodes = schemaQuestionCodes.filter { it is TableQuestionDto }
+      .map { it as TableQuestionDto }
+      .map { it.tableCode }
+
+    orderedPreviousEpisodes.forEach { episode ->
+      val relevantAnswers = episode.answers.filter { questionCodes.contains(it.key) }
+      relevantAnswers.forEach {
+        newEpisode.answers.putIfAbsent(it.key, it.value)
+      }
+
+      val relevantTables = episode.tables.filter { tableCodes.contains(it.key) }
+      relevantTables.forEach {
+        newEpisode.tables.putIfAbsent(it.key, it.value)
+      }
+    }
+    return newEpisode
+  }
+
   private fun prepopulateFromSource(
     episode: AssessmentEpisodeEntity,
     sourceName: String?,
@@ -48,7 +95,9 @@ class EpisodeService(
 
     questionsByExternalSourceEndpoint.forEach { it ->
       val source = loadSource(episode, sourceName, it.key) ?: return
-      it.value.forEach { prepopulateQuestion(episode, source, it) }
+      it.value.forEach {
+        prepopulateQuestion(episode, source, it)
+      }
     }
   }
 
@@ -59,7 +108,7 @@ class EpisodeService(
   ) {
 
     val answer = answerFormat(source, question).orEmpty()
-    episode.answers?.let {
+    episode.answers.let {
       it[question.questionCode] = it[question.questionCode].orEmpty().plus(answer).toSet().toList()
     }
   }

@@ -7,6 +7,7 @@ import io.mockk.verify
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -44,7 +45,6 @@ class QuestionServiceTest {
     questionSchemaRepository,
     questionGroupRepository,
     groupRepository,
-    answerSchemaRepository,
     oasysMappingRepository,
     dependencyService
   )
@@ -355,6 +355,7 @@ class QuestionServiceTest {
     assertThat(subgroupQuestionIds).contains(tableSubQuestion3Id, tableSubQuestion4Id)
   }
 
+  @Disabled("Removed as inline checkboxes no longer used")
   @Test
   fun `get group contents with inline-checkboxes`() {
     every { groupRepository.findByGroupUuid(groupWithCheckboxUuid) } returns groupWithCheckbox

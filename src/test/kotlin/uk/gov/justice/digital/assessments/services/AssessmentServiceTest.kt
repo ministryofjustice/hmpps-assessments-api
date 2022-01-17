@@ -102,6 +102,7 @@ class AssessmentServiceTest {
         )
       }
       every { assessment.assessmentUuid } returns assessmentUuid
+      every { assessment.episodes } returns mutableListOf()
       every { offenderService.validateUserAccess(crn) } returns mockk()
       every { assessment.assessmentId } returns 0
       val episodeUuid1 = UUID.randomUUID()
@@ -138,7 +139,8 @@ class AssessmentServiceTest {
         offenceSubCode = offenceSubCode,
         subCodeDescription = subCodeDescription
       )
-      every { episodeService.prepopulate(any(), assessmentSchemaCode) } returnsArgument 0
+      every { episodeService.prepopulateFromExternalSources(any(), assessmentSchemaCode) } returnsArgument 0
+      every { episodeService.prepopulateFromPreviousEpisodes(any(), emptyList()) } returnsArgument 0
 
       val episodeDto = assessmentsService.createNewEpisode(
         assessmentUuid,
