@@ -11,6 +11,7 @@ import uk.gov.justice.digital.assessments.api.GroupQuestionDto
 import uk.gov.justice.digital.assessments.api.TableQuestionDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
+import uk.gov.justice.digital.assessments.jpa.repositories.refdata.CloneAssessmentExcludedQuestionsRepository
 import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import uk.gov.justice.digital.assessments.services.dto.ExternalSource
@@ -71,6 +72,7 @@ class EpisodeService(
     val questionCodes = questions.filterIsInstance<GroupQuestionDto>()
       .map { it as GroupQuestionDto }
       .map { it.questionCode }
+      .filterNot { ignoredQuestionCodes.contains(it) }
 
     val tableCodes = questions.filterIsInstance<TableQuestionDto>()
       .map { it as TableQuestionDto }
