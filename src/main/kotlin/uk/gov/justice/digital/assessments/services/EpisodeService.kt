@@ -26,9 +26,9 @@ class EpisodeService(
   private val questionService: QuestionService,
   private val courtCaseRestClient: CourtCaseRestClient,
   private val communityApiRestClient: CommunityApiRestClient,
+
   private val assessmentSchemaService: AssessmentSchemaService,
   private val cloneAssessmentExcludedQuestionsRepository: CloneAssessmentExcludedQuestionsRepository
-
 ) {
 
   companion object {
@@ -62,7 +62,7 @@ class EpisodeService(
       it.endDate?.isAfter(LocalDateTime.now().minusWeeks(cloneEpisodeOffset)) ?: false && it.isComplete()
     }
       .sortedByDescending { it.endDate }
-
+      
     val questions =
       assessmentSchemaService.getQuestionsForSchemaCode(newEpisode.assessmentSchemaCode)
 

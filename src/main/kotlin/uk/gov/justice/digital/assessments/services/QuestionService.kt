@@ -2,6 +2,7 @@ package uk.gov.justice.digital.assessments.services
 
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.assessments.api.GroupContentDto
@@ -36,16 +37,19 @@ class QuestionService(
     val log: Logger = LoggerFactory.getLogger(this::class.java)
   }
 
+  @Cacheable("QuestionService:questionSchema")
   fun getQuestionSchema(questionSchemaId: UUID): QuestionSchemaDto {
     val questionSchemaEntity = questionSchemaRepository.findByQuestionSchemaUuid(questionSchemaId)
       ?: throw EntityNotFoundException("Question Schema not found for id: $questionSchemaId")
     return QuestionSchemaDto.from(questionSchemaEntity)
   }
 
+  @Cacheable("QuestionService:listGroups")
   fun listGroups(): Collection<GroupSummaryDto> {
     return questionGroupRepository.listGroups().map { GroupSummaryDto.from(it) }
   }
 
+  @Cacheable("QuestionService:getGroupContents")
   fun getGroupContents(groupCode: String): GroupWithContentsDto {
     return getQuestionGroupContents(findByGroupCode(groupCode))
   }
@@ -54,6 +58,7 @@ class QuestionService(
     return getQuestionGroupContents(findByGroupUuid(groupUuid))
   }
 
+  @Cacheable("QuestionService:getGroupSections")
   fun getGroupSections(groupCode: String): GroupSectionsDto {
     return fetchGroupSections(findByGroupCode(groupCode))
   }
