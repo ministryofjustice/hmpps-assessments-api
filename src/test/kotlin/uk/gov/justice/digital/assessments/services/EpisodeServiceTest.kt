@@ -32,7 +32,7 @@ class EpisodeServiceTest {
   private val communityApiRestClient: CommunityApiRestClient = mockk()
   private val assessmentSchemaService: AssessmentSchemaService = mockk()
   private val cloneAssessmentExcludedQuestionsRepository: CloneAssessmentExcludedQuestionsRepository = mockk()
-  
+
   private val episodeService = EpisodeService(
     questionService,
     courtCaseRestClient,
@@ -234,7 +234,7 @@ class EpisodeServiceTest {
 
   @Test
   fun `existing episode older than 55 weeks will be ignored`() {
-    
+
     val previousEpisodes = listOf(
       AssessmentEpisodeEntity(
         episodeId = 2,

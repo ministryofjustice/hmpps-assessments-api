@@ -62,7 +62,7 @@ class EpisodeService(
       it.endDate?.isAfter(LocalDateTime.now().minusWeeks(cloneEpisodeOffset)) ?: false && it.isComplete()
     }
       .sortedByDescending { it.endDate }
-      
+
     val questions =
       assessmentSchemaService.getQuestionsForSchemaCode(newEpisode.assessmentSchemaCode)
 
