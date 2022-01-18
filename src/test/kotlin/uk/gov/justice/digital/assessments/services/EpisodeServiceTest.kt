@@ -17,6 +17,8 @@ import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.TableRow
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.TableRows
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.Tables
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.CloneAssessmentExcludedQuestionsEntity
+import uk.gov.justice.digital.assessments.jpa.repositories.refdata.CloneAssessmentExcludedQuestionsRepository
 import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import java.time.LocalDateTime
@@ -29,12 +31,14 @@ class EpisodeServiceTest {
   private val courtCaseRestClient: CourtCaseRestClient = mockk()
   private val communityApiRestClient: CommunityApiRestClient = mockk()
   private val assessmentSchemaService: AssessmentSchemaService = mockk()
+  private val cloneAssessmentExcludedQuestionsRepository: CloneAssessmentExcludedQuestionsRepository = mockk()
 
   private val episodeService = EpisodeService(
     questionService,
     courtCaseRestClient,
     communityApiRestClient,
-    assessmentSchemaService
+    assessmentSchemaService,
+    cloneAssessmentExcludedQuestionsRepository
   )
 
   private lateinit var newEpisode: AssessmentEpisodeEntity
@@ -52,8 +56,31 @@ class EpisodeServiceTest {
       author = author,
       assessment = AssessmentEntity()
     )
+    every { cloneAssessmentExcludedQuestionsRepository.findAllByAssessmentSchemaCode(AssessmentSchemaCode.ROSH) } returns emptyList()
+  }
 
-    previousEpisodes = listOf(
+  @Test
+  fun `copies answers and tables from previous episode ignoring excluded questions`() {
+    val schemaQuestions = listOf(
+      GroupQuestionDto(questionCode = "question_1"),
+      GroupQuestionDto(questionCode = "question_2"),
+      TableQuestionDto(tableCode = "table_1")
+    )
+
+    val tablerow1: TableRow = mutableMapOf(
+      "tablerow_1" to listOf("tablerow_answer_1"),
+      "tablerow_2" to listOf("tablerow_answer_2")
+    )
+
+    val tableRows1: TableRows = mutableListOf(
+      tablerow1
+    )
+
+    var table1: Tables = mutableMapOf(
+      "table_1" to tableRows1
+    )
+
+    val mixedPreviousEpisodes = listOf(
       AssessmentEpisodeEntity(
         episodeId = 2,
         assessmentSchemaCode = AssessmentSchemaCode.ROSH,
@@ -71,12 +98,31 @@ class EpisodeServiceTest {
         author = author,
         assessment = AssessmentEntity(),
         endDate = LocalDateTime.now().minusDays(2),
-        answers = mutableMapOf(
-          "question_3" to listOf("answer_3"),
-          "question_4" to listOf("answer_4")
-        )
+        tables = table1
       )
     )
+    every { assessmentSchemaService.getQuestionsForSchemaCode(newEpisode.assessmentSchemaCode) } returns schemaQuestions
+    every { cloneAssessmentExcludedQuestionsRepository.findAllByAssessmentSchemaCode(AssessmentSchemaCode.ROSH) } returns listOf(
+      CloneAssessmentExcludedQuestionsEntity(
+        12345,
+        AssessmentSchemaCode.ROSH,
+        "question_2"
+      ),
+      CloneAssessmentExcludedQuestionsEntity(
+        23456,
+        AssessmentSchemaCode.ROSH,
+        "table_1"
+      )
+    )
+
+    val result = episodeService.prepopulateFromPreviousEpisodes(newEpisode, mixedPreviousEpisodes)
+
+    val expectedAnswers = mutableMapOf(
+      "question_1" to listOf("answer_1")
+    )
+
+    assertThat(result.answers).containsExactlyEntriesOf(expectedAnswers)
+    assertThat(result.tables).isEmpty()
   }
 
   @Test
@@ -189,7 +235,7 @@ class EpisodeServiceTest {
   @Test
   fun `existing episode older than 55 weeks will be ignored`() {
 
-    previousEpisodes = listOf(
+    val previousEpisodes = listOf(
       AssessmentEpisodeEntity(
         episodeId = 2,
         assessmentSchemaCode = AssessmentSchemaCode.ROSH,

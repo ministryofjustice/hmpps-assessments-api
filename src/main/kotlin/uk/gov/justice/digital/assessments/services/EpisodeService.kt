@@ -11,6 +11,7 @@ import uk.gov.justice.digital.assessments.api.GroupQuestionDto
 import uk.gov.justice.digital.assessments.api.TableQuestionDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
+import uk.gov.justice.digital.assessments.jpa.repositories.refdata.CloneAssessmentExcludedQuestionsRepository
 import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import uk.gov.justice.digital.assessments.services.dto.ExternalSource
@@ -25,7 +26,9 @@ class EpisodeService(
   private val questionService: QuestionService,
   private val courtCaseRestClient: CourtCaseRestClient,
   private val communityApiRestClient: CommunityApiRestClient,
-  private val assessmentSchemaService: AssessmentSchemaService
+
+  private val assessmentSchemaService: AssessmentSchemaService,
+  private val cloneAssessmentExcludedQuestionsRepository: CloneAssessmentExcludedQuestionsRepository
 ) {
 
   companion object {
@@ -60,16 +63,21 @@ class EpisodeService(
     }
       .sortedByDescending { it.endDate }
 
-    val schemaQuestionCodes =
+    val questions =
       assessmentSchemaService.getQuestionsForSchemaCode(newEpisode.assessmentSchemaCode)
 
-    val questionCodes = schemaQuestionCodes.filter { it is GroupQuestionDto }
+    val ignoredQuestionCodes = cloneAssessmentExcludedQuestionsRepository
+      .findAllByAssessmentSchemaCode(newEpisode.assessmentSchemaCode).map { it.questionCode }
+
+    val questionCodes = questions.filterIsInstance<GroupQuestionDto>()
       .map { it as GroupQuestionDto }
       .map { it.questionCode }
+      .filterNot { ignoredQuestionCodes.contains(it) }
 
-    val tableCodes = schemaQuestionCodes.filter { it is TableQuestionDto }
+    val tableCodes = questions.filterIsInstance<TableQuestionDto>()
       .map { it as TableQuestionDto }
       .map { it.tableCode }
+      .filterNot { ignoredQuestionCodes.contains(it) }
 
     orderedPreviousEpisodes.forEach { episode ->
       val relevantAnswers = episode.answers.filter { questionCodes.contains(it.key) }
