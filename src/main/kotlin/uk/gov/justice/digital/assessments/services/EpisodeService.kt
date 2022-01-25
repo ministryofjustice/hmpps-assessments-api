@@ -3,7 +3,9 @@ package uk.gov.justice.digital.assessments.services
 import com.jayway.jsonpath.DocumentContext
 import com.jayway.jsonpath.JsonPath
 import net.minidev.json.JSONArray
+import net.minidev.json.JSONObject
 import org.slf4j.Logger
+
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -34,6 +36,8 @@ class EpisodeService(
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
     val cloneEpisodeOffset: Long = 55
+    private val tableFieldTypes: List<String> = listOf("table", "table_question")
+
   }
 
   fun prepopulateFromExternalSources(
@@ -98,40 +102,18 @@ class EpisodeService(
     sourceName: String?,
     questions: List<ExternalSourceQuestionSchemaDto>
   ) {
-    // filter (partition) endpoints for tables and table rows
-    val (tableQuestions, notTableQuestions) = questions.partition{ it.fieldType == "table" || it.fieldType == "table_question" }
 
-    val questionsByExternalSourceEndpoint = notTableQuestions.groupBy { it.externalSourceEndpoint }
+    val questionsByExternalSourceEndpoint = questions.groupBy { it.externalSourceEndpoint }
+
     questionsByExternalSourceEndpoint.forEach {
-        it -> val source = loadSource(episode, sourceName, it.key) ?: return
-      it.value.forEach {
-        prepopulateQuestion(episode, source, it)
+      val source = loadSource(episode, sourceName, it.key) ?: return
+
+      it.value.forEach { question ->
+        val childQuestions = getChildQuestions(question.questionCode, it.value)
+        prepopulateQuestion(episode, source, question, childQuestions)
       }
     }
-    //TODO prepopulate tables
-    prepopulateQuestionTables(episode, sourceName, tableQuestions)
   }
-
-  private fun prepopulateQuestionTables(
-    episode: AssessmentEpisodeEntity,
-    sourceName: String?,
-    tableQuestions: List<ExternalSourceQuestionSchemaDto>
-  ) {
-    val (tables, tableQuestions) = tableQuestions.partition{ it.fieldType == "table" }
-    val questionCodes = tableQuestions.groupBy { it.parentQuestionCode }
-
-    tables.forEach {
-      val json = loadSource(episode, sourceName, it.questionCode) ?: return
-      //TODO use it.value to get the table name and then find the matching tables rows
-      val tableRows = questionCodes[it.questionCode]
-
-
-    }
-
-
-    TODO("Not yet implemented")
-  }
-
 
   private fun prepopulateQuestion(
     episode: AssessmentEpisodeEntity,
@@ -179,7 +161,7 @@ class EpisodeService(
   private fun answerFormat(source: DocumentContext, question: ExternalSourceQuestionSchemaDto): List<String>? {
     try {
       return when (question.fieldType) {
-        "varchar" -> listOf(source.read<Object>(question.jsonPathField).toString())
+        "varchar" -> listOf(source.read<Any>(question.jsonPathField).toString())
         "date" -> listOf(
           (source.read<JSONArray>(question.jsonPathField).filterNotNull() as List<String>).first().toString().split('T')[0]
         )
@@ -214,4 +196,103 @@ class EpisodeService(
       }
     }
   }
+
+  private fun tableFormat(source: DocumentContext, question: ExternalSourceQuestionSchemaDto, childQuestions: List<ExternalSourceQuestionSchemaDto>): TableRows {
+    return when (question.fieldType) {
+      "table" -> buildTable(source, question, childQuestions)
+      else -> return emptyList<TableRow>() as TableRows
+    }
+  }
+
+  fun buildTable(
+    source: DocumentContext,
+    parentQuestion: ExternalSourceQuestionSchemaDto,
+    childQuestions: List<ExternalSourceQuestionSchemaDto>
+  ): TableRows {
+    val contactDetails = source.read<JSONArray>(parentQuestion.jsonPathField)
+
+    val tableRows = contactDetails.map {
+      val contactDetail = it as Map<String, Any>
+      val contactDetailJson = JSONObject(contactDetail).toJSONString()
+      val contactDetailContext = JsonPath.parse(contactDetailJson)
+
+      childQuestions.map { childQuestion ->
+        val value = contactDetailContext.read<Any>(childQuestion.jsonPathField)
+        childQuestion.questionCode to listOf(value)
+      }.toMap()
+    }
+    return tableRows as TableRows
+  }
+
+
+
+
+//  private fun prepopulateFromSource(
+//    episode: AssessmentEpisodeEntity,
+//    sourceName: String?,
+//    questions: List<ExternalSourceQuestionSchemaDto>
+//  ) {
+//    // filter (partition) endpoints for tables and table rows
+//    val (tableQuestions, notTableQuestions) = questions.partition{ it.fieldType == "table" || it.fieldType == "table_question" }
+//
+//    val questionsByExternalSourceEndpoint = notTableQuestions.groupBy { it.externalSourceEndpoint }
+//    questionsByExternalSourceEndpoint.forEach {
+//        it -> val source = loadSource(episode, sourceName, it.key) ?: return
+//
+//      it.value.forEach { question ->
+//        val childQuestions = getChildQuestions(question.questionCode, it.value)
+//        prepopulateQuestion(episode, source, question, childQuestions)
+//      }
+//    }
+//    //TODO prepopulate tables
+//    prepopulateQuestionTables(episode, sourceName, tableQuestions)
+//  }
+//
+//  private fun prepopulateQuestionTables(
+//    episode: AssessmentEpisodeEntity,
+//    sourceName: String?,
+//    tableQuestions: List<ExternalSourceQuestionSchemaDto>
+//  ) {
+//    val (tables, questions) = tableQuestions.partition{ it.fieldType == "table" }
+//
+//    val gpQuestionCode = "gp_details"
+////    val gpTable = tables.filter { it.questionCode == gpQuestionCode }[0]
+//    val gpJson = loadSource(episode, sourceName, gpQuestionCode) ?: return
+//
+//    questions.filter { it.parentQuestionCode == gpQuestionCode }
+//      .forEach { question ->       }
+//
+//
+//
+//      table -> val json = loadSource(episode, sourceName, table.questionCode) ?: return
+//      val tableRows = questionCodes[table.questionCode]
+//
+//    TODO("Not yet implemented")
+//  }
+
+
+  //
+//  fun buildTable(
+//    source: DocumentContext,
+//    question: ExternalSourceQuestionSchemaDto,
+//    childQuestions: List<ExternalSourceQuestionSchemaDto>
+//  ) : List<String>? {
+//    val contactDetails = source.read<JSONArray>(question.jsonPathField)
+//       contactDetails.size
+//
+////    val contactDetailJson = contactDetails
+//
+//    val pathFields = childQuestions.map { it ->
+//      it.jsonPathField
+//    }
+//
+//    pathFields.map {
+//      val detailObject = contactDetails[0] as JSONObject
+//      detailObject.
+//    }
+////    val  = childQuestions.map { it ->
+////      source.read<JSONObject>(it.externalSource)
+////    }
+//    return listOf()
+//  }
 }
