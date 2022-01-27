@@ -13,6 +13,8 @@ import uk.gov.justice.digital.assessments.api.GroupQuestionDto
 import uk.gov.justice.digital.assessments.api.TableQuestionDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.TableRow
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.TableRows
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.CloneAssessmentExcludedQuestionsRepository
 import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
@@ -36,7 +38,9 @@ class EpisodeService(
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
     val cloneEpisodeOffset: Long = 55
-    private val tableFieldTypes: List<String> = listOf("table", "table_question")
+    val fieldTypeTable = "table"
+    val fieldTypeTableQuestion = "table_question"
+    val tableFieldTypes: List<String> = listOf(fieldTypeTable, fieldTypeTableQuestion)
 
   }
 
@@ -118,12 +122,23 @@ class EpisodeService(
   private fun prepopulateQuestion(
     episode: AssessmentEpisodeEntity,
     source: DocumentContext,
-    question: ExternalSourceQuestionSchemaDto
+    question: ExternalSourceQuestionSchemaDto,
+    childQuestions: List<ExternalSourceQuestionSchemaDto>
   ) {
+    if (!tableFieldTypes.contains(question.fieldType)) {
+      val answer = answerFormat(source, question).orEmpty()
+      episode.answers.let {
+        it[question.questionCode] = it[question.questionCode].orEmpty().plus(answer).toSet().toList()
+      }
+    } else if (fieldTypeTable.equals(question.fieldType)) {
+      val tableRows = tableFormat(source, question, childQuestions)
+      episode.tables.put(question.questionCode, tableRows)
+    }
+  }
 
-    val answer = answerFormat(source, question).orEmpty()
-    episode.answers.let {
-      it[question.questionCode] = it[question.questionCode].orEmpty().plus(answer).toSet().toList()
+  private fun getChildQuestions(parentQuestionCode: String, questions: List<ExternalSourceQuestionSchemaDto>): List<ExternalSourceQuestionSchemaDto> {
+    return questions.filter {
+      it.parentQuestionCode.equals(parentQuestionCode)
     }
   }
 
@@ -200,7 +215,7 @@ class EpisodeService(
   private fun tableFormat(source: DocumentContext, question: ExternalSourceQuestionSchemaDto, childQuestions: List<ExternalSourceQuestionSchemaDto>): TableRows {
     return when (question.fieldType) {
       "table" -> buildTable(source, question, childQuestions)
-      else -> return emptyList<TableRow>() as TableRows
+      else -> return mutableListOf<TableRow>() as TableRows
     }
   }
 
@@ -223,76 +238,4 @@ class EpisodeService(
     }
     return tableRows as TableRows
   }
-
-
-
-
-//  private fun prepopulateFromSource(
-//    episode: AssessmentEpisodeEntity,
-//    sourceName: String?,
-//    questions: List<ExternalSourceQuestionSchemaDto>
-//  ) {
-//    // filter (partition) endpoints for tables and table rows
-//    val (tableQuestions, notTableQuestions) = questions.partition{ it.fieldType == "table" || it.fieldType == "table_question" }
-//
-//    val questionsByExternalSourceEndpoint = notTableQuestions.groupBy { it.externalSourceEndpoint }
-//    questionsByExternalSourceEndpoint.forEach {
-//        it -> val source = loadSource(episode, sourceName, it.key) ?: return
-//
-//      it.value.forEach { question ->
-//        val childQuestions = getChildQuestions(question.questionCode, it.value)
-//        prepopulateQuestion(episode, source, question, childQuestions)
-//      }
-//    }
-//    //TODO prepopulate tables
-//    prepopulateQuestionTables(episode, sourceName, tableQuestions)
-//  }
-//
-//  private fun prepopulateQuestionTables(
-//    episode: AssessmentEpisodeEntity,
-//    sourceName: String?,
-//    tableQuestions: List<ExternalSourceQuestionSchemaDto>
-//  ) {
-//    val (tables, questions) = tableQuestions.partition{ it.fieldType == "table" }
-//
-//    val gpQuestionCode = "gp_details"
-////    val gpTable = tables.filter { it.questionCode == gpQuestionCode }[0]
-//    val gpJson = loadSource(episode, sourceName, gpQuestionCode) ?: return
-//
-//    questions.filter { it.parentQuestionCode == gpQuestionCode }
-//      .forEach { question ->       }
-//
-//
-//
-//      table -> val json = loadSource(episode, sourceName, table.questionCode) ?: return
-//      val tableRows = questionCodes[table.questionCode]
-//
-//    TODO("Not yet implemented")
-//  }
-
-
-  //
-//  fun buildTable(
-//    source: DocumentContext,
-//    question: ExternalSourceQuestionSchemaDto,
-//    childQuestions: List<ExternalSourceQuestionSchemaDto>
-//  ) : List<String>? {
-//    val contactDetails = source.read<JSONArray>(question.jsonPathField)
-//       contactDetails.size
-//
-////    val contactDetailJson = contactDetails
-//
-//    val pathFields = childQuestions.map { it ->
-//      it.jsonPathField
-//    }
-//
-//    pathFields.map {
-//      val detailObject = contactDetails[0] as JSONObject
-//      detailObject.
-//    }
-////    val  = childQuestions.map { it ->
-////      source.read<JSONObject>(it.externalSource)
-////    }
-//    return listOf()
-//  }
 }

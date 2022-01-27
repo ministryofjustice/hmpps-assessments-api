@@ -251,17 +251,6 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(answers?.get("emergency_contact_mobile_phone_number")).isEqualTo(listOf("07333567890"))
       assertThat(answers?.get("emergency_contact_phone_number")).isEqualTo(listOf("0133456789"))
 
-      assertThat(answers?.get("gp_first_name")).isEqualTo(listOf("Nick"))
-      assertThat(answers?.get("gp_family_name")).isEqualTo(listOf("Riviera"))
-      assertThat(answers?.get("gp_address_building_name")).isEqualTo(listOf("The practice"))
-      assertThat(answers?.get("gp_address_house_number")).isEqualTo(listOf("38"))
-      assertThat(answers?.get("gp_address_street_name")).isEqualTo(listOf("East Street"))
-      assertThat(answers?.get("gp_address_district")).isEqualTo(listOf("East City Centre"))
-      assertThat(answers?.get("gp_address_town_or_city")).isEqualTo(listOf("Bristol"))
-      assertThat(answers?.get("gp_address_county")).isEqualTo(listOf("East London"))
-      assertThat(answers?.get("gp_address_postcode")).isEqualTo(listOf("E5 7BS"))
-      assertThat(answers?.get("gp_phone_number")).isEqualTo(listOf("0233456789"))
-
       assertThat(answers?.get("allergies")).isEqualTo(listOf("YES"))
       assertThat(answers?.get("allergies_details")).isEqualTo(listOf("Nut Allergy"))
       assertThat(answers?.get("pregnancy")).isEqualTo(listOf("NO"))
@@ -270,6 +259,20 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(answers?.get("caring_commitments_details")).isEqualTo(listOf("Primary Carer"))
       assertThat(answers?.get("reading_writing_difficulties")).isEqualTo(listOf("YES"))
       assertThat(answers?.get("reading_writing_difficulties_details")).isEqualTo(listOf("Cannot read"))
+
+      val tables = assessment.episodes?.first()?.tables
+      val gpDetailsTable = tables.get("gp_details")?.get(0)
+
+      assertThat(gpDetailsTable?.get("gp_first_name")).isEqualTo(listOf("Nick"))
+      assertThat(gpDetailsTable?.get("gp_family_name")).isEqualTo(listOf("Riviera"))
+      assertThat(gpDetailsTable?.get("gp_address_building_name")).isEqualTo(listOf("The practice"))
+      assertThat(gpDetailsTable?.get("gp_address_house_number")).isEqualTo(listOf("38"))
+      assertThat(gpDetailsTable?.get("gp_address_street_name")).isEqualTo(listOf("East Street"))
+      assertThat(gpDetailsTable?.get("gp_address_district")).isEqualTo(listOf("East City Centre"))
+      assertThat(gpDetailsTable?.get("gp_address_town_or_city")).isEqualTo(listOf("Bristol"))
+      assertThat(gpDetailsTable?.get("gp_address_county")).isEqualTo(listOf("East London"))
+      assertThat(gpDetailsTable?.get("gp_address_postcode")).isEqualTo(listOf("E5 7BS"))
+      assertThat(gpDetailsTable?.get("gp_phone_number")).isEqualTo(listOf("0233456789"))
     }
 
     @Test
