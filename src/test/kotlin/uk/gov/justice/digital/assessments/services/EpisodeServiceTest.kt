@@ -284,7 +284,6 @@ class EpisodeServiceTest {
     assertThat(result).doesNotContainKey("question_4")
   }
 
-
   @Test
   fun `test`() {
 
@@ -381,8 +380,7 @@ class EpisodeServiceTest {
       parentQuestionCode = "gp_details"
     )
 
-    episodeService.buildTable(docContext,question, listOf(childQuestionFirstName, childQuestionFamilyName))
-
+    episodeService.buildTable(docContext, question, listOf(childQuestionFirstName, childQuestionFamilyName))
   }
 
   @Test

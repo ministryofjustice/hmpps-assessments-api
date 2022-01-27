@@ -5,7 +5,6 @@ import com.jayway.jsonpath.JsonPath
 import net.minidev.json.JSONArray
 import net.minidev.json.JSONObject
 import org.slf4j.Logger
-
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -41,7 +40,6 @@ class EpisodeService(
     val fieldTypeTable = "table"
     val fieldTypeTableQuestion = "table_question"
     val tableFieldTypes: List<String> = listOf(fieldTypeTable, fieldTypeTableQuestion)
-
   }
 
   fun prepopulateFromExternalSources(
