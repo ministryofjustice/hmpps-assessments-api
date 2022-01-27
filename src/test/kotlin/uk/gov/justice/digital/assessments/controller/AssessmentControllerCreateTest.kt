@@ -289,6 +289,38 @@ class AssessmentControllerCreateTest : IntegrationTest() {
     }
 
     @Test
+    fun `creating a new UPW assessment from Delius only returns GPs where active flag is true`() {
+
+      val dto = CreateAssessmentDto(
+        crn = crn,
+        deliusEventId = eventID,
+        assessmentSchemaCode = AssessmentSchemaCode.UPW
+      )
+      val assessment = webTestClient.post().uri("/assessments")
+        .bodyValue(dto)
+        .header(RequestData.USER_AREA_HEADER_NAME, "WWS")
+        .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
+        .exchange()
+        .expectStatus().isOk
+        .expectBody<AssessmentDto>()
+        .returnResult()
+        .responseBody
+
+      val tables = assessment.episodes.first().tables
+      val gpDetails = tables["gp_details"]
+
+      val gpDetailsTable1 = gpDetails?.get(0)
+      assertThat(gpDetailsTable1?.get("gp_first_name")).isEqualTo(listOf("Nick"))
+      assertThat(gpDetailsTable1?.get("gp_family_name")).isEqualTo(listOf("Riviera"))
+
+      val gpDetailsTable2 = gpDetails?.get(1)
+      assertThat(gpDetailsTable2?.get("gp_first_name")).isEqualTo(listOf("Steve"))
+      assertThat(gpDetailsTable2?.get("gp_family_name")).isEqualTo(listOf("Wilson"))
+
+      assertThat(gpDetails).hasSize(2)
+    }
+
+      @Test
     fun `should pre-populate answers with the 'mapped' type`() {
 
       val dto = CreateAssessmentDto(

@@ -447,7 +447,7 @@ class EpisodeServiceTest {
   }
 ]"""
     val docContext: DocumentContext = JsonPath.parse(json)
-    val question: ExternalSourceQuestionSchemaDto = ExternalSourceQuestionSchemaDto(
+    val question = ExternalSourceQuestionSchemaDto(
       questionCode = "gp_details",
       externalSource = "Delius",
       jsonPathField = "\$[?(@.relationshipType.code=='RT02')]",
@@ -457,7 +457,7 @@ class EpisodeServiceTest {
       ifEmpty = false,
     )
 
-    val childQuestionFirstName: ExternalSourceQuestionSchemaDto = ExternalSourceQuestionSchemaDto(
+    val childQuestionFirstName = ExternalSourceQuestionSchemaDto(
       questionCode = "gp_first_name",
       externalSource = "Delius",
       jsonPathField = "firstName",
@@ -468,7 +468,7 @@ class EpisodeServiceTest {
       parentQuestionCode = "gp_details"
     )
 
-    val childQuestionFamilyName: ExternalSourceQuestionSchemaDto = ExternalSourceQuestionSchemaDto(
+    val childQuestionFamilyName = ExternalSourceQuestionSchemaDto(
       questionCode = "gp_family_name",
       externalSource = "Delius",
       jsonPathField = "surname",
@@ -479,7 +479,7 @@ class EpisodeServiceTest {
       parentQuestionCode = "gp_details"
     )
 
-    val childQuestionGPAddressPostcode: ExternalSourceQuestionSchemaDto = ExternalSourceQuestionSchemaDto(
+    val childQuestionGPAddressPostcode = ExternalSourceQuestionSchemaDto(
       questionCode = "gp_address_postcode",
       externalSource = "Delius",
       jsonPathField = "address.postcode",

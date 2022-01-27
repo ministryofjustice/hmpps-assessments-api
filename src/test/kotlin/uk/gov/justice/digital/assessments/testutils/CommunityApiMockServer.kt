@@ -1075,5 +1075,34 @@ private val personalContact = """[
       "telephoneNumber": "0776 666 6666"
     },
     "isActive": true
+  },
+  {
+    "personalContactId": 2500123992,
+    "relationship": "Family Doctor",
+    "startDate": "2021-10-21T00:00:00",
+    "title": "Dr",
+    "firstName": "Henry",
+    "surname": "Jekyll",
+    "mobileNumber": "0779 786 5666",
+    "emailAddress": "Ed@gp.com",
+    "notes": "ARN Mapping Value testing - 28/10/2022 - ARN-770",
+    "gender": "Male",
+    "relationshipType": {
+      "code": "RT02",
+      "description": "GP"
+    },
+    "createdDatetime": "2021-10-21T15:02:53",
+    "lastUpdatedDatetime": "2021-10-21T15:02:53",
+    "address": {
+      "addressNumber": "77",
+      "buildingName": "The Building",
+      "streetName": "Some Street",
+      "district": "Some City Centre",
+      "town": "London",
+      "county": "Essex",
+      "postcode": "NW10 1EP",
+      "telephoneNumber": "0776 666 6666"
+    },
+    "isActive": false
   }
 ]"""
