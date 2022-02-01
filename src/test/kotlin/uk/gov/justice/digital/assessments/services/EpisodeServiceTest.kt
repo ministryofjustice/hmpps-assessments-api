@@ -45,7 +45,6 @@ class EpisodeServiceTest {
   )
 
   private lateinit var newEpisode: AssessmentEpisodeEntity
-  private lateinit var previousEpisodes: List<AssessmentEpisodeEntity>
 
   private val author = AuthorEntity(
     userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"
@@ -79,7 +78,7 @@ class EpisodeServiceTest {
       tablerow1
     )
 
-    var table1: Tables = mutableMapOf(
+    val table1: Tables = mutableMapOf(
       "table_1" to tableRows1
     )
 
@@ -145,7 +144,7 @@ class EpisodeServiceTest {
       tablerow1
     )
 
-    var table1: Tables = mutableMapOf(
+    val table1: Tables = mutableMapOf(
       "table_1" to tableRows1
     )
 
@@ -188,7 +187,7 @@ class EpisodeServiceTest {
       expectedTableRow
     )
 
-    var expectedTable1: Tables = mutableMapOf(
+    val expectedTable1: Tables = mutableMapOf(
       "table_1" to expectedTableRows
     )
 
@@ -285,7 +284,7 @@ class EpisodeServiceTest {
   }
 
   @Test
-  fun `test`() {
+  fun `test structured data in answers`() {
 
     val json = """[
   {
@@ -380,7 +379,7 @@ class EpisodeServiceTest {
       parentQuestionCode = "gp_details"
     )
 
-    episodeService.buildTable(docContext, question, listOf(childQuestionFirstName, childQuestionFamilyName))
+    episodeService.getStructuredAnswersFromSourceData(docContext, question, listOf(childQuestionFirstName, childQuestionFamilyName))
   }
 
   @Test
@@ -491,24 +490,8 @@ class EpisodeServiceTest {
     )
 
     val result =
-      episodeService.buildTable(docContext, question, listOf(childQuestionFirstName, childQuestionFamilyName, childQuestionGPAddressPostcode))
+      episodeService.getStructuredAnswersFromSourceData(docContext, question, listOf(childQuestionFirstName, childQuestionFamilyName, childQuestionGPAddressPostcode))
 
-    val expectedTableRow1: TableRow = mutableMapOf(
-      "gp_first_name" to listOf("UPW"),
-      "gp_family_name" to listOf("TESTING"),
-      "gp_address_postcode" to listOf("SW1H 9AJ")
-    )
-
-    val expectedTableRow2: TableRow = mutableMapOf(
-      "gp_first_name" to listOf("Charles"),
-      "gp_family_name" to listOf("Europe"),
-      "gp_address_postcode" to listOf("S3 7DQ")
-    )
-
-    val expectedTableRows: TableRows = mutableListOf(
-      expectedTableRow1, expectedTableRow2
-    )
-
-    assertThat(result).isEqualTo(expectedTableRows)
+    assertThat(result).contains("{\"gp_first_name\":[\"UPW\"],\"gp_family_name\":[\"TESTING\"],\"gp_address_postcode\":[\"SW1H 9AJ\"]}", "{\"gp_first_name\":[\"Charles\"],\"gp_family_name\":[\"Europe\"],\"gp_address_postcode\":[\"S3 7DQ\"]}")
   }
 }

@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.assessments.controller
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -35,6 +37,8 @@ import java.util.UUID
 )
 @AutoConfigureWebTestClient(timeout = "6000000")
 class AssessmentControllerCreateTest : IntegrationTest() {
+
+  private val objectMapper = ObjectMapper()
 
   @Nested
   @DisplayName("Creating assessments from court")
@@ -195,31 +199,31 @@ class AssessmentControllerCreateTest : IntegrationTest() {
 
       assertThat(assessment?.assessmentUuid).isNotNull
       assertThat(assessment?.episodes).hasSize(1)
-      val answers = assessment.episodes?.first()?.answers
-      assertThat(answers?.get("first_name")).isEqualTo(listOf("John"))
-      assertThat(answers?.get("first_name_aliases")).isEqualTo(listOf("John", "Jonny"))
-      assertThat(answers?.get("family_name")).isEqualTo(listOf("Smith"))
-      assertThat(answers?.get("family_name_aliases")).isEqualTo(listOf("Smithy"))
-      assertThat(answers?.get("dob")).isEqualTo(listOf("1979-08-18"))
-      assertThat(answers?.get("dob_aliases")).isEqualTo(listOf("1979-09-18"))
-      assertThat(answers?.get("crn")).isEqualTo(listOf("DX5678A"))
-      assertThat(answers?.get("pnc")).isEqualTo(listOf("A/1234560BA"))
-      assertThat(answers?.get("ethnicity")).isEqualTo(listOf("Asian"))
-      assertThat(answers?.get("gender")).isEqualTo(listOf("MALE"))
-      assertThat(answers?.get("gender_identity")).isEqualTo(listOf("NON_BINARY"))
-      assertThat(answers?.get("contact_email_addresses")).isEqualTo(listOf("address1@gmail.com", "address2@gmail.com"))
-      assertThat(answers?.get("contact_mobile_phone_number")).isEqualTo(listOf("1838893"))
-      assertThat(answers?.get("contact_phone_number")).isEqualTo(listOf("0123456999"))
-      assertThat(answers?.get("contact_address_building_name")).isEqualTo(listOf("HMPPS Digital Studio"))
-      assertThat(answers?.get("contact_address_house_number")).isEqualTo(listOf("32"))
-      assertThat(answers?.get("contact_address_street_name")).isEqualTo(listOf("Scotland Street"))
-      assertThat(answers?.get("contact_address_district")).isEqualTo(listOf("Sheffield City Centre"))
-      assertThat(answers?.get("contact_address_town_or_city")).isEqualTo(listOf("Sheffield"))
-      assertThat(answers?.get("contact_address_county")).isEqualTo(listOf("South Yorkshire"))
-      assertThat(answers?.get("contact_address_postcode")).isEqualTo(listOf("S3 7BS"))
+      val answers = assessment.episodes.first().answers
+      assertThat(answers["first_name"]).isEqualTo(listOf("John"))
+      assertThat(answers["first_name_aliases"]).isEqualTo(listOf("John", "Jonny"))
+      assertThat(answers["family_name"]).isEqualTo(listOf("Smith"))
+      assertThat(answers["family_name_aliases"]).isEqualTo(listOf("Smithy"))
+      assertThat(answers["dob"]).isEqualTo(listOf("1979-08-18"))
+      assertThat(answers["dob_aliases"]).isEqualTo(listOf("1979-09-18"))
+      assertThat(answers["crn"]).isEqualTo(listOf("DX5678A"))
+      assertThat(answers["pnc"]).isEqualTo(listOf("A/1234560BA"))
+      assertThat(answers["ethnicity"]).isEqualTo(listOf("Asian"))
+      assertThat(answers["gender"]).isEqualTo(listOf("MALE"))
+      assertThat(answers["gender_identity"]).isEqualTo(listOf("NON_BINARY"))
+      assertThat(answers["contact_email_addresses"]).isEqualTo(listOf("address1@gmail.com", "address2@gmail.com"))
+      assertThat(answers["contact_mobile_phone_number"]).isEqualTo(listOf("1838893"))
+      assertThat(answers["contact_phone_number"]).isEqualTo(listOf("0123456999"))
+      assertThat(answers["contact_address_building_name"]).isEqualTo(listOf("HMPPS Digital Studio"))
+      assertThat(answers["contact_address_house_number"]).isEqualTo(listOf("32"))
+      assertThat(answers["contact_address_street_name"]).isEqualTo(listOf("Scotland Street"))
+      assertThat(answers["contact_address_district"]).isEqualTo(listOf("Sheffield City Centre"))
+      assertThat(answers["contact_address_town_or_city"]).isEqualTo(listOf("Sheffield"))
+      assertThat(answers["contact_address_county"]).isEqualTo(listOf("South Yorkshire"))
+      assertThat(answers["contact_address_postcode"]).isEqualTo(listOf("S3 7BS"))
 
-      assertThat(answers?.get("physical_disability")).isEqualTo(listOf("D", "D02", "RM", "RC", "PC", "VI", "HD"))
-      assertThat(answers?.get("physical_disability_details")).isEqualTo(
+      assertThat(answers["physical_disability"]).isEqualTo(listOf("D", "D02", "RM", "RC", "PC", "VI", "HD"))
+      assertThat(answers["physical_disability_details"]).isEqualTo(
         listOf(
           "general health",
           "physical health concerns",
@@ -230,62 +234,62 @@ class AssessmentControllerCreateTest : IntegrationTest() {
           "hearing difficulties"
         )
       )
-      assertThat(answers?.get("learning_disability")).isEqualTo(listOf("LA"))
-      assertThat(answers?.get("learning_disability_details")).isEqualTo(listOf("learning disability"))
-      assertThat(answers?.get("learning_difficulty")).isEqualTo(listOf("LD"))
-      assertThat(answers?.get("learning_difficulty_details")).isEqualTo(listOf("learning difficulties"))
-      assertThat(answers?.get("mental_health_condition")).isEqualTo(listOf("D", "D01", "MI"))
-      assertThat(answers?.get("mental_health_condition_details")).isEqualTo(
+      assertThat(answers["learning_disability"]).isEqualTo(listOf("LA"))
+      assertThat(answers["learning_disability_details"]).isEqualTo(listOf("learning disability"))
+      assertThat(answers["learning_difficulty"]).isEqualTo(listOf("LD"))
+      assertThat(answers["learning_difficulty_details"]).isEqualTo(listOf("learning difficulties"))
+      assertThat(answers["mental_health_condition"]).isEqualTo(listOf("D", "D01", "MI"))
+      assertThat(answers["mental_health_condition_details"]).isEqualTo(
         listOf(
           "general health",
           "mental health",
           "mental illness"
         )
       )
-      assertThat(answers?.get("language")).isEqualTo(listOf("French"))
-      assertThat(answers?.get("requires_interpreter")).isEqualTo(listOf("true"))
+      assertThat(answers["language"]).isEqualTo(listOf("French"))
+      assertThat(answers["requires_interpreter"]).isEqualTo(listOf("true"))
 
-      assertThat(answers?.get("emergency_contact_first_name")).isEqualTo(listOf("Brian"))
-      assertThat(answers?.get("emergency_contact_family_name")).isEqualTo(listOf("Contact"))
-      assertThat(answers?.get("emergency_contact_relationship")).isEqualTo(listOf("Father"))
-      assertThat(answers?.get("emergency_contact_mobile_phone_number")).isEqualTo(listOf("07333567890"))
-      assertThat(answers?.get("emergency_contact_phone_number")).isEqualTo(listOf("0133456789"))
+      assertThat(answers["emergency_contact_first_name"]).isEqualTo(listOf("Brian"))
+      assertThat(answers["emergency_contact_family_name"]).isEqualTo(listOf("Contact"))
+      assertThat(answers["emergency_contact_relationship"]).isEqualTo(listOf("Father"))
+      assertThat(answers["emergency_contact_mobile_phone_number"]).isEqualTo(listOf("07333567890"))
+      assertThat(answers["emergency_contact_phone_number"]).isEqualTo(listOf("0133456789"))
 
-      assertThat(answers?.get("allergies")).isEqualTo(listOf("YES"))
-      assertThat(answers?.get("allergies_details")).isEqualTo(listOf("Nut Allergy"))
-      assertThat(answers?.get("pregnancy")).isEqualTo(listOf("NO"))
-      assertThat(answers?.get("pregnancy_pregnant_details")).isEqualTo(emptyList<String>())
-      assertThat(answers?.get("caring_commitments")).isEqualTo(listOf("YES"))
-      assertThat(answers?.get("caring_commitments_details")).isEqualTo(listOf("Primary Carer"))
-      assertThat(answers?.get("reading_writing_difficulties")).isEqualTo(listOf("YES"))
-      assertThat(answers?.get("reading_writing_difficulties_details")).isEqualTo(listOf("Cannot read"))
+      assertThat(answers["allergies"]).isEqualTo(listOf("YES"))
+      assertThat(answers["allergies_details"]).isEqualTo(listOf("Nut Allergy"))
+      assertThat(answers["pregnancy"]).isEqualTo(listOf("NO"))
+      assertThat(answers["pregnancy_pregnant_details"]).isEqualTo(emptyList<String>())
+      assertThat(answers["caring_commitments"]).isEqualTo(listOf("YES"))
+      assertThat(answers["caring_commitments_details"]).isEqualTo(listOf("Primary Carer"))
+      assertThat(answers["reading_writing_difficulties"]).isEqualTo(listOf("YES"))
+      assertThat(answers["reading_writing_difficulties_details"]).isEqualTo(listOf("Cannot read"))
 
-      val tables = assessment.episodes?.first()?.tables
-      val gpDetailsTable1 = tables.get("gp_details")?.get(0)
+      val gpDetails = answers["gp_details"]
+      val gpJson1 = objectMapper.readValue<Map<String, List<String>>>(gpDetails?.get(0)!!)
+      
+      assertThat(gpJson1["gp_first_name"]).isEqualTo(listOf("Nick"))
+      assertThat(gpJson1["gp_family_name"]).isEqualTo(listOf("Riviera"))
+      assertThat(gpJson1["gp_address_building_name"]).isEqualTo(listOf("The practice"))
+      assertThat(gpJson1["gp_address_house_number"]).isEqualTo(listOf("38"))
+      assertThat(gpJson1["gp_address_street_name"]).isEqualTo(listOf("East Street"))
+      assertThat(gpJson1["gp_address_district"]).isEqualTo(listOf("East City Centre"))
+      assertThat(gpJson1["gp_address_town_or_city"]).isEqualTo(listOf("Bristol"))
+      assertThat(gpJson1["gp_address_county"]).isEqualTo(listOf("East London"))
+      assertThat(gpJson1["gp_address_postcode"]).isEqualTo(listOf("E5 7BS"))
+      assertThat(gpJson1["gp_phone_number"]).isEqualTo(listOf("0233456789"))
 
-      assertThat(gpDetailsTable1?.get("gp_first_name")).isEqualTo(listOf("Nick"))
-      assertThat(gpDetailsTable1?.get("gp_family_name")).isEqualTo(listOf("Riviera"))
-      assertThat(gpDetailsTable1?.get("gp_address_building_name")).isEqualTo(listOf("The practice"))
-      assertThat(gpDetailsTable1?.get("gp_address_house_number")).isEqualTo(listOf("38"))
-      assertThat(gpDetailsTable1?.get("gp_address_street_name")).isEqualTo(listOf("East Street"))
-      assertThat(gpDetailsTable1?.get("gp_address_district")).isEqualTo(listOf("East City Centre"))
-      assertThat(gpDetailsTable1?.get("gp_address_town_or_city")).isEqualTo(listOf("Bristol"))
-      assertThat(gpDetailsTable1?.get("gp_address_county")).isEqualTo(listOf("East London"))
-      assertThat(gpDetailsTable1?.get("gp_address_postcode")).isEqualTo(listOf("E5 7BS"))
-      assertThat(gpDetailsTable1?.get("gp_phone_number")).isEqualTo(listOf("0233456789"))
+      val gpJson2 = objectMapper.readValue<Map<String, List<String>>>(gpDetails[1])
 
-      val gpDetailsTable2 = tables.get("gp_details")?.get(1)
-
-      assertThat(gpDetailsTable2?.get("gp_first_name")).isEqualTo(listOf("Steve"))
-      assertThat(gpDetailsTable2?.get("gp_family_name")).isEqualTo(listOf("Wilson"))
-      assertThat(gpDetailsTable2?.get("gp_address_building_name")).isEqualTo(listOf("The Building"))
-      assertThat(gpDetailsTable2?.get("gp_address_house_number")).isEqualTo(listOf("77"))
-      assertThat(gpDetailsTable2?.get("gp_address_street_name")).isEqualTo(listOf("Some Street"))
-      assertThat(gpDetailsTable2?.get("gp_address_district")).isEqualTo(listOf("Some City Centre"))
-      assertThat(gpDetailsTable2?.get("gp_address_town_or_city")).isEqualTo(listOf("London"))
-      assertThat(gpDetailsTable2?.get("gp_address_county")).isEqualTo(listOf("Essex"))
-      assertThat(gpDetailsTable2?.get("gp_address_postcode")).isEqualTo(listOf("NW10 1EP"))
-      assertThat(gpDetailsTable2?.get("gp_phone_number")).isEqualTo(listOf("0776 666 6666"))
+      assertThat(gpJson2["gp_first_name"]).isEqualTo(listOf("Steve"))
+      assertThat(gpJson2["gp_family_name"]).isEqualTo(listOf("Wilson"))
+      assertThat(gpJson2["gp_address_building_name"]).isEqualTo(listOf("The Building"))
+      assertThat(gpJson2["gp_address_house_number"]).isEqualTo(listOf("77"))
+      assertThat(gpJson2["gp_address_street_name"]).isEqualTo(listOf("Some Street"))
+      assertThat(gpJson2["gp_address_district"]).isEqualTo(listOf("Some City Centre"))
+      assertThat(gpJson2["gp_address_town_or_city"]).isEqualTo(listOf("London"))
+      assertThat(gpJson2["gp_address_county"]).isEqualTo(listOf("Essex"))
+      assertThat(gpJson2["gp_address_postcode"]).isEqualTo(listOf("NW10 1EP"))
+      assertThat(gpJson2["gp_phone_number"]).isEqualTo(listOf("0776 666 6666"))
     }
 
     @Test
@@ -306,16 +310,16 @@ class AssessmentControllerCreateTest : IntegrationTest() {
         .returnResult()
         .responseBody
 
-      val tables = assessment.episodes.first().tables
-      val gpDetails = tables["gp_details"]
+      val answers = assessment.episodes.first().answers
+      val gpDetails = answers["gp_details"]
 
-      val gpDetailsTable1 = gpDetails?.get(0)
-      assertThat(gpDetailsTable1?.get("gp_first_name")).isEqualTo(listOf("Nick"))
-      assertThat(gpDetailsTable1?.get("gp_family_name")).isEqualTo(listOf("Riviera"))
+      val gpJson1 = objectMapper.readValue<Map<String, List<String>>>(gpDetails?.get(0)!!)
+      assertThat(gpJson1["gp_first_name"]).isEqualTo(listOf("Nick"))
+      assertThat(gpJson1["gp_family_name"]).isEqualTo(listOf("Riviera"))
 
-      val gpDetailsTable2 = gpDetails?.get(1)
-      assertThat(gpDetailsTable2?.get("gp_first_name")).isEqualTo(listOf("Steve"))
-      assertThat(gpDetailsTable2?.get("gp_family_name")).isEqualTo(listOf("Wilson"))
+      val gpJson2 = objectMapper.readValue<Map<String, List<String>>>(gpDetails[1])
+      assertThat(gpJson2["gp_first_name"]).isEqualTo(listOf("Steve"))
+      assertThat(gpJson2["gp_family_name"]).isEqualTo(listOf("Wilson"))
 
       assertThat(gpDetails).hasSize(2)
     }
@@ -340,9 +344,9 @@ class AssessmentControllerCreateTest : IntegrationTest() {
 
       assertThat(assessment?.assessmentUuid).isNotNull
       assertThat(assessment?.episodes).hasSize(1)
-      val answers = assessment.episodes?.first()?.answers
-      assertThat(answers?.get("pregnancy")).isEqualTo(listOf("PREGNANT"))
-      assertThat(answers?.get("pregnancy_pregnant_details")).isEqualTo(listOf("Some notes"))
+      val answers = assessment.episodes.first().answers
+      assertThat(answers["pregnancy"]).isEqualTo(listOf("PREGNANT"))
+      assertThat(answers["pregnancy_pregnant_details"]).isEqualTo(listOf("Some notes"))
     }
 
     @Test
@@ -365,10 +369,10 @@ class AssessmentControllerCreateTest : IntegrationTest() {
 
       assertThat(assessment?.assessmentUuid).isNotNull
       assertThat(assessment?.episodes).hasSize(1)
-      val answers = assessment.episodes?.first()?.answers
-      assertThat(answers?.get("pregnancy")).isEqualTo(listOf("NO"))
-      assertThat(answers?.get("pregnancy_pregnant_details")).isEqualTo(emptyList<String>())
-      assertThat(answers?.get("pregnancy_recently_given_birth_details")).isEqualTo(emptyList<String>())
+      val answers = assessment.episodes.first().answers
+      assertThat(answers["pregnancy"]).isEqualTo(listOf("NO"))
+      assertThat(answers["pregnancy_pregnant_details"]).isEqualTo(emptyList<String>())
+      assertThat(answers["pregnancy_recently_given_birth_details"]).isEqualTo(emptyList<String>())
     }
 
     @Test
