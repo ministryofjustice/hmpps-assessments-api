@@ -239,7 +239,7 @@ class QuestionSchemaEntities(
         it.externalSourceEndpoint,
         it.mappedValue,
         it.ifEmpty,
-        it.parentQuestionCode
+        it.structuredQuestionCode
       )
     }
   }

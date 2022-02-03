@@ -266,7 +266,6 @@ class AssessmentControllerCreateTest : IntegrationTest() {
 
       val gpDetails = answers["gp_details"]
       val gpJson1 = objectMapper.readValue<Map<String, List<String>>>(gpDetails?.get(0)!!)
-      
       assertThat(gpJson1["gp_first_name"]).isEqualTo(listOf("Nick"))
       assertThat(gpJson1["gp_family_name"]).isEqualTo(listOf("Riviera"))
       assertThat(gpJson1["gp_address_building_name"]).isEqualTo(listOf("The practice"))
@@ -279,7 +278,6 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(gpJson1["gp_phone_number"]).isEqualTo(listOf("0233456789"))
 
       val gpJson2 = objectMapper.readValue<Map<String, List<String>>>(gpDetails[1])
-
       assertThat(gpJson2["gp_first_name"]).isEqualTo(listOf("Steve"))
       assertThat(gpJson2["gp_family_name"]).isEqualTo(listOf("Wilson"))
       assertThat(gpJson2["gp_address_building_name"]).isEqualTo(listOf("The Building"))
@@ -324,7 +322,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(gpDetails).hasSize(2)
     }
 
-      @Test
+    @Test
     fun `should pre-populate answers with the 'mapped' type`() {
 
       val dto = CreateAssessmentDto(

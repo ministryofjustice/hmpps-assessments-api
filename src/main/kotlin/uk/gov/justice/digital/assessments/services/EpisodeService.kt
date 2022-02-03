@@ -30,17 +30,18 @@ class EpisodeService(
   private val questionService: QuestionService,
   private val courtCaseRestClient: CourtCaseRestClient,
   private val communityApiRestClient: CommunityApiRestClient,
-
   private val assessmentSchemaService: AssessmentSchemaService,
   private val cloneAssessmentExcludedQuestionsRepository: CloneAssessmentExcludedQuestionsRepository
 ) {
 
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
-    const val cloneEpisodeOffset: Long = 55
-    private const val fieldTypeTable = "table"
-    private const val fieldTypeTableQuestion = "table_question"
-    val tableFieldTypes: List<String> = listOf(fieldTypeTable, fieldTypeTableQuestion)
+    private const val cloneEpisodeOffset: Long = 55
+
+    private const val STRUCTURE_FIELD_TYPE = "structure"
+    private const val STRUCTURED_ANSWER_FIELD_TYPE = "structuredAnswer"
+    private val structuredFieldTypes: List<String> = listOf(STRUCTURE_FIELD_TYPE, STRUCTURED_ANSWER_FIELD_TYPE)
+
     private val objectMapper: ObjectMapper = jacksonObjectMapper().registerModules(JavaTimeModule())
   }
 
@@ -104,7 +105,7 @@ class EpisodeService(
     sourceName: String?,
     questionSchemas: List<ExternalSourceQuestionSchemaDto>
   ) {
-    val (structuredQuestions, simpleQuestions)  = questionSchemas.partition { it.fieldType in tableFieldTypes  }
+    val (structuredDataQuestions, simpleQuestions) = questionSchemas.partition { it.fieldType in structuredFieldTypes }
 
     simpleQuestions.groupBy { it.externalSourceEndpoint }
       .forEach {
@@ -115,34 +116,34 @@ class EpisodeService(
         }
       }
 
-    structuredQuestions.groupBy { it.externalSourceEndpoint }
-      .forEach {
-        val sourceData = loadSource(episode, sourceName, it.key) ?: return
-
-        it.value.filter{ question -> question.fieldType == "table" }
-          .forEach { tableQuestion ->
-          val childQuestions = getChildQuestions(tableQuestion.questionCode, it.value)
-          episode.addAnswer(tableQuestion.questionCode, getStructuredAnswersFromSourceData(sourceData, tableQuestion, childQuestions))
-        }
+    structuredDataQuestions.groupBy { it.externalSourceEndpoint }
+      .forEach { (sourceEndpoint, allStructuredQuestions) ->
+        val sourceData = loadSource(episode, sourceName, sourceEndpoint) ?: return
+        allStructuredQuestions
+          .filter { it.fieldType == STRUCTURE_FIELD_TYPE }
+          .forEach { structure ->
+            val questions = filterQuestionsByStructureQuestionCode(structure.questionCode, allStructuredQuestions)
+            episode.addAnswer(structure.questionCode, getStructuredAnswersFromSourceData(sourceData, structure, questions))
+          }
       }
   }
 
   private fun getAnswersFromSourceData(source: DocumentContext, question: ExternalSourceQuestionSchemaDto): List<String> {
-      return answerFormat(source, question).orEmpty()
+    return answerFormat(source, question).orEmpty()
   }
 
   fun getStructuredAnswersFromSourceData(
     sourceData: DocumentContext,
-    questionSchema: ExternalSourceQuestionSchemaDto,
-    childQuestions: List<ExternalSourceQuestionSchemaDto>
+    structure: ExternalSourceQuestionSchemaDto,
+    questions: List<ExternalSourceQuestionSchemaDto>
   ): List<String> {
-    val answerData = sourceData.read<JSONArray>(questionSchema.jsonPathField)
-    return buildStructuredAnswers(childQuestions, answerData)
+    val answerData = sourceData.read<JSONArray>(structure.jsonPathField)
+    return buildStructuredAnswers(questions, answerData)
   }
 
-  private fun getChildQuestions(parentQuestionCode: String, questions: List<ExternalSourceQuestionSchemaDto>): List<ExternalSourceQuestionSchemaDto> {
+  private fun filterQuestionsByStructureQuestionCode(structure: String, questions: List<ExternalSourceQuestionSchemaDto>): List<ExternalSourceQuestionSchemaDto> {
     return questions.filter {
-      it.parentQuestionCode.equals(parentQuestionCode)
+      it.structuredQuestionCode.equals(structure)
     }
   }
 
@@ -217,17 +218,19 @@ class EpisodeService(
   }
 
   fun buildStructuredAnswers(
-    childQuestions: List<ExternalSourceQuestionSchemaDto>,
+    questions: List<ExternalSourceQuestionSchemaDto>,
     answerData: JSONArray
   ): List<String> {
     return answerData.map {
       val answersJson = JSONObject(it as Map<String, String>).toJSONString()
       val answersDetailContext = JsonPath.parse(answersJson)
-
-       objectMapper.writeValueAsString(childQuestions.associate { childQuestion ->
-        val value = answersDetailContext.read<Any>(childQuestion.jsonPathField)
-        childQuestion.questionCode to listOf(value)
-      })
+      objectMapper.writeValueAsString(
+        questions
+          .associate { childQuestion ->
+            val value = answersDetailContext.read<Any>(childQuestion.jsonPathField)
+            childQuestion.questionCode to listOf(value)
+          }
+      )
     }
   }
 }
