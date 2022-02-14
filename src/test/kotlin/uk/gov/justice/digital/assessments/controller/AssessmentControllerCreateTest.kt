@@ -35,7 +35,7 @@ import java.util.UUID
     executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
   )
 )
-@AutoConfigureWebTestClient(timeout = "6000000")
+@AutoConfigureWebTestClient
 class AssessmentControllerCreateTest : IntegrationTest() {
 
   private val objectMapper = ObjectMapper()
