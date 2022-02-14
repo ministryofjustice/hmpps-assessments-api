@@ -21,7 +21,7 @@ data class AssessmentDto(
   val subject: SubjectDto? = null,
 
   @Schema(description = "assessment episodes")
-  val episodes: Collection<AssessmentEpisodeDto>? = emptyList()
+  val episodes: Collection<AssessmentEpisodeDto> = emptyList()
 
 ) {
 

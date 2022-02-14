@@ -1,8 +1,12 @@
 package uk.gov.justice.digital.assessments.services
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.jayway.jsonpath.DocumentContext
 import com.jayway.jsonpath.JsonPath
 import net.minidev.json.JSONArray
+import net.minidev.json.JSONObject
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -26,14 +30,19 @@ class EpisodeService(
   private val questionService: QuestionService,
   private val courtCaseRestClient: CourtCaseRestClient,
   private val communityApiRestClient: CommunityApiRestClient,
-
   private val assessmentSchemaService: AssessmentSchemaService,
   private val cloneAssessmentExcludedQuestionsRepository: CloneAssessmentExcludedQuestionsRepository
 ) {
 
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
-    val cloneEpisodeOffset: Long = 55
+    private const val cloneEpisodeOffset: Long = 55
+
+    private const val STRUCTURE_FIELD_TYPE = "structure"
+    private const val STRUCTURED_ANSWER_FIELD_TYPE = "structuredAnswer"
+    private val structuredFieldTypes: List<String> = listOf(STRUCTURE_FIELD_TYPE, STRUCTURED_ANSWER_FIELD_TYPE)
+
+    private val objectMapper: ObjectMapper = jacksonObjectMapper().registerModules(JavaTimeModule())
   }
 
   fun prepopulateFromExternalSources(
@@ -70,12 +79,10 @@ class EpisodeService(
       .findAllByAssessmentSchemaCode(newEpisode.assessmentSchemaCode).map { it.questionCode }
 
     val questionCodes = questions.filterIsInstance<GroupQuestionDto>()
-      .map { it as GroupQuestionDto }
       .map { it.questionCode }
       .filterNot { ignoredQuestionCodes.contains(it) }
 
     val tableCodes = questions.filterIsInstance<TableQuestionDto>()
-      .map { it as TableQuestionDto }
       .map { it.tableCode }
       .filterNot { ignoredQuestionCodes.contains(it) }
 
@@ -96,28 +103,47 @@ class EpisodeService(
   private fun prepopulateFromSource(
     episode: AssessmentEpisodeEntity,
     sourceName: String?,
-    questions: List<ExternalSourceQuestionSchemaDto>
+    questionSchemas: List<ExternalSourceQuestionSchemaDto>
   ) {
+    val (structuredDataQuestions, simpleQuestions) = questionSchemas.partition { it.fieldType in structuredFieldTypes }
 
-    val questionsByExternalSourceEndpoint = questions.groupBy { it.externalSourceEndpoint }
+    simpleQuestions.groupBy { it.externalSourceEndpoint }
+      .forEach {
+        val sourceData = loadSource(episode, sourceName, it.key) ?: return
 
-    questionsByExternalSourceEndpoint.forEach { it ->
-      val source = loadSource(episode, sourceName, it.key) ?: return
-      it.value.forEach {
-        prepopulateQuestion(episode, source, it)
+        it.value.forEach { question ->
+          episode.addAnswer(question.questionCode, getAnswersFromSourceData(sourceData, question))
+        }
       }
-    }
+
+    structuredDataQuestions.groupBy { it.externalSourceEndpoint }
+      .forEach { (sourceEndpoint, allStructuredQuestions) ->
+        val sourceData = loadSource(episode, sourceName, sourceEndpoint) ?: return
+        allStructuredQuestions
+          .filter { it.fieldType == STRUCTURE_FIELD_TYPE }
+          .forEach { structure ->
+            val questions = filterQuestionsByStructureQuestionCode(structure.questionCode, allStructuredQuestions)
+            episode.addAnswer(structure.questionCode, getStructuredAnswersFromSourceData(sourceData, structure, questions))
+          }
+      }
   }
 
-  private fun prepopulateQuestion(
-    episode: AssessmentEpisodeEntity,
-    source: DocumentContext,
-    question: ExternalSourceQuestionSchemaDto
-  ) {
+  private fun getAnswersFromSourceData(source: DocumentContext, question: ExternalSourceQuestionSchemaDto): List<String> {
+    return answerFormat(source, question).orEmpty()
+  }
 
-    val answer = answerFormat(source, question).orEmpty()
-    episode.answers.let {
-      it[question.questionCode] = it[question.questionCode].orEmpty().plus(answer).toSet().toList()
+  fun getStructuredAnswersFromSourceData(
+    sourceData: DocumentContext,
+    structure: ExternalSourceQuestionSchemaDto,
+    questions: List<ExternalSourceQuestionSchemaDto>
+  ): List<String> {
+    val answerData = sourceData.read<JSONArray>(structure.jsonPathField)
+    return buildStructuredAnswers(questions, answerData)
+  }
+
+  private fun filterQuestionsByStructureQuestionCode(structure: String, questions: List<ExternalSourceQuestionSchemaDto>): List<ExternalSourceQuestionSchemaDto> {
+    return questions.filter {
+      it.structuredQuestionCode.equals(structure)
     }
   }
 
@@ -155,7 +181,7 @@ class EpisodeService(
   private fun answerFormat(source: DocumentContext, question: ExternalSourceQuestionSchemaDto): List<String>? {
     try {
       return when (question.fieldType) {
-        "varchar" -> listOf(source.read<Object>(question.jsonPathField).toString())
+        "varchar" -> listOf(source.read<Any>(question.jsonPathField).toString())
         "date" -> listOf(
           (source.read<JSONArray>(question.jsonPathField).filterNotNull() as List<String>).first().toString().split('T')[0]
         )
@@ -188,6 +214,23 @@ class EpisodeService(
         "yesno" -> null
         else -> null
       }
+    }
+  }
+
+  fun buildStructuredAnswers(
+    questions: List<ExternalSourceQuestionSchemaDto>,
+    answerData: JSONArray
+  ): List<String> {
+    return answerData.map {
+      val answersJson = JSONObject(it as Map<String, String>).toJSONString()
+      val answersDetailContext = JsonPath.parse(answersJson)
+      objectMapper.writeValueAsString(
+        questions
+          .associate { childQuestion ->
+            val value = answersDetailContext.read<Any>(childQuestion.jsonPathField)
+            childQuestion.questionCode to listOf(value)
+          }
+      )
     }
   }
 }

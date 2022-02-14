@@ -1,5 +1,7 @@
 package uk.gov.justice.digital.assessments.services
 
+import com.jayway.jsonpath.DocumentContext
+import com.jayway.jsonpath.JsonPath
 import io.mockk.every
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
@@ -21,6 +23,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.refdata.CloneAssessmentEx
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.CloneAssessmentExcludedQuestionsRepository
 import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
+import uk.gov.justice.digital.assessments.services.dto.ExternalSourceQuestionSchemaDto
 import java.time.LocalDateTime
 
 @ExtendWith(MockKExtension::class)
@@ -42,7 +45,6 @@ class EpisodeServiceTest {
   )
 
   private lateinit var newEpisode: AssessmentEpisodeEntity
-  private lateinit var previousEpisodes: List<AssessmentEpisodeEntity>
 
   private val author = AuthorEntity(
     userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"
@@ -76,7 +78,7 @@ class EpisodeServiceTest {
       tablerow1
     )
 
-    var table1: Tables = mutableMapOf(
+    val table1: Tables = mutableMapOf(
       "table_1" to tableRows1
     )
 
@@ -142,7 +144,7 @@ class EpisodeServiceTest {
       tablerow1
     )
 
-    var table1: Tables = mutableMapOf(
+    val table1: Tables = mutableMapOf(
       "table_1" to tableRows1
     )
 
@@ -185,7 +187,7 @@ class EpisodeServiceTest {
       expectedTableRow
     )
 
-    var expectedTable1: Tables = mutableMapOf(
+    val expectedTable1: Tables = mutableMapOf(
       "table_1" to expectedTableRows
     )
 
@@ -279,5 +281,112 @@ class EpisodeServiceTest {
     assertThat(result).containsExactlyInAnyOrderEntriesOf(expectedAnswers)
     assertThat(result).doesNotContainKey("question_3")
     assertThat(result).doesNotContainKey("question_4")
+  }
+
+  @Test
+  fun `get structured answers from Delius json for GP`() {
+    val personalContactJson = """[
+  {
+    "personalContactId": 2500125492,
+    "relationship": "Friend",
+    "startDate": "2020-12-15T00:00:00",
+    "title": "Mr",
+    "firstName": "UPW",
+    "surname": "TESTING",
+    "mobileNumber": "07123456789",
+    "emailAddress": "test@test.com",
+    "notes": "ARN Mapping Value testing - 28/10/2022 - ARN-631",
+    "gender": "Male",
+    "relationshipType": {
+      "code": "RT02",
+      "description": "Emergency Contact"
+    },
+    "createdDatetime": "2021-10-28T18:57:56",
+    "lastUpdatedDatetime": "2021-10-28T18:57:56",
+    "address": {
+      "addressNumber": "102",
+      "buildingName": "Petty France",
+      "streetName": "Central London",
+      "district": "London",
+      "town": "London",
+      "county": "London",
+      "postcode": "SW1H 9AJ",
+      "telephoneNumber": "020 2000 0000"
+    },
+    "isActive": true
+  },
+  {
+    "personalContactId": 2500125493,
+    "relationship": "Family Doctor",
+    "startDate": "2021-04-14T00:00:00",
+    "title": "Dr",
+    "firstName": "Charles",
+    "surname": "Europe",
+    "mobileNumber": "07123456789",
+    "emailAddress": "gp@gp.com",
+    "notes": "ARN Mapping Value testing - 28/10/2022 - ARN-631",
+    "gender": "Male",
+    "relationshipType": {
+      "code": "RT02",
+      "description": "GP"
+    },
+    "createdDatetime": "2021-10-28T19:02:03",
+    "lastUpdatedDatetime": "2021-10-28T19:02:03",
+    "address": {
+      "addressNumber": "32",
+      "buildingName": "MOJ Building",
+      "streetName": "Scotland Street",
+      "district": "Sheffield",
+      "town": "Sheffield",
+      "county": "South Yorkshire",
+      "postcode": "S3 7DQ",
+      "telephoneNumber": "020 2123 5678"
+    },
+    "isActive": true
+  }
+]"""
+
+    val docContext: DocumentContext = JsonPath.parse(personalContactJson)
+    val externalSourceGPObjectMapping = ExternalSourceQuestionSchemaDto(
+      questionCode = "gp_details",
+      externalSource = "Delius",
+      jsonPathField = "\$[?(@.relationshipType.code=='RT02')]",
+      fieldType = "structure",
+      ifEmpty = false,
+    )
+    val externalSourceGPQuestions = listOf(
+      ExternalSourceQuestionSchemaDto(
+        questionCode = "gp_first_name",
+        externalSource = "Delius",
+        jsonPathField = "firstName",
+        fieldType = "structuredAnswer",
+        ifEmpty = false,
+        structuredQuestionCode = "gp_details"
+      ),
+      ExternalSourceQuestionSchemaDto(
+        questionCode = "gp_family_name",
+        externalSource = "Delius",
+        jsonPathField = "surname",
+        fieldType = "structuredAnswer",
+        ifEmpty = false,
+        structuredQuestionCode = "gp_details"
+      ),
+      ExternalSourceQuestionSchemaDto(
+        questionCode = "gp_address_postcode",
+        externalSource = "Delius",
+        jsonPathField = "address.postcode",
+        fieldType = "structuredAnswer",
+        ifEmpty = false,
+        structuredQuestionCode = "gp_details"
+      )
+    )
+
+    val result =
+      episodeService.getStructuredAnswersFromSourceData(docContext, externalSourceGPObjectMapping, externalSourceGPQuestions)
+
+    assertThat(result).contains(
+      """{"gp_first_name":["UPW"],"gp_family_name":["TESTING"],"gp_address_postcode":["SW1H 9AJ"]}""".trimIndent(),
+      """{"gp_first_name":["Charles"],"gp_family_name":["Europe"],"gp_address_postcode":["S3 7DQ"]}"""
+    )
   }
 }
