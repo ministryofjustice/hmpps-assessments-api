@@ -1,0 +1,6 @@
+INSERT INTO external_source_question_mapping (external_source_question_mapping_uuid, question_code, assessment_schema_code, external_source, json_path_field, field_type, external_source_endpoint, mapped_value, if_empty, structured_question_code)
+VALUES
+    ('6b88833e-a698-4067-938e-b63e7aeb24bb', 'date_first_sanction', 'RSR', 'OASYS', '$.sections[?(@.section==''1'')].answers[?(@.question==''1.8.2'')].answer[0]', 'array','assessment/latest/$crn', null, false, null),
+    ('688619eb-9c85-44d0-8747-11213667a76a', 'age_first_conviction', 'RSR', 'OASYS', '$.sections[?(@.section==''1'')].answers[?(@.question==''1.8'')].answer[0]', 'array','assessment/latest/$crn', null, false, null),
+    ('6dd6bc54-a73d-47f2-8494-02b91821e788', 'total_sanctions', 'RSR', 'OASYS', '$.sections[?(@.section==''1'')].answers[?(@.question==''1.32'')].answer[0]', 'array','assessment/latest/$crn', null, false, null),
+    ('6046f8a2-eeb1-4aa9-959f-76f298f5a371', 'date_current_conviction', 'RSR', 'OASYS', '$.sections[?(@.section==''1'')].answers[?(@.question==''1.29'')].answer[0]', 'array','assessment/latest/$crn', null, false, null)

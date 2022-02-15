@@ -180,6 +180,33 @@ class AssessmentControllerCreateTest : IntegrationTest() {
     }
 
     @Test
+    fun `creating a new RSR assessment from crn returns assessment with prepopulated OASys answers`() {
+
+      val dto = CreateAssessmentDto(
+        crn = crn,
+        deliusEventId = eventID,
+        assessmentSchemaCode = AssessmentSchemaCode.RSR
+      )
+      val assessment = webTestClient.post().uri("/assessments")
+        .bodyValue(dto)
+        .header(RequestData.USER_AREA_HEADER_NAME, "WWS")
+        .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
+        .exchange()
+        .expectStatus().isOk
+        .expectBody<AssessmentDto>()
+        .returnResult()
+        .responseBody
+
+      val answers = assessment.episodes.first().answers
+      assertThat(answers).hasSize(4)
+
+      assertThat(answers["date_first_sanction"]).isEqualTo(listOf("25/12/2019"))
+      assertThat(answers["age_first_conviction"]).isEqualTo(listOf("21"))
+      assertThat(answers["total_sanctions"]).isEqualTo(emptyList<String>())
+      assertThat(answers["date_current_conviction"]).isEqualTo(emptyList<String>())
+    }
+
+    @Test
     fun `creating a new UPW assessment from crn and delius event id returns assessment with prepopulated Delius answers`() {
 
       val dto = CreateAssessmentDto(

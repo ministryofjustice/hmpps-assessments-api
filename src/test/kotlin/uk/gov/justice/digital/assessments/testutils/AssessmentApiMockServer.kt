@@ -59,6 +59,18 @@ class AssessmentApiMockServer : WireMockServer(9004) {
     )
 
     stubFor(
+      WireMock.get(
+        WireMock.urlEqualTo("/assessments/latest/DX5678A?status=SIGNED&status=COMPLETE&types=LEVEL_1&types=LEVEL_3&cloneable=false")
+      )
+        .willReturn(
+          WireMock.aResponse()
+            .withStatus(200)
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withBody(cloneableAssessment)
+        )
+    )
+
+    stubFor(
       WireMock.post(WireMock.urlEqualTo("/referencedata/filtered"))
         .withRequestBody(WireMock.equalToJson("{ \"oasysSetPk\": 1 }", true, true))
         .willReturn(
@@ -373,4 +385,31 @@ class AssessmentApiMockServer : WireMockServer(9004) {
       
     """.trimIndent()
   }
+
+  val cloneableAssessment = """
+    {
+      "dateCompleted": "2011-09-30T11:50:47",
+      "victims": [],
+      "children": [],
+      "sections": [
+        {
+          "section": "1",
+          "answers": [
+            {
+              "question": "1.8.2",
+              "answer": [
+                "25/12/2019"
+              ]
+            },
+            {
+              "question": "1.8",
+              "answer": [
+                "21"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  """.trimIndent()
 }

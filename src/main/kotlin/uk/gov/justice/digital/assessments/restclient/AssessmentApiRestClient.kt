@@ -8,6 +8,7 @@ import org.springframework.core.ParameterizedTypeReference
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
+import org.springframework.util.MultiValueMapAdapter
 import org.springframework.web.reactive.function.client.ClientResponse
 import reactor.core.publisher.Mono
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.OasysAssessmentType
@@ -28,6 +29,8 @@ import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiForbidd
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiInvalidRequestException
 import uk.gov.justice.digital.assessments.utils.RequestData
 import uk.gov.justice.digital.assessments.utils.offenderStubResource.OffenderStubDto
+import java.time.LocalDateTime
+import java.util.Optional.ofNullable
 import javax.persistence.EntityNotFoundException
 
 @Component
@@ -67,6 +70,29 @@ class AssessmentApiRestClient {
       }
       .bodyToMono(OASysAssessmentDto::class.java)
       .block().also { log.info("Retrieved OASys Assessment $oasysSetPk") }
+  }
+
+  fun getOASysLatestAssessment(
+    crn: String,
+    status: List<String> = emptyList(),
+    types: List<String> = emptyList(),
+    cloneable: Boolean = false,
+    cutoffDate: LocalDateTime? = null
+  ): String? {
+    log.info("Retrieving OASys latest assessment for CRN $crn")
+    val path = "/assessments/latest/$crn"
+    val queryParams = mutableMapOf(
+      "status" to status,
+      "types" to types,
+      "cloneable" to listOf(cloneable.toString()),
+    )
+    ofNullable<LocalDateTime>(cutoffDate).ifPresent { date -> queryParams["cutoffDate"] = listOf(date.toString()) }
+
+    return webClient
+      .get(path, MultiValueMapAdapter(queryParams))
+      .retrieve()
+      .bodyToMono(String::class.java)
+      .block().also { log.info("Retrieved OASys CloneableAssessment for CRN $crn") }
   }
 
   private inline fun <reified T> typeReference() = object : ParameterizedTypeReference<T>() {}

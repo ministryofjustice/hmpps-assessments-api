@@ -1,0 +1,100 @@
+{
+  "oasysSetPk": 9023544,
+  "assessmentType": "LAYER_3",
+  "dateCompleted": "2020-12-01T12:43:06",
+  "dateCreated": "2020-12-01T12:43:06",
+  "dateInitiated": "2020-12-01T12:43:06",
+  "dateSigned": "2020-12-01T12:43:06",
+  "historicStatus": "CURRENT",
+  "status": "COMPLETE",
+  "assessmentPurpose": "260",
+  "createdExternally": "N",
+  "assessor": {
+    "name": "Brian Lane",
+    "assessorOffice": "1015",
+    "assessorTeam": "2001",
+    "assessorUserCode": "CBT0502"
+  },
+  "countersigner": {
+    "name": "Jack Halford",
+    "countersignerUserCode": "CBT0503"
+  },
+  "victims": [
+    {
+      "id": 2,
+      "age": "7",
+      "gender": "9",
+      "ethnicCategory": "NS",
+      "victimRelation": "13"
+    },
+    {
+      "id": 1,
+      "age": "6",
+      "gender": "9",
+      "ethnicCategory": "NS",
+      "victimRelation": "13"
+    }
+  ],
+  "children": [
+    {
+      "id": 2,
+      "name": "Sam Holt",
+      "age": "9",
+      "curregSclsrvsInd": "N",
+      "dateOfBirth": "01/08/2003",
+      "evrPrvSocialSrvInd": "N",
+      "gender": "Male"
+    },
+    {
+      "id": 1,
+      "name": "Max Holt",
+      "age": "10",
+      "curregSclsrvsInd": "N",
+      "dateOfBirth": "08/10/2002",
+      "evrPrvSocialSrvInd": "N",
+      "gender": "Male"
+    }
+  ],
+  "sections": [
+    {
+      "section": "1",
+      "answers": [
+        {
+          "question": "1.24",
+          "answer": [
+            "answer 1"
+          ]
+        },
+        {
+          "question": "1.26",
+          "answer": [
+            "answer 2"
+          ]
+        }
+      ]
+    },
+    {
+      "section": "10",
+      "answers": [
+        {
+          "question": "10.8",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "10.98",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "10.99",
+          "answer": [
+            "NO"
+          ]
+        }
+      ]
+    }
+  ]
+}
