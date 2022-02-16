@@ -86,13 +86,30 @@ class AssessmentApiRestClient {
       "types" to types,
       "cloneable" to listOf(cloneable.toString()),
     )
-    ofNullable<LocalDateTime>(cutoffDate).ifPresent { date -> queryParams["cutoffDate"] = listOf(date.toString()) }
+    ofNullable<LocalDateTime>(cutoffDate).ifPresent {
+      date ->
+      queryParams["cutoffDate"] = listOf(date.toString())
+    }
 
     return webClient
       .get(path, MultiValueMapAdapter(queryParams))
       .retrieve()
+      .onStatus(HttpStatus::is5xxServerError) {
+        handle5xxError(
+          "Failed to retrieve OASys Latest Assessment for crn $crn, status $status, types $types, " +
+            "cloneable $cloneable, cutoffDate $cutoffDate.",
+          HttpMethod.GET,
+          path,
+          ExternalService.ASSESSMENTS_API
+        )
+      }
       .bodyToMono(String::class.java)
-      .block().also { log.info("Retrieved OASys CloneableAssessment for CRN $crn") }
+      .block().also {
+        log.info(
+          "Retrieved OASys Latest Assessment for crn $crn, status $status, types $types, " +
+            "cloneable $cloneable, cutoffDate $cutoffDate."
+        )
+      }
   }
 
   private inline fun <reified T> typeReference() = object : ParameterizedTypeReference<T>() {}

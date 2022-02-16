@@ -44,6 +44,8 @@ class EpisodeService(
     private const val STRUCTURED_ANSWER_FIELD_TYPE = "structuredAnswer"
     private val structuredFieldTypes: List<String> = listOf(STRUCTURE_FIELD_TYPE, STRUCTURED_ANSWER_FIELD_TYPE)
 
+    private const val OASYS_SOURCE_NAME = "OASYS"
+
     private val objectMapper: ObjectMapper = jacksonObjectMapper().registerModules(JavaTimeModule())
   }
 
@@ -115,22 +117,23 @@ class EpisodeService(
     simpleQuestions.groupBy { it.externalSourceEndpoint }
       .forEach {
         val sourceData = loadSource(episode, sourceName, it.key, latestCompleteEpisodeEndDate) ?: return
+        episode.prepopulatedFromOASys = sourceName == OASYS_SOURCE_NAME
 
         it.value.forEach { question ->
           episode.addAnswer(question.questionCode, getAnswersFromSourceData(sourceData, question))
-          if (!episode.prepopulatedFromOASys && sourceName == "OASYS") episode.prepopulatedFromOASys = true
         }
       }
 
     structuredDataQuestions.groupBy { it.externalSourceEndpoint }
       .forEach { (sourceEndpoint, allStructuredQuestions) ->
         val sourceData = loadSource(episode, sourceName, sourceEndpoint, latestCompleteEpisodeEndDate) ?: return
+        episode.prepopulatedFromOASys = sourceName == OASYS_SOURCE_NAME
+
         allStructuredQuestions
           .filter { it.fieldType == STRUCTURE_FIELD_TYPE }
           .forEach { structure ->
             val questions = filterQuestionsByStructureQuestionCode(structure.questionCode, allStructuredQuestions)
             episode.addAnswer(structure.questionCode, getStructuredAnswersFromSourceData(sourceData, structure, questions))
-            if (!episode.prepopulatedFromOASys && sourceName == "OASYS") episode.prepopulatedFromOASys = true
           }
       }
   }
