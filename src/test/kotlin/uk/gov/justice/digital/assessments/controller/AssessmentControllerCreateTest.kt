@@ -198,7 +198,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
         .responseBody
 
       val answers = assessment.episodes.first().answers
-      assertThat(answers).hasSize(4)
+      assertThat(answers).hasSize(33)
 
       assertThat(answers["date_first_sanction"]).isEqualTo(listOf("25/12/2019"))
       assertThat(answers["age_first_conviction"]).isEqualTo(listOf("21"))

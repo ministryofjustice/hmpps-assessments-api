@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.assessments.api.GroupQuestionDto
 import uk.gov.justice.digital.assessments.api.TableQuestionDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode.RSR
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.CloneAssessmentExcludedQuestionsRepository
 import uk.gov.justice.digital.assessments.restclient.AssessmentApiRestClient
@@ -57,8 +56,7 @@ class EpisodeService(
     if (questionsToPopulate.isEmpty())
       return episode
 
-    val latestCompleteEpisodeEndDate =
-      if (assessmentSchemaCode == RSR) getLatestCompleteEpisodeEndDate(episode) else null
+    val latestCompleteEpisodeEndDate = getLatestCompleteEpisodeEndDate(episode)
 
     questionsToPopulate
       .groupBy { it.externalSource }
@@ -108,7 +106,7 @@ class EpisodeService(
 
   private fun prepopulateFromSource(
     episode: AssessmentEpisodeEntity,
-    sourceName: String?,
+    sourceName: String,
     questionSchemas: List<ExternalSourceQuestionSchemaDto>,
     latestCompleteEpisodeEndDate: LocalDateTime?
   ) {
@@ -173,9 +171,7 @@ class EpisodeService(
       val rawJson = when (sourceName) {
         ExternalSource.COURT.name -> loadFromCourtCase(episode)
         ExternalSource.DELIUS.name -> loadFromDelius(episode, sourceEndpoint)
-        ExternalSource.OASYS.name ->
-          if (episode.assessmentSchemaCode == RSR) loadFromOASys(episode, latestCompleteEpisodeEndDate) else null
-
+        ExternalSource.OASYS.name -> loadFromOASys(episode, latestCompleteEpisodeEndDate)
         else -> return null
       }
       return JsonPath.parse(rawJson)
@@ -241,10 +237,7 @@ class EpisodeService(
         else -> listOf((source.read<JSONArray>(question.jsonPathField).filterNotNull() as List<String>).first().toString())
       }
     } catch (e: Exception) {
-      return when (question.fieldType) {
-        "yesno" -> null
-        else -> null
-      }
+      return null
     }
   }
 
