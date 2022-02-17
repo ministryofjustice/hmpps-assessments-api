@@ -60,7 +60,7 @@ class AssessmentApiMockServer : WireMockServer(9004) {
 
     stubFor(
       WireMock.get(
-        WireMock.urlEqualTo("/assessments/latest/DX5678A?status=SIGNED&status=COMPLETE&types=LEVEL_1&types=LEVEL_3&cloneable=false")
+        WireMock.urlEqualTo("/assessments/latest/DX5678A?status=SIGNED&status=COMPLETE&types=LAYER_1&types=LAYER_3&cloneable=false")
       )
         .willReturn(
           WireMock.aResponse()

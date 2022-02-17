@@ -186,7 +186,7 @@ class EpisodeService(
     return assessmentApiRestClient.getOASysLatestAssessment(
       crn = crn,
       status = listOf("SIGNED", "COMPLETE"),
-      types = listOf("LEVEL_1", "LEVEL_3"),
+      types = listOf("LAYER_1", "LAYER_3"),
       cutoffDate = latestCompleteEpisodeEndDate
     )
   }
