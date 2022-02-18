@@ -3,10 +3,14 @@ package uk.gov.justice.digital.assessments.services
 import io.mockk.every
 import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 import uk.gov.justice.digital.assessments.api.EpisodeOasysAnswersDto
 import uk.gov.justice.digital.assessments.api.OasysAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode.ROSH
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode.RSR
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
@@ -21,25 +25,78 @@ class OasysAssessmentServiceTest {
 
   private val oasysAssessmentService = OasysAssessmentService(subjectRepository, questionService)
 
-  @Test
-  fun `return latest episode for subject`() {
-    val assessmentSchemaCode = AssessmentSchemaCode.ROSH
+  companion object {
+    @JvmStatic
+    fun stateDates(): List<Arguments> {
+      return listOf(
+        Arguments.of(
+          StateDates(
+            assessmentSchemaCode = ROSH,
+            createdDate = LocalDateTime.now().minusWeeks(2),
+            endDate = LocalDateTime.now().minusWeeks(1),
+            closedDate = null
+          ),
+          StateDates(
+            assessmentSchemaCode = ROSH,
+            createdDate = LocalDateTime.now().minusWeeks(1),
+            endDate = LocalDateTime.now(),
+            closedDate = null
+          ),
+        ),
+        Arguments.of(
+          StateDates(
+            assessmentSchemaCode = ROSH,
+            createdDate = LocalDateTime.now().minusWeeks(1),
+            endDate = null,
+            closedDate = LocalDateTime.now().minusWeeks(1)
+          ),
+          StateDates(
+            assessmentSchemaCode = ROSH,
+            createdDate = LocalDateTime.now().minusWeeks(2),
+            endDate = LocalDateTime.now(),
+            closedDate = null
+          ),
+        ),
+        Arguments.of(
+          StateDates(
+            assessmentSchemaCode = RSR,
+            createdDate = LocalDateTime.now().minusWeeks(1),
+            endDate = null,
+            closedDate = null
+          ),
+          StateDates(
+            assessmentSchemaCode = ROSH,
+            createdDate = LocalDateTime.now().minusWeeks(2),
+            endDate = null,
+            closedDate = null
+          ),
+        ),
+      )
+    }
+  }
+
+  @ParameterizedTest
+  @MethodSource("stateDates")
+  fun `return latest episode for subject`(stateDates1: StateDates, stateDates2: StateDates) {
+    val assessmentSchemaCode = ROSH
     val crn = "X1234"
     val episode2 = AssessmentEpisodeEntity(
       episodeId = 567,
       changeReason = "Change of Circs 2",
-      createdDate = LocalDateTime.now(),
-      endDate = LocalDateTime.now(),
-      assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+      createdDate = stateDates2.createdDate,
+      endDate = stateDates2.endDate,
+      closedDate = stateDates2.closedDate,
+      assessmentSchemaCode = stateDates2.assessmentSchemaCode,
       author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
       assessment = AssessmentEntity()
     )
     val episode1 = AssessmentEpisodeEntity(
       episodeId = 456,
       changeReason = "Change of Circs 1",
-      createdDate = LocalDateTime.now().minusDays(1),
-      endDate = LocalDateTime.now().minusDays(1),
-      assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+      createdDate = stateDates1.createdDate,
+      endDate = stateDates1.endDate,
+      closedDate = stateDates1.closedDate,
+      assessmentSchemaCode = stateDates1.assessmentSchemaCode,
       author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
       assessment = AssessmentEntity()
     )
@@ -66,4 +123,11 @@ class OasysAssessmentServiceTest {
 
     assertThat(latestEpisode).isEqualTo(OasysAssessmentEpisodeDto.from(episode2, EpisodeOasysAnswersDto()))
   }
+
+  data class StateDates(
+    val assessmentSchemaCode: AssessmentSchemaCode,
+    val createdDate: LocalDateTime,
+    val endDate: LocalDateTime?,
+    val closedDate: LocalDateTime?,
+  )
 }

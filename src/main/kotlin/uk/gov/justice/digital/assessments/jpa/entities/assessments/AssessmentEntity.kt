@@ -50,9 +50,9 @@ class AssessmentEntity(
     return episodes.indexOfFirst { !it.isComplete() && !it.isClosed() } >= 0
   }
 
-  fun getLatestClosedEpisodeOfType(assessmentSchemaCode: AssessmentSchemaCode): AssessmentEpisodeEntity? {
-    return episodes.filter { it.assessmentSchemaCode == assessmentSchemaCode && it.isComplete() }
-      .maxByOrNull { it.endDate!! }
+  fun getLatestInProgessOrCompleteEpisodeOfType(assessmentSchemaCode: AssessmentSchemaCode): AssessmentEpisodeEntity? {
+    return episodes.filter { it.assessmentSchemaCode == assessmentSchemaCode && !it.isClosed() }
+      .maxByOrNull { it.createdDate }
   }
 
   fun newEpisode(

@@ -23,20 +23,20 @@ class OasysAssessmentService(
       subjectRepository.findByCrn(crn)
         ?: throw EntityNotFoundException("Subject for crn $crn not found")
       )
-    val latestClosedEpisode = subjectEntity.getCurrentAssessment()?.getLatestClosedEpisodeOfType(assessmentSchemaCode)
+    val latestInProgressOrCompleteEpisode = subjectEntity.getCurrentAssessment()?.getLatestInProgessOrCompleteEpisodeOfType(assessmentSchemaCode)
       ?: throw EntityNotFoundException("Closed Episode for Subject for crn $crn not found for type $assessmentSchemaCode ")
 
     var oasysAnswers = OasysAnswers.from(
-      latestClosedEpisode,
+      latestInProgressOrCompleteEpisode,
       object : OasysAnswers.Companion.MappingProvider {
         override fun getAllQuestions(): QuestionSchemaEntities =
-          questionService.getAllSectionQuestionsForQuestions(latestClosedEpisode.answers?.keys?.toList() ?: emptyList())
+          questionService.getAllSectionQuestionsForQuestions(latestInProgressOrCompleteEpisode.answers?.keys?.toList() ?: emptyList())
 
         override fun getTableQuestions(tableCode: String): QuestionSchemaEntities =
           questionService.getAllGroupQuestionsByGroupCode(tableCode)
       }
     )
-    return OasysAssessmentEpisodeDto.from(latestClosedEpisode, oasysAnswers.toEpisodeOasysAnswers())
+    return OasysAssessmentEpisodeDto.from(latestInProgressOrCompleteEpisode, oasysAnswers.toEpisodeOasysAnswers())
   }
 
   private fun OasysAnswers.toEpisodeOasysAnswers(): EpisodeOasysAnswersDto {
