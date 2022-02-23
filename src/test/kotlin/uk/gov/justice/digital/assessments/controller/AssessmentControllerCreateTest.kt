@@ -35,7 +35,7 @@ import java.util.UUID
     executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
   )
 )
-@AutoConfigureWebTestClient
+@AutoConfigureWebTestClient(timeout = "6000000")
 class AssessmentControllerCreateTest : IntegrationTest() {
 
   private val objectMapper = ObjectMapper()
@@ -200,7 +200,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       val answers = assessment.episodes.first().answers
       assertThat(answers).hasSize(33)
 
-      assertThat(answers["date_first_sanction"]).isEqualTo(listOf("25/12/2019"))
+      assertThat(answers["date_first_sanction"]).isEqualTo(listOf("2019-12-25"))
       assertThat(answers["age_first_conviction"]).isEqualTo(listOf("21"))
       assertThat(answers["total_sanctions"]).isEqualTo(emptyList<String>())
       assertThat(answers["date_current_conviction"]).isEqualTo(emptyList<String>())
