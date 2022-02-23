@@ -35,7 +35,7 @@ import java.util.UUID
     executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
   )
 )
-@AutoConfigureWebTestClient
+@AutoConfigureWebTestClient(timeout = "6000000")
 class AssessmentControllerCreateTest : IntegrationTest() {
 
   private val objectMapper = ObjectMapper()
@@ -177,6 +177,33 @@ class AssessmentControllerCreateTest : IntegrationTest() {
           assertThat(it.responseBody?.status).isEqualTo(403)
           assertThat(it.responseBody?.reason).isEqualTo("LAO_PERMISSION")
         }
+    }
+
+    @Test
+    fun `creating a new RSR assessment from crn returns assessment with prepopulated OASys answers`() {
+
+      val dto = CreateAssessmentDto(
+        crn = crn,
+        deliusEventId = eventID,
+        assessmentSchemaCode = AssessmentSchemaCode.RSR
+      )
+      val assessment = webTestClient.post().uri("/assessments")
+        .bodyValue(dto)
+        .header(RequestData.USER_AREA_HEADER_NAME, "WWS")
+        .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
+        .exchange()
+        .expectStatus().isOk
+        .expectBody<AssessmentDto>()
+        .returnResult()
+        .responseBody
+
+      val answers = assessment.episodes.first().answers
+      assertThat(answers).hasSize(33)
+
+      assertThat(answers["date_first_sanction"]).isEqualTo(listOf("2019-12-25"))
+      assertThat(answers["age_first_conviction"]).isEqualTo(listOf("21"))
+      assertThat(answers["total_sanctions"]).isEqualTo(emptyList<String>())
+      assertThat(answers["date_current_conviction"]).isEqualTo(emptyList<String>())
     }
 
     @Test
