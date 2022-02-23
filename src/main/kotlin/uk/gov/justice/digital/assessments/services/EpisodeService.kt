@@ -16,6 +16,7 @@ import uk.gov.justice.digital.assessments.api.TableQuestionDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.CloneAssessmentExcludedQuestionsRepository
+import uk.gov.justice.digital.assessments.restclient.AssessmentApiRestClient
 import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import uk.gov.justice.digital.assessments.services.dto.ExternalSource
@@ -30,10 +31,10 @@ class EpisodeService(
   private val questionService: QuestionService,
   private val courtCaseRestClient: CourtCaseRestClient,
   private val communityApiRestClient: CommunityApiRestClient,
+  private val assessmentApiRestClient: AssessmentApiRestClient,
   private val assessmentSchemaService: AssessmentSchemaService,
   private val cloneAssessmentExcludedQuestionsRepository: CloneAssessmentExcludedQuestionsRepository
 ) {
-
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
     private const val cloneEpisodeOffset: Long = 55
@@ -41,6 +42,8 @@ class EpisodeService(
     private const val STRUCTURE_FIELD_TYPE = "structure"
     private const val STRUCTURED_ANSWER_FIELD_TYPE = "structuredAnswer"
     private val structuredFieldTypes: List<String> = listOf(STRUCTURE_FIELD_TYPE, STRUCTURED_ANSWER_FIELD_TYPE)
+
+    private const val OASYS_SOURCE_NAME = "OASYS"
 
     private val objectMapper: ObjectMapper = jacksonObjectMapper().registerModules(JavaTimeModule())
   }
@@ -53,10 +56,12 @@ class EpisodeService(
     if (questionsToPopulate.isEmpty())
       return episode
 
+    val latestCompleteEpisodeEndDate = getLatestCompleteEpisodeEndDate(episode)
+
     questionsToPopulate
       .groupBy { it.externalSource }
       .forEach {
-        prepopulateFromSource(episode, it.key, it.value)
+        prepopulateFromSource(episode, it.key, it.value, latestCompleteEpisodeEndDate)
       }
 
     return episode
@@ -69,8 +74,7 @@ class EpisodeService(
 
     val orderedPreviousEpisodes = previousEpisodes.filter {
       it.endDate?.isAfter(LocalDateTime.now().minusWeeks(cloneEpisodeOffset)) ?: false && it.isComplete()
-    }
-      .sortedByDescending { it.endDate }
+    }.sortedByDescending { it.endDate }
 
     val questions =
       assessmentSchemaService.getQuestionsForSchemaCode(newEpisode.assessmentSchemaCode)
@@ -102,14 +106,16 @@ class EpisodeService(
 
   private fun prepopulateFromSource(
     episode: AssessmentEpisodeEntity,
-    sourceName: String?,
-    questionSchemas: List<ExternalSourceQuestionSchemaDto>
+    sourceName: String,
+    questionSchemas: List<ExternalSourceQuestionSchemaDto>,
+    latestCompleteEpisodeEndDate: LocalDateTime?
   ) {
     val (structuredDataQuestions, simpleQuestions) = questionSchemas.partition { it.fieldType in structuredFieldTypes }
 
     simpleQuestions.groupBy { it.externalSourceEndpoint }
       .forEach {
-        val sourceData = loadSource(episode, sourceName, it.key) ?: return
+        val sourceData = loadSource(episode, sourceName, it.key, latestCompleteEpisodeEndDate) ?: return
+        episode.prepopulatedFromOASys = sourceName == OASYS_SOURCE_NAME
 
         it.value.forEach { question ->
           episode.addAnswer(question.questionCode, getAnswersFromSourceData(sourceData, question))
@@ -118,7 +124,9 @@ class EpisodeService(
 
     structuredDataQuestions.groupBy { it.externalSourceEndpoint }
       .forEach { (sourceEndpoint, allStructuredQuestions) ->
-        val sourceData = loadSource(episode, sourceName, sourceEndpoint) ?: return
+        val sourceData = loadSource(episode, sourceName, sourceEndpoint, latestCompleteEpisodeEndDate) ?: return
+        episode.prepopulatedFromOASys = sourceName == OASYS_SOURCE_NAME
+
         allStructuredQuestions
           .filter { it.fieldType == STRUCTURE_FIELD_TYPE }
           .forEach { structure ->
@@ -141,6 +149,12 @@ class EpisodeService(
     return buildStructuredAnswers(questions, answerData)
   }
 
+  private fun getLatestCompleteEpisodeEndDate(newEpisode: AssessmentEpisodeEntity): LocalDateTime? {
+    return newEpisode.assessment.episodes.filter { it.isComplete() }
+      .sortedByDescending { it.endDate }
+      .firstOrNull()?.endDate
+  }
+
   private fun filterQuestionsByStructureQuestionCode(structure: String, questions: List<ExternalSourceQuestionSchemaDto>): List<ExternalSourceQuestionSchemaDto> {
     return questions.filter {
       it.structuredQuestionCode.equals(structure)
@@ -150,18 +164,31 @@ class EpisodeService(
   private fun loadSource(
     episode: AssessmentEpisodeEntity,
     sourceName: String?,
-    sourceEndpoint: String?
+    sourceEndpoint: String?,
+    latestCompleteEpisodeEndDate: LocalDateTime?
   ): DocumentContext? {
     try {
       val rawJson = when (sourceName) {
         ExternalSource.COURT.name -> loadFromCourtCase(episode)
         ExternalSource.DELIUS.name -> loadFromDelius(episode, sourceEndpoint)
+        ExternalSource.OASYS.name -> loadFromOASys(episode, latestCompleteEpisodeEndDate)
         else -> return null
       }
       return JsonPath.parse(rawJson)
     } catch (e: Exception) {
       return null
     }
+  }
+
+  private fun loadFromOASys(episode: AssessmentEpisodeEntity, latestCompleteEpisodeEndDate: LocalDateTime?): String? {
+    val crn = episode.assessment.subject?.crn
+      ?: throw CrnIsMandatoryException("Crn not found for episode ${episode.episodeUuid}")
+    return assessmentApiRestClient.getOASysLatestAssessment(
+      crn = crn,
+      status = listOf("SIGNED", "COMPLETE"),
+      types = listOf("LAYER_1", "LAYER_3"),
+      cutoffDate = latestCompleteEpisodeEndDate
+    )
   }
 
   private fun loadFromCourtCase(episode: AssessmentEpisodeEntity): String? {
@@ -210,10 +237,7 @@ class EpisodeService(
         else -> listOf((source.read<JSONArray>(question.jsonPathField).filterNotNull() as List<String>).first().toString())
       }
     } catch (e: Exception) {
-      return when (question.fieldType) {
-        "yesno" -> null
-        else -> null
-      }
+      return null
     }
   }
 

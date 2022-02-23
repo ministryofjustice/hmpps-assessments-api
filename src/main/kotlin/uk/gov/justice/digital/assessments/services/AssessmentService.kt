@@ -350,9 +350,11 @@ class AssessmentService(
       author
     )
     if (isNewEpisode) {
-
       episodeService.prepopulateFromExternalSources(episode, assessmentSchemaCode)
-      episodeService.prepopulateFromPreviousEpisodes(episode, assessment.episodes)
+
+      if (!episode.prepopulatedFromOASys) {
+        episodeService.prepopulateFromPreviousEpisodes(episode, assessment.episodes)
+      }
       auditAndLogCreateEpisode(assessment.assessmentUuid, episode, subject?.crn)
     }
     log.info("New episode episode with id:${episode.episodeId} and uuid:${episode.episodeUuid} created for assessment ${assessment.assessmentUuid}")
