@@ -7,6 +7,7 @@ import com.jayway.jsonpath.DocumentContext
 import com.jayway.jsonpath.JsonPath
 import net.minidev.json.JSONArray
 import net.minidev.json.JSONObject
+import org.apache.commons.lang3.time.FastDateFormat
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -24,6 +25,7 @@ import uk.gov.justice.digital.assessments.services.dto.ExternalSourceQuestionSch
 import uk.gov.justice.digital.assessments.services.exceptions.CrnIsMandatoryException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalSourceEndpointIsMandatoryException
 import java.time.LocalDateTime
+import java.util.regex.Pattern
 
 @Service
 @Transactional("refDataTransactionManager")
@@ -46,6 +48,9 @@ class EpisodeService(
     private const val OASYS_SOURCE_NAME = "OASYS"
 
     private val objectMapper: ObjectMapper = jacksonObjectMapper().registerModules(JavaTimeModule())
+    private val basicDatePattern = Pattern.compile("^\\d{2}/\\d{2}/\\d{4}$")
+    private val basicDateFormatter = FastDateFormat.getInstance("dd/MM/yyyy")
+    private val iso8601DateFormatter = FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
   }
 
   fun prepopulateFromExternalSources(
@@ -205,13 +210,18 @@ class EpisodeService(
     return communityApiRestClient.getOffenderJson(crn, externalSourceEndpoint)
   }
 
+  private fun formatDate(source: DocumentContext, question: ExternalSourceQuestionSchemaDto): String {
+    val dateStr = (source.read<JSONArray>(question.jsonPathField).filterNotNull() as List<String>).first().toString()
+
+    return if (basicDatePattern.matcher(dateStr).matches())
+      iso8601DateFormatter.format(basicDateFormatter.parse(dateStr)) else dateStr
+  }
+
   private fun answerFormat(source: DocumentContext, question: ExternalSourceQuestionSchemaDto): List<String>? {
     try {
       return when (question.fieldType) {
         "varchar" -> listOf(source.read<Any>(question.jsonPathField).toString())
-        "date" -> listOf(
-          (source.read<JSONArray>(question.jsonPathField).filterNotNull() as List<String>).first().toString().split('T')[0]
-        )
+        "date" -> listOf(formatDate(source, question).split('T')[0])
         "time" -> listOf(
           (source.read<JSONArray>(question.jsonPathField).filterNotNull() as List<String>).first().toString().split('T')[1]
         )
