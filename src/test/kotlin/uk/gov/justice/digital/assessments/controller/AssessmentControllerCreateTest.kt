@@ -198,12 +198,15 @@ class AssessmentControllerCreateTest : IntegrationTest() {
         .responseBody
 
       val answers = assessment.episodes.first().answers
-      assertThat(answers).hasSize(33)
+      assertThat(answers).hasSize(34)
 
-      assertThat(answers["date_first_sanction"]).isEqualTo(listOf("2019-12-25"))
-      assertThat(answers["age_first_conviction"]).isEqualTo(listOf("21"))
-      assertThat(answers["total_sanctions"]).isEqualTo(emptyList<String>())
-      assertThat(answers["date_current_conviction"]).isEqualTo(emptyList<String>())
+      assertThat(answers["date_first_sanction"]).isEqualTo(listOf("2020-01-01"))
+      assertThat(answers["age_first_conviction"]).isEqualTo(listOf("26"))
+      assertThat(answers["suitable_accommodation"]).isEqualTo(listOf("SIGNIFICANT_PROBLEMS"))
+      assertThat(answers["unemployed_on_release"]).isEqualTo(listOf("NOT_AVAILABLE_FOR_WORK"))
+      assertThat(answers["current_relationship_with_partner"]).isEqualTo(listOf("SOME_PROBLEMS"))
+      assertThat(answers["total_sanctions"]).isEqualTo(listOf("5"))
+      assertThat(answers["date_current_conviction"]).isEqualTo(listOf("2021-01-01"))
     }
 
     @Test
