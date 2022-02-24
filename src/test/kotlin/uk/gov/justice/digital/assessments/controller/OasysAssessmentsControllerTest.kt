@@ -29,10 +29,10 @@ import java.util.UUID
 class OasysAssessmentsControllerTest : IntegrationTest() {
 
   @Test
-  fun `get latest closed episode for rsr oasys answers`() {
+  fun `get latest in progress or complete episode for rsr oasys answers`() {
     val crn = "X1355"
 
-    val latestClosedEpisode = webTestClient.get().uri("/subject/$crn/assessments/episodes/RSR/latest")
+    val latestInProgressOrCompleteEpisode = webTestClient.get().uri("/subject/$crn/assessments/episodes/RSR/latest")
       .headers(setAuthorisation(roles = listOf("ROLE_ARN_READ_ONLY")))
       .exchange()
       .expectStatus().isOk
@@ -40,21 +40,21 @@ class OasysAssessmentsControllerTest : IntegrationTest() {
       .returnResult()
       .responseBody
 
-    assertThat(latestClosedEpisode).isNotNull
-    assertThat(latestClosedEpisode.episodeUuid).isEqualTo(UUID.fromString("f7765470-efd5-4589-8fdd-4570360e5289"))
-    assertThat(latestClosedEpisode.assessment).isEqualTo(
+    assertThat(latestInProgressOrCompleteEpisode).isNotNull
+    assertThat(latestInProgressOrCompleteEpisode.episodeUuid).isEqualTo(UUID.fromString("f7765470-efd5-4589-8fdd-4570360e5289"))
+    assertThat(latestInProgressOrCompleteEpisode.assessment).isEqualTo(
       AssessmentDto(
-        UUID.fromString("49c8d211-68dc-4692-a6e2-d58468127356"), LocalDateTime.of(2019, 11, 14, 9, 0)
+        UUID.fromString("49c8d211-68dc-4692-a6e2-d58468127356"), LocalDateTime.of(2019, 11, 14, 10, 0)
       )
     )
-    assertThat(latestClosedEpisode.created).isEqualTo(
-      LocalDateTime.of(2019, 11, 14, 9, 0)
+    assertThat(latestInProgressOrCompleteEpisode.created).isEqualTo(
+      LocalDateTime.of(2019, 11, 14, 10, 0)
     )
-    assertThat(latestClosedEpisode.ended).isEqualTo(
+    assertThat(latestInProgressOrCompleteEpisode.ended).isEqualTo(
       LocalDateTime.of(2019, 11, 14, 13, 0)
     )
     assertThat(
-      latestClosedEpisode.answers.episodeAnswers
+      latestInProgressOrCompleteEpisode.answers.episodeAnswers
     ).containsExactlyInAnyOrder(
       EpisodeOasysAnswerDto(
         questionCode = "R1.2.1.2_V2",
