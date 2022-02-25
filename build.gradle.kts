@@ -1,6 +1,6 @@
 
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "3.3.16"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.0.4"
   id("org.springframework.boot") version "2.5.8" // this can be removed once spring boot 2.5.8 is added to the dps gradle plugin
   kotlin("plugin.spring") version "1.5.31"
   kotlin("plugin.jpa") version "1.5.31"
