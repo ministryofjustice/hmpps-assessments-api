@@ -386,30 +386,5 @@ class AssessmentApiMockServer : WireMockServer(9004) {
     """.trimIndent()
   }
 
-  val cloneableAssessment = """
-    {
-      "dateCompleted": "2011-09-30T11:50:47",
-      "victims": [],
-      "children": [],
-      "sections": [
-        {
-          "section": "1",
-          "answers": [
-            {
-              "question": "1.8.2",
-              "answer": [
-                "25/12/2019"
-              ]
-            },
-            {
-              "question": "1.8",
-              "answer": [
-                "21"
-              ]
-            }
-          ]
-        }
-      ]
-    }
-  """.trimIndent()
+  val cloneableAssessment = this::class.java.getResource("/json/oasysLatestRSRFullAssessment.json")?.readText()
 }

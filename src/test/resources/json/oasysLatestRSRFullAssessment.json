@@ -1,0 +1,1188 @@
+{
+  "oasysSetPk": 9627349,
+  "assessmentType": "LAYER_3",
+  "dateCompleted": "2022-02-23T16:26:03",
+  "dateCreated": "2022-02-23T16:17:00",
+  "dateInitiated": "2022-02-23T16:17:00",
+  "historicStatus": "CURRENT",
+  "status": "COMPLETE",
+  "assessmentPurpose": "620",
+  "createdExternally": "Y",
+  "assessor": {
+    "name": "Mark Heyward-Chaplin",
+    "assessorOffice": "1025",
+    "assessorTeam": "1003",
+    "assessorUserCode": "HEYWARDCHAPLINCS"
+  },
+  "countersigner": {},
+  "victims": [],
+  "children": [],
+  "sections": [
+    {
+      "section": "1",
+      "answers": [
+        {
+          "question": "1.29",
+          "answer": [
+            "01/01/2021"
+          ]
+        },
+        {
+          "question": "1.30",
+          "answer": [
+            "YES"
+          ]
+        },
+        {
+          "question": "1.32",
+          "answer": [
+            "5"
+          ]
+        },
+        {
+          "question": "1.33",
+          "answer": [
+            "28/02/2020"
+          ]
+        },
+        {
+          "question": "1.34",
+          "answer": [
+            "1"
+          ]
+        },
+        {
+          "question": "1.35",
+          "answer": [
+            "2"
+          ]
+        },
+        {
+          "question": "1.36",
+          "answer": [
+            "3"
+          ]
+        },
+        {
+          "question": "1.37",
+          "answer": [
+            "4"
+          ]
+        },
+        {
+          "question": "1.38",
+          "answer": [
+            "01/01/2021"
+          ]
+        },
+        {
+          "question": "1.40",
+          "answer": [
+            "3"
+          ]
+        },
+        {
+          "question": "1.41",
+          "answer": [
+            "YES"
+          ]
+        },
+        {
+          "question": "1.42",
+          "answer": [
+            "YES"
+          ]
+        },
+        {
+          "question": "1.8",
+          "answer": [
+            "26"
+          ]
+        },
+        {
+          "question": "1.8.2",
+          "answer": [
+            "01/01/2020"
+          ]
+        }
+      ]
+    },
+    {
+      "section": "10",
+      "answers": [
+        {
+          "question": "10.1",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "10.2",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "10.3",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "10.4",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "10.5",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "10.6",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "10.8",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "10.98",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "10.99",
+          "answer": [
+            "NO"
+          ]
+        }
+      ]
+    },
+    {
+      "section": "11",
+      "answers": [
+        {
+          "question": "11.1",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "11.10",
+          "answer": [
+            "0-Noproblems"
+          ]
+        },
+        {
+          "question": "11.11",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "11.12",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "11.2",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "11.3",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "11.4",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "11.5",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "11.6",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "11.7",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "11.8",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "11.9",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "11.98",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "11.99",
+          "answer": [
+            "NO"
+          ]
+        }
+      ]
+    },
+    {
+      "section": "12",
+      "answers": [
+        {
+          "question": "12.1",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "12.3",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "12.4",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "12.5",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "12.6",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "12.8",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "12.9",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "12.98",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "12.99",
+          "answer": [
+            "NO"
+          ]
+        }
+      ]
+    },
+    {
+      "section": "13",
+      "answers": [
+        {
+          "question": "13.1",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "13.2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "13.2.2",
+          "answer": [
+            "YES"
+          ]
+        },
+        {
+          "question": "13.4",
+          "answer": [
+            "YES"
+          ]
+        }
+      ]
+    },
+    {
+      "section": "2",
+      "answers": [
+        {
+          "question": "2.14",
+          "answer": [
+            "NO"
+          ]
+        }
+      ]
+    },
+    {
+      "section": "3",
+      "answers": [
+        {
+          "question": "3.3",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "3.4",
+          "answer": [
+            "2"
+          ]
+        },
+        {
+          "question": "3.5",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "3.6",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "3.98",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "3.99",
+          "answer": [
+            "NO"
+          ]
+        }
+      ]
+    },
+    {
+      "section": "4",
+      "answers": [
+        {
+          "question": "4.10",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "4.2",
+          "answer": [
+            "NA"
+          ]
+        },
+        {
+          "question": "4.3",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "4.4",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "4.5",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "4.6",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "4.7",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "4.8",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "4.9",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "4.96",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "4.98",
+          "answer": [
+            "NO"
+          ]
+        }
+      ]
+    },
+    {
+      "section": "5",
+      "answers": [
+        {
+          "question": "5.2",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "5.3",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "5.4",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "5.5",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "5.6",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "5.98",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "5.99",
+          "answer": [
+            "NO"
+          ]
+        }
+      ]
+    },
+    {
+      "section": "6",
+      "answers": [
+        {
+          "question": "6.1",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "6.12",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "6.3",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "6.4",
+          "answer": [
+            "1"
+          ]
+        },
+        {
+          "question": "6.6",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "6.7da",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "6.8",
+          "answer": [
+            "3"
+          ]
+        },
+        {
+          "question": "6.9",
+          "answer": [
+            "NO"A
+          ]
+        },
+        {
+          "question": "6.98",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "6.99",
+          "answer": [
+            "NO"
+          ]
+        }
+      ]
+    },
+    {
+      "section": "7",
+      "answers": [
+        {
+          "question": "7.1",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "7.2",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "7.3",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "7.4",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "7.5",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "7.98",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "7.99",
+          "answer": [
+            "NO"
+          ]
+        }
+      ]
+    },
+    {
+      "section": "8",
+      "answers": [
+        {
+          "question": "8.1",
+          "answer": [
+            "NO"
+          ]
+        }
+      ]
+    },
+    {
+      "section": "9",
+      "answers": [
+        {
+          "question": "9.1",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "9.2",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "9.3",
+          "answer": [
+            "0"
+          ]
+        },
+        {
+          "question": "9.98",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "9.99",
+          "answer": [
+            "NO"
+          ]
+        }
+      ]
+    },
+    {
+      "section": "ISP",
+      "answers": [
+        {
+          "question": "IP.1",
+          "answer": [
+            "YES"
+          ]
+        },
+        {
+          "question": "IP.17",
+          "answer": [
+            "YES"
+          ]
+        },
+        {
+          "question": "IP.20",
+          "answer": [
+            "Gene Pearce"
+          ]
+        },
+        {
+          "question": "IP.26",
+          "answer": [
+            "Mark Heyward-Chaplin"
+          ]
+        },
+        {
+          "question": "IP.28",
+          "answer": [
+            "23/02/2022"
+          ]
+        }
+      ]
+    },
+    {
+      "section": "ROSH",
+      "answers": [
+        {
+          "question": "R1.2.1.1_V2",
+          "answer": [
+            "YES"
+          ]
+        },
+        {
+          "question": "R1.2.1.2_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.2.10.1_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.2.10.2_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.2.11.1_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.2.11.2_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.2.12.1_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.2.12.2_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.2.13.1_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.2.13.2_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.2.14.1_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.2.14.2_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.2.2.1_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.2.2.2_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.2.3.1_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.2.3.2_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.2.4.1_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.2.4.2_V2",
+          "answer": [
+            "YES"
+          ]
+        },
+        {
+          "question": "R1.2.5.1_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.2.5.2_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.2.6.1_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.2.6.2_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.2.7.1_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.2.7.2_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.2.8.1_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.2.8.2_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.2.9.1_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.2.9.2_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.3.1.1_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.3.1.2_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.3.10.1_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.3.10.2_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.3.11.1_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.3.11.2_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.3.12.1_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.3.12.2_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.3.13.1_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.3.13.2_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.3.14.1_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.3.14.2_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.3.15.1_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.3.15.2_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.3.16.1_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.3.16.2_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.3.17.1_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.3.17.2_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.3.18.1_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.3.18.2_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.3.2.1_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.3.2.2_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.3.20.1_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.3.20.2_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.3.3.1_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.3.3.2_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.3.4.1_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.3.4.2_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.3.5.1_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.3.5.2_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.3.6.1_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.3.6.2_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.3.7.1_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.3.7.2_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.3.8.1_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.3.8.2_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.3.9.1_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R1.3.9.2_V2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R2.1",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R2.2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R3.1",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R3.2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R3.3",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R3.4",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R4.1",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R4.2",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R4.3",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R4.4",
+          "answer": [
+            "NO"
+          ]
+        },
+        {
+          "question": "R5.2b",
+          "answer": [
+            "YES"
+          ]
+        }
+      ]
+    },
+    {
+      "section": "SAQ",
+      "answers": [
+        {
+          "question": "SAQDE",
+          "answer": [
+            "tba"
+          ]
+        }
+      ]
+    }
+  ]
+}

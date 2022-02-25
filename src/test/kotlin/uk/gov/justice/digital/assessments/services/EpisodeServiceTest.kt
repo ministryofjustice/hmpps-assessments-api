@@ -107,7 +107,7 @@ class EpisodeServiceTest {
 
     every { questionService.getAllQuestions().withExternalSource(RSR) } returns questions
 
-    val json = this::class.java.getResource("/json/oasysCloneableAssessment.json")?.readText()
+    val json = this::class.java.getResource("/json/oasysLatestRSRShortAssessment.json")?.readText()
 
     every {
       assessmentApiRestClient.getOASysLatestAssessment(
@@ -233,7 +233,7 @@ class EpisodeServiceTest {
 
     every { questionService.getAllQuestions().withExternalSource(RSR) } returns questions
 
-    val json = this::class.java.getResource("/json/oasysCloneableAssessment.json")?.readText()
+    val json = this::class.java.getResource("/json/oasysLatestRSRShortAssessment.json")?.readText()
 
     every {
       assessmentApiRestClient.getOASysLatestAssessment(
