@@ -102,6 +102,9 @@ management:
     info:
       cache:
         time-to-live: 2000ms
+  info:
+    env:
+      enabled: true
 
 appinsights:
   instrumentationkey:
