@@ -15,7 +15,6 @@ import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.Curr
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.DynamicScoringOffences
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.Gender
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.OffenderAndOffencesDto
-import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.PredictorSubType
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.PreviousOffences
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.RiskPredictorsDto
 import uk.gov.justice.digital.assessments.services.dto.EmploymentType
@@ -147,7 +146,9 @@ class RiskPredictorsService(
         "current_relationship_with_partner"
       ).toProblemsLevel(),
       evidenceOfDomesticViolence = getNonRequiredAnswer(answers, "evidence_domestic_violence").toBoolean(),
-      isPerpetrator = getNonRequiredAnswer(answers, "perpetrator_domestic_violence").tempPerpetratorBoolean(getNonRequiredAnswer(answers, "evidence_domestic_violence").toBoolean()),
+      isPerpetrator = getNonRequiredAnswer(answers, "perpetrator_domestic_violence").tempPerpetratorBoolean(
+        getNonRequiredAnswer(answers, "evidence_domestic_violence").toBoolean()
+      ),
       alcoholUseIssues = getNonRequiredAnswer(answers, "use_of_alcohol").toProblemsLevel(),
       bingeDrinkingIssues = getNonRequiredAnswer(answers, "binge_drinking").toProblemsLevel(),
       impulsivityIssues = getNonRequiredAnswer(answers, "impulsivity_issues").toProblemsLevel(),
@@ -182,24 +183,24 @@ class RiskPredictorsService(
   }
 
   private fun RiskPredictorsDto.toRiskPredictorsScores(): Map<String, uk.gov.justice.digital.assessments.api.Score> {
-    val rsrScore = this.scores[PredictorSubType.RSR]
-    val ospcScore = this.scores[PredictorSubType.OSPC]
-    val ospiScore = this.scores[PredictorSubType.OSPI]
+    val rsrScore = this.scores["RSR"]
+    val ospcScore = this.scores["OSPC"]
+    val ospiScore = this.scores["OSPI"]
 
     return mapOf(
-      PredictorSubType.RSR.name to uk.gov.justice.digital.assessments.api.Score(
+      "RSR" to uk.gov.justice.digital.assessments.api.Score(
         rsrScore?.level?.name,
         rsrScore?.score,
         rsrScore?.isValid == true,
         this.calculatedAt
       ),
-      PredictorSubType.OSPC.name to uk.gov.justice.digital.assessments.api.Score(
+      "OSPC" to uk.gov.justice.digital.assessments.api.Score(
         ospcScore?.level?.name,
         ospcScore?.score,
         ospcScore?.isValid == true,
         this.calculatedAt
       ),
-      PredictorSubType.OSPI.name to uk.gov.justice.digital.assessments.api.Score(
+      "OSPI" to uk.gov.justice.digital.assessments.api.Score(
         ospiScore?.level?.name,
         ospiScore?.score,
         ospiScore?.isValid == true,

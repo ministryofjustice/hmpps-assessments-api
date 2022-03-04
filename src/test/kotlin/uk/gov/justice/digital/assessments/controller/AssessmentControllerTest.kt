@@ -16,7 +16,6 @@ import uk.gov.justice.digital.assessments.api.ErrorResponse
 import uk.gov.justice.digital.assessments.api.PredictorScoresDto
 import uk.gov.justice.digital.assessments.api.Score
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
-import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.PredictorSubType
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.ScoreLevel
 import uk.gov.justice.digital.assessments.services.dto.PredictorType
 import uk.gov.justice.digital.assessments.services.dto.ScoreType
@@ -519,19 +518,19 @@ class AssessmentControllerTest : IntegrationTest() {
             type = PredictorType.RSR,
             scoreType = ScoreType.STATIC,
             scores = mapOf(
-              PredictorSubType.RSR.name to Score(
+              "RSR" to Score(
                 level = ScoreLevel.HIGH.name,
                 score = BigDecimal("11.34"),
                 isValid = true,
                 date = "2021-08-09 14:46:48"
               ),
-              PredictorSubType.OSPC.name to Score(
+              "OSPC" to Score(
                 level = ScoreLevel.NOT_APPLICABLE.name,
                 score = BigDecimal("0"),
                 isValid = false,
                 date = "2021-08-09 14:46:48"
               ),
-              PredictorSubType.OSPI.name to Score(
+              "OSPI" to Score(
                 level = ScoreLevel.NOT_APPLICABLE.name,
                 score = BigDecimal("0"),
                 isValid = false,

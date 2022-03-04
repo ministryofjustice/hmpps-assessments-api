@@ -18,7 +18,6 @@ import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.Dyna
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.EmploymentType
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.Gender
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.OffenderAndOffencesDto
-import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.PredictorSubType
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.PreviousOffences
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.ProblemsLevel
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.RiskPredictorsDto
@@ -121,9 +120,9 @@ class AssessRisksAndNeedsApiClientTest : IntegrationTest() {
         type = PredictorType.RSR,
         scoreType = ScoreType.STATIC,
         scores = mapOf(
-          PredictorSubType.RSR to Score(level = ScoreLevel.HIGH, score = BigDecimal("11.34"), isValid = true),
-          PredictorSubType.OSPC to Score(level = ScoreLevel.NOT_APPLICABLE, score = BigDecimal("0"), isValid = false),
-          PredictorSubType.OSPI to Score(level = ScoreLevel.NOT_APPLICABLE, score = BigDecimal("0"), isValid = false),
+          "RSR" to Score(level = ScoreLevel.HIGH, score = BigDecimal("11.34"), isValid = true),
+          "OSPC" to Score(level = ScoreLevel.NOT_APPLICABLE, score = BigDecimal("0"), isValid = false),
+          "OSPI" to Score(level = ScoreLevel.NOT_APPLICABLE, score = BigDecimal("0"), isValid = false),
         ),
         calculatedAt = "2021-08-09 14:46:48"
       )
