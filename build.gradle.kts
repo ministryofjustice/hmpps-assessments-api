@@ -1,9 +1,8 @@
 
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.0.4"
-  id("org.springframework.boot") version "2.5.8" // this can be removed once spring boot 2.5.8 is added to the dps gradle plugin
-  kotlin("plugin.spring") version "1.5.31"
-  kotlin("plugin.jpa") version "1.5.31"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.1.0"
+  kotlin("plugin.spring") version "1.6.10"
+  kotlin("plugin.jpa") version "1.6.10"
 }
 
 allOpen {
@@ -34,9 +33,9 @@ dependencies {
   implementation("org.springframework.security:spring-security-oauth2-client")
   implementation("org.springframework.data:spring-data-redis:2.5.4")
   implementation("redis.clients:jedis:3.7.0")
-  implementation("org.springdoc:springdoc-openapi-ui:1.5.10")
-  implementation("org.springdoc:springdoc-openapi-data-rest:1.5.10")
-  implementation("org.springdoc:springdoc-openapi-kotlin:1.5.10")
+  implementation("org.springdoc:springdoc-openapi-ui:1.6.6")
+  implementation("org.springdoc:springdoc-openapi-data-rest:1.6.6")
+  implementation("org.springdoc:springdoc-openapi-kotlin:1.6.6")
   implementation("commons-io:commons-io:2.11.0")
   implementation("com.zaxxer:HikariCP:5.0.0")
   implementation("com.vladmihalcea:hibernate-types-52:2.12.1")
