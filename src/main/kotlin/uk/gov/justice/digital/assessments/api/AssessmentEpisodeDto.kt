@@ -2,7 +2,6 @@ package uk.gov.justice.digital.assessments.api
 
 import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.Tables
 import uk.gov.justice.digital.assessments.services.dto.AssessmentEpisodeUpdateErrors
 import java.time.LocalDateTime
 import java.util.UUID
@@ -48,9 +47,6 @@ data class AssessmentEpisodeDto(
   @Schema(description = "Offence codes")
   val offence: OffenceDto,
 
-  @Schema(description = "Tables associated with this episode")
-  val tables: Tables = mutableMapOf(),
-
   @Schema(description = "Date last edited")
   val lastEditedDate: LocalDateTime? = null,
 
@@ -82,7 +78,6 @@ data class AssessmentEpisodeDto(
         errors?.assessmentErrors,
         predictors,
         OffenceDto.from(episode.offence),
-        episode.tables ?: mutableMapOf(),
         episode.lastEditedDate,
         episode.closedDate,
       )

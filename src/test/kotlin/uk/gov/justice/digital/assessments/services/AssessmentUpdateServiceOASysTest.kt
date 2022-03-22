@@ -8,7 +8,6 @@ import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
@@ -46,7 +45,6 @@ class AssessmentUpdateServiceOASysTest {
   private val riskPredictorsService: RiskPredictorsService = mockk()
   private val assessmentSchemaService: AssessmentSchemaService = mockk()
   private val oasysAssessmentUpdateService: OasysAssessmentUpdateService = mockk()
-  private val assessmentService: AssessmentService = mockk()
   private val authorService: AuthorService = mockk()
   private val auditService: AuditService = mockk()
   private val telemetryService: TelemetryService = mockk()
@@ -54,10 +52,8 @@ class AssessmentUpdateServiceOASysTest {
   private val assessmentsUpdateService = AssessmentUpdateService(
     assessmentRepository,
     episodeRepository,
-    questionService,
     riskPredictorsService,
     oasysAssessmentUpdateService,
-    assessmentService,
     authorService,
     auditService,
     telemetryService
@@ -162,172 +158,6 @@ class AssessmentUpdateServiceOASysTest {
     assertThat(oasysAnswers).hasSize(2)
     assertThat(oasysAnswers).contains(OasysAnswer("section1", 1, "name", "some free text"))
     assertThat(oasysAnswers).contains(OasysAnswer("section1", 1, "dob", "20/01/1975"))
-  }
-
-  @Nested
-  @DisplayName("map Oasys answers from ARN questions and answers with children")
-  inner class WithChildren {
-    private val tableQuestion = "table_question"
-    private val childQuestion1 = "child_question_one"
-    private val childQuestion2 = "child_question_two"
-
-    private val childNameQuestion =
-      makeQuestion(10, childQuestion1, "freetext", null, "children", null, "childname")
-    private val childAddressQuestion =
-      makeQuestion(11, childQuestion2, "freetext", null, "children", null, "childaddress")
-
-    val allQuestions = QuestionSchemaEntities(
-      listOf(
-        makeQuestion(1, questionCode1, "freetext", null, "section1", 1, "name"),
-        makeQuestion(2, questionCode2, "date", null, "section1", 1, "dob"),
-        makeQuestion(3, questionCode3),
-        makeQuestion(4, tableQuestion, "table:children_at_risk"),
-        childNameQuestion,
-        childAddressQuestion
-      )
-    )
-    val childTableQuestions = QuestionSchemaEntities(
-      listOf(
-        childNameQuestion,
-        childAddressQuestion
-      )
-    )
-
-    private val testMapper = object : OasysAnswers.Companion.MappingProvider {
-      override fun getAllQuestions(): QuestionSchemaEntities = allQuestions
-      override fun getTableQuestions(tableCode: String): QuestionSchemaEntities =
-        if (tableCode == "children_at_risk")
-          childTableQuestions
-        else
-          throw RuntimeException("Should only be called for children_at_risk table")
-    }
-
-    @Test
-    fun `with one child`() {
-      val answers = mutableMapOf(
-        questionCode1 to listOf("some free text"),
-        questionCode2 to listOf("1975-01-20T00:00:00.000Z"),
-        questionCode3 to listOf("not mapped to oasys"),
-      )
-
-      val tables = mutableMapOf(
-        "children_at_risk" to mutableListOf(
-          mapOf(
-            childQuestion1 to listOf("child name"),
-            childQuestion2 to listOf("child address"),
-          )
-        )
-      )
-
-      val episode = AssessmentEpisodeEntity(
-        answers = answers,
-        createdDate = LocalDateTime.now(),
-        assessmentSchemaCode = AssessmentSchemaCode.ROSH,
-        tables = tables,
-        author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
-        assessment = AssessmentEntity()
-      )
-      val oasysAnswers = OasysAnswers.from(episode, testMapper)
-
-      assertThat(oasysAnswers).hasSize(4)
-      assertThat(oasysAnswers).contains(OasysAnswer("section1", 1, "name", "some free text"))
-      assertThat(oasysAnswers).contains(OasysAnswer("section1", 1, "dob", "20/01/1975"))
-      assertThat(oasysAnswers).contains(OasysAnswer("children", 0, "childname", "child name"))
-      assertThat(oasysAnswers).contains(OasysAnswer("children", 0, "childaddress", "child address"))
-    }
-
-    @Test
-    fun `with multiple children`() {
-      val answers = mutableMapOf(
-        questionCode1 to listOf("some free text"),
-        questionCode2 to listOf("1975-01-20T00:00:00.000Z"),
-        questionCode3 to listOf("not mapped to oasys"),
-      )
-
-      val tables = mutableMapOf(
-        "children_at_risk" to mutableListOf(
-          mapOf(
-            childQuestion1 to listOf("name1"),
-            childQuestion2 to listOf("address1"),
-          ),
-          mapOf(
-            childQuestion1 to listOf("name2"),
-          ),
-          mapOf(
-            childQuestion1 to listOf("name3"),
-            childQuestion2 to listOf("address3"),
-          )
-        )
-      )
-
-      val episode = AssessmentEpisodeEntity(
-        answers = answers,
-        createdDate = LocalDateTime.now(),
-        assessmentSchemaCode = AssessmentSchemaCode.ROSH,
-        tables = tables,
-        author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
-        assessment = AssessmentEntity()
-      )
-
-      val oasysAnswers = OasysAnswers.from(episode, testMapper)
-
-      assertThat(oasysAnswers).hasSize(7)
-      assertThat(oasysAnswers).contains(OasysAnswer("section1", 1, "name", "some free text"))
-      assertThat(oasysAnswers).contains(OasysAnswer("section1", 1, "dob", "20/01/1975"))
-      assertThat(oasysAnswers).contains(OasysAnswer("children", 0, "childname", "name1"))
-      assertThat(oasysAnswers).contains(OasysAnswer("children", 0, "childaddress", "address1"))
-      assertThat(oasysAnswers).contains(OasysAnswer("children", 1, "childname", "name2"))
-      assertThat(oasysAnswers).contains(OasysAnswer("children", 2, "childname", "name3"))
-      assertThat(oasysAnswers).contains(OasysAnswer("children", 2, "childaddress", "address3"))
-    }
-
-    @Test
-    fun `with multiple children with multi-value answer`() {
-      val answers = mutableMapOf(
-        questionCode1 to listOf("some free text"),
-        questionCode2 to listOf("1975-01-20T00:00:00.000Z"),
-        questionCode3 to listOf("not mapped to oasys"),
-      )
-
-      val tables = mutableMapOf(
-        "children_at_risk" to mutableListOf(
-          mapOf(
-            childQuestion1 to listOf("name1"),
-            childQuestion2 to listOf("address1"),
-          ),
-          mapOf(
-            childQuestion1 to listOf("name2"),
-            childQuestion2 to listOf("address2a", "address2b"),
-          ),
-          mapOf(
-            childQuestion1 to listOf("name3"),
-            childQuestion2 to listOf("address3"),
-          )
-        )
-      )
-
-      val episode = AssessmentEpisodeEntity(
-        answers = answers,
-        createdDate = LocalDateTime.now(),
-        assessmentSchemaCode = AssessmentSchemaCode.ROSH,
-        tables = tables,
-        author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
-        assessment = AssessmentEntity()
-      )
-
-      val oasysAnswers = OasysAnswers.from(episode, testMapper)
-
-      assertThat(oasysAnswers).hasSize(9)
-      assertThat(oasysAnswers).contains(OasysAnswer("section1", 1, "name", "some free text"))
-      assertThat(oasysAnswers).contains(OasysAnswer("section1", 1, "dob", "20/01/1975"))
-      assertThat(oasysAnswers).contains(OasysAnswer("children", 0, "childname", "name1"))
-      assertThat(oasysAnswers).contains(OasysAnswer("children", 0, "childaddress", "address1"))
-      assertThat(oasysAnswers).contains(OasysAnswer("children", 1, "childname", "name2"))
-      assertThat(oasysAnswers).contains(OasysAnswer("children", 1, "childaddress", "address2a"))
-      assertThat(oasysAnswers).contains(OasysAnswer("children", 1, "childaddress", "address2b"))
-      assertThat(oasysAnswers).contains(OasysAnswer("children", 2, "childname", "name3"))
-      assertThat(oasysAnswers).contains(OasysAnswer("children", 2, "childaddress", "address3"))
-    }
   }
 
   @Test

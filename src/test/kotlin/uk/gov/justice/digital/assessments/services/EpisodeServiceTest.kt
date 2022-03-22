@@ -18,9 +18,6 @@ import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEnt
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.TableRow
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.TableRows
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.Tables
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.CloneAssessmentExcludedQuestionsEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.CloneAssessmentExcludedQuestionsRepository
 import uk.gov.justice.digital.assessments.restclient.AssessmentApiRestClient
@@ -259,19 +256,6 @@ class EpisodeServiceTest {
       TableQuestionDto(tableCode = "table_1")
     )
 
-    val tablerow1: TableRow = mutableMapOf(
-      "tablerow_1" to listOf("tablerow_answer_1"),
-      "tablerow_2" to listOf("tablerow_answer_2")
-    )
-
-    val tableRows1: TableRows = mutableListOf(
-      tablerow1
-    )
-
-    val table1: Tables = mutableMapOf(
-      "table_1" to tableRows1
-    )
-
     val mixedPreviousEpisodes = listOf(
       AssessmentEpisodeEntity(
         episodeId = 2,
@@ -290,7 +274,6 @@ class EpisodeServiceTest {
         author = author,
         assessment = AssessmentEntity(),
         endDate = LocalDateTime.now().minusDays(2),
-        tables = table1
       )
     )
     every { assessmentSchemaService.getQuestionsForSchemaCode(newEpisode.assessmentSchemaCode) } returns schemaQuestions
@@ -314,7 +297,6 @@ class EpisodeServiceTest {
     )
 
     assertThat(result.answers).containsExactlyEntriesOf(expectedAnswers)
-    assertThat(result.tables).isEmpty()
   }
 
   @Test
@@ -323,19 +305,6 @@ class EpisodeServiceTest {
       GroupQuestionDto(questionCode = "question_1"),
       GroupQuestionDto(questionCode = "question_2"),
       TableQuestionDto(tableCode = "table_1")
-    )
-
-    val tablerow1: TableRow = mutableMapOf(
-      "tablerow_1" to listOf("tablerow_answer_1"),
-      "tablerow_2" to listOf("tablerow_answer_2")
-    )
-
-    val tableRows1: TableRows = mutableListOf(
-      tablerow1
-    )
-
-    val table1: Tables = mutableMapOf(
-      "table_1" to tableRows1
     )
 
     val mixedPreviousEpisodes = listOf(
@@ -356,7 +325,6 @@ class EpisodeServiceTest {
         author = author,
         assessment = AssessmentEntity(),
         endDate = LocalDateTime.now().minusDays(2),
-        tables = table1
       )
     )
     every { assessmentSchemaService.getQuestionsForSchemaCode(newEpisode.assessmentSchemaCode) } returns schemaQuestions
@@ -368,21 +336,7 @@ class EpisodeServiceTest {
       "question_2" to listOf("answer_2")
     )
 
-    val expectedTableRow: TableRow = mutableMapOf(
-      "tablerow_1" to listOf("tablerow_answer_1"),
-      "tablerow_2" to listOf("tablerow_answer_2")
-    )
-
-    val expectedTableRows: TableRows = mutableListOf(
-      expectedTableRow
-    )
-
-    val expectedTable1: Tables = mutableMapOf(
-      "table_1" to expectedTableRows
-    )
-
     assertThat(result.answers).containsExactlyInAnyOrderEntriesOf(expectedAnswers)
-    assertThat(result.tables).containsExactlyInAnyOrderEntriesOf(expectedTable1)
   }
 
   @Test
