@@ -4,11 +4,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.Answers
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.TableRow
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.TableRows
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.Tables
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.OASysMappingEntity
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.services.QuestionSchemaEntities
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -35,10 +31,6 @@ data class OasysAnswers(
       mappingProvider: MappingProvider
     ): OasysAnswers {
       val questions = mappingProvider.getAllQuestions()
-      val tables = pullTableNames(questions)
-
-      val oasysTableAnswers = buildAllTableAnswers(tables, episode.tables, mappingProvider)
-
       val nonTableAnswers = buildOasysAnswers(
         questions,
         episode.answers,
@@ -46,7 +38,6 @@ data class OasysAnswers(
       )
 
       val answers = OasysAnswers()
-      answers.addAll(oasysTableAnswers)
       answers.addAll(nonTableAnswers)
       return OasysAnswers(answers.map { it.toOasysRealAnswerValues() }.toMutableSet())
     }
@@ -58,55 +49,6 @@ data class OasysAnswers(
         return this.copy(answer = EmploymentType.valueOf(this.answer).oasysValue.toString())
       }
       return this
-    }
-
-    private fun pullTableNames(questions: QuestionSchemaEntities): Set<String> {
-      return questions
-        .filter { it.answerType?.startsWith("table:") == true }
-        .map { it.answerType!!.split(":")[1] }
-        .toSet()
-    }
-
-    private fun buildAllTableAnswers(
-      listOfTables: Set<String>,
-      tables: Tables? = mutableMapOf(),
-      mappingProvider: MappingProvider
-    ): OasysAnswers {
-      val oasysAnswers = listOfTables.map { tableName ->
-        convertTableAnswersToOasysAnswers(
-          tables!![tableName] ?: mutableListOf(),
-          mappingProvider.getTableQuestions(tableName),
-        )
-      }.flatten().toMutableSet()
-      return OasysAnswers(oasysAnswers)
-    }
-
-    private fun convertTableAnswersToOasysAnswers(tableRows: TableRows, tableFields: QuestionSchemaEntities): List<OasysAnswer> {
-      val results = mutableListOf<OasysAnswer>()
-      tableRows.mapIndexed { index, row ->
-        tableFields.forEach { field ->
-          results.addAll(createOasysAnswerForTableEntry(row, field, index.toLong()))
-        }
-      }
-      return results
-    }
-
-    private fun createOasysAnswerForTableEntry(tableRow: TableRow, field: QuestionSchemaEntity, index: Long = 0): List<OasysAnswer> {
-      val answersForField = tableRow.getOrDefault(field.questionCode, emptyList())
-      return answersForField.mapNotNull { answer ->
-        createOasysAnswer(answer, field, index)
-      }
-    }
-
-    private fun createOasysAnswer(answer: String, field: QuestionSchemaEntity, index: Long = 0): OasysAnswer? {
-      return field.oasysMappings.firstOrNull()?.let { mapping ->
-        makeOasysAnswer(
-          answer,
-          mapping,
-          field.answerType,
-          index,
-        )
-      }
     }
 
     private fun buildOasysAnswers(
