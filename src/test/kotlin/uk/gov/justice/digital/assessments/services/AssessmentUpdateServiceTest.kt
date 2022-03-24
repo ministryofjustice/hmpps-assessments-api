@@ -65,7 +65,7 @@ class AssessmentUpdateServiceTest {
   inner class UpdateAnswers {
     @Test
     fun `add new answers to existing question for an episode`() {
-      val answers = mutableMapOf(
+      val answers = mutableMapOf<String, List<Any>>(
         existingQuestionCode to listOf("free text")
       )
       val assessment = assessmentEntity(answers)
@@ -103,7 +103,7 @@ class AssessmentUpdateServiceTest {
 
     @Test
     fun `change an existing answer for an episode`() {
-      val answers = mutableMapOf(
+      val answers = mutableMapOf<String, List<Any>>(
         existingQuestionCode to listOf("free text")
       )
       val assessment = assessmentEntity(answers)
@@ -136,7 +136,7 @@ class AssessmentUpdateServiceTest {
 
     @Test
     fun `audit updating answers without author change`() {
-      val answers = mutableMapOf(
+      val answers = mutableMapOf<String, List<Any>>(
         existingQuestionCode to listOf("free text")
       )
       val assessment = assessmentEntity(answers)
@@ -169,7 +169,7 @@ class AssessmentUpdateServiceTest {
 
     @Test
     fun `audit updating answers with author change`() {
-      val answers = mutableMapOf(
+      val answers = mutableMapOf<String, List<Any>>(
         existingQuestionCode to listOf("free text")
       )
       val assessment = assessmentEntity(answers)
@@ -214,7 +214,7 @@ class AssessmentUpdateServiceTest {
 
     @Test
     fun `remove answers for an existing question for an episode`() {
-      val answers = mutableMapOf(
+      val answers = mutableMapOf<String, List<Any>>(
         existingQuestionCode to listOf("free text", "fruit loops", "biscuits")
       )
       val assessment = assessmentEntity(answers)

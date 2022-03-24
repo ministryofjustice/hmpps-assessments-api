@@ -4,7 +4,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.assessments.api.Answers
+import uk.gov.justice.digital.assessments.api.AnswersDto
 import uk.gov.justice.digital.assessments.api.AssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
@@ -48,7 +48,7 @@ class AssessmentUpdateService(
 
   private fun updateEpisode(
     episode: AssessmentEpisodeEntity,
-    updatedEpisodeAnswers: Answers
+    updatedEpisodeAnswers: AnswersDto
   ): AssessmentEpisodeDto {
     if (episode.isComplete() || episode.isClosed()) throw UpdateClosedEpisodeException("Cannot update a closed or completed Episode ${episode.episodeUuid} for assessment ${episode.assessment?.assessmentUuid}")
 
@@ -70,7 +70,7 @@ class AssessmentUpdateService(
   }
 
   fun AssessmentEpisodeEntity.updateEpisodeAnswers(
-    updatedEpisodeAnswers: Answers
+    updatedEpisodeAnswers: AnswersDto
   ) {
     for (updatedAnswer in updatedEpisodeAnswers) {
       this.answers?.let {

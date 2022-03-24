@@ -46,7 +46,6 @@ class AssessmentUpdateServiceOASysTest {
   private val riskPredictorsService: RiskPredictorsService = mockk()
   private val assessmentSchemaService: AssessmentSchemaService = mockk()
   private val oasysAssessmentUpdateService: OasysAssessmentUpdateService = mockk()
-  private val assessmentService: AssessmentService = mockk()
   private val authorService: AuthorService = mockk()
   private val auditService: AuditService = mockk()
   private val telemetryService: TelemetryService = mockk()
@@ -78,6 +77,12 @@ class AssessmentUpdateServiceOASysTest {
   private val answer1Uuid = UUID.randomUUID()
   private val answer2Uuid = UUID.randomUUID()
   private val answer3Uuid = UUID.randomUUID()
+
+  val answers = mutableMapOf<String, List<Any>>(
+    questionCode1 to listOf("some free text"),
+    questionCode2 to listOf("1975-01-20T00:00:00.000Z"),
+    questionCode3 to listOf("not mapped to oasys"),
+  )
 
   @BeforeEach
   fun setup() {
@@ -127,11 +132,7 @@ class AssessmentUpdateServiceOASysTest {
 
   @Test
   fun `map Oasys answers from ARN questions and answers`() {
-    val answers = mutableMapOf(
-      questionCode1 to listOf("some free text"),
-      questionCode2 to listOf("1975-01-20T00:00:00.000Z"),
-      questionCode3 to listOf("not mapped to oasys"),
-    )
+
     val episode = AssessmentEpisodeEntity(
       answers = answers,
       createdDate = LocalDateTime.now(),
@@ -202,11 +203,6 @@ class AssessmentUpdateServiceOASysTest {
 
     @Test
     fun `with one child`() {
-      val answers = mutableMapOf(
-        questionCode1 to listOf("some free text"),
-        questionCode2 to listOf("1975-01-20T00:00:00.000Z"),
-        questionCode3 to listOf("not mapped to oasys"),
-      )
 
       val tables = mutableMapOf(
         "children_at_risk" to mutableListOf(
@@ -236,11 +232,6 @@ class AssessmentUpdateServiceOASysTest {
 
     @Test
     fun `with multiple children`() {
-      val answers = mutableMapOf(
-        questionCode1 to listOf("some free text"),
-        questionCode2 to listOf("1975-01-20T00:00:00.000Z"),
-        questionCode3 to listOf("not mapped to oasys"),
-      )
 
       val tables = mutableMapOf(
         "children_at_risk" to mutableListOf(
@@ -281,11 +272,6 @@ class AssessmentUpdateServiceOASysTest {
 
     @Test
     fun `with multiple children with multi-value answer`() {
-      val answers = mutableMapOf(
-        questionCode1 to listOf("some free text"),
-        questionCode2 to listOf("1975-01-20T00:00:00.000Z"),
-        questionCode3 to listOf("not mapped to oasys"),
-      )
 
       val tables = mutableMapOf(
         "children_at_risk" to mutableListOf(
@@ -566,11 +552,7 @@ class AssessmentUpdateServiceOASysTest {
   }
 
   private fun setupEpisode(): AssessmentEpisodeEntity {
-    val answers = mutableMapOf(
-      questionCode1 to listOf("some free text"),
-      questionCode2 to listOf("1975-01-20T00:00:00.000Z"),
-      questionCode3 to listOf("not mapped to oasys"),
-    )
+
     return AssessmentEpisodeEntity(
       episodeId = episodeId1,
       assessmentSchemaCode = AssessmentSchemaCode.ROSH,
