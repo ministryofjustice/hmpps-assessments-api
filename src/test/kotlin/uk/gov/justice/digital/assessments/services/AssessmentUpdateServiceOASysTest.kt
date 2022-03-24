@@ -54,10 +54,8 @@ class AssessmentUpdateServiceOASysTest {
   private val assessmentsUpdateService = AssessmentUpdateService(
     assessmentRepository,
     episodeRepository,
-    questionService,
     riskPredictorsService,
     oasysAssessmentUpdateService,
-    assessmentService,
     authorService,
     auditService,
     telemetryService
