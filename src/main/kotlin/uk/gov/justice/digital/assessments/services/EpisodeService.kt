@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.assessments.api.GroupQuestionDto
+import uk.gov.justice.digital.assessments.api.TableQuestionDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.CloneAssessmentExcludedQuestionsRepository
@@ -90,10 +91,19 @@ class EpisodeService(
       .map { it.questionCode }
       .filterNot { ignoredQuestionCodes.contains(it) }
 
+    val tableCodes = questions.filterIsInstance<TableQuestionDto>()
+      .map { it.tableCode }
+      .filterNot { ignoredQuestionCodes.contains(it) }
+
     orderedPreviousEpisodes.forEach { episode ->
       val relevantAnswers = episode.answers.filter { questionCodes.contains(it.key) }
       relevantAnswers.forEach {
         newEpisode.answers.putIfAbsent(it.key, it.value)
+      }
+
+      val relevantTables = episode.tables.filter { tableCodes.contains(it.key) }
+      relevantTables.forEach {
+        newEpisode.tables.putIfAbsent(it.key, it.value)
       }
     }
     return newEpisode
