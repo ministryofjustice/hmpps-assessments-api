@@ -988,121 +988,55 @@ class CommunityApiMockServer : WireMockServer(9096) {
   """.trimIndent()
 }
 
-private val personalContact = """[
-  {
-    "personalContactId": 2500124492,
-    "relationship": "Father",
-    "startDate": "2021-10-22T00:00:00",
-    "title": "Mr",
-    "firstName": "Brian",
-    "surname": "Contact",
-    "mobileNumber": "07333567890",
-    "emailAddress": "test@test.com",
-    "notes": "ARN Mapping Value testing - 28/10/2022 - ARN-631",
-    "gender": "Male",
-    "relationshipType": {
-      "code": "ME",
-      "description": "Emergency Contact"
-    },
-    "createdDatetime": "2021-10-22T10:24:14",
-    "lastUpdatedDatetime": "2021-10-22T10:24:14",
-    "address": {
-      "addressNumber": "36",
-      "buildingName": "HMPPS Studio",
-      "streetName": "Fifth Street",
-      "district": "South City Centre",
-      "town": "London",
-      "county": "South London",
-      "postcode": "South City Centre",
-      "telephoneNumber": "0133456789"
-    },
-    "isActive": true
-  },
-  {
-    "personalContactId": 2500123992,
-    "relationship": "Family Doctor",
-    "startDate": "2021-10-21T00:00:00",
-    "title": "Dr",
-    "firstName": "Nick",
-    "surname": "Riviera",
-    "mobileNumber": "07123456789",
-    "emailAddress": "gp@gp.com",
-    "notes": "ARN Mapping Value testing - 28/10/2022 - ARN-631",
-    "gender": "Male",
-    "relationshipType": {
-      "code": "RT02",
-      "description": "GP"
-    },
-    "createdDatetime": "2021-10-21T15:02:53",
-    "lastUpdatedDatetime": "2021-10-21T15:02:53",
-    "address": {
-      "addressNumber": "38",
-      "buildingName": "The practice",
-      "streetName": "East Street",
-      "district": "East City Centre",
-      "town": "Bristol",
-      "county": "East London",
-      "postcode": "E5 7BS",
-      "telephoneNumber": "0233456789"
-    },
-    "isActive": true
-  },
-  {
-    "personalContactId": 2500123992,
-    "relationship": "Family Doctor",
-    "startDate": "2021-10-21T00:00:00",
-    "title": "Dr",
-    "firstName": "Steve",
-    "surname": "Wilson",
-    "mobileNumber": "0779 786 5666",
-    "emailAddress": "steve@gp.com",
-    "notes": "ARN Mapping Value testing - 28/10/2022 - ARN-770",
-    "gender": "Male",
-    "relationshipType": {
-      "code": "RT02",
-      "description": "GP"
-    },
-    "createdDatetime": "2021-10-21T15:02:53",
-    "lastUpdatedDatetime": "2021-10-21T15:02:53",
-    "address": {
-      "addressNumber": "77",
-      "buildingName": "The Building",
-      "streetName": "Some Street",
-      "district": "Some City Centre",
-      "town": "London",
-      "county": "Essex",
-      "postcode": "NW10 1EP",
-      "telephoneNumber": "0776 666 6666"
-    },
-    "isActive": true
-  },
-  {
-    "personalContactId": 2500123992,
-    "relationship": "Family Doctor",
-    "startDate": "2021-10-21T00:00:00",
-    "title": "Dr",
-    "firstName": "Henry",
-    "surname": "Jekyll",
-    "mobileNumber": "0779 786 5666",
-    "emailAddress": "Ed@gp.com",
-    "notes": "ARN Mapping Value testing - 28/10/2022 - ARN-770",
-    "gender": "Male",
-    "relationshipType": {
-      "code": "RT02",
-      "description": "GP"
-    },
-    "createdDatetime": "2021-10-21T15:02:53",
-    "lastUpdatedDatetime": "2021-10-21T15:02:53",
-    "address": {
-      "addressNumber": "77",
-      "buildingName": "The Building",
-      "streetName": "Some Street",
-      "district": "Some City Centre",
-      "town": "London",
-      "county": "Essex",
-      "postcode": "NW10 1EP",
-      "telephoneNumber": "0776 666 6666"
-    },
-    "isActive": false
-  }
-]"""
+private val personalContact = "[" +
+  "{" +
+  "\"personalContactId\": 2500124492, " +
+  "\"relationship\": \"Father\", " +
+  "\"startDate\": \"2021-10-22T00:00:00\", " +
+  "\"title\": \"Mr\", " +
+  "\"firstName\": \"Brian\", " +
+  "\"surname\": \"Contact\", " +
+  "\"gender\": \"Male\", " +
+  "\"mobileNumber\": \"07333567890\", " +
+  "\"relationshipType\": { " +
+  "\"code\": \"ME\", " +
+  "\"description\": \"Emergency Contact\" " +
+  "},  " +
+  "\"createdDatetime\": \"2021-10-22T10:24:14\",  " +
+  "\"lastUpdatedDatetime\": \"2021-10-22T10:24:14\",  " +
+  "\"address\": {" +
+  "\"addressNumber\": \"36\",  " +
+  "\"buildingName\": \"HMPPS Studio\", " +
+  "\"county\": \"South London\",  " +
+  "\"district\": \"South City Centre\"," +
+  "\"postcode\": \"S4 7BS\",  " +
+  "\"streetName\": \"Fifth Street\"," +
+  "\"telephoneNumber\": \"0133456789\", " +
+  "\"town\": \"London\" " +
+  "}   " +
+  "},    " +
+  "{   " +
+  "\"personalContactId\": 2500123992, " +
+  "\"relationship\": \"Family Doctor\", " +
+  "\"startDate\": \"2021-10-21T00:00:00\", " +
+  "\"title\": \"Dr\", " +
+  "\"firstName\": \"Nick\", " +
+  "\"surname\": \"Riviera\", " +
+  "\"gender\": \"Male\", " +
+  "\"relationshipType\": { " +
+  "\"code\": \"RT02\", " +
+  "\"description\": \"GP\" " +
+  "}, " +
+  "\"createdDatetime\": \"2021-10-21T15:02:53\", " +
+  "\"lastUpdatedDatetime\": \"2021-10-21T15:02:53\", " +
+  "\"address\": {" +
+  "\"addressNumber\": \"38\",  " +
+  "\"buildingName\": \"The practice\", " +
+  "\"county\": \"East London\",  " +
+  "\"district\": \"East City Centre\"," +
+  "\"postcode\": \"E5 7BS\",  " +
+  "\"streetName\": \"East Street\"," +
+  "\"telephoneNumber\": \"0233456789\", " +
+  "\"town\": \"Bristol\" " +
+  "}     " +
+  "}]"

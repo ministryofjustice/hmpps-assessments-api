@@ -6,7 +6,7 @@ server:
   forward-headers-strategy: native
 spring:
   flyway:
-    enabled: true
+    enabled: false
 graceful:
   shutdown:
     enabled: false

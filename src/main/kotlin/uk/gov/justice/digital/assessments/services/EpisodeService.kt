@@ -6,7 +6,6 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.jayway.jsonpath.DocumentContext
 import com.jayway.jsonpath.JsonPath
 import net.minidev.json.JSONArray
-import net.minidev.json.JSONObject
 import org.apache.commons.lang3.time.FastDateFormat
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -33,6 +32,7 @@ class EpisodeService(
   private val questionService: QuestionService,
   private val courtCaseRestClient: CourtCaseRestClient,
   private val communityApiRestClient: CommunityApiRestClient,
+
   private val assessmentApiRestClient: AssessmentApiRestClient,
   private val assessmentSchemaService: AssessmentSchemaService,
   private val cloneAssessmentExcludedQuestionsRepository: CloneAssessmentExcludedQuestionsRepository
@@ -40,10 +40,6 @@ class EpisodeService(
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
     private const val cloneEpisodeOffset: Long = 55
-
-    private const val STRUCTURE_FIELD_TYPE = "structure"
-    private const val STRUCTURED_ANSWER_FIELD_TYPE = "structuredAnswer"
-    private val structuredFieldTypes: List<String> = listOf(STRUCTURE_FIELD_TYPE, STRUCTURED_ANSWER_FIELD_TYPE)
 
     private const val OASYS_SOURCE_NAME = "OASYS"
 
@@ -111,59 +107,37 @@ class EpisodeService(
 
   private fun prepopulateFromSource(
     episode: AssessmentEpisodeEntity,
-    sourceName: String,
-    questionSchemas: List<ExternalSourceQuestionSchemaDto>,
+    sourceName: String?,
+    questions: List<ExternalSourceQuestionSchemaDto>,
     latestCompleteEpisodeEndDate: LocalDateTime?
   ) {
-    val (structuredDataQuestions, simpleQuestions) = questionSchemas.partition { it.fieldType in structuredFieldTypes }
+    val questionsByExternalSourceEndpoint = questions.groupBy { it.externalSourceEndpoint }
+    episode.prepopulatedFromOASys = sourceName == OASYS_SOURCE_NAME
 
-    simpleQuestions.groupBy { it.externalSourceEndpoint }
-      .forEach {
-        val sourceData = loadSource(episode, sourceName, it.key, latestCompleteEpisodeEndDate) ?: return
-        episode.prepopulatedFromOASys = sourceName == OASYS_SOURCE_NAME
-
-        it.value.forEach { question ->
-          episode.addAnswer(question.questionCode, getAnswersFromSourceData(sourceData, question))
-        }
+    questionsByExternalSourceEndpoint.forEach { it ->
+      val source = loadSource(episode, sourceName, it.key, latestCompleteEpisodeEndDate) ?: return
+      it.value.forEach {
+        prepopulateQuestion(episode, source, it)
       }
-
-    structuredDataQuestions.groupBy { it.externalSourceEndpoint }
-      .forEach { (sourceEndpoint, allStructuredQuestions) ->
-        val sourceData = loadSource(episode, sourceName, sourceEndpoint, latestCompleteEpisodeEndDate) ?: return
-        episode.prepopulatedFromOASys = sourceName == OASYS_SOURCE_NAME
-
-        allStructuredQuestions
-          .filter { it.fieldType == STRUCTURE_FIELD_TYPE }
-          .forEach { structure ->
-            val questions = filterQuestionsByStructureQuestionCode(structure.questionCode, allStructuredQuestions)
-            episode.addAnswer(structure.questionCode, getStructuredAnswersFromSourceData(sourceData, structure, questions))
-          }
-      }
+    }
   }
 
-  private fun getAnswersFromSourceData(source: DocumentContext, question: ExternalSourceQuestionSchemaDto): List<String> {
-    return answerFormat(source, question).orEmpty()
-  }
+  private fun prepopulateQuestion(
+    episode: AssessmentEpisodeEntity,
+    source: DocumentContext,
+    question: ExternalSourceQuestionSchemaDto
+  ) {
 
-  fun getStructuredAnswersFromSourceData(
-    sourceData: DocumentContext,
-    structure: ExternalSourceQuestionSchemaDto,
-    questions: List<ExternalSourceQuestionSchemaDto>
-  ): List<String> {
-    val answerData = sourceData.read<JSONArray>(structure.jsonPathField)
-    return buildStructuredAnswers(questions, answerData)
+    val answer = answerFormat(source, question).orEmpty()
+    episode.answers.let {
+      it[question.questionCode] = it[question.questionCode].orEmpty().plus(answer).toSet().toList()
+    }
   }
 
   private fun getLatestCompleteEpisodeEndDate(newEpisode: AssessmentEpisodeEntity): LocalDateTime? {
     return newEpisode.assessment.episodes.filter { it.isComplete() }
       .sortedByDescending { it.endDate }
       .firstOrNull()?.endDate
-  }
-
-  private fun filterQuestionsByStructureQuestionCode(structure: String, questions: List<ExternalSourceQuestionSchemaDto>): List<ExternalSourceQuestionSchemaDto> {
-    return questions.filter {
-      it.structuredQuestionCode.equals(structure)
-    }
   }
 
   private fun loadSource(
@@ -248,23 +222,6 @@ class EpisodeService(
       }
     } catch (e: Exception) {
       return null
-    }
-  }
-
-  fun buildStructuredAnswers(
-    questions: List<ExternalSourceQuestionSchemaDto>,
-    answerData: JSONArray
-  ): List<String> {
-    return answerData.map {
-      val answersJson = JSONObject(it as Map<String, String>).toJSONString()
-      val answersDetailContext = JsonPath.parse(answersJson)
-      objectMapper.writeValueAsString(
-        questions
-          .associate { childQuestion ->
-            val value = answersDetailContext.read<Any>(childQuestion.jsonPathField)
-            childQuestion.questionCode to listOf(value)
-          }
-      )
     }
   }
 }
