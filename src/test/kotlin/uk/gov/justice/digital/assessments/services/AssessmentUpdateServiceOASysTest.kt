@@ -56,7 +56,6 @@ class AssessmentUpdateServiceOASysTest {
     episodeRepository,
     riskPredictorsService,
     oasysAssessmentUpdateService,
-    assessmentService,
     authorService,
     auditService,
     telemetryService
