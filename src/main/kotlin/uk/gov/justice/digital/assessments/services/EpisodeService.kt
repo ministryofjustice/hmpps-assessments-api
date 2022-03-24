@@ -7,6 +7,7 @@ import com.jayway.jsonpath.DocumentContext
 import com.jayway.jsonpath.JsonPath
 import net.minidev.json.JSONArray
 import net.minidev.json.JSONObject
+import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.time.FastDateFormat
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -261,8 +262,12 @@ class EpisodeService(
       objectMapper.writeValueAsString(
         questions
           .associate { childQuestion ->
-            val value = answersDetailContext.read<Any>(childQuestion.jsonPathField)
-            childQuestion.questionCode to listOf(value)
+            if (StringUtils.isNotBlank(childQuestion.jsonPathField)) {
+              val value = answersDetailContext.read<Any>(childQuestion.jsonPathField)
+              childQuestion.questionCode to listOf(value)
+            } else {
+              childQuestion.questionCode to emptyList<String>()
+            }
           }
       )
     }

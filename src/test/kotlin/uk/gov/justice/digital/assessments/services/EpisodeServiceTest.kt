@@ -568,6 +568,14 @@ class EpisodeServiceTest {
         fieldType = "structuredAnswer",
         ifEmpty = false,
         structuredQuestionCode = "gp_details"
+      ),
+      ExternalSourceQuestionSchemaDto(
+        questionCode = "gp_medical_practice",
+        externalSource = "Delius",
+        jsonPathField = "",
+        fieldType = "structuredAnswer",
+        ifEmpty = false,
+        structuredQuestionCode = "gp_details"
       )
     )
 
@@ -575,8 +583,8 @@ class EpisodeServiceTest {
       episodeService.getStructuredAnswersFromSourceData(docContext, externalSourceGPObjectMapping, externalSourceGPQuestions)
 
     assertThat(result).contains(
-      """{"gp_first_name":["UPW"],"gp_family_name":["TESTING"],"gp_address_postcode":["SW1H 9AJ"]}""".trimIndent(),
-      """{"gp_first_name":["Charles"],"gp_family_name":["Europe"],"gp_address_postcode":["S3 7DQ"]}"""
+      """{"gp_first_name":["UPW"],"gp_family_name":["TESTING"],"gp_address_postcode":["SW1H 9AJ"],"gp_medical_practice":[]}""".trimIndent(),
+      """{"gp_first_name":["Charles"],"gp_family_name":["Europe"],"gp_address_postcode":["S3 7DQ"],"gp_medical_practice":[]}"""
     )
   }
 }
