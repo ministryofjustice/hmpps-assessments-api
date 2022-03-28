@@ -127,6 +127,7 @@ VALUES
 ('3ce8f782-e8ca-48ff-9579-20b01dd79430', 'contact_phone_number', '2021-09-27 14:50:00', null, 'freetext', null, 'Phone number', null, null),
 ('2b4c0adf-547b-4d09-8be4-ea852f25ca8f', 'contact_mobile_phone_number', '2021-09-27 14:50:00', null, 'freetext', null, 'Mobile number', null, null),
 ('5732b512-97c1-47d5-b7b8-beb3d6cfdec6', 'contact_email_addresses', '2020-11-30 14:50:00', null, 'freetext', null, 'Email', null, null),
+('b8f51e03-c2d6-4ec5-b539-30ba94524d47', 'emergency_contact_details', '2021-09-27 14:50:00', null, 'table', null, '', null, null),
 ('70eb1db7-4e68-4a59-b40c-7ce00f9c0aec', 'emergency_contact_first_name', '2021-09-27 14:50:00', null, 'freetext', null, 'First name', null, null),
 ('c5645fe0-8e9b-4402-8392-629d1b7bfba8', 'emergency_contact_family_name', '2021-09-27 14:50:00', null, 'freetext', null, 'Family name', null, null),
 ('5805283b-d81e-4053-8e5f-b3d3247e7c58', 'emergency_contact_relationship', '2021-09-27 14:50:00', null, 'freetext', null, 'Relationship to the individual', null, null),
