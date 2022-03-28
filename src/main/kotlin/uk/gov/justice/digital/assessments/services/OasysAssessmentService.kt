@@ -40,7 +40,7 @@ class OasysAssessmentService(
   }
 
   private fun OasysAnswers.toEpisodeOasysAnswers(): EpisodeOasysAnswersDto {
-    val answers = this.map { EpisodeOasysAnswerDto(it.questionCode, it.answer) }
+    val answers = this.map { EpisodeOasysAnswerDto(it.questionCode, it.answer.toString()) }
     return EpisodeOasysAnswersDto(answers)
   }
 }

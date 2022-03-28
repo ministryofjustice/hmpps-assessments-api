@@ -479,7 +479,7 @@ class RiskPredictorsServiceTest {
     )
   )
 
-  private val answers = mutableMapOf(
+  private val answers = mutableMapOf<String, List<Any>>(
     testQuestion1.questionCode to listOf("2021-10-01"),
     testQuestion2.questionCode to listOf("10"),
     testQuestion3.questionCode to listOf("9"),

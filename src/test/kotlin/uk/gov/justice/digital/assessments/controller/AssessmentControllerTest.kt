@@ -161,7 +161,7 @@ class AssessmentControllerTest : IntegrationTest() {
       assertThat(episode).isNotNull
       assertThat(episode?.answers).containsKey(newQuestionCode)
 
-      Verify.singleAnswer(episode?.answers?.get(newQuestionCode)!!, "new free text")
+      Verify.singleAnswer(episode?.answers?.get(newQuestionCode)!! as List<String>, "new free text")
     }
 
     @Test
@@ -208,7 +208,7 @@ class AssessmentControllerTest : IntegrationTest() {
         "USERNAME"
       )
 
-      Verify.singleAnswer(episode.answers[questionCode]!!, expectedAnswer)
+      Verify.singleAnswer(episode.answers[questionCode]!! as List<String>, expectedAnswer)
       assertThat(episode.userFullName).isEqualTo("USERNAME")
     }
 

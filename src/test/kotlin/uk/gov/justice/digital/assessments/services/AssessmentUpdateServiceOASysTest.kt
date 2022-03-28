@@ -390,7 +390,7 @@ class AssessmentUpdateServiceOASysTest {
     // Updated answers in returned DTO
     assertThat(episodeDto.answers).hasSize(1)
     Verify.multiAnswers(
-      episodeDto.answers[existingQuestionCode]!!,
+      episodeDto.answers[existingQuestionCode]!! as List<String>,
       "fruit loops",
       "custard"
     )

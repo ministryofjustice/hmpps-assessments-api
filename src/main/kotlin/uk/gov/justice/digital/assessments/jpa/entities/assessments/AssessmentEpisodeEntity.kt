@@ -98,7 +98,8 @@ data class AssessmentEpisodeEntity(
     closedDate = LocalDateTime.now()
   }
 
-  fun addAnswer(questionCode: String, answers: List<String>) {
-    this.answers[questionCode] = this.answers[questionCode].orEmpty().plus(answers).toSet().toList()
+  fun addAnswer(questionCode: String, answers: List<Any>?) {
+    if (answers != null)
+      this.answers[questionCode] = this.answers[questionCode].orEmpty().plus(answers).toSet().toList()
   }
 }

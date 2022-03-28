@@ -215,7 +215,7 @@ class RiskPredictorsService(
   }
 
   private fun getNonRequiredAnswer(answers: AnswersDto, answerCode: String): String? {
-    return answers[answerCode]?.first() as String?
+    return answers[answerCode]?.first()?.toString()
   }
 
   fun String?.toBoolean(): Boolean? {

@@ -6,7 +6,6 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.jayway.jsonpath.DocumentContext
 import com.jayway.jsonpath.JsonPath
 import net.minidev.json.JSONArray
-import net.minidev.json.JSONObject
 import org.apache.commons.lang3.time.FastDateFormat
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -20,9 +19,11 @@ import uk.gov.justice.digital.assessments.jpa.repositories.refdata.CloneAssessme
 import uk.gov.justice.digital.assessments.restclient.AssessmentApiRestClient
 import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
+import uk.gov.justice.digital.assessments.restclient.communityapi.PersonalContact
 import uk.gov.justice.digital.assessments.services.dto.ExternalSource
 import uk.gov.justice.digital.assessments.services.dto.ExternalSourceQuestionSchemaDto
 import uk.gov.justice.digital.assessments.services.exceptions.CrnIsMandatoryException
+import uk.gov.justice.digital.assessments.services.exceptions.ExternalSourceAnswerException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalSourceEndpointIsMandatoryException
 import java.time.LocalDateTime
 import java.util.regex.Pattern
@@ -147,11 +148,14 @@ class EpisodeService(
 
   fun getStructuredAnswersFromSourceData(
     sourceData: DocumentContext,
-    structure: ExternalSourceQuestionSchemaDto,
+    structureQuestion: ExternalSourceQuestionSchemaDto,
     questions: List<ExternalSourceQuestionSchemaDto>
-  ): List<String> {
-    val answerData = sourceData.read<JSONArray>(structure.jsonPathField)
-    return buildStructuredAnswers(questions, answerData)
+  ): List<Any>? {
+    return when (structureQuestion.questionCode){
+      "gp_details" -> sourceData.read<List<PersonalContact>>(structureQuestion.jsonPathField).also { println("gp") }
+      "emergency_contact_details" -> sourceData.read<List<PersonalContact>>(structureQuestion.jsonPathField).also { println("emergency contact") }
+      else -> throw ExternalSourceAnswerException("Question code: ${structureQuestion.questionCode} not recognised")
+    }
   }
 
   private fun getLatestCompleteEpisodeEndDate(newEpisode: AssessmentEpisodeEntity): LocalDateTime? {
@@ -248,23 +252,6 @@ class EpisodeService(
       }
     } catch (e: Exception) {
       return null
-    }
-  }
-
-  fun buildStructuredAnswers(
-    questions: List<ExternalSourceQuestionSchemaDto>,
-    answerData: JSONArray
-  ): List<String> {
-    return answerData.map {
-      val answersJson = JSONObject(it as Map<String, String>).toJSONString()
-      val answersDetailContext = JsonPath.parse(answersJson)
-      objectMapper.writeValueAsString(
-        questions
-          .associate { childQuestion ->
-            val value = answersDetailContext.read<Any>(childQuestion.jsonPathField)
-            childQuestion.questionCode to listOf(value)
-          }
-      )
     }
   }
 }
