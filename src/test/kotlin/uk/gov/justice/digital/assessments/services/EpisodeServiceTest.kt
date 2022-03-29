@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import uk.gov.justice.digital.assessments.api.GPDetailsAnswerDto
 import uk.gov.justice.digital.assessments.api.GroupQuestionDto
 import uk.gov.justice.digital.assessments.api.TableQuestionDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
@@ -488,7 +489,7 @@ class EpisodeServiceTest {
     "notes": "ARN Mapping Value testing - 28/10/2022 - ARN-631",
     "gender": "Male",
     "relationshipType": {
-      "code": "RT02",
+      "code": "ME",
       "description": "Emergency Contact"
     },
     "createdDatetime": "2021-10-28T18:57:56",
@@ -544,36 +545,15 @@ class EpisodeServiceTest {
       fieldType = "structure",
       ifEmpty = false,
     )
-//    val externalSourceGPQuestions = listOf(
-//      ExternalSourceQuestionSchemaDto(
-//        questionCode = "gp_first_name",
-//        externalSource = "Delius",
-//        jsonPathField = "firstName",
-//        fieldType = "structuredAnswer",
-//        ifEmpty = false,
-//        structuredQuestionCode = "gp_details"
-//      ),
-//      ExternalSourceQuestionSchemaDto(
-//        questionCode = "gp_family_name",
-//        externalSource = "Delius",
-//        jsonPathField = "surname",
-//        fieldType = "structuredAnswer",
-//        ifEmpty = false,
-//        structuredQuestionCode = "gp_details"
-//      ),
-//      ExternalSourceQuestionSchemaDto(
-//        questionCode = "gp_address_postcode",
-//        externalSource = "Delius",
-//        jsonPathField = "address.postcode",
-//        fieldType = "structuredAnswer",
-//        ifEmpty = false,
-//        structuredQuestionCode = "gp_details"
-//      )
-//    )
 
-    val result =
+    val gpDetails =
       episodeService.getStructuredAnswersFromSourceData(docContext, externalSourceGPObjectMapping)
+    val gp1 = gpDetails?.get(0) as GPDetailsAnswerDto
 
-    assertThat(result).isEmpty()
+    assertThat(gp1.firstName).isEqualTo(listOf("Charles"))
+    assertThat(gp1.familyName).isEqualTo(listOf("Europe"))
+    assertThat(gp1.postcode).isEqualTo(listOf("S3 7DQ"))
+
+    assertThat(gpDetails).hasSize(1)
   }
 }

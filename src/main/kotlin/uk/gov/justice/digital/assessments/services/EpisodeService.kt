@@ -145,7 +145,7 @@ class EpisodeService(
         val personalContacts: List<PersonalContact> = objectMapper.readValue(personalContactJson)
         GPDetailsAnswerDto.from(personalContacts)
       }
-      "emergency_contact_details" -> sourceData.read<List<PersonalContact>>(structureQuestion.jsonPathField)}
+      "emergency_contact_details" -> sourceData.read<List<PersonalContact>>(structureQuestion.jsonPathField)
       else -> throw ExternalSourceAnswerException("Question code: ${structureQuestion.questionCode} not recognised")
     }
   }
