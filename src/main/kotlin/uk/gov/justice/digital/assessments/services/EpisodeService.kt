@@ -44,10 +44,6 @@ class EpisodeService(
     val log: Logger = LoggerFactory.getLogger(this::class.java)
     private const val cloneEpisodeOffset: Long = 55
 
-    private const val STRUCTURE_FIELD_TYPE = "structure"
-    private const val STRUCTURED_ANSWER_FIELD_TYPE = "structuredAnswer"
-    private val structuredFieldTypes: List<String> = listOf(STRUCTURE_FIELD_TYPE, STRUCTURED_ANSWER_FIELD_TYPE)
-
     private const val OASYS_SOURCE_NAME = "OASYS"
 
     private val objectMapper: ObjectMapper = jacksonObjectMapper().registerModules(JavaTimeModule())
