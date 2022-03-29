@@ -3,6 +3,7 @@ package uk.gov.justice.digital.assessments.services
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.jayway.jsonpath.DocumentContext
 import com.jayway.jsonpath.JsonPath
 import net.minidev.json.JSONArray
@@ -15,6 +16,7 @@ import uk.gov.justice.digital.assessments.api.GroupQuestionDto
 import uk.gov.justice.digital.assessments.api.TableQuestionDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
+import uk.gov.justice.digital.assessments.api.GPDetailsAnswerDto
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.CloneAssessmentExcludedQuestionsRepository
 import uk.gov.justice.digital.assessments.restclient.AssessmentApiRestClient
 import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
@@ -27,6 +29,7 @@ import uk.gov.justice.digital.assessments.services.exceptions.ExternalSourceAnsw
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalSourceEndpointIsMandatoryException
 import java.time.LocalDateTime
 import java.util.regex.Pattern
+
 
 @Service
 @Transactional("refDataTransactionManager")
@@ -116,9 +119,8 @@ class EpisodeService(
     questionSchemas: List<ExternalSourceQuestionSchemaDto>,
     latestCompleteEpisodeEndDate: LocalDateTime?
   ) {
-    val (structuredDataQuestions, simpleQuestions) = questionSchemas.partition { it.fieldType in structuredFieldTypes }
 
-    simpleQuestions.groupBy { it.externalSourceEndpoint }
+    questionSchemas.groupBy { it.externalSourceEndpoint }
       .forEach {
         val sourceData = loadSource(episode, sourceName, it.key, latestCompleteEpisodeEndDate) ?: return
         episode.prepopulatedFromOASys = sourceName == OASYS_SOURCE_NAME
@@ -127,33 +129,23 @@ class EpisodeService(
           episode.addAnswer(question.questionCode, getAnswersFromSourceData(sourceData, question))
         }
       }
-
-    structuredDataQuestions.groupBy { it.externalSourceEndpoint }
-      .forEach { (sourceEndpoint, allStructuredQuestions) ->
-        val sourceData = loadSource(episode, sourceName, sourceEndpoint, latestCompleteEpisodeEndDate) ?: return
-        episode.prepopulatedFromOASys = sourceName == OASYS_SOURCE_NAME
-
-        allStructuredQuestions
-          .filter { it.fieldType == STRUCTURE_FIELD_TYPE }
-          .forEach { structure ->
-            val questions = filterQuestionsByStructureQuestionCode(structure.questionCode, allStructuredQuestions)
-            episode.addAnswer(structure.questionCode, getStructuredAnswersFromSourceData(sourceData, structure, questions))
-          }
-      }
   }
 
-  private fun getAnswersFromSourceData(source: DocumentContext, question: ExternalSourceQuestionSchemaDto): List<String> {
+  private fun getAnswersFromSourceData(source: DocumentContext, question: ExternalSourceQuestionSchemaDto): List<Any> {
     return answerFormat(source, question).orEmpty()
   }
 
   fun getStructuredAnswersFromSourceData(
     sourceData: DocumentContext,
     structureQuestion: ExternalSourceQuestionSchemaDto,
-    questions: List<ExternalSourceQuestionSchemaDto>
   ): List<Any>? {
     return when (structureQuestion.questionCode){
-      "gp_details" -> sourceData.read<List<PersonalContact>>(structureQuestion.jsonPathField).also { println("gp") }
-      "emergency_contact_details" -> sourceData.read<List<PersonalContact>>(structureQuestion.jsonPathField).also { println("emergency contact") }
+      "gp_details" -> {
+        val personalContactJson = sourceData.read<JSONArray>(structureQuestion.jsonPathField).toJSONString()
+        val personalContacts: List<PersonalContact> = objectMapper.readValue(personalContactJson)
+        GPDetailsAnswerDto.from(personalContacts)
+      }
+      "emergency_contact_details" -> sourceData.read<List<PersonalContact>>(structureQuestion.jsonPathField)}
       else -> throw ExternalSourceAnswerException("Question code: ${structureQuestion.questionCode} not recognised")
     }
   }
@@ -162,12 +154,6 @@ class EpisodeService(
     return newEpisode.assessment.episodes.filter { it.isComplete() }
       .sortedByDescending { it.endDate }
       .firstOrNull()?.endDate
-  }
-
-  private fun filterQuestionsByStructureQuestionCode(structure: String, questions: List<ExternalSourceQuestionSchemaDto>): List<ExternalSourceQuestionSchemaDto> {
-    return questions.filter {
-      it.structuredQuestionCode.equals(structure)
-    }
   }
 
   private fun loadSource(
@@ -221,7 +207,7 @@ class EpisodeService(
       iso8601DateFormatter.format(basicDateFormatter.parse(dateStr)) else dateStr
   }
 
-  private fun answerFormat(source: DocumentContext, question: ExternalSourceQuestionSchemaDto): List<String>? {
+  private fun answerFormat(source: DocumentContext, question: ExternalSourceQuestionSchemaDto): List<Any>? {
     try {
       return when (question.fieldType) {
         "varchar" -> listOf(source.read<Any>(question.jsonPathField).toString())
@@ -247,6 +233,9 @@ class EpisodeService(
             listOf(question.mappedValue.orEmpty())
           else
             emptyList()
+        }
+        "structure" -> { getStructuredAnswersFromSourceData(source, question)
+
         }
         else -> listOf((source.read<JSONArray>(question.jsonPathField).filterNotNull() as List<String>).first().toString())
       }

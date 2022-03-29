@@ -544,35 +544,35 @@ class EpisodeServiceTest {
       fieldType = "structure",
       ifEmpty = false,
     )
-    val externalSourceGPQuestions = listOf(
-      ExternalSourceQuestionSchemaDto(
-        questionCode = "gp_first_name",
-        externalSource = "Delius",
-        jsonPathField = "firstName",
-        fieldType = "structuredAnswer",
-        ifEmpty = false,
-        structuredQuestionCode = "gp_details"
-      ),
-      ExternalSourceQuestionSchemaDto(
-        questionCode = "gp_family_name",
-        externalSource = "Delius",
-        jsonPathField = "surname",
-        fieldType = "structuredAnswer",
-        ifEmpty = false,
-        structuredQuestionCode = "gp_details"
-      ),
-      ExternalSourceQuestionSchemaDto(
-        questionCode = "gp_address_postcode",
-        externalSource = "Delius",
-        jsonPathField = "address.postcode",
-        fieldType = "structuredAnswer",
-        ifEmpty = false,
-        structuredQuestionCode = "gp_details"
-      )
-    )
+//    val externalSourceGPQuestions = listOf(
+//      ExternalSourceQuestionSchemaDto(
+//        questionCode = "gp_first_name",
+//        externalSource = "Delius",
+//        jsonPathField = "firstName",
+//        fieldType = "structuredAnswer",
+//        ifEmpty = false,
+//        structuredQuestionCode = "gp_details"
+//      ),
+//      ExternalSourceQuestionSchemaDto(
+//        questionCode = "gp_family_name",
+//        externalSource = "Delius",
+//        jsonPathField = "surname",
+//        fieldType = "structuredAnswer",
+//        ifEmpty = false,
+//        structuredQuestionCode = "gp_details"
+//      ),
+//      ExternalSourceQuestionSchemaDto(
+//        questionCode = "gp_address_postcode",
+//        externalSource = "Delius",
+//        jsonPathField = "address.postcode",
+//        fieldType = "structuredAnswer",
+//        ifEmpty = false,
+//        structuredQuestionCode = "gp_details"
+//      )
+//    )
 
     val result =
-      episodeService.getStructuredAnswersFromSourceData(docContext, externalSourceGPObjectMapping, externalSourceGPQuestions)
+      episodeService.getStructuredAnswersFromSourceData(docContext, externalSourceGPObjectMapping)
 
     assertThat(result).isEmpty()
   }

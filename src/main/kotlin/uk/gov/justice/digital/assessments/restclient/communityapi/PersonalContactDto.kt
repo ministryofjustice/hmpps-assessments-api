@@ -17,10 +17,10 @@ class PersonalContact (
   val emailAddress: String?,
   val notes: String?,
   val gender: String?,
-//  val relationshipType: KeyValue?,
+  val relationshipType: KeyValue?,
   val createdDatetime: LocalDateTime?,
   val lastUpdatedDatetime: LocalDateTime?,
-//  val address: AddressSummary?,
+  val address: AddressSummary?,
   val isActive: Boolean?,
 )
 
