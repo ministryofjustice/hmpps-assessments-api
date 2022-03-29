@@ -12,11 +12,11 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.assessments.api.GPDetailsAnswerDto
 import uk.gov.justice.digital.assessments.api.GroupQuestionDto
 import uk.gov.justice.digital.assessments.api.TableQuestionDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
-import uk.gov.justice.digital.assessments.api.GPDetailsAnswerDto
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.CloneAssessmentExcludedQuestionsRepository
 import uk.gov.justice.digital.assessments.restclient.AssessmentApiRestClient
 import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
@@ -29,7 +29,6 @@ import uk.gov.justice.digital.assessments.services.exceptions.ExternalSourceAnsw
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalSourceEndpointIsMandatoryException
 import java.time.LocalDateTime
 import java.util.regex.Pattern
-
 
 @Service
 @Transactional("refDataTransactionManager")
@@ -139,7 +138,7 @@ class EpisodeService(
     sourceData: DocumentContext,
     structureQuestion: ExternalSourceQuestionSchemaDto,
   ): List<Any>? {
-    return when (structureQuestion.questionCode){
+    return when (structureQuestion.questionCode) {
       "gp_details" -> {
         val personalContactJson = sourceData.read<JSONArray>(structureQuestion.jsonPathField).toJSONString()
         val personalContacts: List<PersonalContact> = objectMapper.readValue(personalContactJson)
@@ -234,9 +233,7 @@ class EpisodeService(
           else
             emptyList()
         }
-        "structure" -> { getStructuredAnswersFromSourceData(source, question)
-
-        }
+        "structure" -> { getStructuredAnswersFromSourceData(source, question) }
         else -> listOf((source.read<JSONArray>(question.jsonPathField).filterNotNull() as List<String>).first().toString())
       }
     } catch (e: Exception) {

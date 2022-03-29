@@ -1,9 +1,8 @@
 package uk.gov.justice.digital.assessments.restclient.communityapi
 
-
 import java.time.LocalDateTime
 
-class PersonalContact (
+class PersonalContact(
   val personalContactId: Long?,
   val relationship: String?,
   val startDate: LocalDateTime?,
@@ -24,12 +23,12 @@ class PersonalContact (
   val isActive: Boolean?,
 )
 
-class KeyValue (
+class KeyValue(
   val code: String?,
   val description: String?,
 )
 
-class AddressSummary (
+class AddressSummary(
   val addressNumber: String?,
   val buildingName: String?,
   val streetName: String?,

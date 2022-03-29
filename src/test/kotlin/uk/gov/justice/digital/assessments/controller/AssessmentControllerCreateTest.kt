@@ -293,7 +293,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(answers["reading_writing_difficulties"]).isEqualTo(listOf("YES"))
       assertThat(answers["reading_writing_difficulties_details"]).isEqualTo(listOf("Cannot read"))
 
-      val gpDetails = answers["gp_details"]  as List<*>
+      val gpDetails = answers["gp_details"] as List<*>
       val gpJson1 = gpDetails[0] as Map<*, *>
       assertThat(gpJson1["gp_first_name"]).isEqualTo(listOf("Nick"))
       assertThat(gpJson1["gp_family_name"]).isEqualTo(listOf("Riviera"))

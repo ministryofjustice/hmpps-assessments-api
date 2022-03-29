@@ -37,10 +37,10 @@ class GPDetailsAnswerDto(
 
   @JsonProperty("gp_phone_number")
   val telephoneNumber: List<String?> = emptyList(),
-){
+) {
   companion object {
 
-    fun from(personalContacts: List<PersonalContact>): List<GPDetailsAnswerDto>{
+    fun from(personalContacts: List<PersonalContact>): List<GPDetailsAnswerDto> {
       return personalContacts.map { from(it) }
     }
 
