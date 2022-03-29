@@ -7,6 +7,7 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -83,6 +84,19 @@ class AssessmentServiceTest {
   private val codeDescription = "Code description"
   private val offenceSubCode = "Sub-code"
   private val subCodeDescription = "Sub-code description"
+
+  @BeforeEach
+  internal fun setUp() {
+    val offenceDto = OffenceDto(
+      convictionId = 123,
+      convictionIndex = eventId,
+      offenceCode = "Code",
+      codeDescription = "Code description",
+      offenceSubCode = "Sub-code",
+      subCodeDescription = "Sub-code description"
+    )
+    every { offenderService.getOffence(any(), crn, eventId) } returns offenceDto
+  }
 
   @Nested
   @DisplayName("episodes")
@@ -200,6 +214,54 @@ class AssessmentServiceTest {
 
       val episodeDtos = assessmentsService.getAssessmentEpisodes(assessmentUuid)
       assertThat(episodeDtos).hasSize(2)
+    }
+
+    @Test
+    fun `should return current episode for assessment given a crn`() {
+      // Given
+      val episodeUuid = UUID.randomUUID()
+      every { subjectRepository.findByCrn(any()) } returns SubjectEntity(
+        crn = crn,
+        dateOfBirth = LocalDate.now(),
+        assessments = listOf(
+          AssessmentEntity(
+            assessmentId = assessmentId,
+            episodes = mutableListOf(
+              AssessmentEpisodeEntity(
+                episodeId = episodeId1,
+                episodeUuid = episodeUuid,
+                changeReason = "Change of Circs 1",
+                createdDate = LocalDateTime.now(),
+                assessmentSchemaCode = AssessmentSchemaCode.UPW,
+                author = AuthorEntity(
+                  userId = "1",
+                  userName = "USER",
+                  userAuthSource = "source",
+                  userFullName = "full name"
+                ),
+                assessment = AssessmentEntity()
+              )
+            )
+          )
+        )
+      )
+
+      // When
+      val currentEpisode = assessmentsService.getCurrentEpisode(crn)
+
+      // Then
+      assertThat(currentEpisode.episodeUuid).isEqualTo(episodeUuid)
+    }
+
+    @Test
+    fun `throw exception if get episode by crn does not exist`() {
+      // given
+      every { subjectRepository.findByCrn(any()) } returns null
+
+      // when & then
+      assertThatThrownBy { assessmentsService.getCurrentEpisode(crn) }
+        .isInstanceOf(EntityNotFoundException::class.java)
+        .hasMessage("No current episode found for $crn")
     }
 
     @Test

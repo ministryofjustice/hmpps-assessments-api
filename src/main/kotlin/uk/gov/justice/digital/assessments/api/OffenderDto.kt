@@ -13,7 +13,7 @@ data class OffenderDto(
   val crn: String? = null,
   val pncNumber: String? = null,
   val croNumber: String? = null,
-  val offence: OffenceDto? = null,
+  var offence: OffenceDto? = null,
   val address: Address? = null,
   val firstNameAliases: List<String>? = emptyList(),
   val surnameAliases: List<String>? = emptyList()

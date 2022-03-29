@@ -76,6 +76,38 @@ class AssessmentControllerTest : IntegrationTest() {
   @Nested
   @DisplayName("fetching assessment episodes")
   inner class FetchingEpisodes {
+
+    @Test
+    fun `should return current episode for a given crn`() {
+      // given
+      val crn = "X1346"
+      val path = "/assessments/subject/$crn/episodes/current"
+
+      // when
+      val assessmentEpisode = webTestClient.get().uri(path)
+        .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
+        .exchange()
+        .expectBody<AssessmentEpisodeDto>()
+        .returnResult()
+        .responseBody
+
+      // then
+      assertThat(assessmentEpisode.episodeUuid).isEqualTo(UUID.fromString("f3569440-efd5-4289-8fdd-4560360e5279"))
+    }
+
+    @Test
+    fun `should return 404 not found for a non existent crn`() {
+      // given
+      val crn = "This does not exist"
+      val path = "/assessments/subject/$crn/episodes/current"
+
+      // when & then
+      val assessmentEpisode = webTestClient.get().uri(path)
+        .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
+        .exchange()
+        .expectStatus().isNotFound
+    }
+
     @Test
     fun `fetch all episodes for an assessment`() {
       val episodes = fetchEpisodes(assessmentUuid)

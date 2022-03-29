@@ -8,8 +8,8 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import uk.gov.justice.digital.assessments.api.DeliusEventType
 import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
-import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityConvictionDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenceDetail
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenceDto
@@ -24,15 +24,70 @@ import java.time.LocalDate
 class OffenderServiceTest {
 
   private val communityApiRestClient: CommunityApiRestClient = mockk()
-  private val courtCaseRestClient: CourtCaseRestClient = mockk()
-//  private val subjectRepository: SubjectRepository = mockk()
-  private val offenderService: OffenderService =
-    OffenderService(communityApiRestClient, courtCaseRestClient)
+  private val offenderService: OffenderService = OffenderService(communityApiRestClient)
 
   private val oasysOffenderPk = 101L
   private val crn = "DX12340A"
   private val eventId = 1L
   private val convictionId = 123456L
+
+  @Test
+  fun `should invoke community service Api with conviction Id when Delius EventType is EventId`() {
+    // given
+    every { communityApiRestClient.getConviction(crn, eventId) } returns CommunityConvictionDto(
+      index = 1L,
+      convictionId = 23423L,
+      sentence = Sentence(LocalDate.now()),
+      offences = listOf(
+        CommunityOffenceDto(
+          offenceId = "234234",
+          mainOffence = true,
+          detail = CommunityOffenceDetail(
+            mainCategoryCode = "code",
+            mainCategoryDescription = "categoryDescription",
+            subCategoryCode = "sub category code",
+            subCategoryDescription = "sub category description"
+          )
+        )
+      )
+    )
+
+    // when
+    offenderService.getOffence(DeliusEventType.EVENT_ID, crn, eventId)
+
+    // then
+    verify() { communityApiRestClient.getConviction(crn, eventId) }
+  }
+
+  @Test
+  fun `should invoke community service Api with conviction Id when Delius EventType is Event index`() {
+    // given
+    every { communityApiRestClient.getConvictions(crn) } returns listOf(
+      CommunityConvictionDto(
+        index = 1L,
+        convictionId = 23423L,
+        sentence = Sentence(LocalDate.now()),
+        offences = listOf(
+          CommunityOffenceDto(
+            offenceId = "234234",
+            mainOffence = true,
+            detail = CommunityOffenceDetail(
+              mainCategoryCode = "code",
+              mainCategoryDescription = "categoryDescription",
+              subCategoryCode = "sub category code",
+              subCategoryDescription = "sub category description"
+            )
+          )
+        )
+      )
+    )
+
+    // when
+    offenderService.getOffence(DeliusEventType.EVENT_INDEX, crn, eventId)
+
+    // then
+    verify() { communityApiRestClient.getConvictions(crn) }
+  }
 
   @Test
   fun `return offender`() {

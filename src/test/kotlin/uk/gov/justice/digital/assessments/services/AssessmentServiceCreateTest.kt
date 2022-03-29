@@ -83,6 +83,15 @@ class AssessmentServiceCreateTest {
   fun setup() {
     MDC.put(RequestData.USER_NAME_HEADER, "User name")
     every { assessmentSchemaService.toOasysAssessmentType(AssessmentSchemaCode.ROSH) } returns OasysAssessmentType.SHORT_FORM_PSR
+    val offenceDto = OffenceDto(
+      convictionId = 123,
+      convictionIndex = eventId,
+      offenceCode = "Code",
+      codeDescription = "Code description",
+      offenceSubCode = "Sub-code",
+      subCodeDescription = "Sub-code description"
+    )
+    every { offenderService.getOffence(any(), crn, eventId) } returns offenceDto
   }
 
   @Nested
@@ -162,7 +171,7 @@ class AssessmentServiceCreateTest {
         oasysOffenderPk,
         oasysSetPk
       )
-      every { offenderService.getOffenceFromConvictionId(crn, eventId) } returns OffenceDto(
+      val offenceDto = OffenceDto(
         convictionId = 123,
         convictionIndex = eventId,
         offenceCode = "Code",
@@ -170,6 +179,8 @@ class AssessmentServiceCreateTest {
         offenceSubCode = "Sub-code",
         subCodeDescription = "Sub-code description"
       )
+      every { offenderService.getOffenceFromConvictionId(crn, eventId) } returns offenceDto
+      every { offenderService.getOffence(DeliusEventType.EVENT_ID, crn, eventId) } returns offenceDto
       every { episodeService.prepopulateFromExternalSources(any(), assessmentSchemaCode) } returnsArgument 0
       every { episodeService.prepopulateFromPreviousEpisodes(any(), any()) } returnsArgument 0
       every { subjectRepository.save(any()) } returns SubjectEntity(
