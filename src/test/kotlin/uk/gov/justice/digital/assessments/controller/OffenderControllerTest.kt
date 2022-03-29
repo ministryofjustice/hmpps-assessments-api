@@ -13,7 +13,7 @@ import uk.gov.justice.digital.assessments.api.OffenderDto
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import java.time.LocalDate
 
-@AutoConfigureWebTestClient(timeout = "6000000")
+@AutoConfigureWebTestClient
 internal class OffenderControllerTest : IntegrationTest() {
 
   @Test
