@@ -238,8 +238,7 @@ class QuestionSchemaEntities(
         it.fieldType,
         it.externalSourceEndpoint,
         it.mappedValue,
-        it.ifEmpty,
-        it.structuredQuestionCode
+        it.ifEmpty
       )
     }
   }
