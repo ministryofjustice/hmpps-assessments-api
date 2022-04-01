@@ -275,12 +275,6 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(answers["language"]).isEqualTo(listOf("French"))
       assertThat(answers["requires_interpreter"]).isEqualTo(listOf("true"))
 
-//      assertThat(answers["emergency_contact_first_name"]).isEqualTo(listOf("Brian"))
-//      assertThat(answers["emergency_contact_family_name"]).isEqualTo(listOf("Contact"))
-//      assertThat(answers["emergency_contact_relationship"]).isEqualTo(listOf("Father"))
-//      assertThat(answers["emergency_contact_mobile_phone_number"]).isEqualTo(listOf("07333567890"))
-//      assertThat(answers["emergency_contact_phone_number"]).isEqualTo(listOf("0133456789"))
-
       assertThat(answers["allergies"]).isEqualTo(listOf("YES"))
       assertThat(answers["allergies_details"]).isEqualTo(listOf("Nut Allergy"))
       assertThat(answers["pregnancy"]).isEqualTo(listOf("NO"))
@@ -290,30 +284,44 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(answers["reading_writing_difficulties"]).isEqualTo(listOf("YES"))
       assertThat(answers["reading_writing_difficulties_details"]).isEqualTo(listOf("Cannot read"))
 
-      val gpDetails = answers["gp_details"] as List<*>
-      val gpJson1 = gpDetails[0] as Map<*, *>
-      assertThat(gpJson1["gp_first_name"]).isEqualTo(listOf("Nick"))
-      assertThat(gpJson1["gp_family_name"]).isEqualTo(listOf("Riviera"))
-      assertThat(gpJson1["gp_address_building_name"]).isEqualTo(listOf("The practice"))
-      assertThat(gpJson1["gp_address_house_number"]).isEqualTo(listOf("38"))
-      assertThat(gpJson1["gp_address_street_name"]).isEqualTo(listOf("East Street"))
-      assertThat(gpJson1["gp_address_district"]).isEqualTo(listOf("East City Centre"))
-      assertThat(gpJson1["gp_address_town_or_city"]).isEqualTo(listOf("Bristol"))
-      assertThat(gpJson1["gp_address_county"]).isEqualTo(listOf("East London"))
-      assertThat(gpJson1["gp_address_postcode"]).isEqualTo(listOf("E5 7BS"))
-      assertThat(gpJson1["gp_phone_number"]).isEqualTo(listOf("0233456789"))
+      val emergencyContactDetails = answers["emergency_contact_details"] as List<*>
+      val contact = emergencyContactDetails[0] as Map<*, *>
+      assertThat(contact["emergency_contact_first_name"]).isEqualTo(listOf("Brian"))
+      assertThat(contact["emergency_contact_family_name"]).isEqualTo(listOf("Contact"))
+      assertThat(contact["emergency_contact_relationship"]).isEqualTo(listOf("Father"))
+      assertThat(contact["emergency_contact_address_house_number"]).isEqualTo(listOf("36"))
+      assertThat(contact["emergency_contact_address_street_name"]).isEqualTo(listOf("Fifth Street"))
+      assertThat(contact["emergency_contact_address_district"]).isEqualTo(listOf("South City Centre"))
+      assertThat(contact["emergency_contact_address_town_or_city"]).isEqualTo(listOf("London"))
+      assertThat(contact["emergency_contact_address_county"]).isEqualTo(listOf("South London"))
+      assertThat(contact["emergency_contact_mobile_phone_number"]).isEqualTo(listOf("07333567890"))
+      assertThat(contact["emergency_contact_address_postcode"]).isEqualTo(listOf("South City Centre"))
+      assertThat(contact["emergency_contact_phone_number"]).isEqualTo(listOf("0133456789"))
 
-      val gpJson2 = gpDetails[1] as Map<*, *>
-      assertThat(gpJson2["gp_first_name"]).isEqualTo(listOf("Steve"))
-      assertThat(gpJson2["gp_family_name"]).isEqualTo(listOf("Wilson"))
-      assertThat(gpJson2["gp_address_building_name"]).isEqualTo(listOf("The Building"))
-      assertThat(gpJson2["gp_address_house_number"]).isEqualTo(listOf("77"))
-      assertThat(gpJson2["gp_address_street_name"]).isEqualTo(listOf("Some Street"))
-      assertThat(gpJson2["gp_address_district"]).isEqualTo(listOf("Some City Centre"))
-      assertThat(gpJson2["gp_address_town_or_city"]).isEqualTo(listOf("London"))
-      assertThat(gpJson2["gp_address_county"]).isEqualTo(listOf("Essex"))
-      assertThat(gpJson2["gp_address_postcode"]).isEqualTo(listOf("NW10 1EP"))
-      assertThat(gpJson2["gp_phone_number"]).isEqualTo(listOf("0776 666 6666"))
+      val gpDetails = answers["gp_details"] as List<*>
+      val gp1 = gpDetails[0] as Map<*, *>
+      assertThat(gp1["gp_first_name"]).isEqualTo(listOf("Nick"))
+      assertThat(gp1["gp_family_name"]).isEqualTo(listOf("Riviera"))
+      assertThat(gp1["gp_address_building_name"]).isEqualTo(listOf("The practice"))
+      assertThat(gp1["gp_address_house_number"]).isEqualTo(listOf("38"))
+      assertThat(gp1["gp_address_street_name"]).isEqualTo(listOf("East Street"))
+      assertThat(gp1["gp_address_district"]).isEqualTo(listOf("East City Centre"))
+      assertThat(gp1["gp_address_town_or_city"]).isEqualTo(listOf("Bristol"))
+      assertThat(gp1["gp_address_county"]).isEqualTo(listOf("East London"))
+      assertThat(gp1["gp_address_postcode"]).isEqualTo(listOf("E5 7BS"))
+      assertThat(gp1["gp_phone_number"]).isEqualTo(listOf("0233456789"))
+
+      val gp2 = gpDetails[1] as Map<*, *>
+      assertThat(gp2["gp_first_name"]).isEqualTo(listOf("Steve"))
+      assertThat(gp2["gp_family_name"]).isEqualTo(listOf("Wilson"))
+      assertThat(gp2["gp_address_building_name"]).isEqualTo(listOf("The Building"))
+      assertThat(gp2["gp_address_house_number"]).isEqualTo(listOf("77"))
+      assertThat(gp2["gp_address_street_name"]).isEqualTo(listOf("Some Street"))
+      assertThat(gp2["gp_address_district"]).isEqualTo(listOf("Some City Centre"))
+      assertThat(gp2["gp_address_town_or_city"]).isEqualTo(listOf("London"))
+      assertThat(gp2["gp_address_county"]).isEqualTo(listOf("Essex"))
+      assertThat(gp2["gp_address_postcode"]).isEqualTo(listOf("NW10 1EP"))
+      assertThat(gp2["gp_phone_number"]).isEqualTo(listOf("0776 666 6666"))
     }
 
     @Test
@@ -337,13 +345,13 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       val answers = assessment.episodes.first().answers
 
       val gpDetails = answers["gp_details"] as List<*>
-      val gpJson1 = gpDetails[0] as Map<*, *>
-      assertThat(gpJson1["gp_first_name"]).isEqualTo(listOf("Nick"))
-      assertThat(gpJson1["gp_family_name"]).isEqualTo(listOf("Riviera"))
+      val gp1 = gpDetails[0] as Map<*, *>
+      assertThat(gp1["gp_first_name"]).isEqualTo(listOf("Nick"))
+      assertThat(gp1["gp_family_name"]).isEqualTo(listOf("Riviera"))
 
-      val gpJson2 = gpDetails[1] as Map<*, *>
-      assertThat(gpJson2["gp_first_name"]).isEqualTo(listOf("Steve"))
-      assertThat(gpJson2["gp_family_name"]).isEqualTo(listOf("Wilson"))
+      val gp2 = gpDetails[1] as Map<*, *>
+      assertThat(gp2["gp_first_name"]).isEqualTo(listOf("Steve"))
+      assertThat(gp2["gp_family_name"]).isEqualTo(listOf("Wilson"))
 
       assertThat(gpDetails).hasSize(2)
     }

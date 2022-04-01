@@ -12,6 +12,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.assessments.api.EmergencyContactDetailsAnswerDto
 import uk.gov.justice.digital.assessments.api.GPDetailsAnswerDto
 import uk.gov.justice.digital.assessments.api.GroupQuestionDto
 import uk.gov.justice.digital.assessments.api.TableQuestionDto
@@ -56,6 +57,7 @@ class EpisodeService(
     episode: AssessmentEpisodeEntity,
     assessmentSchemaCode: AssessmentSchemaCode
   ): AssessmentEpisodeEntity {
+    AssessmentService.log.info("Pre-populating episode from external source for assessment type: $assessmentSchemaCode")
     val questionsToPopulate = questionService.getAllQuestions().withExternalSource(assessmentSchemaCode)
     if (questionsToPopulate.isEmpty())
       return episode
@@ -64,8 +66,8 @@ class EpisodeService(
 
     questionsToPopulate
       .groupBy { it.externalSource }
-      .forEach {
-        prepopulateFromSource(episode, it.key, it.value, latestCompleteEpisodeEndDate)
+      .forEach { (sourceName, questionSchemas) ->
+        prepopulateFromSource(episode, sourceName, questionSchemas, latestCompleteEpisodeEndDate)
       }
 
     return episode
@@ -114,11 +116,9 @@ class EpisodeService(
     questionSchemas: List<ExternalSourceQuestionSchemaDto>,
     latestCompleteEpisodeEndDate: LocalDateTime?
   ) {
-
     questionSchemas.groupBy { it.externalSourceEndpoint }
       .forEach {
         val sourceData = loadSource(episode, sourceName, it.key, latestCompleteEpisodeEndDate) ?: return
-        episode.prepopulatedFromOASys = sourceName == OASYS_SOURCE_NAME
 
         it.value.forEach { question ->
           episode.addAnswer(question.questionCode, getAnswersFromSourceData(sourceData, question))
@@ -128,21 +128,6 @@ class EpisodeService(
 
   private fun getAnswersFromSourceData(source: DocumentContext, question: ExternalSourceQuestionSchemaDto): List<Any> {
     return answerFormat(source, question).orEmpty()
-  }
-
-  fun getStructuredAnswersFromSourceData(
-    sourceData: DocumentContext,
-    structureQuestion: ExternalSourceQuestionSchemaDto,
-  ): List<Any>? {
-    return when (structureQuestion.questionCode) {
-      "gp_details" -> {
-        val personalContactJson = sourceData.read<JSONArray>(structureQuestion.jsonPathField).toJSONString()
-        val personalContacts: List<PersonalContact> = objectMapper.readValue(personalContactJson)
-        GPDetailsAnswerDto.from(personalContacts)
-      }
-      "emergency_contact_details" -> sourceData.read<List<PersonalContact>>(structureQuestion.jsonPathField)
-      else -> throw ExternalSourceAnswerException("Question code: ${structureQuestion.questionCode} not recognised")
-    }
   }
 
   private fun getLatestCompleteEpisodeEndDate(newEpisode: AssessmentEpisodeEntity): LocalDateTime? {
@@ -157,6 +142,7 @@ class EpisodeService(
     sourceEndpoint: String?,
     latestCompleteEpisodeEndDate: LocalDateTime?
   ): DocumentContext? {
+    log.info("Fetching source answers for source: $sourceName")
     try {
       val rawJson = when (sourceName) {
         ExternalSource.COURT.name -> loadFromCourtCase(episode)
@@ -229,11 +215,36 @@ class EpisodeService(
           else
             emptyList()
         }
-        "structure" -> { getStructuredAnswersFromSourceData(source, question) }
+        "structured" -> { getStructuredAnswersFromSourceData(source, question) }
         else -> listOf((source.read<JSONArray>(question.jsonPathField).filterNotNull() as List<String>).first().toString())
       }
     } catch (e: Exception) {
       return null
     }
+  }
+
+  fun getStructuredAnswersFromSourceData(
+    sourceData: DocumentContext,
+    structureQuestion: ExternalSourceQuestionSchemaDto,
+  ): List<Any>? {
+    return when (structureQuestion.questionCode) {
+      "gp_details" -> {
+        val personalContacts = getPersonalContactsFromJson(sourceData, structureQuestion)
+        GPDetailsAnswerDto.from(personalContacts)
+      }
+      "emergency_contact_details" -> {
+        val personalContacts = getPersonalContactsFromJson(sourceData, structureQuestion)
+        EmergencyContactDetailsAnswerDto.from(personalContacts)
+      }
+      else -> throw ExternalSourceAnswerException("Question code: ${structureQuestion.questionCode} not recognised")
+    }
+  }
+
+  private fun getPersonalContactsFromJson(
+    sourceData: DocumentContext,
+    structureQuestion: ExternalSourceQuestionSchemaDto
+  ): List<PersonalContact> {
+    val personalContactJson = sourceData.read<JSONArray>(structureQuestion.jsonPathField).toJSONString()
+    return objectMapper.readValue(personalContactJson)
   }
 }

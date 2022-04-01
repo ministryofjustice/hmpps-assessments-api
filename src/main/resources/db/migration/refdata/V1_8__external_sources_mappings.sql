@@ -60,9 +60,9 @@ VALUES
 ('12be7d28-b20e-43f3-ba3b-3d0fd302e63a', 'mental_health_condition', 'UPW', 'DELIUS', '$.offenderProfile.disabilities[?(@.disabilityType.code==''D''|| @.disabilityType.code==''D01'' || @.disabilityType.code==''MI'')].disabilityType.code', 'array', 'secure/offenders/crn/$crn/all', null, false, null),
 ('031e620a-b49a-4371-931b-6d6e05c3af4d', 'mental_health_condition_details', 'UPW', 'DELIUS', '$.offenderProfile.disabilities[?(@.disabilityType.code==''D''|| @.disabilityType.code==''D01'' || @.disabilityType.code==''MI'')].disabilityType.description', 'array', 'secure/offenders/crn/$crn/all', null, false, null),
 
-('8e219d36-6979-4018-8944-12777990910e', 'emergency_contact_details', 'UPW', 'DELIUS', '$[?(@.relationshipType.code==''ME''&&@.isActive==true)]', 'structure', 'secure/offenders/crn/$crn/personalContacts', null, false, null),
+('8e219d36-6979-4018-8944-12777990910e', 'emergency_contact_details', 'UPW', 'DELIUS', '$[?(@.relationshipType.code==''ME''&&@.isActive==true)]', 'structured', 'secure/offenders/crn/$crn/personalContacts', null, false, null),
 
-('cb24dc64-e8fd-4960-8096-1907d59de3b0', 'gp_details', 'UPW', 'DELIUS', '$[?(@.relationshipType.code==''RT02''&&@.isActive==true)]', 'structure', 'secure/offenders/crn/$crn/personalContacts', null, false, null),
+('cb24dc64-e8fd-4960-8096-1907d59de3b0', 'gp_details', 'UPW', 'DELIUS', '$[?(@.relationshipType.code==''RT02''&&@.isActive==true)]', 'structured', 'secure/offenders/crn/$crn/personalContacts', null, false, null),
 
 ('f4a45236-87c9-457b-b9a3-78db3384e870', 'allergies', 'UPW', 'DELIUS', '$.personalCircumstances[?(@.personalCircumstanceType.code==''D'' && @.personalCircumstanceSubType.code==''D03'')].personalCircumstanceSubType.description', 'yesno', 'secure/offenders/crn/$crn/personalCircumstances', null, false, null),
 ('e0004447-79e0-497c-85ff-303238555ab4', 'allergies_details', 'UPW', 'DELIUS', '$.personalCircumstances[?(@.personalCircumstanceType.code==''D'' && @.personalCircumstanceSubType.code==''D03'')].notes', null, 'secure/offenders/crn/$crn/personalCircumstances', null, false, null),

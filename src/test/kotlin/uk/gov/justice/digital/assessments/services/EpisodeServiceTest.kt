@@ -542,7 +542,7 @@ class EpisodeServiceTest {
       questionCode = "gp_details",
       externalSource = "Delius",
       jsonPathField = "\$[?(@.relationshipType.code=='RT02')]",
-      fieldType = "structure",
+      fieldType = "structured",
       ifEmpty = false,
     )
 
