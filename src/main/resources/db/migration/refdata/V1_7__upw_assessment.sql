@@ -217,7 +217,6 @@ VALUES
 ('19a1b4d8-0f85-4049-ba7b-127646c882d8', 'pregnancy_recently_given_birth_details', '2021-09-27 14:50:00', null, 'textarea', null, 'Give details', null, null),
 ('155e1596-9f83-4e0a-8fa7-e36f9ed2b2e5', 'health_issues_complete', '2021-09-27 14:50:00', null, 'radio', '8067ff6e-7400-4d1e-ae2a-87dee7e124ec', 'Mark this section as complete?', '', null),
 ('0ba4ef3e-8c40-4c1e-b267-a42afd07ee4e', 'gp_details_complete', '2021-09-27 14:50:00', null, 'radio', '8067ff6e-7400-4d1e-ae2a-87dee7e124ec', 'Mark this section as complete?', '', null),
-('2a1a41dd-5d77-4674-9f8f-561c654867b8', 'gp_details', '2021-09-27 14:50:00', null, 'table', null, '', '', null),
 ('d403b86e-cdcc-41c9-b3cb-8780d361986e', 'gp_first_name', '2021-09-27 14:50:00', null, 'freetext', null, 'First name', null, null),
 ('b2a10996-fb47-4bf6-94c7-dba20aff5b97', 'gp_family_name', '2021-09-27 14:50:00', null, 'freetext', null, 'Family name', null, null),
 ('9b7a4455-5bdf-4e28-af57-f2fdbfb54805', 'gp_address_building_name', '2021-09-27 14:50:00', null, 'freetext', null, 'Building name', null, null),

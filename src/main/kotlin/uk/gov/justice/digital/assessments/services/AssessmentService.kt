@@ -80,7 +80,7 @@ class AssessmentService(
       ?: throw EntityNotFoundException("No CRN found for subject for assessment $assessmentUuid")
 
     offenderService.validateUserAccess(subject.crn)
-    val offence = getEpisodeOffence(eventType, subject.crn, eventId)
+    val offence = offenderService.getOffence(eventType, subject.crn, eventId)
     val episode = createPrepopulatedEpisode(
       assessment,
       reason,
@@ -163,7 +163,7 @@ class AssessmentService(
       throw IllegalStateException("Unable to create Assessment with assessment type: $assessmentSchemaCode, eventId: $eventId, crn: $crn")
     }
     val arnAssessment = getOrCreateAssessment(crn, eventId)
-    val offence = getEpisodeOffence(eventType, crn, eventId)
+    val offence = offenderService.getOffence(eventType, crn, eventId)
     val (oasysOffenderPk, oasysSetPK) = oasysAssessmentUpdateService.createOffenderAndOasysAssessment(
       crn = crn,
       deliusEventId = offence.convictionIndex,
@@ -181,6 +181,14 @@ class AssessmentService(
       subject
     )
     return AssessmentDto.from(arnAssessment)
+  }
+
+  fun getCurrentEpisode(crn: String): AssessmentEpisodeDto {
+    log.info("Entered getCurrentEpisode{}", crn)
+
+    val existingSubject = subjectRepository.findByCrn(crn)
+    val currentEpisode = existingSubject?.getCurrentAssessment()?.getCurrentEpisode() ?: throw EntityNotFoundException("No current episode found for $crn")
+    return AssessmentEpisodeDto.from(currentEpisode)
   }
 
   private fun getOrCreateAssessment(crn: String, eventId: Long): AssessmentEntity {
@@ -234,7 +242,7 @@ class AssessmentService(
   }
 
   private fun matchAnswers(
-    episodeAnswer: Map.Entry<String, List<Any>>,
+    episodeAnswer: Map.Entry<String, List<String>>,
     question: QuestionSchemaEntity
   ): Set<AnswerSchemaEntity> {
     val answerSchemas = question.answerSchemaEntities
@@ -359,18 +367,6 @@ class AssessmentService(
     }
     log.info("New episode episode with id:${episode.episodeId} and uuid:${episode.episodeUuid} created for assessment ${assessment.assessmentUuid}")
     return episode
-  }
-
-  private fun getEpisodeOffence(
-    eventType: DeliusEventType,
-    crn: String,
-    eventId: Long
-  ): OffenceDto {
-    return if (eventType == DeliusEventType.EVENT_ID) {
-      offenderService.getOffenceFromConvictionId(crn, eventId)
-    } else {
-      offenderService.getOffenceFromConvictionIndex(crn, eventId)
-    }
   }
 
   private fun auditAndLogCreateEpisode(

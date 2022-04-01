@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
@@ -29,6 +31,10 @@ class AssessmentController(
   val assessmentUpdateService: AssessmentUpdateService,
   val assessmentSchemaService: AssessmentSchemaService
 ) {
+
+  companion object {
+    val log: Logger = LoggerFactory.getLogger(this::class.java)
+  }
 
   @RequestMapping(path = ["/assessments"], method = [RequestMethod.POST])
   @Operation(description = "Creates a new assessment")
@@ -122,6 +128,20 @@ class AssessmentController(
     ) @PathVariable assessmentUuid: UUID
   ): AssessmentEpisodeDto {
     return assessmentService.getCurrentAssessmentEpisode(assessmentUuid)
+  }
+
+  @RequestMapping(path = ["/assessments/subject/{crn}/episodes/current"], method = [RequestMethod.GET])
+  @Operation(description = "Get the current episodes for a given crn")
+  @ApiResponses(
+    value = [
+      ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
+      ApiResponse(responseCode = "200", description = "OK")
+    ]
+  )
+  @PreAuthorize("hasRole('ROLE_PROBATION')")
+  fun getCurrentEpisode(@PathVariable crn: String): AssessmentEpisodeDto {
+    log.debug("Entered getCurrentEpisode{}", crn)
+    return assessmentService.getCurrentEpisode(crn)
   }
 
   @RequestMapping(path = ["/assessments/{assessmentUuid}/episodes/{episodeUuid}"], method = [RequestMethod.GET])

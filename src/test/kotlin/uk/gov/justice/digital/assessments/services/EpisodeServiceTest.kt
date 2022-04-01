@@ -52,6 +52,7 @@ class EpisodeServiceTest {
   )
 
   private lateinit var newEpisode: AssessmentEpisodeEntity
+  private lateinit var previousEpisodes: List<AssessmentEpisodeEntity>
 
   private val author = AuthorEntity(
     userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"
@@ -269,7 +270,7 @@ class EpisodeServiceTest {
       tablerow1
     )
 
-    val table1: Tables = mutableMapOf(
+    var table1: Tables = mutableMapOf(
       "table_1" to tableRows1
     )
 
@@ -335,7 +336,7 @@ class EpisodeServiceTest {
       tablerow1
     )
 
-    val table1: Tables = mutableMapOf(
+    var table1: Tables = mutableMapOf(
       "table_1" to tableRows1
     )
 
@@ -378,7 +379,7 @@ class EpisodeServiceTest {
       expectedTableRow
     )
 
-    val expectedTable1: Tables = mutableMapOf(
+    var expectedTable1: Tables = mutableMapOf(
       "table_1" to expectedTableRows
     )
 
