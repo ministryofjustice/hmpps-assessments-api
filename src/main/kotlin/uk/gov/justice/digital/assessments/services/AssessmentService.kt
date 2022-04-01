@@ -242,7 +242,7 @@ class AssessmentService(
   }
 
   private fun matchAnswers(
-    episodeAnswer: Map.Entry<String, List<String>>,
+    episodeAnswer: Map.Entry<String, List<Any>>,
     question: QuestionSchemaEntity
   ): Set<AnswerSchemaEntity> {
     val answerSchemas = question.answerSchemaEntities

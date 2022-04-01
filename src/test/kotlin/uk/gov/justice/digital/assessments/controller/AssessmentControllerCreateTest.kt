@@ -208,25 +208,12 @@ class AssessmentControllerCreateTest : IntegrationTest() {
     @Test
     fun `creating a new UPW assessment from crn and delius event id returns assessment with prepopulated Delius answers`() {
 
-      val dto = CreateAssessmentDto(
-        crn = crn,
-        deliusEventId = eventID,
-        assessmentSchemaCode = AssessmentSchemaCode.UPW
-      )
-      val assessment = webTestClient.post().uri("/assessments")
-        .bodyValue(dto)
-        .header(RequestData.USER_AREA_HEADER_NAME, "WWS")
-        .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
-        .exchange()
-        .expectStatus().isOk
-        .expectBody<AssessmentDto>()
-        .returnResult()
-        .responseBody
+      val assessment = createDeliusAssessment(crn, eventID, AssessmentSchemaCode.UPW)
 
       assertThat(assessment?.assessmentUuid).isNotNull
       assertThat(assessment?.episodes).hasSize(1)
-      val answers = assessment.episodes.first().answers
-      assertThat(answers["first_name"]).isEqualTo(listOf("John"))
+      val answers = assessment?.episodes?.first()?.answers
+      assertThat(answers!!["first_name"]).isEqualTo(listOf("John"))
       assertThat(answers["first_name_aliases"]).isEqualTo(listOf("John", "Jonny"))
       assertThat(answers["family_name"]).isEqualTo(listOf("Smith"))
       assertThat(answers["family_name_aliases"]).isEqualTo(listOf("Smithy"))
@@ -327,24 +314,11 @@ class AssessmentControllerCreateTest : IntegrationTest() {
     @Test
     fun `creating a new UPW assessment from Delius only returns GPs where active flag is true`() {
 
-      val dto = CreateAssessmentDto(
-        crn = crn,
-        deliusEventId = eventID,
-        assessmentSchemaCode = AssessmentSchemaCode.UPW
-      )
-      val assessment = webTestClient.post().uri("/assessments")
-        .bodyValue(dto)
-        .header(RequestData.USER_AREA_HEADER_NAME, "WWS")
-        .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
-        .exchange()
-        .expectStatus().isOk
-        .expectBody<AssessmentDto>()
-        .returnResult()
-        .responseBody
+      val assessment = createDeliusAssessment(crn, eventID, AssessmentSchemaCode.UPW)
 
-      val answers = assessment.episodes.first().answers
+      val answers = assessment?.episodes?.first()?.answers
 
-      val gpDetails = answers["gp_details"] as List<*>
+      val gpDetails = answers?.get("gp_details") as List<*>
       val gp1 = gpDetails[0] as Map<*, *>
       assertThat(gp1["gp_first_name"]).isEqualTo(listOf("Nick"))
       assertThat(gp1["gp_family_name"]).isEqualTo(listOf("Riviera"))
@@ -410,20 +384,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
     @Test
     fun `creating a new assessment from crn and delius event id returns assessment`() {
 
-      val dto = CreateAssessmentDto(
-        crn = crn,
-        deliusEventId = eventID,
-        assessmentSchemaCode = AssessmentSchemaCode.ROSH
-      )
-      val assessment = webTestClient.post().uri("/assessments")
-        .bodyValue(dto)
-        .header(RequestData.USER_AREA_HEADER_NAME, "WWS")
-        .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
-        .exchange()
-        .expectStatus().isOk
-        .expectBody<AssessmentDto>()
-        .returnResult()
-        .responseBody
+      val assessment = createDeliusAssessment(crn, eventID, AssessmentSchemaCode.ROSH)
 
       assertThat(assessment?.assessmentUuid).isNotNull
       assertThat(assessment?.createdDate).isEqualToIgnoringMinutes(LocalDateTime.now())
@@ -433,8 +394,8 @@ class AssessmentControllerCreateTest : IntegrationTest() {
     fun `creating an assessment for a delius event id and crn when one already exists in ARN returns the existing assessment`() {
       val existingCrn = "CRN1"
       val existingEventId = 12345L
-      val existingAssessment = createDeliusAssessment(existingCrn, existingEventId)
-      val assessmentDto = createDeliusAssessment(existingCrn, existingEventId)
+      val existingAssessment = createDeliusAssessment(existingCrn, existingEventId, AssessmentSchemaCode.ROSH)
+      val assessmentDto = createDeliusAssessment(existingCrn, existingEventId, AssessmentSchemaCode.ROSH)
 
       assertThat(assessmentDto?.assessmentUuid).isEqualTo(existingAssessment?.assessmentUuid)
       assertThat(assessmentDto?.createdDate).isEqualTo(existingAssessment?.createdDate)
@@ -467,11 +428,11 @@ class AssessmentControllerCreateTest : IntegrationTest() {
     }
   }
 
-  private fun createDeliusAssessment(crn: String, deliusId: Long): AssessmentDto? {
+  private fun createDeliusAssessment(crn: String, deliusId: Long, assessmentSchemaCode: AssessmentSchemaCode): AssessmentDto? {
     val dto = CreateAssessmentDto(
       crn = crn,
       deliusEventId = deliusId,
-      assessmentSchemaCode = AssessmentSchemaCode.ROSH
+      assessmentSchemaCode = assessmentSchemaCode
     )
     return webTestClient.post().uri("/assessments")
       .bodyValue(dto)
