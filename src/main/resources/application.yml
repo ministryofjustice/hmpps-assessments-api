@@ -158,5 +158,8 @@ stub:
   restricted: ""
   offset: 0
 
-referenceData:
-  cacheTtlDays: 10
+cache:
+  ttlDays:
+    referenceData: 10
+  ttlMinutes:
+    default: 5

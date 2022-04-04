@@ -12,6 +12,10 @@ import uk.gov.justice.digital.assessments.api.GroupSummaryDto
 import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
 import uk.gov.justice.digital.assessments.api.QuestionSchemaDto
 import uk.gov.justice.digital.assessments.api.TableQuestionDto
+import uk.gov.justice.digital.assessments.config.CacheConstants.GROUP_CONTENTS_CACHE_KEY
+import uk.gov.justice.digital.assessments.config.CacheConstants.GROUP_SECTIONS_CACHE_KEY
+import uk.gov.justice.digital.assessments.config.CacheConstants.LIST_GROUP_CACHE_KEY
+import uk.gov.justice.digital.assessments.config.CacheConstants.QUESTION_SCHEMA_CACHE_KEY
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.GroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionGroupEntity
@@ -37,19 +41,19 @@ class QuestionService(
     val log: Logger = LoggerFactory.getLogger(this::class.java)
   }
 
-  @Cacheable("QuestionService:questionSchema")
+  @Cacheable(QUESTION_SCHEMA_CACHE_KEY)
   fun getQuestionSchema(questionSchemaId: UUID): QuestionSchemaDto {
     val questionSchemaEntity = questionSchemaRepository.findByQuestionSchemaUuid(questionSchemaId)
       ?: throw EntityNotFoundException("Question Schema not found for id: $questionSchemaId")
     return QuestionSchemaDto.from(questionSchemaEntity)
   }
 
-  @Cacheable("QuestionService:listGroups")
+  @Cacheable(LIST_GROUP_CACHE_KEY)
   fun listGroups(): Collection<GroupSummaryDto> {
     return questionGroupRepository.listGroups().map { GroupSummaryDto.from(it) }
   }
 
-  @Cacheable("QuestionService:getGroupContents")
+  @Cacheable(GROUP_CONTENTS_CACHE_KEY)
   fun getGroupContents(groupCode: String): GroupWithContentsDto {
     return getQuestionGroupContents(findByGroupCode(groupCode))
   }
@@ -58,7 +62,7 @@ class QuestionService(
     return getQuestionGroupContents(findByGroupUuid(groupUuid))
   }
 
-  @Cacheable("QuestionService:getGroupSections")
+  @Cacheable(GROUP_SECTIONS_CACHE_KEY)
   fun getGroupSections(groupCode: String): GroupSectionsDto {
     return fetchGroupSections(findByGroupCode(groupCode))
   }
