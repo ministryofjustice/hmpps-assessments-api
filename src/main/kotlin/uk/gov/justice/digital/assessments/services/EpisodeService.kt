@@ -116,6 +116,7 @@ class EpisodeService(
     questionSchemas: List<ExternalSourceQuestionSchemaDto>,
     latestCompleteEpisodeEndDate: LocalDateTime?
   ) {
+    episode.prepopulatedFromOASys = sourceName == OASYS_SOURCE_NAME
     questionSchemas.groupBy { it.externalSourceEndpoint }
       .forEach {
         val sourceData = loadSource(episode, sourceName, it.key, latestCompleteEpisodeEndDate) ?: return
