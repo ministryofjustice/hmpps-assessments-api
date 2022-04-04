@@ -23,6 +23,7 @@ class AssessmentUpdateService(
   private val episodeRepository: EpisodeRepository,
   private val riskPredictorsService: RiskPredictorsService,
   private val oasysAssessmentUpdateService: OasysAssessmentUpdateService,
+  private val assessmentService: AssessmentService,
   private val authorService: AuthorService,
   private val auditService: AuditService,
   private val telemetryService: TelemetryService

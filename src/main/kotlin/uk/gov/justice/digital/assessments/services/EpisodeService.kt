@@ -227,9 +227,6 @@ class EpisodeService(
           else
             emptyList()
         }
-        "structure" -> { getStructuredAnswersFromSourceData(source, question)
-
-        }
         "structured" -> { getStructuredAnswersFromSourceData(source, question) }
         else -> listOf((source.read<JSONArray>(question.jsonPathField).filterNotNull() as List<String>).first().toString())
       }
@@ -269,7 +266,7 @@ class EpisodeService(
 
   private fun getDisabilitiesFromJson(
     sourceData: DocumentContext,
-    structureQuestion: ExternalSourceQuestionSchemaDto
+    structureQuestion: ExternalSourceQuestionDto
   ): List<DeliusDisabilityDto> {
     val disabilitiesJson = sourceData.read<JSONArray>(structureQuestion.jsonPathField).toJSONString()
     return objectMapper.readValue(disabilitiesJson)
