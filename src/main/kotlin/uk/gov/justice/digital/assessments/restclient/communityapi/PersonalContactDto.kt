@@ -16,14 +16,14 @@ class PersonalContact(
   val emailAddress: String?,
   val notes: String?,
   val gender: String?,
-  val relationshipType: KeyValue?,
+  val relationshipType: RelationshipType?,
   val createdDatetime: LocalDateTime?,
   val lastUpdatedDatetime: LocalDateTime?,
   val address: AddressSummary?,
   val isActive: Boolean?,
 )
 
-class KeyValue(
+class RelationshipType(
   val code: String?,
   val description: String?,
 )
