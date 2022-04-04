@@ -50,6 +50,3 @@ VALUES
     ('c567db7c-7a9e-437f-9d18-4391f4c0751d', 'previous_possession_firearm', 'RSR', 'OASYS', '$.sections[?(@.section==''ROSH'')].answers[?(@.question==''R1.2.10.2_V2'')].answer[0]', 'array','assessment/latest/$crn', null, false),
     ('de622310-4c08-4b93-b164-791b23edd82b', 'previous_robbery', 'RSR', 'OASYS', '$.sections[?(@.section==''ROSH'')].answers[?(@.question==''R1.2.12.2_V2'')].answer[0]', 'array','assessment/latest/$crn', null, false),
     ('882c37ec-3c2d-4bc8-a42a-13a27d852e50', 'previous_offence_weapon', 'RSR', 'OASYS', '$.sections[?(@.section==''ROSH'')].answers[?(@.question==''R1.2.13.2_V2'')].answer[0]', 'array','assessment/latest/$crn', null, false)
-
-
-
