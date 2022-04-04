@@ -13,7 +13,7 @@ import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityRegis
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityRegistrationElement
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityRegistrations
 import uk.gov.justice.digital.assessments.restclient.communityapi.ContactDetails
-import uk.gov.justice.digital.assessments.restclient.communityapi.Disability
+import uk.gov.justice.digital.assessments.restclient.communityapi.DeliusDisabilityDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.DisabilityType
 import uk.gov.justice.digital.assessments.restclient.communityapi.IDs
 import uk.gov.justice.digital.assessments.restclient.communityapi.OffenderAlias
@@ -732,17 +732,18 @@ class CommunityApiMockServer : WireMockServer(9096) {
       offenderProfile = OffenderProfile(
         ethnicity = "Asian",
         disabilities = listOf(
-          Disability(DisabilityType("D", "general health")),
-          Disability(DisabilityType("D02", "physical health concerns")),
-          Disability(DisabilityType("RM", "reduced mobility")),
-          Disability(DisabilityType("RC", "reduced physical capacity")),
-          Disability(DisabilityType("PC", "progressive condition")),
-          Disability(DisabilityType("VI", "visual impairment")),
-          Disability(DisabilityType("HD", "hearing difficulties")),
-          Disability(DisabilityType("LA", "learning disability")),
-          Disability(DisabilityType("LD", "learning difficulties")),
-          Disability(DisabilityType("D01", "mental health")),
-          Disability(DisabilityType("MI", "mental illness"))
+          DeliusDisabilityDto(DisabilityType("DY", "dyslexia")),
+          DeliusDisabilityDto(DisabilityType("RF", "refused to state")),
+          DeliusDisabilityDto(DisabilityType("RM", "reduced mobility")),
+          DeliusDisabilityDto(DisabilityType("RC", "reduced physical capacity")),
+          DeliusDisabilityDto(DisabilityType("PC", "progressive condition")),
+          DeliusDisabilityDto(DisabilityType("VI", "visual impairment")),
+          DeliusDisabilityDto(DisabilityType("HD", "hearing difficulties")),
+          DeliusDisabilityDto(DisabilityType("SI", "speech difficulties")),
+          DeliusDisabilityDto(DisabilityType("LA", "learning disability")),
+          DeliusDisabilityDto(DisabilityType("LD", "learning difficulties")),
+          DeliusDisabilityDto(DisabilityType("SD", "disfigurement")),
+          DeliusDisabilityDto(DisabilityType("MI", "mental illness"))
         ),
         offenderLanguages = OffenderLanguages("French", true),
         genderIdentity = "Non-Binary",

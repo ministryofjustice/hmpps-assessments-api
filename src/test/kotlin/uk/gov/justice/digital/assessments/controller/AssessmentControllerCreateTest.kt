@@ -349,6 +349,25 @@ class AssessmentControllerCreateTest : IntegrationTest() {
     }
 
     @Test
+    fun `creating a new UPW assessment from Delius returns disabilities`() {
+//
+//      val assessment = createDeliusAssessment(crn, eventID, AssessmentSchemaCode.UPW)
+//
+//      val answers = assessment?.episodes?.first()?.answers
+//
+//      val gpDetails = answers?.get("gp_details") as List<*>
+//      val gp1 = gpDetails[0] as Map<*, *>
+//      assertThat(gp1["gp_first_name"]).isEqualTo(listOf("Nick"))
+//      assertThat(gp1["gp_family_name"]).isEqualTo(listOf("Riviera"))
+//
+//      val gp2 = gpDetails[1] as Map<*, *>
+//      assertThat(gp2["gp_first_name"]).isEqualTo(listOf("Steve"))
+//      assertThat(gp2["gp_family_name"]).isEqualTo(listOf("Wilson"))
+//
+//      assertThat(gpDetails).hasSize(2)
+    }
+
+    @Test
     fun `should pre-populate answers with the 'mapped' type`() {
 
       val dto = CreateAssessmentDto(

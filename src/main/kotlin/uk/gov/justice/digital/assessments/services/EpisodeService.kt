@@ -12,6 +12,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.assessments.api.DisabilityAnswerDto
 import uk.gov.justice.digital.assessments.api.EmergencyContactDetailsAnswerDto
 import uk.gov.justice.digital.assessments.api.GPDetailsAnswerDto
 import uk.gov.justice.digital.assessments.api.GroupQuestionDto
@@ -22,6 +23,7 @@ import uk.gov.justice.digital.assessments.jpa.repositories.refdata.CloneAssessme
 import uk.gov.justice.digital.assessments.restclient.AssessmentApiRestClient
 import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
+import uk.gov.justice.digital.assessments.restclient.communityapi.DeliusDisabilityDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.PersonalContact
 import uk.gov.justice.digital.assessments.services.dto.ExternalSource
 import uk.gov.justice.digital.assessments.services.dto.ExternalSourceQuestionDto
@@ -47,6 +49,9 @@ class EpisodeService(
     private const val cloneEpisodeOffset: Long = 55
 
     private const val OASYS_SOURCE_NAME = "OASYS"
+    private val DISABILITY_LIST = listOf("dyslexia_disability", "visual_disability", "speech_disability", "hearing_disability",
+    "learning_disability", "mental_disability", "progressive_disability", "mobility_disability",
+    "physical_disability", "apathy_disability", "disfigurement_disability", "refuse_disability")
 
     private val objectMapper: ObjectMapper = jacksonObjectMapper().registerModules(JavaTimeModule())
     private val basicDatePattern = Pattern.compile("^\\d{2}/\\d{2}/\\d{4}$")
@@ -250,6 +255,10 @@ class EpisodeService(
         val personalContacts = getPersonalContactsFromJson(sourceData, structureQuestion)
         EmergencyContactDetailsAnswerDto.from(personalContacts)
       }
+      in DISABILITY_LIST -> {
+        val deliusDisabilities = getDisabilitiesFromJson(sourceData, structureQuestion)
+        DisabilityAnswerDto.from(deliusDisabilities)
+      }
       else -> throw ExternalSourceAnswerException("Question code: ${structureQuestion.questionCode} not recognised")
     }
   }
@@ -260,5 +269,13 @@ class EpisodeService(
   ): List<PersonalContact> {
     val personalContactJson = sourceData.read<JSONArray>(structureQuestion.jsonPathField).toJSONString()
     return objectMapper.readValue(personalContactJson)
+  }
+
+  private fun getDisabilitiesFromJson(
+    sourceData: DocumentContext,
+    structureQuestion: ExternalSourceQuestionSchemaDto
+  ): List<DeliusDisabilityDto> {
+    val disabilitiesJson = sourceData.read<JSONArray>(structureQuestion.jsonPathField).toJSONString()
+    return objectMapper.readValue(disabilitiesJson)
   }
 }
