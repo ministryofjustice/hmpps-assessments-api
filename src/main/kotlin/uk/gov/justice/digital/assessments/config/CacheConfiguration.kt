@@ -14,16 +14,31 @@ import org.springframework.data.redis.cache.RedisCacheManager.RedisCacheManagerB
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer
 import org.springframework.data.redis.serializer.RedisSerializationContext.SerializationPair
 import org.springframework.data.redis.serializer.StringRedisSerializer
+import uk.gov.justice.digital.assessments.config.CacheConstants.ASSESSMENT_SCHEMA_CACHE_KEY
+import uk.gov.justice.digital.assessments.config.CacheConstants.ASSESSMENT_SCHEMA_SUMMARY_CACHE_KEY
+import uk.gov.justice.digital.assessments.config.CacheConstants.GROUP_CONTENTS_CACHE_KEY
+import uk.gov.justice.digital.assessments.config.CacheConstants.GROUP_SECTIONS_CACHE_KEY
+import uk.gov.justice.digital.assessments.config.CacheConstants.LIST_GROUP_CACHE_KEY
+import uk.gov.justice.digital.assessments.config.CacheConstants.QUESTIONS_FOR_SCHEMA_CODE_CACHE_KEY
+import uk.gov.justice.digital.assessments.config.CacheConstants.QUESTION_SCHEMA_CACHE_KEY
 import java.time.Duration
 
 @Configuration
 class CacheConfiguration {
 
-  @Value("\${referenceData.cacheTtlDays}")
+  @Value("\${cache.ttlDays.referenceData}")
   var referenceDataCacheTtlDays: Long = 1
+
+  @Value("\${cache.ttlMinutes.default}")
+  var defaultCacheTtlMinutes: Long = 5
 
   @Bean
   fun defaultRedisCacheConfiguration(): RedisCacheConfiguration {
+    return getDefaultCacheConfiguration()
+      .entryTtl(Duration.ofMinutes(defaultCacheTtlMinutes))
+  }
+
+  private fun getDefaultCacheConfiguration(): RedisCacheConfiguration {
     return RedisCacheConfiguration.defaultCacheConfig()
       .disableCachingNullValues()
       .serializeKeysWith(SerializationPair.fromSerializer(StringRedisSerializer()))
@@ -41,26 +56,19 @@ class CacheConfiguration {
   @Bean
   fun cacheManagerBuilderCustomizer(): RedisCacheManagerBuilderCustomizer? {
     return RedisCacheManagerBuilderCustomizer { builder: RedisCacheManagerBuilder ->
-      run {
-        val defaultConfigWithRefDataTtl = defaultRedisCacheConfiguration()
-          .entryTtl(Duration.ofDays(referenceDataCacheTtlDays))
+      val defaultConfigWithRefDataTtl = getDefaultCacheConfiguration()
+        .entryTtl(Duration.ofDays(referenceDataCacheTtlDays))
 
-        arrayOf(
-          "AssessmentSchemaService:predictorsForAssessment",
-          "AssessmentSchemaService:assessmentSchema",
-          "AssessmentSchemaService:questionsForSchemaCode",
-          "AssessmentSchemaService:assessmentSchemaSummary",
-          "QuestionService:questionSchema",
-          "QuestionService:listGroups",
-          "QuestionService:getGroupContents",
-          "QuestionService:getGroupSections"
-        ).forEach {
-          builder
-            .withCacheConfiguration(
-              it,
-              defaultConfigWithRefDataTtl
-            )
-        }
+      arrayOf(
+        ASSESSMENT_SCHEMA_CACHE_KEY,
+        QUESTIONS_FOR_SCHEMA_CODE_CACHE_KEY,
+        ASSESSMENT_SCHEMA_SUMMARY_CACHE_KEY,
+        QUESTION_SCHEMA_CACHE_KEY,
+        LIST_GROUP_CACHE_KEY,
+        GROUP_CONTENTS_CACHE_KEY,
+        GROUP_SECTIONS_CACHE_KEY
+      ).forEach {
+        builder.withCacheConfiguration(it, defaultConfigWithRefDataTtl)
       }
     }
   }

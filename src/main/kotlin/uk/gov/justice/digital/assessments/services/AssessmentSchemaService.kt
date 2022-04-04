@@ -7,6 +7,9 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.assessments.api.GroupContentDto
 import uk.gov.justice.digital.assessments.api.GroupSectionsDto
 import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
+import uk.gov.justice.digital.assessments.config.CacheConstants.ASSESSMENT_SCHEMA_CACHE_KEY
+import uk.gov.justice.digital.assessments.config.CacheConstants.ASSESSMENT_SCHEMA_SUMMARY_CACHE_KEY
+import uk.gov.justice.digital.assessments.config.CacheConstants.QUESTIONS_FOR_SCHEMA_CODE_CACHE_KEY
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.OasysAssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.PredictorEntity
@@ -28,17 +31,17 @@ class AssessmentSchemaService(
     return assessmentSchemaRepository.findByAssessmentSchemaCode(assessmentSchemaCode)?.predictorEntities.orEmpty().toList()
   }
 
-  @Cacheable("AssessmentSchemaService:assessmentSchema")
+  @Cacheable(ASSESSMENT_SCHEMA_CACHE_KEY)
   fun getAssessmentSchema(assessmentSchemaCode: AssessmentSchemaCode): GroupWithContentsDto {
     return questionService.getGroupContents(getAssessmentSchemaGroupUuid(assessmentSchemaCode))
   }
 
-  @Cacheable("AssessmentSchemaService:questionsForSchemaCode")
+  @Cacheable(QUESTIONS_FOR_SCHEMA_CODE_CACHE_KEY)
   fun getQuestionsForSchemaCode(assessmentSchemaCode: AssessmentSchemaCode): List<GroupContentDto> {
     return questionService.getFlatQuestionsForGroup(getAssessmentSchemaGroupUuid(assessmentSchemaCode))
   }
 
-  @Cacheable("AssessmentSchemaService:assessmentSchemaSummary")
+  @Cacheable(ASSESSMENT_SCHEMA_SUMMARY_CACHE_KEY)
   fun getAssessmentSchemaSummary(assessmentSchemaCode: AssessmentSchemaCode): GroupSectionsDto {
     val assessmentSchemaGroupCode =
       assessmentSchemaRepository.findByAssessmentSchemaCode(assessmentSchemaCode)?.assessmentSchemaGroup?.group?.groupCode
