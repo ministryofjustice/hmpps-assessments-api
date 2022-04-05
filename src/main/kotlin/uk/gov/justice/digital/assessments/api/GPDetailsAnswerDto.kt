@@ -39,9 +39,9 @@ class GPDetailsAnswerDto(
   val telephoneNumber: List<String?> = emptyList(),
 ) {
   companion object {
-
-    fun from(personalContacts: List<PersonalContact>): List<GPDetailsAnswerDto> {
-      return personalContacts.map { from(it) }
+    fun from(personalContacts: List<PersonalContact>): List<GPDetailsAnswerDto>? {
+      return if (personalContacts.isEmpty()) null
+      else personalContacts.map { from(it) }
     }
 
     fun from(personalContact: PersonalContact): GPDetailsAnswerDto {

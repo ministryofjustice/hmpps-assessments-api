@@ -132,8 +132,8 @@ class EpisodeService(
       }
   }
 
-  private fun getAnswersFromSourceData(source: DocumentContext, question: ExternalSourceQuestionSchemaDto): List<Any> {
-    return answerFormat(source, question).orEmpty()
+  private fun getAnswersFromSourceData(source: DocumentContext, question: ExternalSourceQuestionSchemaDto): List<Any>? {
+    return answerFormat(source, question)
   }
 
   private fun getLatestCompleteEpisodeEndDate(newEpisode: AssessmentEpisodeEntity): LocalDateTime? {
