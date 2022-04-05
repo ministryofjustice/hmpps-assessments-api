@@ -9,6 +9,7 @@ import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.context.jdbc.SqlConfig
 import org.springframework.test.context.jdbc.SqlGroup
 import org.springframework.test.web.reactive.server.expectBody
+import uk.gov.justice.digital.assessments.api.AnswersDto
 import uk.gov.justice.digital.assessments.api.AssessmentDto
 import uk.gov.justice.digital.assessments.api.AssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.api.AssessmentSubjectDto
@@ -235,30 +236,10 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(answers["contact_address_county"]).isEqualTo(listOf("South Yorkshire"))
       assertThat(answers["contact_address_postcode"]).isEqualTo(listOf("S3 7BS"))
 
-      assertThat(answers["physical_disability"]).isEqualTo(listOf("D", "D02", "RM", "RC", "PC", "VI", "HD"))
-      assertThat(answers["physical_disability_details"]).isEqualTo(
-        listOf(
-          "general health",
-          "physical health concerns",
-          "reduced mobility",
-          "reduced physical capacity",
-          "progressive condition",
-          "visual impairment",
-          "hearing difficulties"
-        )
-      )
-      assertThat(answers["learning_disability"]).isEqualTo(listOf("LA"))
-      assertThat(answers["learning_disability_details"]).isEqualTo(listOf("learning disability"))
-      assertThat(answers["learning_difficulty"]).isEqualTo(listOf("LD"))
-      assertThat(answers["learning_difficulty_details"]).isEqualTo(listOf("learning difficulties"))
-      assertThat(answers["mental_health_condition"]).isEqualTo(listOf("D", "D01", "MI"))
-      assertThat(answers["mental_health_condition_details"]).isEqualTo(
-        listOf(
-          "general health",
-          "mental health",
-          "mental illness"
-        )
-      )
+      val mentalHealth = getStructuredDataFromAnswer(answers, "mental_disability")
+      assertThat(mentalHealth["disability_notes"]).isEqualTo("Has depression")
+      assertThat(mentalHealth["disability_adjustments"]).isEqualTo(listOf("Behavioural responses/Body language"))
+
       assertThat(answers["language"]).isEqualTo(listOf("French"))
       assertThat(answers["requires_interpreter"]).isEqualTo(listOf("true"))
 
@@ -271,8 +252,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(answers["reading_writing_difficulties"]).isEqualTo(listOf("YES"))
       assertThat(answers["reading_writing_difficulties_details"]).isEqualTo(listOf("Cannot read"))
 
-      val emergencyContactDetails = answers["emergency_contact_details"] as List<*>
-      val contact = emergencyContactDetails[0] as Map<*, *>
+      val contact = getStructuredDataFromAnswer(answers, "emergency_contact_details")
       assertThat(contact["emergency_contact_first_name"]).isEqualTo(listOf("Brian"))
       assertThat(contact["emergency_contact_family_name"]).isEqualTo(listOf("Contact"))
       assertThat(contact["emergency_contact_relationship"]).isEqualTo(listOf("Father"))
@@ -285,8 +265,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(contact["emergency_contact_address_postcode"]).isEqualTo(listOf("South City Centre"))
       assertThat(contact["emergency_contact_phone_number"]).isEqualTo(listOf("0133456789"))
 
-      val gpDetails = answers["gp_details"] as List<*>
-      val gp1 = gpDetails[0] as Map<*, *>
+      val gp1 = getStructuredDataFromAnswer(answers, "gp_details")
       assertThat(gp1["gp_first_name"]).isEqualTo(listOf("Nick"))
       assertThat(gp1["gp_family_name"]).isEqualTo(listOf("Riviera"))
       assertThat(gp1["gp_address_building_name"]).isEqualTo(listOf("The practice"))
@@ -298,7 +277,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(gp1["gp_address_postcode"]).isEqualTo(listOf("E5 7BS"))
       assertThat(gp1["gp_phone_number"]).isEqualTo(listOf("0233456789"))
 
-      val gp2 = gpDetails[1] as Map<*, *>
+      val gp2 = getStructuredDataFromAnswer(answers, "gp_details", 1)
       assertThat(gp2["gp_first_name"]).isEqualTo(listOf("Steve"))
       assertThat(gp2["gp_family_name"]).isEqualTo(listOf("Wilson"))
       assertThat(gp2["gp_address_building_name"]).isEqualTo(listOf("The Building"))
@@ -309,6 +288,11 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(gp2["gp_address_county"]).isEqualTo(listOf("Essex"))
       assertThat(gp2["gp_address_postcode"]).isEqualTo(listOf("NW10 1EP"))
       assertThat(gp2["gp_phone_number"]).isEqualTo(listOf("0776 666 6666"))
+    }
+
+    private fun getStructuredDataFromAnswer(answers: AnswersDto, questionCode: String, position: Int = 0): Map<*, *> {
+      val structuredAnswer = answers[questionCode] as List<*>
+      return structuredAnswer[position] as Map<*, *>
     }
 
     @Test
