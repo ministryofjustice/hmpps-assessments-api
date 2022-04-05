@@ -20,6 +20,8 @@ import uk.gov.justice.digital.assessments.restclient.communityapi.OffenderAlias
 import uk.gov.justice.digital.assessments.restclient.communityapi.OffenderLanguages
 import uk.gov.justice.digital.assessments.restclient.communityapi.OffenderProfile
 import uk.gov.justice.digital.assessments.restclient.communityapi.Phone
+import uk.gov.justice.digital.assessments.restclient.communityapi.Provision
+import uk.gov.justice.digital.assessments.restclient.communityapi.ProvisionType
 import uk.gov.justice.digital.assessments.restclient.communityapi.Type
 import java.time.LocalDate
 
@@ -732,18 +734,25 @@ class CommunityApiMockServer : WireMockServer(9096) {
       offenderProfile = OffenderProfile(
         ethnicity = "Asian",
         disabilities = listOf(
-          DeliusDisabilityDto(DisabilityType("DY", "dyslexia")),
-          DeliusDisabilityDto(DisabilityType("RF", "refused to state")),
-          DeliusDisabilityDto(DisabilityType("RM", "reduced mobility")),
-          DeliusDisabilityDto(DisabilityType("RC", "reduced physical capacity")),
-          DeliusDisabilityDto(DisabilityType("PC", "progressive condition")),
-          DeliusDisabilityDto(DisabilityType("VI", "visual impairment")),
-          DeliusDisabilityDto(DisabilityType("HD", "hearing difficulties")),
-          DeliusDisabilityDto(DisabilityType("SI", "speech difficulties")),
-          DeliusDisabilityDto(DisabilityType("LA", "learning disability")),
-          DeliusDisabilityDto(DisabilityType("LD", "learning difficulties")),
-          DeliusDisabilityDto(DisabilityType("SD", "disfigurement")),
-          DeliusDisabilityDto(DisabilityType("MI", "mental illness"))
+          DeliusDisabilityDto(DisabilityType("DY", "Dyslexia"), isActive = true),
+          DeliusDisabilityDto(
+            DisabilityType("VI", "Visual Impairment"),
+            notes = "Partially sighted in the right eye",
+            provisions = listOf(Provision(null, ProvisionType("09", "Improved signage"))),
+            isActive = true
+          ),
+          DeliusDisabilityDto(
+            DisabilityType("MI", "Mental Illness"),
+            notes = "Has depression",
+            provisions = listOf(Provision("behaviour note", ProvisionType("12", "Behavioural responses/Body language"))),
+            isActive = true
+          ),
+          DeliusDisabilityDto(
+            DisabilityType("RM", "Reduced Mobility"),
+            notes = "Stiff arm",
+            provisions = listOf(Provision(null, ProvisionType("09", "Improved signage"))),
+            isActive = false
+          ),
         ),
         offenderLanguages = OffenderLanguages("French", true),
         genderIdentity = "Non-Binary",

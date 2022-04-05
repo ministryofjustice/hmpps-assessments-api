@@ -1,9 +1,10 @@
 package uk.gov.justice.digital.assessments.restclient.communityapi
 
 data class DeliusDisabilityDto(
-    val disabilityType: DisabilityType,
-    val notes: String? = null,
-    val provisions: List<Provision>? = null,
+  val disabilityType: DisabilityType,
+  val notes: String? = null,
+  val provisions: List<Provision>? = null,
+  val isActive: Boolean
 )
 
 data class DisabilityType(
@@ -11,7 +12,7 @@ data class DisabilityType(
   val description: String
 )
 
-class Provision (
+class Provision(
   val notes: String? = null,
   val provisionType: ProvisionType? = null
 )
