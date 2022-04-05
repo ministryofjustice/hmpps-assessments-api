@@ -14,7 +14,8 @@ class DisabilityAnswerDto(
 ) {
   companion object {
 
-    fun from(deliusDisabilities: List<DeliusDisabilityDto>): List<DisabilityAnswerDto> {
+    fun from(deliusDisabilities: List<DeliusDisabilityDto>): List<DisabilityAnswerDto>? {
+      if (deliusDisabilities.isEmpty()) return null
       return deliusDisabilities.map { from(it) }
     }
 
