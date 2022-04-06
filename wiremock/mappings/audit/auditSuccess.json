@@ -4,7 +4,7 @@
     "method": "POST",
     "urlPathPattern": "/audit",
     "bodyPatterns" : [ {
-      "equalToJson" : "",
+      "equalToJson" : "{}",
       "ignoreExtraElements" : true
     } ]
   },
@@ -13,5 +13,5 @@
       "Content-Type": "application/json"
     },
     "status": 200
-    }
+  }
 }
