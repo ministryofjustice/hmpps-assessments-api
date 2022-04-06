@@ -29,14 +29,14 @@ This service is built using Gradle. In order to build the project from the comma
 ```  
 ./gradlew clean build  
 ```  
-The created JAR file will be named "`hmpps-assessments-api-yyyy-mm-dd.jar`", using the date that the build takes place in the format `yyyy-mm-dd`.
+The created JAR file will be named "`hmpps-assessments-api-<yyyy-mm-dd>.jar`", using the date that the build takes place in the format `yyyy-mm-dd`.
 
 ### Start the application with H2 database
 
 The configuration can be changed for the api to use an in-memory H2 database by using the spring boot profile `dev`. On the command line run:
 ```  
 SPRING_PROFILES_ACTIVE=dev 
-java -jar build/libs/hmpps-assessments-api-yyyy-mm-dd.jar  
+java -jar build/libs/hmpps-assessments-api-<yyyy-mm-dd>.jar  
 ```  
 
 ### Start the application with Postgres database
@@ -47,7 +47,7 @@ The service makes use of Postgres JSONB fields so it is advisable to run with po
 On the command line run:
 ```  
 SPRING_PROFILES_ACTIVE=postgres 
-java -jar build/libs/hmpps-assessments-api-yyyy-mm-dd.jar  
+java -jar build/libs/hmpps-assessments-api-<yyyy-mm-dd>.jar  
 ```  
 
 ### Documentation
