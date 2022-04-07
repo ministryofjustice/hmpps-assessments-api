@@ -311,6 +311,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       val gp1 = gpDetails[0] as Map<*, *>
       assertThat(gp1["gp_first_name"]).isEqualTo(listOf("Nick"))
       assertThat(gp1["gp_family_name"]).isEqualTo(listOf("Riviera"))
+      assertThat(gp1["gp_practice_name"]).isEqualTo(emptyList<String>())
       assertThat(gp1["gp_address_building_name"]).isEqualTo(listOf("The practice"))
       assertThat(gp1["gp_address_house_number"]).isEqualTo(listOf("38"))
       assertThat(gp1["gp_address_street_name"]).isEqualTo(listOf("East Street"))

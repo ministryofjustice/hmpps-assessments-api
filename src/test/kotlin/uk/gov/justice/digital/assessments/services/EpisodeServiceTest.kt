@@ -553,6 +553,7 @@ class EpisodeServiceTest {
     assertThat(gp1.firstName).isEqualTo(listOf("Charles"))
     assertThat(gp1.familyName).isEqualTo(listOf("Europe"))
     assertThat(gp1.postcode).isEqualTo(listOf("S3 7DQ"))
+    assertThat(gp1.practiceName).isEqualTo(emptyList<String>())
 
     assertThat(gpDetails).hasSize(1)
   }
