@@ -25,9 +25,20 @@ data class OffenderLanguages(val primaryLanguage: String? = null, val requiresIn
 
 data class Disability(
   val disabilityType: DisabilityType,
+  val notes: String? = null,
+  val provisions: List<Provision> = emptyList()
 )
 
 data class DisabilityType(
+  val code: String? = null,
+  val description: String? = null
+)
+
+data class Provision(
+  val provisionType: ProvisionType
+)
+
+data class ProvisionType(
   val code: String? = null,
   val description: String? = null
 )

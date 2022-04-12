@@ -257,30 +257,6 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(answers["contact_address_county"]).isEqualTo(listOf("South Yorkshire"))
       assertThat(answers["contact_address_postcode"]).isEqualTo(listOf("S3 7BS"))
 
-      assertThat(answers["physical_disability"]).isEqualTo(listOf("D", "D02", "RM", "RC", "PC", "VI", "HD"))
-      assertThat(answers["physical_disability_details"]).isEqualTo(
-        listOf(
-          "general health",
-          "physical health concerns",
-          "reduced mobility",
-          "reduced physical capacity",
-          "progressive condition",
-          "visual impairment",
-          "hearing difficulties"
-        )
-      )
-      assertThat(answers["learning_disability"]).isEqualTo(listOf("LA"))
-      assertThat(answers["learning_disability_details"]).isEqualTo(listOf("learning disability"))
-      assertThat(answers["learning_difficulty"]).isEqualTo(listOf("LD"))
-      assertThat(answers["learning_difficulty_details"]).isEqualTo(listOf("learning difficulties"))
-      assertThat(answers["mental_health_condition"]).isEqualTo(listOf("D", "D01", "MI"))
-      assertThat(answers["mental_health_condition_details"]).isEqualTo(
-        listOf(
-          "general health",
-          "mental health",
-          "mental illness"
-        )
-      )
       assertThat(answers["language"]).isEqualTo(listOf("French"))
       assertThat(answers["requires_interpreter"]).isEqualTo(listOf("true"))
 
@@ -330,6 +306,26 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(gp2["gp_address_county"]).isEqualTo(listOf("Essex"))
       assertThat(gp2["gp_address_postcode"]).isEqualTo(listOf("NW10 1EP"))
       assertThat(gp2["gp_phone_number"]).isEqualTo(listOf("0776 666 6666"))
+
+      assertDisabilities(answers, 0, "D", "general health", "some notes", "99", "other")
+      assertDisabilities(answers, 1, "D02", "physical health concerns", "some notes", "12", "general health provision")
+      assertDisabilities(answers, 2, "RM", "reduced mobility", "some notes", "22", "handrails")
+      assertDisabilities(answers, 3, "RC", "reduced physical capacity", "some notes", "23", "call points")
+    }
+
+    private fun assertDisabilities(answers: AnswersDto, index: Int, code: String, desc: String, notes: String, provisionCode: String, provisionDesc: String) {
+      val disabilities = answers["disabilities_array"] as List<*>
+      val disability1 = disabilities[index] as Map<*, *>
+
+      assertThat(disability1["notes"]).isEqualTo(notes)
+      assertThat(disability1["code"]).isEqualTo(code)
+      assertThat(disability1["description"]).isEqualTo(desc)
+
+      val provisions = disability1["provisions"] as List<*>
+      val provision1 = provisions[0] as Map<*, *>
+
+      assertThat(provision1["code"]).isEqualTo(provisionCode)
+      assertThat(provision1["description"]).isEqualTo(provisionDesc)
     }
 
     @Test

@@ -20,6 +20,8 @@ import uk.gov.justice.digital.assessments.restclient.communityapi.OffenderAlias
 import uk.gov.justice.digital.assessments.restclient.communityapi.OffenderLanguages
 import uk.gov.justice.digital.assessments.restclient.communityapi.OffenderProfile
 import uk.gov.justice.digital.assessments.restclient.communityapi.Phone
+import uk.gov.justice.digital.assessments.restclient.communityapi.Provision
+import uk.gov.justice.digital.assessments.restclient.communityapi.ProvisionType
 import uk.gov.justice.digital.assessments.restclient.communityapi.Type
 import java.time.LocalDate
 
@@ -732,17 +734,17 @@ class CommunityApiMockServer : WireMockServer(9096) {
       offenderProfile = OffenderProfile(
         ethnicity = "Asian",
         disabilities = listOf(
-          Disability(DisabilityType("D", "general health")),
-          Disability(DisabilityType("D02", "physical health concerns")),
-          Disability(DisabilityType("RM", "reduced mobility")),
-          Disability(DisabilityType("RC", "reduced physical capacity")),
-          Disability(DisabilityType("PC", "progressive condition")),
-          Disability(DisabilityType("VI", "visual impairment")),
-          Disability(DisabilityType("HD", "hearing difficulties")),
-          Disability(DisabilityType("LA", "learning disability")),
-          Disability(DisabilityType("LD", "learning difficulties")),
-          Disability(DisabilityType("D01", "mental health")),
-          Disability(DisabilityType("MI", "mental illness"))
+          Disability(DisabilityType("D", "general health"), "some notes", listOf(Provision(ProvisionType("99", "other")))),
+          Disability(DisabilityType("D02", "physical health concerns"), "some notes", listOf(Provision(ProvisionType("12", "general health provision")))),
+          Disability(DisabilityType("RM", "reduced mobility"), "some notes", listOf(Provision(ProvisionType("22", "handrails")))),
+          Disability(DisabilityType("RC", "reduced physical capacity"), "some notes", listOf(Provision(ProvisionType("23", "call points")))),
+          Disability(DisabilityType("PC", "progressive condition"), "some notes", listOf(Provision(ProvisionType("99", "other")))),
+          Disability(DisabilityType("VI", "visual impairment"), "some notes", listOf(Provision(ProvisionType("04", "large print")))),
+          Disability(DisabilityType("HD", "hearing difficulties"), "some notes", listOf(Provision(ProvisionType("07", "induction loop")))),
+          Disability(DisabilityType("LA", "learning disability"), "some notes", listOf(Provision(ProvisionType("99", "other")))),
+          Disability(DisabilityType("LD", "learning difficulties"), "some notes", listOf(Provision(ProvisionType("99", "other")))),
+          Disability(DisabilityType("D01", "mental health"), "some notes", listOf(Provision(ProvisionType("99", "other")))),
+          Disability(DisabilityType("MI", "mental illness"), "some notes", listOf(Provision(ProvisionType("99", "other"))))
         ),
         offenderLanguages = OffenderLanguages("French", true),
         genderIdentity = "Non-Binary",

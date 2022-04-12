@@ -12,6 +12,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.assessments.api.DisabilityAnswerDto
 import uk.gov.justice.digital.assessments.api.EmergencyContactDetailsAnswerDto
 import uk.gov.justice.digital.assessments.api.GPDetailsAnswerDto
 import uk.gov.justice.digital.assessments.api.GroupQuestionDto
@@ -22,6 +23,7 @@ import uk.gov.justice.digital.assessments.jpa.repositories.refdata.CloneAssessme
 import uk.gov.justice.digital.assessments.restclient.AssessmentApiRestClient
 import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
+import uk.gov.justice.digital.assessments.restclient.communityapi.Disability
 import uk.gov.justice.digital.assessments.restclient.communityapi.PersonalContact
 import uk.gov.justice.digital.assessments.services.dto.ExternalSource
 import uk.gov.justice.digital.assessments.services.dto.ExternalSourceQuestionDto
@@ -241,6 +243,10 @@ class EpisodeService(
         val personalContacts = getPersonalContactsFromJson(sourceData, structureQuestion)
         EmergencyContactDetailsAnswerDto.from(personalContacts)
       }
+      "disabilities_array" -> {
+        val disabilities = getDisabilitiesFromJson(sourceData, structureQuestion)
+        DisabilityAnswerDto.from(disabilities)
+      }
       else -> throw ExternalSourceAnswerException("Question code: ${structureQuestion.questionCode} not recognised")
     }
   }
@@ -251,5 +257,13 @@ class EpisodeService(
   ): List<PersonalContact> {
     val personalContactJson = sourceData.read<JSONArray>(structureQuestion.jsonPathField).toJSONString()
     return objectMapper.readValue(personalContactJson)
+  }
+
+  private fun getDisabilitiesFromJson(
+    sourceData: DocumentContext,
+    structureQuestion: ExternalSourceQuestionSchemaDto
+  ): List<Disability> {
+    val disabilitiesJson = sourceData.read<JSONArray>(structureQuestion.jsonPathField).toJSONString()
+    return objectMapper.readValue(disabilitiesJson)
   }
 }
