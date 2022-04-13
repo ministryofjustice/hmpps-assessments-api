@@ -48,9 +48,11 @@ class EpisodeService(
     private const val cloneEpisodeOffset: Long = 55
 
     private const val OASYS_SOURCE_NAME = "OASYS"
-    private val DISABILITY_LIST = listOf("dyslexia_disability", "visual_disability", "speech_disability", "hearing_disability",
-    "learning_disability", "mental_disability", "progressive_disability", "mobility_disability",
-    "physical_disability", "apathy_disability", "disfigurement_disability", "refuse_disability")
+    private val DISABILITY_LIST = listOf(
+      "dyslexia_disability", "visual_disability", "speech_disability", "hearing_disability",
+      "learning_disability", "mental_disability", "progressive_disability", "mobility_disability",
+      "physical_disability", "apathy_disability", "disfigurement_disability", "refuse_disability"
+    )
 
     private val objectMapper: ObjectMapper = jacksonObjectMapper().registerModules(JavaTimeModule())
     private val basicDatePattern = Pattern.compile("^\\d{2}/\\d{2}/\\d{4}$")
