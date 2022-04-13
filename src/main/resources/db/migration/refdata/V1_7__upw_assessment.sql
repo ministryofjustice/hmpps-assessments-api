@@ -192,7 +192,6 @@ VALUES
 ('7318f4d3-068f-4e62-bbf8-cc430c096dd7', 'alcohol_drug_issues_details', '2021-09-27 14:50:00', null, 'textarea', null, 'Give details', null, null),
 ('e8cc7779-498e-494b-8280-8cb088b3c6e9', 'managing_risk_complete', '2021-09-27 14:50:00', null, 'radio', '8067ff6e-7400-4d1e-ae2a-87dee7e124ec', 'Mark this section as complete?', '', null),
 
-       --TODO remove this
 ('91f02777-6c45-4d7f-b3cb-42737089ed3b', 'autistic_disability', '2021-09-27 14:50:00', null, 'textarea', null, 'Autism Spectrum Condition (ASC)', null, null),
 ('62088094-85dc-447d-899d-c1d3ca448b0d', 'dyslexia_disability', '2021-09-27 14:50:00', null, 'textarea', null, 'Dyslexia', null, null),
 ('c8f62544-09dc-4ab1-b95f-2d32851bb75e', 'visual_disability', '2021-09-27 14:50:00', null, 'textarea', null, 'Visual condition', null, null),
