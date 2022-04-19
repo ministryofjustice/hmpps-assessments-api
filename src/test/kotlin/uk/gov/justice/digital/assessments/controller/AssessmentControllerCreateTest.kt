@@ -314,7 +314,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
     }
 
     private fun assertDisabilities(answers: AnswersDto, index: Int, code: String, desc: String, notes: String, provisionCode: String, provisionDesc: String) {
-      val disabilities = answers["disabilities_array"] as List<*>
+      val disabilities = answers["disabilities_adjustments"] as List<*>
       val disability1 = disabilities[index] as Map<*, *>
 
       assertThat(disability1["notes"]).isEqualTo(notes)

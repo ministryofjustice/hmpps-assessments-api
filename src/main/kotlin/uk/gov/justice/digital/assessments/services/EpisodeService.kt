@@ -243,7 +243,7 @@ class EpisodeService(
         val personalContacts = getPersonalContactsFromJson(sourceData, structureQuestion)
         EmergencyContactDetailsAnswerDto.from(personalContacts)
       }
-      "disabilities_array" -> {
+      "disabilities_adjustments" -> {
         val disabilities = getDisabilitiesFromJson(sourceData, structureQuestion)
         DisabilityAnswerDto.from(disabilities)
       }

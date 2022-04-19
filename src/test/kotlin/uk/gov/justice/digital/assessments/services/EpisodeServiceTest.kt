@@ -1,5 +1,6 @@
 package uk.gov.justice.digital.assessments.services
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.jayway.jsonpath.DocumentContext
 import com.jayway.jsonpath.JsonPath
 import io.mockk.every
@@ -10,8 +11,10 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import uk.gov.justice.digital.assessments.api.DisabilityAnswerDto
 import uk.gov.justice.digital.assessments.api.GPDetailsAnswerDto
 import uk.gov.justice.digital.assessments.api.GroupQuestionDto
+import uk.gov.justice.digital.assessments.api.ProvisionDto
 import uk.gov.justice.digital.assessments.api.TableQuestionDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType.RSR
@@ -555,5 +558,49 @@ class EpisodeServiceTest {
     assertThat(gp1.practiceName).isEqualTo(emptyList<String>())
 
     assertThat(gpDetails).hasSize(1)
+  }
+
+  @Test
+  fun `get structured answers from Delius json for Disabilities`() {
+
+    val disability1 = Disability(DisabilityType("D", "general health"), "some notes", listOf(Provision(ProvisionType("99", "other"))))
+    val disability2 = Disability(DisabilityType("D02", "physical health concerns"), "some notes", listOf(Provision(ProvisionType("12", "general health provision"))))
+    val disability3 = Disability(DisabilityType("RM", "reduced mobility"), "some notes", listOf(Provision(ProvisionType("22", "handrails"))))
+    val disability4 = Disability(DisabilityType("RC", "reduced physical capacity"), "some notes", listOf(Provision(ProvisionType("23", "call points"))))
+    val disabilities = listOf(disability1, disability2, disability3, disability4)
+
+    val offenderProfile = OffenderProfile(disabilities = disabilities)
+    val communityOffenderDto = CommunityOffenderDto(
+      offenderProfile = offenderProfile,
+      dateOfBirth = "12/12/2000"
+    )
+    val communityOffenderDtoJson = jacksonObjectMapper().writeValueAsString(communityOffenderDto)
+    val docContext: DocumentContext = JsonPath.parse(communityOffenderDtoJson)
+
+    val externalSourceOffenderProfileObjectMapping = ExternalSourceQuestionSchemaDto(
+      questionCode = "disabilities_adjustments",
+      externalSource = "DELIUS",
+      jsonPathField = "\$.offenderProfile.disabilities",
+      fieldType = "structured",
+      ifEmpty = false,
+    )
+
+    // When
+    val disabilityAnswerList = episodeService.getStructuredAnswersFromSourceData(docContext, externalSourceOffenderProfileObjectMapping)
+
+    // Then
+    assertThat(disabilityAnswerList).hasSize(4)
+    assertThat(disabilityAnswerList?.get(0)).isEqualTo(
+      DisabilityAnswerDto(code = "D", description = "general health", notes = "some notes", provisions = listOf(ProvisionDto("99", "other")))
+    )
+    assertThat(disabilityAnswerList?.get(1)).isEqualTo(
+      DisabilityAnswerDto(code = "D02", description = "physical health concerns", notes = "some notes", provisions = listOf(ProvisionDto("12", "general health provision")))
+    )
+    assertThat(disabilityAnswerList?.get(2)).isEqualTo(
+      DisabilityAnswerDto(code = "RM", description = "reduced mobility", notes = "some notes", provisions = listOf(ProvisionDto("22", "handrails")))
+    )
+    assertThat(disabilityAnswerList?.get(3)).isEqualTo(
+      DisabilityAnswerDto(code = "RC", description = "reduced physical capacity", notes = "some notes", provisions = listOf(ProvisionDto("23", "call points")))
+    )
   }
 }

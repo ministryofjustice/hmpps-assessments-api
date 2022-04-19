@@ -192,7 +192,7 @@ VALUES
 ('7318f4d3-068f-4e62-bbf8-cc430c096dd7', 'alcohol_drug_issues_details', '2021-09-27 14:50:00', null, 'textarea', null, 'Give details', null, null),
 ('e8cc7779-498e-494b-8280-8cb088b3c6e9', 'managing_risk_complete', '2021-09-27 14:50:00', null, 'radio', '8067ff6e-7400-4d1e-ae2a-87dee7e124ec', 'Mark this section as complete?', '', null),
 
-('572425c8-be55-49b5-9a26-bcfee925d6dd', 'disabilities_array', '2021-09-27 14:50:00', null, 'table', null, '', '', null),
+
 ('7503ab1a-ea03-41f3-8d0a-b75da9830909', 'physical_disability', '2021-09-27 14:50:00', null, 'textarea', null, 'Physical disability', null, null),
 ('4a97f15f-1a1e-44d5-83f7-ef5b2ad67246', 'physical_disability_details', '2021-09-27 14:50:00', null, 'textarea', null, 'Give details', null, null),
 ('ce7451a2-5f75-42a8-95ad-377dee4d99bf', 'learning_disability', '2021-09-27 14:50:00', null, 'textarea', null, 'Learning disability', null, null),
