@@ -13,6 +13,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.assessments.TableRows
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.EpisodeRepository
 import uk.gov.justice.digital.assessments.restclient.audit.AuditType
+import uk.gov.justice.digital.assessments.services.dto.AssessmentEpisodeUpdateErrors
 import uk.gov.justice.digital.assessments.services.exceptions.CannotCloseEpisodeException
 import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
 import java.time.LocalDateTime
@@ -90,20 +91,25 @@ class AssessmentUpdateService(
     val offenderPk: Long? = episode.assessment.subject?.oasysOffenderPk
     episode.author = authorService.getOrCreateAuthor()
     episode.lastEditedDate = LocalDateTime.now()
+    var episodeUpdateErrors: AssessmentEpisodeUpdateErrors? = null
+    var final = false
 
-    val oasysResult = oasysAssessmentUpdateService.completeOASysAssessment(episode, offenderPk)
-    if (oasysResult?.hasErrors() == true) {
-      log.info("Unable to complete episode ${episode.episodeUuid} for assessment ${episode.assessment.assessmentUuid} with OASys restclient")
-    } else {
-      episode.complete()
-      episodeRepository.save(episode)
-      auditAndLogCompleteAssessment(episode)
-      log.info("Saved completed episode ${episode.episodeUuid} for assessment ${episode.assessment.assessmentUuid}")
+    if (episode.isComplete() == false) {
+      episodeUpdateErrors = oasysAssessmentUpdateService.completeOASysAssessment(episode, offenderPk)
+      if (episodeUpdateErrors?.hasErrors() == true) {
+        log.info("Unable to complete episode ${episode.episodeUuid} for assessment ${episode.assessment.assessmentUuid} with OASys restclient")
+      } else {
+        episode.complete()
+        episodeRepository.save(episode)
+        auditAndLogCompleteAssessment(episode)
+        final = true
+        log.info("Saved completed episode ${episode.episodeUuid} for assessment ${episode.assessment.assessmentUuid}")
+      }
     }
-    val predictorResults = riskPredictorsService.getPredictorResults(episode = episode, final = true)
+    val predictorResults = riskPredictorsService.getPredictorResults(episode = episode, final = final)
 
     log.info("Predictors for assessment ${episode.assessment.assessmentUuid} are $predictorResults")
-    return AssessmentEpisodeDto.from(episode, oasysResult, predictorResults)
+    return AssessmentEpisodeDto.from(episode, episodeUpdateErrors, predictorResults)
   }
 
   @Transactional("assessmentsTransactionManager")

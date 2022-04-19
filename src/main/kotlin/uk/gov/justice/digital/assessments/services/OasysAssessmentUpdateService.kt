@@ -72,6 +72,7 @@ class OasysAssessmentUpdateService(
     episode: AssessmentEpisodeEntity,
     offenderPk: Long?,
   ): AssessmentEpisodeUpdateErrors {
+    log.debug("Entered completeOASysAssessment")
     if (episode.oasysSetPk == null || offenderPk == null) {
       val errorMessage =
         "Unable to complete OASys Assessment with keys type: ${episode.assessmentSchemaCode} oasysSet: ${episode.oasysSetPk} offenderPk: $offenderPk, values cant be null"

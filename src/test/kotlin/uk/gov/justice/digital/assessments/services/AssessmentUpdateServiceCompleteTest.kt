@@ -146,7 +146,7 @@ class AssessmentUpdateServiceCompleteTest {
     } returns AssessmentEpisodeUpdateErrors(
       answerErrors = mutableMapOf("question_code" to mutableListOf("error"))
     )
-    every { riskPredictorsService.getPredictorResults(assessmentEpisode, true) } returns emptyList()
+    every { riskPredictorsService.getPredictorResults(assessmentEpisode, false) } returns emptyList()
     val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
     every { authorService.getOrCreateAuthor() } returns author
 
