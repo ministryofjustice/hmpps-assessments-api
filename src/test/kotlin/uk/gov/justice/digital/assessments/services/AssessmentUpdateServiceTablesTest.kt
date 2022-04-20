@@ -84,6 +84,7 @@ class AssessmentUpdateServiceTablesTest {
     } returns AssessmentEpisodeUpdateErrors()
     every { assessmentService.getCurrentEpisode(assessmentUuid) } returns assessmentEpisode
     every { assessmentService.getEpisode(assessmentUuid, episodeUuid) } returns assessmentEpisode
+    every { assessmentService.shouldPushToOasys(AssessmentSchemaCode.ROSH) } returns true
   }
 
   @Test

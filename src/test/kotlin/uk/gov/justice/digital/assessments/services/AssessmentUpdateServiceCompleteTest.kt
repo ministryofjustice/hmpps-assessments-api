@@ -26,7 +26,7 @@ import java.util.UUID
 
 @ExtendWith(MockKExtension::class)
 @DisplayName("Assessment Service Complete Tests")
-class AssessmentUpdateServiceCompleteTest {
+class AssessmentUpdateServiceCompleteTest() {
   private val assessmentRepository: AssessmentRepository = mockk()
   private val episodeRepository: EpisodeRepository = mockk()
   private val questionService: QuestionService = mockk()
@@ -53,6 +53,7 @@ class AssessmentUpdateServiceCompleteTest {
   @BeforeEach
   fun setup() {
     every { assessmentSchemaService.toOasysAssessmentType(AssessmentSchemaCode.ROSH) } returns OasysAssessmentType.SHORT_FORM_PSR
+    every { assessmentService.shouldPushToOasys(AssessmentSchemaCode.ROSH) } returns true
   }
 
   @Test
@@ -69,6 +70,7 @@ class AssessmentUpdateServiceCompleteTest {
         any()
       )
     }
+
     every { assessmentRepository.findByAssessmentUuid(any()) } returns assessment
     every { episodeRepository.save(any()) } returns assessment.episodes[0]
     val assessmentEpisode = assessment.episodes.first()

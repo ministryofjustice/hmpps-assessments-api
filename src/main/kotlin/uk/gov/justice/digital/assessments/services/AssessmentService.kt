@@ -164,16 +164,22 @@ class AssessmentService(
     }
     val arnAssessment = getOrCreateAssessment(crn, eventId)
     val offence = offenderService.getOffence(eventType, crn, eventId)
-    val (oasysOffenderPk, oasysSetPK) = oasysAssessmentUpdateService.createOffenderAndOasysAssessment(
-      crn = crn,
-      deliusEventId = offence.convictionIndex,
-      assessmentSchemaCode = assessmentSchemaCode
-    )
-    val subject = subjectRepository.save(arnAssessment.subject?.copy(oasysOffenderPk = oasysOffenderPk))
+
+    // (oasysOffenderPk, oasysSetPK)
+    var oasysPrimaryKeyPair: Pair<Long?, Long?> = Pair(null, null)
+
+    if (shouldPushToOasys(assessmentSchemaCode)) {
+      oasysPrimaryKeyPair = oasysAssessmentUpdateService.createOffenderAndOasysAssessment(
+        crn = crn,
+        deliusEventId = offence.convictionIndex,
+        assessmentSchemaCode = assessmentSchemaCode
+      )
+    }
+    val subject = subjectRepository.save(arnAssessment.subject?.copy(oasysOffenderPk = oasysPrimaryKeyPair.first))
     createPrepopulatedEpisode(
       arnAssessment,
       "",
-      oasysSetPK,
+      oasysPrimaryKeyPair.second,
       assessmentSchemaCode,
       ExternalSource.DELIUS.name,
       offence.convictionId.toString(),
@@ -223,15 +229,19 @@ class AssessmentService(
       courtCode,
       caseNumber,
     )
-    val (oasysOffenderPk, oasysSetPK) = oasysAssessmentUpdateService.createOffenderAndOasysAssessment(
-      crn = courtCase.crn,
-      assessmentSchemaCode = assessmentSchemaCode
-    )
-    val subject = subjectRepository.save(arnAssessment.subject?.copy(oasysOffenderPk = oasysOffenderPk))
+    // (oasysOffenderPk, oasysSetPK)
+    var oasysPrimaryKeyPair: Pair<Long?, Long?> = Pair(null, null)
+    if (shouldPushToOasys(assessmentSchemaCode)) {
+      oasysPrimaryKeyPair = oasysAssessmentUpdateService.createOffenderAndOasysAssessment(
+        crn = courtCase.crn,
+        assessmentSchemaCode = assessmentSchemaCode
+      )
+    }
+    val subject = subjectRepository.save(arnAssessment.subject?.copy(oasysOffenderPk = oasysPrimaryKeyPair.first))
     createPrepopulatedEpisode(
       arnAssessment,
       "Court Request",
-      oasysSetPK,
+      oasysPrimaryKeyPair.second,
       assessmentSchemaCode,
       ExternalSource.COURT.name,
       courtSourceId(courtCode, caseNumber),
@@ -393,5 +403,9 @@ class AssessmentService(
 
   private fun courtSourceId(courtCode: String?, caseNumber: String?): String {
     return "$courtCode|$caseNumber"
+  }
+
+  fun shouldPushToOasys(assessmentSchemaCode: AssessmentSchemaCode): Boolean {
+    return assessmentSchemaCode == AssessmentSchemaCode.ROSH
   }
 }

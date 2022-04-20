@@ -62,6 +62,7 @@ class AssessmentUpdateServiceTest {
   fun setup() {
     every { assessmentSchemaService.toOasysAssessmentType(AssessmentSchemaCode.ROSH) } returns OasysAssessmentType.SHORT_FORM_PSR
     every { assessmentSchemaService.toOasysAssessmentType(AssessmentSchemaCode.RSR) } returns OasysAssessmentType.SOMETHING_IN_OASYS
+    every { assessmentService.shouldPushToOasys(AssessmentSchemaCode.ROSH) } returns true
   }
 
   @Nested
@@ -251,6 +252,121 @@ class AssessmentUpdateServiceTest {
     }
 
     @Test
+    fun `should complete Oasys assessment when schema code is ROSH`() {
+      // Given
+      val episodeEntity = createAssessmentEpisodeEntity(AssessmentSchemaCode.ROSH)
+
+      val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
+      every { authorService.getOrCreateAuthor() } returns author
+      every { assessmentService.shouldPushToOasys(AssessmentSchemaCode.ROSH) } returns true
+      every { episodeRepository.save(any()) } returns episodeEntity
+      justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
+      every { riskPredictorsService.getPredictorResults(episodeEntity, true) } returns emptyList()
+      every { oasysAssessmentUpdateService.completeOASysAssessment(episodeEntity, any()) } returns AssessmentEpisodeUpdateErrors()
+
+      // When
+      assessmentUpdateService.completeEpisode(episodeEntity)
+
+      // Then
+      verify { oasysAssessmentUpdateService.completeOASysAssessment(any(), any()) }
+    }
+
+    @Test
+    fun `should not attempt to update Oasys assessment when schema code is UPW`() {
+      // Given
+      val episodeEntity = createAssessmentEpisodeEntity(AssessmentSchemaCode.UPW)
+
+      val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
+      every { authorService.getOrCreateAuthor() } returns author
+      every { assessmentService.shouldPushToOasys(AssessmentSchemaCode.UPW) } returns false
+      every { episodeRepository.save(any()) } returns episodeEntity
+      every { assessmentRepository.save(any()) } returns episodeEntity.assessment
+      justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
+
+      val updatedAnswers = UpdateAssessmentEpisodeDto(
+        mutableMapOf(
+          existingQuestionCode to listOf("fruit loops", "custard")
+        )
+      )
+
+      // When
+      assessmentUpdateService.updateEpisode(episodeEntity, updatedAnswers)
+
+      // Then
+      verify(exactly = 0) { oasysAssessmentUpdateService.updateOASysAssessment(any(), any()) }
+    }
+
+    @Test
+    fun `should update Oasys assessment when schema code is ROSH`() {
+      // Given
+      val episodeEntity = createAssessmentEpisodeEntity(AssessmentSchemaCode.ROSH)
+
+      val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
+      every { authorService.getOrCreateAuthor() } returns author
+      every { assessmentService.shouldPushToOasys(AssessmentSchemaCode.ROSH) } returns true
+      every { episodeRepository.save(any()) } returns episodeEntity
+      every { assessmentRepository.save(any()) } returns episodeEntity.assessment
+      justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
+      every { oasysAssessmentUpdateService.updateOASysAssessment(any(), any()) } returns AssessmentEpisodeUpdateErrors()
+
+      val updatedAnswers = UpdateAssessmentEpisodeDto(
+        mutableMapOf(
+          existingQuestionCode to listOf("fruit loops", "custard")
+        )
+      )
+
+      // When
+      assessmentUpdateService.updateEpisode(episodeEntity, updatedAnswers)
+
+      // Then
+      verify() { oasysAssessmentUpdateService.updateOASysAssessment(any(), any()) }
+    }
+
+    @Test
+    fun `should not update Oasys assessment when schema code is UPW`() {
+      // Given
+      val episodeEntity = createAssessmentEpisodeEntity(AssessmentSchemaCode.UPW)
+
+      val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
+      every { authorService.getOrCreateAuthor() } returns author
+      every { assessmentService.shouldPushToOasys(AssessmentSchemaCode.UPW) } returns false
+      every { episodeRepository.save(any()) } returns episodeEntity
+      every { assessmentRepository.save(any()) } returns episodeEntity.assessment
+      justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
+
+      val updatedAnswers = UpdateAssessmentEpisodeDto(
+        mutableMapOf(
+          existingQuestionCode to listOf("fruit loops", "custard")
+        )
+      )
+
+      // When
+      assessmentUpdateService.updateEpisode(episodeEntity, updatedAnswers)
+
+      // Then
+      verify(exactly = 0) { oasysAssessmentUpdateService.updateOASysAssessment(any(), any()) }
+    }
+
+    @Test
+    fun `should not attempt to complete Oasys assessment when schema code is UPW`() {
+      // Given
+      val episodeEntity = createAssessmentEpisodeEntity(AssessmentSchemaCode.UPW)
+
+      val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
+      every { authorService.getOrCreateAuthor() } returns author
+      every { assessmentService.shouldPushToOasys(AssessmentSchemaCode.UPW) } returns false
+      every { episodeRepository.save(any()) } returns episodeEntity
+      justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
+      every { riskPredictorsService.getPredictorResults(episodeEntity, true) } returns emptyList()
+
+      // When
+      assessmentUpdateService.completeEpisode(episodeEntity)
+
+      // Then
+      verify(exactly = 0) { oasysAssessmentUpdateService.completeOASysAssessment(any(), any()) }
+    }
+
+    @Test
     fun `do not update a completed episode`() {
       val assessment = AssessmentEntity(
         assessmentId = assessmentId,
@@ -287,6 +403,23 @@ class AssessmentUpdateServiceTest {
         .isInstanceOf(UpdateClosedEpisodeException::class.java)
         .hasMessage("Cannot update a closed or completed Episode $episodeUuid for assessment $assessmentUuid")
     }
+  }
+
+  private fun createAssessmentEpisodeEntity(schemaCode: AssessmentSchemaCode): AssessmentEpisodeEntity {
+    val answers = mutableMapOf(
+      existingQuestionCode to listOf("free text")
+    )
+    val episodeEntity = AssessmentEpisodeEntity(
+      episodeUuid = episodeUuid,
+      episodeId = episodeId2,
+      changeReason = "Change of Circs 2",
+      answers = answers,
+      createdDate = LocalDateTime.now(),
+      assessmentSchemaCode = schemaCode,
+      author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
+      assessment = AssessmentEntity()
+    )
+    return episodeEntity
   }
 
   private fun assessmentEntity(answers: Answers): AssessmentEntity {

@@ -31,33 +31,6 @@ class OasysAssessmentUpdateServiceITTest() : IntegrationTest() {
   }
 
   @Test
-  fun `Trying to push to Create OASys Assessment that should not be pushed into Oasys returns null`() {
-    val returnAssessmentPk =
-      oasysAssessmentUpdateService.createOffenderAndOasysAssessment(
-        crn = "DX12340A",
-        assessmentSchemaCode = AssessmentSchemaCode.RSR
-      )
-    assertThat(returnAssessmentPk).isEqualTo(Pair(null, null))
-  }
-
-  @Test
-  fun `Trying to push to OASys Assessment update that should not be pushed into Oasys returns null`() {
-    val assessment = rsrAssessment()
-    val updateAssessmentResponse =
-      oasysAssessmentUpdateService.updateOASysAssessment(assessment.episodes.first(), mutableMapOf())
-    assertThat(updateAssessmentResponse).isEqualTo(null)
-  }
-
-  @Test
-  fun `Trying to push to OASys Assessment completion that should not be pushed into Oasys returns null`() {
-    val assessment = rsrAssessment()
-
-    val updateAssessmentResponse =
-      oasysAssessmentUpdateService.completeOASysAssessment(assessment.episodes.first(), null)
-    assertThat(updateAssessmentResponse).isEqualTo(null)
-  }
-
-  @Test
   fun `Trying to push to Create OASys Assessment that should be pushed into Oasys returns the assessment and offender created`() {
     val returnAssessmentPk =
       oasysAssessmentUpdateService.createOffenderAndOasysAssessment(
