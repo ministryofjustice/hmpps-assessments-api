@@ -97,8 +97,61 @@ class AssessmentServiceCreateTest {
   @Nested
   @DisplayName("creating assessments from Delius")
   inner class CreatingDeliusAssessments {
+
+    @Test
+    fun `should not create Oasys assessment for UPW schema code`() {
+      // Given
+      justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
+      justRun { telemetryService.trackAssessmentEvent(ASSESSMENT_CREATED, any(), any(), any(), any(), any()) }
+      every { subjectRepository.findByCrn(crn) } returns null
+      every { offenderService.validateUserAccess("X12345") } returns mockk()
+      every { offenderService.getOffender("X12345") } returns OffenderDto(dateOfBirth = LocalDate.of(1989, 1, 1))
+      every {
+        oasysAssessmentUpdateService.createOffenderAndOasysAssessment(
+          crn,
+          eventId,
+          AssessmentSchemaCode.UPW
+        )
+      } returns Pair(
+        oasysOffenderPk,
+        oasysSetPk
+      )
+      every { offenderService.getOffenceFromConvictionIndex(crn, eventId) } returns OffenceDto(
+        convictionId = 123,
+        convictionIndex = eventId,
+        offenceCode = "Code",
+        codeDescription = "Code description",
+        offenceSubCode = "Sub-code",
+        subCodeDescription = "Sub-code description"
+      )
+      every { episodeService.prepopulateFromExternalSources(any(), AssessmentSchemaCode.UPW) } returnsArgument 0
+      every { episodeService.prepopulateFromPreviousEpisodes(any(), any()) } returnsArgument 0
+      every { subjectRepository.save(any()) } returns SubjectEntity(
+        name = "name",
+        pnc = "PNC",
+        crn = "X12345",
+        dateOfBirth = LocalDate.of(1989, 1, 1),
+        createdDate = LocalDateTime.now(),
+      )
+      every { assessmentRepository.save(any()) } returns AssessmentEntity(assessmentId = assessmentId)
+      val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
+      every { authorService.getOrCreateAuthor() } returns author
+
+      // when
+      assessmentsService.createNewAssessment(
+        CreateAssessmentDto(
+          deliusEventId = eventId,
+          crn = crn,
+          assessmentSchemaCode = AssessmentSchemaCode.UPW
+        )
+      )
+      // Then
+      verify(exactly = 0) { oasysAssessmentUpdateService.createOffenderAndOasysAssessment(any(), any(), any()) }
+    }
+
     @Test
     fun `create new offender with new assessment from delius event index and crn`() {
+      // Given
       justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
       justRun { telemetryService.trackAssessmentEvent(ASSESSMENT_CREATED, any(), any(), any(), any(), any()) }
       every { subjectRepository.findByCrn(crn) } returns null
@@ -135,6 +188,7 @@ class AssessmentServiceCreateTest {
       val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
       every { authorService.getOrCreateAuthor() } returns author
 
+      // when
       assessmentsService.createNewAssessment(
         CreateAssessmentDto(
           deliusEventId = eventId,
@@ -142,7 +196,9 @@ class AssessmentServiceCreateTest {
           assessmentSchemaCode = assessmentSchemaCode
         )
       )
+      // Then
       verify(exactly = 1) { assessmentRepository.save(any()) }
+      verify(exactly = 1) { oasysAssessmentUpdateService.createOffenderAndOasysAssessment(any(), any(), any()) }
     }
 
     @Test

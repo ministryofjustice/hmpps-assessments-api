@@ -530,10 +530,29 @@ class AssessmentControllerTest : IntegrationTest() {
     }
 
     @Test
-    fun `complete assessment episode returns episode`() {
+    fun `should return episode when completing current episode using assessment UUID`() {
       assessRisksAndNeedsApiMockServer.stubGetRSRPredictorsForOffenderAndOffences(true, episodeUuid)
+      completeAndAssertEpisode("/assessments/$assessmentUuid/complete", LocalDateTime.now())
+    }
 
-      val assessmentEpisode = webTestClient.post().uri("/assessments/$assessmentUuid/complete")
+    @Test
+    fun `should return episode when completing current episode using episode UUID`() {
+      assessRisksAndNeedsApiMockServer.stubGetRSRPredictorsForOffenderAndOffences(true, episodeUuid)
+      completeAndAssertEpisode("/assessments/$assessmentUuid/episodes/$episodeUuid/complete", LocalDateTime.now())
+    }
+
+    @Test
+    fun `should return episode when episode is already complete using episode UUID`() {
+      val completedEpisodeUuid = "df43079f-c263-4690-b77e-f8689aa4a093"
+      assessRisksAndNeedsApiMockServer.stubGetRSRPredictorsForOffenderAndOffences(false, UUID.fromString(completedEpisodeUuid))
+      completeAndAssertEpisode(
+        "/assessments/$assessmentUuid/episodes/$completedEpisodeUuid/complete",
+        LocalDateTime.of(2021, 1, 2, 0, 0)
+      )
+    }
+
+    private fun completeAndAssertEpisode(endpointUrl: String, episodeEndDate: LocalDateTime) {
+      val assessmentEpisode = webTestClient.post().uri(endpointUrl)
         .header(RequestData.USER_AREA_HEADER_NAME, "WWS")
         .headers(setAuthorisation(fullName = "NEW USER", roles = listOf("ROLE_PROBATION")))
         .exchange()
@@ -542,7 +561,7 @@ class AssessmentControllerTest : IntegrationTest() {
         .returnResult()
         .responseBody
       assertThat(assessmentEpisode?.assessmentUuid).isEqualTo(assessmentUuid)
-      assertThat(assessmentEpisode?.ended).isEqualToIgnoringMinutes(LocalDateTime.now())
+      assertThat(assessmentEpisode?.ended).isEqualToIgnoringMinutes(episodeEndDate)
       assertThat(assessmentEpisode?.userFullName).isEqualTo("NEW USER")
       assertThat(assessmentEpisode?.predictors).isEqualTo(
         listOf(
