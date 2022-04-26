@@ -300,6 +300,12 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(answers?.get("caring_commitments_details")).isEqualTo(listOf("Primary Carer"))
       assertThat(answers?.get("reading_writing_difficulties")).isEqualTo(listOf("YES"))
       assertThat(answers?.get("reading_writing_difficulties_details")).isEqualTo(listOf("Cannot read"))
+      assertThat(answers?.get("reading_literacy_concerns")).isEqualTo(listOf("YES"))
+      assertThat(answers?.get("reading_literacy_concerns_details")).isEqualTo(listOf("Cannot read"))
+      assertThat(answers?.get("numeracy_concerns")).isEqualTo(listOf("YES"))
+      assertThat(answers?.get("numeracy_concerns_details")).isEqualTo(listOf("Numeracy difficulties"))
+      assertThat(answers?.get("language_communication_concerns")).isEqualTo(listOf("YES"))
+      assertThat(answers?.get("language_communication_concerns_details")).isEqualTo(listOf("Communication difficulties"))
     }
 
     @Test
