@@ -1,8 +1,8 @@
 
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.1.0"
-  kotlin("plugin.spring") version "1.6.10"
-  kotlin("plugin.jpa") version "1.6.10"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.1.5"
+  kotlin("plugin.spring") version "1.6.21"
+  kotlin("plugin.jpa") version "1.6.21"
 }
 
 allOpen {
@@ -31,20 +31,20 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-cache")
   implementation("org.springframework.boot:spring-boot-starter-aop")
   implementation("org.springframework.security:spring-security-oauth2-client")
-  implementation("org.springframework.data:spring-data-redis:2.5.4")
+  implementation("org.springframework.data:spring-data-redis:2.6.4")
   implementation("redis.clients:jedis:3.7.0")
-  implementation("org.springdoc:springdoc-openapi-ui:1.6.6")
-  implementation("org.springdoc:springdoc-openapi-data-rest:1.6.6")
-  implementation("org.springdoc:springdoc-openapi-kotlin:1.6.6")
+  implementation("org.springdoc:springdoc-openapi-ui:1.6.7")
+  implementation("org.springdoc:springdoc-openapi-data-rest:1.6.7")
+  implementation("org.springdoc:springdoc-openapi-kotlin:1.6.7")
   implementation("commons-io:commons-io:2.11.0")
-  implementation("com.zaxxer:HikariCP:5.0.0")
-  implementation("com.vladmihalcea:hibernate-types-52:2.12.1")
-  implementation("com.beust:klaxon:5.5")
-  implementation("com.google.code.gson:gson:2.8.8")
-  implementation("com.google.guava:guava:30.1.1-jre")
+  implementation("com.zaxxer:HikariCP:5.0.1")
+  implementation("com.vladmihalcea:hibernate-types-52:2.16.1")
+  implementation("com.beust:klaxon:5.6")
+  implementation("com.google.code.gson:gson:2.9.0")
+  implementation("com.google.guava:guava:31.1-jre")
   implementation("org.apache.commons:commons-lang3:3.12.0")
-  implementation("org.postgresql:postgresql:42.3.2")
-  implementation("org.flywaydb:flyway-core:7.15.0")
+  implementation("org.postgresql:postgresql:42.3.4")
+  implementation("org.flywaydb:flyway-core:8.5.9")
   runtimeOnly("com.h2database:h2:1.4.200")
 
   testRuntimeOnly("com.h2database:h2:1.4.200")
@@ -57,4 +57,7 @@ dependencies {
   testImplementation("com.ninja-squad:springmockk:3.0.1")
   testImplementation("io.jsonwebtoken:jjwt:0.9.1")
   testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
+}
+repositories {
+  mavenCentral()
 }

@@ -342,5 +342,4 @@
     <packageUrl regex="true">^pkg:maven/com\.pinterest\.ktlint/ktlint\-reporter\-checkstyle@.*$</packageUrl>
     <cve>CVE-2019-9658</cve>
   </suppress>
-
 </suppressions>
