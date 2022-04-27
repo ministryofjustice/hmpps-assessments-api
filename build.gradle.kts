@@ -46,6 +46,7 @@ dependencies {
   implementation("org.postgresql:postgresql:42.3.4")
   implementation("org.flywaydb:flyway-core:8.5.9")
   runtimeOnly("com.h2database:h2:1.4.200")
+  implementation("net.logstash.logback:logstash-logback-encoder:7.1.1")
 
   testRuntimeOnly("com.h2database:h2:1.4.200")
   testAnnotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
