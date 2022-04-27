@@ -11,6 +11,9 @@
             <layout class="ch.qos.logback.classic.PatternLayout">
                 <Pattern>${LOG_PATTERN}</Pattern>
             </layout>
+            <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+                <includeCallerData>true</includeCallerData>
+            </encoder>
         </appender>
         <appender name="aiAppender" class="ch.qos.logback.core.helpers.NOPAppender"/>
     </springProfile>
