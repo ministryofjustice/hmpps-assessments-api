@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.assessments.config
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo
+import com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
@@ -42,7 +43,7 @@ class CacheConfiguration {
     return RedisCacheConfiguration.defaultCacheConfig()
       .disableCachingNullValues()
       .serializeKeysWith(SerializationPair.fromSerializer(StringRedisSerializer()))
-      .serializeValuesWith(SerializationPair.fromSerializer(GenericJackson2JsonRedisSerializer(objectMapper())))
+      .serializeValuesWith(SerializationPair.fromSerializer(GenericJackson2JsonRedisSerializer(objectMapper().configure(FAIL_ON_UNKNOWN_PROPERTIES, false))))
   }
 
   private fun objectMapper(): ObjectMapper {
