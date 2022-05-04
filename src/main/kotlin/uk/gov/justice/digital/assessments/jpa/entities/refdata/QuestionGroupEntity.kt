@@ -36,12 +36,6 @@ class QuestionGroupEntity(
   @Column(name = "display_order")
   val displayOrder: Int = 0,
 
-  @Column(name = "mandatory")
-  val mandatory: Boolean = false,
-
-  @Column(name = "validation")
-  val validation: String? = null,
-
   @Column(name = "read_only")
   val readOnly: Boolean = false,
 

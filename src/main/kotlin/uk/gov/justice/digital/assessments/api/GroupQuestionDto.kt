@@ -22,15 +22,6 @@ data class GroupQuestionDto(
   @Schema(description = "Reference Question Help Text", example = "Some question help text")
   val helpText: String? = null,
 
-  @Schema(description = "Question Order for Group", example = "1")
-  val displayOrder: Int? = 0,
-
-  @Schema(description = "Question Mandatory status for Group", example = "true")
-  val mandatory: Boolean? = null,
-
-  @Schema(description = "Question Validation for Group", example = "to-do")
-  val validation: String? = null,
-
   @Schema(description = "Group or Question should be displayed read only", example = "false")
   val readOnly: Boolean? = null,
 
@@ -58,9 +49,6 @@ data class GroupQuestionDto(
         answerType = questionSchemaEntity.answerType,
         questionText = questionSchemaEntity.questionText,
         helpText = questionSchemaEntity.questionHelpText,
-        displayOrder = questionGroupEntity.displayOrder,
-        mandatory = questionGroupEntity.mandatory,
-        validation = questionGroupEntity.validation,
         readOnly = questionGroupEntity.readOnly,
         conditional = questionDependencies.hasDependency(questionSchemaEntity.questionSchemaUuid),
         referenceDataCategory = questionSchemaEntity.referenceDataCategory,

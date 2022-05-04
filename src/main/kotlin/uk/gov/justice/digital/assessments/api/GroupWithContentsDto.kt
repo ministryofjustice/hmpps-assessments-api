@@ -22,15 +22,6 @@ data class GroupWithContentsDto(
   @Schema(description = "Group Help-text", example = "Some group help text")
   val helpText: String? = null,
 
-  @Schema(description = "Display Order for Group", example = "1")
-  val displayOrder: Int? = 0,
-
-  @Schema(description = "Group is Required", example = "true")
-  val mandatory: Boolean? = null,
-
-  @Schema(description = "Question Validation for Group", example = "to-do")
-  val validation: String? = null,
-
   @Schema(description = "Questions and Groups")
   val contents: List<GroupContentDto>
 ) : GroupContentDto {
@@ -42,9 +33,6 @@ data class GroupWithContentsDto(
         title = group.heading,
         subheading = group.subheading,
         helpText = group.helpText,
-        displayOrder = parentGroup?.displayOrder,
-        mandatory = parentGroup?.mandatory,
-        validation = parentGroup?.validation,
         contents = contents
       )
     }

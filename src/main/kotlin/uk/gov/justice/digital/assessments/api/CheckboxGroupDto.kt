@@ -21,15 +21,6 @@ data class CheckboxGroupDto(
   @Schema(description = "Checkbox Help-text", example = "Some group help text")
   val helpText: String? = null,
 
-  @Schema(description = "Display Order for Checkbox", example = "1")
-  val displayOrder: Int? = 0,
-
-  @Schema(description = "Checkbox is Required", example = "true")
-  val mandatory: Boolean? = null,
-
-  @Schema(description = "Question Validation for Checkbox", example = "to-do")
-  val validation: String? = null,
-
   @Schema(description = "Questions and Groups")
   val contents: List<GroupContentDto>
 ) : GroupContentDto {
@@ -41,9 +32,6 @@ data class CheckboxGroupDto(
         title = group.heading,
         subheading = group.subheading,
         helpText = group.helpText,
-        displayOrder = parentGroup?.displayOrder,
-        mandatory = parentGroup?.mandatory,
-        validation = parentGroup?.validation,
         contents = contents
       )
     }
