@@ -55,7 +55,8 @@ class CommunityApiMockServer : WireMockServer(9096) {
                 "            \"notes\": \"Cannot read\"," +
                 "            \"evidenced\": true," +
                 "            \"createdDatetime\": \"2021-10-25T12:08:42\"," +
-                "            \"lastUpdatedDatetime\": \"2021-10-25T12:08:42\"" +
+                "            \"lastUpdatedDatetime\": \"2021-10-25T12:08:42\"," +
+                "            \"isActive\": true" +
                 "        }," +
                 "        {" +
                 "            \"personalCircumstanceId\": 2507778503," +
@@ -76,7 +77,8 @@ class CommunityApiMockServer : WireMockServer(9096) {
                 "            \"notes\": \"Numeracy difficulties\"," +
                 "            \"evidenced\": true," +
                 "            \"createdDatetime\": \"2021-10-25T12:08:42\"," +
-                "            \"lastUpdatedDatetime\": \"2021-10-25T12:08:42\"" +
+                "            \"lastUpdatedDatetime\": \"2021-10-25T12:08:42\"," +
+                "            \"isActive\": true" +
                 "        }," +
                 "        {" +
                 "            \"personalCircumstanceId\": 2503338503," +
@@ -97,7 +99,8 @@ class CommunityApiMockServer : WireMockServer(9096) {
                 "            \"notes\": \"Communication difficulties\"," +
                 "            \"evidenced\": true," +
                 "            \"createdDatetime\": \"2021-10-25T12:08:42\"," +
-                "            \"lastUpdatedDatetime\": \"2021-10-25T12:08:42\"" +
+                "            \"lastUpdatedDatetime\": \"2021-10-25T12:08:42\"," +
+                "            \"isActive\": true" +
                 "        }," +
                 "        {" +
                 "            \"personalCircumstanceId\": 2500178003," +
