@@ -55,8 +55,6 @@ class GroupWithContentsDtoTest {
     question.questionSchemaUuid,
     "question",
     1,
-    true,
-    "none",
     false,
     question,
     null
@@ -80,8 +78,6 @@ class GroupWithContentsDtoTest {
     question.questionSchemaUuid,
     "question",
     1,
-    true,
-    "none",
     false,
     question,
     null
@@ -93,8 +89,6 @@ class GroupWithContentsDtoTest {
     additionalQuestion.questionSchemaUuid,
     "question",
     2,
-    false,
-    "lots",
     false,
     additionalQuestion,
     null
@@ -118,8 +112,6 @@ class GroupWithContentsDtoTest {
     question.questionSchemaUuid,
     "question",
     1,
-    true,
-    "none",
     false,
     question,
     null
@@ -133,8 +125,6 @@ class GroupWithContentsDtoTest {
     2,
     false,
     null,
-    false,
-    null,
     groupWithTwoQuestions
   )
   private val groupWithNestedGroupSecondQuestion = QuestionGroupEntity(
@@ -144,8 +134,6 @@ class GroupWithContentsDtoTest {
     additionalQuestion.questionSchemaUuid,
     "question",
     3,
-    false,
-    "lots",
     false,
     additionalQuestion,
     null
@@ -221,9 +209,6 @@ class GroupWithContentsDtoTest {
     fun assertQuestionContentsDetails(content: GroupContentDto, entity: QuestionGroupEntity) {
       val qc = content as GroupQuestionDto
 
-      assertThat(qc.displayOrder).isEqualTo(entity.displayOrder)
-      assertThat(qc.mandatory).isEqualTo(entity.mandatory)
-      assertThat(qc.validation).isEqualTo(entity.validation)
       assertThat(qc.readOnly).isEqualTo(entity.readOnly)
 
       val question = entity.question
@@ -238,10 +223,6 @@ class GroupWithContentsDtoTest {
 
     fun assertGroupContentsDetails(content: GroupContentDto, entity: QuestionGroupEntity) {
       val gc = content as GroupWithContentsDto
-
-      assertThat(gc.displayOrder).isEqualTo(entity.displayOrder)
-      assertThat(gc.mandatory).isEqualTo(entity.mandatory)
-      assertThat(gc.validation).isEqualTo(entity.validation)
 
       val group = entity.nestedGroup
       assertThat(group).isNotNull

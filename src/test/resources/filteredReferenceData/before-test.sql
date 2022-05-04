@@ -49,7 +49,7 @@ INSERT INTO hmppsassessmentsschemas.oasys_question_mapping (mapping_uuid, questi
 ('b28a7159-edbc-409a-8a53-3d6b8a4ae3b6', '2fe94330-22c4-4a6e-a494-9f53dc2139c6', 'OFFIN', null, 'assessor_office', true),
 ('1713e728-7738-48d7-8060-3f6f014d6c5c', '8d48ff4d-60f6-461b-ab00-67d1c2ed5f6b', 'OFFIN', null, 'assessor_team', true);
 
-INSERT INTO hmppsassessmentsschemas.question_group (question_group_uuid, content_uuid, content_type, group_uuid, display_order, mandatory, validation, read_only) VALUES
-('2d267ba0-5ac5-473f-8369-8ecc424ad0c3', '8dc6d75e-7908-4f3b-97d4-48d5441af5e1', 'group', '1250321c-feff-4b87-83a7-00a65095cab1', 2, true, null, false),
-('435a2cbc-a7e9-4ba6-808e-dfe6cd60971f', '2fe94330-22c4-4a6e-a494-9f53dc2139c6', 'question', '8dc6d75e-7908-4f3b-97d4-48d5441af5e1', 6, true, '{"mandatory":{"errorMessage":"select a LDU","errorSummary":"Select a LDU"}}', true),
-('47b86036-2a9d-4363-a4a1-fc063a41df4a', '8d48ff4d-60f6-461b-ab00-67d1c2ed5f6b', 'question', '8dc6d75e-7908-4f3b-97d4-48d5441af5e1', 7, true, '{"mandatory":{"errorMessage":"Select a team","errorSummary":"Select a team"}}', true);
+INSERT INTO hmppsassessmentsschemas.question_group (question_group_uuid, content_uuid, content_type, group_uuid, display_order, read_only) VALUES
+('2d267ba0-5ac5-473f-8369-8ecc424ad0c3', '8dc6d75e-7908-4f3b-97d4-48d5441af5e1', 'group', '1250321c-feff-4b87-83a7-00a65095cab1', 2, false),
+('435a2cbc-a7e9-4ba6-808e-dfe6cd60971f', '2fe94330-22c4-4a6e-a494-9f53dc2139c6', 'question', '8dc6d75e-7908-4f3b-97d4-48d5441af5e1', 6, true),
+('47b86036-2a9d-4363-a4a1-fc063a41df4a', '8d48ff4d-60f6-461b-ab00-67d1c2ed5f6b', 'question', '8dc6d75e-7908-4f3b-97d4-48d5441af5e1', 7, true);

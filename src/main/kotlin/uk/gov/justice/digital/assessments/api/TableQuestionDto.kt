@@ -21,15 +21,6 @@ data class TableQuestionDto(
   @Schema(description = "Table Help-text", example = "Some group help text")
   val helpText: String? = null,
 
-  @Schema(description = "Display Order for Table", example = "1")
-  val displayOrder: Int? = 0,
-
-  @Schema(description = "Table is Required", example = "true")
-  val mandatory: Boolean? = null,
-
-  @Schema(description = "Question Validation for Table", example = "to-do")
-  val validation: String? = null,
-
   @Schema(description = "Questions and Groups")
   val contents: List<GroupContentDto> = mutableListOf()
 ) : GroupContentDto {
@@ -41,9 +32,6 @@ data class TableQuestionDto(
         title = group.heading,
         subheading = group.subheading,
         helpText = group.helpText,
-        displayOrder = parentGroup?.displayOrder,
-        mandatory = parentGroup?.mandatory,
-        validation = parentGroup?.validation,
         contents = contents
       )
     }
