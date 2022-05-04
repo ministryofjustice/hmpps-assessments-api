@@ -1,13 +1,11 @@
 package uk.gov.justice.digital.assessments.api
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionGroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.services.QuestionDependencies
 import java.util.UUID
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 data class GroupQuestionDto(
   @Schema(description = "Reference Question Schema UUID", example = "0e5e0848-6ab0-4b1b-a354-f7894913d8e4")
   val questionId: UUID? = null,
