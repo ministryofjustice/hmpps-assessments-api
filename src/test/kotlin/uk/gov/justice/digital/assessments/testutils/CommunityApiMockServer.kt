@@ -55,7 +55,7 @@ class CommunityApiMockServer : WireMockServer(9096) {
                 "            \"notes\": \"Cannot read\"," +
                 "            \"evidenced\": true," +
                 "            \"createdDatetime\": \"2021-10-25T12:08:42\"," +
-                "            \"lastUpdatedDatetime\": \"2021-10-25T12:08:42\"" +
+                "            \"lastUpdatedDatetime\": \"2021-10-25T12:08:42\"," +
                 "            \"isActive\": true" +
                 "        }," +
                 "        {" +
@@ -77,7 +77,7 @@ class CommunityApiMockServer : WireMockServer(9096) {
                 "            \"notes\": \"Numeracy difficulties\"," +
                 "            \"evidenced\": true," +
                 "            \"createdDatetime\": \"2021-10-25T12:08:42\"," +
-                "            \"lastUpdatedDatetime\": \"2021-10-25T12:08:42\"" +
+                "            \"lastUpdatedDatetime\": \"2021-10-25T12:08:42\"," +
                 "            \"isActive\": true" +
                 "        }," +
                 "        {" +
@@ -99,7 +99,7 @@ class CommunityApiMockServer : WireMockServer(9096) {
                 "            \"notes\": \"Communication difficulties\"," +
                 "            \"evidenced\": true," +
                 "            \"createdDatetime\": \"2021-10-25T12:08:42\"," +
-                "            \"lastUpdatedDatetime\": \"2021-10-25T12:08:42\"" +
+                "            \"lastUpdatedDatetime\": \"2021-10-25T12:08:42\"," +
                 "            \"isActive\": true" +
                 "        }," +
                 "        {" +
