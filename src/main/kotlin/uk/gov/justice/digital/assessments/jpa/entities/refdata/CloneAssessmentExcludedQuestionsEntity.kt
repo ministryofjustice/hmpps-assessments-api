@@ -16,9 +16,9 @@ class CloneAssessmentExcludedQuestionsEntity(
   @Column(name = "clone_assessment_excluded_questions_id")
   val cloneAssessmentExcludedQuestionsId: Long,
 
-  @Column(name = "assessment_schema_code")
+  @Column(name = "assessment_code")
   @Enumerated(EnumType.STRING)
-  val assessmentSchemaCode: AssessmentSchemaCode,
+  val assessmentCode: AssessmentSchemaCode,
 
   @Column(name = "question_code")
   val questionCode: String,

@@ -4,15 +4,15 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.GroupEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionGroupEntity
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.services.QuestionDependencies
 import java.time.LocalDateTime
 import java.util.UUID
 
 @DisplayName("Question Group DTO Tests")
 class GroupWithContentsDtoTest {
-  private val question = QuestionSchemaEntity(
+  private val question = QuestionEntity(
     1L,
     UUID.randomUUID(),
     "SupervisionId",
@@ -24,7 +24,7 @@ class GroupWithContentsDtoTest {
     "Question text",
     "Question help text"
   )
-  private val additionalQuestion = QuestionSchemaEntity(
+  private val additionalQuestion = QuestionEntity(
     1L,
     UUID.randomUUID(),
     "AssessmentId",
@@ -52,7 +52,7 @@ class GroupWithContentsDtoTest {
     1L,
     UUID.randomUUID(),
     groupWithOneQuestion,
-    question.questionSchemaUuid,
+    question.questionUuid,
     "question",
     1,
     false,
@@ -75,7 +75,7 @@ class GroupWithContentsDtoTest {
     1L,
     UUID.randomUUID(),
     groupWithTwoQuestions,
-    question.questionSchemaUuid,
+    question.questionUuid,
     "question",
     1,
     false,
@@ -86,7 +86,7 @@ class GroupWithContentsDtoTest {
     1L,
     UUID.randomUUID(),
     groupWithTwoQuestions,
-    additionalQuestion.questionSchemaUuid,
+    additionalQuestion.questionUuid,
     "question",
     2,
     false,
@@ -109,7 +109,7 @@ class GroupWithContentsDtoTest {
     1L,
     UUID.randomUUID(),
     groupWithNestedGroup,
-    question.questionSchemaUuid,
+    question.questionUuid,
     "question",
     1,
     false,
@@ -131,7 +131,7 @@ class GroupWithContentsDtoTest {
     3L,
     UUID.randomUUID(),
     groupWithNestedGroup,
-    additionalQuestion.questionSchemaUuid,
+    additionalQuestion.questionUuid,
     "question",
     3,
     false,
@@ -214,7 +214,7 @@ class GroupWithContentsDtoTest {
       val question = entity.question
       assertThat(question).isNotNull
 
-      assertThat(qc.questionId).isEqualTo(question?.questionSchemaUuid)
+      assertThat(qc.questionId).isEqualTo(question?.questionUuid)
       assertThat(qc.questionCode).isEqualTo(question?.questionCode)
       assertThat(qc.questionText).isEqualTo(question?.questionText)
       assertThat(qc.helpText).isEqualTo(question?.questionHelpText)

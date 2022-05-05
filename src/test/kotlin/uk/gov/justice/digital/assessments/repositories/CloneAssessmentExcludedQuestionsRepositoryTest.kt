@@ -13,7 +13,7 @@ class CloneAssessmentExcludedQuestionsRepositoryTest(
 
   @Test
   fun `return excluded question entities by assessment schema code`() {
-    val cloneAssessmentExcludedQuestions = cloneAssessmentExcludedQuestionsRepository.findAllByAssessmentSchemaCode(UPW)
+    val cloneAssessmentExcludedQuestions = cloneAssessmentExcludedQuestionsRepository.findAllByAssessmentCode(UPW)
     assertThat(cloneAssessmentExcludedQuestions.map { it.questionCode }).containsExactlyInAnyOrder(
       "individual_details_complete",
       "cultural_religious_adjustment_complete",

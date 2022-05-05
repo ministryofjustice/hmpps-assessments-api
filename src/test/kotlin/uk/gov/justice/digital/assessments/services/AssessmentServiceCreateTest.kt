@@ -48,7 +48,7 @@ class AssessmentServiceCreateTest {
   private val episodeService: EpisodeService = mockk()
   private val offenderService: OffenderService = mockk()
   private val oasysAssessmentUpdateService: OasysAssessmentUpdateService = mockk()
-  private val assessmentSchemaService: AssessmentSchemaService = mockk()
+  private val assessmentReferenceDataService: AssessmentReferenceDataService = mockk()
   private val auditService: AuditService = mockk()
   private val telemetryService: TelemetryService = mockk()
 
@@ -82,7 +82,7 @@ class AssessmentServiceCreateTest {
   @BeforeEach
   fun setup() {
     MDC.put(RequestData.USER_NAME_HEADER, "User name")
-    every { assessmentSchemaService.toOasysAssessmentType(AssessmentSchemaCode.ROSH) } returns OasysAssessmentType.SHORT_FORM_PSR
+    every { assessmentReferenceDataService.toOasysAssessmentType(AssessmentSchemaCode.ROSH) } returns OasysAssessmentType.SHORT_FORM_PSR
     val offenceDto = OffenceDto(
       convictionId = 123,
       convictionIndex = eventId,

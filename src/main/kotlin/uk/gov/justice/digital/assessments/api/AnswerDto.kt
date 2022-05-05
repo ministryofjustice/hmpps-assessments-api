@@ -1,13 +1,13 @@
 package uk.gov.justice.digital.assessments.api
 
 import io.swagger.v3.oas.annotations.media.Schema
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerSchemaEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerEntity
 import uk.gov.justice.digital.assessments.services.AnswerDependencies
 import java.util.UUID
 
-data class AnswerSchemaDto(
-  @Schema(description = "Answer Schema UUID", example = "0e5e0848-6ab0-4b1b-a354-f7894913d8e4")
-  val answerSchemaUuid: UUID,
+data class AnswerDto(
+  @Schema(description = "Answer UUID", example = "0e5e0848-6ab0-4b1b-a354-f7894913d8e4")
+  val answerUuid: UUID,
 
   @Schema(description = "Answer Schema Code", example = "RSR-01-a")
   val answerSchemaCode: String? = null,
@@ -24,25 +24,25 @@ data class AnswerSchemaDto(
 ) {
   companion object {
     fun from(
-      answerSchemaEntities: Collection<AnswerSchemaEntity>?,
+      answerEntities: Collection<AnswerEntity>?,
       answerDependencies: AnswerDependencies = { null }
-    ): Collection<AnswerSchemaDto> {
-      if (answerSchemaEntities.isNullOrEmpty()) return emptySet()
-      return answerSchemaEntities.map {
+    ): Collection<AnswerDto> {
+      if (answerEntities.isNullOrEmpty()) return emptySet()
+      return answerEntities.map {
         from(it, answerDependencies)
       }.toSet()
     }
 
     fun from(
-      answerSchemaEntity: AnswerSchemaEntity,
+      answerEntity: AnswerEntity,
       answerDependencies: AnswerDependencies
-    ): AnswerSchemaDto {
-      return AnswerSchemaDto(
-        answerSchemaEntity.answerSchemaUuid,
-        answerSchemaEntity.answerSchemaCode,
-        answerSchemaEntity.value,
-        answerSchemaEntity.text,
-        answerDependencies(answerSchemaEntity.value)
+    ): AnswerDto {
+      return AnswerDto(
+        answerEntity.answerUuid,
+        answerEntity.answerCode,
+        answerEntity.value,
+        answerEntity.text,
+        answerDependencies(answerEntity.value)
       )
     }
   }

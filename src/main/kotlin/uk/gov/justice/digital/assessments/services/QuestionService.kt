@@ -10,7 +10,7 @@ import uk.gov.justice.digital.assessments.api.GroupQuestionDto
 import uk.gov.justice.digital.assessments.api.GroupSectionsDto
 import uk.gov.justice.digital.assessments.api.GroupSummaryDto
 import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
-import uk.gov.justice.digital.assessments.api.QuestionSchemaDto
+import uk.gov.justice.digital.assessments.api.QuestionDto
 import uk.gov.justice.digital.assessments.api.TableQuestionDto
 import uk.gov.justice.digital.assessments.config.CacheConstants.GROUP_CONTENTS_CACHE_KEY
 import uk.gov.justice.digital.assessments.config.CacheConstants.GROUP_SECTIONS_CACHE_KEY
@@ -18,20 +18,20 @@ import uk.gov.justice.digital.assessments.config.CacheConstants.LIST_GROUP_CACHE
 import uk.gov.justice.digital.assessments.config.CacheConstants.QUESTION_SCHEMA_CACHE_KEY
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.GroupEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionGroupEntity
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.GroupRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.OASysMappingRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.QuestionGroupRepository
-import uk.gov.justice.digital.assessments.jpa.repositories.refdata.QuestionSchemaRepository
-import uk.gov.justice.digital.assessments.services.dto.ExternalSourceQuestionSchemaDto
+import uk.gov.justice.digital.assessments.jpa.repositories.refdata.QuestionRepository
+import uk.gov.justice.digital.assessments.services.dto.ExternalSourceQuestionDto
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import java.util.UUID
 
 @Service
 @Transactional("refDataTransactionManager")
 class QuestionService(
-  private val questionSchemaRepository: QuestionSchemaRepository,
+  private val questionRepository: QuestionRepository,
   private val questionGroupRepository: QuestionGroupRepository,
   private val groupRepository: GroupRepository,
   private val oasysMappingRepository: OASysMappingRepository,
@@ -42,10 +42,10 @@ class QuestionService(
   }
 
   @Cacheable(QUESTION_SCHEMA_CACHE_KEY)
-  fun getQuestionSchema(questionSchemaId: UUID): QuestionSchemaDto {
-    val questionSchemaEntity = questionSchemaRepository.findByQuestionSchemaUuid(questionSchemaId)
-      ?: throw EntityNotFoundException("Question Schema not found for id: $questionSchemaId")
-    return QuestionSchemaDto.from(questionSchemaEntity)
+  fun getQuestion(questionUuid: UUID): QuestionDto {
+    val questionEntity = questionRepository.findByQuestionUuid(questionUuid)
+      ?: throw EntityNotFoundException("Question not found for id: $questionUuid")
+    return QuestionDto.from(questionEntity)
   }
 
   @Cacheable(LIST_GROUP_CACHE_KEY)
@@ -73,8 +73,8 @@ class QuestionService(
     return group.contents.flatMap {
       when (it.contentType) {
         "question" -> {
-          val questionSchema = getGroupQuestion(it, dependencies)
-          listOf(questionSchema)
+          val question = getGroupQuestion(it, dependencies)
+          listOf(question)
         }
         "group" -> {
           flattenQuestionsForGroup(it.contentUuid, dependencies)
@@ -130,7 +130,7 @@ class QuestionService(
     dependencies: QuestionDependencies
   ): GroupContentDto {
     log.debug("getGroupQuestion {}", question.contentUuid)
-    val questionEntity = questionSchemaRepository.findByQuestionSchemaUuid(question.contentUuid)
+    val questionEntity = questionRepository.findByQuestionUuid(question.contentUuid)
       ?: throw EntityNotFoundException("Could not get question ${question.contentUuid}")
 
     return when (questionEntity.answerType?.split(":")?.get(0)) {
@@ -144,7 +144,7 @@ class QuestionService(
   }
 
   private fun tableGroupQuestion(
-    questionEntity: QuestionSchemaEntity,
+    questionEntity: QuestionEntity,
     dependencies: QuestionDependencies
   ): TableQuestionDto {
     val group = findGroup(questionEntity)
@@ -152,7 +152,7 @@ class QuestionService(
   }
 
   private fun findGroup(
-    questionEntity: QuestionSchemaEntity
+    questionEntity: QuestionEntity
   ): GroupEntity {
     val groupName = questionEntity.answerType?.split(":")?.get(1)
       ?: throw EntityNotFoundException("Could not get group name for question ${questionEntity.questionCode}")
@@ -174,7 +174,7 @@ class QuestionService(
   }
 
   fun getAllQuestions(): QuestionSchemaEntities {
-    return QuestionSchemaEntities(questionSchemaRepository.findAll())
+    return QuestionSchemaEntities(questionRepository.findAll())
   }
 
   fun getAllGroupQuestionsByGroupCode(groupCode: String): QuestionSchemaEntities {
@@ -182,11 +182,11 @@ class QuestionService(
   }
 
   private fun getAllGroupQuestions(group: GroupEntity): QuestionSchemaEntities {
-    val allQuestions = mutableListOf<QuestionSchemaEntity>()
+    val allQuestions = mutableListOf<QuestionEntity>()
 
     group.contents.forEach {
       if (it.contentType == "question")
-        allQuestions.add(questionSchemaRepository.findByQuestionSchemaUuid(it.contentUuid)!!)
+        allQuestions.add(questionRepository.findByQuestionUuid(it.contentUuid)!!)
       if (it.contentType == "group")
         allQuestions.addAll(
           getAllGroupQuestions(findByGroupUuid(it.contentUuid))
@@ -207,36 +207,36 @@ class QuestionService(
   }
 
   fun getAllSectionQuestionsForQuestions(questionCodes: List<String>): QuestionSchemaEntities {
-    val mappings = oasysMappingRepository.findAllByQuestionSchema_QuestionCodeIn(questionCodes)
+    val mappings = oasysMappingRepository.findAllByQuestion_QuestionCodeIn(questionCodes)
     val sections = mappings?.map { it.sectionCode }?.distinct() ?: emptyList()
     return QuestionSchemaEntities(
       oasysMappingRepository.findAllBySectionCodeIn(sections)
-        .map { it.questionSchema }.distinct()
+        .map { it.question }.distinct()
     )
   }
 }
 
 class QuestionSchemaEntities(
-  questionsList: List<QuestionSchemaEntity>
-) : List<QuestionSchemaEntity> by questionsList {
+  questionsList: List<QuestionEntity>
+) : List<QuestionEntity> by questionsList {
   private val questions = questionsList.associateBy { it.questionCode }
   private val oasysMapping = mapByOasysCoords(questionsList)
 
   operator fun get(questionCode: String) = questions[questionCode]
 
-  fun withExternalSource(assessmentSchemaCode: AssessmentSchemaCode): List<ExternalSourceQuestionSchemaDto> {
+  fun withExternalSource(assessmentSchemaCode: AssessmentSchemaCode): List<ExternalSourceQuestionDto> {
     return questions.values
       .filter { !it.externalSources.isEmpty() }
-      .filter { it.externalSources.any { source -> source.assessmentSchemaCode == assessmentSchemaCode } }
-      .map { it.toQuestionSchemaDto(assessmentSchemaCode) }
+      .filter { it.externalSources.any { source -> source.assessmentCode == assessmentSchemaCode } }
+      .map { it.toQuestionDto(assessmentSchemaCode) }
       .flatten()
   }
 
-  private fun QuestionSchemaEntity.toQuestionSchemaDto(assessmentSchemaCode: AssessmentSchemaCode): List<ExternalSourceQuestionSchemaDto> {
-    val source = this.externalSources.filter { it.assessmentSchemaCode == assessmentSchemaCode }
+  private fun QuestionEntity.toQuestionDto(assessmentSchemaCode: AssessmentSchemaCode): List<ExternalSourceQuestionDto> {
+    val source = this.externalSources.filter { it.assessmentCode == assessmentSchemaCode }
     return source.map {
-      ExternalSourceQuestionSchemaDto(
-        it.questionSchema.questionCode,
+      ExternalSourceQuestionDto(
+        it.question.questionCode,
         it.externalSource,
         it.jsonPathField,
         it.fieldType,
@@ -251,7 +251,7 @@ class QuestionSchemaEntities(
     sectionCode: String?,
     logicalPage: Long?,
     questionCode: String?,
-  ): Collection<QuestionSchemaEntity> {
+  ): Collection<QuestionEntity> {
     val questions = oasysMapping.section(sectionCode)?.logicalPage(logicalPage)?.questionCode(questionCode)
     return questions ?: emptyList()
   }
@@ -293,15 +293,15 @@ class QuestionSchemaEntities(
   }
 
   private class Questions(
-    private val questions: MutableList<QuestionSchemaEntity> = mutableListOf()
-  ) : List<QuestionSchemaEntity> by questions {
-    fun addQuestion(question: QuestionSchemaEntity) {
+    private val questions: MutableList<QuestionEntity> = mutableListOf()
+  ) : List<QuestionEntity> by questions {
+    fun addQuestion(question: QuestionEntity) {
       questions.add(question)
     }
   }
 
   companion object {
-    private fun mapByOasysCoords(questionsList: List<QuestionSchemaEntity>): OasysMappingTree {
+    private fun mapByOasysCoords(questionsList: List<QuestionEntity>): OasysMappingTree {
       val mapping = OasysMappingTree()
       questionsList.forEach { question ->
         question.oasysMappings.forEach {

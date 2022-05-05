@@ -11,22 +11,22 @@ import org.junit.jupiter.api.extension.ExtendWith
 import uk.gov.justice.digital.assessments.api.GroupSectionsDto
 import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.AssessmentSchemaEntity
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.AssessmentSchemaGroupsEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.AssessmentEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.AssessmentGroupsEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.GroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.OasysAssessmentType
-import uk.gov.justice.digital.assessments.jpa.repositories.refdata.AssessmentSchemaRepository
+import uk.gov.justice.digital.assessments.jpa.repositories.refdata.AssessmentRepository
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import java.time.LocalDateTime
 import java.util.UUID
 
 @ExtendWith(MockKExtension::class)
 @DisplayName("Assessment Schema Service Tests")
-class AssessmentSchemaServiceTest {
-  private val assessmentSchemaRepository: AssessmentSchemaRepository = mockk()
+class AssessmentReferenceDataServiceTest {
+  private val assessmentRepository: AssessmentRepository = mockk()
   private val questionService: QuestionService = mockk()
 
-  private val assessmentSchemaService = AssessmentSchemaService(assessmentSchemaRepository, questionService)
+  private val assessmentReferenceDataService = AssessmentReferenceDataService(assessmentRepository, questionService)
 
   @Test
   fun `get group contents by assessment schema code`() {
@@ -43,8 +43,8 @@ class AssessmentSchemaServiceTest {
       null
     )
 
-    val groupsEntity = AssessmentSchemaGroupsEntity(1, UUID.randomUUID(), group)
-    every { assessmentSchemaRepository.findByAssessmentSchemaCode(assessmentSchemaCode) } returns AssessmentSchemaEntity(
+    val groupsEntity = AssessmentGroupsEntity(1, UUID.randomUUID(), group)
+    every { assessmentRepository.findByAssessmentSchemaCode(assessmentSchemaCode) } returns AssessmentEntity(
       1,
       groupsEntity,
       assessmentSchemaCode,
@@ -53,7 +53,7 @@ class AssessmentSchemaServiceTest {
     val groupWithContentsDto = GroupWithContentsDto(groupUuid, "simple-group", contents = emptyList())
     every { questionService.getGroupContents(groupUuid) } returns groupWithContentsDto
 
-    val assessmentSchema = assessmentSchemaService.getAssessmentSchema(assessmentSchemaCode)
+    val assessmentSchema = assessmentReferenceDataService.getAssessmentSchema(assessmentSchemaCode)
 
     assertThat(assessmentSchema).isEqualTo(groupWithContentsDto)
   }
@@ -61,9 +61,9 @@ class AssessmentSchemaServiceTest {
   @Test
   fun `get group contents by assessment schema code throws entity not found if schema doesn't exists`() {
     val assessmentSchemaCode = AssessmentSchemaCode.ROSH
-    every { assessmentSchemaRepository.findByAssessmentSchemaCode(assessmentSchemaCode) } returns null
+    every { assessmentRepository.findByAssessmentSchemaCode(assessmentSchemaCode) } returns null
 
-    assertThrows<EntityNotFoundException> { assessmentSchemaService.getAssessmentSchema(assessmentSchemaCode) }
+    assertThrows<EntityNotFoundException> { assessmentReferenceDataService.getAssessmentSchema(assessmentSchemaCode) }
   }
 
   @Test
@@ -82,8 +82,8 @@ class AssessmentSchemaServiceTest {
       null
     )
 
-    val groupsEntity = AssessmentSchemaGroupsEntity(1, UUID.randomUUID(), group)
-    every { assessmentSchemaRepository.findByAssessmentSchemaCode(assessmentSchemaCode) } returns AssessmentSchemaEntity(
+    val groupsEntity = AssessmentGroupsEntity(1, UUID.randomUUID(), group)
+    every { assessmentRepository.findByAssessmentSchemaCode(assessmentSchemaCode) } returns AssessmentEntity(
       1,
       groupsEntity,
       assessmentSchemaCode,
@@ -92,7 +92,7 @@ class AssessmentSchemaServiceTest {
     val groupSectionsDto = GroupSectionsDto(groupUuid, groupCode, contents = emptyList())
     every { questionService.getGroupSections(groupCode) } returns groupSectionsDto
 
-    val assessmentSchema = assessmentSchemaService.getAssessmentSchemaSummary(assessmentSchemaCode)
+    val assessmentSchema = assessmentReferenceDataService.getAssessmentSchemaSummary(assessmentSchemaCode)
 
     assertThat(assessmentSchema).isEqualTo(groupSectionsDto)
   }
@@ -100,8 +100,8 @@ class AssessmentSchemaServiceTest {
   @Test
   fun `get group sections by assessment schema code throws entity not found if schema doesn't exists`() {
     val assessmentSchemaCode = AssessmentSchemaCode.ROSH
-    every { assessmentSchemaRepository.findByAssessmentSchemaCode(assessmentSchemaCode) } returns null
+    every { assessmentRepository.findByAssessmentSchemaCode(assessmentSchemaCode) } returns null
 
-    assertThrows<EntityNotFoundException> { assessmentSchemaService.getAssessmentSchemaSummary(assessmentSchemaCode) }
+    assertThrows<EntityNotFoundException> { assessmentReferenceDataService.getAssessmentSchemaSummary(assessmentSchemaCode) }
   }
 }

@@ -13,7 +13,7 @@ import uk.gov.justice.digital.assessments.api.GroupContentDto
 import uk.gov.justice.digital.assessments.api.GroupSectionsDto
 import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
-import uk.gov.justice.digital.assessments.services.AssessmentSchemaService
+import uk.gov.justice.digital.assessments.services.AssessmentReferenceDataService
 import uk.gov.justice.digital.assessments.services.AssessmentService
 import uk.gov.justice.digital.assessments.services.AssessmentUpdateService
 
@@ -21,7 +21,7 @@ import uk.gov.justice.digital.assessments.services.AssessmentUpdateService
 class AssessmentSchemaController(
   val assessmentService: AssessmentService,
   val assessmentUpdateService: AssessmentUpdateService,
-  val assessmentSchemaService: AssessmentSchemaService
+  val assessmentReferenceDataService: AssessmentReferenceDataService
 ) {
   @RequestMapping(path = ["/assessments/schema/{assessmentSchemaCode}"], method = [RequestMethod.GET])
   @Operation(description = "Gets an assessment schema with all questions in the assessment schema group")
@@ -39,7 +39,7 @@ class AssessmentSchemaController(
       example = "ROSH"
     ) @PathVariable assessmentSchemaCode: AssessmentSchemaCode
   ): GroupWithContentsDto {
-    return assessmentSchemaService.getAssessmentSchema(assessmentSchemaCode)
+    return assessmentReferenceDataService.getAssessmentSchema(assessmentSchemaCode)
   }
 
   @RequestMapping(path = ["/assessments/schema/{assessmentSchemaCode}/summary"], method = [RequestMethod.GET])
@@ -58,7 +58,7 @@ class AssessmentSchemaController(
       example = "ROSH"
     ) @PathVariable assessmentSchemaCode: AssessmentSchemaCode
   ): GroupSectionsDto {
-    return assessmentSchemaService.getAssessmentSchemaSummary(assessmentSchemaCode)
+    return assessmentReferenceDataService.getAssessmentSchemaSummary(assessmentSchemaCode)
   }
 
   @RequestMapping(path = ["/assessments/schema/{assessmentSchemaCode}/questions"], method = [RequestMethod.GET])
@@ -71,6 +71,6 @@ class AssessmentSchemaController(
   )
   @PreAuthorize("hasRole('ROLE_PROBATION')")
   fun getQuestionsForAssessmentSchemaCode(@PathVariable("assessmentSchemaCode") assessmentSchemaCode: String): List<GroupContentDto> {
-    return assessmentSchemaService.getQuestionsForSchemaCode(AssessmentSchemaCode.valueOf(assessmentSchemaCode))
+    return assessmentReferenceDataService.getQuestionsForSchemaCode(AssessmentSchemaCode.valueOf(assessmentSchemaCode))
   }
 }

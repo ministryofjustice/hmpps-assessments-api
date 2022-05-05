@@ -14,7 +14,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEnt
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.OasysAssessmentType
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.EpisodeRepository
 import uk.gov.justice.digital.assessments.services.dto.AssessmentEpisodeUpdateErrors
@@ -27,7 +27,7 @@ class AssessmentUpdateServiceTablesTest {
   private val episodeRepository: EpisodeRepository = mockk()
   private val questionService: QuestionService = mockk()
   private val riskPredictorsService: RiskPredictorsService = mockk()
-  private val assessmentSchemaService: AssessmentSchemaService = mockk()
+  private val assessmentReferenceDataService: AssessmentReferenceDataService = mockk()
   private val oasysAssessmentUpdateService: OasysAssessmentUpdateService = mockk()
   private val assessmentService: AssessmentService = mockk()
   private val authorService: AuthorService = mockk()
@@ -50,14 +50,14 @@ class AssessmentUpdateServiceTablesTest {
 
   private val tableFields = QuestionSchemaEntities(
     listOf(
-      QuestionSchemaEntity(
-        questionSchemaId = 1L,
-        questionSchemaUuid = UUID.randomUUID(),
+      QuestionEntity(
+        questionId = 1L,
+        questionUuid = UUID.randomUUID(),
         questionCode = "first_question",
       ),
-      QuestionSchemaEntity(
-        questionSchemaId = 2L,
-        questionSchemaUuid = UUID.randomUUID(),
+      QuestionEntity(
+        questionId = 2L,
+        questionUuid = UUID.randomUUID(),
         questionCode = "second_question",
       )
     )
@@ -75,8 +75,8 @@ class AssessmentUpdateServiceTablesTest {
 
   @BeforeEach
   fun setup() {
-    every { assessmentSchemaService.toOasysAssessmentType(AssessmentSchemaCode.ROSH) } returns OasysAssessmentType.SHORT_FORM_PSR
-    every { assessmentSchemaService.toOasysAssessmentType(AssessmentSchemaCode.RSR) } returns OasysAssessmentType.SOMETHING_IN_OASYS
+    every { assessmentReferenceDataService.toOasysAssessmentType(AssessmentSchemaCode.ROSH) } returns OasysAssessmentType.SHORT_FORM_PSR
+    every { assessmentReferenceDataService.toOasysAssessmentType(AssessmentSchemaCode.RSR) } returns OasysAssessmentType.SOMETHING_IN_OASYS
     every { episodeRepository.save(any()) } returns null
     every { assessmentRepository.save(any()) } returns null
     every {

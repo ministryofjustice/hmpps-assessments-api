@@ -23,7 +23,7 @@ class OasysAssessmentService(
       subjectRepository.findByCrn(crn)
         ?: throw EntityNotFoundException("Subject for crn $crn not found")
       )
-    val latestInProgressOrCompleteEpisode = subjectEntity.getCurrentAssessment()?.getLatestInProgessOrCompleteEpisodeOfType(assessmentSchemaCode)
+    val latestInProgressOrCompleteEpisode = subjectEntity.getCurrentAssessment()?.getLatestInProgressOrCompleteEpisodeOfType(assessmentSchemaCode)
       ?: throw EntityNotFoundException("Closed Episode for Subject for crn $crn not found for type $assessmentSchemaCode ")
 
     var oasysAnswers = OasysAnswers.from(

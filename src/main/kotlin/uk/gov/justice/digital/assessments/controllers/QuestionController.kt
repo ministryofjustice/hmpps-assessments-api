@@ -10,14 +10,14 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.assessments.api.GroupSectionsDto
 import uk.gov.justice.digital.assessments.api.GroupSummaryDto
 import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
-import uk.gov.justice.digital.assessments.api.QuestionSchemaDto
+import uk.gov.justice.digital.assessments.api.QuestionDto
 import uk.gov.justice.digital.assessments.services.QuestionService
 import java.util.UUID
 
 @RestController
 class QuestionController(val questionService: QuestionService) {
 
-  @RequestMapping(path = ["/questions/id/{questionSchemaId}"], method = [RequestMethod.GET])
+  @RequestMapping(path = ["/questions/id/{questionId}"], method = [RequestMethod.GET])
   @Operation(description = "Gets a Question Schema by its ID")
   @ApiResponses(
     value = [
@@ -25,8 +25,8 @@ class QuestionController(val questionService: QuestionService) {
       ApiResponse(responseCode = "200", description = "OK")
     ]
   )
-  fun getQuestionSchema(@PathVariable("questionSchemaId") questionSchemaUUId: UUID): QuestionSchemaDto {
-    return questionService.getQuestionSchema(questionSchemaUUId)
+  fun getQuestionSchema(@PathVariable("questionId") questionUUId: UUID): QuestionDto {
+    return questionService.getQuestion(questionUUId)
   }
 
   @RequestMapping(path = ["/questions/list"], method = [RequestMethod.GET])

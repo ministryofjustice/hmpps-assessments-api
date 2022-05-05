@@ -17,11 +17,11 @@ import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEnt
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerSchemaEntity
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerSchemaGroupEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerGroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.OASysMappingEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.OasysAssessmentType
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionEntity
 import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient
 import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.UpdateAssessmentAnswersResponseDto
 import uk.gov.justice.digital.assessments.services.dto.AssessmentEpisodeUpdateErrors
@@ -35,12 +35,12 @@ import java.util.UUID
 class OasysAssessmentUpdateServiceTest() {
   private val questionService: QuestionService = mockk()
   private val assessmentUpdateRestClient: AssessmentUpdateRestClient = mockk()
-  private val assessmentSchemaService: AssessmentSchemaService = mockk()
+  private val assessmentReferenceDataService: AssessmentReferenceDataService = mockk()
 
   private val oasysAssessmentUpdateService = OasysAssessmentUpdateService(
     questionService,
     assessmentUpdateRestClient,
-    assessmentSchemaService
+    assessmentReferenceDataService
   )
 
   private val questionCode1 = "Q1"
@@ -56,7 +56,7 @@ class OasysAssessmentUpdateServiceTest() {
 
   @BeforeEach
   fun setup() {
-    every { assessmentSchemaService.toOasysAssessmentType(AssessmentSchemaCode.ROSH) } returns OasysAssessmentType.SHORT_FORM_PSR
+    every { assessmentReferenceDataService.toOasysAssessmentType(AssessmentSchemaCode.ROSH) } returns OasysAssessmentType.SHORT_FORM_PSR
   }
 
   @Test
@@ -187,17 +187,17 @@ class OasysAssessmentUpdateServiceTest() {
   }
 
   private fun setupSectionQuestionCodes(): QuestionSchemaEntities {
-    val dummy = AnswerSchemaGroupEntity(answerSchemaId = 99)
+    val dummy = AnswerGroupEntity(answerGroupId = 99)
 
     val yes =
-      AnswerSchemaEntity(answerSchemaId = 1, answerSchemaUuid = answer1Uuid, value = "YES", answerSchemaGroup = dummy)
+      AnswerEntity(answerId = 1, answerUuid = answer1Uuid, value = "YES", answerGroup = dummy)
     val maybe =
-      AnswerSchemaEntity(answerSchemaId = 2, answerSchemaUuid = answer2Uuid, value = "MAYBE", answerSchemaGroup = dummy)
+      AnswerEntity(answerId = 2, answerUuid = answer2Uuid, value = "MAYBE", answerGroup = dummy)
     val no =
-      AnswerSchemaEntity(answerSchemaId = 3, answerSchemaUuid = answer3Uuid, value = "NO", answerSchemaGroup = dummy)
+      AnswerEntity(answerId = 3, answerUuid = answer3Uuid, value = "NO", answerGroup = dummy)
 
-    val group1 = AnswerSchemaGroupEntity(answerSchemaId = 1, answerSchemaEntities = listOf(yes))
-    val group2 = AnswerSchemaGroupEntity(answerSchemaId = 2, answerSchemaEntities = listOf(maybe, no))
+    val group1 = AnswerGroupEntity(answerGroupId = 1, answerEntities = listOf(yes))
+    val group2 = AnswerGroupEntity(answerGroupId = 2, answerEntities = listOf(maybe, no))
 
     return QuestionSchemaEntities(
       listOf(
@@ -249,17 +249,17 @@ class OasysAssessmentUpdateServiceTest() {
   }
 
   private fun setupQuestionCodes(): QuestionSchemaEntities {
-    val dummy = AnswerSchemaGroupEntity(answerSchemaId = 99)
+    val dummy = AnswerGroupEntity(answerGroupId = 99)
 
     val yes =
-      AnswerSchemaEntity(answerSchemaId = 1, answerSchemaUuid = answer1Uuid, value = "YES", answerSchemaGroup = dummy)
+      AnswerEntity(answerId = 1, answerUuid = answer1Uuid, value = "YES", answerGroup = dummy)
     val maybe =
-      AnswerSchemaEntity(answerSchemaId = 2, answerSchemaUuid = answer2Uuid, value = "MAYBE", answerSchemaGroup = dummy)
+      AnswerEntity(answerId = 2, answerUuid = answer2Uuid, value = "MAYBE", answerGroup = dummy)
     val no =
-      AnswerSchemaEntity(answerSchemaId = 3, answerSchemaUuid = answer3Uuid, value = "NO", answerSchemaGroup = dummy)
+      AnswerEntity(answerId = 3, answerUuid = answer3Uuid, value = "NO", answerGroup = dummy)
 
-    val group1 = AnswerSchemaGroupEntity(answerSchemaId = 1, answerSchemaEntities = listOf(yes))
-    val group2 = AnswerSchemaGroupEntity(answerSchemaId = 2, answerSchemaEntities = listOf(maybe, no))
+    val group1 = AnswerGroupEntity(answerGroupId = 1, answerEntities = listOf(yes))
+    val group2 = AnswerGroupEntity(answerGroupId = 2, answerEntities = listOf(maybe, no))
 
     return QuestionSchemaEntities(
       listOf(
@@ -274,18 +274,18 @@ class OasysAssessmentUpdateServiceTest() {
     questionSchemaId: Long,
     questionCode: String,
     answerType: String = "freetext",
-    answerSchemaGroup: AnswerSchemaGroupEntity? = null,
+    answerSchemaGroup: AnswerGroupEntity? = null,
     oasysSectionCode: String? = null,
     oasysLogicalPage: Long? = null,
     oasysQuestionCode: String? = null,
-  ): QuestionSchemaEntity {
+  ): QuestionEntity {
     val oaSysMappings = mutableListOf<OASysMappingEntity>()
-    val question = QuestionSchemaEntity(
-      questionSchemaId = questionSchemaId,
-      questionSchemaUuid = UUID.randomUUID(),
+    val question = QuestionEntity(
+      questionId = questionSchemaId,
+      questionUuid = UUID.randomUUID(),
       questionCode = questionCode,
       answerType = answerType,
-      answerSchemaGroup = answerSchemaGroup,
+      answerGroup = answerSchemaGroup,
       oasysMappings = oaSysMappings
     )
     if (oasysSectionCode != null)
@@ -295,7 +295,7 @@ class OasysAssessmentUpdateServiceTest() {
           sectionCode = oasysSectionCode,
           logicalPage = oasysLogicalPage,
           questionCode = oasysQuestionCode!!,
-          questionSchema = question
+          question = question
         )
       )
     return question

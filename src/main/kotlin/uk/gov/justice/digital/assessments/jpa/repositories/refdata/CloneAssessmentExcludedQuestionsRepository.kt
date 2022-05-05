@@ -8,5 +8,5 @@ import uk.gov.justice.digital.assessments.jpa.entities.refdata.CloneAssessmentEx
 @Repository
 interface CloneAssessmentExcludedQuestionsRepository : JpaRepository<CloneAssessmentExcludedQuestionsEntity, String> {
 
-  fun findAllByAssessmentSchemaCode(assessmentSchemaCode: AssessmentSchemaCode): Collection<CloneAssessmentExcludedQuestionsEntity>
+  fun findAllByAssessmentCode(assessmentSchemaCode: AssessmentSchemaCode): Collection<CloneAssessmentExcludedQuestionsEntity>
 }

@@ -20,7 +20,7 @@ import uk.gov.justice.digital.assessments.api.AssessmentSubjectDto
 import uk.gov.justice.digital.assessments.api.CreateAssessmentDto
 import uk.gov.justice.digital.assessments.api.CreateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
-import uk.gov.justice.digital.assessments.services.AssessmentSchemaService
+import uk.gov.justice.digital.assessments.services.AssessmentReferenceDataService
 import uk.gov.justice.digital.assessments.services.AssessmentService
 import uk.gov.justice.digital.assessments.services.AssessmentUpdateService
 import java.util.UUID
@@ -29,7 +29,7 @@ import java.util.UUID
 class AssessmentController(
   val assessmentService: AssessmentService,
   val assessmentUpdateService: AssessmentUpdateService,
-  val assessmentSchemaService: AssessmentSchemaService
+  val assessmentReferenceDataService: AssessmentReferenceDataService
 ) {
 
   companion object {

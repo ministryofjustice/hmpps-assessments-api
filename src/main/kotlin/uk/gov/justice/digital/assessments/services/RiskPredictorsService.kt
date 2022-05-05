@@ -26,7 +26,7 @@ import java.util.UUID
 
 @Service
 class RiskPredictorsService(
-  private val assessmentSchemaService: AssessmentSchemaService,
+  private val assessmentReferenceDataService: AssessmentReferenceDataService,
   private val subjectService: SubjectService,
   private val episodeRepository: EpisodeRepository,
   private val assessRisksAndNeedsApiRestClient: AssessRisksAndNeedsApiRestClient,
@@ -47,7 +47,7 @@ class RiskPredictorsService(
     episode: AssessmentEpisodeEntity,
     final: Boolean = false
   ): List<PredictorScoresDto> {
-    val predictors = assessmentSchemaService.getPredictorsForAssessment(episode.assessmentSchemaCode)
+    val predictors = assessmentReferenceDataService.getPredictorsForAssessment(episode.assessmentSchemaCode)
     log.info("Found ${predictors.size} predictors for episode ${episode.episodeUuid} with assessment type ${episode.assessmentSchemaCode}")
 
     return predictors.map { predictor ->

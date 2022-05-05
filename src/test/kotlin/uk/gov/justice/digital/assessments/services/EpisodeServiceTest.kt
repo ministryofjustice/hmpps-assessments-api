@@ -24,7 +24,7 @@ import uk.gov.justice.digital.assessments.jpa.repositories.refdata.CloneAssessme
 import uk.gov.justice.digital.assessments.restclient.AssessmentApiRestClient
 import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
-import uk.gov.justice.digital.assessments.services.dto.ExternalSourceQuestionSchemaDto
+import uk.gov.justice.digital.assessments.services.dto.ExternalSourceQuestionDto
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -36,7 +36,7 @@ class EpisodeServiceTest {
   private val courtCaseRestClient: CourtCaseRestClient = mockk()
   private val communityApiRestClient: CommunityApiRestClient = mockk()
   private val assessmentApiRestClient: AssessmentApiRestClient = mockk()
-  private val assessmentSchemaService: AssessmentSchemaService = mockk()
+  private val assessmentReferenceDataService: AssessmentReferenceDataService = mockk()
   private val cloneAssessmentExcludedQuestionsRepository: CloneAssessmentExcludedQuestionsRepository = mockk()
 
   private val episodeService = EpisodeService(
@@ -44,7 +44,7 @@ class EpisodeServiceTest {
     courtCaseRestClient,
     communityApiRestClient,
     assessmentApiRestClient,
-    assessmentSchemaService,
+    assessmentReferenceDataService,
     cloneAssessmentExcludedQuestionsRepository
   )
 
@@ -72,7 +72,7 @@ class EpisodeServiceTest {
         )
       )
     )
-    every { cloneAssessmentExcludedQuestionsRepository.findAllByAssessmentSchemaCode(AssessmentSchemaCode.ROSH) } returns emptyList()
+    every { cloneAssessmentExcludedQuestionsRepository.findAllByAssessmentCode(AssessmentSchemaCode.ROSH) } returns emptyList()
   }
 
   @Test
@@ -91,13 +91,13 @@ class EpisodeServiceTest {
       )
     )
 
-    val questions: List<ExternalSourceQuestionSchemaDto> = listOf(
-      ExternalSourceQuestionSchemaDto(
+    val questions: List<ExternalSourceQuestionDto> = listOf(
+      ExternalSourceQuestionDto(
         "question_1", externalSource,
         "\$.sections[?(@.section=='1')].answers[?(@.question=='1.24')].answer[0]",
         "array", "some/endpoint", ifEmpty = false
       ),
-      ExternalSourceQuestionSchemaDto(
+      ExternalSourceQuestionDto(
         "question_2", externalSource,
         "\$.sections[?(@.section=='1')].answers[?(@.question=='1.26')].answer[0]",
         "array", "some/endpoint", ifEmpty = false
@@ -143,13 +143,13 @@ class EpisodeServiceTest {
       )
     )
 
-    val questions: List<ExternalSourceQuestionSchemaDto> = listOf(
-      ExternalSourceQuestionSchemaDto(
+    val questions: List<ExternalSourceQuestionDto> = listOf(
+      ExternalSourceQuestionDto(
         "question_1", externalSource,
         "\$.sections[?(@.section=='1')].answers[?(@.question=='1.24')].answer[0]",
         "array", "some/endpoint", ifEmpty = false
       ),
-      ExternalSourceQuestionSchemaDto(
+      ExternalSourceQuestionDto(
         "question_2", externalSource,
         "\$.sections[?(@.section=='1')].answers[?(@.question=='1.26')].answer[0]",
         "array", "some/endpoint", ifEmpty = false
@@ -217,13 +217,13 @@ class EpisodeServiceTest {
       )
     )
 
-    val questions: List<ExternalSourceQuestionSchemaDto> = listOf(
-      ExternalSourceQuestionSchemaDto(
+    val questions: List<ExternalSourceQuestionDto> = listOf(
+      ExternalSourceQuestionDto(
         "question_1", externalSource,
         "\$.sections[?(@.section=='1')].answers[?(@.question=='XXX')].answer[0]",
         "array", "some/endpoint", ifEmpty = false
       ),
-      ExternalSourceQuestionSchemaDto(
+      ExternalSourceQuestionDto(
         "question_2", externalSource,
         "\$.sections[?(@.section=='1')].answers[?(@.question=='YYY')].answer[0]",
         "array", "some/endpoint", ifEmpty = false
@@ -292,8 +292,8 @@ class EpisodeServiceTest {
         tables = table1
       )
     )
-    every { assessmentSchemaService.getQuestionsForSchemaCode(newEpisode.assessmentSchemaCode) } returns schemaQuestions
-    every { cloneAssessmentExcludedQuestionsRepository.findAllByAssessmentSchemaCode(AssessmentSchemaCode.ROSH) } returns listOf(
+    every { assessmentReferenceDataService.getQuestionsForSchemaCode(newEpisode.assessmentSchemaCode) } returns schemaQuestions
+    every { cloneAssessmentExcludedQuestionsRepository.findAllByAssessmentCode(AssessmentSchemaCode.ROSH) } returns listOf(
       CloneAssessmentExcludedQuestionsEntity(
         12345,
         AssessmentSchemaCode.ROSH,
@@ -358,7 +358,7 @@ class EpisodeServiceTest {
         tables = table1
       )
     )
-    every { assessmentSchemaService.getQuestionsForSchemaCode(newEpisode.assessmentSchemaCode) } returns schemaQuestions
+    every { assessmentReferenceDataService.getQuestionsForSchemaCode(newEpisode.assessmentSchemaCode) } returns schemaQuestions
 
     val result = episodeService.prepopulateFromPreviousEpisodes(newEpisode, mixedPreviousEpisodes)
 
@@ -390,7 +390,7 @@ class EpisodeServiceTest {
       GroupQuestionDto(questionCode = "question_1"),
       GroupQuestionDto(questionCode = "question_2"),
     )
-    every { assessmentSchemaService.getQuestionsForSchemaCode(newEpisode.assessmentSchemaCode) } returns schemaQuestions
+    every { assessmentReferenceDataService.getQuestionsForSchemaCode(newEpisode.assessmentSchemaCode) } returns schemaQuestions
 
     val emptyPreviousEpisode = emptyList<AssessmentEpisodeEntity>()
 
@@ -416,7 +416,7 @@ class EpisodeServiceTest {
       GroupQuestionDto(questionCode = "question_1"),
       GroupQuestionDto(questionCode = "question_2"),
     )
-    every { assessmentSchemaService.getQuestionsForSchemaCode(newEpisode.assessmentSchemaCode) } returns schemaQuestions
+    every { assessmentReferenceDataService.getQuestionsForSchemaCode(newEpisode.assessmentSchemaCode) } returns schemaQuestions
 
     val result = episodeService.prepopulateFromPreviousEpisodes(newEpisode, previousEpisodesNoAnswers).answers
 
@@ -458,7 +458,7 @@ class EpisodeServiceTest {
       GroupQuestionDto(questionCode = "question_4")
     )
 
-    every { assessmentSchemaService.getQuestionsForSchemaCode(newEpisode.assessmentSchemaCode) } returns schemaQuestions
+    every { assessmentReferenceDataService.getQuestionsForSchemaCode(newEpisode.assessmentSchemaCode) } returns schemaQuestions
 
     val result = episodeService.prepopulateFromPreviousEpisodes(newEpisode, previousEpisodes).answers
 

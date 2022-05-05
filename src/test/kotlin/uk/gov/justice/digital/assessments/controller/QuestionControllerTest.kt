@@ -8,7 +8,7 @@ import uk.gov.justice.digital.assessments.api.GroupQuestionDto
 import uk.gov.justice.digital.assessments.api.GroupSectionsDto
 import uk.gov.justice.digital.assessments.api.GroupSummaryDto
 import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
-import uk.gov.justice.digital.assessments.api.QuestionSchemaDto
+import uk.gov.justice.digital.assessments.api.QuestionDto
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import java.util.UUID
 
@@ -31,11 +31,11 @@ class QuestionControllerTest : IntegrationTest() {
       .headers(setAuthorisation())
       .exchange()
       .expectStatus().isOk
-      .expectBody<QuestionSchemaDto>()
+      .expectBody<QuestionDto>()
       .returnResult()
       .responseBody
 
-    assertThat(questionSchema?.questionSchemaUuid).isEqualTo(UUID.fromString(questionSchemaUuid))
+    assertThat(questionSchema?.questionUuid).isEqualTo(UUID.fromString(questionSchemaUuid))
   }
 
   @Test
@@ -56,7 +56,7 @@ class QuestionControllerTest : IntegrationTest() {
     val questionRef2 = questionRefs?.get(1) as GroupQuestionDto
     assertThat(questionRef2.questionId).isEqualTo(UUID.fromString("b7d3e56e-4df0-4152-b92d-edb51e2e95a9"))
 
-    val answerSchemaUuids = questionRef2.answerSchemas?.map { it.answerSchemaUuid }
+    val answerSchemaUuids = questionRef2.answers?.map { it.answerUuid }
     assertThat(answerSchemaUuids).contains(
       UUID.fromString("9541bbcd-dc4f-4d38-8a7c-0ddda92e82d4"),
       UUID.fromString("2b45f6bc-0fa0-4713-a25b-a14e96e8007b"),
@@ -85,13 +85,13 @@ class QuestionControllerTest : IntegrationTest() {
     assertThat(triggerQuestion.conditional).isFalse
     assertThat(triggerQuestion.questionText).isEqualTo("Have they ever committed a sexual or sexually motivated offence?")
 
-    val yesAnswer = triggerQuestion.answerSchemas?.find { it.value == "YES" }
+    val yesAnswer = triggerQuestion.answers?.find { it.value == "YES" }
     assertThat(yesAnswer?.conditionals?.size).isEqualTo(6)
     assertThat(yesAnswer?.conditionals?.map { it.conditional }).contains(
       "current_sexual_offence", "most_recent_sexual_offence_date", "total_sexual_offences_adult",
       "total_sexual_offences_child", "total_sexual_offences_child_image", "total_non_contact_sexual_offences"
     )
-    val noAnswer = triggerQuestion.answerSchemas?.find { it.value == "NO" }
+    val noAnswer = triggerQuestion.answers?.find { it.value == "NO" }
     assertThat(noAnswer?.conditionals?.first()?.conditional).isNull()
   }
 

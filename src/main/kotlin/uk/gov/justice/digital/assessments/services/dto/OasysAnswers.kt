@@ -8,7 +8,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.assessments.TableRow
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.TableRows
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.Tables
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.OASysMappingEntity
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionEntity
 import uk.gov.justice.digital.assessments.services.QuestionSchemaEntities
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -91,14 +91,14 @@ data class OasysAnswers(
       return results
     }
 
-    private fun createOasysAnswerForTableEntry(tableRow: TableRow, field: QuestionSchemaEntity, index: Long = 0): List<OasysAnswer> {
+    private fun createOasysAnswerForTableEntry(tableRow: TableRow, field: QuestionEntity, index: Long = 0): List<OasysAnswer> {
       val answersForField = tableRow.getOrDefault(field.questionCode, emptyList())
       return answersForField.mapNotNull { answer ->
         createOasysAnswer(answer, field, index)
       }
     }
 
-    private fun createOasysAnswer(answer: String, field: QuestionSchemaEntity, index: Long = 0): OasysAnswer? {
+    private fun createOasysAnswer(answer: String, field: QuestionEntity, index: Long = 0): OasysAnswer? {
       return field.oasysMappings.firstOrNull()?.let { mapping ->
         makeOasysAnswer(
           answer,

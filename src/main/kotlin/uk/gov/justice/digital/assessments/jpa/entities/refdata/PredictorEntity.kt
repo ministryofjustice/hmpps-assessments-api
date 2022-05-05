@@ -23,9 +23,9 @@ class PredictorEntity(
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   val id: Long,
 
-  @Column(name = "assessment_schema_code")
+  @Column(name = "assessment_code")
   @Enumerated(EnumType.STRING)
-  val assessmentSchemaCode: AssessmentSchemaCode,
+  val assessmentCode: AssessmentSchemaCode,
 
   @Column(name = "predictor_type")
   @Enumerated(EnumType.STRING)

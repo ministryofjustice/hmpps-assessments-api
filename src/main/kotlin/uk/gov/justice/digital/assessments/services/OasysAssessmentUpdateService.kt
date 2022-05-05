@@ -14,7 +14,7 @@ import uk.gov.justice.digital.assessments.services.dto.OasysAnswers
 class OasysAssessmentUpdateService(
   private val questionService: QuestionService,
   private val assessmentUpdateRestClient: AssessmentUpdateRestClient,
-  private val assessmentSchemaService: AssessmentSchemaService
+  private val assessmentReferenceDataService: AssessmentReferenceDataService
 ) {
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
@@ -49,7 +49,7 @@ class OasysAssessmentUpdateService(
       }
     )
 
-    val oasysAssessmentType = assessmentSchemaService.toOasysAssessmentType(episode.assessmentSchemaCode)
+    val oasysAssessmentType = assessmentReferenceDataService.toOasysAssessmentType(episode.assessmentSchemaCode)
 
     val oasysUpdateResult = assessmentUpdateRestClient.updateAssessment(
       offenderPk,
@@ -79,7 +79,7 @@ class OasysAssessmentUpdateService(
       log.error(errorMessage)
       return AssessmentEpisodeUpdateErrors(errorsInAssessment = mutableListOf(errorMessage))
     }
-    val oasysAssessmentType = assessmentSchemaService.toOasysAssessmentType(episode.assessmentSchemaCode)
+    val oasysAssessmentType = assessmentReferenceDataService.toOasysAssessmentType(episode.assessmentSchemaCode)
     val oasysUpdateResult =
       assessmentUpdateRestClient.completeAssessment(offenderPk, oasysAssessmentType, episode.oasysSetPk!!)
     if (oasysUpdateResult?.validationErrorDtos?.isNotEmpty() == true) {
@@ -99,7 +99,7 @@ class OasysAssessmentUpdateService(
   ): Pair<Long?, Long?> {
     val oasysOffenderPk =
       crn?.let { assessmentUpdateRestClient.createOasysOffender(crn = crn, deliusEvent = deliusEventId) }
-    val oasysAssessmentType = assessmentSchemaService.toOasysAssessmentType(assessmentSchemaCode)
+    val oasysAssessmentType = assessmentReferenceDataService.toOasysAssessmentType(assessmentSchemaCode)
     val oasysSetPK = oasysOffenderPk?.let { assessmentUpdateRestClient.createAssessment(it, oasysAssessmentType) }
     return Pair(oasysOffenderPk, oasysSetPK)
   }

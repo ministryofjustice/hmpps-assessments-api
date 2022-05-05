@@ -16,18 +16,18 @@ import javax.persistence.OneToMany
 import javax.persistence.Table
 
 @Entity
-@Table(name = "assessment_schema", schema = "hmppsassessmentsschemas")
-class AssessmentSchemaEntity(
+@Table(name = "assessment", schema = "hmppsassessmentsschemas")
+class AssessmentEntity(
   @Id
-  @Column(name = "assessment_schema_id")
+  @Column(name = "assessment_id")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  val assessmentSchemaId: Long,
+  val assessmentId: Long,
 
   @ManyToOne
-  @JoinColumn(name = "assessment_schema_uuid", referencedColumnName = "assessment_schema_uuid")
-  val assessmentSchemaGroup: AssessmentSchemaGroupsEntity,
+  @JoinColumn(name = "assessment_uuid", referencedColumnName = "assessment_uuid")
+  val assessmentSchemaGroup: AssessmentGroupsEntity,
 
-  @Column(name = "assessment_schema_code")
+  @Column(name = "assessment_code")
   @Enumerated(EnumType.STRING)
   val assessmentSchemaCode: AssessmentSchemaCode,
 
@@ -43,10 +43,10 @@ class AssessmentSchemaEntity(
   val assessmentName: String? = null,
 
   @OneToMany(fetch = FetchType.EAGER)
-  @JoinColumn(name = "assessment_schema_code", referencedColumnName = "assessment_schema_code")
+  @JoinColumn(name = "assessment_code", referencedColumnName = "assessment_code")
   val predictorEntities: Collection<PredictorEntity> = emptyList(),
 
   @OneToMany(fetch = FetchType.LAZY)
-  @JoinColumn(name = "assessment_schema_code", referencedColumnName = "assessment_schema_code")
+  @JoinColumn(name = "assessment_code", referencedColumnName = "assessment_code")
   val cloneAssessmentExcludedQuestionsEntities: Collection<CloneAssessmentExcludedQuestionsEntity> = emptyList(),
 ) : Serializable

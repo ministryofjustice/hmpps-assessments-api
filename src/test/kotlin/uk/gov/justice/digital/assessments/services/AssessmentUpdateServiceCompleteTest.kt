@@ -30,7 +30,7 @@ class AssessmentUpdateServiceCompleteTest() {
   private val assessmentRepository: AssessmentRepository = mockk()
   private val episodeRepository: EpisodeRepository = mockk()
   private val questionService: QuestionService = mockk()
-  private val assessmentSchemaService: AssessmentSchemaService = mockk()
+  private val assessmentReferenceDataService: AssessmentReferenceDataService = mockk()
   private val riskPredictorsService: RiskPredictorsService = mockk()
   private val oasysAssessmentUpdateService: OasysAssessmentUpdateService = mockk()
   private val assessmentService: AssessmentService = mockk()
@@ -52,7 +52,7 @@ class AssessmentUpdateServiceCompleteTest() {
 
   @BeforeEach
   fun setup() {
-    every { assessmentSchemaService.toOasysAssessmentType(AssessmentSchemaCode.ROSH) } returns OasysAssessmentType.SHORT_FORM_PSR
+    every { assessmentReferenceDataService.toOasysAssessmentType(AssessmentSchemaCode.ROSH) } returns OasysAssessmentType.SHORT_FORM_PSR
     every { assessmentService.shouldPushToOasys(AssessmentSchemaCode.ROSH) } returns true
   }
 

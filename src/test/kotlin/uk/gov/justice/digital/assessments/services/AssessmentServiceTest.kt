@@ -20,9 +20,9 @@ import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpi
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.OffenceEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerSchemaEntity
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerSchemaGroupEntity
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerGroupEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRepository
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
@@ -379,8 +379,8 @@ class AssessmentServiceTest {
       val result = assessmentsService.getCurrentAssessmentCodedAnswers(assessmentUuid)
 
       assertThat(result.assessmentUuid).isEqualTo(assessmentUuid)
-      assertThat(result.answers["Q1"]?.first()?.answerSchemaUuid).isEqualTo(answer1Uuid)
-      assertThat(result.answers["Q2"]?.first()?.answerSchemaUuid).isEqualTo(answer3Uuid)
+      assertThat(result.answers["Q1"]?.first()?.answerUuid).isEqualTo(answer1Uuid)
+      assertThat(result.answers["Q2"]?.first()?.answerUuid).isEqualTo(answer3Uuid)
     }
 
     @Test
@@ -442,8 +442,8 @@ class AssessmentServiceTest {
       )
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
       val result = assessmentsService.getCurrentAssessmentCodedAnswers(assessmentUuid)
-      assertThat(result.answers["Q1"]?.first()?.answerSchemaUuid).isEqualTo(answer1Uuid)
-      assertThat(result.answers["Q2"]?.first()?.answerSchemaUuid).isEqualTo(answer2Uuid)
+      assertThat(result.answers["Q1"]?.first()?.answerUuid).isEqualTo(answer1Uuid)
+      assertThat(result.answers["Q2"]?.first()?.answerUuid).isEqualTo(answer2Uuid)
     }
 
     @Test
@@ -505,8 +505,8 @@ class AssessmentServiceTest {
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
 
       val result = assessmentsService.getCurrentAssessmentCodedAnswers(assessmentUuid)
-      assertThat(result.answers["Q1"]?.first()?.answerSchemaUuid).isEqualTo(answer1Uuid)
-      assertThat(result.answers["Q2"]?.first()?.answerSchemaUuid).isEqualTo(answer3Uuid)
+      assertThat(result.answers["Q1"]?.first()?.answerUuid).isEqualTo(answer1Uuid)
+      assertThat(result.answers["Q2"]?.first()?.answerUuid).isEqualTo(answer3Uuid)
     }
 
     @Test
@@ -538,7 +538,7 @@ class AssessmentServiceTest {
       val result = assessmentsService.getCurrentAssessmentCodedAnswers(assessmentUuid)
 
       assertThat(result.assessmentUuid).isEqualTo(assessmentUuid)
-      assertThat(result.answers["Q1"]?.first()?.answerSchemaUuid).isEqualTo(answer1Uuid)
+      assertThat(result.answers["Q1"]?.first()?.answerUuid).isEqualTo(answer1Uuid)
       assertThat(result.answers).doesNotContainKey("Q2")
     }
 
@@ -574,35 +574,35 @@ class AssessmentServiceTest {
   }
 
   private fun setupQuestionCodes() {
-    val dummy = AnswerSchemaGroupEntity(answerSchemaId = 99)
+    val dummy = AnswerGroupEntity(answerGroupId = 99)
 
     val yes =
-      AnswerSchemaEntity(answerSchemaId = 1, answerSchemaUuid = answer1Uuid, value = "YES", answerSchemaGroup = dummy)
+      AnswerEntity(answerId = 1, answerUuid = answer1Uuid, value = "YES", answerGroup = dummy)
     val maybe =
-      AnswerSchemaEntity(answerSchemaId = 2, answerSchemaUuid = answer2Uuid, value = "MAYBE", answerSchemaGroup = dummy)
+      AnswerEntity(answerId = 2, answerUuid = answer2Uuid, value = "MAYBE", answerGroup = dummy)
     val no =
-      AnswerSchemaEntity(answerSchemaId = 3, answerSchemaUuid = answer3Uuid, value = "NO", answerSchemaGroup = dummy)
+      AnswerEntity(answerId = 3, answerUuid = answer3Uuid, value = "NO", answerGroup = dummy)
 
-    val group1 = AnswerSchemaGroupEntity(answerSchemaId = 1, answerSchemaEntities = listOf(yes))
-    val group2 = AnswerSchemaGroupEntity(answerSchemaId = 2, answerSchemaEntities = listOf(maybe, no))
+    val group1 = AnswerGroupEntity(answerGroupId = 1, answerEntities = listOf(yes))
+    val group2 = AnswerGroupEntity(answerGroupId = 2, answerEntities = listOf(maybe, no))
 
     every { questionService.getAllQuestions() } returns QuestionSchemaEntities(
       listOf(
-        QuestionSchemaEntity(
-          questionSchemaId = 1,
-          questionSchemaUuid = questionSchemaUuid1,
+        QuestionEntity(
+          questionId = 1,
+          questionUuid = questionSchemaUuid1,
           questionCode = questionCode1,
-          answerSchemaGroup = group1
+          answerGroup = group1
         ),
-        QuestionSchemaEntity(
-          questionSchemaId = 2,
-          questionSchemaUuid = questionSchemaUuid2,
+        QuestionEntity(
+          questionId = 2,
+          questionUuid = questionSchemaUuid2,
           questionCode = questionCode2,
-          answerSchemaGroup = group2
+          answerGroup = group2
         ),
-        QuestionSchemaEntity(
-          questionSchemaId = 3,
-          questionSchemaUuid = questionSchemaUuid3,
+        QuestionEntity(
+          questionId = 3,
+          questionUuid = questionSchemaUuid3,
           questionCode = questionCode3
         )
       )

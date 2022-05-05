@@ -21,8 +21,8 @@ class QuestionDependencyEntity(
   val dependencyId: Long,
 
   @OneToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "subject_question_uuid", referencedColumnName = "question_schema_uuid")
-  val subjectQuestionSchema: QuestionSchemaEntity,
+  @JoinColumn(name = "subject_question_uuid", referencedColumnName = "question_uuid")
+  val subjectQuestionSchema: QuestionEntity,
 
   @Column(name = "trigger_question_uuid")
   val triggerQuestionUuid: UUID,

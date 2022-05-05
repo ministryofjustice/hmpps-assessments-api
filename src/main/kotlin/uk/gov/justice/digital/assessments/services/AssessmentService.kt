@@ -4,7 +4,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.assessments.api.AnswerSchemaDto
+import uk.gov.justice.digital.assessments.api.AnswerDto
 import uk.gov.justice.digital.assessments.api.AssessmentAnswersDto
 import uk.gov.justice.digital.assessments.api.AssessmentDto
 import uk.gov.justice.digital.assessments.api.AssessmentEpisodeDto
@@ -18,8 +18,8 @@ import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEnt
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.OffenceEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerSchemaEntity
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRepository
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
@@ -113,7 +113,7 @@ class AssessmentService(
   fun getCurrentAssessmentCodedAnswers(assessmentUuid: UUID): AssessmentAnswersDto {
     val questions = questionService.getAllQuestions()
     val assessment = getAssessmentByUuid(assessmentUuid)
-    val answers: MutableMap<String, Collection<AnswerSchemaDto>> =
+    val answers: MutableMap<String, Collection<AnswerDto>> =
       mapAssessmentQuestionAndAnswerCodes(assessment, questions)
     return AssessmentAnswersDto(assessmentUuid, answers)
   }
@@ -121,8 +121,8 @@ class AssessmentService(
   private fun mapAssessmentQuestionAndAnswerCodes(
     assessment: AssessmentEntity,
     questions: QuestionSchemaEntities
-  ): MutableMap<String, Collection<AnswerSchemaDto>> {
-    val answers: MutableMap<String, Collection<AnswerSchemaDto>> = mutableMapOf()
+  ): MutableMap<String, Collection<AnswerDto>> {
+    val answers: MutableMap<String, Collection<AnswerDto>> = mutableMapOf()
 
     assessment.episodes.sortedWith(compareBy(nullsLast()) { it.endDate }).forEach {
       val episodeAnswers = mapAssessmentQuestionAndAnswerCodes(it, questions)
@@ -135,18 +135,18 @@ class AssessmentService(
   private fun mapAssessmentQuestionAndAnswerCodes(
     episode: AssessmentEpisodeEntity,
     questions: QuestionSchemaEntities
-  ): MutableMap<String, Collection<AnswerSchemaDto>> {
-    val answers: MutableMap<String, Collection<AnswerSchemaDto>> = mutableMapOf()
+  ): MutableMap<String, Collection<AnswerDto>> {
+    val answers: MutableMap<String, Collection<AnswerDto>> = mutableMapOf()
 
     episode.answers.forEach { episodeAnswer ->
       val question = questions[episodeAnswer.key]
         ?: throw IllegalStateException("Question not found for UUID ${episodeAnswer.key}")
 
-      if (question.answerSchemaGroup != null) {
+      if (question.answerGroup != null) {
         val questionCode = question.questionCode
         val answerSchema = matchAnswers(episodeAnswer, question)
         if (answerSchema.isNotEmpty()) {
-          answers[questionCode] = AnswerSchemaDto.from(answerSchema)
+          answers[questionCode] = AnswerDto.from(answerSchema)
         }
       }
     }
@@ -253,14 +253,14 @@ class AssessmentService(
 
   private fun matchAnswers(
     episodeAnswer: Map.Entry<String, List<String>>,
-    question: QuestionSchemaEntity
-  ): Set<AnswerSchemaEntity> {
-    val answerSchemas = question.answerSchemaEntities
+    question: QuestionEntity
+  ): Set<AnswerEntity> {
+    val answerSchemas = question.answerEntities
     return episodeAnswer.value.map { answer ->
       answerSchemas.firstOrNull { answerSchema ->
         answer == answerSchema.value
       }
-        ?: throw IllegalStateException("Answer Code not found for question ${question.questionSchemaUuid} answer value $answer")
+        ?: throw IllegalStateException("Answer Code not found for question ${question.questionUuid} answer value $answer")
     }.toSet()
   }
 

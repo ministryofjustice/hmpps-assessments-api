@@ -12,15 +12,15 @@ import javax.persistence.ManyToOne
 import javax.persistence.Table
 
 @Entity
-@Table(name = "assessment_schema_groups", schema = "hmppsassessmentsschemas")
-class AssessmentSchemaGroupsEntity(
+@Table(name = "assessment_groups", schema = "hmppsassessmentsschemas")
+class AssessmentGroupsEntity(
   @Id
-  @Column(name = "assessment_schema_group_id")
+  @Column(name = "assessment_group_id")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  val assessmentSchemaGroupId: Long,
+  val assessmentGroupId: Long,
 
-  @Column(name = "assessment_schema_uuid")
-  val assessmentSchemaUuid: UUID,
+  @Column(name = "assessment_uuid")
+  val assessmentUuid: UUID,
 
   @ManyToOne
   @JoinColumn(name = "group_uuid", referencedColumnName = "group_uuid")
