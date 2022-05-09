@@ -8,9 +8,9 @@ import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import uk.gov.justice.digital.assessments.api.EpisodeOasysAnswersDto
 import uk.gov.justice.digital.assessments.api.OasysAssessmentEpisodeDto
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode.ROSH
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode.RSR
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType.ROSH
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType.RSR
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
@@ -31,13 +31,13 @@ class OasysAssessmentServiceTest {
       return listOf(
         Arguments.of(
           StateDates(
-            assessmentSchemaCode = ROSH,
+            assessmentType = ROSH,
             createdDate = LocalDateTime.now().minusWeeks(2),
             endDate = LocalDateTime.now().minusWeeks(1),
             closedDate = null
           ),
           StateDates(
-            assessmentSchemaCode = ROSH,
+            assessmentType = ROSH,
             createdDate = LocalDateTime.now().minusWeeks(1),
             endDate = LocalDateTime.now(),
             closedDate = null
@@ -45,13 +45,13 @@ class OasysAssessmentServiceTest {
         ),
         Arguments.of(
           StateDates(
-            assessmentSchemaCode = ROSH,
+            assessmentType = ROSH,
             createdDate = LocalDateTime.now().minusWeeks(1),
             endDate = null,
             closedDate = LocalDateTime.now().minusWeeks(1)
           ),
           StateDates(
-            assessmentSchemaCode = ROSH,
+            assessmentType = ROSH,
             createdDate = LocalDateTime.now().minusWeeks(2),
             endDate = LocalDateTime.now(),
             closedDate = null
@@ -59,13 +59,13 @@ class OasysAssessmentServiceTest {
         ),
         Arguments.of(
           StateDates(
-            assessmentSchemaCode = RSR,
+            assessmentType = RSR,
             createdDate = LocalDateTime.now().minusWeeks(1),
             endDate = null,
             closedDate = null
           ),
           StateDates(
-            assessmentSchemaCode = ROSH,
+            assessmentType = ROSH,
             createdDate = LocalDateTime.now().minusWeeks(2),
             endDate = null,
             closedDate = null
@@ -86,7 +86,7 @@ class OasysAssessmentServiceTest {
       createdDate = stateDates2.createdDate,
       endDate = stateDates2.endDate,
       closedDate = stateDates2.closedDate,
-      assessmentSchemaCode = stateDates2.assessmentSchemaCode,
+      assessmentType = stateDates2.assessmentType,
       author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
       assessment = AssessmentEntity()
     )
@@ -96,7 +96,7 @@ class OasysAssessmentServiceTest {
       createdDate = stateDates1.createdDate,
       endDate = stateDates1.endDate,
       closedDate = stateDates1.closedDate,
-      assessmentSchemaCode = stateDates1.assessmentSchemaCode,
+      assessmentType = stateDates1.assessmentType,
       author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
       assessment = AssessmentEntity()
     )
@@ -125,7 +125,7 @@ class OasysAssessmentServiceTest {
   }
 
   data class StateDates(
-    val assessmentSchemaCode: AssessmentSchemaCode,
+    val assessmentType: AssessmentType,
     val createdDate: LocalDateTime,
     val endDate: LocalDateTime?,
     val closedDate: LocalDateTime?,

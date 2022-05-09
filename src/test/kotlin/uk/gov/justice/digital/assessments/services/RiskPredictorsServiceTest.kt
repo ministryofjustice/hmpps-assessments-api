@@ -9,7 +9,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
@@ -226,7 +226,7 @@ class RiskPredictorsServiceTest {
   private val predictors = listOf(
     PredictorEntity(
       1,
-      AssessmentSchemaCode.RSR,
+      AssessmentType.RSR,
       PredictorType.RSR,
       listOf(
         PredictorFieldMappingEntity(
@@ -524,7 +524,7 @@ class RiskPredictorsServiceTest {
     answers = answers,
     createdDate = LocalDateTime.now(),
     assessment = assessment,
-    assessmentSchemaCode = AssessmentSchemaCode.RSR,
+    assessmentType = AssessmentType.RSR,
     offence = OffenceEntity(offenceCode = "138", offenceSubCode = "00", sentenceDate = LocalDate.now()),
     author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
   )
@@ -534,7 +534,7 @@ class RiskPredictorsServiceTest {
     episodeUuid = UUID.randomUUID(),
     createdDate = LocalDateTime.now(),
     assessment = assessment,
-    assessmentSchemaCode = AssessmentSchemaCode.RSR,
+    assessmentType = AssessmentType.RSR,
     author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
   )
   val final = true
@@ -553,7 +553,7 @@ class RiskPredictorsServiceTest {
   inner class GetPredictorEntityResults {
     @Test
     fun `throws exception when required answer is not found`() {
-      every { assessmentReferenceDataService.getPredictorsForAssessment(AssessmentSchemaCode.RSR) } returns predictors
+      every { assessmentReferenceDataService.getPredictorsForAssessment(AssessmentType.RSR) } returns predictors
       every {
         subjectService.getSubjectForAssessment(assessment.assessmentUuid)
       } returns SubjectEntity(
@@ -572,7 +572,7 @@ class RiskPredictorsServiceTest {
 
     @Test
     fun `returns predictor scores for the assessment code`() {
-      every { assessmentReferenceDataService.getPredictorsForAssessment(AssessmentSchemaCode.RSR) } returns predictors
+      every { assessmentReferenceDataService.getPredictorsForAssessment(AssessmentType.RSR) } returns predictors
 
       val offenderAndOffencesDto = offenderAndOffencesDto()
 
@@ -642,7 +642,7 @@ class RiskPredictorsServiceTest {
     fun `returns predictor scores for the assessment episode`() {
       val final = false
       every { episodeRepository.findByEpisodeUuid(episodeUuid) } returns assessmentEpisode
-      every { assessmentReferenceDataService.getPredictorsForAssessment(AssessmentSchemaCode.RSR) } returns predictors
+      every { assessmentReferenceDataService.getPredictorsForAssessment(AssessmentType.RSR) } returns predictors
 
       val offenderAndOffencesDto = offenderAndOffencesDto()
 
@@ -712,7 +712,7 @@ class RiskPredictorsServiceTest {
     fun `returns predictor scores for the assessment episode throw exception when offence is missing in episode`() {
       val final = false
       every { episodeRepository.findByEpisodeUuid(episodeUuid) } returns assessmentEpisode.copy(offence = null)
-      every { assessmentReferenceDataService.getPredictorsForAssessment(AssessmentSchemaCode.RSR) } returns predictors
+      every { assessmentReferenceDataService.getPredictorsForAssessment(AssessmentType.RSR) } returns predictors
 
       every {
         subjectService.getSubjectForAssessment(assessment.assessmentUuid)

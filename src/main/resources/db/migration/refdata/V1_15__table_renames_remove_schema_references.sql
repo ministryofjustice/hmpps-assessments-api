@@ -20,12 +20,11 @@ ALTER TABLE question_schema RENAME TO question;
 ALTER TABLE question RENAME COLUMN question_schema_id TO question_id;
 ALTER TABLE question RENAME COLUMN question_schema_uuid TO question_uuid;
 ALTER TABLE question RENAME COLUMN answer_schema_group_uuid TO answer_group_uuid;
-
 -- Rename assessment_schema table and associated columns
 ALTER TABLE assessment_schema RENAME TO assessment;
 ALTER TABLE assessment RENAME COLUMN assessment_schema_id TO assessment_id;
 ALTER TABLE assessment RENAME COLUMN assessment_schema_uuid TO assessment_uuid;
-ALTER TABLE assessment RENAME COLUMN assessment_schema_code TO assessment_code;
+ALTER TABLE assessment RENAME COLUMN assessment_schema_code TO assessment_type;
 
 -- Rename assessment_schema_groups table and associated columns
 ALTER TABLE assessment_schema_groups RENAME TO assessment_groups;
@@ -33,9 +32,9 @@ ALTER TABLE assessment_groups RENAME COLUMN assessment_schema_group_id TO assess
 ALTER TABLE assessment_groups RENAME COLUMN assessment_schema_uuid TO assessment_uuid;
 
 -- Rename misc column names
-ALTER TABLE assessment_predictors RENAME COLUMN assessment_schema_code TO assessment_code;
-ALTER TABLE clone_assessment_excluded_questions RENAME COLUMN assessment_schema_code TO assessment_code;
-ALTER TABLE external_source_question_mapping RENAME COLUMN assessment_schema_code TO assessment_code;
+ALTER TABLE assessment_predictors RENAME COLUMN assessment_schema_code TO assessment_type;
+ALTER TABLE clone_assessment_excluded_questions RENAME COLUMN assessment_schema_code TO assessment_type;
+ALTER TABLE external_source_question_mapping RENAME COLUMN assessment_schema_code TO assessment_type;
 ALTER TABLE oasys_question_mapping RENAME COLUMN question_schema_uuid TO question_uuid;
 ALTER TABLE oasys_reference_data_target_mapping RENAME COLUMN question_schema_uuid TO question_uuid;
 ALTER TABLE oasys_reference_data_target_mapping RENAME COLUMN parent_question_schema_uuid TO parent_question_uuid;

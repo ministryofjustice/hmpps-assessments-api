@@ -9,7 +9,7 @@ import org.springframework.http.MediaType
 import org.springframework.mock.web.MockMultipartFile
 import org.springframework.web.multipart.MultipartFile
 import uk.gov.justice.digital.assessments.api.UploadedUpwDocumentDto
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
@@ -107,7 +107,7 @@ class DocumentServiceTest {
           dateOfBirth = LocalDate.now()
         )
       ),
-      assessmentSchemaCode = AssessmentSchemaCode.UPW,
+      assessmentType = AssessmentType.UPW,
       author = AuthorEntity(
         userId = "userId",
         userName = "userName"

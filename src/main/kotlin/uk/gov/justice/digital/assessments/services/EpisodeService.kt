@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.assessments.api.GroupQuestionDto
 import uk.gov.justice.digital.assessments.api.TableQuestionDto
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.CloneAssessmentExcludedQuestionsRepository
 import uk.gov.justice.digital.assessments.restclient.AssessmentApiRestClient
@@ -51,9 +51,9 @@ class EpisodeService(
 
   fun prepopulateFromExternalSources(
     episode: AssessmentEpisodeEntity,
-    assessmentSchemaCode: AssessmentSchemaCode
+    assessmentType: AssessmentType
   ): AssessmentEpisodeEntity {
-    val questionsToPopulate = questionService.getAllQuestions().withExternalSource(assessmentSchemaCode)
+    val questionsToPopulate = questionService.getAllQuestions().withExternalSource(assessmentType)
     if (questionsToPopulate.isEmpty())
       return episode
 
@@ -78,10 +78,10 @@ class EpisodeService(
     }.sortedByDescending { it.endDate }
 
     val questions =
-      assessmentReferenceDataService.getQuestionsForSchemaCode(newEpisode.assessmentSchemaCode)
+      assessmentReferenceDataService.getQuestionsForAssessmentType(newEpisode.assessmentType)
 
     val ignoredQuestionCodes = cloneAssessmentExcludedQuestionsRepository
-      .findAllByAssessmentCode(newEpisode.assessmentSchemaCode).map { it.questionCode }
+      .findAllByAssessmentType(newEpisode.assessmentType).map { it.questionCode }
 
     val questionCodes = questions.filterIsInstance<GroupQuestionDto>()
       .map { it.questionCode }

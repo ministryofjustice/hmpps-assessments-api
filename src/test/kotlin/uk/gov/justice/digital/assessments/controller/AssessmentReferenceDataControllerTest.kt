@@ -11,7 +11,7 @@ import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import java.util.UUID
 
 @AutoConfigureWebTestClient(timeout = "6000000000")
-class AssessmentSchemaControllerTest : IntegrationTest() {
+class AssessmentReferenceDataControllerTest : IntegrationTest() {
   private val assessmentGroupUuid = "b89429c8-9e3e-4989-b886-9caed4ed0a30"
   private val groupUuid = "5d37254e-d956-488e-89be-1eaec8758ef7"
   private val subgroupUuid1 = "eb7b7324-f2a6-4902-91ef-709a8fab1f82"
@@ -25,8 +25,8 @@ class AssessmentSchemaControllerTest : IntegrationTest() {
   private val roshSubGroupUuid5 = "7773691f-7244-4415-b410-17c495bf9a59"
 
   @Test
-  fun `get all reference questions and answers for assessment schema code`() {
-    val groups = webTestClient.get().uri("/assessments/schema/ROSH")
+  fun `get all reference questions and answers for assessment type`() {
+    val groups = webTestClient.get().uri("/assessments/ROSH")
       .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
       .exchange()
       .expectStatus().isOk
@@ -69,8 +69,8 @@ class AssessmentSchemaControllerTest : IntegrationTest() {
   }
 
   @Test
-  fun `section for top-level group for an assessment by assessment schema code`() {
-    val assessmentGroup = webTestClient.get().uri("/assessments/schema/RSR/summary")
+  fun `section for top-level group for an assessment by assessment type`() {
+    val assessmentGroup = webTestClient.get().uri("/assessments/RSR/summary")
       .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
       .exchange()
       .expectStatus().isOk
@@ -106,8 +106,8 @@ class AssessmentSchemaControllerTest : IntegrationTest() {
   }
 
   @Test
-  fun `get flattened questions for assessment schema code`() {
-    val assessmentGroup = webTestClient.get().uri("/assessments/schema/RSR/questions")
+  fun `get flattened questions for assessment type`() {
+    val assessmentGroup = webTestClient.get().uri("/assessments/RSR/questions")
       .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
       .exchange()
       .expectStatus().isOk

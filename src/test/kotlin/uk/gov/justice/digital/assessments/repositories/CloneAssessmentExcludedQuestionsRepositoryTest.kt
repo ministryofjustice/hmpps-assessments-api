@@ -3,7 +3,7 @@ package uk.gov.justice.digital.assessments.repositories
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode.UPW
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType.UPW
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.CloneAssessmentExcludedQuestionsRepository
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 
@@ -13,7 +13,7 @@ class CloneAssessmentExcludedQuestionsRepositoryTest(
 
   @Test
   fun `return excluded question entities by assessment schema code`() {
-    val cloneAssessmentExcludedQuestions = cloneAssessmentExcludedQuestionsRepository.findAllByAssessmentCode(UPW)
+    val cloneAssessmentExcludedQuestions = cloneAssessmentExcludedQuestionsRepository.findAllByAssessmentType(UPW)
     assertThat(cloneAssessmentExcludedQuestions.map { it.questionCode }).containsExactlyInAnyOrder(
       "individual_details_complete",
       "cultural_religious_adjustment_complete",

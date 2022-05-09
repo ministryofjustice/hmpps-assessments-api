@@ -12,19 +12,17 @@ import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.assessments.api.GroupContentDto
 import uk.gov.justice.digital.assessments.api.GroupSectionsDto
 import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.services.AssessmentReferenceDataService
 import uk.gov.justice.digital.assessments.services.AssessmentService
-import uk.gov.justice.digital.assessments.services.AssessmentUpdateService
 
 @RestController
-class AssessmentSchemaController(
+class AssessmentReferenceDataController(
   val assessmentService: AssessmentService,
-  val assessmentUpdateService: AssessmentUpdateService,
   val assessmentReferenceDataService: AssessmentReferenceDataService
 ) {
-  @RequestMapping(path = ["/assessments/schema/{assessmentSchemaCode}"], method = [RequestMethod.GET])
-  @Operation(description = "Gets an assessment schema with all questions in the assessment schema group")
+  @RequestMapping(path = ["/assessments/{assessmentType}"], method = [RequestMethod.GET])
+  @Operation(description = "Gets an assessment with all questions in the assessment group for a particular assessment type")
   @ApiResponses(
     value = [
       ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
@@ -32,18 +30,18 @@ class AssessmentSchemaController(
     ]
   )
   @PreAuthorize("hasRole('ROLE_PROBATION')")
-  fun getAssessmentSchema(
+  fun getAssessmentReferenceData(
     @Parameter(
-      description = "Assessment Schema Code",
+      description = "Assessment Type Code",
       required = true,
       example = "ROSH"
-    ) @PathVariable assessmentSchemaCode: AssessmentSchemaCode
+    ) @PathVariable assessmentType: AssessmentType
   ): GroupWithContentsDto {
-    return assessmentReferenceDataService.getAssessmentSchema(assessmentSchemaCode)
+    return assessmentReferenceDataService.getAssessmentForAssessmentType(assessmentType)
   }
 
-  @RequestMapping(path = ["/assessments/schema/{assessmentSchemaCode}/summary"], method = [RequestMethod.GET])
-  @Operation(description = "Gets Summary information for an assessment schema")
+  @RequestMapping(path = ["/assessments/{assessmentType}/summary"], method = [RequestMethod.GET])
+  @Operation(description = "Gets Summary information for an assessment type")
   @ApiResponses(
     value = [
       ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
@@ -51,26 +49,26 @@ class AssessmentSchemaController(
     ]
   )
   @PreAuthorize("hasRole('ROLE_PROBATION')")
-  fun getAssessmentSchemaSummary(
+  fun getAssessmentSummary(
     @Parameter(
-      description = "Assessment Schema Code",
+      description = "Assessment Type Code",
       required = true,
       example = "ROSH"
-    ) @PathVariable assessmentSchemaCode: AssessmentSchemaCode
+    ) @PathVariable assessmentType: AssessmentType
   ): GroupSectionsDto {
-    return assessmentReferenceDataService.getAssessmentSchemaSummary(assessmentSchemaCode)
+    return assessmentReferenceDataService.getAssessmentSummary(assessmentType)
   }
 
-  @RequestMapping(path = ["/assessments/schema/{assessmentSchemaCode}/questions"], method = [RequestMethod.GET])
-  @Operation(description = "Gets questions for Assessment Schema code")
+  @RequestMapping(path = ["/assessments/{assessmentType}/questions"], method = [RequestMethod.GET])
+  @Operation(description = "Retrieve questions for Assessment type")
   @ApiResponses(
     value = [
-      ApiResponse(responseCode = "404", description = "Questions not found for Assessment Schema code"),
+      ApiResponse(responseCode = "404", description = "Questions not found for Assessment type"),
       ApiResponse(responseCode = "200", description = "OK")
     ]
   )
   @PreAuthorize("hasRole('ROLE_PROBATION')")
-  fun getQuestionsForAssessmentSchemaCode(@PathVariable("assessmentSchemaCode") assessmentSchemaCode: String): List<GroupContentDto> {
-    return assessmentReferenceDataService.getQuestionsForSchemaCode(AssessmentSchemaCode.valueOf(assessmentSchemaCode))
+  fun getQuestionsForAssessmentSchemaCode(@PathVariable("assessmentType") assessmentType: String): List<GroupContentDto> {
+    return assessmentReferenceDataService.getQuestionsForAssessmentType(AssessmentType.valueOf(assessmentType))
   }
 }

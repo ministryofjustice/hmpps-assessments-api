@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.assessments.jpa.entities.assessments
 
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import java.io.Serializable
 import java.time.LocalDateTime
 import java.util.UUID
@@ -50,15 +50,15 @@ class AssessmentEntity(
     return episodes.indexOfFirst { !it.isComplete() && !it.isClosed() } >= 0
   }
 
-  fun getLatestInProgressOrCompleteEpisodeOfType(assessmentSchemaCode: AssessmentSchemaCode): AssessmentEpisodeEntity? {
-    return episodes.filter { it.assessmentSchemaCode == assessmentSchemaCode && !it.isClosed() }
+  fun getLatestInProgressOrCompleteEpisodeOfType(assessmentType: AssessmentType): AssessmentEpisodeEntity? {
+    return episodes.filter { it.assessmentType == assessmentType && !it.isClosed() }
       .maxByOrNull { it.createdDate }
   }
 
   fun newEpisode(
     changeReason: String,
     oasysSetPk: Long? = null,
-    assessmentSchemaCode: AssessmentSchemaCode,
+    assessmentType: AssessmentType,
     offence: OffenceEntity?,
     author: AuthorEntity
   ): AssessmentEpisodeEntity {
@@ -72,7 +72,7 @@ class AssessmentEntity(
       changeReason = changeReason,
       author = author,
       oasysSetPk = oasysSetPk,
-      assessmentSchemaCode = assessmentSchemaCode,
+      assessmentType = assessmentType,
       offence = offence
     )
     episodes.add(newEpisode)

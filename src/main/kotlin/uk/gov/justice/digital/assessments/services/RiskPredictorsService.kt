@@ -47,8 +47,8 @@ class RiskPredictorsService(
     episode: AssessmentEpisodeEntity,
     final: Boolean = false
   ): List<PredictorScoresDto> {
-    val predictors = assessmentReferenceDataService.getPredictorsForAssessment(episode.assessmentSchemaCode)
-    log.info("Found ${predictors.size} predictors for episode ${episode.episodeUuid} with assessment type ${episode.assessmentSchemaCode}")
+    val predictors = assessmentReferenceDataService.getPredictorsForAssessment(episode.assessmentType)
+    log.info("Found ${predictors.size} predictors for episode ${episode.episodeUuid} with assessment type ${episode.assessmentType}")
 
     return predictors.map { predictor ->
       fetchResults(

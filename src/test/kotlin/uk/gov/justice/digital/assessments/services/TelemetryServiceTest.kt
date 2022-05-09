@@ -8,7 +8,7 @@ import io.mockk.verify
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
 import java.util.UUID
 
@@ -23,7 +23,7 @@ class TelemetryServiceTest {
   val event = TelemetryEventType.ASSESSMENT_CREATED
   val author = AuthorEntity(userName = "USER1", userId = "User_Id")
   val crn = "DX0123456C"
-  val assessmentSchemaCode = AssessmentSchemaCode.UPW
+  val assessmentType = AssessmentType.UPW
 
   @Test
   fun `logs custom event to application insights`() {
@@ -33,11 +33,11 @@ class TelemetryServiceTest {
       "crn" to crn,
       "assessmentUUID" to assessmentUuid.toString(),
       "episodeUUID" to episodeUuid.toString(),
-      "assessmentType" to assessmentSchemaCode.name
+      "assessmentType" to assessmentType.name
     )
 
     justRun { telemetryClient.trackEvent("arnAssessmentCreated", any(), any()) }
-    telemetryService.trackAssessmentEvent(event, crn, author, assessmentUuid, episodeUuid, assessmentSchemaCode)
+    telemetryService.trackAssessmentEvent(event, crn, author, assessmentUuid, episodeUuid, assessmentType)
     verify(exactly = 1) { telemetryClient.trackEvent("arnAssessmentCreated", expectedProperties, any()) }
   }
 }

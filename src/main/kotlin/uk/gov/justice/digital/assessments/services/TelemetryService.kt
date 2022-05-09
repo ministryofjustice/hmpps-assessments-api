@@ -2,7 +2,7 @@ package uk.gov.justice.digital.assessments.services
 
 import com.microsoft.applicationinsights.TelemetryClient
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
 import java.util.UUID
 
@@ -11,7 +11,7 @@ class TelemetryService(
   private val telemetryClient: TelemetryClient
 ) {
 
-  fun trackAssessmentEvent(event: TelemetryEventType, crn: String?, author: AuthorEntity, assessmentUuid: UUID, episodeUuid: UUID, assessmentType: AssessmentSchemaCode) {
+  fun trackAssessmentEvent(event: TelemetryEventType, crn: String?, author: AuthorEntity, assessmentUuid: UUID, episodeUuid: UUID, assessmentType: AssessmentType) {
     val properties = mapOf(
       "author" to author.userName,
       "crn" to crn,

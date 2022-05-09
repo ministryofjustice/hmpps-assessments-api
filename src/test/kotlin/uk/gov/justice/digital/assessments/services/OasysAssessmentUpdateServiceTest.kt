@@ -12,7 +12,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
@@ -56,7 +56,7 @@ class OasysAssessmentUpdateServiceTest() {
 
   @BeforeEach
   fun setup() {
-    every { assessmentReferenceDataService.toOasysAssessmentType(AssessmentSchemaCode.ROSH) } returns OasysAssessmentType.SHORT_FORM_PSR
+    every { assessmentReferenceDataService.toOasysAssessmentType(AssessmentType.ROSH) } returns OasysAssessmentType.SHORT_FORM_PSR
   }
 
   @Test
@@ -101,7 +101,7 @@ class OasysAssessmentUpdateServiceTest() {
     val episode = AssessmentEpisodeEntity(
       oasysSetPk = oasysSetPk,
       createdDate = LocalDateTime.now(),
-      assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+      assessmentType = AssessmentType.ROSH,
       author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
       assessment = AssessmentEntity()
     )
@@ -161,7 +161,7 @@ class OasysAssessmentUpdateServiceTest() {
   fun `Update oasys assessment returns errors when offender null`() {
     val assessmentEpisode = AssessmentEpisodeEntity(
       episodeId = 128,
-      assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+      assessmentType = AssessmentType.ROSH,
       author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
       assessment = AssessmentEntity()
     )
@@ -176,7 +176,7 @@ class OasysAssessmentUpdateServiceTest() {
   fun `Complete oasys assessment returns errors when offender null`() {
     val assessmentEpisode = AssessmentEpisodeEntity(
       episodeId = 128,
-      assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+      assessmentType = AssessmentType.ROSH,
       author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
       assessment = AssessmentEntity()
     )
@@ -231,7 +231,7 @@ class OasysAssessmentUpdateServiceTest() {
     )
     return AssessmentEpisodeEntity(
       episodeId = episodeId1,
-      assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+      assessmentType = AssessmentType.ROSH,
       oasysSetPk = oasysSetPk,
       answers = answers,
       createdDate = LocalDateTime.now(),

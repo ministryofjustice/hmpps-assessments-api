@@ -15,7 +15,7 @@ import uk.gov.justice.digital.assessments.api.AssessmentSubjectDto
 import uk.gov.justice.digital.assessments.api.CreateAssessmentDto
 import uk.gov.justice.digital.assessments.api.CreateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.api.ErrorResponse
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import uk.gov.justice.digital.assessments.utils.RequestData
 import java.time.LocalDate
@@ -54,7 +54,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
           CreateAssessmentDto(
             courtCode = "SHF06",
             caseNumber = "668911253",
-            assessmentSchemaCode = AssessmentSchemaCode.ROSH
+            assessmentType = AssessmentType.ROSH
           )
         )
         .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
@@ -72,7 +72,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       val dto = CreateAssessmentDto(
         courtCode = "SHF06",
         caseNumber = "668911253",
-        assessmentSchemaCode = AssessmentSchemaCode.ROSH
+        assessmentType = AssessmentType.ROSH
       )
       val assessment = webTestClient.post().uri("/assessments")
         .bodyValue(dto)
@@ -104,7 +104,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       val dto = CreateAssessmentDto(
         courtCode = "SHF06",
         caseNumber = "existingAssessment",
-        assessmentSchemaCode = AssessmentSchemaCode.ROSH
+        assessmentType = AssessmentType.ROSH
       )
       val assessment = webTestClient.post().uri("/assessments")
         .bodyValue(dto)
@@ -142,7 +142,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
           CreateAssessmentDto(
             crn = crn,
             deliusEventId = eventID,
-            assessmentSchemaCode = AssessmentSchemaCode.ROSH
+            assessmentType = AssessmentType.ROSH
           )
         )
         .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
@@ -162,7 +162,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
           CreateAssessmentDto(
             crn = "OX1232456",
             deliusEventId = eventID,
-            assessmentSchemaCode = AssessmentSchemaCode.ROSH
+            assessmentType = AssessmentType.ROSH
           )
         )
         .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
@@ -181,7 +181,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       val dto = CreateAssessmentDto(
         crn = crn,
         deliusEventId = eventID,
-        assessmentSchemaCode = AssessmentSchemaCode.RSR
+        assessmentType = AssessmentType.RSR
       )
       val assessment = webTestClient.post().uri("/assessments")
         .bodyValue(dto)
@@ -211,7 +211,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       val dto = CreateAssessmentDto(
         crn = crn,
         deliusEventId = eventID,
-        assessmentSchemaCode = AssessmentSchemaCode.UPW
+        assessmentType = AssessmentType.UPW
       )
       val assessment = webTestClient.post().uri("/assessments")
         .bodyValue(dto)
@@ -314,7 +314,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       val dto = CreateAssessmentDto(
         crn = "DX5678B",
         deliusEventId = eventID,
-        assessmentSchemaCode = AssessmentSchemaCode.UPW
+        assessmentType = AssessmentType.UPW
       )
       val assessment = webTestClient.post().uri("/assessments")
         .bodyValue(dto)
@@ -339,7 +339,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       val dto = CreateAssessmentDto(
         crn = crn,
         deliusEventId = eventID,
-        assessmentSchemaCode = AssessmentSchemaCode.UPW
+        assessmentType = AssessmentType.UPW
       )
       val assessment = webTestClient.post().uri("/assessments")
         .bodyValue(dto)
@@ -365,7 +365,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       val dto = CreateAssessmentDto(
         crn = crn,
         deliusEventId = eventID,
-        assessmentSchemaCode = AssessmentSchemaCode.ROSH
+        assessmentType = AssessmentType.ROSH
       )
       val assessment = webTestClient.post().uri("/assessments")
         .bodyValue(dto)
@@ -399,7 +399,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
     @Test
     fun `creates new episode on existing assessment`() {
       val episode = webTestClient.post().uri("/assessments/49c8d211-68dc-4692-a6e2-d58468127356/episodes")
-        .bodyValue(CreateAssessmentEpisodeDto("Change of Circs", 1L, AssessmentSchemaCode.ROSH))
+        .bodyValue(CreateAssessmentEpisodeDto("Change of Circs", 1L, AssessmentType.ROSH))
         .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
         .exchange()
         .expectStatus().isOk
@@ -423,7 +423,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
     val dto = CreateAssessmentDto(
       crn = crn,
       deliusEventId = deliusId,
-      assessmentSchemaCode = AssessmentSchemaCode.ROSH
+      assessmentType = AssessmentType.ROSH
     )
     return webTestClient.post().uri("/assessments")
       .bodyValue(dto)

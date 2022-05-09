@@ -21,7 +21,7 @@ class AnswerGroupEntity(
   val answerGroupUuid: UUID = UUID.randomUUID(),
 
   @Column(name = "answer_group_code")
-  val answerSchemaGroupCode: String? = null,
+  val answerGroupCode: String? = null,
 
   @Column(name = "group_start")
   val groupStart: LocalDateTime? = null,

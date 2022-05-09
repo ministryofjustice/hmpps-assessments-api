@@ -14,7 +14,7 @@ class AnswerGroupRepositoryTest(@Autowired val answerGroupRepository: AnswerGrou
     val answerSchemaGroupUuid = UUID.fromString("d03940ce-5f84-4ec1-af45-ab2957d09402")
     val answerSchemaGroup = answerGroupRepository.findByAnswerGroupUuid(answerSchemaGroupUuid)
     assertThat(answerSchemaGroup?.answerGroupUuid).isEqualTo(answerSchemaGroupUuid)
-    assertThat(answerSchemaGroup?.answerSchemaGroupCode).isEqualTo("noproblems-someproblems-significantproblems")
+    assertThat(answerSchemaGroup?.answerGroupCode).isEqualTo("noproblems-someproblems-significantproblems")
     assertThat(answerSchemaGroup?.answerEntities?.size).isEqualTo(3)
   }
 }

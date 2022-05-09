@@ -66,7 +66,7 @@ class AssessmentUpdateService(
     log.info("Updated episode ${episode.episodeUuid} with ${updatedEpisodeAnswers.size} answer(s) for assessment ${episode.assessment.assessmentUuid}")
 
     var episodeUpdateErrors: AssessmentEpisodeUpdateErrors? = null
-    if (assessmentService.shouldPushToOasys(episode.assessmentSchemaCode)) {
+    if (assessmentService.shouldPushToOasys(episode.assessmentType)) {
       episodeUpdateErrors = oasysAssessmentUpdateService.updateOASysAssessment(episode, updatedEpisodeAnswers)
     }
 
@@ -98,7 +98,7 @@ class AssessmentUpdateService(
     var final = false
 
     if (!episode.isComplete()) {
-      if (assessmentService.shouldPushToOasys(episode.assessmentSchemaCode)) {
+      if (assessmentService.shouldPushToOasys(episode.assessmentType)) {
         episodeUpdateErrors = oasysAssessmentUpdateService.completeOASysAssessment(episode, offenderPk)
       }
       if (episodeUpdateErrors != null && episodeUpdateErrors.hasErrors()) {
@@ -193,7 +193,7 @@ class AssessmentUpdateService(
       updateTableForEpisode(episode, tableName, table)
 
       var episodeUpdateErrors: AssessmentEpisodeUpdateErrors? = null
-      if (assessmentService.shouldPushToOasys(episode.assessmentSchemaCode)) {
+      if (assessmentService.shouldPushToOasys(episode.assessmentType)) {
         episodeUpdateErrors = oasysAssessmentUpdateService.updateOASysAssessment(episode)
       }
 
@@ -252,7 +252,7 @@ class AssessmentUpdateService(
       updateTableForEpisode(episode, tableName, table)
 
       var episodeUpdateErrors: AssessmentEpisodeUpdateErrors? = null
-      if (assessmentService.shouldPushToOasys(episode.assessmentSchemaCode)) {
+      if (assessmentService.shouldPushToOasys(episode.assessmentType)) {
         episodeUpdateErrors = oasysAssessmentUpdateService.updateOASysAssessment(episode)
       }
 
@@ -296,7 +296,7 @@ class AssessmentUpdateService(
       updateTableForEpisode(episode, tableName, table)
 
       var episodeUpdateErrors: AssessmentEpisodeUpdateErrors? = null
-      if (assessmentService.shouldPushToOasys(episode.assessmentSchemaCode)) {
+      if (assessmentService.shouldPushToOasys(episode.assessmentType)) {
         episodeUpdateErrors = oasysAssessmentUpdateService.updateOASysAssessment(episode)
       }
 
@@ -331,7 +331,7 @@ class AssessmentUpdateService(
           episode.author,
           episode.assessment.assessmentUuid,
           episode.episodeUuid,
-          episode.assessmentSchemaCode
+          episode.assessmentType
         )
       }
     }
@@ -352,7 +352,7 @@ class AssessmentUpdateService(
         episode.author,
         episode.assessment.assessmentUuid,
         episode.episodeUuid,
-        episode.assessmentSchemaCode
+        episode.assessmentType
       )
     }
   }
@@ -372,7 +372,7 @@ class AssessmentUpdateService(
         episode.author,
         episode.assessment.assessmentUuid,
         episode.episodeUuid,
-        episode.assessmentSchemaCode
+        episode.assessmentType
       )
     }
   }

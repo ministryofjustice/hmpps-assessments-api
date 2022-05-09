@@ -21,7 +21,7 @@ class AssessmentEntityTest {
 
   private val assessmentID: Long = 1L
   private val episodeId: Long = 1L
-  private val assessmentSchemaCode = AssessmentSchemaCode.ROSH
+  private val assessmentType = AssessmentType.ROSH
 
   @BeforeEach
   fun setup() {
@@ -34,7 +34,7 @@ class AssessmentEntityTest {
     assertThat(assessment.episodes).hasSize(0)
     val newEpisode = assessment.newEpisode(
       "Change of Circs",
-      assessmentSchemaCode = assessmentSchemaCode,
+      assessmentType = assessmentType,
       offence = OffenceEntity(
         offenceCode = "Code",
         codeDescription = "Code description",
@@ -58,7 +58,7 @@ class AssessmentEntityTest {
           episodeId = episodeId,
           changeReason = "Change of Circs",
           createdDate = LocalDateTime.now(),
-          assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+          assessmentType = AssessmentType.ROSH,
           author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
           assessment = AssessmentEntity()
         )
@@ -67,7 +67,7 @@ class AssessmentEntityTest {
     assertThat(assessment.episodes).hasSize(1)
     val newEpisode = assessment.newEpisode(
       "Another change of Circs",
-      assessmentSchemaCode = assessmentSchemaCode,
+      assessmentType = assessmentType,
       offence = OffenceEntity(
         offenceCode = "Code",
         codeDescription = "Code description",
@@ -91,7 +91,7 @@ class AssessmentEntityTest {
           episodeId = episodeId,
           changeReason = "Change of Circs",
           createdDate = LocalDateTime.now(),
-          assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+          assessmentType = AssessmentType.ROSH,
           author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
           assessment = AssessmentEntity()
         )
@@ -112,7 +112,7 @@ class AssessmentEntityTest {
           changeReason = "Change of Circs",
           createdDate = LocalDateTime.now(),
           endDate = LocalDateTime.now().minusDays(1),
-          assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+          assessmentType = AssessmentType.ROSH,
           author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
           assessment = AssessmentEntity()
         )

@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import uk.gov.justice.digital.assessments.api.DeliusEventType
 import uk.gov.justice.digital.assessments.api.OffenceDto
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
@@ -61,7 +61,7 @@ class AssessmentServiceTest {
 
   private val assessmentUuid = UUID.randomUUID()
   private val assessmentId = 1L
-  private val assessmentSchemaCode = AssessmentSchemaCode.ROSH
+  private val assessmentType = AssessmentType.ROSH
 
   private val episodeId1 = 1L
   private val episodeId2 = 2L
@@ -126,7 +126,7 @@ class AssessmentServiceTest {
       every {
         assessment.newEpisode(
           "Change of Circs",
-          assessmentSchemaCode = assessmentSchemaCode,
+          assessmentType = assessmentType,
           offence = any(),
           author = author
         )
@@ -135,7 +135,7 @@ class AssessmentServiceTest {
         episodeUuid = episodeUuid1,
         assessment = assessment,
         createdDate = LocalDateTime.now(),
-        assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+        assessmentType = AssessmentType.ROSH,
         offence = OffenceEntity(
           offenceCode = offenceCode,
           codeDescription = codeDescription,
@@ -153,14 +153,14 @@ class AssessmentServiceTest {
         offenceSubCode = offenceSubCode,
         subCodeDescription = subCodeDescription
       )
-      every { episodeService.prepopulateFromExternalSources(any(), assessmentSchemaCode) } returnsArgument 0
+      every { episodeService.prepopulateFromExternalSources(any(), assessmentType) } returnsArgument 0
       every { episodeService.prepopulateFromPreviousEpisodes(any(), emptyList()) } returnsArgument 0
 
       val episodeDto = assessmentsService.createNewEpisode(
         assessmentUuid,
         eventId,
         "Change of Circs",
-        assessmentSchemaCode,
+        assessmentType,
         DeliusEventType.EVENT_INDEX
       )
 
@@ -188,7 +188,7 @@ class AssessmentServiceTest {
             episodeId = episodeId1,
             changeReason = "Change of Circs 1",
             createdDate = LocalDateTime.now(),
-            assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+            assessmentType = AssessmentType.ROSH,
             author = AuthorEntity(
               userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"
             ),
@@ -198,7 +198,7 @@ class AssessmentServiceTest {
             episodeId = episodeId2,
             changeReason = "Change of Circs 2",
             createdDate = LocalDateTime.now(),
-            assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+            assessmentType = AssessmentType.ROSH,
             author = AuthorEntity(
               userId = "1",
               userName = "USER",
@@ -232,7 +232,7 @@ class AssessmentServiceTest {
                 episodeUuid = episodeUuid,
                 changeReason = "Change of Circs 1",
                 createdDate = LocalDateTime.now(),
-                assessmentSchemaCode = AssessmentSchemaCode.UPW,
+                assessmentType = AssessmentType.UPW,
                 author = AuthorEntity(
                   userId = "1",
                   userName = "USER",
@@ -285,7 +285,7 @@ class AssessmentServiceTest {
             changeReason = "Change of Circs 1",
             createdDate = LocalDateTime.now(),
             endDate = LocalDateTime.now().minusDays(1),
-            assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+            assessmentType = AssessmentType.ROSH,
             author = AuthorEntity(
               userId = "1",
               userName = "USER",
@@ -299,7 +299,7 @@ class AssessmentServiceTest {
             episodeUuid = episodeUuid2,
             changeReason = "Change of Circs 2",
             createdDate = LocalDateTime.now(),
-            assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+            assessmentType = AssessmentType.ROSH,
             author = AuthorEntity(
               userId = "1",
               userName = "USER",
@@ -350,7 +350,7 @@ class AssessmentServiceTest {
             episodeId = episodeId1,
             answers = mutableMapOf(questionCode1 to listOf("YES")),
             createdDate = LocalDateTime.now(),
-            assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+            assessmentType = AssessmentType.ROSH,
             author = AuthorEntity(
               userId = "1",
               userName = "USER",
@@ -363,7 +363,7 @@ class AssessmentServiceTest {
             episodeId = episodeId2,
             answers = mutableMapOf(questionCode2 to listOf("NO")),
             createdDate = LocalDateTime.now(),
-            assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+            assessmentType = AssessmentType.ROSH,
             author = AuthorEntity(
               userId = "1",
               userName = "USER",
@@ -397,7 +397,7 @@ class AssessmentServiceTest {
               questionCode1 to listOf("YES")
             ),
             createdDate = LocalDateTime.now(),
-            assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+            assessmentType = AssessmentType.ROSH,
             author = AuthorEntity(
               userId = "1",
               userName = "USER",
@@ -413,7 +413,7 @@ class AssessmentServiceTest {
               questionCode2 to listOf("MAYBE")
             ),
             createdDate = LocalDateTime.now(),
-            assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+            assessmentType = AssessmentType.ROSH,
             author = AuthorEntity(
               userId = "1",
               userName = "USER",
@@ -429,7 +429,7 @@ class AssessmentServiceTest {
               questionCode2 to listOf("NO")
             ),
             createdDate = LocalDateTime.now(),
-            assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+            assessmentType = AssessmentType.ROSH,
             author = AuthorEntity(
               userId = "1",
               userName = "USER",
@@ -459,7 +459,7 @@ class AssessmentServiceTest {
               questionCode1 to listOf("YES")
             ),
             createdDate = LocalDateTime.now(),
-            assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+            assessmentType = AssessmentType.ROSH,
             author = AuthorEntity(
               userId = "1",
               userName = "USER",
@@ -475,7 +475,7 @@ class AssessmentServiceTest {
               questionCode2 to listOf("NO")
             ),
             createdDate = LocalDateTime.now(),
-            assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+            assessmentType = AssessmentType.ROSH,
             author = AuthorEntity(
               userId = "1",
               userName = "USER",
@@ -491,7 +491,7 @@ class AssessmentServiceTest {
               questionCode2 to listOf("MAYBE")
             ),
             createdDate = LocalDateTime.now(),
-            assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+            assessmentType = AssessmentType.ROSH,
             author = AuthorEntity(
               userId = "1",
               userName = "USER",
@@ -523,7 +523,7 @@ class AssessmentServiceTest {
               questionCode3 to listOf("free text")
             ),
             createdDate = LocalDateTime.now(),
-            assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+            assessmentType = AssessmentType.ROSH,
             author = AuthorEntity(
               userId = "1",
               userName = "USER",
@@ -555,7 +555,7 @@ class AssessmentServiceTest {
               questionCode1 to listOf("NO")
             ),
             createdDate = LocalDateTime.now(),
-            assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+            assessmentType = AssessmentType.ROSH,
             author = AuthorEntity(
               userId = "1",
               userName = "USER",

@@ -12,14 +12,14 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.assessments.api.OasysAssessmentEpisodeDto
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.services.OasysAssessmentService
 
 @RestController
 class OasysAssessmentsController(val oasysAssessmentService: OasysAssessmentService) {
 
   @RequestMapping(
-    path = ["/subject/{crn}/assessments/episodes/{assessmentSchemaCode}/latest"],
+    path = ["/subject/{crn}/assessments/episodes/{assessmentType}/latest"],
     method = [RequestMethod.GET]
   )
   @Operation(description = "Gets current assessment episode with oasys formatted answers for a specific schema type")
@@ -37,10 +37,10 @@ class OasysAssessmentsController(val oasysAssessmentService: OasysAssessmentServ
       description = "Assessment Schema Code",
       required = true,
       example = "RSR"
-    ) @PathVariable assessmentSchemaCode: AssessmentSchemaCode
+    ) @PathVariable assessmentType: AssessmentType
   ): OasysAssessmentEpisodeDto {
-    log.info("Get current episode for an Offender with crn:$crn and assessment schema code:$assessmentSchemaCode")
-    return oasysAssessmentService.getLatestEpisodeOfTypeForSubjectWithCrn(assessmentSchemaCode, crn)
+    log.info("Get current episode for an Offender with crn:$crn and assessment schema code:$assessmentType")
+    return oasysAssessmentService.getLatestEpisodeOfTypeForSubjectWithCrn(assessmentType, crn)
   }
 
   companion object {

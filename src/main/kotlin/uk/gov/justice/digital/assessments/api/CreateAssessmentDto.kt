@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.assessments.api
 
 import io.swagger.v3.oas.annotations.media.Schema
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 
 data class CreateAssessmentDto(
   @Schema(description = "Delius Event ID", example = "1234")
@@ -20,7 +20,7 @@ data class CreateAssessmentDto(
   val caseNumber: String? = null,
 
   @Schema(description = "Assessment Schema Code", example = "ROSH")
-  val assessmentSchemaCode: AssessmentSchemaCode
+  val assessmentType: AssessmentType
 
 ) {
   fun isCourtCase() = (courtCode != null && caseNumber != null)

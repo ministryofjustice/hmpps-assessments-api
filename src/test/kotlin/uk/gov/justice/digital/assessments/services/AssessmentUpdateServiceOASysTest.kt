@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.Answers
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
@@ -83,9 +83,9 @@ class AssessmentUpdateServiceOASysTest {
 
   @BeforeEach
   fun setup() {
-    every { assessmentReferenceDataService.toOasysAssessmentType(AssessmentSchemaCode.ROSH) } returns OasysAssessmentType.SHORT_FORM_PSR
-    every { assessmentReferenceDataService.toOasysAssessmentType(AssessmentSchemaCode.RSR) } returns OasysAssessmentType.SOMETHING_IN_OASYS
-    every { assessmentService.shouldPushToOasys(AssessmentSchemaCode.ROSH) } returns true
+    every { assessmentReferenceDataService.toOasysAssessmentType(AssessmentType.ROSH) } returns OasysAssessmentType.SHORT_FORM_PSR
+    every { assessmentReferenceDataService.toOasysAssessmentType(AssessmentType.RSR) } returns OasysAssessmentType.SOMETHING_IN_OASYS
+    every { assessmentService.shouldPushToOasys(AssessmentType.ROSH) } returns true
   }
 
   @Test
@@ -138,7 +138,7 @@ class AssessmentUpdateServiceOASysTest {
     val episode = AssessmentEpisodeEntity(
       answers = answers,
       createdDate = LocalDateTime.now(),
-      assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+      assessmentType = AssessmentType.ROSH,
       author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
       assessment = AssessmentEntity()
     )
@@ -223,7 +223,7 @@ class AssessmentUpdateServiceOASysTest {
       val episode = AssessmentEpisodeEntity(
         answers = answers,
         createdDate = LocalDateTime.now(),
-        assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+        assessmentType = AssessmentType.ROSH,
         tables = tables,
         author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
         assessment = AssessmentEntity()
@@ -264,7 +264,7 @@ class AssessmentUpdateServiceOASysTest {
       val episode = AssessmentEpisodeEntity(
         answers = answers,
         createdDate = LocalDateTime.now(),
-        assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+        assessmentType = AssessmentType.ROSH,
         tables = tables,
         author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
         assessment = AssessmentEntity()
@@ -310,7 +310,7 @@ class AssessmentUpdateServiceOASysTest {
       val episode = AssessmentEpisodeEntity(
         answers = answers,
         createdDate = LocalDateTime.now(),
-        assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+        assessmentType = AssessmentType.ROSH,
         tables = tables,
         author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
         assessment = AssessmentEntity()
@@ -354,7 +354,7 @@ class AssessmentUpdateServiceOASysTest {
 
     val assessmentEpisode = AssessmentEpisodeEntity(
       episodeId = episodeId1,
-      assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+      assessmentType = AssessmentType.ROSH,
       createdDate = LocalDateTime.now(),
       oasysSetPk = oasysSetPk,
       assessment = assessment,
@@ -557,7 +557,7 @@ class AssessmentUpdateServiceOASysTest {
         episodeId = episodeId2,
         assessment = assessment,
         createdDate = LocalDateTime.now(),
-        assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+        assessmentType = AssessmentType.ROSH,
         changeReason = "Change of Circs 2",
         oasysSetPk = 7777,
         answers = answers,
@@ -576,7 +576,7 @@ class AssessmentUpdateServiceOASysTest {
     )
     return AssessmentEpisodeEntity(
       episodeId = episodeId1,
-      assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+      assessmentType = AssessmentType.ROSH,
       oasysSetPk = oasysSetPk,
       answers = answers,
       createdDate = LocalDateTime.now(),

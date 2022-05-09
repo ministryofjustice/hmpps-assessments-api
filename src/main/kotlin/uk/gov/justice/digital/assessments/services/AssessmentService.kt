@@ -13,7 +13,7 @@ import uk.gov.justice.digital.assessments.api.CreateAssessmentDto
 import uk.gov.justice.digital.assessments.api.DeliusEventType
 import uk.gov.justice.digital.assessments.api.OffenceDto
 import uk.gov.justice.digital.assessments.api.OffenderDto
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.OffenceEntity
@@ -53,7 +53,7 @@ class AssessmentService(
       return createFromDelius(
         newAssessment.deliusEventId,
         newAssessment.crn,
-        newAssessment.assessmentSchemaCode,
+        newAssessment.assessmentType,
         newAssessment.deliusEventType
       )
     }
@@ -61,7 +61,7 @@ class AssessmentService(
       return createFromCourtCase(
         newAssessment.courtCode!!,
         newAssessment.caseNumber!!,
-        newAssessment.assessmentSchemaCode
+        newAssessment.assessmentType
       )
     }
     throw IllegalStateException("Empty create assessment request")
@@ -72,7 +72,7 @@ class AssessmentService(
     assessmentUuid: UUID,
     eventId: Long,
     reason: String,
-    assessmentSchemaCode: AssessmentSchemaCode,
+    assessmentType: AssessmentType,
     eventType: DeliusEventType
   ): AssessmentEpisodeDto {
     val assessment = getAssessmentByUuid(assessmentUuid)
@@ -84,7 +84,7 @@ class AssessmentService(
     val episode = createPrepopulatedEpisode(
       assessment,
       reason,
-      assessmentSchemaCode = assessmentSchemaCode,
+      assessmentType = assessmentType,
       source = ExternalSource.DELIUS.name,
       eventId = eventId.toString(),
       offence = offence,
@@ -156,11 +156,11 @@ class AssessmentService(
   private fun createFromDelius(
     eventId: Long?,
     crn: String?,
-    assessmentSchemaCode: AssessmentSchemaCode?,
+    assessmentType: AssessmentType?,
     eventType: DeliusEventType
   ): AssessmentDto {
-    if (eventId == null || crn.isNullOrEmpty() || assessmentSchemaCode == null) {
-      throw IllegalStateException("Unable to create Assessment with assessment type: $assessmentSchemaCode, eventId: $eventId, crn: $crn")
+    if (eventId == null || crn.isNullOrEmpty() || assessmentType == null) {
+      throw IllegalStateException("Unable to create Assessment with assessment type: $assessmentType, eventId: $eventId, crn: $crn")
     }
     val arnAssessment = getOrCreateAssessment(crn, eventId)
     val offence = offenderService.getOffence(eventType, crn, eventId)
@@ -168,11 +168,11 @@ class AssessmentService(
     // (oasysOffenderPk, oasysSetPK)
     var oasysPrimaryKeyPair: Pair<Long?, Long?> = Pair(null, null)
 
-    if (shouldPushToOasys(assessmentSchemaCode)) {
+    if (shouldPushToOasys(assessmentType)) {
       oasysPrimaryKeyPair = oasysAssessmentUpdateService.createOffenderAndOasysAssessment(
         crn = crn,
         deliusEventId = offence.convictionIndex,
-        assessmentSchemaCode = assessmentSchemaCode
+        assessmentType = assessmentType
       )
     }
     val subject = subjectRepository.save(arnAssessment.subject?.copy(oasysOffenderPk = oasysPrimaryKeyPair.first))
@@ -180,7 +180,7 @@ class AssessmentService(
       arnAssessment,
       "",
       oasysPrimaryKeyPair.second,
-      assessmentSchemaCode,
+      assessmentType,
       ExternalSource.DELIUS.name,
       offence.convictionId.toString(),
       offence,
@@ -217,7 +217,7 @@ class AssessmentService(
   private fun createFromCourtCase(
     courtCode: String,
     caseNumber: String,
-    assessmentSchemaCode: AssessmentSchemaCode,
+    assessmentType: AssessmentType,
   ): AssessmentDto {
     val courtCase = courtCaseClient.getCourtCase(courtCode, caseNumber)
       ?: throw EntityNotFoundException("No court case found for $courtCode, $caseNumber")
@@ -231,10 +231,10 @@ class AssessmentService(
     )
     // (oasysOffenderPk, oasysSetPK)
     var oasysPrimaryKeyPair: Pair<Long?, Long?> = Pair(null, null)
-    if (shouldPushToOasys(assessmentSchemaCode)) {
+    if (shouldPushToOasys(assessmentType)) {
       oasysPrimaryKeyPair = oasysAssessmentUpdateService.createOffenderAndOasysAssessment(
         crn = courtCase.crn,
-        assessmentSchemaCode = assessmentSchemaCode
+        assessmentType = assessmentType
       )
     }
     val subject = subjectRepository.save(arnAssessment.subject?.copy(oasysOffenderPk = oasysPrimaryKeyPair.first))
@@ -242,7 +242,7 @@ class AssessmentService(
       arnAssessment,
       "Court Request",
       oasysPrimaryKeyPair.second,
-      assessmentSchemaCode,
+      assessmentType,
       ExternalSource.COURT.name,
       courtSourceId(courtCode, caseNumber),
       null,
@@ -344,7 +344,7 @@ class AssessmentService(
     assessment: AssessmentEntity,
     reason: String,
     oasysSetPK: Long? = null,
-    assessmentSchemaCode: AssessmentSchemaCode,
+    assessmentType: AssessmentType,
     source: String,
     eventId: String,
     offence: OffenceDto? = null,
@@ -355,7 +355,7 @@ class AssessmentService(
     val episode = assessment.newEpisode(
       reason,
       oasysSetPk = oasysSetPK,
-      assessmentSchemaCode = assessmentSchemaCode,
+      assessmentType = assessmentType,
       offence = OffenceEntity(
         source = source,
         sourceId = eventId,
@@ -368,7 +368,7 @@ class AssessmentService(
       author
     )
     if (isNewEpisode) {
-      episodeService.prepopulateFromExternalSources(episode, assessmentSchemaCode)
+      episodeService.prepopulateFromExternalSources(episode, assessmentType)
 
       if (!episode.prepopulatedFromOASys) {
         episodeService.prepopulateFromPreviousEpisodes(episode, assessment.episodes)
@@ -397,7 +397,7 @@ class AssessmentService(
       episode.author,
       assessmentUuid,
       episode.episodeUuid,
-      episode.assessmentSchemaCode
+      episode.assessmentType
     )
   }
 
@@ -405,7 +405,7 @@ class AssessmentService(
     return "$courtCode|$caseNumber"
   }
 
-  fun shouldPushToOasys(assessmentSchemaCode: AssessmentSchemaCode): Boolean {
-    return assessmentSchemaCode == AssessmentSchemaCode.ROSH
+  fun shouldPushToOasys(assessmentType: AssessmentType): Boolean {
+    return assessmentType == AssessmentType.ROSH
   }
 }

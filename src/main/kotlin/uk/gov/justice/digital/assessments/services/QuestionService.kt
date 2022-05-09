@@ -12,11 +12,11 @@ import uk.gov.justice.digital.assessments.api.GroupSummaryDto
 import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
 import uk.gov.justice.digital.assessments.api.QuestionDto
 import uk.gov.justice.digital.assessments.api.TableQuestionDto
-import uk.gov.justice.digital.assessments.config.CacheConstants.GROUP_CONTENTS_CACHE_KEY
-import uk.gov.justice.digital.assessments.config.CacheConstants.GROUP_SECTIONS_CACHE_KEY
-import uk.gov.justice.digital.assessments.config.CacheConstants.LIST_GROUP_CACHE_KEY
-import uk.gov.justice.digital.assessments.config.CacheConstants.QUESTION_SCHEMA_CACHE_KEY
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.config.CacheConstants.QUESTION_GROUP_CONTENTS_CACHE_KEY
+import uk.gov.justice.digital.assessments.config.CacheConstants.QUESTION_GROUP_SECTIONS_CACHE_KEY
+import uk.gov.justice.digital.assessments.config.CacheConstants.LIST_QUESTION_GROUPS_CACHE_KEY
+import uk.gov.justice.digital.assessments.config.CacheConstants.QUESTION_CACHE_KEY
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.GroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionGroupEntity
@@ -41,19 +41,19 @@ class QuestionService(
     val log: Logger = LoggerFactory.getLogger(this::class.java)
   }
 
-  @Cacheable(QUESTION_SCHEMA_CACHE_KEY)
+  @Cacheable(QUESTION_CACHE_KEY)
   fun getQuestion(questionUuid: UUID): QuestionDto {
     val questionEntity = questionRepository.findByQuestionUuid(questionUuid)
       ?: throw EntityNotFoundException("Question not found for id: $questionUuid")
     return QuestionDto.from(questionEntity)
   }
 
-  @Cacheable(LIST_GROUP_CACHE_KEY)
+  @Cacheable(LIST_QUESTION_GROUPS_CACHE_KEY)
   fun listGroups(): Collection<GroupSummaryDto> {
     return questionGroupRepository.listGroups().map { GroupSummaryDto.from(it) }
   }
 
-  @Cacheable(GROUP_CONTENTS_CACHE_KEY)
+  @Cacheable(QUESTION_GROUP_CONTENTS_CACHE_KEY)
   fun getGroupContents(groupCode: String): GroupWithContentsDto {
     return getQuestionGroupContents(findByGroupCode(groupCode))
   }
@@ -62,7 +62,7 @@ class QuestionService(
     return getQuestionGroupContents(findByGroupUuid(groupUuid))
   }
 
-  @Cacheable(GROUP_SECTIONS_CACHE_KEY)
+  @Cacheable(QUESTION_GROUP_SECTIONS_CACHE_KEY)
   fun getGroupSections(groupCode: String): GroupSectionsDto {
     return fetchGroupSections(findByGroupCode(groupCode))
   }
@@ -224,16 +224,16 @@ class QuestionSchemaEntities(
 
   operator fun get(questionCode: String) = questions[questionCode]
 
-  fun withExternalSource(assessmentSchemaCode: AssessmentSchemaCode): List<ExternalSourceQuestionDto> {
+  fun withExternalSource(assessmentType: AssessmentType): List<ExternalSourceQuestionDto> {
     return questions.values
       .filter { !it.externalSources.isEmpty() }
-      .filter { it.externalSources.any { source -> source.assessmentCode == assessmentSchemaCode } }
-      .map { it.toQuestionDto(assessmentSchemaCode) }
+      .filter { it.externalSources.any { source -> source.assessmentType == assessmentType } }
+      .map { it.toQuestionDto(assessmentType) }
       .flatten()
   }
 
-  private fun QuestionEntity.toQuestionDto(assessmentSchemaCode: AssessmentSchemaCode): List<ExternalSourceQuestionDto> {
-    val source = this.externalSources.filter { it.assessmentCode == assessmentSchemaCode }
+  private fun QuestionEntity.toQuestionDto(assessmentType: AssessmentType): List<ExternalSourceQuestionDto> {
+    val source = this.externalSources.filter { it.assessmentType == assessmentType }
     return source.map {
       ExternalSourceQuestionDto(
         it.question.questionCode,

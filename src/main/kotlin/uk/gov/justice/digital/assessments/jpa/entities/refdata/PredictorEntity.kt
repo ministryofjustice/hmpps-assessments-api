@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.assessments.jpa.entities.refdata
 
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.services.dto.PredictorType
 import java.io.Serializable
 import javax.persistence.Column
@@ -23,9 +23,9 @@ class PredictorEntity(
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   val id: Long,
 
-  @Column(name = "assessment_code")
+  @Column(name = "assessment_type")
   @Enumerated(EnumType.STRING)
-  val assessmentCode: AssessmentSchemaCode,
+  val assessmentType: AssessmentType,
 
   @Column(name = "predictor_type")
   @Enumerated(EnumType.STRING)

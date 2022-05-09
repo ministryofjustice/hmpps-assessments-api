@@ -8,7 +8,7 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
@@ -33,7 +33,7 @@ private val episodeUuid = UUID.randomUUID()
 private val episode = AssessmentEpisodeEntity(
   episodeUuid = episodeUuid,
   oasysSetPk = 123456,
-  assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+  assessmentType = AssessmentType.ROSH,
   createdDate = LocalDateTime.now(),
   author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
   assessment = AssessmentEntity()
