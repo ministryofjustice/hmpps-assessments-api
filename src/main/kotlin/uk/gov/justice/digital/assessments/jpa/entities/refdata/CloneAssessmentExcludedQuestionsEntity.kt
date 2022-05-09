@@ -23,4 +23,4 @@ class CloneAssessmentExcludedQuestionsEntity(
   @Column(name = "question_code")
   val questionCode: String,
 
-  ) : Serializable
+) : Serializable

@@ -17,11 +17,11 @@ import org.springframework.data.redis.serializer.RedisSerializationContext.Seria
 import org.springframework.data.redis.serializer.StringRedisSerializer
 import uk.gov.justice.digital.assessments.config.CacheConstants.ASSESSMENT_CACHE_KEY
 import uk.gov.justice.digital.assessments.config.CacheConstants.ASSESSMENT_SUMMARY_CACHE_KEY
-import uk.gov.justice.digital.assessments.config.CacheConstants.QUESTION_GROUP_CONTENTS_CACHE_KEY
-import uk.gov.justice.digital.assessments.config.CacheConstants.QUESTION_GROUP_SECTIONS_CACHE_KEY
 import uk.gov.justice.digital.assessments.config.CacheConstants.LIST_QUESTION_GROUPS_CACHE_KEY
 import uk.gov.justice.digital.assessments.config.CacheConstants.QUESTIONS_FOR_ASSESSMENT_TYPE_CACHE_KEY
 import uk.gov.justice.digital.assessments.config.CacheConstants.QUESTION_CACHE_KEY
+import uk.gov.justice.digital.assessments.config.CacheConstants.QUESTION_GROUP_CONTENTS_CACHE_KEY
+import uk.gov.justice.digital.assessments.config.CacheConstants.QUESTION_GROUP_SECTIONS_CACHE_KEY
 import java.time.Duration
 
 @Configuration
