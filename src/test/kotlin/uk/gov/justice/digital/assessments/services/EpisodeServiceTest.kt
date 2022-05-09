@@ -10,8 +10,8 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import uk.gov.justice.digital.assessments.api.GroupQuestionDto
 import uk.gov.justice.digital.assessments.api.TableQuestionDto
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode.RSR
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType.RSR
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
@@ -24,7 +24,7 @@ import uk.gov.justice.digital.assessments.jpa.repositories.refdata.CloneAssessme
 import uk.gov.justice.digital.assessments.restclient.AssessmentApiRestClient
 import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
-import uk.gov.justice.digital.assessments.services.dto.ExternalSourceQuestionSchemaDto
+import uk.gov.justice.digital.assessments.services.dto.ExternalSourceQuestionDto
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -36,7 +36,7 @@ class EpisodeServiceTest {
   private val courtCaseRestClient: CourtCaseRestClient = mockk()
   private val communityApiRestClient: CommunityApiRestClient = mockk()
   private val assessmentApiRestClient: AssessmentApiRestClient = mockk()
-  private val assessmentSchemaService: AssessmentSchemaService = mockk()
+  private val assessmentReferenceDataService: AssessmentReferenceDataService = mockk()
   private val cloneAssessmentExcludedQuestionsRepository: CloneAssessmentExcludedQuestionsRepository = mockk()
 
   private val episodeService = EpisodeService(
@@ -44,7 +44,7 @@ class EpisodeServiceTest {
     courtCaseRestClient,
     communityApiRestClient,
     assessmentApiRestClient,
-    assessmentSchemaService,
+    assessmentReferenceDataService,
     cloneAssessmentExcludedQuestionsRepository
   )
 
@@ -63,7 +63,7 @@ class EpisodeServiceTest {
   fun setup() {
     newEpisode = AssessmentEpisodeEntity(
       episodeId = 1,
-      assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+      assessmentType = AssessmentType.ROSH,
       author = author,
       assessment = AssessmentEntity(
         subject = SubjectEntity(
@@ -72,7 +72,7 @@ class EpisodeServiceTest {
         )
       )
     )
-    every { cloneAssessmentExcludedQuestionsRepository.findAllByAssessmentSchemaCode(AssessmentSchemaCode.ROSH) } returns emptyList()
+    every { cloneAssessmentExcludedQuestionsRepository.findAllByAssessmentType(AssessmentType.ROSH) } returns emptyList()
   }
 
   @Test
@@ -81,7 +81,7 @@ class EpisodeServiceTest {
 
     newEpisode = AssessmentEpisodeEntity(
       episodeId = 1,
-      assessmentSchemaCode = RSR,
+      assessmentType = RSR,
       author = author,
       assessment = AssessmentEntity(
         subject = SubjectEntity(
@@ -91,13 +91,13 @@ class EpisodeServiceTest {
       )
     )
 
-    val questions: List<ExternalSourceQuestionSchemaDto> = listOf(
-      ExternalSourceQuestionSchemaDto(
+    val questions: List<ExternalSourceQuestionDto> = listOf(
+      ExternalSourceQuestionDto(
         "question_1", externalSource,
         "\$.sections[?(@.section=='1')].answers[?(@.question=='1.24')].answer[0]",
         "array", "some/endpoint", ifEmpty = false
       ),
-      ExternalSourceQuestionSchemaDto(
+      ExternalSourceQuestionDto(
         "question_2", externalSource,
         "\$.sections[?(@.section=='1')].answers[?(@.question=='1.26')].answer[0]",
         "array", "some/endpoint", ifEmpty = false
@@ -133,7 +133,7 @@ class EpisodeServiceTest {
 
     newEpisode = AssessmentEpisodeEntity(
       episodeId = 1,
-      assessmentSchemaCode = RSR,
+      assessmentType = RSR,
       author = author,
       assessment = AssessmentEntity(
         subject = SubjectEntity(
@@ -143,13 +143,13 @@ class EpisodeServiceTest {
       )
     )
 
-    val questions: List<ExternalSourceQuestionSchemaDto> = listOf(
-      ExternalSourceQuestionSchemaDto(
+    val questions: List<ExternalSourceQuestionDto> = listOf(
+      ExternalSourceQuestionDto(
         "question_1", externalSource,
         "\$.sections[?(@.section=='1')].answers[?(@.question=='1.24')].answer[0]",
         "array", "some/endpoint", ifEmpty = false
       ),
-      ExternalSourceQuestionSchemaDto(
+      ExternalSourceQuestionDto(
         "question_2", externalSource,
         "\$.sections[?(@.section=='1')].answers[?(@.question=='1.26')].answer[0]",
         "array", "some/endpoint", ifEmpty = false
@@ -162,7 +162,7 @@ class EpisodeServiceTest {
     val previousEpisodes = listOf(
       AssessmentEpisodeEntity(
         episodeId = 2,
-        assessmentSchemaCode = RSR,
+        assessmentType = RSR,
         author = author,
         assessment = AssessmentEntity(),
         endDate = now,
@@ -173,7 +173,7 @@ class EpisodeServiceTest {
       ),
       AssessmentEpisodeEntity(
         episodeId = 3,
-        assessmentSchemaCode = RSR,
+        assessmentType = RSR,
         author = author,
         assessment = AssessmentEntity(),
         endDate = latestEndDate,
@@ -207,7 +207,7 @@ class EpisodeServiceTest {
 
     newEpisode = AssessmentEpisodeEntity(
       episodeId = 1,
-      assessmentSchemaCode = RSR,
+      assessmentType = RSR,
       author = author,
       assessment = AssessmentEntity(
         subject = SubjectEntity(
@@ -217,13 +217,13 @@ class EpisodeServiceTest {
       )
     )
 
-    val questions: List<ExternalSourceQuestionSchemaDto> = listOf(
-      ExternalSourceQuestionSchemaDto(
+    val questions: List<ExternalSourceQuestionDto> = listOf(
+      ExternalSourceQuestionDto(
         "question_1", externalSource,
         "\$.sections[?(@.section=='1')].answers[?(@.question=='XXX')].answer[0]",
         "array", "some/endpoint", ifEmpty = false
       ),
-      ExternalSourceQuestionSchemaDto(
+      ExternalSourceQuestionDto(
         "question_2", externalSource,
         "\$.sections[?(@.section=='1')].answers[?(@.question=='YYY')].answer[0]",
         "array", "some/endpoint", ifEmpty = false
@@ -274,7 +274,7 @@ class EpisodeServiceTest {
     val mixedPreviousEpisodes = listOf(
       AssessmentEpisodeEntity(
         episodeId = 2,
-        assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+        assessmentType = AssessmentType.ROSH,
         author = author,
         assessment = AssessmentEntity(),
         endDate = LocalDateTime.now().minusDays(1),
@@ -285,23 +285,23 @@ class EpisodeServiceTest {
       ),
       AssessmentEpisodeEntity(
         episodeId = 3,
-        assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+        assessmentType = AssessmentType.ROSH,
         author = author,
         assessment = AssessmentEntity(),
         endDate = LocalDateTime.now().minusDays(2),
         tables = table1
       )
     )
-    every { assessmentSchemaService.getQuestionsForSchemaCode(newEpisode.assessmentSchemaCode) } returns schemaQuestions
-    every { cloneAssessmentExcludedQuestionsRepository.findAllByAssessmentSchemaCode(AssessmentSchemaCode.ROSH) } returns listOf(
+    every { assessmentReferenceDataService.getQuestionsForAssessmentType(newEpisode.assessmentType) } returns schemaQuestions
+    every { cloneAssessmentExcludedQuestionsRepository.findAllByAssessmentType(AssessmentType.ROSH) } returns listOf(
       CloneAssessmentExcludedQuestionsEntity(
         12345,
-        AssessmentSchemaCode.ROSH,
+        AssessmentType.ROSH,
         "question_2"
       ),
       CloneAssessmentExcludedQuestionsEntity(
         23456,
-        AssessmentSchemaCode.ROSH,
+        AssessmentType.ROSH,
         "table_1"
       )
     )
@@ -340,7 +340,7 @@ class EpisodeServiceTest {
     val mixedPreviousEpisodes = listOf(
       AssessmentEpisodeEntity(
         episodeId = 2,
-        assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+        assessmentType = AssessmentType.ROSH,
         author = author,
         assessment = AssessmentEntity(),
         endDate = LocalDateTime.now().minusDays(1),
@@ -351,14 +351,14 @@ class EpisodeServiceTest {
       ),
       AssessmentEpisodeEntity(
         episodeId = 3,
-        assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+        assessmentType = AssessmentType.ROSH,
         author = author,
         assessment = AssessmentEntity(),
         endDate = LocalDateTime.now().minusDays(2),
         tables = table1
       )
     )
-    every { assessmentSchemaService.getQuestionsForSchemaCode(newEpisode.assessmentSchemaCode) } returns schemaQuestions
+    every { assessmentReferenceDataService.getQuestionsForAssessmentType(newEpisode.assessmentType) } returns schemaQuestions
 
     val result = episodeService.prepopulateFromPreviousEpisodes(newEpisode, mixedPreviousEpisodes)
 
@@ -390,7 +390,7 @@ class EpisodeServiceTest {
       GroupQuestionDto(questionCode = "question_1"),
       GroupQuestionDto(questionCode = "question_2"),
     )
-    every { assessmentSchemaService.getQuestionsForSchemaCode(newEpisode.assessmentSchemaCode) } returns schemaQuestions
+    every { assessmentReferenceDataService.getQuestionsForAssessmentType(newEpisode.assessmentType) } returns schemaQuestions
 
     val emptyPreviousEpisode = emptyList<AssessmentEpisodeEntity>()
 
@@ -404,7 +404,7 @@ class EpisodeServiceTest {
     val previousEpisodesNoAnswers = listOf(
       AssessmentEpisodeEntity(
         episodeId = 2,
-        assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+        assessmentType = AssessmentType.ROSH,
         author = author,
         assessment = AssessmentEntity(),
         endDate = LocalDateTime.now().minusDays(1),
@@ -416,7 +416,7 @@ class EpisodeServiceTest {
       GroupQuestionDto(questionCode = "question_1"),
       GroupQuestionDto(questionCode = "question_2"),
     )
-    every { assessmentSchemaService.getQuestionsForSchemaCode(newEpisode.assessmentSchemaCode) } returns schemaQuestions
+    every { assessmentReferenceDataService.getQuestionsForAssessmentType(newEpisode.assessmentType) } returns schemaQuestions
 
     val result = episodeService.prepopulateFromPreviousEpisodes(newEpisode, previousEpisodesNoAnswers).answers
 
@@ -429,7 +429,7 @@ class EpisodeServiceTest {
     val previousEpisodes = listOf(
       AssessmentEpisodeEntity(
         episodeId = 2,
-        assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+        assessmentType = AssessmentType.ROSH,
         author = author,
         assessment = AssessmentEntity(),
         endDate = LocalDateTime.now().minusWeeks(1),
@@ -440,7 +440,7 @@ class EpisodeServiceTest {
       ),
       AssessmentEpisodeEntity(
         episodeId = 3,
-        assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+        assessmentType = AssessmentType.ROSH,
         author = author,
         assessment = AssessmentEntity(),
         endDate = LocalDateTime.now().minusWeeks(55).minusDays(1),
@@ -458,7 +458,7 @@ class EpisodeServiceTest {
       GroupQuestionDto(questionCode = "question_4")
     )
 
-    every { assessmentSchemaService.getQuestionsForSchemaCode(newEpisode.assessmentSchemaCode) } returns schemaQuestions
+    every { assessmentReferenceDataService.getQuestionsForAssessmentType(newEpisode.assessmentType) } returns schemaQuestions
 
     val result = episodeService.prepopulateFromPreviousEpisodes(newEpisode, previousEpisodes).answers
 

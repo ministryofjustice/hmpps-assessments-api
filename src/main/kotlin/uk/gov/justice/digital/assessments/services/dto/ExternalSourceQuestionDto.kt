@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.assessments.services.dto
 
-class ExternalSourceQuestionSchemaDto(
+class ExternalSourceQuestionDto(
   val questionCode: String,
   val externalSource: String,
   val jsonPathField: String,

@@ -28,8 +28,8 @@ class ReferenceDataService(
     val questionUuids = mutableListOf(questionUuid)
     parentFields?.mapNotNull { parentField -> parentField.key }?.toCollection(questionUuids)
 
-    val oasysMappings = oaSysMappingRepository.findAllByQuestionSchema_QuestionSchemaUuidIn(questionUuids)
-      ?.associate { m -> m.questionSchema.questionSchemaUuid to m }
+    val oasysMappings = oaSysMappingRepository.findAllByQuestion_QuestionUuidIn(questionUuids)
+      ?.associate { m -> m.question.questionUuid to m }
 
     val questionSchema = oasysMappings?.get(questionUuid)
       ?: throw EntityNotFoundException("Failed to find OASys mappings for question schema $questionUuid")
@@ -43,7 +43,7 @@ class ReferenceDataService(
       assessmentClient.getFilteredReferenceData(
         oasysSetPk = episode.oasysSetPk!!,
         offenderPk = assessment.subject?.oasysOffenderPk,
-        oasysAssessmentType = episode.assessmentSchemaCode.toString(),
+        oasysAssessmentType = episode.assessmentType.toString(),
         sectionCode = questionSchema.sectionCode,
         fieldName = questionSchema.questionCode,
         parentList = mappedParentFields

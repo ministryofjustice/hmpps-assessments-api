@@ -15,13 +15,13 @@ import org.springframework.data.redis.cache.RedisCacheManager.RedisCacheManagerB
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer
 import org.springframework.data.redis.serializer.RedisSerializationContext.SerializationPair
 import org.springframework.data.redis.serializer.StringRedisSerializer
-import uk.gov.justice.digital.assessments.config.CacheConstants.ASSESSMENT_SCHEMA_CACHE_KEY
-import uk.gov.justice.digital.assessments.config.CacheConstants.ASSESSMENT_SCHEMA_SUMMARY_CACHE_KEY
-import uk.gov.justice.digital.assessments.config.CacheConstants.GROUP_CONTENTS_CACHE_KEY
-import uk.gov.justice.digital.assessments.config.CacheConstants.GROUP_SECTIONS_CACHE_KEY
-import uk.gov.justice.digital.assessments.config.CacheConstants.LIST_GROUP_CACHE_KEY
-import uk.gov.justice.digital.assessments.config.CacheConstants.QUESTIONS_FOR_SCHEMA_CODE_CACHE_KEY
-import uk.gov.justice.digital.assessments.config.CacheConstants.QUESTION_SCHEMA_CACHE_KEY
+import uk.gov.justice.digital.assessments.config.CacheConstants.ASSESSMENT_CACHE_KEY
+import uk.gov.justice.digital.assessments.config.CacheConstants.ASSESSMENT_SUMMARY_CACHE_KEY
+import uk.gov.justice.digital.assessments.config.CacheConstants.LIST_QUESTION_GROUPS_CACHE_KEY
+import uk.gov.justice.digital.assessments.config.CacheConstants.QUESTIONS_FOR_ASSESSMENT_TYPE_CACHE_KEY
+import uk.gov.justice.digital.assessments.config.CacheConstants.QUESTION_CACHE_KEY
+import uk.gov.justice.digital.assessments.config.CacheConstants.QUESTION_GROUP_CONTENTS_CACHE_KEY
+import uk.gov.justice.digital.assessments.config.CacheConstants.QUESTION_GROUP_SECTIONS_CACHE_KEY
 import java.time.Duration
 
 @Configuration
@@ -61,13 +61,13 @@ class CacheConfiguration {
         .entryTtl(Duration.ofDays(referenceDataCacheTtlDays))
 
       arrayOf(
-        ASSESSMENT_SCHEMA_CACHE_KEY,
-        QUESTIONS_FOR_SCHEMA_CODE_CACHE_KEY,
-        ASSESSMENT_SCHEMA_SUMMARY_CACHE_KEY,
-        QUESTION_SCHEMA_CACHE_KEY,
-        LIST_GROUP_CACHE_KEY,
-        GROUP_CONTENTS_CACHE_KEY,
-        GROUP_SECTIONS_CACHE_KEY
+        ASSESSMENT_CACHE_KEY,
+        QUESTIONS_FOR_ASSESSMENT_TYPE_CACHE_KEY,
+        ASSESSMENT_SUMMARY_CACHE_KEY,
+        QUESTION_CACHE_KEY,
+        LIST_QUESTION_GROUPS_CACHE_KEY,
+        QUESTION_GROUP_CONTENTS_CACHE_KEY,
+        QUESTION_GROUP_SECTIONS_CACHE_KEY
       ).forEach {
         builder.withCacheConfiguration(it, defaultConfigWithRefDataTtl)
       }

@@ -26,8 +26,8 @@ class PredictorFieldMappingEntity(
   val predictorMappingUuid: UUID,
 
   @ManyToOne
-  @JoinColumn(name = "question_schema_uuid", referencedColumnName = "question_schema_uuid")
-  val questionSchema: QuestionSchemaEntity,
+  @JoinColumn(name = "question_uuid", referencedColumnName = "question_uuid")
+  val questionSchema: QuestionEntity,
 
   @Column(name = "predictor_type")
   @Enumerated(EnumType.STRING)

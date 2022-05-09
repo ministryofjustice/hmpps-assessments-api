@@ -5,7 +5,7 @@ import com.vladmihalcea.hibernate.type.json.JsonStringType
 import org.hibernate.annotations.Type
 import org.hibernate.annotations.TypeDef
 import org.hibernate.annotations.TypeDefs
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import java.time.LocalDateTime
 import java.util.UUID
 import javax.persistence.CascadeType
@@ -43,7 +43,7 @@ data class AssessmentEpisodeEntity(
 
   @Column(name = "assessment_schema_code")
   @Enumerated(EnumType.STRING)
-  val assessmentSchemaCode: AssessmentSchemaCode,
+  val assessmentType: AssessmentType,
 
   @Column(name = "oasys_set_pk")
   val oasysSetPk: Long? = null,

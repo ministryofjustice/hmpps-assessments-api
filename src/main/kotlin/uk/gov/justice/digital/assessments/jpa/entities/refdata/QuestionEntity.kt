@@ -15,21 +15,21 @@ import javax.persistence.OneToMany
 import javax.persistence.Table
 
 @Entity(name = "question")
-@Table(name = "question_schema", schema = "hmppsassessmentsschemas")
-class QuestionSchemaEntity(
+@Table(name = "question", schema = "hmppsassessmentsschemas")
+class QuestionEntity(
 
   @Id
-  @Column(name = "question_schema_id")
+  @Column(name = "question_id")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  val questionSchemaId: Long,
+  val questionId: Long,
 
-  @Column(name = "question_schema_uuid")
-  val questionSchemaUuid: UUID = UUID.randomUUID(),
+  @Column(name = "question_uuid")
+  val questionUuid: UUID = UUID.randomUUID(),
 
   @Column(name = "question_code")
   val questionCode: String,
 
-  @OneToMany(mappedBy = "questionSchema", fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
   val externalSources: Collection<ExternalSourceQuestionMappingEntity> = emptyList(),
 
   @Column(name = "question_start")
@@ -50,16 +50,16 @@ class QuestionSchemaEntity(
   @Column(name = "reference_data_category")
   val referenceDataCategory: String? = null,
 
-  @OneToMany(mappedBy = "questionSchema", fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
   val referenceDataTargets: Collection<ReferenceDataTargetMappingEntity> = emptyList(),
 
   @ManyToOne
-  @JoinColumn(name = "answer_schema_group_uuid", referencedColumnName = "answer_schema_group_uuid")
-  val answerSchemaGroup: AnswerSchemaGroupEntity? = null,
+  @JoinColumn(name = "answer_group_uuid", referencedColumnName = "answer_group_uuid")
+  val answerGroup: AnswerGroupEntity? = null,
 
-  @OneToMany(mappedBy = "questionSchema", fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
   val oasysMappings: Collection<OASysMappingEntity> = emptyList()
 ) : Serializable {
-  val answerSchemaEntities: Collection<AnswerSchemaEntity>
-    get() = answerSchemaGroup?.answerSchemaEntities ?: emptyList()
+  val answerEntities: Collection<AnswerEntity>
+    get() = answerGroup?.answerEntities ?: emptyList()
 }

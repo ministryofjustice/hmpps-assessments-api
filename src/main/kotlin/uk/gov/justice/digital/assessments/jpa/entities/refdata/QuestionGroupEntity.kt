@@ -40,7 +40,7 @@ class QuestionGroupEntity(
   val readOnly: Boolean = false,
 
   @Transient
-  var question: QuestionSchemaEntity?,
+  var question: QuestionEntity?,
 
   @Transient
   var nestedGroup: GroupEntity?

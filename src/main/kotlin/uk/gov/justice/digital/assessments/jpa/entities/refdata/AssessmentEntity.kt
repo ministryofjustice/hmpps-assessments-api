@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.assessments.jpa.entities.refdata
 
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import java.io.Serializable
 import javax.persistence.Column
 import javax.persistence.Entity
@@ -16,20 +16,20 @@ import javax.persistence.OneToMany
 import javax.persistence.Table
 
 @Entity
-@Table(name = "assessment_schema", schema = "hmppsassessmentsschemas")
-class AssessmentSchemaEntity(
+@Table(name = "assessment", schema = "hmppsassessmentsschemas")
+class AssessmentEntity(
   @Id
-  @Column(name = "assessment_schema_id")
+  @Column(name = "assessment_id")
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  val assessmentSchemaId: Long,
+  val assessmentId: Long,
 
   @ManyToOne
-  @JoinColumn(name = "assessment_schema_uuid", referencedColumnName = "assessment_schema_uuid")
-  val assessmentSchemaGroup: AssessmentSchemaGroupsEntity,
+  @JoinColumn(name = "assessment_uuid", referencedColumnName = "assessment_uuid")
+  val assessmentGroup: AssessmentGroupsEntity,
 
-  @Column(name = "assessment_schema_code")
+  @Column(name = "assessment_type")
   @Enumerated(EnumType.STRING)
-  val assessmentSchemaCode: AssessmentSchemaCode,
+  val assessmentType: AssessmentType,
 
   @Column(name = "oasys_assessment_type")
   @Enumerated(EnumType.STRING)
@@ -43,10 +43,10 @@ class AssessmentSchemaEntity(
   val assessmentName: String? = null,
 
   @OneToMany(fetch = FetchType.EAGER)
-  @JoinColumn(name = "assessment_schema_code", referencedColumnName = "assessment_schema_code")
+  @JoinColumn(name = "assessment_type", referencedColumnName = "assessment_type")
   val predictorEntities: Collection<PredictorEntity> = emptyList(),
 
   @OneToMany(fetch = FetchType.LAZY)
-  @JoinColumn(name = "assessment_schema_code", referencedColumnName = "assessment_schema_code")
+  @JoinColumn(name = "assessment_type", referencedColumnName = "assessment_type")
   val cloneAssessmentExcludedQuestionsEntities: Collection<CloneAssessmentExcludedQuestionsEntity> = emptyList(),
 ) : Serializable

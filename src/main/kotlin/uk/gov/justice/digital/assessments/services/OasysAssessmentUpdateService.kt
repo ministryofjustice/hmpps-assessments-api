@@ -4,7 +4,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.assessments.api.Answers
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient
 import uk.gov.justice.digital.assessments.services.dto.AssessmentEpisodeUpdateErrors
@@ -14,7 +14,7 @@ import uk.gov.justice.digital.assessments.services.dto.OasysAnswers
 class OasysAssessmentUpdateService(
   private val questionService: QuestionService,
   private val assessmentUpdateRestClient: AssessmentUpdateRestClient,
-  private val assessmentSchemaService: AssessmentSchemaService
+  private val assessmentReferenceDataService: AssessmentReferenceDataService
 ) {
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
@@ -33,7 +33,7 @@ class OasysAssessmentUpdateService(
     val offenderPk = episode.assessment.subject?.oasysOffenderPk
     if (episode.oasysSetPk == null || offenderPk == null) {
       val errorMessage =
-        "Unable to update OASys Assessment with keys type: ${episode.assessmentSchemaCode} oasysSet: ${episode.oasysSetPk} offenderPk: $offenderPk, values cant be null"
+        "Unable to update OASys Assessment with keys type: ${episode.assessmentType} oasysSet: ${episode.oasysSetPk} offenderPk: $offenderPk, values cant be null"
       log.error(errorMessage)
       return AssessmentEpisodeUpdateErrors(errorsInAssessment = mutableListOf(errorMessage))
     }
@@ -49,7 +49,7 @@ class OasysAssessmentUpdateService(
       }
     )
 
-    val oasysAssessmentType = assessmentSchemaService.toOasysAssessmentType(episode.assessmentSchemaCode)
+    val oasysAssessmentType = assessmentReferenceDataService.toOasysAssessmentType(episode.assessmentType)
 
     val oasysUpdateResult = assessmentUpdateRestClient.updateAssessment(
       offenderPk,
@@ -75,11 +75,11 @@ class OasysAssessmentUpdateService(
     log.debug("Entered completeOASysAssessment")
     if (episode.oasysSetPk == null || offenderPk == null) {
       val errorMessage =
-        "Unable to complete OASys Assessment with keys type: ${episode.assessmentSchemaCode} oasysSet: ${episode.oasysSetPk} offenderPk: $offenderPk, values cant be null"
+        "Unable to complete OASys Assessment with keys type: ${episode.assessmentType} oasysSet: ${episode.oasysSetPk} offenderPk: $offenderPk, values cant be null"
       log.error(errorMessage)
       return AssessmentEpisodeUpdateErrors(errorsInAssessment = mutableListOf(errorMessage))
     }
-    val oasysAssessmentType = assessmentSchemaService.toOasysAssessmentType(episode.assessmentSchemaCode)
+    val oasysAssessmentType = assessmentReferenceDataService.toOasysAssessmentType(episode.assessmentType)
     val oasysUpdateResult =
       assessmentUpdateRestClient.completeAssessment(offenderPk, oasysAssessmentType, episode.oasysSetPk!!)
     if (oasysUpdateResult?.validationErrorDtos?.isNotEmpty() == true) {
@@ -95,11 +95,11 @@ class OasysAssessmentUpdateService(
   fun createOffenderAndOasysAssessment(
     crn: String?,
     deliusEventId: Long? = null,
-    assessmentSchemaCode: AssessmentSchemaCode
+    assessmentType: AssessmentType
   ): Pair<Long?, Long?> {
     val oasysOffenderPk =
       crn?.let { assessmentUpdateRestClient.createOasysOffender(crn = crn, deliusEvent = deliusEventId) }
-    val oasysAssessmentType = assessmentSchemaService.toOasysAssessmentType(assessmentSchemaCode)
+    val oasysAssessmentType = assessmentReferenceDataService.toOasysAssessmentType(assessmentType)
     val oasysSetPK = oasysOffenderPk?.let { assessmentUpdateRestClient.createAssessment(it, oasysAssessmentType) }
     return Pair(oasysOffenderPk, oasysSetPK)
   }

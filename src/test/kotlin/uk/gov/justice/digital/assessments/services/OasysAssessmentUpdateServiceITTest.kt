@@ -5,7 +5,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.slf4j.MDC
 import org.springframework.beans.factory.annotation.Autowired
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
@@ -35,7 +35,7 @@ class OasysAssessmentUpdateServiceITTest() : IntegrationTest() {
     val returnAssessmentPk =
       oasysAssessmentUpdateService.createOffenderAndOasysAssessment(
         crn = "DX12340A",
-        assessmentSchemaCode = AssessmentSchemaCode.ROSH
+        assessmentType = AssessmentType.ROSH
       )
     assertThat(returnAssessmentPk.first).isEqualTo(1L)
     assertThat(returnAssessmentPk.second).isEqualTo(1L)
@@ -77,7 +77,7 @@ class OasysAssessmentUpdateServiceITTest() : IntegrationTest() {
         episodeId = episodeId2,
         changeReason = "Change of Circs 2",
         oasysSetPk = 1L,
-        assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+        assessmentType = AssessmentType.ROSH,
         answers = mutableMapOf(),
         createdDate = LocalDateTime.now(),
         author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
@@ -93,7 +93,7 @@ class OasysAssessmentUpdateServiceITTest() : IntegrationTest() {
         assessment = AssessmentEntity(),
         episodeId = episodeId2,
         changeReason = "Change of Circs 2",
-        assessmentSchemaCode = AssessmentSchemaCode.RSR,
+        assessmentType = AssessmentType.RSR,
         answers = mutableMapOf(),
         createdDate = LocalDateTime.now(),
         author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),

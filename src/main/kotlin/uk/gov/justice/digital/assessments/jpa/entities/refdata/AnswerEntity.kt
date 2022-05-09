@@ -10,21 +10,21 @@ import javax.persistence.ManyToOne
 import javax.persistence.Table
 
 @Entity
-@Table(name = "answer_schema", schema = "hmppsassessmentsschemas")
-class AnswerSchemaEntity(
+@Table(name = "answer", schema = "hmppsassessmentsschemas")
+class AnswerEntity(
   @Id
-  @Column(name = "answer_schema_id")
-  val answerSchemaId: Long,
+  @Column(name = "answer_id")
+  val answerId: Long,
 
-  @Column(name = "answer_schema_uuid")
-  val answerSchemaUuid: UUID = UUID.randomUUID(),
+  @Column(name = "answer_uuid")
+  val answerUuid: UUID = UUID.randomUUID(),
 
-  @Column(name = "answer_schema_code")
-  val answerSchemaCode: String? = null,
+  @Column(name = "answer_code")
+  val answerCode: String? = null,
 
   @ManyToOne
-  @JoinColumn(name = "answer_schema_group_uuid", referencedColumnName = "answer_schema_group_uuid")
-  val answerSchemaGroup: AnswerSchemaGroupEntity,
+  @JoinColumn(name = "answer_group_uuid", referencedColumnName = "answer_group_uuid")
+  val answerGroup: AnswerGroupEntity,
 
   @Column(name = "answer_start")
   val answerStart: LocalDateTime? = null,

@@ -18,7 +18,7 @@ import org.springframework.test.context.jdbc.SqlGroup
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.assessments.api.CreateAssessmentDto
 import uk.gov.justice.digital.assessments.api.DeliusEventType
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRepository
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiForbiddenException
@@ -73,7 +73,7 @@ class AssessmentServiceITTest : IntegrationTest() {
         CreateAssessmentDto(
           deliusEventId = 1L,
           crn = crn,
-          assessmentSchemaCode = AssessmentSchemaCode.ROSH
+          assessmentType = AssessmentType.ROSH
         )
       )
     assertThat(assessmentResponse.assessmentUuid).isNotNull
@@ -100,7 +100,7 @@ class AssessmentServiceITTest : IntegrationTest() {
         CreateAssessmentDto(
           deliusEventId = 123456L,
           crn = crn,
-          assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+          assessmentType = AssessmentType.ROSH,
           deliusEventType = DeliusEventType.EVENT_ID
         )
       )
@@ -126,7 +126,7 @@ class AssessmentServiceITTest : IntegrationTest() {
         CreateAssessmentDto(
           deliusEventId = 1L,
           crn = crn,
-          assessmentSchemaCode = AssessmentSchemaCode.ROSH
+          assessmentType = AssessmentType.ROSH
         )
       )
     val assessmentUuid = assessmentResponse.assessmentUuid
@@ -139,7 +139,7 @@ class AssessmentServiceITTest : IntegrationTest() {
         CreateAssessmentDto(
           deliusEventId = 1L,
           crn = crn,
-          assessmentSchemaCode = AssessmentSchemaCode.ROSH
+          assessmentType = AssessmentType.ROSH
         )
       )
 
@@ -158,7 +158,7 @@ class AssessmentServiceITTest : IntegrationTest() {
         CreateAssessmentDto(
           deliusEventId = 1L,
           crn = crn,
-          assessmentSchemaCode = AssessmentSchemaCode.ROSH
+          assessmentType = AssessmentType.ROSH
         )
       )
     } catch (e: Exception) {
@@ -176,7 +176,7 @@ class AssessmentServiceITTest : IntegrationTest() {
         CreateAssessmentDto(
           deliusEventId = 1L,
           crn = crn,
-          assessmentSchemaCode = AssessmentSchemaCode.ROSH
+          assessmentType = AssessmentType.ROSH
         )
       )
     }

@@ -1,16 +1,16 @@
 package uk.gov.justice.digital.assessments.api
 
 import io.swagger.v3.oas.annotations.media.Schema
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionGroupEntity
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEntity
 import uk.gov.justice.digital.assessments.services.QuestionDependencies
 import java.util.UUID
 
 data class GroupQuestionDto(
-  @Schema(description = "Reference Question Schema UUID", example = "0e5e0848-6ab0-4b1b-a354-f7894913d8e4")
+  @Schema(description = "Reference Question UUID", example = "0e5e0848-6ab0-4b1b-a354-f7894913d8e4")
   val questionId: UUID? = null,
 
-  @Schema(description = "Reference Question Schema Code", example = "RSR_23")
+  @Schema(description = "Reference Question Code", example = "RSR_23")
   val questionCode: String? = null,
 
   @Schema(description = "Answer Type", example = "to-do")
@@ -34,28 +34,28 @@ data class GroupQuestionDto(
   @Schema(description = "Reference Data Targets")
   val referenceDataTargets: Collection<ReferenceDataTargetDto> = emptyList(),
 
-  @Schema(description = "Reference Answer Schemas")
-  val answerSchemas: Collection<AnswerSchemaDto>? = null,
+  @Schema(description = "Reference Answers")
+  val answers: Collection<AnswerDto>? = null,
 ) : GroupContentDto {
   companion object {
     fun from(
-      questionSchemaEntity: QuestionSchemaEntity,
+      questionEntity: QuestionEntity,
       questionGroupEntity: QuestionGroupEntity,
       questionDependencies: QuestionDependencies
     ): GroupQuestionDto {
       return GroupQuestionDto(
-        questionId = questionSchemaEntity.questionSchemaUuid,
-        questionCode = questionSchemaEntity.questionCode,
-        answerType = questionSchemaEntity.answerType,
-        questionText = questionSchemaEntity.questionText,
-        helpText = questionSchemaEntity.questionHelpText,
+        questionId = questionEntity.questionUuid,
+        questionCode = questionEntity.questionCode,
+        answerType = questionEntity.answerType,
+        questionText = questionEntity.questionText,
+        helpText = questionEntity.questionHelpText,
         readOnly = questionGroupEntity.readOnly,
-        conditional = questionDependencies.hasDependency(questionSchemaEntity.questionSchemaUuid),
-        referenceDataCategory = questionSchemaEntity.referenceDataCategory,
-        ReferenceDataTargetDto.from(questionSchemaEntity.referenceDataTargets),
-        answerSchemas = AnswerSchemaDto.from(
-          questionSchemaEntity.answerSchemaEntities,
-          questionDependencies.answerTriggers(questionSchemaEntity.questionSchemaUuid)
+        conditional = questionDependencies.hasDependency(questionEntity.questionUuid),
+        referenceDataCategory = questionEntity.referenceDataCategory,
+        ReferenceDataTargetDto.from(questionEntity.referenceDataTargets),
+        answers = AnswerDto.from(
+          questionEntity.answerEntities,
+          questionDependencies.answerTriggers(questionEntity.questionUuid)
         )
       )
     }

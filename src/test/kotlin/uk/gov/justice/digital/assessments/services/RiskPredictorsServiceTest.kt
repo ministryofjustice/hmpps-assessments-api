@@ -9,7 +9,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
@@ -17,7 +17,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.assessments.OffenceEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.PredictorEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.PredictorFieldMappingEntity
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.EpisodeRepository
 import uk.gov.justice.digital.assessments.restclient.AssessRisksAndNeedsApiRestClient
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.CurrentOffence
@@ -38,195 +38,195 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 class RiskPredictorsServiceTest {
-  private val assessmentSchemaService: AssessmentSchemaService = mockk()
+  private val assessmentReferenceDataService: AssessmentReferenceDataService = mockk()
   private val subjectService: SubjectService = mockk()
   private val episodeRepository: EpisodeRepository = mockk()
   private val assessRisksAndNeedsApiRestClient: AssessRisksAndNeedsApiRestClient = mockk()
   private val offenderService: OffenderService = mockk()
 
   private val predictorService =
-    RiskPredictorsService(assessmentSchemaService, subjectService, episodeRepository, assessRisksAndNeedsApiRestClient, offenderService)
+    RiskPredictorsService(assessmentReferenceDataService, subjectService, episodeRepository, assessRisksAndNeedsApiRestClient, offenderService)
 
-  private val testQuestion1 = QuestionSchemaEntity(
-    questionSchemaId = 1,
-    questionSchemaUuid = UUID.randomUUID(),
+  private val testQuestion1 = QuestionEntity(
+    questionId = 1,
+    questionUuid = UUID.randomUUID(),
     questionCode = "question_one"
   )
-  private val testQuestion2 = QuestionSchemaEntity(
-    questionSchemaId = 2,
-    questionSchemaUuid = UUID.randomUUID(),
+  private val testQuestion2 = QuestionEntity(
+    questionId = 2,
+    questionUuid = UUID.randomUUID(),
     questionCode = "question_two"
   )
-  private val testQuestion3 = QuestionSchemaEntity(
-    questionSchemaId = 3,
-    questionSchemaUuid = UUID.randomUUID(),
+  private val testQuestion3 = QuestionEntity(
+    questionId = 3,
+    questionUuid = UUID.randomUUID(),
     questionCode = "question_three"
   )
-  private val testQuestion4 = QuestionSchemaEntity(
-    questionSchemaId = 4,
-    questionSchemaUuid = UUID.randomUUID(),
+  private val testQuestion4 = QuestionEntity(
+    questionId = 4,
+    questionUuid = UUID.randomUUID(),
     questionCode = "question_four"
   )
-  private val testQuestion5 = QuestionSchemaEntity(
-    questionSchemaId = 5,
-    questionSchemaUuid = UUID.randomUUID(),
+  private val testQuestion5 = QuestionEntity(
+    questionId = 5,
+    questionUuid = UUID.randomUUID(),
     questionCode = "question_five"
   )
-  private val testQuestion6 = QuestionSchemaEntity(
-    questionSchemaId = 6,
-    questionSchemaUuid = UUID.randomUUID(),
+  private val testQuestion6 = QuestionEntity(
+    questionId = 6,
+    questionUuid = UUID.randomUUID(),
     questionCode = "question_six"
   )
-  private val testQuestion7 = QuestionSchemaEntity(
-    questionSchemaId = 7,
-    questionSchemaUuid = UUID.randomUUID(),
+  private val testQuestion7 = QuestionEntity(
+    questionId = 7,
+    questionUuid = UUID.randomUUID(),
     questionCode = "question_seven"
   )
-  private val testQuestion8 = QuestionSchemaEntity(
-    questionSchemaId = 8,
-    questionSchemaUuid = UUID.randomUUID(),
+  private val testQuestion8 = QuestionEntity(
+    questionId = 8,
+    questionUuid = UUID.randomUUID(),
     questionCode = "question_eight"
   )
-  private val testQuestion9 = QuestionSchemaEntity(
-    questionSchemaId = 9,
-    questionSchemaUuid = UUID.randomUUID(),
+  private val testQuestion9 = QuestionEntity(
+    questionId = 9,
+    questionUuid = UUID.randomUUID(),
     questionCode = "question_nine"
   )
-  private val testQuestion10 = QuestionSchemaEntity(
-    questionSchemaId = 10,
-    questionSchemaUuid = UUID.randomUUID(),
+  private val testQuestion10 = QuestionEntity(
+    questionId = 10,
+    questionUuid = UUID.randomUUID(),
     questionCode = "question_ten"
   )
-  private val testQuestion11 = QuestionSchemaEntity(
-    questionSchemaId = 11,
-    questionSchemaUuid = UUID.randomUUID(),
+  private val testQuestion11 = QuestionEntity(
+    questionId = 11,
+    questionUuid = UUID.randomUUID(),
     questionCode = "question_eleven"
   )
-  private val testQuestion12 = QuestionSchemaEntity(
-    questionSchemaId = 12,
-    questionSchemaUuid = UUID.randomUUID(),
+  private val testQuestion12 = QuestionEntity(
+    questionId = 12,
+    questionUuid = UUID.randomUUID(),
     questionCode = "question_twelve"
   )
-  private val testQuestion13 = QuestionSchemaEntity(
-    questionSchemaId = 13,
-    questionSchemaUuid = UUID.randomUUID(),
+  private val testQuestion13 = QuestionEntity(
+    questionId = 13,
+    questionUuid = UUID.randomUUID(),
     questionCode = "question_thirtheen"
   )
-  private val testQuestion14 = QuestionSchemaEntity(
-    questionSchemaId = 14,
-    questionSchemaUuid = UUID.randomUUID(),
+  private val testQuestion14 = QuestionEntity(
+    questionId = 14,
+    questionUuid = UUID.randomUUID(),
     questionCode = "question_fourteen"
   )
-  private val testQuestion15 = QuestionSchemaEntity(
-    questionSchemaId = 15,
-    questionSchemaUuid = UUID.randomUUID(),
+  private val testQuestion15 = QuestionEntity(
+    questionId = 15,
+    questionUuid = UUID.randomUUID(),
     questionCode = "question_fifteen"
   )
-  private val testQuestion16 = QuestionSchemaEntity(
-    questionSchemaId = 16,
-    questionSchemaUuid = UUID.randomUUID(),
+  private val testQuestion16 = QuestionEntity(
+    questionId = 16,
+    questionUuid = UUID.randomUUID(),
     questionCode = "question_sixteen"
   )
-  private val testQuestion17 = QuestionSchemaEntity(
-    questionSchemaId = 17,
-    questionSchemaUuid = UUID.randomUUID(),
+  private val testQuestion17 = QuestionEntity(
+    questionId = 17,
+    questionUuid = UUID.randomUUID(),
     questionCode = "question_seventeen"
   )
-  private val testQuestion18 = QuestionSchemaEntity(
-    questionSchemaId = 18,
-    questionSchemaUuid = UUID.randomUUID(),
+  private val testQuestion18 = QuestionEntity(
+    questionId = 18,
+    questionUuid = UUID.randomUUID(),
     questionCode = "question_eighteen"
   )
-  private val testQuestion19 = QuestionSchemaEntity(
-    questionSchemaId = 19,
-    questionSchemaUuid = UUID.randomUUID(),
+  private val testQuestion19 = QuestionEntity(
+    questionId = 19,
+    questionUuid = UUID.randomUUID(),
     questionCode = "question_nineteen"
   )
-  private val testQuestion20 = QuestionSchemaEntity(
-    questionSchemaId = 20,
-    questionSchemaUuid = UUID.randomUUID(),
+  private val testQuestion20 = QuestionEntity(
+    questionId = 20,
+    questionUuid = UUID.randomUUID(),
     questionCode = "question_twenty"
   )
-  private val testQuestion21 = QuestionSchemaEntity(
-    questionSchemaId = 21,
-    questionSchemaUuid = UUID.randomUUID(),
+  private val testQuestion21 = QuestionEntity(
+    questionId = 21,
+    questionUuid = UUID.randomUUID(),
     questionCode = "question_twenty_one"
   )
-  private val testQuestion22 = QuestionSchemaEntity(
-    questionSchemaId = 22,
-    questionSchemaUuid = UUID.randomUUID(),
+  private val testQuestion22 = QuestionEntity(
+    questionId = 22,
+    questionUuid = UUID.randomUUID(),
     questionCode = "question_twenty_two"
   )
-  private val testQuestion23 = QuestionSchemaEntity(
-    questionSchemaId = 23,
-    questionSchemaUuid = UUID.randomUUID(),
+  private val testQuestion23 = QuestionEntity(
+    questionId = 23,
+    questionUuid = UUID.randomUUID(),
     questionCode = "question_twenty_three"
   )
-  private val testQuestion24 = QuestionSchemaEntity(
-    questionSchemaId = 24,
-    questionSchemaUuid = UUID.randomUUID(),
+  private val testQuestion24 = QuestionEntity(
+    questionId = 24,
+    questionUuid = UUID.randomUUID(),
     questionCode = "question_twenty_four"
   )
-  private val testQuestion25 = QuestionSchemaEntity(
-    questionSchemaId = 25,
-    questionSchemaUuid = UUID.randomUUID(),
+  private val testQuestion25 = QuestionEntity(
+    questionId = 25,
+    questionUuid = UUID.randomUUID(),
     questionCode = "question_twenty_five"
   )
-  private val testQuestion26 = QuestionSchemaEntity(
-    questionSchemaId = 26,
-    questionSchemaUuid = UUID.randomUUID(),
+  private val testQuestion26 = QuestionEntity(
+    questionId = 26,
+    questionUuid = UUID.randomUUID(),
     questionCode = "question_twenty_six"
   )
-  private val testQuestion27 = QuestionSchemaEntity(
-    questionSchemaId = 27,
-    questionSchemaUuid = UUID.randomUUID(),
+  private val testQuestion27 = QuestionEntity(
+    questionId = 27,
+    questionUuid = UUID.randomUUID(),
     questionCode = "question_twenty_seven"
   )
-  private val testQuestion28 = QuestionSchemaEntity(
-    questionSchemaId = 28,
-    questionSchemaUuid = UUID.randomUUID(),
+  private val testQuestion28 = QuestionEntity(
+    questionId = 28,
+    questionUuid = UUID.randomUUID(),
     questionCode = "question_twenty_eight"
   )
-  private val testQuestion29 = QuestionSchemaEntity(
-    questionSchemaId = 29,
-    questionSchemaUuid = UUID.randomUUID(),
+  private val testQuestion29 = QuestionEntity(
+    questionId = 29,
+    questionUuid = UUID.randomUUID(),
     questionCode = "question_twenty_nine"
   )
-  private val testQuestion30 = QuestionSchemaEntity(
-    questionSchemaId = 30,
-    questionSchemaUuid = UUID.randomUUID(),
+  private val testQuestion30 = QuestionEntity(
+    questionId = 30,
+    questionUuid = UUID.randomUUID(),
     questionCode = "question_thirty"
   )
-  private val testQuestion31 = QuestionSchemaEntity(
-    questionSchemaId = 31,
-    questionSchemaUuid = UUID.randomUUID(),
+  private val testQuestion31 = QuestionEntity(
+    questionId = 31,
+    questionUuid = UUID.randomUUID(),
     questionCode = "question_thirty_one"
   )
-  private val testQuestion32 = QuestionSchemaEntity(
-    questionSchemaId = 32,
-    questionSchemaUuid = UUID.randomUUID(),
+  private val testQuestion32 = QuestionEntity(
+    questionId = 32,
+    questionUuid = UUID.randomUUID(),
     questionCode = "question_thirty_two"
   )
-  private val testQuestion33 = QuestionSchemaEntity(
-    questionSchemaId = 33,
-    questionSchemaUuid = UUID.randomUUID(),
+  private val testQuestion33 = QuestionEntity(
+    questionId = 33,
+    questionUuid = UUID.randomUUID(),
     questionCode = "question_thirty_three"
   )
-  private val testQuestion34 = QuestionSchemaEntity(
-    questionSchemaId = 34,
-    questionSchemaUuid = UUID.randomUUID(),
+  private val testQuestion34 = QuestionEntity(
+    questionId = 34,
+    questionUuid = UUID.randomUUID(),
     questionCode = "question_thirty_four"
   )
-  private val testQuestion35 = QuestionSchemaEntity(
-    questionSchemaId = 35,
-    questionSchemaUuid = UUID.randomUUID(),
+  private val testQuestion35 = QuestionEntity(
+    questionId = 35,
+    questionUuid = UUID.randomUUID(),
     questionCode = "question_thirty_five"
   )
 
   private val predictors = listOf(
     PredictorEntity(
       1,
-      AssessmentSchemaCode.RSR,
+      AssessmentType.RSR,
       PredictorType.RSR,
       listOf(
         PredictorFieldMappingEntity(
@@ -524,7 +524,7 @@ class RiskPredictorsServiceTest {
     answers = answers,
     createdDate = LocalDateTime.now(),
     assessment = assessment,
-    assessmentSchemaCode = AssessmentSchemaCode.RSR,
+    assessmentType = AssessmentType.RSR,
     offence = OffenceEntity(offenceCode = "138", offenceSubCode = "00", sentenceDate = LocalDate.now()),
     author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
   )
@@ -534,7 +534,7 @@ class RiskPredictorsServiceTest {
     episodeUuid = UUID.randomUUID(),
     createdDate = LocalDateTime.now(),
     assessment = assessment,
-    assessmentSchemaCode = AssessmentSchemaCode.RSR,
+    assessmentType = AssessmentType.RSR,
     author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
   )
   val final = true
@@ -553,7 +553,7 @@ class RiskPredictorsServiceTest {
   inner class GetPredictorEntityResults {
     @Test
     fun `throws exception when required answer is not found`() {
-      every { assessmentSchemaService.getPredictorsForAssessment(AssessmentSchemaCode.RSR) } returns predictors
+      every { assessmentReferenceDataService.getPredictorsForAssessment(AssessmentType.RSR) } returns predictors
       every {
         subjectService.getSubjectForAssessment(assessment.assessmentUuid)
       } returns SubjectEntity(
@@ -572,7 +572,7 @@ class RiskPredictorsServiceTest {
 
     @Test
     fun `returns predictor scores for the assessment code`() {
-      every { assessmentSchemaService.getPredictorsForAssessment(AssessmentSchemaCode.RSR) } returns predictors
+      every { assessmentReferenceDataService.getPredictorsForAssessment(AssessmentType.RSR) } returns predictors
 
       val offenderAndOffencesDto = offenderAndOffencesDto()
 
@@ -642,7 +642,7 @@ class RiskPredictorsServiceTest {
     fun `returns predictor scores for the assessment episode`() {
       val final = false
       every { episodeRepository.findByEpisodeUuid(episodeUuid) } returns assessmentEpisode
-      every { assessmentSchemaService.getPredictorsForAssessment(AssessmentSchemaCode.RSR) } returns predictors
+      every { assessmentReferenceDataService.getPredictorsForAssessment(AssessmentType.RSR) } returns predictors
 
       val offenderAndOffencesDto = offenderAndOffencesDto()
 
@@ -712,7 +712,7 @@ class RiskPredictorsServiceTest {
     fun `returns predictor scores for the assessment episode throw exception when offence is missing in episode`() {
       val final = false
       every { episodeRepository.findByEpisodeUuid(episodeUuid) } returns assessmentEpisode.copy(offence = null)
-      every { assessmentSchemaService.getPredictorsForAssessment(AssessmentSchemaCode.RSR) } returns predictors
+      every { assessmentReferenceDataService.getPredictorsForAssessment(AssessmentType.RSR) } returns predictors
 
       every {
         subjectService.getSubjectForAssessment(assessment.assessmentUuid)
