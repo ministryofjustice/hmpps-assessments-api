@@ -53,7 +53,7 @@ class AssessmentService(
       return createFromDelius(
         newAssessment.deliusEventId,
         newAssessment.crn,
-        newAssessment.assessmentType,
+        newAssessment.assessmentSchemaCode,
         newAssessment.deliusEventType
       )
     }
@@ -61,7 +61,7 @@ class AssessmentService(
       return createFromCourtCase(
         newAssessment.courtCode!!,
         newAssessment.caseNumber!!,
-        newAssessment.assessmentType
+        newAssessment.assessmentSchemaCode
       )
     }
     throw IllegalStateException("Empty create assessment request")
