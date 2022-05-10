@@ -73,7 +73,7 @@ class AssessmentServiceITTest : IntegrationTest() {
         CreateAssessmentDto(
           deliusEventId = 1L,
           crn = crn,
-          assessmentType = AssessmentType.ROSH
+          assessmentSchemaCode = AssessmentType.ROSH
         )
       )
     assertThat(assessmentResponse.assessmentUuid).isNotNull
@@ -100,7 +100,7 @@ class AssessmentServiceITTest : IntegrationTest() {
         CreateAssessmentDto(
           deliusEventId = 123456L,
           crn = crn,
-          assessmentType = AssessmentType.ROSH,
+          assessmentSchemaCode = AssessmentType.ROSH,
           deliusEventType = DeliusEventType.EVENT_ID
         )
       )
@@ -126,7 +126,7 @@ class AssessmentServiceITTest : IntegrationTest() {
         CreateAssessmentDto(
           deliusEventId = 1L,
           crn = crn,
-          assessmentType = AssessmentType.ROSH
+          assessmentSchemaCode = AssessmentType.ROSH
         )
       )
     val assessmentUuid = assessmentResponse.assessmentUuid
@@ -139,7 +139,7 @@ class AssessmentServiceITTest : IntegrationTest() {
         CreateAssessmentDto(
           deliusEventId = 1L,
           crn = crn,
-          assessmentType = AssessmentType.ROSH
+          assessmentSchemaCode = AssessmentType.ROSH
         )
       )
 
@@ -158,7 +158,7 @@ class AssessmentServiceITTest : IntegrationTest() {
         CreateAssessmentDto(
           deliusEventId = 1L,
           crn = crn,
-          assessmentType = AssessmentType.ROSH
+          assessmentSchemaCode = AssessmentType.ROSH
         )
       )
     } catch (e: Exception) {
@@ -176,7 +176,7 @@ class AssessmentServiceITTest : IntegrationTest() {
         CreateAssessmentDto(
           deliusEventId = 1L,
           crn = crn,
-          assessmentType = AssessmentType.ROSH
+          assessmentSchemaCode = AssessmentType.ROSH
         )
       )
     }

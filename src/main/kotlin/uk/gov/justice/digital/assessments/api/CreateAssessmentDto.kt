@@ -19,8 +19,8 @@ data class CreateAssessmentDto(
   @Schema(description = "Case Number", example = "1234567890")
   val caseNumber: String? = null,
 
-  @Schema(description = "Assessment Schema Code", example = "ROSH")
-  val assessmentType: AssessmentType
+  @Schema(description = "Assessment Type", example = "ROSH")
+  val assessmentSchemaCode: AssessmentType
 
 ) {
   fun isCourtCase() = (courtCode != null && caseNumber != null)

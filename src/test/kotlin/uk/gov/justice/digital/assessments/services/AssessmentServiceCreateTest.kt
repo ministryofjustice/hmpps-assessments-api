@@ -142,7 +142,7 @@ class AssessmentServiceCreateTest {
         CreateAssessmentDto(
           deliusEventId = eventId,
           crn = crn,
-          assessmentType = AssessmentType.UPW
+          assessmentSchemaCode = AssessmentType.UPW
         )
       )
       // Then
@@ -193,7 +193,7 @@ class AssessmentServiceCreateTest {
         CreateAssessmentDto(
           deliusEventId = eventId,
           crn = crn,
-          assessmentType = assessmentType
+          assessmentSchemaCode = assessmentType
         )
       )
       // Then
@@ -254,7 +254,7 @@ class AssessmentServiceCreateTest {
         CreateAssessmentDto(
           deliusEventId = eventId,
           crn = crn,
-          assessmentType = assessmentType,
+          assessmentSchemaCode = assessmentType,
           deliusEventType = DeliusEventType.EVENT_ID
         )
       )
@@ -304,7 +304,7 @@ class AssessmentServiceCreateTest {
           CreateAssessmentDto(
             deliusEventId = eventId,
             crn = crn,
-            assessmentType = assessmentType
+            assessmentSchemaCode = assessmentType
           )
         )
       assertThat(assessmentDto.assessmentUuid).isEqualTo(assessmentUuid)
@@ -358,7 +358,7 @@ class AssessmentServiceCreateTest {
         CreateAssessmentDto(
           deliusEventId = eventId,
           crn = crn,
-          assessmentType = assessmentType
+          assessmentSchemaCode = assessmentType
         )
       )
       verify(exactly = 0) { episodeService.prepopulateFromExternalSources(any(), assessmentType) }
@@ -375,7 +375,7 @@ class AssessmentServiceCreateTest {
           CreateAssessmentDto(
             deliusEventId = eventId,
             crn = crn,
-            assessmentType = assessmentType
+            assessmentSchemaCode = assessmentType
           )
         )
       }
@@ -397,7 +397,7 @@ class AssessmentServiceCreateTest {
           CreateAssessmentDto(
             deliusEventId = eventId,
             crn = crn,
-            assessmentType = assessmentType
+            assessmentSchemaCode = assessmentType
           )
         )
       }
@@ -447,7 +447,7 @@ class AssessmentServiceCreateTest {
         CreateAssessmentDto(
           deliusEventId = eventId,
           crn = crn,
-          assessmentType = assessmentType
+          assessmentSchemaCode = assessmentType
         )
       )
       verify(exactly = 1) {
@@ -517,7 +517,7 @@ class AssessmentServiceCreateTest {
         CreateAssessmentDto(
           deliusEventId = eventId,
           crn = crn,
-          assessmentType = assessmentType
+          assessmentSchemaCode = assessmentType
         )
       )
       verify(exactly = 0) { assessmentRepository.save(any()) }
@@ -583,7 +583,7 @@ class AssessmentServiceCreateTest {
         CreateAssessmentDto(
           courtCode = courtCode,
           caseNumber = caseNumber,
-          assessmentType = assessmentType
+          assessmentSchemaCode = assessmentType
         )
       )
 
@@ -633,7 +633,7 @@ class AssessmentServiceCreateTest {
         CreateAssessmentDto(
           courtCode = courtCode,
           caseNumber = existingCaseNumber,
-          assessmentType = assessmentType
+          assessmentSchemaCode = assessmentType
         )
       )
 
@@ -689,7 +689,7 @@ class AssessmentServiceCreateTest {
         CreateAssessmentDto(
           courtCode = courtCode,
           caseNumber = caseNumber,
-          assessmentType = assessmentType
+          assessmentSchemaCode = assessmentType
         )
       )
       verify(exactly = 1) {
