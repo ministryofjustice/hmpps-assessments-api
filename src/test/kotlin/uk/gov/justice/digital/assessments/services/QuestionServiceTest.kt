@@ -622,7 +622,7 @@ class QuestionServiceTest {
       .filter { it.questionId == secondQuestion.questionUuid }
       .forEach {
         assertThat(
-          it.answers?.first()?.conditionals?.first()?.conditional
+          it.answerDtos?.first()?.conditionals?.first()?.conditional
         ).isEqualTo(thirdQuestion.questionCode)
       }
   }

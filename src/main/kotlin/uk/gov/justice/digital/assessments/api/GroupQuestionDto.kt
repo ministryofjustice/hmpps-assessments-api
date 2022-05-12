@@ -35,7 +35,7 @@ data class GroupQuestionDto(
   val referenceDataTargets: Collection<ReferenceDataTargetDto> = emptyList(),
 
   @Schema(description = "Reference Answers")
-  val answers: Collection<AnswerDto>? = null,
+  val answerDtos: Collection<AnswerDto>? = null,
 ) : GroupContentDto {
   companion object {
     fun from(
@@ -53,7 +53,7 @@ data class GroupQuestionDto(
         conditional = questionDependencies.hasDependency(questionEntity.questionUuid),
         referenceDataCategory = questionEntity.referenceDataCategory,
         ReferenceDataTargetDto.from(questionEntity.referenceDataTargets),
-        answers = AnswerDto.from(
+        answerDtos = AnswerDto.from(
           questionEntity.answerEntities,
           questionDependencies.answerTriggers(questionEntity.questionUuid)
         )
