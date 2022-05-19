@@ -25,8 +25,8 @@ WHERE external_source_question_mapping_uuid in
 
 INSERT INTO question (question_uuid, question_code, question_start, question_end, answer_type, answer_group_uuid, question_text, question_help_text, reference_data_category)
 VALUES
-    ('b8f51e03-c2d6-4ec5-b539-30ba94524d47', 'emergency_contact_details', '2021-09-27 14:50:00', null, 'table', null, '', null, null),
-    ('2a1a41dd-5d77-4674-9f8f-561c654867b8', 'gp_details', '2021-09-27 14:50:00', null, 'table', null, '', '', null);
+    ('9f6866e5-e960-4bba-a506-70094588a3b8', 'emergency_contact_details', '2021-09-27 14:50:00', null, 'table', null, '', null, null),
+    ('9329c62b-d4c2-4200-9a0d-ba40f18fe3e4', 'gp_details', '2021-09-27 14:50:00', null, 'table', null, '', '', null);
 
 
 INSERT INTO external_source_question_mapping (external_source_question_mapping_uuid, question_code, assessment_type, external_source, json_path_field, field_type, external_source_endpoint, mapped_value, if_empty)
