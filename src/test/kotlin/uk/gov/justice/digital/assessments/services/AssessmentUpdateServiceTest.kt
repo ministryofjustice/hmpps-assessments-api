@@ -32,6 +32,7 @@ class AssessmentUpdateServiceTest {
   private val riskPredictorsService: RiskPredictorsService = mockk()
   private val assessmentReferenceDataService: AssessmentReferenceDataService = mockk()
   private val oasysAssessmentUpdateService: OasysAssessmentUpdateService = mockk()
+  private val assessmentService: AssessmentService = mockk()
   private val authorService: AuthorService = mockk()
   private val auditService: AuditService = mockk()
   private val telemetryService: TelemetryService = mockk()
@@ -41,6 +42,7 @@ class AssessmentUpdateServiceTest {
     episodeRepository,
     riskPredictorsService,
     oasysAssessmentUpdateService,
+    assessmentService,
     authorService,
     auditService,
     telemetryService
@@ -402,10 +404,10 @@ class AssessmentUpdateServiceTest {
   }
 
   private fun createAssessmentEpisodeEntity(schemaCode: AssessmentType): AssessmentEpisodeEntity {
-    val answers = mutableMapOf(
+    val answers = mutableMapOf<String, List<Any>>(
       existingQuestionCode to listOf("free text")
     )
-    val episodeEntity = AssessmentEpisodeEntity(
+    return AssessmentEpisodeEntity(
       episodeUuid = episodeUuid,
       episodeId = episodeId2,
       changeReason = "Change of Circs 2",
@@ -415,7 +417,6 @@ class AssessmentUpdateServiceTest {
       author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
       assessment = AssessmentEntity()
     )
-    return episodeEntity
   }
 
   private fun assessmentEntity(answers: Answers): AssessmentEntity {

@@ -52,7 +52,6 @@ class EpisodeServiceTest {
   )
 
   private lateinit var newEpisode: AssessmentEpisodeEntity
-  private lateinit var previousEpisodes: List<AssessmentEpisodeEntity>
 
   private val author = AuthorEntity(
     userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"
@@ -539,7 +538,7 @@ class EpisodeServiceTest {
 ]"""
 
     val docContext: DocumentContext = JsonPath.parse(personalContactJson)
-    val externalSourceGPObjectMapping = ExternalSourceQuestionSchemaDto(
+    val externalSourceGPObjectMapping = ExternalSourceQuestionDto(
       questionCode = "gp_details",
       externalSource = "Delius",
       jsonPathField = "\$[?(@.relationshipType.code=='RT02')]",

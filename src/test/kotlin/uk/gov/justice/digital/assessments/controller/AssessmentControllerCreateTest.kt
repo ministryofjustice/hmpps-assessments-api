@@ -77,7 +77,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
 
       val assessment = webTestClient.post().uri("/assessments")
         .contentType(MediaType.APPLICATION_JSON)
-        .body(BodyInserters.fromObject(body))
+        .body(BodyInserters.fromValue(body))
         .header(RequestData.USER_AREA_HEADER_NAME, "WWS")
         .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
         .exchange()
@@ -230,7 +230,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
     @Test
     fun `creating a new UPW assessment from crn and delius event id returns assessment with prepopulated Delius answers`() {
 
-      val assessment = createDeliusAssessment(crn, eventID, AssessmentSchemaType.UPW)
+      val assessment = createDeliusAssessment(crn, eventID, AssessmentType.UPW)
 
       assertThat(assessment?.assessmentUuid).isNotNull
       assertThat(assessment?.episodes).hasSize(1)
@@ -336,22 +336,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
     @Test
     fun `creating a new UPW assessment from Delius only returns GPs where active flag is true`() {
 
-      assertThat(answers?.get("allergies")).isEqualTo(listOf("YES"))
-      assertThat(answers?.get("allergies_details")).isEqualTo(listOf("Nut Allergy"))
-      assertThat(answers?.get("pregnancy")).isEqualTo(listOf("NO"))
-      assertThat(answers?.get("pregnancy_pregnant_details")).isEqualTo(emptyList<String>())
-      assertThat(answers?.get("caring_commitments")).isEqualTo(listOf("YES"))
-      assertThat(answers?.get("caring_commitments_details")).isEqualTo(listOf("Primary Carer"))
-      assertThat(answers?.get("reading_writing_difficulties")).isEqualTo(listOf("YES"))
-      assertThat(answers?.get("reading_writing_difficulties_details")).isEqualTo(listOf("Cannot read"))
-      assertThat(answers?.get("reading_literacy_concerns")).isEqualTo(listOf("YES"))
-      assertThat(answers?.get("reading_literacy_concerns_details")).isEqualTo(listOf("Cannot read"))
-      assertThat(answers?.get("numeracy_concerns")).isEqualTo(listOf("YES"))
-      assertThat(answers?.get("numeracy_concerns_details")).isEqualTo(listOf("Numeracy difficulties"))
-      assertThat(answers?.get("language_communication_concerns")).isEqualTo(listOf("YES"))
-      assertThat(answers?.get("language_communication_concerns_details")).isEqualTo(listOf("Communication difficulties"))
-      val assessment = createDeliusAssessment(crn, eventID, AssessmentSchemaCode.UPW)
-
+      val assessment = createDeliusAssessment(crn, eventID, AssessmentType.UPW)
       val answers = assessment?.episodes?.first()?.answers
 
       val gpDetails = answers?.get("gp_details") as List<*>
@@ -430,8 +415,8 @@ class AssessmentControllerCreateTest : IntegrationTest() {
     fun `creating an assessment for a delius event id and crn when one already exists in ARN returns the existing assessment`() {
       val existingCrn = "CRN1"
       val existingEventId = 12345L
-      val existingAssessment = createDeliusAssessment(existingCrn, existingEventId, AssessmentSchemaCode.ROSH)
-      val assessmentDto = createDeliusAssessment(existingCrn, existingEventId, AssessmentSchemaCode.ROSH)
+      val existingAssessment = createDeliusAssessment(existingCrn, existingEventId, AssessmentType.ROSH)
+      val assessmentDto = createDeliusAssessment(existingCrn, existingEventId, AssessmentType.ROSH)
 
       assertThat(assessmentDto?.assessmentUuid).isEqualTo(existingAssessment?.assessmentUuid)
       assertThat(assessmentDto?.createdDate).isEqualTo(existingAssessment?.createdDate)
@@ -464,11 +449,11 @@ class AssessmentControllerCreateTest : IntegrationTest() {
     }
   }
 
-  private fun createDeliusAssessment(crn: String, deliusId: Long, assessmentSchemaCode: AssessmentSchemaCode): AssessmentDto? {
+  private fun createDeliusAssessment(crn: String, deliusId: Long, assessmentSchemaCode: AssessmentType = AssessmentType.ROSH): AssessmentDto? {
     val dto = CreateAssessmentDto(
       crn = crn,
       deliusEventId = deliusId,
-      assessmentSchemaCode = AssessmentType.ROSH
+      assessmentSchemaCode = assessmentSchemaCode
     )
     return webTestClient.post().uri("/assessments")
       .bodyValue(dto)

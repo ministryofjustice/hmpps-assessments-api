@@ -58,7 +58,7 @@ class EpisodeService(
     episode: AssessmentEpisodeEntity,
     assessmentType: AssessmentType
   ): AssessmentEpisodeEntity {
-    log.info("Pre-populating episode from external source for assessment type: $assessmentSchemaCode")
+    log.info("Pre-populating episode from external source for assessment type: $assessmentType")
     val questionsToPopulate = questionService.getAllQuestions().withExternalSource(assessmentType)
     if (questionsToPopulate.isEmpty())
       return episode
@@ -118,7 +118,7 @@ class EpisodeService(
     latestCompleteEpisodeEndDate: LocalDateTime?
   ) {
     episode.prepopulatedFromOASys = sourceName == OASYS_SOURCE_NAME
-    questionSchemas.groupBy { it.externalSourceEndpoint }
+    questions.groupBy { it.externalSourceEndpoint }
       .forEach {
         val sourceData = loadSource(episode, sourceName, it.key, latestCompleteEpisodeEndDate) ?: return
 
@@ -128,17 +128,10 @@ class EpisodeService(
       }
   }
 
-  private fun prepopulateQuestion(
-    episode: AssessmentEpisodeEntity,
+  fun getAnswersFromSourceData(
     source: DocumentContext,
     question: ExternalSourceQuestionDto
-  ) {
-
-    val answer = answerFormat(source, question).orEmpty()
-    episode.answers.let {
-      it[question.questionCode] = it[question.questionCode].orEmpty().plus(answer).toSet().toList()
-    }
-  private fun getAnswersFromSourceData(source: DocumentContext, question: ExternalSourceQuestionSchemaDto): List<Any> {
+  ): List<Any> {
     return answerFormat(source, question).orEmpty()
   }
 
@@ -194,7 +187,7 @@ class EpisodeService(
   }
 
   private fun formatDate(source: DocumentContext, question: ExternalSourceQuestionDto): String {
-    val dateStr = (source.read<JSONArray>(question.jsonPathField).filterNotNull() as List<String>).first().toString()
+    val dateStr = (source.read<JSONArray>(question.jsonPathField).filterNotNull()).first().toString()
 
     return if (basicDatePattern.matcher(dateStr).matches())
       iso8601DateFormatter.format(basicDateFormatter.parse(dateStr)) else dateStr
@@ -237,7 +230,7 @@ class EpisodeService(
 
   fun getStructuredAnswersFromSourceData(
     sourceData: DocumentContext,
-    structureQuestion: ExternalSourceQuestionSchemaDto,
+    structureQuestion: ExternalSourceQuestionDto,
   ): List<Any>? {
     return when (structureQuestion.questionCode) {
       "gp_details" -> {
@@ -254,7 +247,7 @@ class EpisodeService(
 
   private fun getPersonalContactsFromJson(
     sourceData: DocumentContext,
-    structureQuestion: ExternalSourceQuestionSchemaDto
+    structureQuestion: ExternalSourceQuestionDto
   ): List<PersonalContact> {
     val personalContactJson = sourceData.read<JSONArray>(structureQuestion.jsonPathField).toJSONString()
     return objectMapper.readValue(personalContactJson)
