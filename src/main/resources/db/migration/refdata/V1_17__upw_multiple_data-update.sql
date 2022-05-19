@@ -29,7 +29,7 @@ VALUES
     ('2a1a41dd-5d77-4674-9f8f-561c654867b8', 'gp_details', '2021-09-27 14:50:00', null, 'table', null, '', '', null);
 
 
-INSERT INTO external_source_question_mapping (external_source_question_mapping_uuid, question_code, assessment_code, external_source, json_path_field, field_type, external_source_endpoint, mapped_value, if_empty)
+INSERT INTO external_source_question_mapping (external_source_question_mapping_uuid, question_code, assessment_type, external_source, json_path_field, field_type, external_source_endpoint, mapped_value, if_empty)
 VALUES
     ('8e219d36-6979-4018-8944-12777990910e', 'emergency_contact_details', 'UPW', 'DELIUS', '$[?(@.relationshipType.code==''ME''&&@.isActive==true)]', 'structured', 'secure/offenders/crn/$crn/personalContacts', null, false),
     ('cb24dc64-e8fd-4960-8096-1907d59de3b0', 'gp_details', 'UPW', 'DELIUS', '$[?(@.relationshipType.code==''RT02''&&@.isActive==true)]', 'structured', 'secure/offenders/crn/$crn/personalContacts', null, false);
