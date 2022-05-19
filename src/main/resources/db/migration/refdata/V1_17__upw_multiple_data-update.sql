@@ -23,7 +23,7 @@ WHERE external_source_question_mapping_uuid in
     '7762598e-dc3c-41a4-8546-38444c0ef708',
     '7802580e-fa85-4998-966e-cc29e58f04a5');
 
-INSERT INTO question_schema (question_schema_uuid, question_code, question_start, question_end, answer_type, answer_schema_group_uuid, question_text, question_help_text, reference_data_category)
+INSERT INTO question (question_uuid, question_code, question_start, question_end, answer_type, answer_schema_group_uuid, question_text, question_help_text, reference_data_category)
 VALUES
     ('b8f51e03-c2d6-4ec5-b539-30ba94524d47', 'emergency_contact_details', '2021-09-27 14:50:00', null, 'table', null, '', null, null),
     ('2a1a41dd-5d77-4674-9f8f-561c654867b8', 'gp_details', '2021-09-27 14:50:00', null, 'table', null, '', '', null);
