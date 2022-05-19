@@ -93,5 +93,4 @@ will apply ktlint styles to intellij and also add a pre-commit hook to format al
   - POST https://sign-in-dev.hmpps.service.justice.gov.uk/auth/oauth/token?grant_type=password&username=<speak_to_another_dev_to_get_this>&password=<speak_to_another_dev_to_get_this> in Postman or similar
   - The response will contain an `access_token` which will used as your `bearer token` when sending a request to a `hmpps-assessments-api` endpoint.
 
-
   
