@@ -29,7 +29,6 @@ import java.util.UUID
 class AssessmentUpdateServiceTest {
   private val assessmentRepository: AssessmentRepository = mockk()
   private val episodeRepository: EpisodeRepository = mockk()
-  private val questionService: QuestionService = mockk()
   private val riskPredictorsService: RiskPredictorsService = mockk()
   private val assessmentReferenceDataService: AssessmentReferenceDataService = mockk()
   private val oasysAssessmentUpdateService: OasysAssessmentUpdateService = mockk()
@@ -41,7 +40,6 @@ class AssessmentUpdateServiceTest {
   private val assessmentUpdateService = AssessmentUpdateService(
     assessmentRepository,
     episodeRepository,
-    questionService,
     riskPredictorsService,
     oasysAssessmentUpdateService,
     assessmentService,
@@ -70,7 +68,7 @@ class AssessmentUpdateServiceTest {
   inner class UpdateAnswers {
     @Test
     fun `add new answers to existing question for an episode`() {
-      val answers = mutableMapOf(
+      val answers = mutableMapOf<String, List<Any>>(
         existingQuestionCode to listOf("free text")
       )
       val assessment = assessmentEntity(answers)
@@ -108,7 +106,7 @@ class AssessmentUpdateServiceTest {
 
     @Test
     fun `change an existing answer for an episode`() {
-      val answers = mutableMapOf(
+      val answers = mutableMapOf<String, List<Any>>(
         existingQuestionCode to listOf("free text")
       )
       val assessment = assessmentEntity(answers)
@@ -141,7 +139,7 @@ class AssessmentUpdateServiceTest {
 
     @Test
     fun `audit updating answers without author change`() {
-      val answers = mutableMapOf(
+      val answers = mutableMapOf<String, List<Any>>(
         existingQuestionCode to listOf("free text")
       )
       val assessment = assessmentEntity(answers)
@@ -174,7 +172,7 @@ class AssessmentUpdateServiceTest {
 
     @Test
     fun `audit updating answers with author change`() {
-      val answers = mutableMapOf(
+      val answers = mutableMapOf<String, List<Any>>(
         existingQuestionCode to listOf("free text")
       )
       val assessment = assessmentEntity(answers)
@@ -219,7 +217,7 @@ class AssessmentUpdateServiceTest {
 
     @Test
     fun `remove answers for an existing question for an episode`() {
-      val answers = mutableMapOf(
+      val answers = mutableMapOf<String, List<Any>>(
         existingQuestionCode to listOf("free text", "fruit loops", "biscuits")
       )
       val assessment = assessmentEntity(answers)
@@ -406,10 +404,10 @@ class AssessmentUpdateServiceTest {
   }
 
   private fun createAssessmentEpisodeEntity(schemaCode: AssessmentType): AssessmentEpisodeEntity {
-    val answers = mutableMapOf(
+    val answers = mutableMapOf<String, List<Any>>(
       existingQuestionCode to listOf("free text")
     )
-    val episodeEntity = AssessmentEpisodeEntity(
+    return AssessmentEpisodeEntity(
       episodeUuid = episodeUuid,
       episodeId = episodeId2,
       changeReason = "Change of Circs 2",
@@ -419,7 +417,6 @@ class AssessmentUpdateServiceTest {
       author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
       assessment = AssessmentEntity()
     )
-    return episodeEntity
   }
 
   private fun assessmentEntity(answers: Answers): AssessmentEntity {

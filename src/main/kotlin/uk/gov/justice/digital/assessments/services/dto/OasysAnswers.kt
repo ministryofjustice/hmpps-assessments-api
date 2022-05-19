@@ -53,9 +53,9 @@ data class OasysAnswers(
 
     private fun OasysAnswer.toOasysRealAnswerValues(): OasysAnswer {
       if (problemsLevelQuestions.contains(this.questionCode)) {
-        return this.copy(answer = ProblemsLevel.valueOf(this.answer).oasysValue.toString())
+        return this.copy(answer = ProblemsLevel.valueOf(this.answer as String).oasysValue.toString())
       } else if (employmentTypeQuestions.contains(this.questionCode)) {
-        return this.copy(answer = EmploymentType.valueOf(this.answer).oasysValue.toString())
+        return this.copy(answer = EmploymentType.valueOf(this.answer as String).oasysValue.toString())
       }
       return this
     }
@@ -112,7 +112,7 @@ data class OasysAnswers(
     private fun buildOasysAnswers(
       questions: QuestionSchemaEntities,
       answers: Answers?,
-      builder: (OASysMappingEntity, List<String>, String?) -> List<OasysAnswer>
+      builder: (OASysMappingEntity, List<Any>, String?) -> List<OasysAnswer>
     ): OasysAnswers {
       val oasysAnswers = OasysAnswers()
       answers?.forEach { (questionCode, answerEntity) ->
@@ -129,7 +129,7 @@ data class OasysAnswers(
 
     fun mapOasysAnswers(
       oasysMapping: OASysMappingEntity,
-      answers: List<String>,
+      answers: List<Any>,
       answerType: String?
     ): List<OasysAnswer> {
       return answers.map { answer ->
@@ -138,13 +138,13 @@ data class OasysAnswers(
     }
 
     private fun makeOasysAnswer(
-      value: String,
+      value: Any,
       oasysMapping: OASysMappingEntity,
       answerType: String?,
       index: Long? = null
     ): OasysAnswer {
       val answer = when (answerType) {
-        "date" -> toOASysDate(value)
+        "date" -> toOASysDate(value as String)
         else -> value
       }
 

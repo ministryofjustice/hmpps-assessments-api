@@ -3,6 +3,7 @@ package uk.gov.justice.digital.assessments.services
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.jayway.jsonpath.DocumentContext
 import com.jayway.jsonpath.JsonPath
 import net.minidev.json.JSONArray
@@ -11,6 +12,8 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.assessments.api.EmergencyContactDetailsAnswerDto
+import uk.gov.justice.digital.assessments.api.GPDetailsAnswerDto
 import uk.gov.justice.digital.assessments.api.GroupQuestionDto
 import uk.gov.justice.digital.assessments.api.TableQuestionDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
@@ -19,9 +22,11 @@ import uk.gov.justice.digital.assessments.jpa.repositories.refdata.CloneAssessme
 import uk.gov.justice.digital.assessments.restclient.AssessmentApiRestClient
 import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
+import uk.gov.justice.digital.assessments.restclient.communityapi.PersonalContact
 import uk.gov.justice.digital.assessments.services.dto.ExternalSource
 import uk.gov.justice.digital.assessments.services.dto.ExternalSourceQuestionDto
 import uk.gov.justice.digital.assessments.services.exceptions.CrnIsMandatoryException
+import uk.gov.justice.digital.assessments.services.exceptions.ExternalSourceAnswerException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalSourceEndpointIsMandatoryException
 import java.time.LocalDateTime
 import java.util.regex.Pattern
@@ -53,6 +58,7 @@ class EpisodeService(
     episode: AssessmentEpisodeEntity,
     assessmentType: AssessmentType
   ): AssessmentEpisodeEntity {
+    log.info("Pre-populating episode from external source for assessment type: $assessmentType")
     val questionsToPopulate = questionService.getAllQuestions().withExternalSource(assessmentType)
     if (questionsToPopulate.isEmpty())
       return episode
@@ -61,8 +67,8 @@ class EpisodeService(
 
     questionsToPopulate
       .groupBy { it.externalSource }
-      .forEach {
-        prepopulateFromSource(episode, it.key, it.value, latestCompleteEpisodeEndDate)
+      .forEach { (sourceName, questionSchemas) ->
+        prepopulateFromSource(episode, sourceName, questionSchemas, latestCompleteEpisodeEndDate)
       }
 
     return episode
@@ -111,27 +117,22 @@ class EpisodeService(
     questions: List<ExternalSourceQuestionDto>,
     latestCompleteEpisodeEndDate: LocalDateTime?
   ) {
-    val questionsByExternalSourceEndpoint = questions.groupBy { it.externalSourceEndpoint }
     episode.prepopulatedFromOASys = sourceName == OASYS_SOURCE_NAME
+    questions.groupBy { it.externalSourceEndpoint }
+      .forEach {
+        val sourceData = loadSource(episode, sourceName, it.key, latestCompleteEpisodeEndDate) ?: return
 
-    questionsByExternalSourceEndpoint.forEach { it ->
-      val source = loadSource(episode, sourceName, it.key, latestCompleteEpisodeEndDate) ?: return
-      it.value.forEach {
-        prepopulateQuestion(episode, source, it)
+        it.value.forEach { question ->
+          episode.addAnswer(question.questionCode, getAnswersFromSourceData(sourceData, question))
+        }
       }
-    }
   }
 
-  private fun prepopulateQuestion(
-    episode: AssessmentEpisodeEntity,
+  fun getAnswersFromSourceData(
     source: DocumentContext,
     question: ExternalSourceQuestionDto
-  ) {
-
-    val answer = answerFormat(source, question).orEmpty()
-    episode.answers.let {
-      it[question.questionCode] = it[question.questionCode].orEmpty().plus(answer).toSet().toList()
-    }
+  ): List<Any> {
+    return answerFormat(source, question).orEmpty()
   }
 
   private fun getLatestCompleteEpisodeEndDate(newEpisode: AssessmentEpisodeEntity): LocalDateTime? {
@@ -146,6 +147,7 @@ class EpisodeService(
     sourceEndpoint: String?,
     latestCompleteEpisodeEndDate: LocalDateTime?
   ): DocumentContext? {
+    log.info("Fetching source answers for source: $sourceName")
     try {
       val rawJson = when (sourceName) {
         ExternalSource.COURT.name -> loadFromCourtCase(episode)
@@ -185,13 +187,13 @@ class EpisodeService(
   }
 
   private fun formatDate(source: DocumentContext, question: ExternalSourceQuestionDto): String {
-    val dateStr = (source.read<JSONArray>(question.jsonPathField).filterNotNull() as List<String>).first().toString()
+    val dateStr = (source.read<JSONArray>(question.jsonPathField).filterNotNull()).first().toString()
 
     return if (basicDatePattern.matcher(dateStr).matches())
       iso8601DateFormatter.format(basicDateFormatter.parse(dateStr)) else dateStr
   }
 
-  private fun answerFormat(source: DocumentContext, question: ExternalSourceQuestionDto): List<String>? {
+  private fun answerFormat(source: DocumentContext, question: ExternalSourceQuestionDto): List<Any>? {
     try {
       return when (question.fieldType) {
         "varchar" -> listOf(source.read<Any>(question.jsonPathField).toString())
@@ -218,10 +220,36 @@ class EpisodeService(
           else
             emptyList()
         }
+        "structured" -> { getStructuredAnswersFromSourceData(source, question) }
         else -> listOf((source.read<JSONArray>(question.jsonPathField).filterNotNull() as List<String>).first().toString())
       }
     } catch (e: Exception) {
       return null
     }
+  }
+
+  fun getStructuredAnswersFromSourceData(
+    sourceData: DocumentContext,
+    structureQuestion: ExternalSourceQuestionDto,
+  ): List<Any>? {
+    return when (structureQuestion.questionCode) {
+      "gp_details" -> {
+        val personalContacts = getPersonalContactsFromJson(sourceData, structureQuestion)
+        GPDetailsAnswerDto.from(personalContacts)
+      }
+      "emergency_contact_details" -> {
+        val personalContacts = getPersonalContactsFromJson(sourceData, structureQuestion)
+        EmergencyContactDetailsAnswerDto.from(personalContacts)
+      }
+      else -> throw ExternalSourceAnswerException("Question code: ${structureQuestion.questionCode} not recognised")
+    }
+  }
+
+  private fun getPersonalContactsFromJson(
+    sourceData: DocumentContext,
+    structureQuestion: ExternalSourceQuestionDto
+  ): List<PersonalContact> {
+    val personalContactJson = sourceData.read<JSONArray>(structureQuestion.jsonPathField).toJSONString()
+    return objectMapper.readValue(personalContactJson)
   }
 }

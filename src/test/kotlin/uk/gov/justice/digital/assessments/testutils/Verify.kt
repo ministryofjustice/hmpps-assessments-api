@@ -7,12 +7,12 @@ class Verify {
     fun emptyAnswer(answers: List<String>) {
       Assertions.assertThat(answers.size).isEqualTo(0)
     }
-    fun singleAnswer(answers: List<String>, vararg expected: String) {
+    fun singleAnswer(answers: List<Any>, vararg expected: Any) {
       Assertions.assertThat(answers.size).isEqualTo(1)
       val expectedAnswer = listOf(expected.first())
       Assertions.assertThat(answers).isEqualTo(expectedAnswer)
     }
-    fun multiAnswers(answers: List<String>, vararg expected: String) {
+    fun multiAnswers(answers: List<Any>, vararg expected: Any) {
       Assertions.assertThat(answers.size).isEqualTo(expected.size)
       Assertions.assertThat(answers).isEqualTo(expected.toList())
     }

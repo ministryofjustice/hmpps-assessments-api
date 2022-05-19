@@ -224,7 +224,7 @@ class OasysAssessmentUpdateServiceTest() {
   }
 
   private fun setupEpisode(): AssessmentEpisodeEntity {
-    val answers = mutableMapOf(
+    val answers = mutableMapOf<String, List<Any>>(
       questionCode1 to listOf("some free text"),
       questionCode2 to listOf("1975-01-20T00:00:00.000Z"),
       questionCode3 to listOf("not mapped to oasys")

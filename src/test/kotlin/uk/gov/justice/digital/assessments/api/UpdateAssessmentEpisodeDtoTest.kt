@@ -20,7 +20,7 @@ class UpdateAssessmentEpisodeDtoTest {
 
     val deserialized = ObjectMapper().readValue(testAnswers, UpdateAssessmentEpisodeDto::class.java)
     val transformed = deserialized.answers
-    val answers: List<String>? = transformed["question_code"]
+    val answers: List<Any>? = transformed["question_code"]
     assertThat(answers).isEqualTo(listOf("FOO", "BAR"))
   }
 
@@ -36,7 +36,7 @@ class UpdateAssessmentEpisodeDtoTest {
 
     val deserialized = ObjectMapper().readValue(testAnswers, UpdateAssessmentEpisodeDto::class.java)
     val transformed = deserialized.answers
-    val answers: List<String>? = transformed["question_code"]
+    val answers: List<Any>? = transformed["question_code"]
     assertThat(answers).isEqualTo(emptyList<String>())
   }
 }

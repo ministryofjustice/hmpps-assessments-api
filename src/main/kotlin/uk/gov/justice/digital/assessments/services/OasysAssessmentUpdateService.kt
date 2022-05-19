@@ -3,7 +3,7 @@ package uk.gov.justice.digital.assessments.services
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.assessments.api.Answers
+import uk.gov.justice.digital.assessments.api.AnswersDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.restclient.AssessmentUpdateRestClient
@@ -28,7 +28,7 @@ class OasysAssessmentUpdateService(
 
   fun updateOASysAssessment(
     episode: AssessmentEpisodeEntity,
-    updatedEpisodeAnswers: Answers,
+    updatedEpisodeAnswers: AnswersDto,
   ): AssessmentEpisodeUpdateErrors {
     val offenderPk = episode.assessment.subject?.oasysOffenderPk
     if (episode.oasysSetPk == null || offenderPk == null) {

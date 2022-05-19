@@ -31,7 +31,7 @@ data class AssessmentEpisodeDto(
   val userFullName: String? = null,
 
   @Schema(description = "Answers associated with this episode")
-  val answers: Answers = emptyMap(),
+  val answers: AnswersDto = emptyMap(),
 
   @Schema(description = "Validation errors on this episode, indexed by question code")
   val errors: Map<String, Collection<String>>? = null,

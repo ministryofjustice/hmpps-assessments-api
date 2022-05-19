@@ -26,10 +26,9 @@ import java.util.UUID
 
 @ExtendWith(MockKExtension::class)
 @DisplayName("Assessment Service Complete Tests")
-class AssessmentUpdateServiceCompleteTest() {
+class AssessmentUpdateServiceCompleteTest {
   private val assessmentRepository: AssessmentRepository = mockk()
   private val episodeRepository: EpisodeRepository = mockk()
-  private val questionService: QuestionService = mockk()
   private val assessmentReferenceDataService: AssessmentReferenceDataService = mockk()
   private val riskPredictorsService: RiskPredictorsService = mockk()
   private val oasysAssessmentUpdateService: OasysAssessmentUpdateService = mockk()
@@ -41,7 +40,6 @@ class AssessmentUpdateServiceCompleteTest() {
   private val assessmentUpdateService = AssessmentUpdateService(
     assessmentRepository,
     episodeRepository,
-    questionService,
     riskPredictorsService,
     oasysAssessmentUpdateService,
     assessmentService,

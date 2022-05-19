@@ -3,7 +3,7 @@ package uk.gov.justice.digital.assessments.services
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.assessments.api.Answers
+import uk.gov.justice.digital.assessments.api.AnswersDto
 import uk.gov.justice.digital.assessments.api.PredictorScoresDto
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.OffenceEntity
@@ -55,15 +55,15 @@ class RiskPredictorsService(
         episode,
         final,
         predictor.type,
-        extractAnswers(predictor.fieldEntities.toList(), episode.answers.orEmpty())
+        extractAnswers(predictor.fieldEntities.toList(), episode.answers)
       )
     }
   }
 
   private fun extractAnswers(
     predictorFieldEntities: List<PredictorFieldMappingEntity>,
-    answers: Answers
-  ): Answers {
+    answers: AnswersDto
+  ): AnswersDto {
     return predictorFieldEntities
       .associate { predictorField ->
         val questionCode = predictorField.questionSchema.questionCode
@@ -77,7 +77,7 @@ class RiskPredictorsService(
     episode: AssessmentEpisodeEntity,
     final: Boolean,
     predictorType: PredictorType,
-    answers: Answers,
+    answers: AnswersDto,
   ): PredictorScoresDto {
     val assessmentUuid = getEpisodeAssessmentUuid(episode)
     val offender = subjectService.getSubjectForAssessment(assessmentUuid)
@@ -135,7 +135,7 @@ class RiskPredictorsService(
 
   private fun getDynamicScoringOffences(
     hasCompletedInterview: Boolean,
-    answers: Answers,
+    answers: AnswersDto,
   ): DynamicScoringOffences? {
     if (!hasCompletedInterview) return null
     return DynamicScoringOffences(
@@ -209,13 +209,13 @@ class RiskPredictorsService(
     )
   }
 
-  private fun getRequiredAnswer(answers: Answers, answerCode: String): String {
-    return answers[answerCode]?.first()
+  private fun getRequiredAnswer(answers: AnswersDto, answerCode: String): String {
+    return answers[answerCode]?.first() as String?
       ?: throw EntityNotFoundException("Answer $answerCode for predictor not found")
   }
 
-  private fun getNonRequiredAnswer(answers: Answers, answerCode: String): String? {
-    return answers[answerCode]?.first()
+  private fun getNonRequiredAnswer(answers: AnswersDto, answerCode: String): String? {
+    return answers[answerCode]?.first()?.toString()
   }
 
   fun String?.toBoolean(): Boolean? {

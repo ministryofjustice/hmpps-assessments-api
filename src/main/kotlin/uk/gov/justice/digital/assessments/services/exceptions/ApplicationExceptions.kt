@@ -22,6 +22,7 @@ class PredictorCalculationException(msg: String?) : RuntimeException(msg)
 class MultipleExternalSourcesException(msg: String?) : RuntimeException(msg)
 class CrnIsMandatoryException(msg: String?) : RuntimeException(msg)
 class ExternalSourceEndpointIsMandatoryException(msg: String?) : RuntimeException(msg)
+class ExternalSourceAnswerException(msg: String?) : RuntimeException(msg)
 class AuditFailureException(msg: String?) : RuntimeException(msg)
 
 class OASysUserPermissionException(
