@@ -28,7 +28,6 @@ VALUES
     ('9f6866e5-e960-4bba-a506-70094588a3b8', 'emergency_contact_details', '2021-09-27 14:50:00', null, 'table', null, '', null, null),
     ('9329c62b-d4c2-4200-9a0d-ba40f18fe3e4', 'gp_details', '2021-09-27 14:50:00', null, 'table', null, '', '', null);
 
-
 INSERT INTO external_source_question_mapping (external_source_question_mapping_uuid, question_code, assessment_type, external_source, json_path_field, field_type, external_source_endpoint, mapped_value, if_empty)
 VALUES
     ('8e219d36-6979-4018-8944-12777990910e', 'emergency_contact_details', 'UPW', 'DELIUS', '$[?(@.relationshipType.code==''ME''&&@.isActive==true)]', 'structured', 'secure/offenders/crn/$crn/personalContacts', null, false),
