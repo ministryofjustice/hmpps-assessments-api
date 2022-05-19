@@ -14,15 +14,15 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import uk.gov.justice.digital.assessments.api.DeliusEventType
 import uk.gov.justice.digital.assessments.api.OffenceDto
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.OffenceEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerSchemaEntity
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerSchemaGroupEntity
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerGroupEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRepository
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
@@ -61,7 +61,7 @@ class AssessmentServiceTest {
 
   private val assessmentUuid = UUID.randomUUID()
   private val assessmentId = 1L
-  private val assessmentSchemaCode = AssessmentSchemaCode.ROSH
+  private val assessmentType = AssessmentType.ROSH
 
   private val episodeId1 = 1L
   private val episodeId2 = 2L
@@ -126,7 +126,7 @@ class AssessmentServiceTest {
       every {
         assessment.newEpisode(
           "Change of Circs",
-          assessmentSchemaCode = assessmentSchemaCode,
+          assessmentType = assessmentType,
           offence = any(),
           author = author
         )
@@ -135,7 +135,7 @@ class AssessmentServiceTest {
         episodeUuid = episodeUuid1,
         assessment = assessment,
         createdDate = LocalDateTime.now(),
-        assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+        assessmentType = AssessmentType.ROSH,
         offence = OffenceEntity(
           offenceCode = offenceCode,
           codeDescription = codeDescription,
@@ -153,14 +153,14 @@ class AssessmentServiceTest {
         offenceSubCode = offenceSubCode,
         subCodeDescription = subCodeDescription
       )
-      every { episodeService.prepopulateFromExternalSources(any(), assessmentSchemaCode) } returnsArgument 0
+      every { episodeService.prepopulateFromExternalSources(any(), assessmentType) } returnsArgument 0
       every { episodeService.prepopulateFromPreviousEpisodes(any(), emptyList()) } returnsArgument 0
 
       val episodeDto = assessmentsService.createNewEpisode(
         assessmentUuid,
         eventId,
         "Change of Circs",
-        assessmentSchemaCode,
+        assessmentType,
         DeliusEventType.EVENT_INDEX
       )
 
@@ -188,7 +188,7 @@ class AssessmentServiceTest {
             episodeId = episodeId1,
             changeReason = "Change of Circs 1",
             createdDate = LocalDateTime.now(),
-            assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+            assessmentType = AssessmentType.ROSH,
             author = AuthorEntity(
               userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"
             ),
@@ -198,7 +198,7 @@ class AssessmentServiceTest {
             episodeId = episodeId2,
             changeReason = "Change of Circs 2",
             createdDate = LocalDateTime.now(),
-            assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+            assessmentType = AssessmentType.ROSH,
             author = AuthorEntity(
               userId = "1",
               userName = "USER",
@@ -232,7 +232,7 @@ class AssessmentServiceTest {
                 episodeUuid = episodeUuid,
                 changeReason = "Change of Circs 1",
                 createdDate = LocalDateTime.now(),
-                assessmentSchemaCode = AssessmentSchemaCode.UPW,
+                assessmentType = AssessmentType.UPW,
                 author = AuthorEntity(
                   userId = "1",
                   userName = "USER",
@@ -285,7 +285,7 @@ class AssessmentServiceTest {
             changeReason = "Change of Circs 1",
             createdDate = LocalDateTime.now(),
             endDate = LocalDateTime.now().minusDays(1),
-            assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+            assessmentType = AssessmentType.ROSH,
             author = AuthorEntity(
               userId = "1",
               userName = "USER",
@@ -299,7 +299,7 @@ class AssessmentServiceTest {
             episodeUuid = episodeUuid2,
             changeReason = "Change of Circs 2",
             createdDate = LocalDateTime.now(),
-            assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+            assessmentType = AssessmentType.ROSH,
             author = AuthorEntity(
               userId = "1",
               userName = "USER",
@@ -350,7 +350,7 @@ class AssessmentServiceTest {
             episodeId = episodeId1,
             answers = mutableMapOf(questionCode1 to listOf("YES")),
             createdDate = LocalDateTime.now(),
-            assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+            assessmentType = AssessmentType.ROSH,
             author = AuthorEntity(
               userId = "1",
               userName = "USER",
@@ -363,7 +363,7 @@ class AssessmentServiceTest {
             episodeId = episodeId2,
             answers = mutableMapOf(questionCode2 to listOf("NO")),
             createdDate = LocalDateTime.now(),
-            assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+            assessmentType = AssessmentType.ROSH,
             author = AuthorEntity(
               userId = "1",
               userName = "USER",
@@ -379,8 +379,8 @@ class AssessmentServiceTest {
       val result = assessmentsService.getCurrentAssessmentCodedAnswers(assessmentUuid)
 
       assertThat(result.assessmentUuid).isEqualTo(assessmentUuid)
-      assertThat(result.answers["Q1"]?.first()?.answerSchemaUuid).isEqualTo(answer1Uuid)
-      assertThat(result.answers["Q2"]?.first()?.answerSchemaUuid).isEqualTo(answer3Uuid)
+      assertThat(result.answers["Q1"]?.first()?.answerUuid).isEqualTo(answer1Uuid)
+      assertThat(result.answers["Q2"]?.first()?.answerUuid).isEqualTo(answer3Uuid)
     }
 
     @Test
@@ -397,7 +397,7 @@ class AssessmentServiceTest {
               questionCode1 to listOf("YES")
             ),
             createdDate = LocalDateTime.now(),
-            assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+            assessmentType = AssessmentType.ROSH,
             author = AuthorEntity(
               userId = "1",
               userName = "USER",
@@ -413,7 +413,7 @@ class AssessmentServiceTest {
               questionCode2 to listOf("MAYBE")
             ),
             createdDate = LocalDateTime.now(),
-            assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+            assessmentType = AssessmentType.ROSH,
             author = AuthorEntity(
               userId = "1",
               userName = "USER",
@@ -429,7 +429,7 @@ class AssessmentServiceTest {
               questionCode2 to listOf("NO")
             ),
             createdDate = LocalDateTime.now(),
-            assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+            assessmentType = AssessmentType.ROSH,
             author = AuthorEntity(
               userId = "1",
               userName = "USER",
@@ -442,8 +442,8 @@ class AssessmentServiceTest {
       )
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
       val result = assessmentsService.getCurrentAssessmentCodedAnswers(assessmentUuid)
-      assertThat(result.answers["Q1"]?.first()?.answerSchemaUuid).isEqualTo(answer1Uuid)
-      assertThat(result.answers["Q2"]?.first()?.answerSchemaUuid).isEqualTo(answer2Uuid)
+      assertThat(result.answers["Q1"]?.first()?.answerUuid).isEqualTo(answer1Uuid)
+      assertThat(result.answers["Q2"]?.first()?.answerUuid).isEqualTo(answer2Uuid)
     }
 
     @Test
@@ -459,7 +459,7 @@ class AssessmentServiceTest {
               questionCode1 to listOf("YES")
             ),
             createdDate = LocalDateTime.now(),
-            assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+            assessmentType = AssessmentType.ROSH,
             author = AuthorEntity(
               userId = "1",
               userName = "USER",
@@ -475,7 +475,7 @@ class AssessmentServiceTest {
               questionCode2 to listOf("NO")
             ),
             createdDate = LocalDateTime.now(),
-            assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+            assessmentType = AssessmentType.ROSH,
             author = AuthorEntity(
               userId = "1",
               userName = "USER",
@@ -491,7 +491,7 @@ class AssessmentServiceTest {
               questionCode2 to listOf("MAYBE")
             ),
             createdDate = LocalDateTime.now(),
-            assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+            assessmentType = AssessmentType.ROSH,
             author = AuthorEntity(
               userId = "1",
               userName = "USER",
@@ -505,8 +505,8 @@ class AssessmentServiceTest {
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
 
       val result = assessmentsService.getCurrentAssessmentCodedAnswers(assessmentUuid)
-      assertThat(result.answers["Q1"]?.first()?.answerSchemaUuid).isEqualTo(answer1Uuid)
-      assertThat(result.answers["Q2"]?.first()?.answerSchemaUuid).isEqualTo(answer3Uuid)
+      assertThat(result.answers["Q1"]?.first()?.answerUuid).isEqualTo(answer1Uuid)
+      assertThat(result.answers["Q2"]?.first()?.answerUuid).isEqualTo(answer3Uuid)
     }
 
     @Test
@@ -523,7 +523,7 @@ class AssessmentServiceTest {
               questionCode3 to listOf("free text")
             ),
             createdDate = LocalDateTime.now(),
-            assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+            assessmentType = AssessmentType.ROSH,
             author = AuthorEntity(
               userId = "1",
               userName = "USER",
@@ -538,7 +538,7 @@ class AssessmentServiceTest {
       val result = assessmentsService.getCurrentAssessmentCodedAnswers(assessmentUuid)
 
       assertThat(result.assessmentUuid).isEqualTo(assessmentUuid)
-      assertThat(result.answers["Q1"]?.first()?.answerSchemaUuid).isEqualTo(answer1Uuid)
+      assertThat(result.answers["Q1"]?.first()?.answerUuid).isEqualTo(answer1Uuid)
       assertThat(result.answers).doesNotContainKey("Q2")
     }
 
@@ -555,7 +555,7 @@ class AssessmentServiceTest {
               questionCode1 to listOf("NO")
             ),
             createdDate = LocalDateTime.now(),
-            assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+            assessmentType = AssessmentType.ROSH,
             author = AuthorEntity(
               userId = "1",
               userName = "USER",
@@ -574,35 +574,35 @@ class AssessmentServiceTest {
   }
 
   private fun setupQuestionCodes() {
-    val dummy = AnswerSchemaGroupEntity(answerSchemaId = 99)
+    val dummy = AnswerGroupEntity(answerGroupId = 99)
 
     val yes =
-      AnswerSchemaEntity(answerSchemaId = 1, answerSchemaUuid = answer1Uuid, value = "YES", answerSchemaGroup = dummy)
+      AnswerEntity(answerId = 1, answerUuid = answer1Uuid, value = "YES", answerGroup = dummy)
     val maybe =
-      AnswerSchemaEntity(answerSchemaId = 2, answerSchemaUuid = answer2Uuid, value = "MAYBE", answerSchemaGroup = dummy)
+      AnswerEntity(answerId = 2, answerUuid = answer2Uuid, value = "MAYBE", answerGroup = dummy)
     val no =
-      AnswerSchemaEntity(answerSchemaId = 3, answerSchemaUuid = answer3Uuid, value = "NO", answerSchemaGroup = dummy)
+      AnswerEntity(answerId = 3, answerUuid = answer3Uuid, value = "NO", answerGroup = dummy)
 
-    val group1 = AnswerSchemaGroupEntity(answerSchemaId = 1, answerSchemaEntities = listOf(yes))
-    val group2 = AnswerSchemaGroupEntity(answerSchemaId = 2, answerSchemaEntities = listOf(maybe, no))
+    val group1 = AnswerGroupEntity(answerGroupId = 1, answerEntities = listOf(yes))
+    val group2 = AnswerGroupEntity(answerGroupId = 2, answerEntities = listOf(maybe, no))
 
     every { questionService.getAllQuestions() } returns QuestionSchemaEntities(
       listOf(
-        QuestionSchemaEntity(
-          questionSchemaId = 1,
-          questionSchemaUuid = questionSchemaUuid1,
+        QuestionEntity(
+          questionId = 1,
+          questionUuid = questionSchemaUuid1,
           questionCode = questionCode1,
-          answerSchemaGroup = group1
+          answerGroup = group1
         ),
-        QuestionSchemaEntity(
-          questionSchemaId = 2,
-          questionSchemaUuid = questionSchemaUuid2,
+        QuestionEntity(
+          questionId = 2,
+          questionUuid = questionSchemaUuid2,
           questionCode = questionCode2,
-          answerSchemaGroup = group2
+          answerGroup = group2
         ),
-        QuestionSchemaEntity(
-          questionSchemaId = 3,
-          questionSchemaUuid = questionSchemaUuid3,
+        QuestionEntity(
+          questionId = 3,
+          questionUuid = questionSchemaUuid3,
           questionCode = questionCode3
         )
       )

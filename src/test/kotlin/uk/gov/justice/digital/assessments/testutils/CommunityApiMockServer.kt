@@ -55,7 +55,52 @@ class CommunityApiMockServer : WireMockServer(9096) {
                 "            \"notes\": \"Cannot read\"," +
                 "            \"evidenced\": true," +
                 "            \"createdDatetime\": \"2021-10-25T12:08:42\"," +
-                "            \"lastUpdatedDatetime\": \"2021-10-25T12:08:42\"" +
+                "            \"lastUpdatedDatetime\": \"2021-10-25T12:08:42\"," +
+                "            \"isActive\": true" +
+                "        }," +
+                "        {" +
+                "            \"personalCircumstanceId\": 2507778503," +
+                "            \"offenderId\": 2500275961," +
+                "            \"personalCircumstanceType\": {" +
+                "                \"code\": \"G\"," +
+                "                \"description\": \"Literacy and Numeracy\"" +
+                "            }," +
+                "            \"personalCircumstanceSubType\": {" +
+                "                \"code\": \"G02\"," +
+                "                \"description\": \"Numeracy Concerns\"" +
+                "            }," +
+                "            \"startDate\": \"2021-08-09\"," +
+                "            \"probationArea\": {" +
+                "                \"code\": \"N07\"," +
+                "                \"description\": \"NPS London\"" +
+                "            }," +
+                "            \"notes\": \"Numeracy difficulties\"," +
+                "            \"evidenced\": true," +
+                "            \"createdDatetime\": \"2021-10-25T12:08:42\"," +
+                "            \"lastUpdatedDatetime\": \"2021-10-25T12:08:42\"," +
+                "            \"isActive\": true" +
+                "        }," +
+                "        {" +
+                "            \"personalCircumstanceId\": 2503338503," +
+                "            \"offenderId\": 2500275961," +
+                "            \"personalCircumstanceType\": {" +
+                "                \"code\": \"G\"," +
+                "                \"description\": \"Literacy and Numeracy\"" +
+                "            }," +
+                "            \"personalCircumstanceSubType\": {" +
+                "                \"code\": \"G03\"," +
+                "                \"description\": \"Language/Communication Concerns\"" +
+                "            }," +
+                "            \"startDate\": \"2021-08-09\"," +
+                "            \"probationArea\": {" +
+                "                \"code\": \"N07\"," +
+                "                \"description\": \"NPS London\"" +
+                "            }," +
+                "            \"notes\": \"Communication difficulties\"," +
+                "            \"evidenced\": true," +
+                "            \"createdDatetime\": \"2021-10-25T12:08:42\"," +
+                "            \"lastUpdatedDatetime\": \"2021-10-25T12:08:42\"," +
+                "            \"isActive\": true" +
                 "        }," +
                 "        {" +
                 "            \"personalCircumstanceId\": 2500178003," +

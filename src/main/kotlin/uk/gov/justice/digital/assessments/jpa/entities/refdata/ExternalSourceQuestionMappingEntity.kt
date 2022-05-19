@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.assessments.jpa.entities.refdata
 
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import java.io.Serializable
 import java.util.UUID
 import javax.persistence.Column
@@ -26,9 +26,9 @@ class ExternalSourceQuestionMappingEntity(
   @Column(name = "external_source_question_mapping_uuid")
   val externalSourceQuestionMappingUuid: UUID = UUID.randomUUID(),
 
-  @Column(name = "assessment_schema_code")
+  @Column(name = "assessment_type")
   @Enumerated(EnumType.STRING)
-  val assessmentSchemaCode: AssessmentSchemaCode,
+  val assessmentType: AssessmentType,
 
   @Column(name = "external_source")
   val externalSource: String,
@@ -50,5 +50,5 @@ class ExternalSourceQuestionMappingEntity(
 
   @ManyToOne
   @JoinColumn(name = "question_code", referencedColumnName = "question_code")
-  val questionSchema: QuestionSchemaEntity,
+  val question: QuestionEntity,
 ) : Serializable

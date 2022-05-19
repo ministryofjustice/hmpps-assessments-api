@@ -10,7 +10,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
@@ -26,12 +26,14 @@ import java.util.UUID
 
 @ExtendWith(MockKExtension::class)
 @DisplayName("Assessment Service Complete Tests")
-class AssessmentUpdateServiceCompleteTest {
+class AssessmentUpdateServiceCompleteTest() {
   private val assessmentRepository: AssessmentRepository = mockk()
   private val episodeRepository: EpisodeRepository = mockk()
-  private val assessmentSchemaService: AssessmentSchemaService = mockk()
+  private val questionService: QuestionService = mockk()
+  private val assessmentReferenceDataService: AssessmentReferenceDataService = mockk()
   private val riskPredictorsService: RiskPredictorsService = mockk()
   private val oasysAssessmentUpdateService: OasysAssessmentUpdateService = mockk()
+  private val assessmentService: AssessmentService = mockk()
   private val authorService: AuthorService = mockk()
   private val auditService: AuditService = mockk()
   private val telemetryService: TelemetryService = mockk()
@@ -39,8 +41,10 @@ class AssessmentUpdateServiceCompleteTest {
   private val assessmentUpdateService = AssessmentUpdateService(
     assessmentRepository,
     episodeRepository,
+    questionService,
     riskPredictorsService,
     oasysAssessmentUpdateService,
+    assessmentService,
     authorService,
     auditService,
     telemetryService
@@ -48,7 +52,8 @@ class AssessmentUpdateServiceCompleteTest {
 
   @BeforeEach
   fun setup() {
-    every { assessmentSchemaService.toOasysAssessmentType(AssessmentSchemaCode.ROSH) } returns OasysAssessmentType.SHORT_FORM_PSR
+    every { assessmentReferenceDataService.toOasysAssessmentType(AssessmentType.ROSH) } returns OasysAssessmentType.SHORT_FORM_PSR
+    every { assessmentService.shouldPushToOasys(AssessmentType.ROSH) } returns true
   }
 
   @Test
@@ -65,6 +70,7 @@ class AssessmentUpdateServiceCompleteTest {
         any()
       )
     }
+
     every { assessmentRepository.findByAssessmentUuid(any()) } returns assessment
     every { episodeRepository.save(any()) } returns assessment.episodes[0]
     val assessmentEpisode = assessment.episodes.first()
@@ -126,7 +132,7 @@ class AssessmentUpdateServiceCompleteTest {
         author,
         episode.assessmentUuid,
         episode.episodeUuid!!,
-        AssessmentSchemaCode.ROSH
+        AssessmentType.ROSH
       )
     }
   }
@@ -142,7 +148,7 @@ class AssessmentUpdateServiceCompleteTest {
     } returns AssessmentEpisodeUpdateErrors(
       answerErrors = mutableMapOf("question_code" to mutableListOf("error"))
     )
-    every { riskPredictorsService.getPredictorResults(assessmentEpisode, true) } returns emptyList()
+    every { riskPredictorsService.getPredictorResults(assessmentEpisode, false) } returns emptyList()
     val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
     every { authorService.getOrCreateAuthor() } returns author
 
@@ -173,7 +179,7 @@ class AssessmentUpdateServiceCompleteTest {
         episodeUuid = UUID.fromString("669cdd10-1061-42ec-90d4-e34baab19566"),
         episodeId = 1234,
         assessment = assessment,
-        assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+        assessmentType = AssessmentType.ROSH,
         changeReason = "Change of Circs 2",
         oasysSetPk = 7777,
         createdDate = LocalDateTime.now(),

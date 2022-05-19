@@ -4,6 +4,6 @@ import java.util.UUID
 
 data class AssessmentAnswersDto(
   val assessmentUuid: UUID,
-  // Question Code -> List Of Answer Schema Dto
-  val answers: Map<String, Collection<AnswerSchemaDto>>
+  // Question Code -> List Of Answer Dtos
+  val answers: Map<String, Collection<AnswerDto>>
 )

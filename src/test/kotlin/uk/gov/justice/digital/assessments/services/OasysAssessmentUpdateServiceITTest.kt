@@ -5,7 +5,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.slf4j.MDC
 import org.springframework.beans.factory.annotation.Autowired
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
@@ -31,38 +31,11 @@ class OasysAssessmentUpdateServiceITTest() : IntegrationTest() {
   }
 
   @Test
-  fun `Trying to push to Create OASys Assessment that should not be pushed into Oasys returns null`() {
-    val returnAssessmentPk =
-      oasysAssessmentUpdateService.createOffenderAndOasysAssessment(
-        crn = "DX12340A",
-        assessmentSchemaCode = AssessmentSchemaCode.RSR
-      )
-    assertThat(returnAssessmentPk).isEqualTo(Pair(null, null))
-  }
-
-  @Test
-  fun `Trying to push to OASys Assessment update that should not be pushed into Oasys returns null`() {
-    val assessment = rsrAssessment()
-    val updateAssessmentResponse =
-      oasysAssessmentUpdateService.updateOASysAssessment(assessment.episodes.first(), mutableMapOf())
-    assertThat(updateAssessmentResponse).isEqualTo(null)
-  }
-
-  @Test
-  fun `Trying to push to OASys Assessment completion that should not be pushed into Oasys returns null`() {
-    val assessment = rsrAssessment()
-
-    val updateAssessmentResponse =
-      oasysAssessmentUpdateService.completeOASysAssessment(assessment.episodes.first(), null)
-    assertThat(updateAssessmentResponse).isEqualTo(null)
-  }
-
-  @Test
   fun `Trying to push to Create OASys Assessment that should be pushed into Oasys returns the assessment and offender created`() {
     val returnAssessmentPk =
       oasysAssessmentUpdateService.createOffenderAndOasysAssessment(
         crn = "DX12340A",
-        assessmentSchemaCode = AssessmentSchemaCode.ROSH
+        assessmentType = AssessmentType.ROSH
       )
     assertThat(returnAssessmentPk.first).isEqualTo(1L)
     assertThat(returnAssessmentPk.second).isEqualTo(1L)
@@ -104,7 +77,7 @@ class OasysAssessmentUpdateServiceITTest() : IntegrationTest() {
         episodeId = episodeId2,
         changeReason = "Change of Circs 2",
         oasysSetPk = 1L,
-        assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+        assessmentType = AssessmentType.ROSH,
         answers = mutableMapOf(),
         createdDate = LocalDateTime.now(),
         author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
@@ -120,7 +93,7 @@ class OasysAssessmentUpdateServiceITTest() : IntegrationTest() {
         assessment = AssessmentEntity(),
         episodeId = episodeId2,
         changeReason = "Change of Circs 2",
-        assessmentSchemaCode = AssessmentSchemaCode.RSR,
+        assessmentType = AssessmentType.RSR,
         answers = mutableMapOf(),
         createdDate = LocalDateTime.now(),
         author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),

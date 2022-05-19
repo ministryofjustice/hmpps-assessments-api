@@ -19,12 +19,12 @@ class ReferenceDataTargetMappingEntity(
   val id: Long,
 
   @ManyToOne
-  @JoinColumn(name = "question_schema_uuid", referencedColumnName = "question_schema_uuid")
-  val questionSchema: QuestionSchemaEntity,
+  @JoinColumn(name = "question_uuid", referencedColumnName = "question_uuid")
+  val question: QuestionEntity,
 
   @ManyToOne
-  @JoinColumn(name = "parent_question_schema_uuid", referencedColumnName = "question_schema_uuid")
-  val parentQuestionSchema: QuestionSchemaEntity,
+  @JoinColumn(name = "parent_question_uuid", referencedColumnName = "question_uuid")
+  val parentQuestion: QuestionEntity,
 
   @Column(name = "is_required")
   val isRequired: Boolean = false,

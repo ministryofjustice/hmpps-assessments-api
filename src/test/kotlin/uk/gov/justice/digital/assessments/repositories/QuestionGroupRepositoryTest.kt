@@ -24,14 +24,14 @@ class QuestionGroupRepositoryTest(@Autowired val questionGroupRepository: Questi
   @Test
   fun `list group summaries`() {
     val groupSummaries = questionGroupRepository.listGroups()
-    assertThat(groupSummaries).hasSize(55)
+    assertThat(groupSummaries).hasSize(54)
 
     val groupInfo = groupSummaries.find { it.groupCode == "risk_to_others" }
 
     assertThat(groupInfo?.groupUuid).isEqualTo("946091d2-4038-4e2b-9283-83cc4876f6ed")
     assertThat(groupInfo?.heading).isEqualTo("Risk to others")
-    assertThat(groupInfo?.contentCount).isEqualTo(33)
+    assertThat(groupInfo?.contentCount).isEqualTo(32)
     assertThat(groupInfo?.groupCount).isEqualTo(0)
-    assertThat(groupInfo?.questionCount).isEqualTo(33)
+    assertThat(groupInfo?.questionCount).isEqualTo(32)
   }
 }

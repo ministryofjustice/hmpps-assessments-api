@@ -16,7 +16,7 @@ import uk.gov.justice.digital.assessments.api.EmergencyContactDetailsAnswerDto
 import uk.gov.justice.digital.assessments.api.GPDetailsAnswerDto
 import uk.gov.justice.digital.assessments.api.GroupQuestionDto
 import uk.gov.justice.digital.assessments.api.TableQuestionDto
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.CloneAssessmentExcludedQuestionsRepository
 import uk.gov.justice.digital.assessments.restclient.AssessmentApiRestClient
@@ -24,7 +24,7 @@ import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import uk.gov.justice.digital.assessments.restclient.communityapi.PersonalContact
 import uk.gov.justice.digital.assessments.services.dto.ExternalSource
-import uk.gov.justice.digital.assessments.services.dto.ExternalSourceQuestionSchemaDto
+import uk.gov.justice.digital.assessments.services.dto.ExternalSourceQuestionDto
 import uk.gov.justice.digital.assessments.services.exceptions.CrnIsMandatoryException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalSourceAnswerException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalSourceEndpointIsMandatoryException
@@ -37,8 +37,9 @@ class EpisodeService(
   private val questionService: QuestionService,
   private val courtCaseRestClient: CourtCaseRestClient,
   private val communityApiRestClient: CommunityApiRestClient,
+
   private val assessmentApiRestClient: AssessmentApiRestClient,
-  private val assessmentSchemaService: AssessmentSchemaService,
+  private val assessmentReferenceDataService: AssessmentReferenceDataService,
   private val cloneAssessmentExcludedQuestionsRepository: CloneAssessmentExcludedQuestionsRepository
 ) {
   companion object {
@@ -55,10 +56,10 @@ class EpisodeService(
 
   fun prepopulateFromExternalSources(
     episode: AssessmentEpisodeEntity,
-    assessmentSchemaCode: AssessmentSchemaCode
+    assessmentType: AssessmentType
   ): AssessmentEpisodeEntity {
-    AssessmentService.log.info("Pre-populating episode from external source for assessment type: $assessmentSchemaCode")
-    val questionsToPopulate = questionService.getAllQuestions().withExternalSource(assessmentSchemaCode)
+    log.info("Pre-populating episode from external source for assessment type: $assessmentSchemaCode")
+    val questionsToPopulate = questionService.getAllQuestions().withExternalSource(assessmentType)
     if (questionsToPopulate.isEmpty())
       return episode
 
@@ -83,10 +84,10 @@ class EpisodeService(
     }.sortedByDescending { it.endDate }
 
     val questions =
-      assessmentSchemaService.getQuestionsForSchemaCode(newEpisode.assessmentSchemaCode)
+      assessmentReferenceDataService.getQuestionsForAssessmentType(newEpisode.assessmentType)
 
     val ignoredQuestionCodes = cloneAssessmentExcludedQuestionsRepository
-      .findAllByAssessmentSchemaCode(newEpisode.assessmentSchemaCode).map { it.questionCode }
+      .findAllByAssessmentType(newEpisode.assessmentType).map { it.questionCode }
 
     val questionCodes = questions.filterIsInstance<GroupQuestionDto>()
       .map { it.questionCode }
@@ -112,8 +113,8 @@ class EpisodeService(
 
   private fun prepopulateFromSource(
     episode: AssessmentEpisodeEntity,
-    sourceName: String,
-    questionSchemas: List<ExternalSourceQuestionSchemaDto>,
+    sourceName: String?,
+    questions: List<ExternalSourceQuestionDto>,
     latestCompleteEpisodeEndDate: LocalDateTime?
   ) {
     episode.prepopulatedFromOASys = sourceName == OASYS_SOURCE_NAME
@@ -127,6 +128,16 @@ class EpisodeService(
       }
   }
 
+  private fun prepopulateQuestion(
+    episode: AssessmentEpisodeEntity,
+    source: DocumentContext,
+    question: ExternalSourceQuestionDto
+  ) {
+
+    val answer = answerFormat(source, question).orEmpty()
+    episode.answers.let {
+      it[question.questionCode] = it[question.questionCode].orEmpty().plus(answer).toSet().toList()
+    }
   private fun getAnswersFromSourceData(source: DocumentContext, question: ExternalSourceQuestionSchemaDto): List<Any> {
     return answerFormat(source, question).orEmpty()
   }
@@ -182,14 +193,14 @@ class EpisodeService(
     return communityApiRestClient.getOffenderJson(crn, externalSourceEndpoint)
   }
 
-  private fun formatDate(source: DocumentContext, question: ExternalSourceQuestionSchemaDto): String {
+  private fun formatDate(source: DocumentContext, question: ExternalSourceQuestionDto): String {
     val dateStr = (source.read<JSONArray>(question.jsonPathField).filterNotNull() as List<String>).first().toString()
 
     return if (basicDatePattern.matcher(dateStr).matches())
       iso8601DateFormatter.format(basicDateFormatter.parse(dateStr)) else dateStr
   }
 
-  private fun answerFormat(source: DocumentContext, question: ExternalSourceQuestionSchemaDto): List<Any>? {
+  private fun answerFormat(source: DocumentContext, question: ExternalSourceQuestionDto): List<Any>? {
     try {
       return when (question.fieldType) {
         "varchar" -> listOf(source.read<Any>(question.jsonPathField).toString())

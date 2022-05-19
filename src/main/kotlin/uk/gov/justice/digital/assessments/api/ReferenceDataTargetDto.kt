@@ -22,7 +22,7 @@ data class ReferenceDataTargetDto(
 
     fun from(referenceDataTargetMappingEntity: ReferenceDataTargetMappingEntity): ReferenceDataTargetDto {
       return ReferenceDataTargetDto(
-        referenceDataTargetMappingEntity.parentQuestionSchema.questionSchemaUuid,
+        referenceDataTargetMappingEntity.parentQuestion.questionUuid,
         referenceDataTargetMappingEntity.isRequired,
       )
     }

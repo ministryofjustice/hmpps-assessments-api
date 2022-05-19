@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service
 import uk.gov.justice.digital.assessments.api.EpisodeOasysAnswerDto
 import uk.gov.justice.digital.assessments.api.EpisodeOasysAnswersDto
 import uk.gov.justice.digital.assessments.api.OasysAssessmentEpisodeDto
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRepository
 import uk.gov.justice.digital.assessments.services.dto.OasysAnswers
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
@@ -16,15 +16,15 @@ class OasysAssessmentService(
 ) {
 
   fun getLatestEpisodeOfTypeForSubjectWithCrn(
-    assessmentSchemaCode: AssessmentSchemaCode,
+    assessmentType: AssessmentType,
     crn: String
   ): OasysAssessmentEpisodeDto {
     val subjectEntity = (
       subjectRepository.findByCrn(crn)
         ?: throw EntityNotFoundException("Subject for crn $crn not found")
       )
-    val latestInProgressOrCompleteEpisode = subjectEntity.getCurrentAssessment()?.getLatestInProgessOrCompleteEpisodeOfType(assessmentSchemaCode)
-      ?: throw EntityNotFoundException("Closed Episode for Subject for crn $crn not found for type $assessmentSchemaCode ")
+    val latestInProgressOrCompleteEpisode = subjectEntity.getCurrentAssessment()?.getLatestInProgressOrCompleteEpisodeOfType(assessmentType)
+      ?: throw EntityNotFoundException("Closed Episode for Subject for crn $crn not found for type $assessmentType ")
 
     var oasysAnswers = OasysAnswers.from(
       latestInProgressOrCompleteEpisode,

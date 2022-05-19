@@ -31,7 +31,6 @@ class CommunityApiRestClient(
   val webClient: WebClient
 ) {
 
-  @Cacheable("offender")
   fun getOffender(crn: String): CommunityOffenderDto? {
     return getOffender(offenderCrn = crn, elementClass = CommunityOffenderDto::class.java)
   }

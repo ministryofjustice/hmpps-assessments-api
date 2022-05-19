@@ -8,12 +8,12 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentSchemaCode
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.OASysMappingEntity
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.OASysMappingRepository
 import uk.gov.justice.digital.assessments.restclient.AssessmentApiRestClient
@@ -33,7 +33,7 @@ private val episodeUuid = UUID.randomUUID()
 private val episode = AssessmentEpisodeEntity(
   episodeUuid = episodeUuid,
   oasysSetPk = 123456,
-  assessmentSchemaCode = AssessmentSchemaCode.ROSH,
+  assessmentType = AssessmentType.ROSH,
   createdDate = LocalDateTime.now(),
   author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
   assessment = AssessmentEntity()
@@ -42,20 +42,20 @@ private val assessment = AssessmentEntity(episodes = mutableListOf(episode))
 private val referenceDataElement = RefElementDto("code", "short description", "long description")
 private val referenceData = mapOf("some_field" to listOf(referenceDataElement))
 
-private val questionSchema = QuestionSchemaEntity(questionSchemaId = 1234, questionCode = "question_code_1")
+private val questionSchema = QuestionEntity(questionId = 1234, questionCode = "question_code_1")
 private val questionMapping = OASysMappingEntity(
   mappingId = 1234,
   questionCode = "some_field",
   sectionCode = "some_section",
-  questionSchema = questionSchema
+  question = questionSchema
 )
 
-private val parentQuestionSchema = QuestionSchemaEntity(questionSchemaId = 5678, questionCode = "question_code_2")
+private val parentQuestionSchema = QuestionEntity(questionId = 5678, questionCode = "question_code_2")
 private val parentQuestionMapping = OASysMappingEntity(
   mappingId = 5678,
   questionCode = "parent_field",
   sectionCode = "some_section",
-  questionSchema = parentQuestionSchema
+  question = parentQuestionSchema
 )
 
 @ExtendWith(MockKExtension::class)
@@ -75,7 +75,7 @@ class ReferenceDataServiceTest {
     } returns referenceData
 
     every { assessmentRepository.findByAssessmentUuid(any()) } returns assessment
-    every { oaSysMappingRepository.findAllByQuestionSchema_QuestionSchemaUuidIn(any()) } returns listOf(
+    every { oaSysMappingRepository.findAllByQuestion_QuestionUuidIn(any()) } returns listOf(
       questionMapping,
       parentQuestionMapping
     )
@@ -83,8 +83,8 @@ class ReferenceDataServiceTest {
     val referenceData = referenceDataService.getFilteredReferenceData(
       assessmentUuid = UUID.randomUUID(),
       episodeUuid = episodeUuid,
-      questionUuid = questionSchema.questionSchemaUuid,
-      parentFields = mapOf(parentQuestionSchema.questionSchemaUuid to "some_value")
+      questionUuid = questionSchema.questionUuid,
+      parentFields = mapOf(parentQuestionSchema.questionUuid to "some_value")
     )
 
     assertThat(referenceData).isEqualTo(referenceData)
@@ -104,7 +104,7 @@ class ReferenceDataServiceTest {
     } throws Exception("Something went wrong in the client")
 
     every { assessmentRepository.findByAssessmentUuid(any()) } returns assessment
-    every { oaSysMappingRepository.findAllByQuestionSchema_QuestionSchemaUuidIn(any()) } returns listOf(
+    every { oaSysMappingRepository.findAllByQuestion_QuestionUuidIn(any()) } returns listOf(
       questionMapping,
       parentQuestionMapping
     )
@@ -113,8 +113,8 @@ class ReferenceDataServiceTest {
       referenceDataService.getFilteredReferenceData(
         assessmentUuid = UUID.randomUUID(),
         episodeUuid = episodeUuid,
-        questionUuid = questionSchema.questionSchemaUuid,
-        parentFields = mapOf(parentQuestionSchema.questionSchemaUuid to "some_value")
+        questionUuid = questionSchema.questionUuid,
+        parentFields = mapOf(parentQuestionSchema.questionUuid to "some_value")
       )
     }.hasMessage("Something went wrong in the client")
   }
@@ -133,7 +133,7 @@ class ReferenceDataServiceTest {
     } returns referenceData
 
     every { assessmentRepository.findByAssessmentUuid(any()) } returns AssessmentEntity(episodes = mutableListOf())
-    every { oaSysMappingRepository.findAllByQuestionSchema_QuestionSchemaUuidIn(any()) } returns listOf(
+    every { oaSysMappingRepository.findAllByQuestion_QuestionUuidIn(any()) } returns listOf(
       questionMapping,
       parentQuestionMapping
     )
@@ -142,8 +142,8 @@ class ReferenceDataServiceTest {
       referenceDataService.getFilteredReferenceData(
         assessmentUuid = UUID.randomUUID(),
         episodeUuid = episodeUuid,
-        questionUuid = questionSchema.questionSchemaUuid,
-        parentFields = mapOf(parentQuestionSchema.questionSchemaUuid to "some_value")
+        questionUuid = questionSchema.questionUuid,
+        parentFields = mapOf(parentQuestionSchema.questionUuid to "some_value")
       )
     }
       .isInstanceOf(EntityNotFoundException::class.java)
@@ -164,7 +164,7 @@ class ReferenceDataServiceTest {
     } returns referenceData
 
     every { assessmentRepository.findByAssessmentUuid(any()) } returns assessment
-    every { oaSysMappingRepository.findAllByQuestionSchema_QuestionSchemaUuidIn(any()) } returns listOf(
+    every { oaSysMappingRepository.findAllByQuestion_QuestionUuidIn(any()) } returns listOf(
       parentQuestionMapping
     )
 
@@ -172,8 +172,8 @@ class ReferenceDataServiceTest {
       referenceDataService.getFilteredReferenceData(
         assessmentUuid = UUID.randomUUID(),
         episodeUuid = episodeUuid,
-        questionUuid = questionSchema.questionSchemaUuid,
-        parentFields = mapOf(parentQuestionSchema.questionSchemaUuid to "some_value")
+        questionUuid = questionSchema.questionUuid,
+        parentFields = mapOf(parentQuestionSchema.questionUuid to "some_value")
       )
     }
       .isInstanceOf(EntityNotFoundException::class.java)
@@ -194,14 +194,14 @@ class ReferenceDataServiceTest {
     } returns referenceData
 
     every { assessmentRepository.findByAssessmentUuid(any()) } returns assessment
-    every { oaSysMappingRepository.findAllByQuestionSchema_QuestionSchemaUuidIn(any()) } returns listOf(questionMapping)
+    every { oaSysMappingRepository.findAllByQuestion_QuestionUuidIn(any()) } returns listOf(questionMapping)
 
     assertThatThrownBy {
       referenceDataService.getFilteredReferenceData(
         assessmentUuid = UUID.randomUUID(),
         episodeUuid = episodeUuid,
-        questionUuid = questionSchema.questionSchemaUuid,
-        parentFields = mapOf(parentQuestionSchema.questionSchemaUuid to "some_value")
+        questionUuid = questionSchema.questionUuid,
+        parentFields = mapOf(parentQuestionSchema.questionUuid to "some_value")
       )
     }
       .isInstanceOf(EntityNotFoundException::class.java)

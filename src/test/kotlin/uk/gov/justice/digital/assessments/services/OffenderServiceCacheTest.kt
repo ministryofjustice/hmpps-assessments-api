@@ -3,7 +3,6 @@ package uk.gov.justice.digital.assessments.services
 import com.github.tomakehurst.wiremock.client.WireMock.exactly
 import com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -63,17 +62,6 @@ internal class OffenderServiceCacheTest(
     }
 
     communityApiMockServer.verify(exactly(2), getRequestedFor(urlEqualTo("/secure/offenders/crn/$aCRN/user/user1/userAccess")))
-  }
-
-  @Test
-  fun `get offender is cached`() {
-    val aCRN = "DX12340A"
-    val itemCacheMiss = offenderService.getOffender(aCRN)
-    val itemCacheHit = offenderService.getOffender(aCRN)
-
-    communityApiMockServer.verify(exactly(1), getRequestedFor(urlEqualTo("/secure/offenders/crn/$aCRN/all")))
-
-    assertThat(itemCacheMiss).isEqualTo(itemCacheHit)
   }
 
   companion object {

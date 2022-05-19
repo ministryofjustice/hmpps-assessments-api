@@ -14,35 +14,35 @@ import org.junit.jupiter.api.extension.ExtendWith
 import uk.gov.justice.digital.assessments.api.CheckboxGroupDto
 import uk.gov.justice.digital.assessments.api.GroupQuestionDto
 import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
-import uk.gov.justice.digital.assessments.api.QuestionSchemaDto
+import uk.gov.justice.digital.assessments.api.QuestionDto
 import uk.gov.justice.digital.assessments.api.TableQuestionDto
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerSchemaEntity
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerSchemaGroupEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerGroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.GroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.GroupSummaryEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.OASysMappingEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionDependencyEntity
+import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionGroupEntity
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionSchemaEntity
-import uk.gov.justice.digital.assessments.jpa.repositories.refdata.AnswerSchemaRepository
+import uk.gov.justice.digital.assessments.jpa.repositories.refdata.AnswerRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.GroupRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.OASysMappingRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.QuestionGroupRepository
-import uk.gov.justice.digital.assessments.jpa.repositories.refdata.QuestionSchemaRepository
+import uk.gov.justice.digital.assessments.jpa.repositories.refdata.QuestionRepository
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import java.util.UUID
 
 @ExtendWith(MockKExtension::class)
 @DisplayName("Question Schema Service Tests")
 class QuestionServiceTest {
-  private val questionSchemaRepository: QuestionSchemaRepository = mockk()
-  private val answerSchemaRepository: AnswerSchemaRepository = mockk()
+  private val questionRepository: QuestionRepository = mockk()
+  private val answerRepository: AnswerRepository = mockk()
   private val questionGroupRepository: QuestionGroupRepository = mockk()
   private val groupRepository: GroupRepository = mockk()
   private val oasysMappingRepository: OASysMappingRepository = mockk()
   private val dependencyService: QuestionDependencyService = mockk()
   private val questionService = QuestionService(
-    questionSchemaRepository,
+    questionRepository,
     questionGroupRepository,
     groupRepository,
     oasysMappingRepository,
@@ -60,9 +60,9 @@ class QuestionServiceTest {
     groupCode = "Test Group",
     contents = contents
   )
-  private val question = QuestionSchemaEntity(
-    questionSchemaId = questionId,
-    questionSchemaUuid = questionUuid,
+  private val question = QuestionEntity(
+    questionId = questionId,
+    questionUuid = questionUuid,
     questionCode = "question_code"
   )
 
@@ -76,9 +76,9 @@ class QuestionServiceTest {
   )
 
   private val tableQuestionUuid = UUID.randomUUID()
-  private val tableQuestion = QuestionSchemaEntity(
-    questionSchemaId = 2L,
-    questionSchemaUuid = tableQuestionUuid,
+  private val tableQuestion = QuestionEntity(
+    questionId = 2L,
+    questionUuid = tableQuestionUuid,
     answerType = "table:children",
     questionCode = "table_children"
   )
@@ -101,24 +101,24 @@ class QuestionServiceTest {
   private val tableSubQuestion2Id = UUID.randomUUID()
   private val tableSubQuestion3Id = UUID.randomUUID()
   private val tableSubQuestion4Id = UUID.randomUUID()
-  private val tableSubQuestion1 = QuestionSchemaEntity(
-    questionSchemaId = 12,
-    questionSchemaUuid = tableSubQuestion1Id,
+  private val tableSubQuestion1 = QuestionEntity(
+    questionId = 12,
+    questionUuid = tableSubQuestion1Id,
     questionCode = "table_sub_question_one"
   )
-  private val tableSubQuestion2 = QuestionSchemaEntity(
-    questionSchemaId = 14,
-    questionSchemaUuid = tableSubQuestion2Id,
+  private val tableSubQuestion2 = QuestionEntity(
+    questionId = 14,
+    questionUuid = tableSubQuestion2Id,
     questionCode = "table_sub_question_two"
   )
-  private val tableSubQuestion3 = QuestionSchemaEntity(
-    questionSchemaId = 16,
-    questionSchemaUuid = tableSubQuestion3Id,
+  private val tableSubQuestion3 = QuestionEntity(
+    questionId = 16,
+    questionUuid = tableSubQuestion3Id,
     questionCode = "table_sub_question_three"
   )
-  private val tableSubQuestion4 = QuestionSchemaEntity(
-    questionSchemaId = 18,
-    questionSchemaUuid = tableSubQuestion4Id,
+  private val tableSubQuestion4 = QuestionEntity(
+    questionId = 18,
+    questionUuid = tableSubQuestion4Id,
     questionCode = "table_sub_question_four"
   )
 
@@ -131,9 +131,9 @@ class QuestionServiceTest {
     contents = groupWithCheckboxContents
   )
   private val checkboxQuestionUuid = UUID.randomUUID()
-  private val checkboxQuestion = QuestionSchemaEntity(
-    questionSchemaId = 2L,
-    questionSchemaUuid = checkboxQuestionUuid,
+  private val checkboxQuestion = QuestionEntity(
+    questionId = 2L,
+    questionUuid = checkboxQuestionUuid,
     answerType = "inline-checkboxes:previous_offences",
     questionCode = "question_code_previous_offences"
   )
@@ -146,9 +146,9 @@ class QuestionServiceTest {
     contents = checkboxGroupContents
   )
   private val checkboxSubQuestion1Id = UUID.randomUUID()
-  private val checkboxSubQuestion1 = QuestionSchemaEntity(
-    questionSchemaId = 17,
-    questionSchemaUuid = checkboxSubQuestion1Id,
+  private val checkboxSubQuestion1 = QuestionEntity(
+    questionId = 17,
+    questionUuid = checkboxSubQuestion1Id,
     questionCode = "question_code"
   )
 
@@ -277,36 +277,36 @@ class QuestionServiceTest {
 
   @Test
   fun `get Question Schema by ID`() {
-    every { questionSchemaRepository.findByQuestionSchemaUuid(questionUuid) } returns QuestionSchemaEntity(
-      questionSchemaId = questionId,
-      questionSchemaUuid = questionUuid,
+    every { questionRepository.findByQuestionUuid(questionUuid) } returns QuestionEntity(
+      questionId = questionId,
+      questionUuid = questionUuid,
       questionCode = "question_code"
     )
 
-    val questionSchemaDto = questionService.getQuestionSchema(questionUuid)
+    val questionSchemaDto = questionService.getQuestion(questionUuid)
 
-    verify(exactly = 1) { questionSchemaRepository.findByQuestionSchemaUuid(questionUuid) }
+    verify(exactly = 1) { questionRepository.findByQuestionUuid(questionUuid) }
     assertThat(questionSchemaDto).isEqualTo(
-      QuestionSchemaDto(
-        questionSchemaId = questionId,
-        questionSchemaUuid = questionUuid,
+      QuestionDto(
+        questionId = questionId,
+        questionUuid = questionUuid,
         questionCode = "question_code",
-        answerSchemas = emptySet()
+        answerDtos = emptySet()
       )
     )
   }
 
   @Test
   fun `throw exception when Question Schema for ID`() {
-    every { questionSchemaRepository.findByQuestionSchemaUuid(questionUuid) } returns null
-    Assertions.assertThatThrownBy { questionService.getQuestionSchema(questionUuid) }
+    every { questionRepository.findByQuestionUuid(questionUuid) } returns null
+    Assertions.assertThatThrownBy { questionService.getQuestion(questionUuid) }
       .isInstanceOf(EntityNotFoundException::class.java)
-    verify(exactly = 1) { questionSchemaRepository.findByQuestionSchemaUuid(questionUuid) }
+    verify(exactly = 1) { questionRepository.findByQuestionUuid(questionUuid) }
   }
 
   @Test
   fun `get group contents`() {
-    every { questionSchemaRepository.findByQuestionSchemaUuid(questionUuid) } returns question
+    every { questionRepository.findByQuestionUuid(questionUuid) } returns question
     every { groupRepository.findByGroupUuid(groupUuid) } returns group
     every { dependencyService.dependencies() } returns QuestionDependencies(emptyList())
 
@@ -325,12 +325,12 @@ class QuestionServiceTest {
     every { groupRepository.findByGroupUuid(groupWithTableUuid) } returns groupWithTable
     every { groupRepository.findByGroupUuid(tableSubGroup.groupUuid) } returns tableSubGroup
     every { groupRepository.findByGroupCode("children") } returns tableGroup
-    every { questionSchemaRepository.findByQuestionSchemaUuid(questionUuid) } returns question
-    every { questionSchemaRepository.findByQuestionSchemaUuid(tableQuestionUuid) } returns tableQuestion
-    every { questionSchemaRepository.findByQuestionSchemaUuid(tableSubQuestion1Id) } returns tableSubQuestion1
-    every { questionSchemaRepository.findByQuestionSchemaUuid(tableSubQuestion2Id) } returns tableSubQuestion2
-    every { questionSchemaRepository.findByQuestionSchemaUuid(tableSubQuestion3Id) } returns tableSubQuestion3
-    every { questionSchemaRepository.findByQuestionSchemaUuid(tableSubQuestion4Id) } returns tableSubQuestion4
+    every { questionRepository.findByQuestionUuid(questionUuid) } returns question
+    every { questionRepository.findByQuestionUuid(tableQuestionUuid) } returns tableQuestion
+    every { questionRepository.findByQuestionUuid(tableSubQuestion1Id) } returns tableSubQuestion1
+    every { questionRepository.findByQuestionUuid(tableSubQuestion2Id) } returns tableSubQuestion2
+    every { questionRepository.findByQuestionUuid(tableSubQuestion3Id) } returns tableSubQuestion3
+    every { questionRepository.findByQuestionUuid(tableSubQuestion4Id) } returns tableSubQuestion4
     every { dependencyService.dependencies() } returns QuestionDependencies(emptyList())
 
     val groupQuestions = questionService.getGroupContents(groupWithTableUuid)
@@ -360,8 +360,8 @@ class QuestionServiceTest {
   fun `get group contents with inline-checkboxes`() {
     every { groupRepository.findByGroupUuid(groupWithCheckboxUuid) } returns groupWithCheckbox
     every { groupRepository.findByGroupCode("previous_offences") } returns checkboxGroup
-    every { questionSchemaRepository.findByQuestionSchemaUuid(checkboxQuestionUuid) } returns checkboxQuestion
-    every { questionSchemaRepository.findByQuestionSchemaUuid(checkboxSubQuestion1Id) } returns checkboxSubQuestion1
+    every { questionRepository.findByQuestionUuid(checkboxQuestionUuid) } returns checkboxQuestion
+    every { questionRepository.findByQuestionUuid(checkboxSubQuestion1Id) } returns checkboxSubQuestion1
     every { dependencyService.dependencies() } returns QuestionDependencies(emptyList())
 
     val groupQuestions = questionService.getGroupContents(groupWithCheckboxUuid)
@@ -384,22 +384,22 @@ class QuestionServiceTest {
     every { groupRepository.findByGroupCode("childrenSubGroup") } returns tableSubGroup
     every { groupRepository.findByGroupUuid(tableSubGroup.groupUuid) } returns tableSubGroup
     every { groupRepository.findByGroupCode(tableSubGroup.groupUuid.toString()) } returns null
-    every { questionSchemaRepository.findByQuestionSchemaUuid(questionUuid) } returns question
-    every { questionSchemaRepository.findByQuestionSchemaUuid(tableQuestionUuid) } returns tableQuestion
-    every { questionSchemaRepository.findByQuestionSchemaUuid(tableSubQuestion1Id) } returns tableSubQuestion1
-    every { questionSchemaRepository.findByQuestionSchemaUuid(tableSubQuestion2Id) } returns tableSubQuestion2
-    every { questionSchemaRepository.findByQuestionSchemaUuid(tableSubQuestion3Id) } returns tableSubQuestion3
-    every { questionSchemaRepository.findByQuestionSchemaUuid(tableSubQuestion4Id) } returns tableSubQuestion4
+    every { questionRepository.findByQuestionUuid(questionUuid) } returns question
+    every { questionRepository.findByQuestionUuid(tableQuestionUuid) } returns tableQuestion
+    every { questionRepository.findByQuestionUuid(tableSubQuestion1Id) } returns tableSubQuestion1
+    every { questionRepository.findByQuestionUuid(tableSubQuestion2Id) } returns tableSubQuestion2
+    every { questionRepository.findByQuestionUuid(tableSubQuestion3Id) } returns tableSubQuestion3
+    every { questionRepository.findByQuestionUuid(tableSubQuestion4Id) } returns tableSubQuestion4
     every { dependencyService.dependencies() } returns QuestionDependencies(emptyList())
 
     val subTableQuestions = questionService.getAllGroupQuestionsByGroupCode("childrenSubGroup")
     assertThat(subTableQuestions).hasSize(2)
-    val subTableQuestionIds = subTableQuestions.map { it.questionSchemaUuid }
+    val subTableQuestionIds = subTableQuestions.map { it.questionUuid }
     assertThat(subTableQuestionIds).contains(tableSubQuestion3Id, tableSubQuestion4Id)
 
     val tableQuestions = questionService.getAllGroupQuestionsByGroupCode("children")
     assertThat(tableQuestions).hasSize(4)
-    val tableQuestionIds = tableQuestions.map { it.questionSchemaUuid }
+    val tableQuestionIds = tableQuestions.map { it.questionUuid }
     assertThat(tableQuestionIds).contains(
       tableSubQuestion1Id,
       tableSubQuestion2Id,
@@ -438,15 +438,15 @@ class QuestionServiceTest {
   fun `get all questions for a section that the given question belongs to`() {
     val questionUuid1 = UUID.randomUUID()
     val questionUuid2 = UUID.randomUUID()
-    every { oasysMappingRepository.findAllByQuestionSchema_QuestionCodeIn(listOf("question_code_1")) } returns
+    every { oasysMappingRepository.findAllByQuestion_QuestionCodeIn(listOf("question_code_1")) } returns
       listOf(
         OASysMappingEntity(
           mappingId = 1,
           sectionCode = "section",
           questionCode = "code",
-          questionSchema = QuestionSchemaEntity(
-            questionSchemaId = 1,
-            questionSchemaUuid = questionUuid1,
+          question = QuestionEntity(
+            questionId = 1,
+            questionUuid = questionUuid1,
             questionCode = "question_code_1"
           )
         )
@@ -458,9 +458,9 @@ class QuestionServiceTest {
           mappingId = 1,
           sectionCode = "section",
           questionCode = "code",
-          questionSchema = QuestionSchemaEntity(
-            questionSchemaId = 1,
-            questionSchemaUuid = questionUuid1,
+          question = QuestionEntity(
+            questionId = 1,
+            questionUuid = questionUuid1,
             questionCode = "question_code_1"
           )
         ),
@@ -468,9 +468,9 @@ class QuestionServiceTest {
           mappingId = 1,
           sectionCode = "section",
           questionCode = "code",
-          questionSchema = QuestionSchemaEntity(
-            questionSchemaId = 2,
-            questionSchemaUuid = questionUuid2,
+          question = QuestionEntity(
+            questionId = 2,
+            questionUuid = questionUuid2,
             questionCode = "question_code_2"
           )
         )
@@ -478,9 +478,9 @@ class QuestionServiceTest {
 
     val result = questionService.getAllSectionQuestionsForQuestions(listOf("question_code_1"))
 
-    verify(exactly = 1) { oasysMappingRepository.findAllByQuestionSchema_QuestionCodeIn(listOf("question_code_1")) }
+    verify(exactly = 1) { oasysMappingRepository.findAllByQuestion_QuestionCodeIn(listOf("question_code_1")) }
     assertThat(result).hasSize(2)
-    assertThat(result.map { it.questionSchemaUuid }).contains(questionUuid1, questionUuid2)
+    assertThat(result.map { it.questionUuid }).contains(questionUuid1, questionUuid2)
   }
 
   @Test
@@ -501,37 +501,37 @@ class QuestionServiceTest {
       contents = childQuestionGroupContents,
     )
 
-    val firstQuestion = QuestionSchemaEntity(
-      questionSchemaId = 1,
-      questionSchemaUuid = UUID.randomUUID(),
+    val firstQuestion = QuestionEntity(
+      questionId = 1,
+      questionUuid = UUID.randomUUID(),
       questionCode = "first_question",
     )
 
-    val answerSchemaEntities = mutableListOf<AnswerSchemaEntity>()
-    val answerSchemaGroup = AnswerSchemaGroupEntity(
-      answerSchemaId = 1,
-      answerSchemaGroupUuid = UUID.randomUUID(),
-      answerSchemaEntities = answerSchemaEntities,
+    val answerSchemaEntities = mutableListOf<AnswerEntity>()
+    val answerSchemaGroup = AnswerGroupEntity(
+      answerGroupId = 1,
+      answerGroupUuid = UUID.randomUUID(),
+      answerEntities = answerSchemaEntities,
     )
-    val answer = AnswerSchemaEntity(
-      answerSchemaId = 1,
-      answerSchemaUuid = UUID.randomUUID(),
-      answerSchemaCode = "yes",
+    val answer = AnswerEntity(
+      answerId = 1,
+      answerUuid = UUID.randomUUID(),
+      answerCode = "yes",
       value = "YES",
-      answerSchemaGroup = answerSchemaGroup,
+      answerGroup = answerSchemaGroup,
     )
     answerSchemaEntities.add(answer)
 
-    val secondQuestion = QuestionSchemaEntity(
-      questionSchemaId = 2,
-      questionSchemaUuid = UUID.randomUUID(),
+    val secondQuestion = QuestionEntity(
+      questionId = 2,
+      questionUuid = UUID.randomUUID(),
       questionCode = "second_question",
-      answerSchemaGroup = answerSchemaGroup
+      answerGroup = answerSchemaGroup
     )
 
-    val thirdQuestion = QuestionSchemaEntity(
-      questionSchemaId = 3,
-      questionSchemaUuid = UUID.randomUUID(),
+    val thirdQuestion = QuestionEntity(
+      questionId = 3,
+      questionUuid = UUID.randomUUID(),
       questionCode = "third_question",
     )
 
@@ -549,7 +549,7 @@ class QuestionServiceTest {
     childQuestionGroupContents.add(
       QuestionGroupEntity(
         questionGroupId = 2,
-        contentUuid = firstQuestion.questionSchemaUuid,
+        contentUuid = firstQuestion.questionUuid,
         contentType = "question",
         group = childQuestionGroup,
         question = firstQuestion,
@@ -560,7 +560,7 @@ class QuestionServiceTest {
     questionGroupContents.add(
       QuestionGroupEntity(
         questionGroupId = 3,
-        contentUuid = secondQuestion.questionSchemaUuid,
+        contentUuid = secondQuestion.questionUuid,
         contentType = "question",
         group = questionGroup,
         question = secondQuestion,
@@ -571,7 +571,7 @@ class QuestionServiceTest {
     questionGroupContents.add(
       QuestionGroupEntity(
         questionGroupId = 4,
-        contentUuid = thirdQuestion.questionSchemaUuid,
+        contentUuid = thirdQuestion.questionUuid,
         contentType = "question",
         group = questionGroup,
         question = thirdQuestion,
@@ -583,7 +583,7 @@ class QuestionServiceTest {
       questionDeps = listOf(
         QuestionDependencyEntity(
           dependencyId = 1,
-          triggerQuestionUuid = secondQuestion.questionSchemaUuid,
+          triggerQuestionUuid = secondQuestion.questionUuid,
           triggerAnswerValue = "YES",
           subjectQuestionSchema = thirdQuestion,
           displayInline = true,
@@ -596,13 +596,13 @@ class QuestionServiceTest {
     every { groupRepository.findByGroupUuid(childQuestionGroup.groupUuid) } returns childQuestionGroup
 
     every {
-      questionSchemaRepository.findByQuestionSchemaUuid(firstQuestion.questionSchemaUuid)
+      questionRepository.findByQuestionUuid(firstQuestion.questionUuid)
     } returns firstQuestion
     every {
-      questionSchemaRepository.findByQuestionSchemaUuid(secondQuestion.questionSchemaUuid)
+      questionRepository.findByQuestionUuid(secondQuestion.questionUuid)
     } returns secondQuestion
     every {
-      questionSchemaRepository.findByQuestionSchemaUuid(thirdQuestion.questionSchemaUuid)
+      questionRepository.findByQuestionUuid(thirdQuestion.questionUuid)
     } returns thirdQuestion
 
     val result = questionService.getFlatQuestionsForGroup(questionGroup.groupUuid)
@@ -613,16 +613,16 @@ class QuestionServiceTest {
         .map { it as GroupQuestionDto }
         .map { it.questionId }
     ).contains(
-      firstQuestion.questionSchemaUuid,
-      secondQuestion.questionSchemaUuid,
-      thirdQuestion.questionSchemaUuid,
+      firstQuestion.questionUuid,
+      secondQuestion.questionUuid,
+      thirdQuestion.questionUuid,
     )
     result
       .map { it as GroupQuestionDto }
-      .filter { it.questionId == secondQuestion.questionSchemaUuid }
+      .filter { it.questionId == secondQuestion.questionUuid }
       .forEach {
         assertThat(
-          it.answerSchemas?.first()?.conditionals?.first()?.conditional
+          it.answerDtos?.first()?.conditionals?.first()?.conditional
         ).isEqualTo(thirdQuestion.questionCode)
       }
   }
