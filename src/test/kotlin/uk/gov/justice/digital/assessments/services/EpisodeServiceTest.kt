@@ -550,9 +550,9 @@ class EpisodeServiceTest {
       episodeService.getStructuredAnswersFromSourceData(docContext, externalSourceGPObjectMapping)
     val gp1 = gpDetails?.get(0) as GPDetailsAnswerDto
 
-    assertThat(gp1.firstName).isEqualTo(listOf("Charles"))
-    assertThat(gp1.familyName).isEqualTo(listOf("Europe"))
+    assertThat(gp1.name).isEqualTo(listOf("Charles Europe"))
     assertThat(gp1.postcode).isEqualTo(listOf("S3 7DQ"))
+    assertThat(gp1.practiceName).isEqualTo(emptyList<String>())
 
     assertThat(gpDetails).hasSize(1)
   }

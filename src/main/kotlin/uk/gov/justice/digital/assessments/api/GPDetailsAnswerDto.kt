@@ -4,12 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import uk.gov.justice.digital.assessments.restclient.communityapi.PersonalContact
 
 class GPDetailsAnswerDto(
-
-  @JsonProperty("gp_first_name")
-  val firstName: List<String?> = emptyList(),
-
-  @JsonProperty("gp_family_name")
-  val familyName: List<String?> = emptyList(),
+  @JsonProperty("gp_name")
+  val name: List<String?> = emptyList(),
 
   @JsonProperty("gp_practice_name")
   val practiceName: List<String?> = emptyList(),
@@ -46,11 +42,9 @@ class GPDetailsAnswerDto(
 
     fun from(personalContact: PersonalContact): GPDetailsAnswerDto {
       return GPDetailsAnswerDto(
-
-        firstName = listOf(personalContact.firstName),
-        familyName = listOf(personalContact.surname),
-        addressNumber = listOf(personalContact.address?.addressNumber),
+        name = listOf("${personalContact.firstName} ${personalContact.surname}"),
         buildingName = listOf(personalContact.address?.buildingName),
+        addressNumber = listOf(personalContact.address?.addressNumber),
         streetName = listOf(personalContact.address?.streetName),
         district = listOf(personalContact.address?.district),
         town = listOf(personalContact.address?.town),
