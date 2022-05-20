@@ -309,8 +309,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
 
       val gpDetails = answers["gp_details"] as List<*>
       val gp1 = gpDetails[0] as Map<*, *>
-      assertThat(gp1["gp_first_name"]).isEqualTo(listOf("Nick"))
-      assertThat(gp1["gp_family_name"]).isEqualTo(listOf("Riviera"))
+      assertThat(gp1["gp_name"]).isEqualTo(listOf("Nick Riviera"))
       assertThat(gp1["gp_practice_name"]).isEqualTo(emptyList<String>())
       assertThat(gp1["gp_address_building_name"]).isEqualTo(listOf("The practice"))
       assertThat(gp1["gp_address_house_number"]).isEqualTo(listOf("38"))
@@ -322,8 +321,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(gp1["gp_phone_number"]).isEqualTo(listOf("0233456789"))
 
       val gp2 = gpDetails[1] as Map<*, *>
-      assertThat(gp2["gp_first_name"]).isEqualTo(listOf("Steve"))
-      assertThat(gp2["gp_family_name"]).isEqualTo(listOf("Wilson"))
+      assertThat(gp2["gp_name"]).isEqualTo(listOf("Steve Wilson"))
       assertThat(gp2["gp_address_building_name"]).isEqualTo(listOf("The Building"))
       assertThat(gp2["gp_address_house_number"]).isEqualTo(listOf("77"))
       assertThat(gp2["gp_address_street_name"]).isEqualTo(listOf("Some Street"))
@@ -342,12 +340,10 @@ class AssessmentControllerCreateTest : IntegrationTest() {
 
       val gpDetails = answers?.get("gp_details") as List<*>
       val gp1 = gpDetails[0] as Map<*, *>
-      assertThat(gp1["gp_first_name"]).isEqualTo(listOf("Nick"))
-      assertThat(gp1["gp_family_name"]).isEqualTo(listOf("Riviera"))
+      assertThat(gp1["gp_name"]).isEqualTo(listOf("Nick Riviera"))
 
       val gp2 = gpDetails[1] as Map<*, *>
-      assertThat(gp2["gp_first_name"]).isEqualTo(listOf("Steve"))
-      assertThat(gp2["gp_family_name"]).isEqualTo(listOf("Wilson"))
+      assertThat(gp2["gp_name"]).isEqualTo(listOf("Steve Wilson"))
 
       assertThat(gpDetails).hasSize(2)
     }

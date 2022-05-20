@@ -43,6 +43,8 @@ class GPDetailsAnswerDto(
     fun from(personalContact: PersonalContact): GPDetailsAnswerDto {
       return GPDetailsAnswerDto(
         name = listOf("${personalContact.firstName} ${personalContact.surname}"),
+        buildingName = listOf(personalContact.address?.buildingName),
+        addressNumber = listOf(personalContact.address?.addressNumber),
         streetName = listOf(personalContact.address?.streetName),
         district = listOf(personalContact.address?.district),
         town = listOf(personalContact.address?.town),
