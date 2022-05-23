@@ -7,22 +7,9 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.http.HttpHeader
 import com.github.tomakehurst.wiremock.http.HttpHeaders
-import uk.gov.justice.digital.assessments.restclient.communityapi.Address
-import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityRegistration
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityRegistrationElement
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityRegistrations
-import uk.gov.justice.digital.assessments.restclient.communityapi.ContactDetails
-import uk.gov.justice.digital.assessments.restclient.communityapi.DeliusDisabilityDto
-import uk.gov.justice.digital.assessments.restclient.communityapi.DisabilityType
-import uk.gov.justice.digital.assessments.restclient.communityapi.IDs
-import uk.gov.justice.digital.assessments.restclient.communityapi.OffenderAlias
-import uk.gov.justice.digital.assessments.restclient.communityapi.OffenderLanguages
-import uk.gov.justice.digital.assessments.restclient.communityapi.OffenderProfile
-import uk.gov.justice.digital.assessments.restclient.communityapi.Phone
-import uk.gov.justice.digital.assessments.restclient.communityapi.Provision
-import uk.gov.justice.digital.assessments.restclient.communityapi.ProvisionType
-import uk.gov.justice.digital.assessments.restclient.communityapi.Type
 import java.time.LocalDate
 
 class CommunityApiMockServer : WireMockServer(9096) {
