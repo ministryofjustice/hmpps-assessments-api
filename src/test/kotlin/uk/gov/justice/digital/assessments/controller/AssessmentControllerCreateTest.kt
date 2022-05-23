@@ -345,20 +345,19 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       val visual = getStructuredDataFromAnswer(answers, "visual_disability")
       assertThat(visual["disability_notes"]).isEqualTo(
         "Comment added by Natalie Wood on 23/05/2022 at 12:03\n" +
-        "Blind in the left eye\n" +
-        "---------------------------------------------------------\n" +
-        "Comment added by Natalie Wood on 23/05/2022 at 12:05\n" +
-        "Partially sighted in the right eye\n" +
-        "---------------------------------------------------------\n" +
-        "Comment added by Natalie Wood on 23/05/2022 at 12:05\n" +
-        "Cataracts"
+          "Blind in the left eye\n" +
+          "---------------------------------------------------------\n" +
+          "Comment added by Natalie Wood on 23/05/2022 at 12:05\n" +
+          "Partially sighted in the right eye\n" +
+          "---------------------------------------------------------\n" +
+          "Comment added by Natalie Wood on 23/05/2022 at 12:05\n" +
+          "Cataracts"
       )
       assertThat(visual["disability_adjustments"]).isEqualTo(listOf("Improved signage", "Audio/Braille/Moon"))
 
       val mobility = getStructuredDataFromAnswer(answers, "mobility_disability")
       assertThat(mobility["disability_notes"]).isEqualTo("Comment added by Natalie Wood on 23/05/2022 at 12:04\nStiff arm")
       assertThat(mobility["disability_adjustments"]).isEqualTo(listOf("Handrails"))
-
     }
 
     @Test
