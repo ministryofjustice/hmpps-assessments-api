@@ -36,7 +36,7 @@ class GPDetailsAnswerDto(
 ) {
   companion object {
     fun from(personalContacts: List<PersonalContact>): List<GPDetailsAnswerDto>? {
-      return if (personalContacts.isEmpty()) null
+      return if (personalContacts.isEmpty()) emptyList()
       else personalContacts.map { from(it) }
     }
 

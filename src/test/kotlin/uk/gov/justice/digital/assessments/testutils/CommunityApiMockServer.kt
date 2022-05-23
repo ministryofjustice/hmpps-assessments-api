@@ -341,7 +341,7 @@ class CommunityApiMockServer : WireMockServer(9096) {
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
-            .withBody(mapToJson(offenderDto("DX12340A")))
+            .withBody(offenderDto("DX12340A"))
         )
     )
     stubFor(
@@ -349,7 +349,7 @@ class CommunityApiMockServer : WireMockServer(9096) {
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
-            .withBody(mapToJson(offenderDto("DX12340F")))
+            .withBody(offenderDto("DX12340F"))
         )
     )
     stubFor(
@@ -357,7 +357,7 @@ class CommunityApiMockServer : WireMockServer(9096) {
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
-            .withBody(mapToJson(offenderDto("X1355")))
+            .withBody(offenderDto("X1355"))
         )
     )
     stubFor(
@@ -365,7 +365,7 @@ class CommunityApiMockServer : WireMockServer(9096) {
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
-            .withBody(mapToJson(offenderDto("X1356")))
+            .withBody(offenderDto("X1356"))
         )
     )
 
@@ -374,7 +374,7 @@ class CommunityApiMockServer : WireMockServer(9096) {
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
-            .withBody(mapToJson(offenderDto("DX5678A")))
+            .withBody(offenderDto("DX5678A"))
         )
     )
 
@@ -383,7 +383,7 @@ class CommunityApiMockServer : WireMockServer(9096) {
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
-            .withBody(mapToJson(offenderDto("DX5678B")))
+            .withBody(offenderDto("DX5678B"))
         )
     )
 
@@ -673,91 +673,189 @@ class CommunityApiMockServer : WireMockServer(9096) {
     return objectMapper.writeValueAsString(dto)
   }
 
-  private fun offenderDto(crn: String): CommunityOffenderDto {
-    return CommunityOffenderDto(
-      offenderId = 101L,
-      firstName = "John",
-      middleNames = listOf("firstMiddleName", "secondMiddleName"),
-      surname = "Smith",
-      previousSurname = null,
-      dateOfBirth = "1979-08-18",
-      gender = "Male",
-      otherIds = IDs(
-        crn = crn,
-        pncNumber = "A/1234560BA"
-      ),
-      offenderAliases = listOf(
-        OffenderAlias(
-          firstName = "John",
-          surname = "Smithy",
-          dateOfBirth = "1979-09-18"
-        ),
-        OffenderAlias(
-          firstName = "Jonny"
-        )
-      ),
-      contactDetails = ContactDetails(
-        emailAddresses = listOf("address1@gmail.com", "address2@gmail.com"),
-        phoneNumbers = listOf(
-          Phone("1838893", "MOBILE"),
-          Phone("0123456999", "TELEPHONE")
-        ),
-        addresses = listOf(
-          Address(
-            addressNumber = "32",
-            buildingName = "HMPPS Digital Studio",
-            county = "South Yorkshire",
-            district = "Sheffield City Centre",
-            postcode = "S3 7BS",
-            status = Type(
-              code = "M", description = "Main address"
-            ),
-            streetName = "Scotland Street",
-            telephoneNumber = "0123456999",
-            town = "Sheffield"
-          ),
-          Address(
-            addressNumber = "33",
-            buildingName = "HMPPS Digital Studio 2",
-            county = "South London",
-            district = "London City Centre",
-            postcode = "S3 8BS",
-            status = Type(
-              code = "O", description = "Some description"
-            ),
-            streetName = "Pink Street",
-            telephoneNumber = "0123456998",
-            town = "London"
-          )
-        )
-      ),
-      offenderProfile = OffenderProfile(
-        ethnicity = "Asian",
-        disabilities = listOf(
-          DeliusDisabilityDto(DisabilityType("DY", "Dyslexia"), isActive = true),
-          DeliusDisabilityDto(
-            DisabilityType("VI", "Visual Impairment"),
-            notes = "Partially sighted in the right eye",
-            provisions = listOf(Provision(null, ProvisionType("09", "Improved signage"))),
-            isActive = true
-          ),
-          DeliusDisabilityDto(
-            DisabilityType("MI", "Mental Illness"),
-            notes = "Has depression",
-            provisions = listOf(Provision("behaviour note", ProvisionType("12", "Behavioural responses/Body language"))),
-            isActive = true
-          ),
-          DeliusDisabilityDto(
-            DisabilityType("RM", "Reduced Mobility"),
-            notes = "Stiff arm",
-            provisions = listOf(Provision(null, ProvisionType("09", "Improved signage"))),
-            isActive = false
-          ),
-        ),
-        offenderLanguages = OffenderLanguages("French", true),
-        genderIdentity = "Non-Binary",
-      )
-    )
+  private fun offenderDto(crn: String): String {
+    return """
+      {
+          "offenderId": 101,
+          "title": "Mr",
+          "firstName": "John",
+          "middleNames": [
+              "firstMiddleName",
+              "secondMiddleName"
+          ],
+          "surname": "Smith",
+          "dateOfBirth": "1979-08-18",
+          "gender": "Male",
+          "otherIds": {
+              "crn": "$crn",
+              "pncNumber": "A/1234560BA"
+          },
+          "contactDetails": {
+              "phoneNumbers": [
+                  {
+                      "type": "TELEPHONE",
+                      "number": "0123456999"
+                  },
+                  {
+                      "type": "MOBILE",
+                      "number": "071838893"
+                  }
+              ],
+              "emailAddresses": [
+                  "address1@gmail.com",
+                  "address2@gmail.com"
+              ],
+              "allowSMS": false,
+              "addresses": [
+                  {
+                      "from": "2022-05-23",
+                      "noFixedAbode": false,
+                      "addressNumber": "32",
+                      "buildingName": "HMPPS Digital Studio",
+                      "streetName": "Scotland Street",
+                      "district": "Sheffield City Centre",
+                      "town": "Sheffield",
+                      "county": "South Yorkshire",
+                      "postcode": "S3 7BS",
+                      "telephoneNumber": "0123456999",
+                      "status": {
+                          "code": "M",
+                          "description": "Main"
+                      },
+                      "typeVerified": false,
+                      "createdDatetime": "2022-05-23T11:57:22",
+                      "lastUpdatedDatetime": "2022-05-23T11:59:19"
+                  },
+                  {
+                      "from": "2022-05-23",
+                      "noFixedAbode": false,
+                      "addressNumber": "33",
+                      "buildingName": "HMPPS Digital Studio 2",
+                      "streetName": "Pink Street",
+                      "district": "London City Centre",
+                      "town": "London",
+                      "county": "South London",
+                      "postcode": "S3 8BS",
+                      "telephoneNumber": "0123456998",
+                      "status": {
+                          "code": "P",
+                          "description": "Previous"
+                      },
+                      "typeVerified": false,
+                      "createdDatetime": "2022-05-23T11:58:39",
+                      "lastUpdatedDatetime": "2022-05-23T11:58:39"
+                  }
+              ]
+          },
+          "offenderProfile": {
+              "offenderLanguages": {},
+              "previousConviction": {},
+              "ethnicity": "Asian",
+              "genderIdentity": "Non-Binary",
+              "offenderLanguages": {
+                  "primaryLanguage": "French",
+                  "requiresInterpreter": true
+              },
+              "disabilities": [
+                  {
+                      "disabilityId": 2500096591,
+                      "disabilityType": {
+                          "code": "MI",
+                          "description": "Mental Illness"
+                      },
+                      "startDate": "2022-05-22",
+                      "notes": "Comment added by Natalie Wood on 23/05/2022 at 12:05\nHas depression",
+                      "provisions": [
+                          {
+                              "provisionId": 2500081161,
+                              "startDate": "2022-05-22",
+                              "provisionType": {
+                                  "code": "12",
+                                  "description": "Behavioural responses/Body language"
+                              }
+                          }
+                      ],
+                      "lastUpdatedDateTime": "2022-05-23T12:05:44",
+                      "isActive": true
+                  },
+                  {
+                      "disabilityId": 2500096589,
+                      "disabilityType": {
+                          "code": "VI",
+                          "description": "Visual Impairment"
+                      },
+                      "startDate": "2022-05-22",
+                      "notes": "Comment added by Natalie Wood on 23/05/2022 at 12:03\nBlind in the left eye\n---------------------------------------------------------\nComment added by Natalie Wood on 23/05/2022 at 12:05\nPartially sighted in the right eye\n---------------------------------------------------------\nComment added by Natalie Wood on 23/05/2022 at 12:05\nCataracts",
+                      "provisions": [
+                          {
+                              "provisionId": 2500081158,
+                              "startDate": "2022-05-22",
+                              "provisionType": {
+                                  "code": "09",
+                                  "description": "Improved signage"
+                              }
+                          },
+                          {
+                              "provisionId": 2500081160,
+                              "startDate": "2022-05-22",
+                              "provisionType": {
+                                  "code": "02",
+                                  "description": "Audio/Braille/Moon"
+                              }
+                          }
+                      ],
+                      "lastUpdatedDateTime": "2022-05-23T12:05:23",
+                      "isActive": true
+                  },
+                  {
+                      "disabilityId": 2500096590,
+                      "disabilityType": {
+                          "code": "RM",
+                          "description": "Reduced Mobility"
+                      },
+                      "startDate": "2022-05-22",
+                      "notes": "Comment added by Natalie Wood on 23/05/2022 at 12:04\nStiff arm",
+                      "provisions": [
+                          {
+                              "provisionId": 2500081159,
+                              "startDate": "2022-05-22",
+                              "provisionType": {
+                                  "code": "22",
+                                  "description": "Handrails"
+                              }
+                          }
+                      ],
+                      "lastUpdatedDateTime": "2022-05-23T12:04:19",
+                      "isActive": true
+                  }
+              ]
+          },
+          "offenderAliases": [
+              {
+                  "id": "2500120187",
+                  "dateOfBirth": "1979-09-18",
+                  "firstName": "John",
+                  "surname": "Smithy",
+                  "gender": "Male"
+              },
+              {
+                  "id": "2500120188",
+                  "dateOfBirth": "1979-08-18",
+                  "firstName": "Jonny",
+                  "gender": "Male"
+              }
+          ],
+          "softDeleted": false,
+          "currentDisposal": "0",
+          "partitionArea": "National Data",
+          "currentRestriction": false,
+          "restrictionMessage": "This is a restricted offender record. Please contact a system administrator",
+          "currentExclusion": false,
+          "exclusionMessage": "You are excluded from viewing this offender record. Please contact a system administrator",
+          "currentTier": "D-0",
+          "activeProbationManagedSentence": false
+      }
+    """.trimIndent()
   }
 
   private val convictionsJson = """[

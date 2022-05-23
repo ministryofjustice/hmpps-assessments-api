@@ -241,14 +241,14 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(answers["family_name"]).isEqualTo(listOf("Smith"))
       assertThat(answers["family_name_aliases"]).isEqualTo(listOf("Smithy"))
       assertThat(answers["dob"]).isEqualTo(listOf("1979-08-18"))
-      assertThat(answers["dob_aliases"]).isEqualTo(listOf("1979-09-18"))
+      assertThat(answers["dob_aliases"]).isEqualTo(listOf("1979-09-18", "1979-08-18"))
       assertThat(answers["crn"]).isEqualTo(listOf("DX5678A"))
       assertThat(answers["pnc"]).isEqualTo(listOf("A/1234560BA"))
       assertThat(answers["ethnicity"]).isEqualTo(listOf("Asian"))
       assertThat(answers["gender"]).isEqualTo(listOf("MALE"))
       assertThat(answers["gender_identity"]).isEqualTo(listOf("NON_BINARY"))
       assertThat(answers["contact_email_addresses"]).isEqualTo(listOf("address1@gmail.com", "address2@gmail.com"))
-      assertThat(answers["contact_mobile_phone_number"]).isEqualTo(listOf("1838893"))
+      assertThat(answers["contact_mobile_phone_number"]).isEqualTo(listOf("071838893"))
       assertThat(answers["contact_phone_number"]).isEqualTo(listOf("0123456999"))
       assertThat(answers["contact_address_building_name"]).isEqualTo(listOf("HMPPS Digital Studio"))
       assertThat(answers["contact_address_house_number"]).isEqualTo(listOf("32"))
@@ -259,7 +259,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(answers["contact_address_postcode"]).isEqualTo(listOf("S3 7BS"))
 
       val mentalHealth = getStructuredDataFromAnswer(answers, "mental_disability")
-      assertThat(mentalHealth["disability_notes"]).isEqualTo("Has depression")
+      assertThat(mentalHealth["disability_notes"]).isEqualTo("Comment added by Natalie Wood on 23/05/2022 at 12:05\nHas depression")
       assertThat(mentalHealth["disability_adjustments"]).isEqualTo(listOf("Behavioural responses/Body language"))
 
       assertThat(answers["language"]).isEqualTo(listOf("French"))
@@ -334,21 +334,31 @@ class AssessmentControllerCreateTest : IntegrationTest() {
 
     @Test
     fun `creating a new UPW assessment from Delius returns disabilities`() {
-//
-//      val assessment = createDeliusAssessment(crn, eventID, AssessmentSchemaCode.UPW)
-//
-//      val answers = assessment?.episodes?.first()?.answers
-//
-//      val gpDetails = answers?.get("gp_details") as List<*>
-//      val gp1 = gpDetails[0] as Map<*, *>
-//      assertThat(gp1["gp_first_name"]).isEqualTo(listOf("Nick"))
-//      assertThat(gp1["gp_family_name"]).isEqualTo(listOf("Riviera"))
-//
-//      val gp2 = gpDetails[1] as Map<*, *>
-//      assertThat(gp2["gp_first_name"]).isEqualTo(listOf("Steve"))
-//      assertThat(gp2["gp_family_name"]).isEqualTo(listOf("Wilson"))
-//
-//      assertThat(gpDetails).hasSize(2)
+
+      val assessment = createDeliusAssessment(crn, eventID, AssessmentType.UPW)
+
+      val answers = assessment?.episodes?.first()?.answers!!
+      val mentalHealth = getStructuredDataFromAnswer(answers, "mental_disability")
+      assertThat(mentalHealth["disability_notes"]).isEqualTo("Comment added by Natalie Wood on 23/05/2022 at 12:05\nHas depression")
+      assertThat(mentalHealth["disability_adjustments"]).isEqualTo(listOf("Behavioural responses/Body language"))
+
+      val visual = getStructuredDataFromAnswer(answers, "visual_disability")
+      assertThat(visual["disability_notes"]).isEqualTo(
+        "Comment added by Natalie Wood on 23/05/2022 at 12:03\n" +
+        "Blind in the left eye\n" +
+        "---------------------------------------------------------\n" +
+        "Comment added by Natalie Wood on 23/05/2022 at 12:05\n" +
+        "Partially sighted in the right eye\n" +
+        "---------------------------------------------------------\n" +
+        "Comment added by Natalie Wood on 23/05/2022 at 12:05\n" +
+        "Cataracts"
+      )
+      assertThat(visual["disability_adjustments"]).isEqualTo(listOf("Improved signage", "Audio/Braille/Moon"))
+
+      val mobility = getStructuredDataFromAnswer(answers, "mobility_disability")
+      assertThat(mobility["disability_notes"]).isEqualTo("Comment added by Natalie Wood on 23/05/2022 at 12:04\nStiff arm")
+      assertThat(mobility["disability_adjustments"]).isEqualTo(listOf("Handrails"))
+
     }
 
     @Test

@@ -1,5 +1,8 @@
 package uk.gov.justice.digital.assessments.restclient.communityapi
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class DeliusDisabilityDto(
   val disabilityType: DisabilityType,
   val notes: String? = null,
@@ -12,6 +15,7 @@ data class DisabilityType(
   val description: String
 )
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 class Provision(
   val notes: String? = null,
   val provisionType: ProvisionType? = null
