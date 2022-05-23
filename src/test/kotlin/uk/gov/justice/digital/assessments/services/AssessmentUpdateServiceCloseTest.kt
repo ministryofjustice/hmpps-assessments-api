@@ -29,6 +29,7 @@ class AssessmentUpdateServiceCloseTest {
   private val episodeRepository: EpisodeRepository = mockk()
   private val riskPredictorsService: RiskPredictorsService = mockk()
   private val oasysAssessmentUpdateService: OasysAssessmentUpdateService = mockk()
+  private val assessmentService: AssessmentService = mockk()
   private val authorService: AuthorService = mockk()
   private val auditService: AuditService = mockk()
   private val telemetryService: TelemetryService = mockk()
@@ -38,6 +39,7 @@ class AssessmentUpdateServiceCloseTest {
     episodeRepository,
     riskPredictorsService,
     oasysAssessmentUpdateService,
+    assessmentService,
     authorService,
     auditService,
     telemetryService

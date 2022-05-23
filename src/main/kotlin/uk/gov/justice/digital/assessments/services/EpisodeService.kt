@@ -261,7 +261,7 @@ class EpisodeService(
 
   private fun getDisabilitiesFromJson(
     sourceData: DocumentContext,
-    structureQuestion: ExternalSourceQuestionSchemaDto
+    structureQuestion: ExternalSourceQuestionDto
   ): List<Disability> {
     val disabilitiesJson = sourceData.read<JSONArray>(structureQuestion.jsonPathField).toJSONString()
     return objectMapper.readValue(disabilitiesJson)

@@ -30,6 +30,12 @@ import uk.gov.justice.digital.assessments.jpa.repositories.refdata.CloneAssessme
 import uk.gov.justice.digital.assessments.restclient.AssessmentApiRestClient
 import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
+import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
+import uk.gov.justice.digital.assessments.restclient.communityapi.Disability
+import uk.gov.justice.digital.assessments.restclient.communityapi.DisabilityType
+import uk.gov.justice.digital.assessments.restclient.communityapi.OffenderProfile
+import uk.gov.justice.digital.assessments.restclient.communityapi.Provision
+import uk.gov.justice.digital.assessments.restclient.communityapi.ProvisionType
 import uk.gov.justice.digital.assessments.services.dto.ExternalSourceQuestionDto
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -577,7 +583,7 @@ class EpisodeServiceTest {
     val communityOffenderDtoJson = jacksonObjectMapper().writeValueAsString(communityOffenderDto)
     val docContext: DocumentContext = JsonPath.parse(communityOffenderDtoJson)
 
-    val externalSourceOffenderProfileObjectMapping = ExternalSourceQuestionSchemaDto(
+    val externalSourceOffenderProfileObjectMapping = ExternalSourceQuestionDto(
       questionCode = "disabilities_adjustments",
       externalSource = "DELIUS",
       jsonPathField = "\$.offenderProfile.disabilities",

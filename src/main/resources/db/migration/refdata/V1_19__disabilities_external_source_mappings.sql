@@ -9,7 +9,7 @@ DELETE FROM external_source_question_mapping WHERE question_code IN (
     'mental_health_condition_details'
 );
 
-DELETE FROM question_schema WHERE question_code IN (
+DELETE FROM question WHERE question_code IN (
     'physical_disability',
     'physical_disability_details',
     'learning_disability',
@@ -31,10 +31,10 @@ DELETE FROM question_group WHERE content_uuid IN (
     'c97bb3af-993d-45f3-a349-27ba547310c6'
 );
 
-INSERT INTO question_schema (question_schema_uuid, question_code, question_start, question_end, answer_type, answer_schema_group_uuid, question_text, question_help_text, reference_data_category)
+INSERT INTO question (question_uuid, question_code, question_start, question_end, answer_type, answer_group_uuid, question_text, question_help_text, reference_data_category)
 VALUES
 ('572425c8-be55-49b5-9a26-bcfee925d6dd', 'disabilities_adjustments', '2021-09-27 14:50:00', null, 'table', null, '', '', null);
 
-INSERT INTO external_source_question_mapping (external_source_question_mapping_uuid, question_code, assessment_schema_code, external_source, json_path_field, field_type, external_source_endpoint, mapped_value, if_empty)
+INSERT INTO external_source_question_mapping (external_source_question_mapping_uuid, question_code, assessment_type, external_source, json_path_field, field_type, external_source_endpoint, mapped_value, if_empty)
 VALUES
 ('03d7bf77-dc67-4ad7-b84c-63d94ed6f79f', 'disabilities_adjustments', 'UPW', 'DELIUS', '$.offenderProfile.disabilities', 'structured', 'secure/offenders/crn/$crn/all', null, false);
