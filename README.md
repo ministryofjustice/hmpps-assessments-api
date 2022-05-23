@@ -2,7 +2,7 @@
 
 A Spring Boot app to manage Risk and Need Assessments across HMPPS.
 
-[Swagger API documentation is available](https://offender-dev.aks-dev-1.studio-hosting.service.justice.gov.uk/swagger-ui.html)
+[Swagger API documentation is available](https://api-dev.hmpps-assessments.service.justice.gov.uk/swagger-ui/index.html)
 
 ## Dependencies
 * Java JDK 11+
