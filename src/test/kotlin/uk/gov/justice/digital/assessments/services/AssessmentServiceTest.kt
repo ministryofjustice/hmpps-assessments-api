@@ -153,8 +153,8 @@ class AssessmentServiceTest {
         offenceSubCode = offenceSubCode,
         subCodeDescription = subCodeDescription
       )
-      every { episodeService.prepopulateFromExternalSources(any(), assessmentType) } returnsArgument 0
-      every { episodeService.prepopulateFromPreviousEpisodes(any(), emptyList()) } returnsArgument 0
+      every { episodeService.prePopulateFromExternalSources(any(), assessmentType) } returnsArgument 0
+      every { episodeService.prePopulateFromPreviousEpisodes(any(), emptyList()) } returnsArgument 0
 
       val episodeDto = assessmentsService.createNewEpisode(
         assessmentUuid,

@@ -81,7 +81,7 @@ class AssessmentService(
 
     offenderService.validateUserAccess(subject.crn)
     val offence = offenderService.getOffence(eventType, subject.crn, eventId)
-    val episode = createPrepopulatedEpisode(
+    val episode = createPrePopulatedEpisode(
       assessment,
       reason,
       assessmentType = assessmentType,
@@ -176,7 +176,7 @@ class AssessmentService(
       )
     }
     val subject = subjectRepository.save(arnAssessment.subject?.copy(oasysOffenderPk = oasysPrimaryKeyPair.first))
-    createPrepopulatedEpisode(
+    createPrePopulatedEpisode(
       arnAssessment,
       "",
       oasysPrimaryKeyPair.second,
@@ -202,8 +202,7 @@ class AssessmentService(
     val existingSubject = subjectRepository.findByCrn(crn)
     return if (existingSubject != null) {
       log.info("Existing assessment ${existingSubject.getCurrentAssessment()?.assessmentUuid} found for delius event id: $eventId, crn: $crn")
-      existingSubject.getCurrentAssessment()
-        ?: throw EntityNotFoundException("Subject $existingSubject doesn't belong to any assessment")
+      existingSubject.getCurrentAssessment() ?: throw EntityNotFoundException("Subject $existingSubject doesn't belong to any assessment")
     } else {
       val offender = offenderService.getOffender(crn)
       createDeliusAssessment(
@@ -238,7 +237,7 @@ class AssessmentService(
       )
     }
     val subject = subjectRepository.save(arnAssessment.subject?.copy(oasysOffenderPk = oasysPrimaryKeyPair.first))
-    createPrepopulatedEpisode(
+    createPrePopulatedEpisode(
       arnAssessment,
       "Court Request",
       oasysPrimaryKeyPair.second,
@@ -340,7 +339,7 @@ class AssessmentService(
     return newAssessment
   }
 
-  private fun createPrepopulatedEpisode(
+  private fun createPrePopulatedEpisode(
     assessment: AssessmentEntity,
     reason: String,
     oasysSetPK: Long? = null,
@@ -350,9 +349,10 @@ class AssessmentService(
     offence: OffenceDto? = null,
     subject: SubjectEntity?
   ): AssessmentEpisodeEntity {
+    log.debug("Entered createPrePopulatedEpisode")
     val author = authorService.getOrCreateAuthor()
     val isNewEpisode = !assessment.hasCurrentEpisode()
-    val episode = assessment.newEpisode(
+    var episode = assessment.newEpisode(
       reason,
       oasysSetPk = oasysSetPK,
       assessmentType = assessmentType,
@@ -368,10 +368,10 @@ class AssessmentService(
       author
     )
     if (isNewEpisode) {
-      episodeService.prepopulateFromExternalSources(episode, assessmentType)
+      episodeService.prePopulateFromExternalSources(episode, assessmentType)
 
       if (!episode.prepopulatedFromOASys) {
-        episodeService.prepopulateFromPreviousEpisodes(episode, assessment.episodes)
+        episodeService.prePopulateFromPreviousEpisodes(episode, assessment.episodes)
       }
       auditAndLogCreateEpisode(assessment.assessmentUuid, episode, subject?.crn)
     }

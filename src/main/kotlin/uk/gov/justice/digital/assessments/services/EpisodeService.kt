@@ -54,7 +54,7 @@ class EpisodeService(
     private val iso8601DateFormatter = FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
   }
 
-  fun prepopulateFromExternalSources(
+  fun prePopulateFromExternalSources(
     episode: AssessmentEpisodeEntity,
     assessmentType: AssessmentType
   ): AssessmentEpisodeEntity {
@@ -74,11 +74,11 @@ class EpisodeService(
     return episode
   }
 
-  fun prepopulateFromPreviousEpisodes(
+  fun prePopulateFromPreviousEpisodes(
     newEpisode: AssessmentEpisodeEntity,
     previousEpisodes: List<AssessmentEpisodeEntity>
   ): AssessmentEpisodeEntity {
-
+    log.debug("Entered prepopulateFromPreviousEpisodes")
     val orderedPreviousEpisodes = previousEpisodes.filter {
       it.endDate?.isAfter(LocalDateTime.now().minusWeeks(cloneEpisodeOffset)) ?: false && it.isComplete()
     }.sortedByDescending { it.endDate }
@@ -99,8 +99,9 @@ class EpisodeService(
 
     orderedPreviousEpisodes.forEach { episode ->
       val relevantAnswers = episode.answers.filter { questionCodes.contains(it.key) }
-      relevantAnswers.forEach {
-        newEpisode.answers.putIfAbsent(it.key, it.value)
+      relevantAnswers.forEach { answer ->
+        log.info("Relevant answers: $relevantAnswers")
+        newEpisode.answers.putIfAbsent(answer.key, answer.value).also { log.info("Absent: added ${answer.key}, ${answer.value}") }
       }
 
       val relevantTables = episode.tables.filter { tableCodes.contains(it.key) }

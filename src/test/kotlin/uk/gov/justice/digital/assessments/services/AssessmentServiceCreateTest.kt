@@ -20,6 +20,7 @@ import uk.gov.justice.digital.assessments.api.OffenceDto
 import uk.gov.justice.digital.assessments.api.OffenderDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.OasysAssessmentType
@@ -92,6 +93,9 @@ class AssessmentServiceCreateTest {
       subCodeDescription = "Sub-code description"
     )
     every { offenderService.getOffence(any(), crn, eventId) } returns offenceDto
+    justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
+    justRun { telemetryService.trackAssessmentEvent(ASSESSMENT_CREATED, any(), any(), any(), any(), any()) }
+    every { offenderService.validateUserAccess(crn) } returns mockk()
   }
 
   @Nested
@@ -99,13 +103,10 @@ class AssessmentServiceCreateTest {
   inner class CreatingDeliusAssessments {
 
     @Test
-    fun `should not create Oasys assessment for UPW schema code`() {
+    fun `should not create Oasys assessment for UPW assessment type`() {
       // Given
-      justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
-      justRun { telemetryService.trackAssessmentEvent(ASSESSMENT_CREATED, any(), any(), any(), any(), any()) }
       every { subjectRepository.findByCrn(crn) } returns null
-      every { offenderService.validateUserAccess("X12345") } returns mockk()
-      every { offenderService.getOffender("X12345") } returns OffenderDto(dateOfBirth = LocalDate.of(1989, 1, 1))
+      every { offenderService.getOffender(crn) } returns OffenderDto(dateOfBirth = LocalDate.of(1989, 1, 1))
       every {
         oasysAssessmentUpdateService.createOffenderAndOasysAssessment(
           crn,
@@ -124,12 +125,12 @@ class AssessmentServiceCreateTest {
         offenceSubCode = "Sub-code",
         subCodeDescription = "Sub-code description"
       )
-      every { episodeService.prepopulateFromExternalSources(any(), AssessmentType.UPW) } returnsArgument 0
-      every { episodeService.prepopulateFromPreviousEpisodes(any(), any()) } returnsArgument 0
+      every { episodeService.prePopulateFromExternalSources(any(), AssessmentType.UPW) } returnsArgument 0
+      every { episodeService.prePopulateFromPreviousEpisodes(any(), any()) } returnsArgument 0
       every { subjectRepository.save(any()) } returns SubjectEntity(
         name = "name",
         pnc = "PNC",
-        crn = "X12345",
+        crn = crn,
         dateOfBirth = LocalDate.of(1989, 1, 1),
         createdDate = LocalDateTime.now(),
       )
@@ -152,21 +153,11 @@ class AssessmentServiceCreateTest {
     @Test
     fun `create new offender with new assessment from delius event index and crn`() {
       // Given
-      justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
-      justRun { telemetryService.trackAssessmentEvent(ASSESSMENT_CREATED, any(), any(), any(), any(), any()) }
       every { subjectRepository.findByCrn(crn) } returns null
-      every { offenderService.validateUserAccess("X12345") } returns mockk()
-      every { offenderService.getOffender("X12345") } returns OffenderDto(dateOfBirth = LocalDate.of(1989, 1, 1))
+      every { offenderService.getOffender(crn) } returns OffenderDto(dateOfBirth = LocalDate.of(1989, 1, 1))
       every {
-        oasysAssessmentUpdateService.createOffenderAndOasysAssessment(
-          crn,
-          eventId,
-          assessmentType
-        )
-      } returns Pair(
-        oasysOffenderPk,
-        oasysSetPk
-      )
+        oasysAssessmentUpdateService.createOffenderAndOasysAssessment(crn, eventId, assessmentType)
+      } returns Pair(oasysOffenderPk, oasysSetPk)
       every { offenderService.getOffenceFromConvictionIndex(crn, eventId) } returns OffenceDto(
         convictionId = 123,
         convictionIndex = eventId,
@@ -175,12 +166,12 @@ class AssessmentServiceCreateTest {
         offenceSubCode = "Sub-code",
         subCodeDescription = "Sub-code description"
       )
-      every { episodeService.prepopulateFromExternalSources(any(), assessmentType) } returnsArgument 0
-      every { episodeService.prepopulateFromPreviousEpisodes(any(), any()) } returnsArgument 0
+      every { episodeService.prePopulateFromExternalSources(any(), assessmentType) } returnsArgument 0
+      every { episodeService.prePopulateFromPreviousEpisodes(any(), any()) } returnsArgument 0
       every { subjectRepository.save(any()) } returns SubjectEntity(
         name = "name",
         pnc = "PNC",
-        crn = "X12345",
+        crn = crn,
         dateOfBirth = LocalDate.of(1989, 1, 1),
         createdDate = LocalDateTime.now(),
       )
@@ -188,7 +179,7 @@ class AssessmentServiceCreateTest {
       val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
       every { authorService.getOrCreateAuthor() } returns author
 
-      // when
+      // When
       assessmentsService.createNewAssessment(
         CreateAssessmentDto(
           deliusEventId = eventId,
@@ -203,30 +194,16 @@ class AssessmentServiceCreateTest {
 
     @Test
     fun `create new offender with new assessment from delius event ID and crn`() {
-      justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
-      justRun {
-        telemetryService.trackAssessmentEvent(
-          ASSESSMENT_CREATED,
-          any(),
-          any(),
-          any(),
-          any(),
-          any()
-        )
-      }
       every { subjectRepository.findByCrn(crn) } returns null
-      every { offenderService.validateUserAccess("X12345") } returns mockk()
-      every { offenderService.getOffender("X12345") } returns OffenderDto(dateOfBirth = LocalDate.of(1989, 1, 1))
+      every { offenderService.getOffender(crn) } returns OffenderDto(dateOfBirth = LocalDate.of(1989, 1, 1))
       every {
         oasysAssessmentUpdateService.createOffenderAndOasysAssessment(
           crn,
           eventId,
           assessmentType
         )
-      } returns Pair(
-        oasysOffenderPk,
-        oasysSetPk
-      )
+      } returns Pair(oasysOffenderPk, oasysSetPk)
+
       val offenceDto = OffenceDto(
         convictionId = 123,
         convictionIndex = eventId,
@@ -237,12 +214,12 @@ class AssessmentServiceCreateTest {
       )
       every { offenderService.getOffenceFromConvictionId(crn, eventId) } returns offenceDto
       every { offenderService.getOffence(DeliusEventType.EVENT_ID, crn, eventId) } returns offenceDto
-      every { episodeService.prepopulateFromExternalSources(any(), assessmentType) } returnsArgument 0
-      every { episodeService.prepopulateFromPreviousEpisodes(any(), any()) } returnsArgument 0
+      every { episodeService.prePopulateFromExternalSources(any(), assessmentType) } returnsArgument 0
+      every { episodeService.prePopulateFromPreviousEpisodes(any(), any()) } returnsArgument 0
       every { subjectRepository.save(any()) } returns SubjectEntity(
         name = "name",
         pnc = "PNC",
-        crn = "X12345",
+        crn = crn,
         dateOfBirth = LocalDate.of(1989, 1, 1),
         createdDate = LocalDateTime.now(),
       )
@@ -263,9 +240,7 @@ class AssessmentServiceCreateTest {
 
     @Test
     fun `return existing assessment from delius event id and crn if one already exists`() {
-      justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
-      justRun { telemetryService.trackAssessmentEvent(ASSESSMENT_CREATED, any(), any(), any(), any(), any()) }
-      every { offenderService.validateUserAccess("X12345") } returns mockk()
+      // Given
       every { subjectRepository.findByCrn(crn) } returns
         SubjectEntity(
           assessments = listOf(AssessmentEntity(assessmentId = assessmentId, assessmentUuid = assessmentUuid)),
@@ -280,8 +255,8 @@ class AssessmentServiceCreateTest {
         offenceSubCode = "Sub-code",
         subCodeDescription = "Sub-code description"
       )
-      every { episodeService.prepopulateFromExternalSources(any(), assessmentType) } returnsArgument 0
-      every { episodeService.prepopulateFromPreviousEpisodes(any(), any()) } returnsArgument 0
+      every { episodeService.prePopulateFromExternalSources(any(), assessmentType) } returnsArgument 0
+      every { episodeService.prePopulateFromPreviousEpisodes(any(), any()) } returnsArgument 0
       every { subjectRepository.save(any()) } returns SubjectEntity(
         name = "name",
         pnc = "PNC",
@@ -290,38 +265,102 @@ class AssessmentServiceCreateTest {
         createdDate = LocalDateTime.now(),
       )
       every {
-        oasysAssessmentUpdateService.createOffenderAndOasysAssessment(
-          crn,
-          eventId,
-          assessmentType
-        )
+        oasysAssessmentUpdateService.createOffenderAndOasysAssessment(crn, eventId, assessmentType)
       } returns Pair(oasysOffenderPk, oasysSetPk)
+
       val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
       every { authorService.getOrCreateAuthor() } returns author
 
+      // When
       val assessmentDto =
-        assessmentsService.createNewAssessment(
-          CreateAssessmentDto(
-            deliusEventId = eventId,
-            crn = crn,
-            assessmentSchemaCode = assessmentType
-          )
-        )
+        assessmentsService.createNewAssessment(CreateAssessmentDto(deliusEventId = eventId, crn = crn, assessmentSchemaCode = assessmentType))
+
+      // Then
       assertThat(assessmentDto.assessmentUuid).isEqualTo(assessmentUuid)
       verify(exactly = 0) { assessmentRepository.save(any()) }
     }
 
     @Test
+    fun `should return assessment with pre-populated answers from delius where subject already exists with previous episode`() {
+      // Given
+      val authorEntity = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
+      every { authorService.getOrCreateAuthor() } returns authorEntity
+
+      val assessment = AssessmentEntity(assessmentId = assessmentId, assessmentUuid = assessmentUuid)
+      val assessmentEpisodeEntity = AssessmentEpisodeEntity(
+        oasysSetPk = 1,
+        assessment = assessment,
+        assessmentType = AssessmentType.UPW,
+        author = authorEntity,
+        endDate = LocalDateTime.now(),
+        answers = mutableMapOf(
+          "gender_identity" to listOf("Prefer to self-describe"),
+          "question_2" to listOf("answer_2")
+        )
+      )
+      assessment.episodes.add(assessmentEpisodeEntity)
+
+      every {
+        oasysAssessmentUpdateService.createOffenderAndOasysAssessment(crn, eventId, AssessmentType.UPW)
+      } returns Pair(oasysOffenderPk, oasysSetPk)
+
+      every { subjectRepository.findByCrn(crn) } returns
+        SubjectEntity(
+          assessments = listOf(assessment),
+          dateOfBirth = LocalDate.of(1989, 1, 1),
+          crn = crn
+        )
+      every { offenderService.getOffenceFromConvictionIndex(crn, eventId) } returns OffenceDto(
+        convictionId = 123,
+        convictionIndex = eventId,
+        offenceCode = "Code",
+        codeDescription = "Code description",
+        offenceSubCode = "Sub-code",
+        subCodeDescription = "Sub-code description"
+      )
+
+      every { episodeService.prePopulateFromExternalSources(any(), AssessmentType.UPW) } returns assessmentEpisodeEntity
+//      every { episodeService.prePopulateFromPreviousEpisodes(any(), any()) } returnsArgument 0
+      val assessmentEpisodeEntity1 = AssessmentEpisodeEntity(
+        oasysSetPk = 2,
+        assessment = assessment,
+        assessmentType = AssessmentType.UPW,
+        author = authorEntity,
+        endDate = LocalDateTime.now(),
+        answers = mutableMapOf(
+          "gender_identity" to listOf("Male"),
+          "question_3" to listOf("answer_3")
+        )
+      )
+      every { episodeService.prePopulateFromPreviousEpisodes(any(), any()) } returns assessmentEpisodeEntity1
+
+      every { subjectRepository.save(any()) } returns SubjectEntity(
+        name = "name",
+        pnc = "PNC",
+        crn = crn,
+        dateOfBirth = LocalDate.of(1989, 1, 1),
+        createdDate = LocalDateTime.now(),
+      )
+
+      // When
+      val assessmentDto =
+        assessmentsService.createNewAssessment(CreateAssessmentDto(deliusEventId = eventId, crn = crn, assessmentSchemaCode = AssessmentType.UPW))
+
+      // Then
+      assertThat(assessmentDto.assessmentUuid).isEqualTo(assessmentUuid)
+      assertThat(assessmentDto.episodes.size).isEqualTo(2)
+      assertThat(assessmentDto.episodes.elementAt(1).answers).hasSize(2)
+        .containsKeys("gender_identity", "question_2")
+      verify(exactly = 0) { assessmentRepository.save(any()) }
+    }
+
+    @Test
     fun `do not prepopulate existing episode`() {
-      justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
-      justRun { telemetryService.trackAssessmentEvent(ASSESSMENT_CREATED, any(), any(), any(), any(), any()) }
-      every { offenderService.validateUserAccess("X12345") } returns mockk()
+      // Given
       val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
       every { authorService.getOrCreateAuthor() } returns author
-      val assessment = AssessmentEntity(
-        assessmentId = assessmentId,
-        assessmentUuid = assessmentUuid
-      )
+
+      val assessment = AssessmentEntity(assessmentId = assessmentId, assessmentUuid = assessmentUuid)
       assessment.newEpisode("reason", 1, assessmentType, null, author)
 
       every { subjectRepository.findByCrn(crn) } returns
@@ -338,7 +377,7 @@ class AssessmentServiceCreateTest {
         offenceSubCode = "Sub-code",
         subCodeDescription = "Sub-code description"
       )
-      every { episodeService.prepopulateFromExternalSources(any(), assessmentType) } returnsArgument 0
+      every { episodeService.prePopulateFromExternalSources(any(), assessmentType) } returnsArgument 0
       every { subjectRepository.save(any()) } returns SubjectEntity(
         name = "name",
         pnc = "PNC",
@@ -347,27 +386,20 @@ class AssessmentServiceCreateTest {
         createdDate = LocalDateTime.now(),
       )
       every {
-        oasysAssessmentUpdateService.createOffenderAndOasysAssessment(
-          crn,
-          eventId,
-          assessmentType
-        )
+        oasysAssessmentUpdateService.createOffenderAndOasysAssessment(crn, eventId, assessmentType)
       } returns Pair(oasysOffenderPk, oasysSetPk)
 
+      // When
       assessmentsService.createNewAssessment(
-        CreateAssessmentDto(
-          deliusEventId = eventId,
-          crn = crn,
-          assessmentSchemaCode = assessmentType
-        )
+        CreateAssessmentDto(deliusEventId = eventId, crn = crn, assessmentSchemaCode = assessmentType)
       )
-      verify(exactly = 0) { episodeService.prepopulateFromExternalSources(any(), assessmentType) }
+      // Then
+      verify(exactly = 0) { episodeService.prePopulateFromExternalSources(any(), assessmentType) }
     }
 
     @Test
     fun `throw exception if offender is not returned from Delius`() {
       every { subjectRepository.findByCrn(crn) } returns null
-      every { offenderService.validateUserAccess("X12345") } returns mockk()
       every { offenderService.getOffender("X12345") } throws EntityNotFoundException("")
 
       assertThrows<EntityNotFoundException> {
@@ -407,21 +439,19 @@ class AssessmentServiceCreateTest {
 
     @Test
     fun `audit create assessment from delius`() {
-      justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
-      justRun { telemetryService.trackAssessmentEvent(ASSESSMENT_CREATED, any(), any(), any(), any(), any()) }
       every { subjectRepository.findByCrn(crn) } returns null
-      every { offenderService.validateUserAccess("X12345") } returns mockk()
-      every { offenderService.getOffender("X12345") } returns OffenderDto(dateOfBirth = LocalDate.of(1989, 1, 1))
+      every {
+        offenderService.getOffender("X12345")
+      } returns OffenderDto(dateOfBirth = LocalDate.of(1989, 1, 1))
+
       every {
         oasysAssessmentUpdateService.createOffenderAndOasysAssessment(
           crn,
           eventId,
           assessmentType
         )
-      } returns Pair(
-        oasysOffenderPk,
-        oasysSetPk
-      )
+      } returns Pair(oasysOffenderPk, oasysSetPk)
+
       every { offenderService.getOffenceFromConvictionIndex(crn, eventId) } returns OffenceDto(
         convictionId = 123,
         convictionIndex = eventId,
@@ -430,8 +460,8 @@ class AssessmentServiceCreateTest {
         offenceSubCode = "Sub-code",
         subCodeDescription = "Sub-code description"
       )
-      every { episodeService.prepopulateFromExternalSources(any(), assessmentType) } returnsArgument 0
-      every { episodeService.prepopulateFromPreviousEpisodes(any(), any()) } returnsArgument 0
+      every { episodeService.prePopulateFromExternalSources(any(), assessmentType) } returnsArgument 0
+      every { episodeService.prePopulateFromPreviousEpisodes(any(), any()) } returnsArgument 0
       every { subjectRepository.save(any()) } returns SubjectEntity(
         name = "name",
         pnc = "PNC",
@@ -474,9 +504,6 @@ class AssessmentServiceCreateTest {
 
     @Test
     fun `do not audit existing assessment if one already exists`() {
-      justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
-      justRun { telemetryService.trackAssessmentEvent(ASSESSMENT_CREATED, any(), any(), any(), any(), any()) }
-      every { offenderService.validateUserAccess("X12345") } returns mockk()
       val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
       val assessment = AssessmentEntity(
         assessmentId = assessmentId,
@@ -533,21 +560,12 @@ class AssessmentServiceCreateTest {
     @BeforeEach
     fun setup() {
       MDC.put(RequestData.USER_NAME_HEADER, "User name")
+      justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
+      justRun { telemetryService.trackAssessmentEvent(ASSESSMENT_CREATED, any(), any(), any(), any(), any()) }
     }
 
     @Test
     fun `create new assessment from court`() {
-      justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
-      justRun {
-        telemetryService.trackAssessmentEvent(
-          ASSESSMENT_CREATED,
-          any(),
-          any(),
-          any(),
-          any(),
-          any()
-        )
-      }
       every { subjectRepository.findByCrn(crn) } returns null
       every { subjectRepository.save(any()) } returns SubjectEntity(
         name = "name",
@@ -574,8 +592,8 @@ class AssessmentServiceCreateTest {
         offenceSubCode = "Sub-code",
         subCodeDescription = "Sub-code description"
       )
-      every { episodeService.prepopulateFromExternalSources(any(), assessmentType) } returnsArgument 0
-      every { episodeService.prepopulateFromPreviousEpisodes(any(), any()) } returnsArgument 0
+      every { episodeService.prePopulateFromExternalSources(any(), assessmentType) } returnsArgument 0
+      every { episodeService.prePopulateFromPreviousEpisodes(any(), any()) } returnsArgument 0
       val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
       every { authorService.getOrCreateAuthor() } returns author
 
@@ -599,33 +617,20 @@ class AssessmentServiceCreateTest {
       )
       val assessment = AssessmentEntity(assessmentId = 1, subject = subjectEntity)
       val subject = subjectEntity.copy(assessments = listOf(assessment))
-      justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
-      justRun {
-        telemetryService.trackAssessmentEvent(
-          ASSESSMENT_CREATED,
-          any(),
-          any(),
-          any(),
-          any(),
-          any()
-        )
-      }
+
       every { subjectRepository.findByCrn(crn) } returns subject
       every { courtCaseRestClient.getCourtCase(courtCode, existingCaseNumber) } returns CourtCase(
         defendantDob = LocalDate.now(),
         crn = crn
       )
       every {
-        oasysAssessmentUpdateService.createOffenderAndOasysAssessment(
-          crn = crn,
-          assessmentType = assessmentType
-        )
+        oasysAssessmentUpdateService.createOffenderAndOasysAssessment(crn = crn, assessmentType = assessmentType)
       } returns Pair(oasysOffenderPk, oasysSetPk)
 
       val updatedSubject = subjectEntity.copy(oasysOffenderPk = oasysOffenderPk)
       every { subjectRepository.save(updatedSubject) } returns updatedSubject
-      every { episodeService.prepopulateFromExternalSources(any(), assessmentType) } returnsArgument 0
-      every { episodeService.prepopulateFromPreviousEpisodes(any(), any()) } returnsArgument 0
+      every { episodeService.prePopulateFromExternalSources(any(), assessmentType) } returnsArgument 0
+      every { episodeService.prePopulateFromPreviousEpisodes(any(), any()) } returnsArgument 0
       val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
       every { authorService.getOrCreateAuthor() } returns author
 
@@ -643,17 +648,6 @@ class AssessmentServiceCreateTest {
 
     @Test
     fun `audit create assessment from court`() {
-      justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
-      justRun {
-        telemetryService.trackAssessmentEvent(
-          ASSESSMENT_CREATED,
-          any(),
-          any(),
-          any(),
-          any(),
-          any()
-        )
-      }
       every { subjectRepository.findByCrn(crn) } returns null
       every { subjectRepository.save(any()) } returns SubjectEntity(
         name = "name",
@@ -680,8 +674,8 @@ class AssessmentServiceCreateTest {
         offenceSubCode = "Sub-code",
         subCodeDescription = "Sub-code description"
       )
-      every { episodeService.prepopulateFromExternalSources(any(), assessmentType) } returnsArgument 0
-      every { episodeService.prepopulateFromPreviousEpisodes(any(), any()) } returnsArgument 0
+      every { episodeService.prePopulateFromExternalSources(any(), assessmentType) } returnsArgument 0
+      every { episodeService.prePopulateFromPreviousEpisodes(any(), any()) } returnsArgument 0
       val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
       every { authorService.getOrCreateAuthor() } returns author
 
