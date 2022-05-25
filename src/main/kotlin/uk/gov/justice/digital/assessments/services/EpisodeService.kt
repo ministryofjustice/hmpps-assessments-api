@@ -100,8 +100,9 @@ class EpisodeService(
     orderedPreviousEpisodes.forEach { episode ->
       val relevantAnswers = episode.answers.filter { questionCodes.contains(it.key) }
       relevantAnswers.forEach { answer ->
-        log.info("Relevant answers: $relevantAnswers")
-        newEpisode.answers.putIfAbsent(answer.key, answer.value).also { log.info("Absent: added ${answer.key}, ${answer.value}") }
+        log.info("Previous Delius value for question code: ${answer.key} is: ${newEpisode.answers[answer.key]}")
+        log.info("Question code: ${answer.key} has answer: ${answer.value} in previous episode.")
+        newEpisode.answers.putIfAbsent(answer.key, answer.value)
       }
 
       val relevantTables = episode.tables.filter { tableCodes.contains(it.key) }

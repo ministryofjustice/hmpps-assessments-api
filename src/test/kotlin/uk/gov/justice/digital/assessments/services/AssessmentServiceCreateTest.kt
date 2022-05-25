@@ -20,7 +20,6 @@ import uk.gov.justice.digital.assessments.api.OffenceDto
 import uk.gov.justice.digital.assessments.api.OffenderDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.OasysAssessmentType
@@ -277,80 +276,6 @@ class AssessmentServiceCreateTest {
 
       // Then
       assertThat(assessmentDto.assessmentUuid).isEqualTo(assessmentUuid)
-      verify(exactly = 0) { assessmentRepository.save(any()) }
-    }
-
-    @Test
-    fun `should return assessment with pre-populated answers from delius where subject already exists with previous episode`() {
-      // Given
-      val authorEntity = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
-      every { authorService.getOrCreateAuthor() } returns authorEntity
-
-      val assessment = AssessmentEntity(assessmentId = assessmentId, assessmentUuid = assessmentUuid)
-      val assessmentEpisodeEntity = AssessmentEpisodeEntity(
-        oasysSetPk = 1,
-        assessment = assessment,
-        assessmentType = AssessmentType.UPW,
-        author = authorEntity,
-        endDate = LocalDateTime.now(),
-        answers = mutableMapOf(
-          "gender_identity" to listOf("Prefer to self-describe"),
-          "question_2" to listOf("answer_2")
-        )
-      )
-      assessment.episodes.add(assessmentEpisodeEntity)
-
-      every {
-        oasysAssessmentUpdateService.createOffenderAndOasysAssessment(crn, eventId, AssessmentType.UPW)
-      } returns Pair(oasysOffenderPk, oasysSetPk)
-
-      every { subjectRepository.findByCrn(crn) } returns
-        SubjectEntity(
-          assessments = listOf(assessment),
-          dateOfBirth = LocalDate.of(1989, 1, 1),
-          crn = crn
-        )
-      every { offenderService.getOffenceFromConvictionIndex(crn, eventId) } returns OffenceDto(
-        convictionId = 123,
-        convictionIndex = eventId,
-        offenceCode = "Code",
-        codeDescription = "Code description",
-        offenceSubCode = "Sub-code",
-        subCodeDescription = "Sub-code description"
-      )
-
-      every { episodeService.prePopulateFromExternalSources(any(), AssessmentType.UPW) } returns assessmentEpisodeEntity
-//      every { episodeService.prePopulateFromPreviousEpisodes(any(), any()) } returnsArgument 0
-      val assessmentEpisodeEntity1 = AssessmentEpisodeEntity(
-        oasysSetPk = 2,
-        assessment = assessment,
-        assessmentType = AssessmentType.UPW,
-        author = authorEntity,
-        endDate = LocalDateTime.now(),
-        answers = mutableMapOf(
-          "gender_identity" to listOf("Male"),
-          "question_3" to listOf("answer_3")
-        )
-      )
-      every { episodeService.prePopulateFromPreviousEpisodes(any(), any()) } returns assessmentEpisodeEntity1
-
-      every { subjectRepository.save(any()) } returns SubjectEntity(
-        name = "name",
-        pnc = "PNC",
-        crn = crn,
-        dateOfBirth = LocalDate.of(1989, 1, 1),
-        createdDate = LocalDateTime.now(),
-      )
-
-      // When
-      val assessmentDto =
-        assessmentsService.createNewAssessment(CreateAssessmentDto(deliusEventId = eventId, crn = crn, assessmentSchemaCode = AssessmentType.UPW))
-
-      // Then
-      assertThat(assessmentDto.assessmentUuid).isEqualTo(assessmentUuid)
-      assertThat(assessmentDto.episodes.size).isEqualTo(2)
-      assertThat(assessmentDto.episodes.elementAt(1).answers).hasSize(2)
-        .containsKeys("gender_identity", "question_2")
       verify(exactly = 0) { assessmentRepository.save(any()) }
     }
 

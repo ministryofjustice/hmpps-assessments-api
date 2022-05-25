@@ -75,6 +75,7 @@ class AssessmentService(
     assessmentType: AssessmentType,
     eventType: DeliusEventType
   ): AssessmentEpisodeDto {
+    log.info("Entered createNewEpisode with uuid: $assessmentUuid and type: $assessmentType")
     val assessment = getAssessmentByUuid(assessmentUuid)
     val subject = assessment.subject
       ?: throw EntityNotFoundException("No CRN found for subject for assessment $assessmentUuid")
@@ -275,6 +276,7 @@ class AssessmentService(
   }
 
   fun getAssessmentByUuid(assessmentUuid: UUID): AssessmentEntity {
+    log.debug("Entered getAssessmentByUuid($assessmentUuid)")
     val assessment = assessmentRepository.findByAssessmentUuid(assessmentUuid)
       ?: throw EntityNotFoundException("Assessment $assessmentUuid not found")
     assessment.subject?.crn?.let { offenderService.validateUserAccess(it) }
@@ -349,9 +351,10 @@ class AssessmentService(
     offence: OffenceDto? = null,
     subject: SubjectEntity?
   ): AssessmentEpisodeEntity {
-    log.debug("Entered createPrePopulatedEpisode")
+    log.info("Entered createPrePopulatedEpisode")
     val author = authorService.getOrCreateAuthor()
     val isNewEpisode = !assessment.hasCurrentEpisode()
+    log.info("isNewEpisode is $isNewEpisode")
     var episode = assessment.newEpisode(
       reason,
       oasysSetPk = oasysSetPK,
