@@ -13,7 +13,6 @@ import uk.gov.justice.digital.assessments.utils.RequestData
 @Service
 class OffenderService(
   private val communityApiRestClient: CommunityApiRestClient,
-//  private val courtCaseClient: CourtCaseRestClient
 ) {
 
   fun getOffence(
@@ -21,7 +20,7 @@ class OffenderService(
     crn: String,
     eventId: Long
   ): OffenceDto {
-    log.info("getOffence crn: $crn")
+    log.info("Entered getOffence crn: $crn")
     return if (eventType == DeliusEventType.EVENT_ID) {
       getOffenceFromConvictionId(crn, eventId)
     } else {

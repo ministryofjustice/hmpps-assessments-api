@@ -83,6 +83,7 @@ class AssessmentController(
       required = true
     ) @RequestBody createAssessmentEpisodeDto: CreateAssessmentEpisodeDto
   ): AssessmentEpisodeDto? {
+    log.debug("Entered createNewAssessmentEpisode")
     return assessmentService.createNewEpisode(
       assessmentUuid,
       createAssessmentEpisodeDto.eventID,
