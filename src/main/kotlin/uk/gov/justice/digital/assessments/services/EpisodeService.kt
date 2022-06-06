@@ -102,12 +102,16 @@ class EpisodeService(
       relevantAnswers.forEach { answer ->
         log.info("Previous Delius value for question code: ${answer.key} is: ${newEpisode.answers[answer.key]}")
         log.info("Question code: ${answer.key} has answer: ${answer.value} in previous episode.")
-        newEpisode.answers.putIfAbsent(answer.key, answer.value)
+        if (newEpisode.answers[answer.key] == null || newEpisode.answers[answer.key]?.isEmpty() == true) {
+          newEpisode.answers.put(answer.key, answer.value)
+        }
       }
 
       val relevantTables = episode.tables.filter { tableCodes.contains(it.key) }
       relevantTables.forEach {
-        newEpisode.tables.putIfAbsent(it.key, it.value)
+        if (newEpisode.tables[it.key] == null || newEpisode.answers[it.key]?.isEmpty() == true) {
+          newEpisode.tables.putIfAbsent(it.key, it.value)
+        }
       }
     }
     return newEpisode
