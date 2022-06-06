@@ -109,7 +109,7 @@ class EpisodeServiceTest {
   }
 
   @Test
-  fun `should NOT override answers from previous episode after populating from Delius as an external source`() {
+  fun `should not add answers from previous episode if present in Delius`() {
     // Given
     newEpisode = createEpisode(UPW)
 
@@ -136,7 +136,7 @@ class EpisodeServiceTest {
         assessment = AssessmentEntity(),
         endDate = LocalDateTime.now().minusDays(1),
         answers = mutableMapOf(
-          "gender_identity" to listOf("Prefer to self-describe"),
+          "gender_identity" to listOf("NON_BINARY"),
           "question_2" to listOf("answer_2")
         )
       ),
