@@ -258,10 +258,6 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(answers["contact_address_county"]).isEqualTo(listOf("South Yorkshire"))
       assertThat(answers["contact_address_postcode"]).isEqualTo(listOf("S3 7BS"))
 
-      val mentalHealth = getStructuredDataFromAnswer(answers, "mental_disability")
-      assertThat(mentalHealth["disability_notes"]).isEqualTo("Comment added by Natalie Wood on 23/05/2022 at 12:05\nHas depression")
-      assertThat(mentalHealth["disability_adjustments"]).isEqualTo(listOf("Behavioural responses/Body language"))
-
       assertThat(answers["language"]).isEqualTo(listOf("French"))
       assertThat(answers["requires_interpreter"]).isEqualTo(listOf("true"))
 
@@ -338,11 +334,19 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       val assessment = createDeliusAssessment(crn, eventID, AssessmentType.UPW)
 
       val answers = assessment?.episodes?.first()?.answers!!
-      val mentalHealth = getStructuredDataFromAnswer(answers, "mental_disability")
+
+      val activeDisabilities = answers["active_disabilities"] as List<*>
+      assertThat(activeDisabilities).hasSize(3)
+
+      val mentalHealth = activeDisabilities[0] as Map<*, *>
+      assertThat(mentalHealth["type"]).isEqualTo("MI")
+      assertThat(mentalHealth["description"]).isEqualTo("Mental Illness")
       assertThat(mentalHealth["disability_notes"]).isEqualTo("Comment added by Natalie Wood on 23/05/2022 at 12:05\nHas depression")
       assertThat(mentalHealth["disability_adjustments"]).isEqualTo(listOf("Behavioural responses/Body language"))
 
-      val visual = getStructuredDataFromAnswer(answers, "visual_disability")
+      val visual = activeDisabilities[1] as Map<*, *>
+      assertThat(visual["type"]).isEqualTo("VI")
+      assertThat(visual["description"]).isEqualTo("Visual Impairment")
       assertThat(visual["disability_notes"]).isEqualTo(
         "Comment added by Natalie Wood on 23/05/2022 at 12:03\n" +
           "Blind in the left eye\n" +
@@ -355,7 +359,9 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       )
       assertThat(visual["disability_adjustments"]).isEqualTo(listOf("Improved signage", "Audio/Braille/Moon"))
 
-      val mobility = getStructuredDataFromAnswer(answers, "mobility_disability")
+      val mobility = activeDisabilities[2] as Map<*, *>
+      assertThat(mobility["type"]).isEqualTo("RM")
+      assertThat(mobility["description"]).isEqualTo("Reduced Mobility")
       assertThat(mobility["disability_notes"]).isEqualTo("Comment added by Natalie Wood on 23/05/2022 at 12:04\nStiff arm")
       assertThat(mobility["disability_adjustments"]).isEqualTo(listOf("Handrails"))
     }
