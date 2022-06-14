@@ -339,13 +339,13 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(activeDisabilities).hasSize(3)
 
       val mentalHealth = activeDisabilities[0] as Map<*, *>
-      assertThat(mentalHealth["type"]).isEqualTo("MI")
+      assertThat(mentalHealth["code"]).isEqualTo("MI")
       assertThat(mentalHealth["description"]).isEqualTo("Mental Illness")
       assertThat(mentalHealth["disability_notes"]).isEqualTo("Comment added by Natalie Wood on 23/05/2022 at 12:05\nHas depression")
       assertThat(mentalHealth["disability_adjustments"]).isEqualTo(listOf("Behavioural responses/Body language"))
 
       val visual = activeDisabilities[1] as Map<*, *>
-      assertThat(visual["type"]).isEqualTo("VI")
+      assertThat(visual["code"]).isEqualTo("VI")
       assertThat(visual["description"]).isEqualTo("Visual Impairment")
       assertThat(visual["disability_notes"]).isEqualTo(
         "Comment added by Natalie Wood on 23/05/2022 at 12:03\n" +
@@ -360,7 +360,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(visual["disability_adjustments"]).isEqualTo(listOf("Improved signage", "Audio/Braille/Moon"))
 
       val mobility = activeDisabilities[2] as Map<*, *>
-      assertThat(mobility["type"]).isEqualTo("RM")
+      assertThat(mobility["code"]).isEqualTo("RM")
       assertThat(mobility["description"]).isEqualTo("Reduced Mobility")
       assertThat(mobility["disability_notes"]).isEqualTo("Comment added by Natalie Wood on 23/05/2022 at 12:04\nStiff arm")
       assertThat(mobility["disability_adjustments"]).isEqualTo(listOf("Handrails"))

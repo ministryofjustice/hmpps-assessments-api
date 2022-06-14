@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import uk.gov.justice.digital.assessments.restclient.communityapi.DeliusDisabilityDto
 
 class DisabilityAnswerDto(
-  @JsonProperty("type")
-  val type: String? = null,
+  @JsonProperty("code")
+  val code: String? = null,
 
   @JsonProperty("description")
   val description: String? = null,
@@ -25,7 +25,7 @@ class DisabilityAnswerDto(
 
     fun from(deliusDisability: DeliusDisabilityDto): DisabilityAnswerDto {
       return DisabilityAnswerDto(
-        type = deliusDisability.disabilityType.code,
+        code = deliusDisability.disabilityType.code,
         description = deliusDisability.disabilityType.description,
         notes = deliusDisability.notes,
         adjustments = deliusDisability.provisions?.map { it.provisionType?.description }
