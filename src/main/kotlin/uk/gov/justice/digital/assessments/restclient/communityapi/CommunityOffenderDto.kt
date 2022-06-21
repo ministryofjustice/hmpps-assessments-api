@@ -16,21 +16,12 @@ data class CommunityOffenderDto(
 
 data class OffenderProfile(
   val ethnicity: String? = null,
-  val disabilities: List<Disability>? = null,
+  val disabilities: List<DeliusDisabilityDto>? = null,
   val offenderLanguages: OffenderLanguages? = null,
   val genderIdentity: String? = null,
 )
 
 data class OffenderLanguages(val primaryLanguage: String? = null, val requiresInterpreter: Boolean)
-
-data class Disability(
-  val disabilityType: DisabilityType,
-)
-
-data class DisabilityType(
-  val code: String? = null,
-  val description: String? = null
-)
 
 data class ContactDetails(
   val emailAddresses: List<String>? = null,

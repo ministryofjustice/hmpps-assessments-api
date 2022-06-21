@@ -44,7 +44,8 @@ class EmergencyContactDetailsAnswerDto(
   companion object {
 
     fun from(personalContacts: List<PersonalContact>): List<EmergencyContactDetailsAnswerDto> {
-      return personalContacts.map { from(it) }
+      return if (personalContacts.isEmpty()) emptyList()
+      else personalContacts.map { from(it) }
     }
 
     fun from(personalContact: PersonalContact): EmergencyContactDetailsAnswerDto {
