@@ -7,7 +7,7 @@ VALUES
 
 INSERT INTO external_source_question_mapping (external_source_question_mapping_uuid, question_code, assessment_type, external_source, json_path_field, field_type, external_source_endpoint, mapped_value, if_empty)
 VALUES
-    ('9b78dd50-2300-478a-a3d8-babc8bbe165e', 'active_disabilities', 'UPW', 'DELIUS', '$.offenderProfile.disabilities[?((@.disabilityType.code==''AS'' || @.disabilityType.code==''DY'' || @.disabilityType.code==''VI'' || @.disabilityType.code==''SI'' || @.disabilityType.code==''HD'' || @.disabilityType.code==''LD'' || @.disabilityType.code==''LA'' || @.disabilityType.code==''MI'' || @.disabilityType.code==''PC'' || @.disabilityType.code==''RM'' || @.disabilityType.code==''RC'' || @.disabilityType.code==''SD'' || @.disabilityType.code==''RF'' || @.disabilityType.code==''OD'') && (@.isActive==true))]', 'structured', 'secure/offenders/crn/$crn/all', null, false);
+    ('9b78dd50-2300-478a-a3d8-babc8bbe165e', 'active_disabilities', 'UPW', 'DELIUS', '$.offenderProfile.disabilities[?((@.disabilityType.code==''AP'' || @.disabilityType.code==''DY'' || @.disabilityType.code==''VI'' || @.disabilityType.code==''SI'' || @.disabilityType.code==''HD'' || @.disabilityType.code==''LD'' || @.disabilityType.code==''RD'' || @.disabilityType.code==''MI'' || @.disabilityType.code==''PC'' || @.disabilityType.code==''RM'' || @.disabilityType.code==''RC'' || @.disabilityType.code==''SD'') && (@.isActive==true))]', 'structured', 'secure/offenders/crn/$crn/all', null, false);
 
 INSERT INTO question_group (question_group_uuid, content_uuid, content_type, group_uuid, display_order, read_only)
 VALUES
