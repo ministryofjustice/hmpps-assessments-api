@@ -2,6 +2,7 @@ package uk.gov.justice.digital.assessments.api
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import uk.gov.justice.digital.assessments.restclient.communityapi.DeliusDisabilityDto
+import java.time.LocalDate
 
 class DisabilityAnswerDto(
   @JsonProperty("code")
@@ -28,7 +29,11 @@ class DisabilityAnswerDto(
         code = deliusDisability.disabilityType.code,
         description = deliusDisability.disabilityType.description,
         notes = deliusDisability.notes,
-        adjustments = deliusDisability.provisions?.map { it.provisionType?.description }
+        adjustments = deliusDisability.provisions?.filter {
+          val now = LocalDate.now()
+          (it.startDate.isBefore(now) || it.startDate.isEqual(now)) &&
+            (it.finishDate == null || it.finishDate.isAfter(now))
+        }?.map { it.provisionType?.description }
       )
     }
   }

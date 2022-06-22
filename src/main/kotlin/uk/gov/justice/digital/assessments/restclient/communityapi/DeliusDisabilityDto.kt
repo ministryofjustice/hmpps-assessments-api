@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.assessments.restclient.communityapi
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import java.time.LocalDate
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class DeliusDisabilityDto(
@@ -18,7 +19,9 @@ data class DisabilityType(
 @JsonIgnoreProperties(ignoreUnknown = true)
 class Provision(
   val notes: String? = null,
-  val provisionType: ProvisionType? = null
+  val provisionType: ProvisionType? = null,
+  val startDate: LocalDate,
+  val finishDate: LocalDate? = null,
 )
 
 data class ProvisionType(
