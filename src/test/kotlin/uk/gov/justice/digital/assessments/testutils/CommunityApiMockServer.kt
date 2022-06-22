@@ -789,6 +789,25 @@ class CommunityApiMockServer : WireMockServer(9096) {
                                   "code": "02",
                                   "description": "Audio/Braille/Moon"
                               }
+                          },
+                          {
+                              "provisionId": 2500081161,
+                              "startDate": "2100-05-22",
+                              "notes": "Should be filtered because it has not started",
+                              "provisionType": {
+                                  "code": "00",
+                                  "description": "Not started provision"
+                              }
+                          },                   
+                          {
+                              "provisionId": 2500081161,
+                              "startDate": "2022-05-22",
+                              "finishDate": "1900-01-01",
+                              "notes": "Should be filtered because it is expired",
+                              "provisionType": {
+                                  "code": "00",
+                                  "description": "Expired provision"
+                              }
                           }
                       ],
                       "lastUpdatedDateTime": "2022-05-23T12:05:23",
