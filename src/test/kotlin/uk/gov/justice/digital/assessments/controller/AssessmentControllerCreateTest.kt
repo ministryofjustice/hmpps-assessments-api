@@ -367,6 +367,24 @@ class AssessmentControllerCreateTest : IntegrationTest() {
     }
 
     @Test
+    fun `creating a new UPW assessment from Delius returns carer commitments`() {
+      val assessment = createDeliusAssessment("DX5678B", eventID, AssessmentType.UPW)
+
+      val answers = assessment?.episodes?.first()?.answers!!
+
+      val activeCarerCommitments = answers["active_carer_commitments"] as List<*>
+      assertThat(activeCarerCommitments).hasSize(1)
+
+      val carerCommitment = activeCarerCommitments[0] as Map<*, *>
+      assertThat(carerCommitment["description"]).isEqualTo("Dependents")
+      assertThat(carerCommitment["code"]).isEqualTo("I")
+      assertThat(carerCommitment["subType"]).isEqualTo("Is a Primary Carer")
+      assertThat(carerCommitment["subTypeCode"]).isEqualTo("I02")
+      assertThat(carerCommitment["notes"]).isEqualTo("Some notes")
+      assertThat(carerCommitment["isEvidenced"]).isEqualTo(true)
+    }
+
+    @Test
     fun `should pre-populate answers with the 'mapped' type`() {
 
       val dto = CreateAssessmentDto(

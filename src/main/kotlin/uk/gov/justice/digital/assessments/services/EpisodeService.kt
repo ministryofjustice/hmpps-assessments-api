@@ -12,6 +12,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.assessments.api.CarerCommitmentsAnswerDto
 import uk.gov.justice.digital.assessments.api.DisabilityAnswerDto
 import uk.gov.justice.digital.assessments.api.EmergencyContactDetailsAnswerDto
 import uk.gov.justice.digital.assessments.api.GPDetailsAnswerDto
@@ -24,6 +25,7 @@ import uk.gov.justice.digital.assessments.restclient.AssessmentApiRestClient
 import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import uk.gov.justice.digital.assessments.restclient.communityapi.DeliusDisabilityDto
+import uk.gov.justice.digital.assessments.restclient.communityapi.DeliusPersonalCircumstanceDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.PersonalContact
 import uk.gov.justice.digital.assessments.services.dto.ExternalSource
 import uk.gov.justice.digital.assessments.services.dto.ExternalSourceQuestionDto
@@ -253,6 +255,10 @@ class EpisodeService(
         val deliusDisabilities = getDisabilitiesFromJson(sourceData, structureQuestion)
         DisabilityAnswerDto.from(deliusDisabilities)
       }
+      "active_carer_commitments" -> {
+        val carerCommitments = getCarerCommitmentsFromJson(sourceData, structureQuestion)
+        CarerCommitmentsAnswerDto.from(carerCommitments)
+      }
       else -> throw ExternalSourceAnswerException("Question code: ${structureQuestion.questionCode} not recognised")
     }
   }
@@ -271,5 +277,13 @@ class EpisodeService(
   ): List<DeliusDisabilityDto> {
     val disabilitiesJson = sourceData.read<JSONArray>(structureQuestion.jsonPathField).toJSONString()
     return objectMapper.readValue(disabilitiesJson)
+  }
+
+  private fun getCarerCommitmentsFromJson(
+    sourceData: DocumentContext,
+    structureQuestion: ExternalSourceQuestionDto
+  ): List<DeliusPersonalCircumstanceDto> {
+    val carerCommitmentsJson = sourceData.read<JSONArray>(structureQuestion.jsonPathField).toJSONString()
+    return objectMapper.readValue(carerCommitmentsJson)
   }
 }
