@@ -290,8 +290,51 @@ class CommunityApiMockServer : WireMockServer(9096) {
                 "            }," +
                 "            \"notes\": \"Some notes\"," +
                 "            \"evidenced\": true," +
+                "            \"isActive\": false," +
                 "            \"createdDatetime\": \"2021-10-25T12:08:42\"," +
                 "            \"lastUpdatedDatetime\": \"2021-10-25T12:08:42\"" +
+                "        }, {" +
+                "            \"personalCircumstanceId\": 2500180004," +
+                "            \"offenderId\": 2500275961," +
+                "            \"personalCircumstanceType\": {" +
+                "                \"code\": \"D\"," +
+                "                \"description\": \"General Health\"" +
+                "            }," +
+                "            \"personalCircumstanceSubType\": {" +
+                "                \"code\": \"D02\"," +
+                "                \"description\": \"Physical Health Concerns\"" +
+                "            }," +
+                "            \"startDate\": \"2021-08-09\"," +
+                "            \"probationArea\": {" +
+                "                \"code\": \"N07\"," +
+                "                \"description\": \"NPS London\"" +
+                "            }," +
+                "            \"notes\": \"Some notes\"," +
+                "            \"evidenced\": true," +
+                "            \"isActive\": true," +
+                "            \"createdDatetime\": \"2021-10-29T18:25:53\"," +
+                "            \"lastUpdatedDatetime\": \"2021-10-29T18:25:53\"" +
+                "        }, {" +
+                "            \"personalCircumstanceId\": 2500179507," +
+                "            \"offenderId\": 2500275961," +
+                "            \"personalCircumstanceType\": {" +
+                "                \"code\": \"I\"," +
+                "                \"description\": \"Dependents\"" +
+                "            }," +
+                "            \"personalCircumstanceSubType\": {" +
+                "                \"code\": \"I02\"," +
+                "                \"description\": \"Is a Primary Carer\"" +
+                "            }," +
+                "            \"startDate\": \"2021-08-09\"," +
+                "            \"probationArea\": {" +
+                "                \"code\": \"N07\"," +
+                "                \"description\": \"NPS London\"" +
+                "            }," +
+                "            \"notes\": \"Some notes\"," +
+                "            \"evidenced\": true," +
+                "            \"isActive\": true," +
+                "            \"createdDatetime\": \"2021-10-28T18:42:20\"," +
+                "            \"lastUpdatedDatetime\": \"2021-10-28T18:42:20\"" +
                 "        }" +
                 "    ]" +
                 "}"
