@@ -2,7 +2,7 @@
 INSERT INTO question (question_uuid, question_code, question_start, question_end, answer_type, answer_group_uuid, question_text, question_help_text, reference_data_category)
 VALUES
     ('8f721d80-2b61-4b3d-8f72-7d20a72d2ed0', 'active_carer_commitments', '2021-09-27 14:50:00', null, 'freetext', null, 'Are there carer commitments?', '', null),
-    ('d1d6d2be-bbec-4cd0-bced-927bf24fa614', 'active_carer_commitments_details', '2021-09-27 14:50:00', null, 'freetext', null, 'Additional information (Optional)', '', null);
+    ('d1d6d2be-bbec-4cd0-bced-927bf24fa614', 'active_carer_commitments_details', '2021-09-27 14:50:00', null, 'textarea', null, 'Additional information (Optional)', '', null);
 
 INSERT INTO external_source_question_mapping (external_source_question_mapping_uuid, question_code, assessment_type, external_source, json_path_field, field_type, external_source_endpoint, mapped_value, if_empty)
 VALUES
