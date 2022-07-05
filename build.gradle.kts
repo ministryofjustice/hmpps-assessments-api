@@ -1,8 +1,8 @@
 
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.2.3"
-  kotlin("plugin.spring") version "1.6.21"
-  kotlin("plugin.jpa") version "1.6.21"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.3.2"
+  kotlin("plugin.spring") version "1.7.0"
+  kotlin("plugin.jpa") version "1.7.0"
 }
 
 allOpen {
@@ -19,7 +19,6 @@ dependencyCheck {
   suppressionFiles.add("suppressions.xml")
 }
 
-ext["log4j2.version"] = "2.17.1" // this can be removed once spring boot 2.5.8 is added to the dps gradle plugin
 dependencies {
 
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
@@ -31,22 +30,22 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-cache")
   implementation("org.springframework.boot:spring-boot-starter-aop")
   implementation("org.springframework.security:spring-security-oauth2-client")
-  implementation("org.springframework.data:spring-data-redis:2.6.4")
-  implementation("redis.clients:jedis:3.7.0")
-  implementation("org.springdoc:springdoc-openapi-ui:1.6.7")
-  implementation("org.springdoc:springdoc-openapi-data-rest:1.6.7")
-  implementation("org.springdoc:springdoc-openapi-kotlin:1.6.7")
+  implementation("org.springframework.data:spring-data-redis:2.7.1")
+  implementation("redis.clients:jedis:3.9.0")
+  implementation("org.springdoc:springdoc-openapi-ui:1.6.9")
+  implementation("org.springdoc:springdoc-openapi-data-rest:1.6.9")
+  implementation("org.springdoc:springdoc-openapi-kotlin:1.6.9")
   implementation("commons-io:commons-io:2.11.0")
   implementation("com.zaxxer:HikariCP:5.0.1")
-  implementation("com.vladmihalcea:hibernate-types-52:2.16.1")
+  implementation("com.vladmihalcea:hibernate-types-52:2.16.3")
   implementation("com.beust:klaxon:5.6")
   implementation("com.google.code.gson:gson:2.9.0")
   implementation("com.google.guava:guava:31.1-jre")
   implementation("org.apache.commons:commons-lang3:3.12.0")
-  implementation("org.postgresql:postgresql:42.3.4")
-  implementation("org.flywaydb:flyway-core:8.5.9")
+  implementation("org.postgresql:postgresql:42.4.0")
+  implementation("org.flywaydb:flyway-core:8.5.12")
   runtimeOnly("com.h2database:h2:1.4.200")
-  implementation("net.logstash.logback:logstash-logback-encoder:7.1.1")
+  implementation("net.logstash.logback:logstash-logback-encoder:7.2")
 
   testRuntimeOnly("com.h2database:h2:1.4.200")
   testAnnotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
@@ -55,7 +54,7 @@ dependencies {
     exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     exclude(module = "mockito-core")
   }
-  testImplementation("com.ninja-squad:springmockk:3.0.1")
+  testImplementation("com.ninja-squad:springmockk:3.1.1")
   testImplementation("io.jsonwebtoken:jjwt:0.9.1")
   testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
 }
