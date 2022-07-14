@@ -1,8 +1,8 @@
 
 plugins {
   id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.3.2"
-  kotlin("plugin.spring") version "1.7.0"
-  kotlin("plugin.jpa") version "1.7.0"
+  kotlin("plugin.spring") version "1.7.10"
+  kotlin("plugin.jpa") version "1.7.10"
 }
 
 allOpen {
@@ -43,7 +43,7 @@ dependencies {
   implementation("com.google.guava:guava:31.1-jre")
   implementation("org.apache.commons:commons-lang3:3.12.0")
   implementation("org.postgresql:postgresql:42.4.0")
-  implementation("org.flywaydb:flyway-core:8.5.12")
+  implementation("org.flywaydb:flyway-core:8.5.13")
   runtimeOnly("com.h2database:h2:1.4.200")
   implementation("net.logstash.logback:logstash-logback-encoder:7.2")
 
