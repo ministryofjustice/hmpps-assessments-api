@@ -31,7 +31,7 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-aop")
   implementation("org.springframework.security:spring-security-oauth2-client")
   implementation("org.springframework.data:spring-data-redis:2.7.1")
-  implementation("redis.clients:jedis:3.9.0")
+  implementation("redis.clients:jedis:4.2.3")
   implementation("org.springdoc:springdoc-openapi-ui:1.6.9")
   implementation("org.springdoc:springdoc-openapi-data-rest:1.6.9")
   implementation("org.springdoc:springdoc-openapi-kotlin:1.6.9")
