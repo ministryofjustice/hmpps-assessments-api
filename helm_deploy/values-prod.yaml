@@ -1,47 +1,23 @@
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
+---
+# Per environment values which override defaults in hmpps-assessments-api/values.yaml
 
-replicaCount: 2
+generic-service:
+  ingress:
+    host: hmpps-arn-risks-api.hmpps.service.justice.gov.uk
 
-image:
-  repository: quay.io/hmpps/hmpps-assessments-api
-  tag: latest
-  port: 8080
+  env:
+    OAUTH_ENDPOINT_URL: https://sign-in.hmpps.service.justice.gov.uk/auth
+    COURT_CASE_API_BASE_URL: https://court-case-service.apps.live-1.cloud-platform.service.justice.gov.uk
+    ASSESSMENT_UPDATE_API_BASE_URL: https://offender-assessments-updates.hmpps.service.justice.gov.uk
+    COMMUNITY_API_BASE_URL: https://community-api.probation.service.justice.gov.uk/
+    ASSESSMENT_API_BASE_URL: https://offender-prod.aks-live-1.studio-hosting.service.justice.gov.uk
+    ASSESS_RISKS_AND_NEEDS_API_BASE_URL: https://assess-risks-and-needs.hmpps.service.justice.gov.uk/
+    AUDIT_BASE_URL: https://audit-api.hmpps.service.justice.gov.uk
+    SPRING_PROFILES_ACTIVE: "logstash,postgres,preprod"
+    INGRESS_URL: "https://api.hmpps-assessments.service.justice.gov.uk"
 
-redis:
-  secret: hmpps-assessments-elasticache-redis
-  tlsEnabled: true
-
-env:
-  JAVA_OPTS: "-Xmx512m -Duser.timezone=UTC"
-  OAUTH_ENDPOINT_URL: https://sign-in.hmpps.service.justice.gov.uk/auth
-  COURT_CASE_API_BASE_URL: https://court-case-service.apps.live-1.cloud-platform.service.justice.gov.uk
-  ASSESSMENT_UPDATE_API_BASE_URL: https://offender-assessments-updates.hmpps.service.justice.gov.uk
-  COMMUNITY_API_BASE_URL:  https://community-api.probation.service.justice.gov.uk/
-  ASSESSMENT_API_BASE_URL: https://offender-prod.aks-live-1.studio-hosting.service.justice.gov.uk
-  ASSESS_RISKS_AND_NEEDS_API_BASE_URL: https://assess-risks-and-needs.hmpps.service.justice.gov.uk/
-  AUDIT_BASE_URL: https://audit-api.hmpps.service.justice.gov.uk
-  SPRING_PROFILES_ACTIVE: "logstash,postgres,preprod"
-  STUB_RESTRICTED: "D002593"
-  STUB_OFFSET: "200"
-
-ingress:
-  enabled: true
-  enable_allow_list: true
-  host: api.hmpps-assessments.service.justice.gov.uk
-  cert_secret: hmpps-assessments-api-cert
-  path: /
-  identifier: green
-  weighting: 100
-
-allow_list:
-  office: "217.33.148.210/32"
-  health-kick: "35.177.252.195/32"
-  mojvpn: "81.134.202.29/32"
-  cloudplatform-live1-1: "35.178.209.113/32"
-  cloudplatform-live1-2: "3.8.51.207/32"
-  cloudplatform-live1-3: "35.177.252.54/32"
-
+# CloudPlatform AlertManager receiver to route prometheus alerts to slack
+# See https://user-guide.cloud-platform.service.justice.gov.uk/documentation/monitoring-an-app/how-to-create-alarms.html#creating-your-own-custom-alerts
 generic-prometheus-alerts:
   enabled: true
   targetApplication: hmpps-assessments-api
