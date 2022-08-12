@@ -57,7 +57,6 @@ class EpisodeService(
     private val basicDatePattern = Pattern.compile("^\\d{2}/\\d{2}/\\d{4}$")
     private val basicDateFormatter = FastDateFormat.getInstance("dd/MM/yyyy")
     private val iso8601DateFormatter = FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
-
     private val CONTACT_ADDRESS_FIELDS = listOf("contact_address_house_number", "contact_address_building_name", "contact_address_street_name", "contact_address_postcode", "contact_address_town_or_city", "contact_address_county", "contact_address_district")
   }
 
