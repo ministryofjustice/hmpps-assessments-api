@@ -215,9 +215,7 @@ class EpisodeServiceTest {
           GPDetailsAnswerDto(
             name = listOf("Some previous episode name"),
             buildingName = listOf("Some previous episode building name")
-          )
-        ),
-        "gp_details" to listOf(
+          ),
           GPDetailsAnswerDto(
             name = listOf("Some other previous episode name"),
             buildingName = listOf("Some other previous episode building name")
@@ -227,9 +225,7 @@ class EpisodeServiceTest {
           EmergencyContactDetailsAnswerDto(
             relationship = listOf("Some previous episode relationship"),
             buildingName = listOf("Some previous episode building name")
-          )
-        ),
-        "emergency_contact_details" to listOf(
+          ),
           EmergencyContactDetailsAnswerDto(
             relationship = listOf("Some other previous episode relationship"),
             buildingName = listOf("Some other previous episode building name")
