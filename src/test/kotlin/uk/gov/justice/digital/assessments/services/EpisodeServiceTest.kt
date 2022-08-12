@@ -109,6 +109,61 @@ class EpisodeServiceTest {
   }
 
   @Test
+  fun `should not add address from previous episode if address is present in Delius`() {
+    // Given
+    newEpisode = createEpisode(UPW)
+
+    val questions: List<ExternalSourceQuestionDto> = createContactDetailsAddressExternalSourceQuestionList(ENDPOINT_URL)
+    every { questionService.getAllQuestions().withExternalSource(UPW) } returns questions
+    every { cloneAssessmentExcludedQuestionsRepository.findAllByAssessmentType(UPW) } returns emptyList()
+
+    val json = this::class.java.getResource("/json/deliusOffender.json")?.readText()
+    every {
+      communityApiRestClient.getOffenderJson(crn = CRN, externalSourceEndpoint = ENDPOINT_URL)
+    } returns json
+
+    val questionDtos = listOf(
+      GroupQuestionDto(questionCode = "contact_address_house_number"),
+      GroupQuestionDto(questionCode = "contact_address_building_name"),
+      GroupQuestionDto(questionCode = "contact_address_street_name"),
+      GroupQuestionDto(questionCode = "contact_address_postcode"),
+      GroupQuestionDto(questionCode = "contact_address_town_or_city"),
+    )
+    every { assessmentReferenceDataService.getQuestionsForAssessmentType(newEpisode.assessmentType) } returns questionDtos
+
+    val previousEpisodes = listOf(
+      AssessmentEpisodeEntity(
+        episodeId = 2,
+        assessmentType = UPW,
+        author = authorEntity,
+        assessment = AssessmentEntity(),
+        endDate = LocalDateTime.now().minusDays(1),
+        answers = mutableMapOf(
+          "contact_address_house_number" to listOf("12"),
+          "contact_address_building_name" to listOf("The Gables"),
+          "contact_address_street_name" to listOf("High Street"),
+          "contact_address_postcode" to listOf("S11 8JK"),
+          "contact_address_town_or_city" to listOf("Leeds")
+        )
+      ),
+    )
+
+    // When
+    val episodeEntity = episodeService.prePopulateFromExternalSources(newEpisode, UPW)
+    episodeService.prePopulateFromPreviousEpisodes(newEpisode, previousEpisodes)
+
+    // Then
+    val expectedAnswers = mutableMapOf(
+      "contact_address_house_number" to listOf("32"),
+      "contact_address_building_name" to listOf("HMPPS Digital Studio"),
+      "contact_address_street_name" to emptyList(),
+      "contact_address_postcode" to listOf("S3 7BS"),
+      "contact_address_town_or_city" to listOf("Sheffield")
+    )
+    assertThat(episodeEntity.answers).containsAllEntriesOf(expectedAnswers)
+  }
+
+  @Test
   fun `should not add answers from previous episode if present in Delius`() {
     // Given
     newEpisode = createEpisode(UPW)
@@ -153,6 +208,57 @@ class EpisodeServiceTest {
       "question_2" to listOf("answer_2"),
     )
     assertThat(episodeEntity.answers).containsExactlyEntriesOf(expectedAnswers)
+  }
+
+  private fun createContactDetailsAddressExternalSourceQuestionList(endpoint: String): List<ExternalSourceQuestionDto> {
+
+    return listOf(
+      ExternalSourceQuestionDto(
+        "contact_address_building_name",
+        ExternalSource.DELIUS.name,
+        "\$.contactDetails.addresses[?(@.status.code=='M')].buildingName",
+        null,
+        externalSourceEndpoint = endpoint,
+        ifEmpty = false,
+        mappedValue = null
+      ),
+      ExternalSourceQuestionDto(
+        "contact_address_house_number",
+        ExternalSource.DELIUS.name,
+        "\$.contactDetails.addresses[?(@.status.code=='M')].addressNumber",
+        null,
+        externalSourceEndpoint = endpoint,
+        ifEmpty = false,
+        mappedValue = null
+      ),
+      ExternalSourceQuestionDto(
+        "contact_address_street_name",
+        ExternalSource.DELIUS.name,
+        "\$.contactDetails.addresses[?(@.status.code=='M')].streetName",
+        null,
+        externalSourceEndpoint = endpoint,
+        ifEmpty = false,
+        mappedValue = null
+      ),
+      ExternalSourceQuestionDto(
+        "contact_address_town_or_city",
+        ExternalSource.DELIUS.name,
+        "\$.contactDetails.addresses[?(@.status.code=='M')].town",
+        null,
+        externalSourceEndpoint = endpoint,
+        ifEmpty = false,
+        mappedValue = null
+      ),
+      ExternalSourceQuestionDto(
+        "contact_address_postcode",
+        ExternalSource.DELIUS.name,
+        "\$.contactDetails.addresses[?(@.status.code=='M')].postcode",
+        null,
+        externalSourceEndpoint = endpoint,
+        ifEmpty = false,
+        mappedValue = null
+      ),
+    )
   }
 
   private fun createGenderIdentityExternalSourceQuestionList(endpoint: String): List<ExternalSourceQuestionDto> {
