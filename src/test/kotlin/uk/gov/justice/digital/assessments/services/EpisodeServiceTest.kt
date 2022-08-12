@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import uk.gov.justice.digital.assessments.api.EmergencyContactDetailsAnswerDto
 import uk.gov.justice.digital.assessments.api.GPDetailsAnswerDto
 import uk.gov.justice.digital.assessments.api.GroupQuestionDto
 import uk.gov.justice.digital.assessments.api.TableQuestionDto
@@ -109,7 +110,7 @@ class EpisodeServiceTest {
   }
 
   @Test
-  fun `should not add address from previous episode if address is present in Delius`() {
+  fun `should not add contact address from previous episode if present in Delius`() {
     // Given
     newEpisode = createEpisode(UPW)
 
@@ -162,6 +163,100 @@ class EpisodeServiceTest {
     )
     assertThat(episodeEntity.answers).containsAllEntriesOf(expectedAnswers)
   }
+
+  @Test
+  fun `should not add personal contacts from previous episode if present in Delius`() {
+    // Given
+    newEpisode = createEpisode(UPW)
+
+    val questions: List<ExternalSourceQuestionDto> = createPersonalContactExternalSourceQuestionList(ENDPOINT_URL)
+    every { questionService.getAllQuestions().withExternalSource(UPW) } returns questions
+    every { cloneAssessmentExcludedQuestionsRepository.findAllByAssessmentType(UPW) } returns emptyList()
+
+    val personalContactsJson = this::class.java.getResource("/json/deliusPersonalContacts.json")?.readText()
+    every {
+      communityApiRestClient.getOffenderJson(crn = CRN, externalSourceEndpoint = ENDPOINT_URL)
+    } returns personalContactsJson
+
+    val questionDtos = listOf(
+      GroupQuestionDto(questionCode = "gp_details"),
+      GroupQuestionDto(questionCode = "emergency_contact_details"),
+    )
+    every { assessmentReferenceDataService.getQuestionsForAssessmentType(newEpisode.assessmentType) } returns questionDtos
+
+    val previousEpisodes = createPreviousEpisodePersonalContacts()
+
+    // When
+    val episodeEntity = episodeService.prePopulateFromExternalSources(newEpisode, UPW)
+    episodeService.prePopulateFromPreviousEpisodes(newEpisode, previousEpisodes)
+
+    // Then
+    val gpDetailsAnswerDtos = episodeEntity.answers["gp_details"] as List<GPDetailsAnswerDto>
+    assertThat(gpDetailsAnswerDtos.size).isEqualTo(1)
+    assertThat(gpDetailsAnswerDtos[0].name).isEqualTo(listOf("Charles Europe"))
+    assertThat(gpDetailsAnswerDtos[0].buildingName).isEqualTo(listOf(null))
+
+    val emergencyContactDetailsAnswerDtos =
+      episodeEntity.answers["emergency_contact_details"] as List<EmergencyContactDetailsAnswerDto>
+    assertThat(emergencyContactDetailsAnswerDtos.size).isEqualTo(1)
+    assertThat(emergencyContactDetailsAnswerDtos[0].relationship).isEqualTo(listOf("Friend"))
+    assertThat(emergencyContactDetailsAnswerDtos[0].buildingName).isEqualTo(listOf("Petty France"))
+  }
+
+  private fun createPreviousEpisodePersonalContacts() = listOf(
+    AssessmentEpisodeEntity(
+      episodeId = 2,
+      assessmentType = UPW,
+      author = authorEntity,
+      assessment = AssessmentEntity(),
+      endDate = LocalDateTime.now().minusDays(1),
+      answers = mutableMapOf(
+        "gp_details" to listOf(
+          GPDetailsAnswerDto(
+            name = listOf("Some previous episode name"),
+            buildingName = listOf("Some previous episode building name")
+          )
+        ),
+        "gp_details" to listOf(
+          GPDetailsAnswerDto(
+            name = listOf("Some other previous episode name"),
+            buildingName = listOf("Some other previous episode building name")
+          )
+        ),
+        "emergency_contact_details" to listOf(
+          EmergencyContactDetailsAnswerDto(
+            relationship = listOf("Some previous episode relationship"),
+            buildingName = listOf("Some previous episode building name")
+          )
+        ),
+        "emergency_contact_details" to listOf(
+          EmergencyContactDetailsAnswerDto(
+            relationship = listOf("Some other previous episode relationship"),
+            buildingName = listOf("Some other previous episode building name")
+          )
+        ),
+      )
+    ),
+  )
+
+  private fun createPersonalContactExternalSourceQuestionList(endpoint: String) = listOf(
+    ExternalSourceQuestionDto(
+      "gp_details",
+      ExternalSource.DELIUS.name,
+      "\$[?(@.relationshipType.code=='RT02'&&@.isActive==true)]",
+      "structured",
+      externalSourceEndpoint = endpoint,
+      ifEmpty = false,
+    ),
+    ExternalSourceQuestionDto(
+      "emergency_contact_details",
+      ExternalSource.DELIUS.name,
+      "\$[?(@.relationshipType.code=='ME'&&@.isActive==true)]",
+      "structured",
+      externalSourceEndpoint = endpoint,
+      ifEmpty = false,
+    )
+  )
 
   @Test
   fun `should not add answers from previous episode if present in Delius`() {
@@ -661,66 +756,7 @@ class EpisodeServiceTest {
 
   @Test
   fun `get structured answers from Delius json for GP`() {
-    val personalContactJson = """[
-  {
-    "personalContactId": 2500125492,
-    "relationship": "Friend",
-    "startDate": "2020-12-15T00:00:00",
-    "title": "Mr",
-    "firstName": "UPW",
-    "surname": "TESTING",
-    "mobileNumber": "07123456789",
-    "emailAddress": "test@test.com",
-    "notes": "ARN Mapping Value testing - 28/10/2022 - ARN-631",
-    "gender": "Male",
-    "relationshipType": {
-      "code": "ME",
-      "description": "Emergency Contact"
-    },
-    "createdDatetime": "2021-10-28T18:57:56",
-    "lastUpdatedDatetime": "2021-10-28T18:57:56",
-    "address": {
-      "addressNumber": "102",
-      "buildingName": "Petty France",
-      "streetName": "Central London",
-      "district": "London",
-      "town": "London",
-      "county": "London",
-      "postcode": "SW1H 9AJ",
-      "telephoneNumber": "020 2000 0000"
-    },
-    "isActive": true
-  },
-  {
-    "personalContactId": 2500125493,
-    "relationship": "Family Doctor",
-    "startDate": "2021-04-14T00:00:00",
-    "title": "Dr",
-    "firstName": "Charles",
-    "surname": "Europe",
-    "mobileNumber": "07123456789",
-    "emailAddress": "gp@gp.com",
-    "notes": "ARN Mapping Value testing - 28/10/2022 - ARN-631",
-    "gender": "Male",
-    "relationshipType": {
-      "code": "RT02",
-      "description": "GP"
-    },
-    "createdDatetime": "2021-10-28T19:02:03",
-    "lastUpdatedDatetime": "2021-10-28T19:02:03",
-    "address": {
-      "addressNumber": "32",
-      "buildingName": "MOJ Building",
-      "streetName": "Scotland Street",
-      "district": "Sheffield",
-      "town": "Sheffield",
-      "county": "South Yorkshire",
-      "postcode": "S3 7DQ",
-      "telephoneNumber": "020 2123 5678"
-    },
-    "isActive": true
-  }
-]"""
+    val personalContactJson = this::class.java.getResource("/json/deliusPersonalContacts.json")?.readText()
 
     val docContext: DocumentContext = JsonPath.parse(personalContactJson)
     val externalSourceGPObjectMapping = ExternalSourceQuestionDto(
@@ -731,8 +767,7 @@ class EpisodeServiceTest {
       ifEmpty = false,
     )
 
-    val gpDetails =
-      episodeService.getStructuredAnswersFromSourceData(docContext, externalSourceGPObjectMapping)
+    val gpDetails = episodeService.getStructuredAnswersFromSourceData(docContext, externalSourceGPObjectMapping)
     val gp1 = gpDetails?.get(0) as GPDetailsAnswerDto
 
     assertThat(gp1.name).isEqualTo(listOf("Charles Europe"))
