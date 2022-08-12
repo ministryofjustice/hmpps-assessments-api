@@ -19,6 +19,7 @@ import uk.gov.justice.digital.assessments.api.GPDetailsAnswerDto
 import uk.gov.justice.digital.assessments.api.GroupQuestionDto
 import uk.gov.justice.digital.assessments.api.TableQuestionDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.Answers
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.CloneAssessmentExcludedQuestionsRepository
 import uk.gov.justice.digital.assessments.restclient.AssessmentApiRestClient
@@ -56,6 +57,7 @@ class EpisodeService(
     private val basicDatePattern = Pattern.compile("^\\d{2}/\\d{2}/\\d{4}$")
     private val basicDateFormatter = FastDateFormat.getInstance("dd/MM/yyyy")
     private val iso8601DateFormatter = FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+    private val CONTACT_ADDRESS_FIELDS = listOf("contact_address_house_number", "contact_address_building_name", "contact_address_street_name", "contact_address_postcode", "contact_address_town_or_city", "contact_address_county", "contact_address_district")
   }
 
   fun prePopulateFromExternalSources(
@@ -104,9 +106,11 @@ class EpisodeService(
     orderedPreviousEpisodes.forEach { episode ->
       val relevantAnswers = episode.answers.filter { questionCodes.contains(it.key) }
       relevantAnswers.forEach { answer ->
-        log.info("Previous Delius value for question code: ${answer.key} is: ${newEpisode.answers[answer.key]}")
+        log.info("Delius value for question code: ${answer.key} is: ${newEpisode.answers[answer.key]}")
         log.info("Question code: ${answer.key} has answer: ${answer.value} in previous episode.")
-        if (newEpisode.answers[answer.key] == null || newEpisode.answers[answer.key]?.isEmpty() == true) {
+        if ((newEpisode.answers[answer.key] == null || newEpisode.answers[answer.key]?.isEmpty() == true) &&
+          !isAddressPrePopulatedFromDelius(newEpisode.answers, answer)
+        ) {
           newEpisode.answers.put(answer.key, answer.value)
         }
       }
@@ -119,6 +123,15 @@ class EpisodeService(
       }
     }
     return newEpisode
+  }
+
+  private fun isAddressField(questionCode: String): Boolean {
+    return CONTACT_ADDRESS_FIELDS.contains(questionCode)
+  }
+
+  private fun isAddressPrePopulatedFromDelius(newEpisodeAnswers: Answers, previousEpisodeAnswer: Map.Entry<String, List<Any>>): Boolean {
+    // only check for existence of a value for address fields
+    return isAddressField(previousEpisodeAnswer.key) && newEpisodeAnswers[previousEpisodeAnswer.key]?.isEmpty() == true
   }
 
   private fun prepopulateFromSource(
@@ -231,9 +244,19 @@ class EpisodeService(
             emptyList()
         }
         "structured" -> { getStructuredAnswersFromSourceData(source, question) }
-        else -> listOf((source.read<JSONArray>(question.jsonPathField).filterNotNull() as List<String>).first().toString())
+        else -> {
+          val field = source.read<JSONArray>(question.jsonPathField)
+          if (field.isEmpty()) {
+            emptyList<String>()
+          } else if (field[0] is Int) {
+            listOf((source.read<JSONArray>(question.jsonPathField).filterNotNull() as List<Integer>).first().toString())
+          } else {
+            listOf((source.read<JSONArray>(question.jsonPathField).filterNotNull() as List<String>).first().toString())
+          }
+        }
       }
     } catch (e: Exception) {
+      log.error("Could not extract value from jsonpath field : ${question.jsonPathField}", e)
       return null
     }
   }

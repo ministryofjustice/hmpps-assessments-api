@@ -1,0 +1,59 @@
+[
+  {
+    "personalContactId": 2500125492,
+    "relationship": "Friend",
+    "startDate": "2020-12-15T00:00:00",
+    "title": "Mr",
+    "firstName": "UPW",
+    "surname": "TESTING",
+    "mobileNumber": "07123456789",
+    "emailAddress": "test@test.com",
+    "notes": "ARN Mapping Value testing - 28/10/2022 - ARN-631",
+    "gender": "Male",
+    "relationshipType": {
+      "code": "ME",
+      "description": "Emergency Contact"
+    },
+    "createdDatetime": "2021-10-28T18:57:56",
+    "lastUpdatedDatetime": "2021-10-28T18:57:56",
+    "address": {
+      "addressNumber": "102",
+      "buildingName": "Petty France",
+      "streetName": "Central London",
+      "district": "London",
+      "town": "London",
+      "county": "London",
+      "postcode": "SW1H 9AJ",
+      "telephoneNumber": "020 2000 0000"
+    },
+    "isActive": true
+  },
+  {
+    "personalContactId": 2500125493,
+    "relationship": "Family Doctor",
+    "startDate": "2021-04-14T00:00:00",
+    "title": "Dr",
+    "firstName": "Charles",
+    "surname": "Europe",
+    "mobileNumber": "07123456789",
+    "emailAddress": "gp@gp.com",
+    "notes": "ARN Mapping Value testing - 28/10/2022 - ARN-631",
+    "gender": "Male",
+    "relationshipType": {
+      "code": "RT02",
+      "description": "GP"
+    },
+    "createdDatetime": "2021-10-28T19:02:03",
+    "lastUpdatedDatetime": "2021-10-28T19:02:03",
+    "address": {
+      "addressNumber": "32",
+      "streetName": "Scotland Street",
+      "district": "Sheffield",
+      "town": "Sheffield",
+      "county": "South Yorkshire",
+      "postcode": "S3 7DQ",
+      "telephoneNumber": "020 2123 5678"
+    },
+    "isActive": true
+  }
+]

@@ -229,7 +229,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
     }
 
     @Test
-    fun `creating a new UPW assessment from crn and delius event id returns assessment with prepopulated Delius answers`() {
+    fun `creating a new UPW assessment from crn and delius event id returns assessment with pre-populated Delius answers`() {
 
       val assessment = createDeliusAssessment(crn, eventID, AssessmentType.UPW)
 

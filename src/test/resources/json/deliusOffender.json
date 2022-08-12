@@ -15,15 +15,14 @@
         "notes": "Some address notes",
         "postcode": "S3 7BS",
         "status": {
-          "code": "ABC123",
+          "code": "M",
           "description": "Some description"
         },
-        "streetName": "Scotland Street",
         "telephoneNumber": "0123456789",
         "to": "2021-07-10",
         "town": "Sheffield",
         "type": {
-          "code": "ABC123",
+          "code": "M",
           "description": "Some description"
         },
         "typeVerified": true
