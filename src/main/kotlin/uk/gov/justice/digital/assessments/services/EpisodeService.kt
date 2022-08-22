@@ -249,9 +249,9 @@ class EpisodeService(
           if (field.isEmpty()) {
             emptyList<String>()
           } else if (field[0] is Int) {
-            listOf((source.read<JSONArray>(question.jsonPathField).filterNotNull() as List<Integer>).first().toString())
+            (source.read<JSONArray>(question.jsonPathField).filterNotNull() as List<Integer>).map { it.toString() }.toList()
           } else {
-            listOf((source.read<JSONArray>(question.jsonPathField).filterNotNull() as List<String>).first().toString())
+            source.read<JSONArray>(question.jsonPathField).filterNotNull() as List<String>
           }
         }
       }
