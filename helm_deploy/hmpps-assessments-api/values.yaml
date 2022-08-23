@@ -20,7 +20,7 @@ generic-service:
     JAVA_OPTS: "-Xmx512m -Duser.timezone=UTC"
     STUB_RESTRICTED: "D002593"
     STUB_OFFSET: "200"
-    APPLICATIONINSIGHTS_CONNECTION_STRING: "InstrumentationKey=$(APPINSIGHTS_INSTRUMENTATIONKEY)"
+    APPLICATIONINSIGHTS_CONNECTION_STRING: "InstrumentationKey=$(APPINSIGHTS_INSTRUMENTATIONKEY);IngestionEndpoint=https://northeurope-0.in.applicationinsights.azure.com/;LiveEndpoint=https://northeurope.livediagnostics.monitor.azure.com/"
     SPRING_REDIS_SSL: "true"
     SERVER_PORT: 8080
 
