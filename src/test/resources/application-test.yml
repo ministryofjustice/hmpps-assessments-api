@@ -32,9 +32,6 @@ oauth:
   endpoint:
     url: http://localhost:9010/auth
 
-court-case-api:
-  base-url: http://localhost:9002
-
 assessment-update-api:
   base-url: http://localhost:9003
 

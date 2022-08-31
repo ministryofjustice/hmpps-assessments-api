@@ -13,16 +13,9 @@ data class CreateAssessmentDto(
   @Schema(description = "Offender CRN", example = "CRN1")
   val crn: String? = null,
 
-  @Schema(description = "Court Code", example = "SHF")
-  val courtCode: String? = null,
-
-  @Schema(description = "Case Number", example = "1234567890")
-  val caseNumber: String? = null,
-
   @Schema(description = "Assessment Type", example = "ROSH")
   val assessmentSchemaCode: AssessmentType
 
 ) {
-  fun isCourtCase() = (courtCode != null && caseNumber != null)
   fun isDelius() = (crn != null && deliusEventId != null)
 }

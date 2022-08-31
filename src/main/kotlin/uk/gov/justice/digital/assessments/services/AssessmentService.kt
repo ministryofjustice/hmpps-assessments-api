@@ -22,9 +22,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRepository
-import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import uk.gov.justice.digital.assessments.restclient.audit.AuditType
-import uk.gov.justice.digital.assessments.restclient.courtcaseapi.CourtCase
 import uk.gov.justice.digital.assessments.services.dto.ExternalSource
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import java.time.LocalDateTime
@@ -54,13 +52,6 @@ class AssessmentService(
         newAssessment.crn,
         newAssessment.assessmentSchemaCode,
         newAssessment.deliusEventType
-      )
-    }
-    if (newAssessment.isCourtCase()) {
-      return createFromCourtCase(
-        newAssessment.courtCode!!,
-        newAssessment.caseNumber!!,
-        newAssessment.assessmentSchemaCode
       )
     }
     throw IllegalStateException("Empty create assessment request")
@@ -202,35 +193,6 @@ class AssessmentService(
     }
   }
 
-  private fun createFromCourtCase(
-    courtCode: String,
-    caseNumber: String,
-    assessmentType: AssessmentType,
-  ): AssessmentDto {
-    val courtCase = courtCaseClient.getCourtCase(courtCode, caseNumber)
-      ?: throw EntityNotFoundException("No court case found for $courtCode, $caseNumber")
-    val crn = courtCase.crn ?: throw EntityNotFoundException("No CRN found for $courtCode, $caseNumber")
-
-    val arnAssessment = getOrCreateCourtAssessment(
-      crn,
-      courtCase,
-      courtCode,
-      caseNumber,
-    )
-
-    val subject = subjectRepository.save(arnAssessment.subject?.copy())
-    createPrePopulatedEpisode(
-      arnAssessment,
-      "Court Request",
-      assessmentType,
-      ExternalSource.COURT.name,
-      courtSourceId(courtCode, caseNumber),
-      null,
-      subject
-    )
-    return AssessmentDto.from(arnAssessment)
-  }
-
   private fun matchAnswers(
     episodeAnswer: Map.Entry<String, List<Any>>,
     question: QuestionEntity
@@ -261,42 +223,6 @@ class AssessmentService(
       ?: throw EntityNotFoundException("Assessment $assessmentUuid not found")
     assessment.subject?.crn?.let { offenderService.validateUserAccess(it) }
     return assessment
-  }
-
-  private fun subjectFromCourtCase(
-    courtCase: CourtCase,
-  ): SubjectEntity {
-    return SubjectEntity(
-      name = courtCase.defendantName,
-      pnc = courtCase.pnc,
-      crn = courtCase.crn ?: "",
-      dateOfBirth = courtCase.defendantDob,
-      createdDate = LocalDateTime.now(),
-    )
-  }
-
-  private fun getOrCreateCourtAssessment(
-    crn: String,
-    courtCase: CourtCase,
-    courtCode: String,
-    caseNumber: String,
-  ): AssessmentEntity {
-    val existingSubject = subjectRepository.findByCrn(crn)
-    return if (existingSubject != null) {
-      log.info("Existing assessment ${existingSubject.getCurrentAssessment()?.assessmentUuid} found for court $courtCode, case $caseNumber")
-      existingSubject.getCurrentAssessment()
-        ?: throw EntityNotFoundException("Subject $existingSubject doesn't belong to any assessment")
-    } else {
-      val subject = subjectRepository.save(subjectFromCourtCase(courtCase))
-      val assessment = AssessmentEntity(
-        createdDate = LocalDateTime.now(),
-        subject = subject
-      )
-      log.info("About to save court assessment: ${assessment.assessmentUuid}")
-      val newAssessment = assessmentRepository.save(assessment)
-      log.info("New assessment ${assessment.assessmentUuid} created for court $courtCode, case $caseNumber")
-      newAssessment
-    }
   }
 
   private fun createDeliusAssessment(
@@ -377,9 +303,5 @@ class AssessmentService(
       episode.episodeUuid,
       episode.assessmentType
     )
-  }
-
-  private fun courtSourceId(courtCode: String?, caseNumber: String?): String {
-    return "$courtCode|$caseNumber"
   }
 }

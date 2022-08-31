@@ -31,8 +31,6 @@ import java.util.concurrent.TimeUnit
 
 @Configuration
 class WebClientConfig {
-  @Value("\${court-case-api.base-url}")
-  private lateinit var courtCaseBaseUrl: String
   @Value("\${assessment-update-api.base-url}")
   private lateinit var assessmentUpdateBaseUrl: String
   @Value("\${assessment-api.base-url}")
@@ -53,18 +51,6 @@ class WebClientConfig {
   private val writeTimeoutMs: Long = 0
   @Value("\${web.client.byte-buffer-size}")
   val bufferByteSize: Int = Int.MAX_VALUE
-
-  @Bean
-  fun courtCaseWebClient(
-    @Qualifier(value = "authorizedClientManager") authorizedClientManager: OAuth2AuthorizedClientManager,
-  ): AuthenticatingRestClient {
-    val webClient = webClientFactory(
-      authorizedClientManager,
-      courtCaseBaseUrl,
-    )
-
-    return AuthenticatingRestClient(webClient, "court-case-client", disableAuthentication)
-  }
 
   @Bean
   fun assessmentUpdateWebClient(

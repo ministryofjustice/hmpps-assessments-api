@@ -14,7 +14,6 @@ A Spring Boot app to manage Risk and Need Assessments across HMPPS.
 * Offender Assessments Updates Service
 * [Offender Assessments API](https://github.com/ministryofjustice/offender-assessments-api-kotlin)
 * [HMPPS Community API - Wiremock](https://github.com/ministryofjustice/community-api)
-* [Court Case Service -Wiremock](https://github.com/ministryofjustice/court-case-service)
 
 #### OAuth security
 In order to run the service locally, [Nomis OAuth Service](https://github.com/ministryofjustice/nomis-oauth2-server/) is required. This can be run locally using the [docker-compose.yml](docker-compose.yml) file which will pull down the latest version.  From the command line run:
@@ -72,7 +71,6 @@ will apply ktlint styles to intellij and also add a pre-commit hook to format al
 - Set active profile to `postgres`
 - Add the following environment variables as a single semicolon delimited line to point to the dev downstream services: 
   - OAUTH_ENDPOINT_URL=https://sign-in-dev.hmpps.service.justice.gov.uk/auth;
-  - COURT_CASE_API_BASE_URL=https://court-case-service-dev.apps.live-1.cloud-platform.service.justice.gov.uk;
   - ASSESSMENT_UPDATE_API_BASE_URL=https://asmnt-updte-dev.aks-dev-1.studio-hosting.service.justice.gov.uk;
   - COMMUNITY_API_BASE_URL=https://community-api-secure.test.delius.probation.hmpps.dsd.io/;
   - ASSESSMENT_API_BASE_URL=https://offender-dev.aks-dev-1.studio-hosting.service.justice.gov.uk;
