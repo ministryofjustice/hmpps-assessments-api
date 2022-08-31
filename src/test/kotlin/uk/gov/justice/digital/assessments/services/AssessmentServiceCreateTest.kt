@@ -25,10 +25,8 @@ import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.OasysAssessmentType
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRepository
-import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import uk.gov.justice.digital.assessments.restclient.ExternalService
 import uk.gov.justice.digital.assessments.restclient.audit.AuditType.ARN_ASSESSMENT_CREATED
-import uk.gov.justice.digital.assessments.restclient.courtcaseapi.CourtCase
 import uk.gov.justice.digital.assessments.services.TelemetryEventType.ASSESSMENT_CREATED
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiForbiddenException
@@ -44,7 +42,6 @@ class AssessmentServiceCreateTest {
   private val subjectRepository: SubjectRepository = mockk()
   private val authorService: AuthorService = mockk()
   private val questionService: QuestionService = mockk()
-  private val courtCaseRestClient: CourtCaseRestClient = mockk()
   private val episodeService: EpisodeService = mockk()
   private val offenderService: OffenderService = mockk()
   private val oasysAssessmentUpdateService: OasysAssessmentUpdateService = mockk()
@@ -58,7 +55,6 @@ class AssessmentServiceCreateTest {
     authorService,
     questionService,
     episodeService,
-    courtCaseRestClient,
     oasysAssessmentUpdateService,
     offenderService,
     auditService,
@@ -72,10 +68,6 @@ class AssessmentServiceCreateTest {
   private val oasysOffenderPk = 1L
   private val crn = "X12345"
   private val oasysSetPk = 1L
-
-  private val courtCode = "SHF06"
-  private val caseNumber = "668911253"
-  private val existingCaseNumber = "existingAssessment"
 
   private val eventId = 1L
 
@@ -475,162 +467,6 @@ class AssessmentServiceCreateTest {
       verify(exactly = 0) { assessmentRepository.save(any()) }
       verify(exactly = 0) { auditService.createAuditEvent(any(), any(), any(), any(), any()) }
       verify(exactly = 0) { telemetryService.trackAssessmentEvent(any(), any(), any(), any(), any(), any()) }
-    }
-  }
-
-  @Nested
-  @DisplayName("creating assessments from court")
-  inner class CreatingCourtAssessments {
-
-    @BeforeEach
-    fun setup() {
-      MDC.put(RequestData.USER_NAME_HEADER, "User name")
-      justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
-      justRun { telemetryService.trackAssessmentEvent(ASSESSMENT_CREATED, any(), any(), any(), any(), any()) }
-    }
-
-    @Test
-    fun `create new assessment from court`() {
-      every { subjectRepository.findByCrn(crn) } returns null
-      every { subjectRepository.save(any()) } returns SubjectEntity(
-        name = "name",
-        pnc = "PNC",
-        crn = crn,
-        dateOfBirth = LocalDate.of(1989, 1, 1),
-        createdDate = LocalDateTime.now(),
-      )
-      every { assessmentRepository.save(any()) } returns AssessmentEntity(assessmentId = assessmentId)
-      every { courtCaseRestClient.getCourtCase(courtCode, caseNumber) } returns CourtCase(
-        crn = crn,
-        defendantDob = LocalDate.of(1989, 1, 1)
-      )
-      every {
-        oasysAssessmentUpdateService.createOffenderAndOasysAssessment(
-          crn = crn,
-          assessmentType = assessmentType
-        )
-      } returns Pair(oasysOffenderPk, oasysSetPk)
-
-      every { offenderService.getOffenceFromConvictionIndex(crn, eventId) } returns OffenceDto(
-        offenceCode = "Code",
-        codeDescription = "Code description",
-        offenceSubCode = "Sub-code",
-        subCodeDescription = "Sub-code description"
-      )
-      every { episodeService.prePopulateFromExternalSources(any(), assessmentType) } returnsArgument 0
-      every { episodeService.prePopulateFromPreviousEpisodes(any(), any()) } returnsArgument 0
-      val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
-      every { authorService.getOrCreateAuthor() } returns author
-
-      assessmentsService.createNewAssessment(
-        CreateAssessmentDto(
-          courtCode = courtCode,
-          caseNumber = caseNumber,
-          assessmentSchemaCode = assessmentType
-        )
-      )
-
-      verify(exactly = 1) { assessmentRepository.save(any()) }
-      verify(exactly = 1) { courtCaseRestClient.getCourtCase(courtCode, caseNumber) }
-    }
-
-    @Test
-    fun `return existing assessment if one exists from court`() {
-      val subjectEntity = SubjectEntity(
-        dateOfBirth = LocalDate.of(1989, 1, 1),
-        crn = crn
-      )
-      val assessment = AssessmentEntity(assessmentId = 1, subject = subjectEntity)
-      val subject = subjectEntity.copy(assessments = listOf(assessment))
-
-      every { subjectRepository.findByCrn(crn) } returns subject
-      every { courtCaseRestClient.getCourtCase(courtCode, existingCaseNumber) } returns CourtCase(
-        defendantDob = LocalDate.now(),
-        crn = crn
-      )
-      every {
-        oasysAssessmentUpdateService.createOffenderAndOasysAssessment(crn = crn, assessmentType = assessmentType)
-      } returns Pair(oasysOffenderPk, oasysSetPk)
-
-      val updatedSubject = subjectEntity.copy(oasysOffenderPk = oasysOffenderPk)
-      every { subjectRepository.save(updatedSubject) } returns updatedSubject
-      every { episodeService.prePopulateFromExternalSources(any(), assessmentType) } returnsArgument 0
-      every { episodeService.prePopulateFromPreviousEpisodes(any(), any()) } returnsArgument 0
-      val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
-      every { authorService.getOrCreateAuthor() } returns author
-
-      assessmentsService.createNewAssessment(
-        CreateAssessmentDto(
-          courtCode = courtCode,
-          caseNumber = existingCaseNumber,
-          assessmentSchemaCode = assessmentType
-        )
-      )
-
-      verify(exactly = 1) { subjectRepository.save(updatedSubject) }
-      verify(exactly = 0) { assessmentRepository.save(any()) }
-    }
-
-    @Test
-    fun `audit create assessment from court`() {
-      every { subjectRepository.findByCrn(crn) } returns null
-      every { subjectRepository.save(any()) } returns SubjectEntity(
-        name = "name",
-        pnc = "PNC",
-        crn = crn,
-        dateOfBirth = LocalDate.of(1989, 1, 1),
-        createdDate = LocalDateTime.now(),
-      )
-      every { assessmentRepository.save(any()) } returns AssessmentEntity(assessmentId = assessmentId)
-      every { courtCaseRestClient.getCourtCase(courtCode, caseNumber) } returns CourtCase(
-        crn = crn,
-        defendantDob = LocalDate.of(1989, 1, 1)
-      )
-      every {
-        oasysAssessmentUpdateService.createOffenderAndOasysAssessment(
-          crn = crn,
-          assessmentType = assessmentType
-        )
-      } returns Pair(oasysOffenderPk, oasysSetPk)
-
-      every { offenderService.getOffenceFromConvictionIndex(crn, eventId) } returns OffenceDto(
-        offenceCode = "Code",
-        codeDescription = "Code description",
-        offenceSubCode = "Sub-code",
-        subCodeDescription = "Sub-code description"
-      )
-      every { episodeService.prePopulateFromExternalSources(any(), assessmentType) } returnsArgument 0
-      every { episodeService.prePopulateFromPreviousEpisodes(any(), any()) } returnsArgument 0
-      val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
-      every { authorService.getOrCreateAuthor() } returns author
-
-      val assessment = assessmentsService.createNewAssessment(
-        CreateAssessmentDto(
-          courtCode = courtCode,
-          caseNumber = caseNumber,
-          assessmentSchemaCode = assessmentType
-        )
-      )
-      verify(exactly = 1) {
-        auditService.createAuditEvent(
-          ARN_ASSESSMENT_CREATED,
-          assessment.assessmentUuid,
-          assessment.episodes?.first()?.episodeUuid,
-          crn,
-          any(),
-          any()
-        )
-      }
-      verify(exactly = 1) {
-        telemetryService.trackAssessmentEvent(
-          ASSESSMENT_CREATED,
-          crn,
-          author,
-          assessment.assessmentUuid,
-          assessment.episodes?.first()?.episodeUuid!!,
-          assessmentType
-        )
-      }
     }
   }
 }

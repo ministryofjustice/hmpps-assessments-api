@@ -7,7 +7,6 @@ generic-service:
 
   env:
     OAUTH_ENDPOINT_URL: https://sign-in-dev.hmpps.service.justice.gov.uk/auth
-    COURT_CASE_API_BASE_URL: https://court-case-service-dev.apps.live-1.cloud-platform.service.justice.gov.uk
     ASSESSMENT_UPDATE_API_BASE_URL: https://asmnt-updte-dev.aks-dev-1.studio-hosting.service.justice.gov.uk
     COMMUNITY_API_BASE_URL: https://community-api-secure.test.delius.probation.hmpps.dsd.io/
     ASSESSMENT_API_BASE_URL: https://offender-dev.aks-dev-1.studio-hosting.service.justice.gov.uk

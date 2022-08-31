@@ -25,7 +25,6 @@ import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerGroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRepository
-import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import uk.gov.justice.digital.assessments.restclient.audit.AuditType
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import java.time.LocalDate
@@ -39,7 +38,6 @@ class AssessmentServiceTest {
   private val subjectRepository: SubjectRepository = mockk()
   private val authorService: AuthorService = mockk()
   private val questionService: QuestionService = mockk()
-  private val courtCaseRestClient: CourtCaseRestClient = mockk()
   private val episodeService: EpisodeService = mockk()
   private val offenderService: OffenderService = mockk()
   private val oasysAssessmentUpdateService: OasysAssessmentUpdateService = mockk()
@@ -52,7 +50,6 @@ class AssessmentServiceTest {
     authorService,
     questionService,
     episodeService,
-    courtCaseRestClient,
     oasysAssessmentUpdateService,
     offenderService,
     auditService,

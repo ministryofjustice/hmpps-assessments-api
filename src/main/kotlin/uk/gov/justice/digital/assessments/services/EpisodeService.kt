@@ -24,7 +24,6 @@ import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpi
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.CloneAssessmentExcludedQuestionsRepository
 import uk.gov.justice.digital.assessments.restclient.AssessmentApiRestClient
 import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
-import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import uk.gov.justice.digital.assessments.restclient.communityapi.DeliusDisabilityDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.DeliusPersonalCircumstanceDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.PersonalContact
@@ -40,7 +39,6 @@ import java.util.regex.Pattern
 @Transactional("refDataTransactionManager")
 class EpisodeService(
   private val questionService: QuestionService,
-  private val courtCaseRestClient: CourtCaseRestClient,
   private val communityApiRestClient: CommunityApiRestClient,
 
   private val assessmentApiRestClient: AssessmentApiRestClient,
@@ -173,7 +171,6 @@ class EpisodeService(
     log.info("Fetching source answers for source: $sourceName")
     try {
       val rawJson = when (sourceName) {
-        ExternalSource.COURT.name -> loadFromCourtCase(episode)
         ExternalSource.DELIUS.name -> loadFromDelius(episode, sourceEndpoint)
         ExternalSource.OASYS.name -> loadFromOASys(episode, latestCompleteEpisodeEndDate)
         else -> return null
@@ -193,12 +190,6 @@ class EpisodeService(
       types = listOf("LAYER_1", "LAYER_3"),
       cutoffDate = latestCompleteEpisodeEndDate
     )
-  }
-
-  private fun loadFromCourtCase(episode: AssessmentEpisodeEntity): String? {
-    if (episode.offence?.source != ExternalSource.COURT.name) return null
-    val (courtCode, caseNumber) = episode.offence?.sourceId!!.split('|')
-    return courtCaseRestClient.getCourtCaseJson(courtCode, caseNumber)
   }
 
   private fun loadFromDelius(episode: AssessmentEpisodeEntity, sourceEndpoint: String?): String? {

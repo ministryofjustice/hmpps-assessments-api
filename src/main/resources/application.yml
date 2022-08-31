@@ -10,13 +10,6 @@ spring:
     oauth2:
       client:
         registration:
-          court-case-client:
-            client-name: court-case-api-client
-            client-id: ${court-case-api-id:sentence-plan-api-client}
-            client-secret: ${court-case-api-client-secret:clientsecret}
-            client-authentication-method: basic
-            authorization-grant-type: client_credentials
-            provider: oauth-service
           assessment-update-client:
             client-name: assessment-update-api-client
             client-id: ${assessment-update-api-id:sentence-plan-api-client}
@@ -134,10 +127,6 @@ web:
     read-timeout-ms: 50000
     write-timeout-ms: 5000
     byte-buffer-size: 20971520
-
-court-case-api:
-  base-url: ${court-case-api-base-url:http://localhost:9080}
-  case-path-template: /court/%s/case/%s
 
 assessment-update-api:
   base-url: http://localhost:9080
