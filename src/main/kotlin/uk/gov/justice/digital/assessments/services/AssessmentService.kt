@@ -35,7 +35,6 @@ class AssessmentService(
   private val authorService: AuthorService,
   private val questionService: QuestionService,
   private val episodeService: EpisodeService,
-  private val courtCaseClient: CourtCaseRestClient,
   private val offenderService: OffenderService,
   private val auditService: AuditService,
   private val telemetryService: TelemetryService
@@ -260,7 +259,7 @@ class AssessmentService(
     val author = authorService.getOrCreateAuthor()
     val isNewEpisode = !assessment.hasCurrentEpisode()
     log.info("isNewEpisode is $isNewEpisode")
-    var episode = assessment.newEpisode(
+    val episode = assessment.newEpisode(
       reason,
       assessmentType = assessmentType,
       offence = OffenceEntity(

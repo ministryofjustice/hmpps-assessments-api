@@ -4,15 +4,11 @@ import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.web.reactive.function.client.ClientResponse
 import reactor.core.publisher.Mono
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.OasysAssessmentType
-import uk.gov.justice.digital.assessments.restclient.assessmentupdateapi.OASysErrorResponse
-import uk.gov.justice.digital.assessments.services.exceptions.DuplicateOffenderRecordException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiAuthorisationException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiEntityNotFoundException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiForbiddenException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiInvalidRequestException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiUnknownException
-import uk.gov.justice.digital.assessments.services.exceptions.OASysUserPermissionException
 
 fun handle4xxError(
   clientResponse: ClientResponse,
@@ -53,47 +49,6 @@ fun handle5xxError(
     path,
     service
   )
-}
-
-fun handleOffenderError(
-  crn: String?,
-  user: String?,
-  clientResponse: ClientResponse,
-  method: HttpMethod,
-  url: String
-): Mono<out Throwable?>? {
-  return when {
-    HttpStatus.CONFLICT == clientResponse.statusCode() -> {
-      clientResponse.bodyToMono(OASysErrorResponse::class.java)
-        .map { error -> DuplicateOffenderRecordException(error.developerMessage, "Unable to create OASys offender. Duplicate OASys offender found for crn: $crn") }
-    }
-    HttpStatus.FORBIDDEN == clientResponse.statusCode() -> {
-      clientResponse.bodyToMono(OASysErrorResponse::class.java)
-        .map { error -> OASysUserPermissionException(error.developerMessage, "Unable to create OASys offender. User $user does not have permission to create offender with crn $crn") }
-    }
-    else -> handleError(clientResponse, method, url, ExternalService.ASSESSMENTS_API)
-  }
-}
-
-fun handleAssessmentError(
-  offenderPK: Long?,
-  user: String?,
-  oasysAssessmentType: OasysAssessmentType,
-  clientResponse: ClientResponse,
-  method: HttpMethod,
-  url: String
-): Mono<out Throwable?>? {
-  return when {
-    HttpStatus.CONFLICT == clientResponse.statusCode() -> {
-      clientResponse.bodyToMono(OASysErrorResponse::class.java)
-        .map { error -> DuplicateOffenderRecordException(error.developerMessage, "Unable to create OASys assessment. Existing assessment found for offender $offenderPK") }
-    }
-    HttpStatus.FORBIDDEN == clientResponse.statusCode() -> {
-      clientResponse.bodyToMono(OASysErrorResponse::class.java)
-        .map { error -> OASysUserPermissionException(error.developerMessage, "Unable to create OASys assessment. User $user does not have permission to create assessment type: $oasysAssessmentType for offender with pk $offenderPK") }
-    }
-    else -> handleError(clientResponse, method, url, ExternalService.ASSESSMENTS_API)
-  }
 }
 
 fun handleError(

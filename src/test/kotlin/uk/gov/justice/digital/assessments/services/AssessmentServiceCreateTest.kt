@@ -60,9 +60,7 @@ class AssessmentServiceCreateTest {
   private val assessmentId = 1L
   private val assessmentType = AssessmentType.UPW
 
-  private val oasysOffenderPk = 1L
   private val crn = "X12345"
-  private val oasysSetPk = 1L
 
   private val eventId = 1L
 

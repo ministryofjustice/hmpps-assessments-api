@@ -96,7 +96,7 @@ class AssessmentControllerTest : IntegrationTest() {
       val path = "/assessments/subject/$crn/episodes/current"
 
       // when & then
-      val assessmentEpisode = webTestClient.get().uri(path)
+      webTestClient.get().uri(path)
         .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
         .exchange()
         .expectStatus().isNotFound

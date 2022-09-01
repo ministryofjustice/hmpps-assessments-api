@@ -12,7 +12,6 @@ import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.EpisodeRepository
 import uk.gov.justice.digital.assessments.restclient.audit.AuditType
-import uk.gov.justice.digital.assessments.services.dto.AssessmentEpisodeUpdateErrors
 import uk.gov.justice.digital.assessments.services.exceptions.CannotCloseEpisodeException
 import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
 import java.time.LocalDateTime
@@ -21,6 +20,7 @@ import java.time.LocalDateTime
 class AssessmentUpdateService(
   private val assessmentRepository: AssessmentRepository,
   private val episodeRepository: EpisodeRepository,
+  private val riskPredictorsService: RiskPredictorsService,
   private val authorService: AuthorService,
   private val auditService: AuditService,
   private val telemetryService: TelemetryService
@@ -66,7 +66,7 @@ class AssessmentUpdateService(
     assessmentRepository.save(episode.assessment)
     log.info("Saved episode ${episode.episodeUuid} for assessment ${episode.assessment.assessmentUuid}")
     auditEpisodeUpdate(currentAuthor, episode)
-    return AssessmentEpisodeDto.from(episode, episodeUpdateErrors)
+    return AssessmentEpisodeDto.from(episode)
   }
 
   fun AssessmentEpisodeEntity.updateEpisodeAnswers(
@@ -92,7 +92,7 @@ class AssessmentUpdateService(
       auditAndLogCompleteAssessment(episode)
       log.info("Saved completed episode ${episode.episodeUuid} for assessment ${episode.assessment.assessmentUuid}")
     }
-    return AssessmentEpisodeDto.from(episode = episode)
+    return AssessmentEpisodeDto.from(episode)
   }
 
   @Transactional("assessmentsTransactionManager")
