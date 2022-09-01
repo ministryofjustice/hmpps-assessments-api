@@ -22,7 +22,6 @@ import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.OasysAssessmentType
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRepository
 import uk.gov.justice.digital.assessments.restclient.ExternalService
@@ -44,8 +43,6 @@ class AssessmentServiceCreateTest {
   private val questionService: QuestionService = mockk()
   private val episodeService: EpisodeService = mockk()
   private val offenderService: OffenderService = mockk()
-  private val oasysAssessmentUpdateService: OasysAssessmentUpdateService = mockk()
-  private val assessmentReferenceDataService: AssessmentReferenceDataService = mockk()
   private val auditService: AuditService = mockk()
   private val telemetryService: TelemetryService = mockk()
 
@@ -55,7 +52,6 @@ class AssessmentServiceCreateTest {
     authorService,
     questionService,
     episodeService,
-    oasysAssessmentUpdateService,
     offenderService,
     auditService,
     telemetryService
@@ -65,16 +61,13 @@ class AssessmentServiceCreateTest {
   private val assessmentId = 1L
   private val assessmentType = AssessmentType.ROSH
 
-  private val oasysOffenderPk = 1L
   private val crn = "X12345"
-  private val oasysSetPk = 1L
 
   private val eventId = 1L
 
   @BeforeEach
   fun setup() {
     MDC.put(RequestData.USER_NAME_HEADER, "User name")
-    every { assessmentReferenceDataService.toOasysAssessmentType(AssessmentType.ROSH) } returns OasysAssessmentType.SHORT_FORM_PSR
     val offenceDto = OffenceDto(
       convictionId = 123,
       convictionIndex = eventId,
@@ -94,61 +87,10 @@ class AssessmentServiceCreateTest {
   inner class CreatingDeliusAssessments {
 
     @Test
-    fun `should not create Oasys assessment for UPW assessment type`() {
-      // Given
-      every { subjectRepository.findByCrn(crn) } returns null
-      every { offenderService.getOffender(crn) } returns OffenderDto(dateOfBirth = LocalDate.of(1989, 1, 1))
-      every {
-        oasysAssessmentUpdateService.createOffenderAndOasysAssessment(
-          crn,
-          eventId,
-          AssessmentType.UPW
-        )
-      } returns Pair(
-        oasysOffenderPk,
-        oasysSetPk
-      )
-      every { offenderService.getOffenceFromConvictionIndex(crn, eventId) } returns OffenceDto(
-        convictionId = 123,
-        convictionIndex = eventId,
-        offenceCode = "Code",
-        codeDescription = "Code description",
-        offenceSubCode = "Sub-code",
-        subCodeDescription = "Sub-code description"
-      )
-      every { episodeService.prePopulateFromExternalSources(any(), AssessmentType.UPW) } returnsArgument 0
-      every { episodeService.prePopulateFromPreviousEpisodes(any(), any()) } returnsArgument 0
-      every { subjectRepository.save(any()) } returns SubjectEntity(
-        name = "name",
-        pnc = "PNC",
-        crn = crn,
-        dateOfBirth = LocalDate.of(1989, 1, 1),
-        createdDate = LocalDateTime.now(),
-      )
-      every { assessmentRepository.save(any()) } returns AssessmentEntity(assessmentId = assessmentId)
-      val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
-      every { authorService.getOrCreateAuthor() } returns author
-
-      // when
-      assessmentsService.createNewAssessment(
-        CreateAssessmentDto(
-          deliusEventId = eventId,
-          crn = crn,
-          assessmentSchemaCode = AssessmentType.UPW
-        )
-      )
-      // Then
-      verify(exactly = 0) { oasysAssessmentUpdateService.createOffenderAndOasysAssessment(any(), any(), any()) }
-    }
-
-    @Test
     fun `create new offender with new assessment from delius event index and crn`() {
       // Given
       every { subjectRepository.findByCrn(crn) } returns null
       every { offenderService.getOffender(crn) } returns OffenderDto(dateOfBirth = LocalDate.of(1989, 1, 1))
-      every {
-        oasysAssessmentUpdateService.createOffenderAndOasysAssessment(crn, eventId, assessmentType)
-      } returns Pair(oasysOffenderPk, oasysSetPk)
       every { offenderService.getOffenceFromConvictionIndex(crn, eventId) } returns OffenceDto(
         convictionId = 123,
         convictionIndex = eventId,
@@ -180,20 +122,12 @@ class AssessmentServiceCreateTest {
       )
       // Then
       verify(exactly = 1) { assessmentRepository.save(any()) }
-      verify(exactly = 1) { oasysAssessmentUpdateService.createOffenderAndOasysAssessment(any(), any(), any()) }
     }
 
     @Test
     fun `create new offender with new assessment from delius event ID and crn`() {
       every { subjectRepository.findByCrn(crn) } returns null
       every { offenderService.getOffender(crn) } returns OffenderDto(dateOfBirth = LocalDate.of(1989, 1, 1))
-      every {
-        oasysAssessmentUpdateService.createOffenderAndOasysAssessment(
-          crn,
-          eventId,
-          assessmentType
-        )
-      } returns Pair(oasysOffenderPk, oasysSetPk)
 
       val offenceDto = OffenceDto(
         convictionId = 123,
@@ -255,9 +189,6 @@ class AssessmentServiceCreateTest {
         dateOfBirth = LocalDate.of(1989, 1, 1),
         createdDate = LocalDateTime.now(),
       )
-      every {
-        oasysAssessmentUpdateService.createOffenderAndOasysAssessment(crn, eventId, assessmentType)
-      } returns Pair(oasysOffenderPk, oasysSetPk)
 
       val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
       every { authorService.getOrCreateAuthor() } returns author
@@ -302,9 +233,6 @@ class AssessmentServiceCreateTest {
         dateOfBirth = LocalDate.of(1989, 1, 1),
         createdDate = LocalDateTime.now(),
       )
-      every {
-        oasysAssessmentUpdateService.createOffenderAndOasysAssessment(crn, eventId, assessmentType)
-      } returns Pair(oasysOffenderPk, oasysSetPk)
 
       // When
       assessmentsService.createNewAssessment(
@@ -361,14 +289,6 @@ class AssessmentServiceCreateTest {
         offenderService.getOffender("X12345")
       } returns OffenderDto(dateOfBirth = LocalDate.of(1989, 1, 1))
 
-      every {
-        oasysAssessmentUpdateService.createOffenderAndOasysAssessment(
-          crn,
-          eventId,
-          assessmentType
-        )
-      } returns Pair(oasysOffenderPk, oasysSetPk)
-
       every { offenderService.getOffenceFromConvictionIndex(crn, eventId) } returns OffenceDto(
         convictionId = 123,
         convictionIndex = eventId,
@@ -401,7 +321,7 @@ class AssessmentServiceCreateTest {
         auditService.createAuditEvent(
           ARN_ASSESSMENT_CREATED,
           assessment.assessmentUuid,
-          assessment.episodes?.first()?.episodeUuid,
+          assessment.episodes.first().episodeUuid,
           crn,
           any(),
           any()
@@ -413,7 +333,7 @@ class AssessmentServiceCreateTest {
           crn,
           author,
           assessment.assessmentUuid,
-          assessment.episodes?.first()?.episodeUuid!!,
+          assessment.episodes.first().episodeUuid!!,
           assessmentType
         )
       }
@@ -449,13 +369,6 @@ class AssessmentServiceCreateTest {
         dateOfBirth = LocalDate.of(1989, 1, 1),
         createdDate = LocalDateTime.now(),
       )
-      every {
-        oasysAssessmentUpdateService.createOffenderAndOasysAssessment(
-          crn,
-          eventId,
-          assessmentType
-        )
-      } returns Pair(oasysOffenderPk, oasysSetPk)
       every { authorService.getOrCreateAuthor() } returns author
       assessmentsService.createNewAssessment(
         CreateAssessmentDto(

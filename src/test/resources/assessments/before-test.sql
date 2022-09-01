@@ -121,12 +121,5 @@ VALUES ('23c3e984-54c7-480f-b06c-7d000e2fb87c', 'question_code_for_test', '2020-
 INSERT INTO hmppsassessmentsschemas.question_group (question_group_uuid, content_uuid, content_type, group_uuid, display_order, read_only)
 VALUES ('c093a4ea-46a2-4b98-89cc-6bacaad4d401', '23c3e984-54c7-480f-b06c-7d000e2fb87c', 'question', 'fb777be0-a183-4c83-8209-e7871df9c547', 3, false);
 
-/* Existing Court Subject */
-INSERT INTO hmppsassessmentsapi.subject (subject_uuid, name, pnc, crn, date_of_birth, gender, created_date) VALUES
-('85a1a9de-9afe-4b49-97b1-0d37fd89eee5', 'John Smith', 'dummy-pnc', 'DX12340A', '1928-08-01', 'MALE', '2019-11-14 08:30'),
-('65a6a6de-9afe-4b49-97b1-0d37fd89eee5', 'Martin Smith', 'dummy-pnc', 'DX12440A', '1928-08-01', 'MALE', '2019-11-14 08:30');
-
 INSERT INTO hmppsassessmentsapi.assessment  (assessment_uuid, subject_uuid, created_date) VALUES
-('1e010e18-a11c-107f-bc78-e5f284e237e5', '65a6a6de-9afe-4b49-97b1-0d37fd89eee5', '2019-11-14 09:00'),
-('2e020e28-a21c-207f-bc78-e5f284e237e5', '85a1a9de-9afe-4b49-97b1-0d37fd89eee5', '2019-11-14 09:00'),
 ('4e040e44-a21c-207f-bc48-e5f284e237e5', '362aae3c-852d-4a39-80f4-f41adc249bae', '2019-11-14 09:00');

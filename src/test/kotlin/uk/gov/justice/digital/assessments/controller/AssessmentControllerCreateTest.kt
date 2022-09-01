@@ -5,16 +5,13 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
-import org.springframework.http.MediaType
 import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.context.jdbc.SqlConfig
 import org.springframework.test.context.jdbc.SqlGroup
 import org.springframework.test.web.reactive.server.expectBody
-import org.springframework.web.reactive.function.BodyInserters
 import uk.gov.justice.digital.assessments.api.AnswersDto
 import uk.gov.justice.digital.assessments.api.AssessmentDto
 import uk.gov.justice.digital.assessments.api.AssessmentEpisodeDto
-import uk.gov.justice.digital.assessments.api.AssessmentSubjectDto
 import uk.gov.justice.digital.assessments.api.CreateAssessmentDto
 import uk.gov.justice.digital.assessments.api.CreateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.api.ErrorResponse
@@ -52,26 +49,6 @@ class AssessmentControllerCreateTest : IntegrationTest() {
         .header("Content-Type", "application/json")
         .exchange()
         .expectStatus().isUnauthorized
-    }
-
-    @Test
-    fun `should return bad request when no user area header is set when creating assessment from delius`() {
-      webTestClient.post().uri("/assessments")
-        .bodyValue(
-          CreateAssessmentDto(
-            crn = crn,
-            deliusEventId = eventID,
-            assessmentSchemaCode = AssessmentType.ROSH
-          )
-        )
-        .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
-        .exchange()
-        .expectStatus().isBadRequest
-        .expectBody<ErrorResponse>()
-        .consumeWith {
-          assertThat(it.responseBody?.status).isEqualTo(400)
-          assertThat(it.responseBody?.developerMessage).isEqualTo("Area Code Header is mandatory")
-        }
     }
 
     @Test
@@ -393,26 +370,5 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       .expectBody<AssessmentDto>()
       .returnResult()
       .responseBody
-  }
-
-  private fun fetchAssessmentSubject(assessmentUuid: UUID?): AssessmentSubjectDto? {
-    val subject = webTestClient.get().uri("/assessments/$assessmentUuid/subject")
-      .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
-      .exchange()
-      .expectStatus().isOk
-      .expectBody<AssessmentSubjectDto>()
-      .returnResult()
-      .responseBody
-    return subject!!
-  }
-
-  private fun fetchEpisodes(assessmentUuid: UUID?): List<AssessmentEpisodeDto>? {
-    return webTestClient.get().uri("/assessments/$assessmentUuid/episodes")
-      .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
-      .exchange()
-      .expectStatus().isOk
-      .expectBody<List<AssessmentEpisodeDto>>()
-      .returnResult()
-      .responseBody!!
   }
 }

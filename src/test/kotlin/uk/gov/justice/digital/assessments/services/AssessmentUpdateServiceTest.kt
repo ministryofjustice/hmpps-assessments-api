@@ -6,7 +6,6 @@ import io.mockk.mockk
 import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -16,11 +15,9 @@ import uk.gov.justice.digital.assessments.jpa.entities.assessments.Answers
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.OasysAssessmentType
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.EpisodeRepository
 import uk.gov.justice.digital.assessments.restclient.audit.AuditType
-import uk.gov.justice.digital.assessments.services.dto.AssessmentEpisodeUpdateErrors
 import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
 import uk.gov.justice.digital.assessments.testutils.Verify
 import java.time.LocalDateTime
@@ -30,9 +27,6 @@ class AssessmentUpdateServiceTest {
   private val assessmentRepository: AssessmentRepository = mockk()
   private val episodeRepository: EpisodeRepository = mockk()
   private val riskPredictorsService: RiskPredictorsService = mockk()
-  private val assessmentReferenceDataService: AssessmentReferenceDataService = mockk()
-  private val oasysAssessmentUpdateService: OasysAssessmentUpdateService = mockk()
-  private val assessmentService: AssessmentService = mockk()
   private val authorService: AuthorService = mockk()
   private val auditService: AuditService = mockk()
   private val telemetryService: TelemetryService = mockk()
@@ -41,8 +35,6 @@ class AssessmentUpdateServiceTest {
     assessmentRepository,
     episodeRepository,
     riskPredictorsService,
-    oasysAssessmentUpdateService,
-    assessmentService,
     authorService,
     auditService,
     telemetryService
@@ -55,13 +47,6 @@ class AssessmentUpdateServiceTest {
   private val episodeUuid = UUID.randomUUID()
 
   private val existingQuestionCode = "existing_question_code"
-
-  @BeforeEach
-  fun setup() {
-    every { assessmentReferenceDataService.toOasysAssessmentType(AssessmentType.ROSH) } returns OasysAssessmentType.SHORT_FORM_PSR
-    every { assessmentReferenceDataService.toOasysAssessmentType(AssessmentType.RSR) } returns OasysAssessmentType.SOMETHING_IN_OASYS
-    every { assessmentService.shouldPushToOasys(AssessmentType.ROSH) } returns true
-  }
 
   @Nested
   @DisplayName("update episode")
@@ -80,12 +65,6 @@ class AssessmentUpdateServiceTest {
         )
       )
       justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
-      every {
-        oasysAssessmentUpdateService.updateOASysAssessment(
-          assessment.episodes.first(),
-          updatedAnswers.answers,
-        )
-      } returns AssessmentEpisodeUpdateErrors()
       every { assessmentRepository.save(any()) } returns null
       val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
       every { authorService.getOrCreateAuthor() } returns author
@@ -117,12 +96,6 @@ class AssessmentUpdateServiceTest {
         )
       )
       justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
-      every {
-        oasysAssessmentUpdateService.updateOASysAssessment(
-          assessment.episodes.first(),
-          updatedAnswers.answers,
-        )
-      } returns AssessmentEpisodeUpdateErrors()
       every { assessmentRepository.save(any()) } returns null
 
       val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
@@ -150,9 +123,6 @@ class AssessmentUpdateServiceTest {
         )
       )
       justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
-      every {
-        oasysAssessmentUpdateService.updateOASysAssessment(any(), any())
-      } returns AssessmentEpisodeUpdateErrors()
       every { assessmentRepository.save(any()) } returns null
       val author = AuthorEntity(authorUuid = UUID.randomUUID(), userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
       every { authorService.getOrCreateAuthor() } returns author
@@ -183,9 +153,6 @@ class AssessmentUpdateServiceTest {
         )
       )
       justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
-      every {
-        oasysAssessmentUpdateService.updateOASysAssessment(any(), any())
-      } returns AssessmentEpisodeUpdateErrors()
       every { assessmentRepository.save(any()) } returns null
       val author = AuthorEntity(authorUuid = UUID.randomUUID(), userId = "2", userName = "USER2", userAuthSource = "source", userFullName = "full name 2")
       every { authorService.getOrCreateAuthor() } returns author
@@ -228,12 +195,6 @@ class AssessmentUpdateServiceTest {
         )
       )
       justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
-      every {
-        oasysAssessmentUpdateService.updateOASysAssessment(
-          assessment.episodes.first(),
-          updatedAnswers.answers,
-        )
-      } returns AssessmentEpisodeUpdateErrors()
       every { assessmentRepository.save(any()) } returns null
 
       val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
@@ -247,121 +208,6 @@ class AssessmentUpdateServiceTest {
         "fruit loops",
         "custard"
       )
-    }
-
-    @Test
-    fun `should complete Oasys assessment when schema code is ROSH`() {
-      // Given
-      val episodeEntity = createAssessmentEpisodeEntity(AssessmentType.ROSH)
-
-      val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
-      every { authorService.getOrCreateAuthor() } returns author
-      every { assessmentService.shouldPushToOasys(AssessmentType.ROSH) } returns true
-      every { episodeRepository.save(any()) } returns episodeEntity
-      justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
-      every { riskPredictorsService.getPredictorResults(episodeEntity, true) } returns emptyList()
-      every { oasysAssessmentUpdateService.completeOASysAssessment(episodeEntity, any()) } returns AssessmentEpisodeUpdateErrors()
-
-      // When
-      assessmentUpdateService.completeEpisode(episodeEntity)
-
-      // Then
-      verify { oasysAssessmentUpdateService.completeOASysAssessment(any(), any()) }
-    }
-
-    @Test
-    fun `should not attempt to update Oasys assessment when schema code is UPW`() {
-      // Given
-      val episodeEntity = createAssessmentEpisodeEntity(AssessmentType.UPW)
-
-      val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
-      every { authorService.getOrCreateAuthor() } returns author
-      every { assessmentService.shouldPushToOasys(AssessmentType.UPW) } returns false
-      every { episodeRepository.save(any()) } returns episodeEntity
-      every { assessmentRepository.save(any()) } returns episodeEntity.assessment
-      justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
-
-      val updatedAnswers = UpdateAssessmentEpisodeDto(
-        mutableMapOf(
-          existingQuestionCode to listOf("fruit loops", "custard")
-        )
-      )
-
-      // When
-      assessmentUpdateService.updateEpisode(episodeEntity, updatedAnswers)
-
-      // Then
-      verify(exactly = 0) { oasysAssessmentUpdateService.updateOASysAssessment(any(), any()) }
-    }
-
-    @Test
-    fun `should update Oasys assessment when schema code is ROSH`() {
-      // Given
-      val episodeEntity = createAssessmentEpisodeEntity(AssessmentType.ROSH)
-
-      val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
-      every { authorService.getOrCreateAuthor() } returns author
-      every { assessmentService.shouldPushToOasys(AssessmentType.ROSH) } returns true
-      every { episodeRepository.save(any()) } returns episodeEntity
-      every { assessmentRepository.save(any()) } returns episodeEntity.assessment
-      justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
-      every { oasysAssessmentUpdateService.updateOASysAssessment(any(), any()) } returns AssessmentEpisodeUpdateErrors()
-
-      val updatedAnswers = UpdateAssessmentEpisodeDto(
-        mutableMapOf(
-          existingQuestionCode to listOf("fruit loops", "custard")
-        )
-      )
-
-      // When
-      assessmentUpdateService.updateEpisode(episodeEntity, updatedAnswers)
-
-      // Then
-      verify() { oasysAssessmentUpdateService.updateOASysAssessment(any(), any()) }
-    }
-
-    @Test
-    fun `should not update Oasys assessment when schema code is UPW`() {
-      // Given
-      val episodeEntity = createAssessmentEpisodeEntity(AssessmentType.UPW)
-
-      val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
-      every { authorService.getOrCreateAuthor() } returns author
-      every { assessmentService.shouldPushToOasys(AssessmentType.UPW) } returns false
-      every { episodeRepository.save(any()) } returns episodeEntity
-      every { assessmentRepository.save(any()) } returns episodeEntity.assessment
-      justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
-
-      val updatedAnswers = UpdateAssessmentEpisodeDto(
-        mutableMapOf(
-          existingQuestionCode to listOf("fruit loops", "custard")
-        )
-      )
-
-      // When
-      assessmentUpdateService.updateEpisode(episodeEntity, updatedAnswers)
-
-      // Then
-      verify(exactly = 0) { oasysAssessmentUpdateService.updateOASysAssessment(any(), any()) }
-    }
-
-    @Test
-    fun `should not attempt to complete Oasys assessment when schema code is UPW`() {
-      // Given
-      val episodeEntity = createAssessmentEpisodeEntity(AssessmentType.UPW)
-
-      val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
-      every { authorService.getOrCreateAuthor() } returns author
-      every { assessmentService.shouldPushToOasys(AssessmentType.UPW) } returns false
-      every { episodeRepository.save(any()) } returns episodeEntity
-      justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
-      every { riskPredictorsService.getPredictorResults(episodeEntity, true) } returns emptyList()
-
-      // When
-      assessmentUpdateService.completeEpisode(episodeEntity)
-
-      // Then
-      verify(exactly = 0) { oasysAssessmentUpdateService.completeOASysAssessment(any(), any()) }
     }
 
     @Test
@@ -401,22 +247,6 @@ class AssessmentUpdateServiceTest {
         .isInstanceOf(UpdateClosedEpisodeException::class.java)
         .hasMessage("Cannot update a closed or completed Episode $episodeUuid for assessment $assessmentUuid")
     }
-  }
-
-  private fun createAssessmentEpisodeEntity(schemaCode: AssessmentType): AssessmentEpisodeEntity {
-    val answers = mutableMapOf<String, List<Any>>(
-      existingQuestionCode to listOf("free text")
-    )
-    return AssessmentEpisodeEntity(
-      episodeUuid = episodeUuid,
-      episodeId = episodeId2,
-      changeReason = "Change of Circs 2",
-      answers = answers,
-      createdDate = LocalDateTime.now(),
-      assessmentType = schemaCode,
-      author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
-      assessment = AssessmentEntity()
-    )
   }
 
   private fun assessmentEntity(answers: Answers): AssessmentEntity {

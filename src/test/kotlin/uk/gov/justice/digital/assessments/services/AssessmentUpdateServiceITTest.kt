@@ -73,7 +73,6 @@ class AssessmentUpdateServiceITTest() : IntegrationTest() {
     assertThat(updateAssessmentResponse).isEqualTo(
       AssessmentEpisodeDto.from(
         assessmentEpisode,
-        null,
         emptyList()
       )
     )
@@ -97,7 +96,6 @@ class AssessmentUpdateServiceITTest() : IntegrationTest() {
     assertThat(updateAssessmentResponse).isEqualTo(
       AssessmentEpisodeDto.from(
         assessmentEpisode,
-        null,
         listOf(
           PredictorScoresDto(
             type = PredictorType.RSR,

@@ -12,7 +12,6 @@ import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.EpisodeRepository
 import uk.gov.justice.digital.assessments.restclient.audit.AuditType
-import uk.gov.justice.digital.assessments.services.dto.AssessmentEpisodeUpdateErrors
 import uk.gov.justice.digital.assessments.services.exceptions.CannotCloseEpisodeException
 import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
 import java.time.LocalDateTime
@@ -22,8 +21,6 @@ class AssessmentUpdateService(
   private val assessmentRepository: AssessmentRepository,
   private val episodeRepository: EpisodeRepository,
   private val riskPredictorsService: RiskPredictorsService,
-  private val oasysAssessmentUpdateService: OasysAssessmentUpdateService,
-  private val assessmentService: AssessmentService,
   private val authorService: AuthorService,
   private val auditService: AuditService,
   private val telemetryService: TelemetryService
@@ -63,16 +60,11 @@ class AssessmentUpdateService(
 
     log.info("Updated episode ${episode.episodeUuid} with ${updatedEpisodeAnswers.size} answer(s) for assessment ${episode.assessment.assessmentUuid}")
 
-    var episodeUpdateErrors: AssessmentEpisodeUpdateErrors? = null
-    if (assessmentService.shouldPushToOasys(episode.assessmentType)) {
-      episodeUpdateErrors = oasysAssessmentUpdateService.updateOASysAssessment(episode, updatedEpisodeAnswers)
-    }
-
     // shouldn't need this because of the transactional annotation, unless there is an exception which needs handling.
     assessmentRepository.save(episode.assessment)
     log.info("Saved episode ${episode.episodeUuid} for assessment ${episode.assessment.assessmentUuid}")
     auditEpisodeUpdate(currentAuthor, episode)
-    return AssessmentEpisodeDto.from(episode, episodeUpdateErrors)
+    return AssessmentEpisodeDto.from(episode)
   }
 
   fun AssessmentEpisodeEntity.updateEpisodeAnswers(
@@ -89,30 +81,21 @@ class AssessmentUpdateService(
   fun completeEpisode(
     episode: AssessmentEpisodeEntity
   ): AssessmentEpisodeDto {
-    val offenderPk: Long? = episode.assessment.subject?.oasysOffenderPk
     episode.author = authorService.getOrCreateAuthor()
     episode.lastEditedDate = LocalDateTime.now()
-    var episodeUpdateErrors: AssessmentEpisodeUpdateErrors? = null
     var final = false
-
     if (!episode.isComplete()) {
-      if (assessmentService.shouldPushToOasys(episode.assessmentType)) {
-        episodeUpdateErrors = oasysAssessmentUpdateService.completeOASysAssessment(episode, offenderPk)
-      }
-      if (episodeUpdateErrors != null && episodeUpdateErrors.hasErrors()) {
-        log.info("Unable to complete episode ${episode.episodeUuid} for assessment ${episode.assessment.assessmentUuid} with OASys restclient")
-      } else {
-        episode.complete()
-        episodeRepository.save(episode)
-        auditAndLogCompleteAssessment(episode)
-        final = true
-        log.info("Saved completed episode ${episode.episodeUuid} for assessment ${episode.assessment.assessmentUuid}")
-      }
+      episode.complete()
+      episodeRepository.save(episode)
+      auditAndLogCompleteAssessment(episode)
+      final = true
     }
+    log.info("Saved completed episode ${episode.episodeUuid} for assessment ${episode.assessment.assessmentUuid}")
+
     val predictorResults = riskPredictorsService.getPredictorResults(episode = episode, final = final)
 
     log.info("Predictors for assessment ${episode.assessment.assessmentUuid} are $predictorResults")
-    return AssessmentEpisodeDto.from(episode, episodeUpdateErrors, predictorResults)
+    return AssessmentEpisodeDto.from(episode, predictorResults)
   }
 
   @Transactional("assessmentsTransactionManager")

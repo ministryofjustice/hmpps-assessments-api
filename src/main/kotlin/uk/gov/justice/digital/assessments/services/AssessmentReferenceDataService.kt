@@ -11,11 +11,9 @@ import uk.gov.justice.digital.assessments.config.CacheConstants.ASSESSMENT_CACHE
 import uk.gov.justice.digital.assessments.config.CacheConstants.ASSESSMENT_SUMMARY_CACHE_KEY
 import uk.gov.justice.digital.assessments.config.CacheConstants.QUESTIONS_FOR_ASSESSMENT_TYPE_CACHE_KEY
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.OasysAssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.PredictorEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.AssessmentRepository
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
-import uk.gov.justice.digital.assessments.services.exceptions.OasysAssessmentTypeMappingMissing
 import java.util.UUID
 
 @Service
@@ -48,11 +46,6 @@ class AssessmentReferenceDataService(
         ?: throw EntityNotFoundException("Assessment not found for assessment type: $assessmentType")
 
     return questionService.getGroupSections(assessmentSchemaGroupCode)
-  }
-
-  fun toOasysAssessmentType(assessmentType: AssessmentType): OasysAssessmentType {
-    return assessmentRepository.findByAssessmentType(assessmentType)?.oasysAssessmentType
-      ?: throw OasysAssessmentTypeMappingMissing("Corresponding Oasys assessment type mapping not found for :$assessmentType")
   }
 
   private fun getAssessmentGroupUuid(assessmentType: AssessmentType): UUID {

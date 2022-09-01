@@ -15,12 +15,9 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.context.jdbc.SqlConfig
 import org.springframework.test.context.jdbc.SqlGroup
-import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.assessments.api.CreateAssessmentDto
-import uk.gov.justice.digital.assessments.api.DeliusEventType
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
-import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRepository
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiForbiddenException
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import uk.gov.justice.digital.assessments.utils.RequestData
@@ -45,9 +42,6 @@ class AssessmentServiceITTest : IntegrationTest() {
   @Autowired
   internal lateinit var assessmentRepository: AssessmentRepository
 
-  @Autowired
-  internal lateinit var subjectRepository: SubjectRepository
-
   @BeforeEach
   fun init() {
     val jwt = Jwt.withTokenValue("token")
@@ -61,60 +55,6 @@ class AssessmentServiceITTest : IntegrationTest() {
     MDC.put(RequestData.USER_NAME_HEADER, "SWITHLAM")
     MDC.put(RequestData.USER_FULL_NAME_HEADER, "Stuart Withlam")
     MDC.put(RequestData.USER_AUTH_SOURCE_HEADER, "delius")
-  }
-
-  @Test
-  @Transactional("assessmentsTransactionManager")
-  fun `Trying to create assessment and push to OASys`() {
-
-    val crn = "X1356"
-    val assessmentResponse =
-      assessmentService.createNewAssessment(
-        CreateAssessmentDto(
-          deliusEventId = 1L,
-          crn = crn,
-          assessmentSchemaCode = AssessmentType.ROSH
-        )
-      )
-    assertThat(assessmentResponse.assessmentUuid).isNotNull
-    assertThat(assessmentResponse.subject).isNotNull
-    assertThat(assessmentResponse.subject?.crn).isEqualTo(crn)
-
-    val assessmentEntity = assessmentRepository.findByAssessmentUuid(assessmentResponse.assessmentUuid)
-    assertThat(assessmentEntity).isNotNull
-    assertThat(assessmentEntity?.assessmentUuid).isEqualTo(assessmentResponse.assessmentUuid)
-    assertThat(assessmentEntity?.subject).isNotNull
-    assertThat(assessmentEntity?.subject?.crn).isEqualTo(crn)
-    assertThat(assessmentEntity?.subject?.oasysOffenderPk).isEqualTo(1L)
-    assertThat(assessmentEntity?.episodes).hasSize(1)
-    assertThat(assessmentEntity?.episodes?.get(0)?.oasysSetPk).isEqualTo(1L)
-  }
-
-  @Test
-  @Transactional("assessmentsTransactionManager")
-  fun `Trying to create assessment and push to OASys with Delius Conviction ID`() {
-
-    val crn = "X1356"
-    val assessmentResponse =
-      assessmentService.createNewAssessment(
-        CreateAssessmentDto(
-          deliusEventId = 123456L,
-          crn = crn,
-          assessmentSchemaCode = AssessmentType.ROSH,
-          deliusEventType = DeliusEventType.EVENT_ID
-        )
-      )
-    assertThat(assessmentResponse.assessmentUuid).isNotNull
-    assertThat(assessmentResponse.subject).isNotNull
-    assertThat(assessmentResponse.subject?.crn).isEqualTo(crn)
-
-    val assessmentEntity = assessmentRepository.findByAssessmentUuid(assessmentResponse.assessmentUuid)
-    assertThat(assessmentEntity?.assessmentUuid).isEqualTo(assessmentResponse.assessmentUuid)
-    assertThat(assessmentEntity?.subject?.crn).isEqualTo(crn)
-    assertThat(assessmentEntity?.subject?.oasysOffenderPk).isEqualTo(1L)
-    assertThat(assessmentEntity?.episodes).hasSize(1)
-    assertThat(assessmentEntity?.episodes?.get(0)?.oasysSetPk).isEqualTo(1L)
-    assertThat(assessmentEntity?.episodes?.get(0)?.offence?.sourceId).isEqualTo("123456")
   }
 
   @Test
@@ -146,25 +86,6 @@ class AssessmentServiceITTest : IntegrationTest() {
     assertThat(assessmentSecondResponse.assessmentUuid).isEqualTo(assessmentUuid)
     assertThat(assessmentResponse.subject).isNotNull
     assertThat(assessmentResponse.subject?.crn).isEqualTo(crn)
-  }
-
-  @Test
-  fun `Trying to create assessment throws error from oasys and rollback`() {
-
-    val crn = "DX12340F"
-
-    try {
-      assessmentService.createNewAssessment(
-        CreateAssessmentDto(
-          deliusEventId = 1L,
-          crn = crn,
-          assessmentSchemaCode = AssessmentType.ROSH
-        )
-      )
-    } catch (e: Exception) {
-    }
-    val subject = subjectRepository.findByCrn(crn)
-    assertThat(subject).isNull()
   }
 
   @Test

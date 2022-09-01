@@ -3,7 +3,6 @@ package uk.gov.justice.digital.assessments.api
 import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.Tables
-import uk.gov.justice.digital.assessments.services.dto.AssessmentEpisodeUpdateErrors
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -65,7 +64,6 @@ data class AssessmentEpisodeDto(
 
     fun from(
       episode: AssessmentEpisodeEntity,
-      errors: AssessmentEpisodeUpdateErrors? = null,
       predictors: Collection<PredictorScoresDto> = emptyList(),
     ): AssessmentEpisodeDto {
       return AssessmentEpisodeDto(
@@ -76,13 +74,13 @@ data class AssessmentEpisodeDto(
         episode.createdDate,
         episode.endDate,
         episode.author.userFullName,
-        episode.answers ?: mutableMapOf(),
-        errors?.errors,
-        errors?.pageErrors,
-        errors?.assessmentErrors,
+        episode.answers,
+        null,
+        null,
+        null,
         predictors,
         OffenceDto.from(episode.offence),
-        episode.tables ?: mutableMapOf(),
+        episode.tables,
         episode.lastEditedDate,
         episode.closedDate,
       )

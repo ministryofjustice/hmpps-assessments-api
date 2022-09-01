@@ -102,7 +102,7 @@ class AssessmentControllerTest : IntegrationTest() {
       val path = "/assessments/subject/$crn/episodes/current"
 
       // when & then
-      val assessmentEpisode = webTestClient.get().uri(path)
+      webTestClient.get().uri(path)
         .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
         .exchange()
         .expectStatus().isNotFound
@@ -374,35 +374,6 @@ class AssessmentControllerTest : IntegrationTest() {
     }
 
     @Test
-    fun `complete assessment episode with errors returns assessment level errors`() {
-      val assessmentErrorsUUID = UUID.fromString("aa47e6c4-e41f-467c-95e7-fcf5ffd422f5")
-      val assessmentEpisode = webTestClient.post().uri("/assessments/$assessmentErrorsUUID/complete")
-        .header(RequestData.USER_AREA_HEADER_NAME, "WWS")
-        .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
-        .exchange()
-        .expectStatus().isOk
-        .expectBody<AssessmentEpisodeDto>()
-        .returnResult()
-        .responseBody
-      assertThat(assessmentEpisode?.ended).isNull()
-      assertThat(assessmentEpisode?.assessmentErrors).hasSize(1)
-    }
-
-    @Test
-    fun `should return bad request when no user area header is set when completing assessment`() {
-      val roshAssessmentUuid = UUID.fromString("aa47e6c4-e41f-467c-95e7-fcf5ffd422f5")
-      webTestClient.post().uri("/assessments/$roshAssessmentUuid/complete")
-        .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
-        .exchange()
-        .expectStatus().isBadRequest
-        .expectBody<ErrorResponse>()
-        .consumeWith {
-          assertThat(it.responseBody?.status).isEqualTo(400)
-          assertThat(it.responseBody?.developerMessage).isEqualTo("Area Code Header is mandatory")
-        }
-    }
-
-    @Test
     fun `should return forbidden when user does not have LAO permission for offender`() {
       webTestClient.post().uri("/assessments/$laoFailureAssessmentUuid/complete")
         .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
@@ -443,20 +414,6 @@ class AssessmentControllerTest : IntegrationTest() {
       assertThat(assessmentEpisode?.assessmentUuid).isEqualTo(assessmentUuid)
       assertThat(assessmentEpisode?.closedDate).isEqualToIgnoringMinutes(LocalDateTime.now())
       assertThat(assessmentEpisode?.userFullName).isEqualTo("NEW USER")
-    }
-
-    @Test
-    fun `should return bad request when no user area header is set when completing assessment`() {
-      val roshAssessmentUuid = UUID.fromString("aa47e6c4-e41f-467c-95e7-fcf5ffd422f5")
-      webTestClient.post().uri("/assessments/$roshAssessmentUuid/complete")
-        .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
-        .exchange()
-        .expectStatus().isBadRequest
-        .expectBody<ErrorResponse>()
-        .consumeWith {
-          assertThat(it.responseBody?.status).isEqualTo(400)
-          assertThat(it.responseBody?.developerMessage).isEqualTo("Area Code Header is mandatory")
-        }
     }
 
     @Test

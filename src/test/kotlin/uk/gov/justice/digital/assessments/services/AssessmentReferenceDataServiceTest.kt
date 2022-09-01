@@ -14,7 +14,6 @@ import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.AssessmentGroupsEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.GroupEntity
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.OasysAssessmentType
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.AssessmentRepository
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import java.time.LocalDateTime
@@ -47,8 +46,7 @@ class AssessmentReferenceDataServiceTest {
     every { assessmentRepository.findByAssessmentType(assessmentType) } returns AssessmentEntity(
       1,
       groupsEntity,
-      assessmentType,
-      OasysAssessmentType.SOMETHING_IN_OASYS
+      assessmentType
     )
     val groupWithContentsDto = GroupWithContentsDto(groupUuid, "simple-group", contents = emptyList())
     every { questionService.getGroupContents(groupUuid) } returns groupWithContentsDto
@@ -86,8 +84,7 @@ class AssessmentReferenceDataServiceTest {
     every { assessmentRepository.findByAssessmentType(assessmentType) } returns AssessmentEntity(
       1,
       groupsEntity,
-      assessmentType,
-      OasysAssessmentType.SOMETHING_IN_OASYS
+      assessmentType
     )
     val groupSectionsDto = GroupSectionsDto(groupUuid, groupCode, contents = emptyList())
     every { questionService.getGroupSections(groupCode) } returns groupSectionsDto

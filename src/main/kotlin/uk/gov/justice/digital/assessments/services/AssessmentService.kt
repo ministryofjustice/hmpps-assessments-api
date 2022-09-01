@@ -35,7 +35,6 @@ class AssessmentService(
   private val authorService: AuthorService,
   private val questionService: QuestionService,
   private val episodeService: EpisodeService,
-  private val oasysAssessmentUpdateService: OasysAssessmentUpdateService,
   private val offenderService: OffenderService,
   private val auditService: AuditService,
   private val telemetryService: TelemetryService
@@ -156,21 +155,10 @@ class AssessmentService(
     val arnAssessment = getOrCreateAssessment(crn, eventId)
     val offence = offenderService.getOffence(eventType, crn, eventId)
 
-    // (oasysOffenderPk, oasysSetPK)
-    var oasysPrimaryKeyPair: Pair<Long?, Long?> = Pair(null, null)
-
-    if (shouldPushToOasys(assessmentType)) {
-      oasysPrimaryKeyPair = oasysAssessmentUpdateService.createOffenderAndOasysAssessment(
-        crn = crn,
-        deliusEventId = offence.convictionIndex,
-        assessmentType = assessmentType
-      )
-    }
-    val subject = subjectRepository.save(arnAssessment.subject?.copy(oasysOffenderPk = oasysPrimaryKeyPair.first))
+    val subject = arnAssessment.subject?.copy()?.let { subjectRepository.save(it) }
     createPrePopulatedEpisode(
       arnAssessment,
       "",
-      oasysPrimaryKeyPair.second,
       assessmentType,
       ExternalSource.DELIUS.name,
       offence.convictionId.toString(),
@@ -261,7 +249,6 @@ class AssessmentService(
   private fun createPrePopulatedEpisode(
     assessment: AssessmentEntity,
     reason: String,
-    oasysSetPK: Long? = null,
     assessmentType: AssessmentType,
     source: String,
     eventId: String,
@@ -272,9 +259,9 @@ class AssessmentService(
     val author = authorService.getOrCreateAuthor()
     val isNewEpisode = !assessment.hasCurrentEpisode()
     log.info("isNewEpisode is $isNewEpisode")
-    var episode = assessment.newEpisode(
+    val episode = assessment.newEpisode(
       reason,
-      oasysSetPk = oasysSetPK,
+      oasysSetPk = null,
       assessmentType = assessmentType,
       offence = OffenceEntity(
         source = source,
@@ -319,9 +306,5 @@ class AssessmentService(
       episode.episodeUuid,
       episode.assessmentType
     )
-  }
-
-  fun shouldPushToOasys(assessmentType: AssessmentType): Boolean {
-    return assessmentType == AssessmentType.ROSH
   }
 }

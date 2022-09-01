@@ -40,7 +40,6 @@ class AssessmentServiceTest {
   private val questionService: QuestionService = mockk()
   private val episodeService: EpisodeService = mockk()
   private val offenderService: OffenderService = mockk()
-  private val oasysAssessmentUpdateService: OasysAssessmentUpdateService = mockk()
   private val auditService: AuditService = mockk()
   private val telemetryService: TelemetryService = mockk()
 
@@ -50,7 +49,6 @@ class AssessmentServiceTest {
     authorService,
     questionService,
     episodeService,
-    oasysAssessmentUpdateService,
     offenderService,
     auditService,
     telemetryService
