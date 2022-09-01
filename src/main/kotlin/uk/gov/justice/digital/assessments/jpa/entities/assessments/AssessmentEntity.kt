@@ -57,7 +57,6 @@ class AssessmentEntity(
 
   fun newEpisode(
     changeReason: String,
-    oasysSetPk: Long? = null,
     assessmentType: AssessmentType,
     offence: OffenceEntity?,
     author: AuthorEntity
@@ -71,7 +70,6 @@ class AssessmentEntity(
       createdDate = LocalDateTime.now(),
       changeReason = changeReason,
       author = author,
-      oasysSetPk = oasysSetPk,
       assessmentType = assessmentType,
       offence = offence
     )

@@ -47,19 +47,6 @@ class OffenderStubServiceTest {
 
     val offenderOffenceDetails = offenderStubService.createOffenderAndOffenceStub()
 
-    verify(exactly = 1) {
-      assessmentUpdateRestClient.createOasysOffenderStub(
-        OffenderStubDto(
-          crn = crn,
-          pnc = "A/1234560BA",
-          familyName = "Smith",
-          forename1 = "John",
-          gender = "F",
-          dateOfBirth = LocalDate.of(1979, 8, 18),
-          areaCode = "WWS"
-        )
-      )
-    }
     assertThat(offenderOffenceDetails).isEqualTo(
       OffenderAndOffenceStubDto(
         crn = crn,
@@ -104,19 +91,6 @@ class OffenderStubServiceTest {
 
     val offenderOffenceDetails = offenderStubService.createStubFromCrn(crn)
 
-    verify(exactly = 1) {
-      assessmentUpdateRestClient.createOasysOffenderStub(
-        OffenderStubDto(
-          crn = crn,
-          pnc = "A/1234560BA",
-          familyName = "Smith",
-          forename1 = "John",
-          gender = "F",
-          dateOfBirth = LocalDate.of(1979, 8, 18),
-          areaCode = "WWS"
-        )
-      )
-    }
     assertThat(offenderOffenceDetails).isEqualTo(
       OffenderAndOffenceStubDto(
         crn = crn,

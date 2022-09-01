@@ -21,7 +21,7 @@ class AssessmentEntityTest {
 
   private val assessmentID: Long = 1L
   private val episodeId: Long = 1L
-  private val assessmentType = AssessmentType.ROSH
+  private val assessmentType = AssessmentType.UPW
 
   @BeforeEach
   fun setup() {
@@ -58,7 +58,7 @@ class AssessmentEntityTest {
           episodeId = episodeId,
           changeReason = "Change of Circs",
           createdDate = LocalDateTime.now(),
-          assessmentType = AssessmentType.ROSH,
+          assessmentType = AssessmentType.UPW,
           author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
           assessment = AssessmentEntity()
         )
@@ -91,7 +91,7 @@ class AssessmentEntityTest {
           episodeId = episodeId,
           changeReason = "Change of Circs",
           createdDate = LocalDateTime.now(),
-          assessmentType = AssessmentType.ROSH,
+          assessmentType = AssessmentType.UPW,
           author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
           assessment = AssessmentEntity()
         )
@@ -112,7 +112,7 @@ class AssessmentEntityTest {
           changeReason = "Change of Circs",
           createdDate = LocalDateTime.now(),
           endDate = LocalDateTime.now().minusDays(1),
-          assessmentType = AssessmentType.ROSH,
+          assessmentType = AssessmentType.UPW,
           author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
           assessment = AssessmentEntity()
         )

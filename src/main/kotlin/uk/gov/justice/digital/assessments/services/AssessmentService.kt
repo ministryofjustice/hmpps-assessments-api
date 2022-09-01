@@ -38,7 +38,6 @@ class AssessmentService(
   private val questionService: QuestionService,
   private val episodeService: EpisodeService,
   private val courtCaseClient: CourtCaseRestClient,
-  private val oasysAssessmentUpdateService: OasysAssessmentUpdateService,
   private val offenderService: OffenderService,
   private val auditService: AuditService,
   private val telemetryService: TelemetryService
@@ -166,21 +165,10 @@ class AssessmentService(
     val arnAssessment = getOrCreateAssessment(crn, eventId)
     val offence = offenderService.getOffence(eventType, crn, eventId)
 
-    // (oasysOffenderPk, oasysSetPK)
-    var oasysPrimaryKeyPair: Pair<Long?, Long?> = Pair(null, null)
-
-    if (shouldPushToOasys(assessmentType)) {
-      oasysPrimaryKeyPair = oasysAssessmentUpdateService.createOffenderAndOasysAssessment(
-        crn = crn,
-        deliusEventId = offence.convictionIndex,
-        assessmentType = assessmentType
-      )
-    }
-    val subject = subjectRepository.save(arnAssessment.subject?.copy(oasysOffenderPk = oasysPrimaryKeyPair.first))
+    val subject = subjectRepository.save(arnAssessment.subject?.copy())
     createPrePopulatedEpisode(
       arnAssessment,
       "",
-      oasysPrimaryKeyPair.second,
       assessmentType,
       ExternalSource.DELIUS.name,
       offence.convictionId.toString(),
@@ -229,19 +217,11 @@ class AssessmentService(
       courtCode,
       caseNumber,
     )
-    // (oasysOffenderPk, oasysSetPK)
-    var oasysPrimaryKeyPair: Pair<Long?, Long?> = Pair(null, null)
-    if (shouldPushToOasys(assessmentType)) {
-      oasysPrimaryKeyPair = oasysAssessmentUpdateService.createOffenderAndOasysAssessment(
-        crn = courtCase.crn,
-        assessmentType = assessmentType
-      )
-    }
-    val subject = subjectRepository.save(arnAssessment.subject?.copy(oasysOffenderPk = oasysPrimaryKeyPair.first))
+
+    val subject = subjectRepository.save(arnAssessment.subject?.copy())
     createPrePopulatedEpisode(
       arnAssessment,
       "Court Request",
-      oasysPrimaryKeyPair.second,
       assessmentType,
       ExternalSource.COURT.name,
       courtSourceId(courtCode, caseNumber),
@@ -344,7 +324,6 @@ class AssessmentService(
   private fun createPrePopulatedEpisode(
     assessment: AssessmentEntity,
     reason: String,
-    oasysSetPK: Long? = null,
     assessmentType: AssessmentType,
     source: String,
     eventId: String,
@@ -357,7 +336,6 @@ class AssessmentService(
     log.info("isNewEpisode is $isNewEpisode")
     var episode = assessment.newEpisode(
       reason,
-      oasysSetPk = oasysSetPK,
       assessmentType = assessmentType,
       offence = OffenceEntity(
         source = source,
@@ -372,10 +350,7 @@ class AssessmentService(
     )
     if (isNewEpisode) {
       episodeService.prePopulateFromExternalSources(episode, assessmentType)
-
-      if (!episode.prepopulatedFromOASys) {
-        episodeService.prePopulateFromPreviousEpisodes(episode, assessment.episodes)
-      }
+      episodeService.prePopulateFromPreviousEpisodes(episode, assessment.episodes)
       auditAndLogCreateEpisode(assessment.assessmentUuid, episode, subject?.crn)
     }
     log.info("New episode episode with id:${episode.episodeId} and uuid:${episode.episodeUuid} created for assessment ${assessment.assessmentUuid}")
@@ -406,9 +381,5 @@ class AssessmentService(
 
   private fun courtSourceId(courtCode: String?, caseNumber: String?): String {
     return "$courtCode|$caseNumber"
-  }
-
-  fun shouldPushToOasys(assessmentType: AssessmentType): Boolean {
-    return assessmentType == AssessmentType.ROSH
   }
 }

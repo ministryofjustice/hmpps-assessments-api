@@ -42,7 +42,6 @@ class AssessmentServiceTest {
   private val courtCaseRestClient: CourtCaseRestClient = mockk()
   private val episodeService: EpisodeService = mockk()
   private val offenderService: OffenderService = mockk()
-  private val oasysAssessmentUpdateService: OasysAssessmentUpdateService = mockk()
   private val auditService: AuditService = mockk()
   private val telemetryService: TelemetryService = mockk()
 
@@ -53,7 +52,6 @@ class AssessmentServiceTest {
     questionService,
     episodeService,
     courtCaseRestClient,
-    oasysAssessmentUpdateService,
     offenderService,
     auditService,
     telemetryService
@@ -61,7 +59,7 @@ class AssessmentServiceTest {
 
   private val assessmentUuid = UUID.randomUUID()
   private val assessmentId = 1L
-  private val assessmentType = AssessmentType.ROSH
+  private val assessmentType = AssessmentType.UPW
 
   private val episodeId1 = 1L
   private val episodeId2 = 2L
@@ -135,7 +133,7 @@ class AssessmentServiceTest {
         episodeUuid = episodeUuid1,
         assessment = assessment,
         createdDate = LocalDateTime.now(),
-        assessmentType = AssessmentType.ROSH,
+        assessmentType = AssessmentType.UPW,
         offence = OffenceEntity(
           offenceCode = offenceCode,
           codeDescription = codeDescription,
@@ -188,7 +186,7 @@ class AssessmentServiceTest {
             episodeId = episodeId1,
             changeReason = "Change of Circs 1",
             createdDate = LocalDateTime.now(),
-            assessmentType = AssessmentType.ROSH,
+            assessmentType = AssessmentType.UPW,
             author = AuthorEntity(
               userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"
             ),
@@ -198,7 +196,7 @@ class AssessmentServiceTest {
             episodeId = episodeId2,
             changeReason = "Change of Circs 2",
             createdDate = LocalDateTime.now(),
-            assessmentType = AssessmentType.ROSH,
+            assessmentType = AssessmentType.UPW,
             author = AuthorEntity(
               userId = "1",
               userName = "USER",
@@ -285,7 +283,7 @@ class AssessmentServiceTest {
             changeReason = "Change of Circs 1",
             createdDate = LocalDateTime.now(),
             endDate = LocalDateTime.now().minusDays(1),
-            assessmentType = AssessmentType.ROSH,
+            assessmentType = AssessmentType.UPW,
             author = AuthorEntity(
               userId = "1",
               userName = "USER",
@@ -299,7 +297,7 @@ class AssessmentServiceTest {
             episodeUuid = episodeUuid2,
             changeReason = "Change of Circs 2",
             createdDate = LocalDateTime.now(),
-            assessmentType = AssessmentType.ROSH,
+            assessmentType = AssessmentType.UPW,
             author = AuthorEntity(
               userId = "1",
               userName = "USER",
@@ -350,7 +348,7 @@ class AssessmentServiceTest {
             episodeId = episodeId1,
             answers = mutableMapOf(questionCode1 to listOf("YES")),
             createdDate = LocalDateTime.now(),
-            assessmentType = AssessmentType.ROSH,
+            assessmentType = AssessmentType.UPW,
             author = AuthorEntity(
               userId = "1",
               userName = "USER",
@@ -363,7 +361,7 @@ class AssessmentServiceTest {
             episodeId = episodeId2,
             answers = mutableMapOf(questionCode2 to listOf("NO")),
             createdDate = LocalDateTime.now(),
-            assessmentType = AssessmentType.ROSH,
+            assessmentType = AssessmentType.UPW,
             author = AuthorEntity(
               userId = "1",
               userName = "USER",
@@ -397,7 +395,7 @@ class AssessmentServiceTest {
               questionCode1 to listOf("YES")
             ),
             createdDate = LocalDateTime.now(),
-            assessmentType = AssessmentType.ROSH,
+            assessmentType = AssessmentType.UPW,
             author = AuthorEntity(
               userId = "1",
               userName = "USER",
@@ -413,7 +411,7 @@ class AssessmentServiceTest {
               questionCode2 to listOf("MAYBE")
             ),
             createdDate = LocalDateTime.now(),
-            assessmentType = AssessmentType.ROSH,
+            assessmentType = AssessmentType.UPW,
             author = AuthorEntity(
               userId = "1",
               userName = "USER",
@@ -429,7 +427,7 @@ class AssessmentServiceTest {
               questionCode2 to listOf("NO")
             ),
             createdDate = LocalDateTime.now(),
-            assessmentType = AssessmentType.ROSH,
+            assessmentType = AssessmentType.UPW,
             author = AuthorEntity(
               userId = "1",
               userName = "USER",
@@ -459,7 +457,7 @@ class AssessmentServiceTest {
               questionCode1 to listOf("YES")
             ),
             createdDate = LocalDateTime.now(),
-            assessmentType = AssessmentType.ROSH,
+            assessmentType = AssessmentType.UPW,
             author = AuthorEntity(
               userId = "1",
               userName = "USER",
@@ -475,7 +473,7 @@ class AssessmentServiceTest {
               questionCode2 to listOf("NO")
             ),
             createdDate = LocalDateTime.now(),
-            assessmentType = AssessmentType.ROSH,
+            assessmentType = AssessmentType.UPW,
             author = AuthorEntity(
               userId = "1",
               userName = "USER",
@@ -491,7 +489,7 @@ class AssessmentServiceTest {
               questionCode2 to listOf("MAYBE")
             ),
             createdDate = LocalDateTime.now(),
-            assessmentType = AssessmentType.ROSH,
+            assessmentType = AssessmentType.UPW,
             author = AuthorEntity(
               userId = "1",
               userName = "USER",
@@ -523,7 +521,7 @@ class AssessmentServiceTest {
               questionCode3 to listOf("free text")
             ),
             createdDate = LocalDateTime.now(),
-            assessmentType = AssessmentType.ROSH,
+            assessmentType = AssessmentType.UPW,
             author = AuthorEntity(
               userId = "1",
               userName = "USER",
@@ -555,7 +553,7 @@ class AssessmentServiceTest {
               questionCode1 to listOf("NO")
             ),
             createdDate = LocalDateTime.now(),
-            assessmentType = AssessmentType.ROSH,
+            assessmentType = AssessmentType.UPW,
             author = AuthorEntity(
               userId = "1",
               userName = "USER",

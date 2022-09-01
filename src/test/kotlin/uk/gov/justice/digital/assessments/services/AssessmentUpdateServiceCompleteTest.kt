@@ -6,7 +6,6 @@ import io.mockk.justRun
 import io.mockk.mockk
 import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -15,11 +14,9 @@ import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEnt
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.OasysAssessmentType
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.EpisodeRepository
 import uk.gov.justice.digital.assessments.restclient.audit.AuditType
-import uk.gov.justice.digital.assessments.services.dto.AssessmentEpisodeUpdateErrors
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
@@ -29,9 +26,7 @@ import java.util.UUID
 class AssessmentUpdateServiceCompleteTest {
   private val assessmentRepository: AssessmentRepository = mockk()
   private val episodeRepository: EpisodeRepository = mockk()
-  private val assessmentReferenceDataService: AssessmentReferenceDataService = mockk()
   private val riskPredictorsService: RiskPredictorsService = mockk()
-  private val oasysAssessmentUpdateService: OasysAssessmentUpdateService = mockk()
   private val assessmentService: AssessmentService = mockk()
   private val authorService: AuthorService = mockk()
   private val auditService: AuditService = mockk()
@@ -41,18 +36,10 @@ class AssessmentUpdateServiceCompleteTest {
     assessmentRepository,
     episodeRepository,
     riskPredictorsService,
-    oasysAssessmentUpdateService,
-    assessmentService,
     authorService,
     auditService,
     telemetryService
   )
-
-  @BeforeEach
-  fun setup() {
-    every { assessmentReferenceDataService.toOasysAssessmentType(AssessmentType.ROSH) } returns OasysAssessmentType.SHORT_FORM_PSR
-    every { assessmentService.shouldPushToOasys(AssessmentType.ROSH) } returns true
-  }
 
   @Test
   fun `complete episode`() {
@@ -72,9 +59,6 @@ class AssessmentUpdateServiceCompleteTest {
     every { assessmentRepository.findByAssessmentUuid(any()) } returns assessment
     every { episodeRepository.save(any()) } returns assessment.episodes[0]
     val assessmentEpisode = assessment.episodes.first()
-    every {
-      oasysAssessmentUpdateService.completeOASysAssessment(assessmentEpisode, 9999)
-    } returns AssessmentEpisodeUpdateErrors()
     every { riskPredictorsService.getPredictorResults(assessmentEpisode, true) } returns emptyList()
     val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
     every { authorService.getOrCreateAuthor() } returns author
@@ -82,9 +66,6 @@ class AssessmentUpdateServiceCompleteTest {
     val episode = assessmentUpdateService.completeEpisode(assessmentEpisode)
 
     verify(exactly = 1) { episodeRepository.save(any()) }
-    verify(exactly = 1) {
-      oasysAssessmentUpdateService.completeOASysAssessment(assessmentEpisode, 9999)
-    }
     assertThat(episode.ended).isEqualToIgnoringMinutes(LocalDateTime.now())
   }
 
@@ -105,9 +86,6 @@ class AssessmentUpdateServiceCompleteTest {
     every { assessmentRepository.findByAssessmentUuid(any()) } returns assessment
     every { episodeRepository.save(any()) } returns assessment.episodes[0]
     val assessmentEpisode = assessment.episodes.first()
-    every {
-      oasysAssessmentUpdateService.completeOASysAssessment(assessmentEpisode, 9999)
-    } returns AssessmentEpisodeUpdateErrors()
     every { riskPredictorsService.getPredictorResults(assessmentEpisode, true) } returns emptyList()
     val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
     every { authorService.getOrCreateAuthor() } returns author
@@ -130,33 +108,9 @@ class AssessmentUpdateServiceCompleteTest {
         author,
         episode.assessmentUuid,
         episode.episodeUuid!!,
-        AssessmentType.ROSH
+        AssessmentType.UPW
       )
     }
-  }
-
-  @Test
-  fun `complete episode with oasys errors does not complete episode`() {
-    val assessment = assessmentEntity()
-    every { assessmentRepository.findByAssessmentUuid(any()) } returns assessment
-    every { episodeRepository.save(any()) } returns assessment.episodes[0]
-    val assessmentEpisode = assessment.episodes.first()
-    every {
-      oasysAssessmentUpdateService.completeOASysAssessment(assessmentEpisode, 9999)
-    } returns AssessmentEpisodeUpdateErrors(
-      answerErrors = mutableMapOf("question_code" to mutableListOf("error"))
-    )
-    every { riskPredictorsService.getPredictorResults(assessmentEpisode, false) } returns emptyList()
-    val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
-    every { authorService.getOrCreateAuthor() } returns author
-
-    val episode = assessmentUpdateService.completeEpisode(assessmentEpisode)
-
-    verify(exactly = 0) { episodeRepository.save(any()) }
-    verify(exactly = 1) {
-      oasysAssessmentUpdateService.completeOASysAssessment(assessmentEpisode, 9999)
-    }
-    assertThat(episode.ended).isNull()
   }
 
   private fun assessmentEntity(): AssessmentEntity {
@@ -177,7 +131,7 @@ class AssessmentUpdateServiceCompleteTest {
         episodeUuid = UUID.fromString("669cdd10-1061-42ec-90d4-e34baab19566"),
         episodeId = 1234,
         assessment = assessment,
-        assessmentType = AssessmentType.ROSH,
+        assessmentType = AssessmentType.UPW,
         changeReason = "Change of Circs 2",
         oasysSetPk = 7777,
         createdDate = LocalDateTime.now(),

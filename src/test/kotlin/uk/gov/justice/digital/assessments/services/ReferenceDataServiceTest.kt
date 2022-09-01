@@ -33,7 +33,7 @@ private val episodeUuid = UUID.randomUUID()
 private val episode = AssessmentEpisodeEntity(
   episodeUuid = episodeUuid,
   oasysSetPk = 123456,
-  assessmentType = AssessmentType.ROSH,
+  assessmentType = AssessmentType.UPW,
   createdDate = LocalDateTime.now(),
   author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
   assessment = AssessmentEntity()
