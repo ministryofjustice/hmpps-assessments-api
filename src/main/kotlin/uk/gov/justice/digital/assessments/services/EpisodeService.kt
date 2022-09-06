@@ -42,8 +42,6 @@ class EpisodeService(
   private val questionService: QuestionService,
   private val courtCaseRestClient: CourtCaseRestClient,
   private val communityApiRestClient: CommunityApiRestClient,
-
-  private val assessmentApiRestClient: AssessmentApiRestClient,
   private val assessmentReferenceDataService: AssessmentReferenceDataService,
   private val cloneAssessmentExcludedQuestionsRepository: CloneAssessmentExcludedQuestionsRepository
 ) {
@@ -224,7 +222,7 @@ class EpisodeService(
           if (field.isEmpty()) {
             emptyList<String>()
           } else if (field[0] is Int) {
-            listOf((source.read<JSONArray>(question.jsonPathField).filterNotNull() as List<Integer>).first().toString())
+            listOf((source.read<JSONArray>(question.jsonPathField).filterNotNull() as List<Int>).first().toString())
           } else {
             listOf((source.read<JSONArray>(question.jsonPathField).filterNotNull() as List<String>).first().toString())
           }

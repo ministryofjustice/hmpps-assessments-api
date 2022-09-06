@@ -27,8 +27,6 @@ import java.util.UUID
 class AssessmentUpdateServiceCloseTest {
   private val assessmentRepository: AssessmentRepository = mockk()
   private val episodeRepository: EpisodeRepository = mockk()
-  private val riskPredictorsService: RiskPredictorsService = mockk()
-  private val assessmentService: AssessmentService = mockk()
   private val authorService: AuthorService = mockk()
   private val auditService: AuditService = mockk()
   private val telemetryService: TelemetryService = mockk()
@@ -36,7 +34,6 @@ class AssessmentUpdateServiceCloseTest {
   private val assessmentUpdateService = AssessmentUpdateService(
     assessmentRepository,
     episodeRepository,
-    riskPredictorsService,
     authorService,
     auditService,
     telemetryService

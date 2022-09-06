@@ -26,8 +26,6 @@ import java.util.UUID
 class AssessmentUpdateServiceCompleteTest {
   private val assessmentRepository: AssessmentRepository = mockk()
   private val episodeRepository: EpisodeRepository = mockk()
-  private val riskPredictorsService: RiskPredictorsService = mockk()
-  private val assessmentService: AssessmentService = mockk()
   private val authorService: AuthorService = mockk()
   private val auditService: AuditService = mockk()
   private val telemetryService: TelemetryService = mockk()
@@ -35,7 +33,6 @@ class AssessmentUpdateServiceCompleteTest {
   private val assessmentUpdateService = AssessmentUpdateService(
     assessmentRepository,
     episodeRepository,
-    riskPredictorsService,
     authorService,
     auditService,
     telemetryService
@@ -59,7 +56,6 @@ class AssessmentUpdateServiceCompleteTest {
     every { assessmentRepository.findByAssessmentUuid(any()) } returns assessment
     every { episodeRepository.save(any()) } returns assessment.episodes[0]
     val assessmentEpisode = assessment.episodes.first()
-    every { riskPredictorsService.getPredictorResults(assessmentEpisode, true) } returns emptyList()
     val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
     every { authorService.getOrCreateAuthor() } returns author
 
@@ -86,7 +82,6 @@ class AssessmentUpdateServiceCompleteTest {
     every { assessmentRepository.findByAssessmentUuid(any()) } returns assessment
     every { episodeRepository.save(any()) } returns assessment.episodes[0]
     val assessmentEpisode = assessment.episodes.first()
-    every { riskPredictorsService.getPredictorResults(assessmentEpisode, true) } returns emptyList()
     val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
     every { authorService.getOrCreateAuthor() } returns author
 

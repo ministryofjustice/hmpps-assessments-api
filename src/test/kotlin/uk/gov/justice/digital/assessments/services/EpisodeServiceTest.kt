@@ -40,7 +40,6 @@ class EpisodeServiceTest {
   private val questionService: QuestionService = mockk()
   private val courtCaseRestClient: CourtCaseRestClient = mockk()
   private val communityApiRestClient: CommunityApiRestClient = mockk()
-  private val assessmentApiRestClient: AssessmentApiRestClient = mockk()
   private val assessmentReferenceDataService: AssessmentReferenceDataService = mockk()
   private val cloneAssessmentExcludedQuestionsRepository: CloneAssessmentExcludedQuestionsRepository = mockk()
 
@@ -48,7 +47,6 @@ class EpisodeServiceTest {
     questionService,
     courtCaseRestClient,
     communityApiRestClient,
-    assessmentApiRestClient,
     assessmentReferenceDataService,
     cloneAssessmentExcludedQuestionsRepository
   )

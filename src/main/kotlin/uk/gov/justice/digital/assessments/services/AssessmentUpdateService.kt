@@ -21,7 +21,6 @@ import java.time.LocalDateTime
 class AssessmentUpdateService(
   private val assessmentRepository: AssessmentRepository,
   private val episodeRepository: EpisodeRepository,
-  private val riskPredictorsService: RiskPredictorsService,
   private val authorService: AuthorService,
   private val auditService: AuditService,
   private val telemetryService: TelemetryService
@@ -86,19 +85,14 @@ class AssessmentUpdateService(
   ): AssessmentEpisodeDto {
     episode.author = authorService.getOrCreateAuthor()
     episode.lastEditedDate = LocalDateTime.now()
-    var final = false
 
     if (!episode.isComplete()) {
       episode.complete()
       episodeRepository.save(episode)
       auditAndLogCompleteAssessment(episode)
-      final = true
       log.info("Saved completed episode ${episode.episodeUuid} for assessment ${episode.assessment.assessmentUuid}")
     }
-    val predictorResults = riskPredictorsService.getPredictorResults(episode = episode, final = final)
-
-    log.info("Predictors for assessment ${episode.assessment.assessmentUuid} are $predictorResults")
-    return AssessmentEpisodeDto.from(episode = episode, predictors = predictorResults)
+    return AssessmentEpisodeDto.from(episode = episode)
   }
 
   @Transactional("assessmentsTransactionManager")

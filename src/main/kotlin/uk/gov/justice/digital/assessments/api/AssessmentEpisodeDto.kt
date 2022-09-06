@@ -42,9 +42,6 @@ data class AssessmentEpisodeDto(
   @Schema(description = "OASys assessment errors")
   val assessmentErrors: Collection<String>? = null,
 
-  @Schema(description = "Results of predictors")
-  val predictors: Collection<PredictorScoresDto> = emptyList(),
-
   @Schema(description = "Offence codes")
   val offence: OffenceDto,
 
@@ -65,8 +62,7 @@ data class AssessmentEpisodeDto(
 
     fun from(
       episode: AssessmentEpisodeEntity,
-      errors: AssessmentEpisodeUpdateErrors? = null,
-      predictors: Collection<PredictorScoresDto> = emptyList(),
+      errors: AssessmentEpisodeUpdateErrors? = null
     ): AssessmentEpisodeDto {
       return AssessmentEpisodeDto(
         episode.episodeUuid,
@@ -80,7 +76,6 @@ data class AssessmentEpisodeDto(
         errors?.errors,
         errors?.pageErrors,
         errors?.assessmentErrors,
-        predictors,
         OffenceDto.from(episode.offence),
         episode.tables ?: mutableMapOf(),
         episode.lastEditedDate,
