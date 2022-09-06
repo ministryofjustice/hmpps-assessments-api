@@ -261,7 +261,6 @@ class AssessmentService(
     log.info("isNewEpisode is $isNewEpisode")
     val episode = assessment.newEpisode(
       reason,
-      oasysSetPk = null,
       assessmentType = assessmentType,
       offence = OffenceEntity(
         source = source,

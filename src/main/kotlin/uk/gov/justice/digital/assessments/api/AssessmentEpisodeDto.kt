@@ -32,20 +32,11 @@ data class AssessmentEpisodeDto(
   @Schema(description = "Answers associated with this episode")
   val answers: AnswersDto = emptyMap(),
 
-  @Schema(description = "Validation errors on this episode, indexed by question code")
-  val errors: Map<String, Collection<String>>? = null,
-
-  @Schema(description = "Validation level errors")
-  val pageErrors: Collection<String>? = null,
-
-  @Schema(description = "OASys assessment errors")
-  val assessmentErrors: Collection<String>? = null,
-
   @Schema(description = "Offence codes")
   val offence: OffenceDto,
 
   @Schema(description = "Tables associated with this episode")
-  val tables: Tables = mutableMapOf(),
+  val tables: Tables? = null,
 
   @Schema(description = "Date last edited")
   val lastEditedDate: LocalDateTime? = null,
@@ -61,7 +52,6 @@ data class AssessmentEpisodeDto(
 
     fun from(
       episode: AssessmentEpisodeEntity,
-      predictors: Collection<PredictorScoresDto> = emptyList(),
     ): AssessmentEpisodeDto {
       return AssessmentEpisodeDto(
         episode.episodeUuid,
@@ -72,10 +62,6 @@ data class AssessmentEpisodeDto(
         episode.endDate,
         episode.author.userFullName,
         episode.answers,
-        null,
-        null,
-        null,
-        predictors,
         OffenceDto.from(episode.offence),
         episode.tables,
         episode.lastEditedDate,

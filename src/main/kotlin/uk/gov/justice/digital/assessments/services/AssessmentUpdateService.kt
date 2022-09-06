@@ -20,7 +20,6 @@ import java.time.LocalDateTime
 class AssessmentUpdateService(
   private val assessmentRepository: AssessmentRepository,
   private val episodeRepository: EpisodeRepository,
-  private val riskPredictorsService: RiskPredictorsService,
   private val authorService: AuthorService,
   private val auditService: AuditService,
   private val telemetryService: TelemetryService

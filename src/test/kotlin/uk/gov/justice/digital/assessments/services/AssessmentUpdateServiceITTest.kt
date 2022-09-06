@@ -34,7 +34,7 @@ import java.util.UUID
   )
 )
 @AutoConfigureWebTestClient
-class AssessmentUpdateServiceITTest() : IntegrationTest() {
+class AssessmentUpdateServiceITTest : IntegrationTest() {
   @Autowired
   internal lateinit var assessmentUpdateService: AssessmentUpdateService
 
@@ -65,10 +65,7 @@ class AssessmentUpdateServiceITTest() : IntegrationTest() {
     val updateAssessmentResponse =
       assessmentUpdateService.updateEpisode(assessmentEpisode!!, UpdateAssessmentEpisodeDto(mutableMapOf()))
     assertThat(updateAssessmentResponse).isEqualTo(
-      AssessmentEpisodeDto.from(
-        assessmentEpisode,
-        null
-      )
+      AssessmentEpisodeDto.from(assessmentEpisode)
     )
   }
 
@@ -85,7 +82,7 @@ class AssessmentUpdateServiceITTest() : IntegrationTest() {
 
     // Then
     assertThat(updateAssessmentResponse).isEqualTo(
-      AssessmentEpisodeDto.from(assessmentEpisode, null)
+      AssessmentEpisodeDto.from(assessmentEpisode)
     )
   }
 }
