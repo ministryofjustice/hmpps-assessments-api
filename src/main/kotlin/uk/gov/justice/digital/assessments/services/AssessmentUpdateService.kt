@@ -60,8 +60,6 @@ class AssessmentUpdateService(
 
     log.info("Updated episode ${episode.episodeUuid} with ${updatedEpisodeAnswers.size} answer(s) for assessment ${episode.assessment.assessmentUuid}")
 
-    var episodeUpdateErrors: AssessmentEpisodeUpdateErrors? = null
-
     // shouldn't need this because of the transactional annotation, unless there is an exception which needs handling.
     assessmentRepository.save(episode.assessment)
     log.info("Saved episode ${episode.episodeUuid} for assessment ${episode.assessment.assessmentUuid}")
