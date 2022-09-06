@@ -22,7 +22,6 @@ import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.Answers
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.CloneAssessmentExcludedQuestionsRepository
-import uk.gov.justice.digital.assessments.restclient.AssessmentApiRestClient
 import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import uk.gov.justice.digital.assessments.restclient.communityapi.DeliusDisabilityDto
@@ -42,16 +41,12 @@ class EpisodeService(
   private val questionService: QuestionService,
   private val courtCaseRestClient: CourtCaseRestClient,
   private val communityApiRestClient: CommunityApiRestClient,
-
-  private val assessmentApiRestClient: AssessmentApiRestClient,
   private val assessmentReferenceDataService: AssessmentReferenceDataService,
   private val cloneAssessmentExcludedQuestionsRepository: CloneAssessmentExcludedQuestionsRepository
 ) {
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
     private const val cloneEpisodeOffset: Long = 55
-
-    private const val OASYS_SOURCE_NAME = "OASYS"
 
     private val objectMapper: ObjectMapper = jacksonObjectMapper().registerModules(JavaTimeModule())
     private val basicDatePattern = Pattern.compile("^\\d{2}/\\d{2}/\\d{4}$")
@@ -69,12 +64,10 @@ class EpisodeService(
     if (questionsToPopulate.isEmpty())
       return episode
 
-    val latestCompleteEpisodeEndDate = getLatestCompleteEpisodeEndDate(episode)
-
     questionsToPopulate
       .groupBy { it.externalSource }
       .forEach { (sourceName, questionSchemas) ->
-        prepopulateFromSource(episode, sourceName, questionSchemas, latestCompleteEpisodeEndDate)
+        prepopulateFromSource(episode, sourceName, questionSchemas)
       }
 
     return episode
@@ -137,13 +130,11 @@ class EpisodeService(
   private fun prepopulateFromSource(
     episode: AssessmentEpisodeEntity,
     sourceName: String?,
-    questions: List<ExternalSourceQuestionDto>,
-    latestCompleteEpisodeEndDate: LocalDateTime?
+    questions: List<ExternalSourceQuestionDto>
   ) {
-    episode.prepopulatedFromOASys = sourceName == OASYS_SOURCE_NAME
     questions.groupBy { it.externalSourceEndpoint }
       .forEach {
-        val sourceData = loadSource(episode, sourceName, it.key, latestCompleteEpisodeEndDate) ?: return
+        val sourceData = loadSource(episode, sourceName, it.key) ?: return
 
         it.value.forEach { question ->
           episode.addAnswer(question.questionCode, getAnswersFromSourceData(sourceData, question))
@@ -158,41 +149,22 @@ class EpisodeService(
     return answerFormat(source, question).orEmpty()
   }
 
-  private fun getLatestCompleteEpisodeEndDate(newEpisode: AssessmentEpisodeEntity): LocalDateTime? {
-    return newEpisode.assessment.episodes.filter { it.isComplete() }
-      .sortedByDescending { it.endDate }
-      .firstOrNull()?.endDate
-  }
-
   private fun loadSource(
     episode: AssessmentEpisodeEntity,
     sourceName: String?,
-    sourceEndpoint: String?,
-    latestCompleteEpisodeEndDate: LocalDateTime?
+    sourceEndpoint: String?
   ): DocumentContext? {
     log.info("Fetching source answers for source: $sourceName")
     try {
       val rawJson = when (sourceName) {
         ExternalSource.COURT.name -> loadFromCourtCase(episode)
         ExternalSource.DELIUS.name -> loadFromDelius(episode, sourceEndpoint)
-        ExternalSource.OASYS.name -> loadFromOASys(episode, latestCompleteEpisodeEndDate)
         else -> return null
       }
       return JsonPath.parse(rawJson)
     } catch (e: Exception) {
       return null
     }
-  }
-
-  private fun loadFromOASys(episode: AssessmentEpisodeEntity, latestCompleteEpisodeEndDate: LocalDateTime?): String? {
-    val crn = episode.assessment.subject?.crn
-      ?: throw CrnIsMandatoryException("Crn not found for episode ${episode.episodeUuid}")
-    return assessmentApiRestClient.getOASysLatestAssessment(
-      crn = crn,
-      status = listOf("SIGNED", "COMPLETE"),
-      types = listOf("LAYER_1", "LAYER_3"),
-      cutoffDate = latestCompleteEpisodeEndDate
-    )
   }
 
   private fun loadFromCourtCase(episode: AssessmentEpisodeEntity): String? {
@@ -249,7 +221,7 @@ class EpisodeService(
           if (field.isEmpty()) {
             emptyList<String>()
           } else if (field[0] is Int) {
-            (source.read<JSONArray>(question.jsonPathField).filterNotNull() as List<Integer>).map { it.toString() }.toList()
+            (source.read<JSONArray>(question.jsonPathField).filterNotNull() as List<Int>).map { it.toString() }.toList()
           } else {
             source.read<JSONArray>(question.jsonPathField).filterNotNull() as List<String>
           }

@@ -27,9 +27,6 @@ import java.util.UUID
 class AssessmentUpdateServiceCloseTest {
   private val assessmentRepository: AssessmentRepository = mockk()
   private val episodeRepository: EpisodeRepository = mockk()
-  private val riskPredictorsService: RiskPredictorsService = mockk()
-  private val oasysAssessmentUpdateService: OasysAssessmentUpdateService = mockk()
-  private val assessmentService: AssessmentService = mockk()
   private val authorService: AuthorService = mockk()
   private val auditService: AuditService = mockk()
   private val telemetryService: TelemetryService = mockk()
@@ -37,9 +34,6 @@ class AssessmentUpdateServiceCloseTest {
   private val assessmentUpdateService = AssessmentUpdateService(
     assessmentRepository,
     episodeRepository,
-    riskPredictorsService,
-    oasysAssessmentUpdateService,
-    assessmentService,
     authorService,
     auditService,
     telemetryService
@@ -115,7 +109,7 @@ class AssessmentUpdateServiceCloseTest {
         episodeUuid = UUID.fromString("669cdd10-1061-42ec-90d4-e34baab19566"),
         episodeId = 1234,
         assessment = assessment,
-        assessmentType = AssessmentType.ROSH,
+        assessmentType = AssessmentType.UPW,
         changeReason = "Change of Circs 2",
         oasysSetPk = 7777,
         createdDate = LocalDateTime.now(),

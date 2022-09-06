@@ -18,7 +18,7 @@ class CommunityApiMockServer : WireMockServer(9096) {
 
   fun stubGetOffenderPersonalCircumstances() {
     stubFor(
-      WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/DX5678A/personalCircumstances"))
+      WireMock.get(WireMock.urlPathMatching("/secure/offenders/crn/(?:DX5678A|X1356|CRN1|X1355)/personalCircumstances"))
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
@@ -356,7 +356,7 @@ class CommunityApiMockServer : WireMockServer(9096) {
 
   fun stubGetOffenderPersonalContactsPregnant() {
     stubFor(
-      WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/DX5678B/personalContacts"))
+      WireMock.get(WireMock.urlPathMatching("/secure/offenders/crn/(?:DX5678B|X1356|CRN1|X1355)/personalContacts"))
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
@@ -391,7 +391,7 @@ class CommunityApiMockServer : WireMockServer(9096) {
         )
     )
     stubFor(
-      WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/X1356/all"))
+      WireMock.get(WireMock.urlPathMatching("/secure/offenders/crn/(?:X1356|CRN1)/all"))
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))

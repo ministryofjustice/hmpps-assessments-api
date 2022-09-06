@@ -30,7 +30,7 @@ class AssessmentReferenceDataServiceTest {
 
   @Test
   fun `get group contents by assessment schema code`() {
-    val assessmentType = AssessmentType.ROSH
+    val assessmentType = AssessmentType.UPW
     val groupUuid = UUID.randomUUID()
     val group = GroupEntity(
       1L,
@@ -60,7 +60,7 @@ class AssessmentReferenceDataServiceTest {
 
   @Test
   fun `get group contents by assessment schema code throws entity not found if schema doesn't exists`() {
-    val assessmentType = AssessmentType.ROSH
+    val assessmentType = AssessmentType.UPW
     every { assessmentRepository.findByAssessmentType(assessmentType) } returns null
 
     assertThrows<EntityNotFoundException> { assessmentReferenceDataService.getAssessmentForAssessmentType(assessmentType) }
@@ -68,7 +68,7 @@ class AssessmentReferenceDataServiceTest {
 
   @Test
   fun `get group sections by assessment schema code`() {
-    val assessmentType = AssessmentType.ROSH
+    val assessmentType = AssessmentType.UPW
     val groupUuid = UUID.randomUUID()
     val groupCode = "simple-group"
     val group = GroupEntity(
@@ -99,7 +99,7 @@ class AssessmentReferenceDataServiceTest {
 
   @Test
   fun `get group sections by assessment schema code throws entity not found if schema doesn't exists`() {
-    val assessmentType = AssessmentType.ROSH
+    val assessmentType = AssessmentType.UPW
     every { assessmentRepository.findByAssessmentType(assessmentType) } returns null
 
     assertThrows<EntityNotFoundException> { assessmentReferenceDataService.getAssessmentSummary(assessmentType) }

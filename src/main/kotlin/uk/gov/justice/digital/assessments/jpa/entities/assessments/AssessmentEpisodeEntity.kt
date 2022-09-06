@@ -19,7 +19,6 @@ import javax.persistence.Id
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
 import javax.persistence.Table
-import javax.persistence.Transient
 
 @Entity
 @Table(name = "assessed_episode", schema = "hmppsassessmentsapi")
@@ -78,9 +77,6 @@ data class AssessmentEpisodeEntity(
 
   @Column(name = "closed_date")
   var closedDate: LocalDateTime? = null,
-
-  @Transient
-  var prepopulatedFromOASys: Boolean = false
 ) {
   fun isComplete(): Boolean {
     return endDate != null

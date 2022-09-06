@@ -13,16 +13,10 @@ import org.springframework.test.web.reactive.server.expectBody
 import uk.gov.justice.digital.assessments.api.AssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.api.AssessmentSubjectDto
 import uk.gov.justice.digital.assessments.api.ErrorResponse
-import uk.gov.justice.digital.assessments.api.PredictorScoresDto
-import uk.gov.justice.digital.assessments.api.Score
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
-import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.ScoreLevel
-import uk.gov.justice.digital.assessments.services.dto.PredictorType
-import uk.gov.justice.digital.assessments.services.dto.ScoreType
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import uk.gov.justice.digital.assessments.testutils.Verify
 import uk.gov.justice.digital.assessments.utils.RequestData
-import java.math.BigDecimal
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -299,20 +293,17 @@ class AssessmentControllerTest : IntegrationTest() {
 
     @Test
     fun `should return episode when completing current episode using assessment UUID`() {
-      assessRisksAndNeedsApiMockServer.stubGetRSRPredictorsForOffenderAndOffences(true, episodeUuid)
       completeAndAssertEpisode("/assessments/$assessmentUuid/complete", LocalDateTime.now())
     }
 
     @Test
     fun `should return episode when completing current episode using episode UUID`() {
-      assessRisksAndNeedsApiMockServer.stubGetRSRPredictorsForOffenderAndOffences(true, episodeUuid)
       completeAndAssertEpisode("/assessments/$assessmentUuid/episodes/$episodeUuid/complete", LocalDateTime.now())
     }
 
     @Test
     fun `should return episode when episode is already complete using episode UUID`() {
       val completedEpisodeUuid = "df43079f-c263-4690-b77e-f8689aa4a093"
-      assessRisksAndNeedsApiMockServer.stubGetRSRPredictorsForOffenderAndOffences(false, UUID.fromString(completedEpisodeUuid))
       completeAndAssertEpisode(
         "/assessments/$assessmentUuid/episodes/$completedEpisodeUuid/complete",
         LocalDateTime.of(2021, 1, 2, 0, 0)
@@ -331,34 +322,6 @@ class AssessmentControllerTest : IntegrationTest() {
       assertThat(assessmentEpisode?.assessmentUuid).isEqualTo(assessmentUuid)
       assertThat(assessmentEpisode?.ended).isEqualToIgnoringMinutes(episodeEndDate)
       assertThat(assessmentEpisode?.userFullName).isEqualTo("NEW USER")
-      assertThat(assessmentEpisode?.predictors).isEqualTo(
-        listOf(
-          PredictorScoresDto(
-            type = PredictorType.RSR,
-            scoreType = ScoreType.STATIC,
-            scores = mapOf(
-              "RSR" to Score(
-                level = ScoreLevel.HIGH.name,
-                score = BigDecimal("11.34"),
-                isValid = true,
-                date = "2021-08-09 14:46:48"
-              ),
-              "OSPC" to Score(
-                level = ScoreLevel.NOT_APPLICABLE.name,
-                score = BigDecimal("0"),
-                isValid = false,
-                date = "2021-08-09 14:46:48"
-              ),
-              "OSPI" to Score(
-                level = ScoreLevel.NOT_APPLICABLE.name,
-                score = BigDecimal("0"),
-                isValid = false,
-                date = "2021-08-09 14:46:48"
-              ),
-            )
-          )
-        )
-      )
     }
 
     @Test
@@ -371,35 +334,6 @@ class AssessmentControllerTest : IntegrationTest() {
         .expectBody<ErrorResponse>()
         .returnResult()
         .responseBody
-    }
-
-    @Test
-    fun `complete assessment episode with errors returns assessment level errors`() {
-      val assessmentErrorsUUID = UUID.fromString("aa47e6c4-e41f-467c-95e7-fcf5ffd422f5")
-      val assessmentEpisode = webTestClient.post().uri("/assessments/$assessmentErrorsUUID/complete")
-        .header(RequestData.USER_AREA_HEADER_NAME, "WWS")
-        .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
-        .exchange()
-        .expectStatus().isOk
-        .expectBody<AssessmentEpisodeDto>()
-        .returnResult()
-        .responseBody
-      assertThat(assessmentEpisode?.ended).isNull()
-      assertThat(assessmentEpisode?.assessmentErrors).hasSize(1)
-    }
-
-    @Test
-    fun `should return bad request when no user area header is set when completing assessment`() {
-      val roshAssessmentUuid = UUID.fromString("aa47e6c4-e41f-467c-95e7-fcf5ffd422f5")
-      webTestClient.post().uri("/assessments/$roshAssessmentUuid/complete")
-        .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
-        .exchange()
-        .expectStatus().isBadRequest
-        .expectBody<ErrorResponse>()
-        .consumeWith {
-          assertThat(it.responseBody?.status).isEqualTo(400)
-          assertThat(it.responseBody?.developerMessage).isEqualTo("Area Code Header is mandatory")
-        }
     }
 
     @Test
@@ -443,20 +377,6 @@ class AssessmentControllerTest : IntegrationTest() {
       assertThat(assessmentEpisode?.assessmentUuid).isEqualTo(assessmentUuid)
       assertThat(assessmentEpisode?.closedDate).isEqualToIgnoringMinutes(LocalDateTime.now())
       assertThat(assessmentEpisode?.userFullName).isEqualTo("NEW USER")
-    }
-
-    @Test
-    fun `should return bad request when no user area header is set when completing assessment`() {
-      val roshAssessmentUuid = UUID.fromString("aa47e6c4-e41f-467c-95e7-fcf5ffd422f5")
-      webTestClient.post().uri("/assessments/$roshAssessmentUuid/complete")
-        .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
-        .exchange()
-        .expectStatus().isBadRequest
-        .expectBody<ErrorResponse>()
-        .consumeWith {
-          assertThat(it.responseBody?.status).isEqualTo(400)
-          assertThat(it.responseBody?.developerMessage).isEqualTo("Area Code Header is mandatory")
-        }
     }
 
     @Test

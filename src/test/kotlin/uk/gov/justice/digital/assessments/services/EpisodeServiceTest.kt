@@ -15,8 +15,6 @@ import uk.gov.justice.digital.assessments.api.GPDetailsAnswerDto
 import uk.gov.justice.digital.assessments.api.GroupQuestionDto
 import uk.gov.justice.digital.assessments.api.TableQuestionDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType.ROSH
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType.RSR
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType.UPW
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
@@ -27,7 +25,6 @@ import uk.gov.justice.digital.assessments.jpa.entities.assessments.TableRows
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.Tables
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.CloneAssessmentExcludedQuestionsEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.CloneAssessmentExcludedQuestionsRepository
-import uk.gov.justice.digital.assessments.restclient.AssessmentApiRestClient
 import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
 import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import uk.gov.justice.digital.assessments.services.dto.ExternalSource
@@ -42,7 +39,6 @@ class EpisodeServiceTest {
   private val questionService: QuestionService = mockk()
   private val courtCaseRestClient: CourtCaseRestClient = mockk()
   private val communityApiRestClient: CommunityApiRestClient = mockk()
-  private val assessmentApiRestClient: AssessmentApiRestClient = mockk()
   private val assessmentReferenceDataService: AssessmentReferenceDataService = mockk()
   private val cloneAssessmentExcludedQuestionsRepository: CloneAssessmentExcludedQuestionsRepository = mockk()
 
@@ -50,7 +46,6 @@ class EpisodeServiceTest {
     questionService,
     courtCaseRestClient,
     communityApiRestClient,
-    assessmentApiRestClient,
     assessmentReferenceDataService,
     cloneAssessmentExcludedQuestionsRepository
   )
@@ -68,8 +63,8 @@ class EpisodeServiceTest {
 
   @BeforeEach
   fun setup() {
-    every { cloneAssessmentExcludedQuestionsRepository.findAllByAssessmentType(ROSH) } returns emptyList()
-    newEpisode = createEpisode(ROSH)
+    every { cloneAssessmentExcludedQuestionsRepository.findAllByAssessmentType(UPW) } returns emptyList()
+    newEpisode = createEpisode(UPW)
   }
 
   private fun createEpisode(assessmentType: AssessmentType): AssessmentEpisodeEntity {
@@ -385,147 +380,6 @@ class EpisodeServiceTest {
   }
 
   @Test
-  fun `should pre-populate answers from external source OASys`() {
-    newEpisode = createEpisode(RSR)
-
-    val questions: List<ExternalSourceQuestionDto> = listOf(
-      ExternalSourceQuestionDto(
-        "question_1", ExternalSource.OASYS.name,
-        "\$.sections[?(@.section=='1')].answers[?(@.question=='1.24')].answer[0]",
-        "array", ENDPOINT_URL, ifEmpty = false
-      ),
-      ExternalSourceQuestionDto(
-        "question_2", ExternalSource.OASYS.name,
-        "\$.sections[?(@.section=='1')].answers[?(@.question=='1.26')].answer[0]",
-        "array", ENDPOINT_URL, ifEmpty = false
-      ),
-    )
-
-    every { questionService.getAllQuestions().withExternalSource(RSR) } returns questions
-
-    val json = this::class.java.getResource("/json/oasysLatestRSRShortAssessment.json")?.readText()
-
-    every {
-      assessmentApiRestClient.getOASysLatestAssessment(
-        crn = CRN,
-        status = listOf("SIGNED", "COMPLETE"),
-        types = listOf("LAYER_1", "LAYER_3"),
-        cutoffDate = any()
-      )
-    } returns json
-
-    val result =
-      episodeService.prePopulateFromExternalSources(newEpisode, RSR)
-
-    val expectedAnswers = mutableMapOf(
-      "question_1" to listOf("answer 1"),
-      "question_2" to listOf("answer 2")
-    )
-    assertThat(result.answers).containsExactlyEntriesOf(expectedAnswers)
-  }
-
-  @Test
-  fun `does not pre-populate answers from external source as OASys does not return an assessment`() {
-    // Given
-    newEpisode = createEpisode(RSR)
-
-    val questions: List<ExternalSourceQuestionDto> = listOf(
-      ExternalSourceQuestionDto(
-        "question_1", ExternalSource.OASYS.name,
-        "\$.sections[?(@.section=='1')].answers[?(@.question=='1.24')].answer[0]",
-        "array", ENDPOINT_URL, ifEmpty = false
-      ),
-      ExternalSourceQuestionDto(
-        "question_2", ExternalSource.OASYS.name,
-        "\$.sections[?(@.section=='1')].answers[?(@.question=='1.26')].answer[0]",
-        "array", ENDPOINT_URL, ifEmpty = false
-      ),
-    )
-
-    val now = LocalDateTime.now()
-    val latestEndDate = now.minusWeeks(5)
-
-    val previousEpisodes = listOf(
-      AssessmentEpisodeEntity(
-        episodeId = 2,
-        assessmentType = RSR,
-        author = authorEntity,
-        assessment = AssessmentEntity(),
-        endDate = now,
-        answers = mutableMapOf(
-          "question_1" to listOf("previous answer 1"),
-          "question_2" to listOf("previous answer 2")
-        )
-      ),
-      AssessmentEpisodeEntity(
-        episodeId = 3,
-        assessmentType = RSR,
-        author = authorEntity,
-        assessment = AssessmentEntity(),
-        endDate = latestEndDate,
-        answers = mutableMapOf(
-          "question_3" to listOf("previous answer 3"),
-          "question_4" to listOf("previous answer 4")
-        )
-      )
-    )
-    newEpisode.assessment.episodes.addAll(previousEpisodes)
-
-    every { questionService.getAllQuestions().withExternalSource(RSR) } returns questions
-    every {
-      assessmentApiRestClient.getOASysLatestAssessment(
-        crn = CRN,
-        status = listOf("SIGNED", "COMPLETE"),
-        types = listOf("LAYER_1", "LAYER_3"),
-        cutoffDate = latestEndDate
-      )
-    } returns null
-
-    // When
-    val result = episodeService.prePopulateFromExternalSources(newEpisode, RSR)
-
-    // Then
-    assertThat(result.answers).isEmpty()
-  }
-
-  @Test
-  fun `does not pre-populate answers from external source as no matching answers in OASys`() {
-    val externalSource = "OASYS"
-    newEpisode = createEpisode(RSR)
-
-    val questions: List<ExternalSourceQuestionDto> = listOf(
-      ExternalSourceQuestionDto(
-        "question_1", externalSource,
-        "\$.sections[?(@.section=='1')].answers[?(@.question=='XXX')].answer[0]",
-        "array", ENDPOINT_URL, ifEmpty = false
-      ),
-      ExternalSourceQuestionDto(
-        "question_2", externalSource,
-        "\$.sections[?(@.section=='1')].answers[?(@.question=='YYY')].answer[0]",
-        "array", ENDPOINT_URL, ifEmpty = false
-      ),
-    )
-
-    every { questionService.getAllQuestions().withExternalSource(RSR) } returns questions
-
-    val json = this::class.java.getResource("/json/oasysLatestRSRShortAssessment.json")?.readText()
-
-    every {
-      assessmentApiRestClient.getOASysLatestAssessment(
-        crn = CRN,
-        status = listOf("SIGNED", "COMPLETE"),
-        types = listOf("LAYER_1", "LAYER_3"),
-        cutoffDate = any()
-      )
-    } returns json
-
-    val result = episodeService.prePopulateFromExternalSources(newEpisode, RSR)
-
-    assertThat(result.answers["question_1"]).isEmpty()
-    assertThat(result.answers["question_2"]).isEmpty()
-  }
-
-  @Test
   fun `copies answers and tables from previous episode ignoring excluded questions`() {
     val schemaQuestions = listOf(
       GroupQuestionDto(questionCode = "question_1"),
@@ -549,7 +403,7 @@ class EpisodeServiceTest {
     val mixedPreviousEpisodes = listOf(
       AssessmentEpisodeEntity(
         episodeId = 2,
-        assessmentType = ROSH,
+        assessmentType = UPW,
         author = authorEntity,
         assessment = AssessmentEntity(),
         endDate = LocalDateTime.now().minusDays(1),
@@ -560,7 +414,7 @@ class EpisodeServiceTest {
       ),
       AssessmentEpisodeEntity(
         episodeId = 3,
-        assessmentType = ROSH,
+        assessmentType = UPW,
         author = authorEntity,
         assessment = AssessmentEntity(),
         endDate = LocalDateTime.now().minusDays(2),
@@ -568,15 +422,15 @@ class EpisodeServiceTest {
       )
     )
     every { assessmentReferenceDataService.getQuestionsForAssessmentType(newEpisode.assessmentType) } returns schemaQuestions
-    every { cloneAssessmentExcludedQuestionsRepository.findAllByAssessmentType(ROSH) } returns listOf(
+    every { cloneAssessmentExcludedQuestionsRepository.findAllByAssessmentType(UPW) } returns listOf(
       CloneAssessmentExcludedQuestionsEntity(
         12345,
-        ROSH,
+        UPW,
         "question_2"
       ),
       CloneAssessmentExcludedQuestionsEntity(
         23456,
-        ROSH,
+        UPW,
         "table_1"
       )
     )
@@ -616,7 +470,7 @@ class EpisodeServiceTest {
     val mixedPreviousEpisodes = listOf(
       AssessmentEpisodeEntity(
         episodeId = 2,
-        assessmentType = ROSH,
+        assessmentType = UPW,
         author = authorEntity,
         assessment = AssessmentEntity(),
         endDate = LocalDateTime.now().minusDays(1),
@@ -627,7 +481,7 @@ class EpisodeServiceTest {
       ),
       AssessmentEpisodeEntity(
         episodeId = 3,
-        assessmentType = ROSH,
+        assessmentType = UPW,
         author = authorEntity,
         assessment = AssessmentEntity(),
         endDate = LocalDateTime.now().minusDays(2),
@@ -682,7 +536,7 @@ class EpisodeServiceTest {
     val previousEpisodesNoAnswers = listOf(
       AssessmentEpisodeEntity(
         episodeId = 2,
-        assessmentType = ROSH,
+        assessmentType = UPW,
         author = authorEntity,
         assessment = AssessmentEntity(),
         endDate = LocalDateTime.now().minusDays(1),
@@ -707,7 +561,7 @@ class EpisodeServiceTest {
     val previousEpisodes = listOf(
       AssessmentEpisodeEntity(
         episodeId = 2,
-        assessmentType = ROSH,
+        assessmentType = UPW,
         author = authorEntity,
         assessment = AssessmentEntity(),
         endDate = LocalDateTime.now().minusWeeks(1),
@@ -718,7 +572,7 @@ class EpisodeServiceTest {
       ),
       AssessmentEpisodeEntity(
         episodeId = 3,
-        assessmentType = ROSH,
+        assessmentType = UPW,
         author = authorEntity,
         assessment = AssessmentEntity(),
         endDate = LocalDateTime.now().minusWeeks(55).minusDays(1),

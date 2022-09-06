@@ -65,7 +65,7 @@ class AssessmentServiceITTest : IntegrationTest() {
 
   @Test
   @Transactional("assessmentsTransactionManager")
-  fun `Trying to create assessment and push to OASys`() {
+  fun `Should create assessment`() {
 
     val crn = "X1356"
     val assessmentResponse =
@@ -73,7 +73,7 @@ class AssessmentServiceITTest : IntegrationTest() {
         CreateAssessmentDto(
           deliusEventId = 1L,
           crn = crn,
-          assessmentSchemaCode = AssessmentType.ROSH
+          assessmentSchemaCode = AssessmentType.UPW
         )
       )
     assertThat(assessmentResponse.assessmentUuid).isNotNull
@@ -85,14 +85,12 @@ class AssessmentServiceITTest : IntegrationTest() {
     assertThat(assessmentEntity?.assessmentUuid).isEqualTo(assessmentResponse.assessmentUuid)
     assertThat(assessmentEntity?.subject).isNotNull
     assertThat(assessmentEntity?.subject?.crn).isEqualTo(crn)
-    assertThat(assessmentEntity?.subject?.oasysOffenderPk).isEqualTo(1L)
     assertThat(assessmentEntity?.episodes).hasSize(1)
-    assertThat(assessmentEntity?.episodes?.get(0)?.oasysSetPk).isEqualTo(1L)
   }
 
   @Test
   @Transactional("assessmentsTransactionManager")
-  fun `Trying to create assessment and push to OASys with Delius Conviction ID`() {
+  fun `Should create assessment with Delius Conviction ID`() {
 
     val crn = "X1356"
     val assessmentResponse =
@@ -100,7 +98,7 @@ class AssessmentServiceITTest : IntegrationTest() {
         CreateAssessmentDto(
           deliusEventId = 123456L,
           crn = crn,
-          assessmentSchemaCode = AssessmentType.ROSH,
+          assessmentSchemaCode = AssessmentType.UPW,
           deliusEventType = DeliusEventType.EVENT_ID
         )
       )
@@ -111,9 +109,7 @@ class AssessmentServiceITTest : IntegrationTest() {
     val assessmentEntity = assessmentRepository.findByAssessmentUuid(assessmentResponse.assessmentUuid)
     assertThat(assessmentEntity?.assessmentUuid).isEqualTo(assessmentResponse.assessmentUuid)
     assertThat(assessmentEntity?.subject?.crn).isEqualTo(crn)
-    assertThat(assessmentEntity?.subject?.oasysOffenderPk).isEqualTo(1L)
     assertThat(assessmentEntity?.episodes).hasSize(1)
-    assertThat(assessmentEntity?.episodes?.get(0)?.oasysSetPk).isEqualTo(1L)
     assertThat(assessmentEntity?.episodes?.get(0)?.offence?.sourceId).isEqualTo("123456")
   }
 
@@ -126,7 +122,7 @@ class AssessmentServiceITTest : IntegrationTest() {
         CreateAssessmentDto(
           deliusEventId = 1L,
           crn = crn,
-          assessmentSchemaCode = AssessmentType.ROSH
+          assessmentSchemaCode = AssessmentType.UPW
         )
       )
     val assessmentUuid = assessmentResponse.assessmentUuid
@@ -139,32 +135,13 @@ class AssessmentServiceITTest : IntegrationTest() {
         CreateAssessmentDto(
           deliusEventId = 1L,
           crn = crn,
-          assessmentSchemaCode = AssessmentType.ROSH
+          assessmentSchemaCode = AssessmentType.UPW
         )
       )
 
     assertThat(assessmentSecondResponse.assessmentUuid).isEqualTo(assessmentUuid)
     assertThat(assessmentResponse.subject).isNotNull
     assertThat(assessmentResponse.subject?.crn).isEqualTo(crn)
-  }
-
-  @Test
-  fun `Trying to create assessment throws error from oasys and rollback`() {
-
-    val crn = "DX12340F"
-
-    try {
-      assessmentService.createNewAssessment(
-        CreateAssessmentDto(
-          deliusEventId = 1L,
-          crn = crn,
-          assessmentSchemaCode = AssessmentType.ROSH
-        )
-      )
-    } catch (e: Exception) {
-    }
-    val subject = subjectRepository.findByCrn(crn)
-    assertThat(subject).isNull()
   }
 
   @Test
@@ -176,7 +153,7 @@ class AssessmentServiceITTest : IntegrationTest() {
         CreateAssessmentDto(
           deliusEventId = 1L,
           crn = crn,
-          assessmentSchemaCode = AssessmentType.ROSH
+          assessmentSchemaCode = AssessmentType.UPW
         )
       )
     }

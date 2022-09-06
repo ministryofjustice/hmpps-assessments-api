@@ -16,16 +16,10 @@ import org.springframework.test.context.jdbc.SqlConfig
 import org.springframework.test.context.jdbc.SqlGroup
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.assessments.api.AssessmentEpisodeDto
-import uk.gov.justice.digital.assessments.api.PredictorScoresDto
-import uk.gov.justice.digital.assessments.api.Score
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
-import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.ScoreLevel
-import uk.gov.justice.digital.assessments.services.dto.PredictorType
-import uk.gov.justice.digital.assessments.services.dto.ScoreType
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import uk.gov.justice.digital.assessments.utils.RequestData
-import java.math.BigDecimal
 import java.util.UUID
 
 @SqlGroup(
@@ -73,58 +67,25 @@ class AssessmentUpdateServiceITTest() : IntegrationTest() {
     assertThat(updateAssessmentResponse).isEqualTo(
       AssessmentEpisodeDto.from(
         assessmentEpisode,
-        null,
-        emptyList()
+        null
       )
     )
   }
 
   @Test
   @Transactional("assessmentsTransactionManager")
-  fun `Trying to push assessment completion to OASys`() {
-    val final = true
+  fun `should complete episode`() {
+    // Given
     val assessment = assessmentRepository.findByAssessmentUuid(UUID.fromString("29c8d211-68dc-4692-a6e2-d58468127356"))
     val assessmentEpisode = assessment?.episodes?.get(1)
     assertThat(assessmentEpisode).isNotNull
-    assessRisksAndNeedsApiMockServer.stubGetRSRPredictorsForOffenderAndOffencesWithCurrentOffences(
-      final,
-      assessmentEpisode?.episodeUuid!!,
-      "X1349", "052", "07"
-    )
 
-    val updateAssessmentResponse =
-      assessmentUpdateService.completeEpisode(assessmentEpisode)
+    // When
+    val updateAssessmentResponse = assessmentUpdateService.completeEpisode(assessmentEpisode!!)
+
+    // Then
     assertThat(updateAssessmentResponse).isEqualTo(
-      AssessmentEpisodeDto.from(
-        assessmentEpisode,
-        null,
-        listOf(
-          PredictorScoresDto(
-            type = PredictorType.RSR,
-            scoreType = ScoreType.STATIC,
-            scores = mapOf(
-              "RSR" to Score(
-                level = ScoreLevel.HIGH.name,
-                score = BigDecimal("11.34"),
-                isValid = true,
-                date = "2021-08-09 14:46:48"
-              ),
-              "OSPC" to Score(
-                level = ScoreLevel.NOT_APPLICABLE.name,
-                score = BigDecimal("0"),
-                isValid = false,
-                date = "2021-08-09 14:46:48"
-              ),
-              "OSPI" to Score(
-                level = ScoreLevel.NOT_APPLICABLE.name,
-                score = BigDecimal("0"),
-                isValid = false,
-                date = "2021-08-09 14:46:48"
-              ),
-            )
-          )
-        )
-      )
+      AssessmentEpisodeDto.from(assessmentEpisode, null)
     )
   }
 }
