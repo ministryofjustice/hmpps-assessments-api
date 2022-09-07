@@ -34,9 +34,6 @@ data class QuestionDto(
   @Schema(description = "Reference Data Category")
   val referenceDataCategory: String? = null,
 
-  @Schema(description = "Reference Data Targets")
-  val referenceDataTargets: Collection<ReferenceDataTargetDto> = emptyList(),
-
   @Schema(description = "List of Reference Data Answers")
   val answerDtos: Collection<AnswerDto>,
 
@@ -59,7 +56,6 @@ data class QuestionDto(
         questionEntity?.questionText,
         questionEntity?.questionHelpText,
         questionEntity?.referenceDataCategory,
-        ReferenceDataTargetDto.from(questionEntity?.referenceDataTargets),
         AnswerDto.from(
           questionEntity?.answerEntities
         )
