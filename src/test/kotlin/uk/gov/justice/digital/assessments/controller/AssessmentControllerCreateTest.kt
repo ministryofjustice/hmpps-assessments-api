@@ -112,7 +112,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(answers["caring_commitments"]).isEqualTo(listOf("YES"))
       assertThat(answers["caring_commitments_details"]).isEqualTo(listOf("Primary Carer"))
       assertThat(answers["reading_writing_difficulties"]).isEqualTo(listOf("YES"))
-      assertThat(answers["reading_writing_difficulties_details"]).isEqualTo(listOf("Cannot read"))
+      assertThat(answers["reading_writing_difficulties_details"]).isEqualTo(listOf("Cannot read", "Numeracy difficulties", "Communication difficulties"))
 
       val contact = getStructuredDataFromAnswer(answers, "emergency_contact_details")
       assertThat(contact["emergency_contact_first_name"]).isEqualTo(listOf("Brian"))
