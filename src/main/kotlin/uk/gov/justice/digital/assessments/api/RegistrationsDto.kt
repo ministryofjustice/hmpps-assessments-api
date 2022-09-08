@@ -15,6 +15,8 @@ private enum class Flags(val code: String) {
   SUICIDE_OR_SELF_HARM("ALSH"),
   VULNERABLE("RVLN"),
   WEAPONS("WEAP"),
+  MODERN_DAY_SLAVERY_VICTIM("MSV"),
+  MODERN_DAY_SLAVERY_PERPETRATOR("MSP"),
 }
 
 // TODO: populate this list
@@ -29,6 +31,8 @@ private val flagsToInclude = listOf(
   Flags.SUICIDE_OR_SELF_HARM,
   Flags.VULNERABLE,
   Flags.WEAPONS,
+  Flags.MODERN_DAY_SLAVERY_VICTIM,
+  Flags.MODERN_DAY_SLAVERY_PERPETRATOR,
 ).map { flag -> flag.code }
 
 data class RegistrationsDto(

@@ -42,10 +42,6 @@ class AssessmentEntity(
   @Column(name = "assessment_name")
   val assessmentName: String? = null,
 
-  @OneToMany(fetch = FetchType.EAGER)
-  @JoinColumn(name = "assessment_type", referencedColumnName = "assessment_type")
-  val predictorEntities: Collection<PredictorEntity> = emptyList(),
-
   @OneToMany(fetch = FetchType.LAZY)
   @JoinColumn(name = "assessment_type", referencedColumnName = "assessment_type")
   val cloneAssessmentExcludedQuestionsEntities: Collection<CloneAssessmentExcludedQuestionsEntity> = emptyList(),

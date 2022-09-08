@@ -50,15 +50,10 @@ class QuestionEntity(
   @Column(name = "reference_data_category")
   val referenceDataCategory: String? = null,
 
-  @OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
-  val referenceDataTargets: Collection<ReferenceDataTargetMappingEntity> = emptyList(),
-
   @ManyToOne
   @JoinColumn(name = "answer_group_uuid", referencedColumnName = "answer_group_uuid")
   val answerGroup: AnswerGroupEntity? = null,
 
-  @OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
-  val oasysMappings: Collection<OASysMappingEntity> = emptyList()
 ) : Serializable {
   val answerEntities: Collection<AnswerEntity>
     get() = answerGroup?.answerEntities ?: emptyList()

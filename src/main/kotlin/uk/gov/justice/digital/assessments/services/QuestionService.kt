@@ -21,7 +21,6 @@ import uk.gov.justice.digital.assessments.jpa.entities.refdata.GroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionGroupEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.GroupRepository
-import uk.gov.justice.digital.assessments.jpa.repositories.refdata.OASysMappingRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.QuestionGroupRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.QuestionRepository
 import uk.gov.justice.digital.assessments.services.dto.ExternalSourceQuestionDto
@@ -34,7 +33,6 @@ class QuestionService(
   private val questionRepository: QuestionRepository,
   private val questionGroupRepository: QuestionGroupRepository,
   private val groupRepository: GroupRepository,
-  private val oasysMappingRepository: OASysMappingRepository,
   private val questionDependencyService: QuestionDependencyService
 ) {
   companion object {
@@ -205,22 +203,12 @@ class QuestionService(
     return groupRepository.findByGroupUuid(uuid)
       ?: throw EntityNotFoundException("Group not found: $uuid")
   }
-
-  fun getAllSectionQuestionsForQuestions(questionCodes: List<String>): QuestionSchemaEntities {
-    val mappings = oasysMappingRepository.findAllByQuestion_QuestionCodeIn(questionCodes)
-    val sections = mappings?.map { it.sectionCode }?.distinct() ?: emptyList()
-    return QuestionSchemaEntities(
-      oasysMappingRepository.findAllBySectionCodeIn(sections)
-        .map { it.question }.distinct()
-    )
-  }
 }
 
 class QuestionSchemaEntities(
   questionsList: List<QuestionEntity>
 ) : List<QuestionEntity> by questionsList {
   private val questions = questionsList.associateBy { it.questionCode }
-  private val oasysMapping = mapByOasysCoords(questionsList)
 
   operator fun get(questionCode: String) = questions[questionCode]
 
@@ -245,15 +233,6 @@ class QuestionSchemaEntities(
         it.ifEmpty
       )
     }
-  }
-
-  fun forOasysMapping(
-    sectionCode: String?,
-    logicalPage: Long?,
-    questionCode: String?,
-  ): Collection<QuestionEntity> {
-    val questions = oasysMapping.section(sectionCode)?.logicalPage(logicalPage)?.questionCode(questionCode)
-    return questions ?: emptyList()
   }
 
   private class OasysMappingTree {
@@ -297,21 +276,6 @@ class QuestionSchemaEntities(
   ) : List<QuestionEntity> by questions {
     fun addQuestion(question: QuestionEntity) {
       questions.add(question)
-    }
-  }
-
-  companion object {
-    private fun mapByOasysCoords(questionsList: List<QuestionEntity>): OasysMappingTree {
-      val mapping = OasysMappingTree()
-      questionsList.forEach { question ->
-        question.oasysMappings.forEach {
-          mapping.addSection(it.sectionCode)
-            .addLogicalPage(it.logicalPage)
-            .addQuestionCode(it.questionCode)
-            .addQuestion(question)
-        }
-      }
-      return mapping
     }
   }
 }
