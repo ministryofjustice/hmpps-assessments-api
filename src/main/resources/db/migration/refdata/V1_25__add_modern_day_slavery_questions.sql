@@ -22,6 +22,7 @@ VALUES ('a65345d2-e6dd-4e79-8266-b262e0deec97', 'modern_day_slavery', 'Modern da
 -- add questions the modern day slavery question group  NB: I've just used an arbitrary value for display order here as it's not used AFAIK
 INSERT INTO question_group (question_group_uuid, content_uuid, content_type, group_uuid, display_order, read_only)
 VALUES
+    ('3b9d1f50-b085-4621-86a8-6a3d87907c9c', 'a65345d2-e6dd-4e79-8266-b262e0deec97', 'group', '95000412-07cb-49aa-8821-6712880e3097', 3, true),
     ('c2a65206-73d9-4ecb-96b0-4c72b1de9dee', '86b3e0c5-2731-49c0-a76a-9baaef7941c9', 'question', 'a65345d2-e6dd-4e79-8266-b262e0deec97', 1, false),
     ('fc170bf5-b57e-47c2-8abe-758b8d8cf3c7', 'e84ee6f1-231c-4d65-a02c-00e3a2eb29e9', 'question', 'a65345d2-e6dd-4e79-8266-b262e0deec97', 2, false),
     ('d286e0ce-61d7-4ae6-89a5-13134c3ed9be', '36c51db6-1f9c-4257-9372-7c48cbaa4cef', 'question', 'a65345d2-e6dd-4e79-8266-b262e0deec97', 3, false),
