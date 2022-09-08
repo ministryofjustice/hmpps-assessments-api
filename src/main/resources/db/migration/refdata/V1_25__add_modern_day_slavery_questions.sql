@@ -6,7 +6,8 @@ VALUES
     ('36c51db6-1f9c-4257-9372-7c48cbaa4cef', 'modern_day_slavery_orders', '2022-09-01 01:00:00', null, 'freetext', null, 'Are there any slavery and trafficking prevention orders or slavery and trafficking risk orders in place?', null, null),
     ('0b5a97bd-9f60-4a78-9f43-ccc68cc1a6ec', 'modern_day_slavery_orders_details', '2022-09-01 01:00:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'What restrictions do they specify?', null, null),
     ('2223afec-9239-406b-93a3-52186af94f0a', 'modern_day_slavery_safeguarding', '2022-09-01 01:00:00', null, 'freetext', null, 'Are there any safeguarding measures that need to be put into place?', null, null),
-    ('935df25c-ac07-4260-a298-57ea1631dac7', 'modern_day_slavery_safeguarding_details', '2022-09-01 01:00:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Give details', null, null);
+    ('935df25c-ac07-4260-a298-57ea1631dac7', 'modern_day_slavery_safeguarding_details', '2022-09-01 01:00:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Give details', null, null),
+    ('efd7bc3f-b9f4-46c6-a06f-f29f911c0138', 'modern_day_slavery_complete', '2022-09-01 01:00:00', null, 'radio', '8067ff6e-7400-4d1e-ae2a-87dee7e124ec', 'Mark modern day slavery section as complete?', '', null);
 
 -- set up question dependencies
 INSERT INTO question_dependency (subject_question_uuid, trigger_question_uuid, trigger_answer_value, dependency_start, display_inline)
@@ -28,4 +29,5 @@ VALUES
     ('d286e0ce-61d7-4ae6-89a5-13134c3ed9be', '36c51db6-1f9c-4257-9372-7c48cbaa4cef', 'question', 'a65345d2-e6dd-4e79-8266-b262e0deec97', 3, false),
     ('39d716f9-b769-455b-b99b-ecac8b9bc7d9', '0b5a97bd-9f60-4a78-9f43-ccc68cc1a6ec', 'question', 'a65345d2-e6dd-4e79-8266-b262e0deec97', 4, false),
     ('8a7a11bc-f620-4f00-a4b9-09d1f438d2a5', '2223afec-9239-406b-93a3-52186af94f0a', 'question', 'a65345d2-e6dd-4e79-8266-b262e0deec97', 5, false),
-    ('00c27350-d95f-4ef8-8a66-ca6d7f8701dc', '935df25c-ac07-4260-a298-57ea1631dac7', 'question', 'a65345d2-e6dd-4e79-8266-b262e0deec97', 6, false);
+    ('00c27350-d95f-4ef8-8a66-ca6d7f8701dc', '935df25c-ac07-4260-a298-57ea1631dac7', 'question', 'a65345d2-e6dd-4e79-8266-b262e0deec97', 6, false),
+    ('f6ce5e6f-5596-44f8-9037-209c441e4240', 'efd7bc3f-b9f4-46c6-a06f-f29f911c0138', 'question', 'a65345d2-e6dd-4e79-8266-b262e0deec97', 7, false);
