@@ -1,12 +1,12 @@
 -- add modern day slavery questions
 INSERT INTO question (question_uuid, question_code, question_start, question_end, answer_type, answer_group_uuid, question_text, question_help_text, reference_data_category)
 VALUES
-    ('86b3e0c5-2731-49c0-a76a-9baaef7941c9', 'modern_day_slavery_risks', '2022-09-01 01:00:00', null, 'freetext', null, 'Are there specific risks  that need to be taken into account?', null, null),
-    ('e84ee6f1-231c-4d65-a02c-00e3a2eb29e9', 'modern_day_slavery_risks_details', '2022-09-01 01:00:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Give details', null, null),
-    ('36c51db6-1f9c-4257-9372-7c48cbaa4cef', 'modern_day_slavery_orders', '2022-09-01 01:00:00', null, 'freetext', null, 'Are there any slavery and trafficking prevention orders or slavery and trafficking risk orders in place?', null, null),
-    ('0b5a97bd-9f60-4a78-9f43-ccc68cc1a6ec', 'modern_day_slavery_orders_details', '2022-09-01 01:00:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'What restrictions do they specify?', null, null),
-    ('2223afec-9239-406b-93a3-52186af94f0a', 'modern_day_slavery_safeguarding', '2022-09-01 01:00:00', null, 'freetext', null, 'Are there any safeguarding measures that need to be put into place?', null, null),
-    ('935df25c-ac07-4260-a298-57ea1631dac7', 'modern_day_slavery_safeguarding_details', '2022-09-01 01:00:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Give details', null, null),
+    ('86b3e0c5-2731-49c0-a76a-9baaef7941c9', 'modern_day_slavery_risks', '2022-09-01 01:00:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Are there specific risks  that need to be taken into account?', null, null),
+    ('e84ee6f1-231c-4d65-a02c-00e3a2eb29e9', 'modern_day_slavery_risks_details', '2022-09-01 01:00:00', null, 'textarea', null, 'Give details', null, null),
+    ('36c51db6-1f9c-4257-9372-7c48cbaa4cef', 'modern_day_slavery_orders', '2022-09-01 01:00:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Are there any slavery and trafficking prevention orders or slavery and trafficking risk orders in place?', null, null),
+    ('0b5a97bd-9f60-4a78-9f43-ccc68cc1a6ec', 'modern_day_slavery_orders_details', '2022-09-01 01:00:00', null, 'textarea', null, 'What restrictions do they specify?', null, null),
+    ('2223afec-9239-406b-93a3-52186af94f0a', 'modern_day_slavery_safeguarding', '2022-09-01 01:00:00', null, 'radio', '887f4528-06d1-4247-8bc3-5e679222baa6', 'Are there any safeguarding measures that need to be put into place?', null, null),
+    ('935df25c-ac07-4260-a298-57ea1631dac7', 'modern_day_slavery_safeguarding_details', '2022-09-01 01:00:00', null, 'textarea', null, 'Give details', null, null),
     ('efd7bc3f-b9f4-46c6-a06f-f29f911c0138', 'modern_day_slavery_complete', '2022-09-01 01:00:00', null, 'radio', '8067ff6e-7400-4d1e-ae2a-87dee7e124ec', 'Mark modern day slavery section as complete?', '', null);
 
 -- set up question dependencies
