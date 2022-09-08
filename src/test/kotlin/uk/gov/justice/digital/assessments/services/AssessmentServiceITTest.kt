@@ -20,7 +20,6 @@ import uk.gov.justice.digital.assessments.api.CreateAssessmentDto
 import uk.gov.justice.digital.assessments.api.DeliusEventType
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
-import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRepository
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiForbiddenException
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import uk.gov.justice.digital.assessments.utils.RequestData
@@ -44,9 +43,6 @@ class AssessmentServiceITTest : IntegrationTest() {
 
   @Autowired
   internal lateinit var assessmentRepository: AssessmentRepository
-
-  @Autowired
-  internal lateinit var subjectRepository: SubjectRepository
 
   @BeforeEach
   fun init() {

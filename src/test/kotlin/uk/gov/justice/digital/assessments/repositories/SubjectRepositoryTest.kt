@@ -16,7 +16,6 @@ import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 
 class SubjectRepositoryTest(@Autowired val subjectRepository: SubjectRepository) : IntegrationTest() {
   val crn = "dummy-crn-1"
-  val subject = "COURT"
 
   @Test
   fun `return Court Cases by CRN`() {

@@ -3,7 +3,6 @@ package uk.gov.justice.digital.assessments.api
 import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.Tables
-import uk.gov.justice.digital.assessments.services.dto.AssessmentEpisodeUpdateErrors
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -33,20 +32,11 @@ data class AssessmentEpisodeDto(
   @Schema(description = "Answers associated with this episode")
   val answers: AnswersDto = emptyMap(),
 
-  @Schema(description = "Validation errors on this episode, indexed by question code")
-  val errors: Map<String, Collection<String>>? = null,
-
-  @Schema(description = "Validation level errors")
-  val pageErrors: Collection<String>? = null,
-
-  @Schema(description = "OASys assessment errors")
-  val assessmentErrors: Collection<String>? = null,
-
   @Schema(description = "Offence codes")
   val offence: OffenceDto,
 
   @Schema(description = "Tables associated with this episode")
-  val tables: Tables = mutableMapOf(),
+  val tables: Tables? = null,
 
   @Schema(description = "Date last edited")
   val lastEditedDate: LocalDateTime? = null,
@@ -62,7 +52,6 @@ data class AssessmentEpisodeDto(
 
     fun from(
       episode: AssessmentEpisodeEntity,
-      errors: AssessmentEpisodeUpdateErrors? = null
     ): AssessmentEpisodeDto {
       return AssessmentEpisodeDto(
         episode.episodeUuid,
@@ -72,12 +61,9 @@ data class AssessmentEpisodeDto(
         episode.createdDate,
         episode.endDate,
         episode.author.userFullName,
-        episode.answers ?: mutableMapOf(),
-        errors?.errors,
-        errors?.pageErrors,
-        errors?.assessmentErrors,
+        episode.answers,
         OffenceDto.from(episode.offence),
-        episode.tables ?: mutableMapOf(),
+        episode.tables,
         episode.lastEditedDate,
         episode.closedDate,
       )

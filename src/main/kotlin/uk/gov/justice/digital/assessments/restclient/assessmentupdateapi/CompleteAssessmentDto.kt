@@ -1,12 +1,9 @@
 package uk.gov.justice.digital.assessments.restclient.assessmentupdateapi
 
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.OasysAssessmentType
-
 class CompleteAssessmentDto(
   val oasysSetPk: Long,
   val offenderPk: Long,
   val areaCode: String,
   val oasysUserCode: String,
-  val assessmentType: OasysAssessmentType,
   val ignoreWarnings: Boolean
 )

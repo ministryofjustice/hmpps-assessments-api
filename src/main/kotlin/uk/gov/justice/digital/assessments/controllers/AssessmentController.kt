@@ -20,7 +20,6 @@ import uk.gov.justice.digital.assessments.api.AssessmentSubjectDto
 import uk.gov.justice.digital.assessments.api.CreateAssessmentDto
 import uk.gov.justice.digital.assessments.api.CreateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
-import uk.gov.justice.digital.assessments.services.AssessmentReferenceDataService
 import uk.gov.justice.digital.assessments.services.AssessmentService
 import uk.gov.justice.digital.assessments.services.AssessmentUpdateService
 import java.util.UUID
@@ -29,7 +28,6 @@ import java.util.UUID
 class AssessmentController(
   val assessmentService: AssessmentService,
   val assessmentUpdateService: AssessmentUpdateService,
-  val assessmentReferenceDataService: AssessmentReferenceDataService
 ) {
 
   companion object {
@@ -266,7 +264,6 @@ class AssessmentController(
   private fun updateResponse(
     assessmentEpisode: AssessmentEpisodeDto
   ): ResponseEntity<AssessmentEpisodeDto> {
-    val code = if (assessmentEpisode.errors == null) HttpStatus.OK else HttpStatus.UNPROCESSABLE_ENTITY
-    return ResponseEntity(assessmentEpisode, code)
+    return ResponseEntity(assessmentEpisode, HttpStatus.OK)
   }
 }

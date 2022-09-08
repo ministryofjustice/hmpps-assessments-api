@@ -23,7 +23,6 @@ import uk.gov.justice.digital.assessments.jpa.entities.assessments.Answers
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.CloneAssessmentExcludedQuestionsRepository
 import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
-import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import uk.gov.justice.digital.assessments.restclient.communityapi.DeliusDisabilityDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.DeliusPersonalCircumstanceDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.PersonalContact
@@ -39,7 +38,6 @@ import java.util.regex.Pattern
 @Transactional("refDataTransactionManager")
 class EpisodeService(
   private val questionService: QuestionService,
-  private val courtCaseRestClient: CourtCaseRestClient,
   private val communityApiRestClient: CommunityApiRestClient,
   private val assessmentReferenceDataService: AssessmentReferenceDataService,
   private val cloneAssessmentExcludedQuestionsRepository: CloneAssessmentExcludedQuestionsRepository
@@ -157,7 +155,6 @@ class EpisodeService(
     log.info("Fetching source answers for source: $sourceName")
     try {
       val rawJson = when (sourceName) {
-        ExternalSource.COURT.name -> loadFromCourtCase(episode)
         ExternalSource.DELIUS.name -> loadFromDelius(episode, sourceEndpoint)
         else -> return null
       }
@@ -165,12 +162,6 @@ class EpisodeService(
     } catch (e: Exception) {
       return null
     }
-  }
-
-  private fun loadFromCourtCase(episode: AssessmentEpisodeEntity): String? {
-    if (episode.offence?.source != ExternalSource.COURT.name) return null
-    val (courtCode, caseNumber) = episode.offence?.sourceId!!.split('|')
-    return courtCaseRestClient.getCourtCaseJson(courtCode, caseNumber)
   }
 
   private fun loadFromDelius(episode: AssessmentEpisodeEntity, sourceEndpoint: String?): String? {

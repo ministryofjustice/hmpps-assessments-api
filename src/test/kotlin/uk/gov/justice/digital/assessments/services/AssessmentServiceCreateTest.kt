@@ -23,7 +23,6 @@ import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRepository
-import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import uk.gov.justice.digital.assessments.restclient.ExternalService
 import uk.gov.justice.digital.assessments.restclient.audit.AuditType.ARN_ASSESSMENT_CREATED
 import uk.gov.justice.digital.assessments.services.TelemetryEventType.ASSESSMENT_CREATED
@@ -41,7 +40,6 @@ class AssessmentServiceCreateTest {
   private val subjectRepository: SubjectRepository = mockk()
   private val authorService: AuthorService = mockk()
   private val questionService: QuestionService = mockk()
-  private val courtCaseRestClient: CourtCaseRestClient = mockk()
   private val episodeService: EpisodeService = mockk()
   private val offenderService: OffenderService = mockk()
   private val auditService: AuditService = mockk()
@@ -53,7 +51,6 @@ class AssessmentServiceCreateTest {
     authorService,
     questionService,
     episodeService,
-    courtCaseRestClient,
     offenderService,
     auditService,
     telemetryService
@@ -63,13 +60,7 @@ class AssessmentServiceCreateTest {
   private val assessmentId = 1L
   private val assessmentType = AssessmentType.UPW
 
-  private val oasysOffenderPk = 1L
   private val crn = "X12345"
-  private val oasysSetPk = 1L
-
-  private val courtCode = "SHF06"
-  private val caseNumber = "668911253"
-  private val existingCaseNumber = "existingAssessment"
 
   private val eventId = 1L
 

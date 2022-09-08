@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.assessments.api
 
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
-import uk.gov.justice.digital.assessments.restclient.courtcaseapi.DefendantAddress
 import java.time.LocalDate
 
 data class OffenderDto(
@@ -44,22 +43,4 @@ data class Address(
   val address4: String? = null,
   val address5: String? = null,
   val postcode: String? = null
-) {
-  companion object {
-
-    fun from(defendantAddress: DefendantAddress?): Address? {
-      return if (defendantAddress == null) {
-        null
-      } else {
-        Address(
-          address1 = defendantAddress.line1,
-          address2 = defendantAddress.line2,
-          address3 = defendantAddress.line3,
-          address4 = defendantAddress.line4,
-          address5 = defendantAddress.line5,
-          postcode = defendantAddress.postcode
-        )
-      }
-    }
-  }
-}
+)

@@ -26,7 +26,6 @@ import uk.gov.justice.digital.assessments.jpa.entities.assessments.Tables
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.CloneAssessmentExcludedQuestionsEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.CloneAssessmentExcludedQuestionsRepository
 import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
-import uk.gov.justice.digital.assessments.restclient.CourtCaseRestClient
 import uk.gov.justice.digital.assessments.services.dto.ExternalSource
 import uk.gov.justice.digital.assessments.services.dto.ExternalSourceQuestionDto
 import java.time.LocalDate
@@ -37,14 +36,12 @@ import java.time.LocalDateTime
 class EpisodeServiceTest {
 
   private val questionService: QuestionService = mockk()
-  private val courtCaseRestClient: CourtCaseRestClient = mockk()
   private val communityApiRestClient: CommunityApiRestClient = mockk()
   private val assessmentReferenceDataService: AssessmentReferenceDataService = mockk()
   private val cloneAssessmentExcludedQuestionsRepository: CloneAssessmentExcludedQuestionsRepository = mockk()
 
   private val episodeService = EpisodeService(
     questionService,
-    courtCaseRestClient,
     communityApiRestClient,
     assessmentReferenceDataService,
     cloneAssessmentExcludedQuestionsRepository

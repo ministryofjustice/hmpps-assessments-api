@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.IDs
 import uk.gov.justice.digital.assessments.restclient.communityapi.OffenderAlias
-import uk.gov.justice.digital.assessments.restclient.courtcaseapi.DefendantAddress
 
 @DisplayName("Offender DTO Tests")
 class OffenderDtoTest {
@@ -49,26 +48,5 @@ class OffenderDtoTest {
     assertThat(offenderDto.croNumber).isEqualTo(communityOffenderDto.otherIds?.croNumber)
     assertThat(offenderDto.firstNameAliases).containsExactly("firstName", "firstName2")
     assertThat(offenderDto.surnameAliases).containsExactly("surname", "surname2")
-  }
-
-  @Test
-  fun `builds valid Address from Defendant address`() {
-    val defendantAddress = DefendantAddress(
-      line1 = "line1",
-      line2 = "line2",
-      line3 = "line3",
-      line4 = "line4",
-      line5 = "line5",
-      postcode = "postcode"
-    )
-
-    val address = Address.from(defendantAddress)
-
-    assertThat(address?.address1).isEqualTo(defendantAddress.line1)
-    assertThat(address?.address2).isEqualTo(defendantAddress.line2)
-    assertThat(address?.address3).isEqualTo(defendantAddress.line3)
-    assertThat(address?.address4).isEqualTo(defendantAddress.line4)
-    assertThat(address?.address5).isEqualTo(defendantAddress.line5)
-    assertThat(address?.postcode).isEqualTo(defendantAddress.postcode)
   }
 }

@@ -12,7 +12,6 @@ import org.springframework.test.web.reactive.server.expectBody
 import uk.gov.justice.digital.assessments.api.AnswersDto
 import uk.gov.justice.digital.assessments.api.AssessmentDto
 import uk.gov.justice.digital.assessments.api.AssessmentEpisodeDto
-import uk.gov.justice.digital.assessments.api.AssessmentSubjectDto
 import uk.gov.justice.digital.assessments.api.CreateAssessmentDto
 import uk.gov.justice.digital.assessments.api.CreateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.api.ErrorResponse
@@ -340,26 +339,5 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       .expectBody<AssessmentDto>()
       .returnResult()
       .responseBody
-  }
-
-  private fun fetchAssessmentSubject(assessmentUuid: UUID?): AssessmentSubjectDto? {
-    val subject = webTestClient.get().uri("/assessments/$assessmentUuid/subject")
-      .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
-      .exchange()
-      .expectStatus().isOk
-      .expectBody<AssessmentSubjectDto>()
-      .returnResult()
-      .responseBody
-    return subject!!
-  }
-
-  private fun fetchEpisodes(assessmentUuid: UUID?): List<AssessmentEpisodeDto>? {
-    return webTestClient.get().uri("/assessments/$assessmentUuid/episodes")
-      .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
-      .exchange()
-      .expectStatus().isOk
-      .expectBody<List<AssessmentEpisodeDto>>()
-      .returnResult()
-      .responseBody!!
   }
 }
