@@ -11,12 +11,12 @@ class QuestionRepositoryTest(@Autowired val questionRepository: QuestionReposito
 
   @Test
   fun `return Question by UUID`() {
-    val questionSchemaUuid = UUID.fromString("574618c3-27f4-4dd2-94bb-6de74126ff22")
+    val questionSchemaUuid = UUID.fromString("2c88800c-1566-4019-9be1-1c1dfc67d4fb")
     val questionSchemaEntity = questionRepository.findByQuestionUuid(questionSchemaUuid)
     assertThat(questionSchemaEntity).isNotNull
     assertThat(questionSchemaEntity?.questionUuid).isEqualTo(questionSchemaUuid)
-    assertThat(questionSchemaEntity?.questionCode).isEqualTo("binge_drinking")
+    assertThat(questionSchemaEntity?.questionCode).isEqualTo("gender_identity")
     assertThat(questionSchemaEntity?.answerGroup).isNotNull
-    assertThat(questionSchemaEntity?.answerEntities?.size).isEqualTo(3)
+    assertThat(questionSchemaEntity?.answerEntities?.size).isEqualTo(5)
   }
 }
