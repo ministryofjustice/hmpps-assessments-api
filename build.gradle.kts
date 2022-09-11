@@ -37,7 +37,7 @@ dependencies {
   implementation("org.springdoc:springdoc-openapi-kotlin:1.6.11")
   implementation("commons-io:commons-io:2.11.0")
   implementation("com.zaxxer:HikariCP:5.0.1")
-  implementation("com.vladmihalcea:hibernate-types-52:2.19.0")
+  implementation("com.vladmihalcea:hibernate-types-52:2.19.1")
   implementation("com.beust:klaxon:5.6")
   implementation("com.google.code.gson:gson:2.9.1")
   implementation("com.google.guava:guava:31.1-jre")
