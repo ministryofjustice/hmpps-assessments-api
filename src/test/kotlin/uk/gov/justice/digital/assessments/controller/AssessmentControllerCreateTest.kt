@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
+import org.springframework.http.MediaType
 import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.context.jdbc.SqlConfig
 import org.springframework.test.context.jdbc.SqlGroup
@@ -68,6 +69,27 @@ class AssessmentControllerCreateTest : IntegrationTest() {
         .consumeWith {
           assertThat(it.responseBody?.status).isEqualTo(403)
           assertThat(it.responseBody?.reason).isEqualTo("LAO_PERMISSION")
+        }
+    }
+
+    @Test
+    fun `should return bad request when invalid assessment type of ROSH is in request`() {
+      webTestClient.post().uri("/assessments").contentType(MediaType.APPLICATION_JSON)
+        .bodyValue(
+          """{
+            "crn": "CRN1",
+            "deliusEventId": "1",
+            "assessmentSchemaCode": "ROSH"
+          }"""
+        )
+        .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
+        .exchange()
+        .expectStatus().isBadRequest
+        .expectBody<ErrorResponse>()
+        .consumeWith {
+          assertThat(it.responseBody?.developerMessage).contains(
+            "Cannot deserialize value of type `uk.gov.justice.digital.assessments.jpa.entities.AssessmentType` from String \"ROSH\""
+          )
         }
     }
 

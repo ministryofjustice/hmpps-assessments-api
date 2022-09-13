@@ -12,10 +12,10 @@ class QuestionDependenciesTest(
   @Autowired
   private val questionDependencyService: QuestionDependencyService
 ) : IntegrationTest() {
-  val subjectUuid: UUID = UUID.fromString("3662710d-ce3e-4e45-bce3-caa4155872aa")
-  val subjectQuestionCode: String = "current_sexual_offence"
+  val subjectUuid: UUID = UUID.fromString("e7f8205b-1f2a-4578-943c-154d2a6ee11e")
+  val subjectQuestionCode: String = "cultural_religious_adjustment_details"
 
-  val triggerUuid: UUID = UUID.fromString("58d3efd1-65a1-439b-952f-b2826ffa5e71")
+  val triggerUuid: UUID = UUID.fromString("5cefd241-cc51-4128-a343-cb7c438a9048")
   val questionWithNoDependenciesUuid: UUID = UUID.fromString("7877141f-19f6-4dab-a466-2f3c438e3ba6")
   lateinit var dependencies: QuestionDependencies
 
@@ -38,21 +38,6 @@ class QuestionDependenciesTest(
   fun `question triggers a dependency`() {
     assertThat(dependencies.triggersDependency(triggerUuid, "YES")).first()
       .isEqualTo(ConditionalsSchemaDto(subjectQuestionCode, true))
-  }
-
-  @Test
-  fun `question triggers multiple dependencies`() {
-    val multipleDependencies = mutableSetOf<ConditionalsSchemaDto>()
-    multipleDependencies.add(ConditionalsSchemaDto("current_sexual_offence", true))
-    multipleDependencies.add(ConditionalsSchemaDto("most_recent_sexual_offence_date", true))
-    multipleDependencies.add(ConditionalsSchemaDto("total_sexual_offences_adult", true))
-    multipleDependencies.add(ConditionalsSchemaDto("total_sexual_offences_child", true))
-    multipleDependencies.add(ConditionalsSchemaDto("total_sexual_offences_child_image", true))
-    multipleDependencies.add(ConditionalsSchemaDto("total_non_contact_sexual_offences", true))
-
-    assertThat(dependencies.triggersDependency(triggerUuid, "YES")).isEqualTo(
-      multipleDependencies
-    )
   }
 
   @Test
