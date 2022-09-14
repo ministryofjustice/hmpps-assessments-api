@@ -113,6 +113,7 @@ class AssessmentServiceTest {
           any()
         )
       }
+      justRun { episodeService.removeOrphanedAnswers(any()) }
       every { assessment.assessmentUuid } returns assessmentUuid
       every { assessment.episodes } returns mutableListOf()
       every { offenderService.validateUserAccess(crn) } returns mockk()
