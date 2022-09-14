@@ -22,7 +22,8 @@ class AssessmentUpdateService(
   private val episodeRepository: EpisodeRepository,
   private val authorService: AuthorService,
   private val auditService: AuditService,
-  private val telemetryService: TelemetryService
+  private val telemetryService: TelemetryService,
+  private val episodeService: EpisodeService,
 ) {
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
@@ -52,6 +53,7 @@ class AssessmentUpdateService(
       throw UpdateClosedEpisodeException("Cannot update a closed or completed Episode ${episode.episodeUuid} for assessment ${episode.assessment.assessmentUuid}")
 
     episode.updateEpisodeAnswers(updatedEpisodeAnswers)
+    episodeService.removeOrphanedAnswers(episode)
 
     val currentAuthor = episode.author
     episode.author = authorService.getOrCreateAuthor()

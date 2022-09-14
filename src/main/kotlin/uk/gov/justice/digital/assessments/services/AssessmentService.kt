@@ -276,6 +276,7 @@ class AssessmentService(
     if (isNewEpisode) {
       episodeService.prePopulateFromExternalSources(episode, assessmentType)
       episodeService.prePopulateFromPreviousEpisodes(episode, assessment.episodes)
+      episodeService.removeOrphanedAnswers(episode)
       auditAndLogCreateEpisode(assessment.assessmentUuid, episode, subject?.crn)
     }
     log.info("New episode episode with id:${episode.episodeId} and uuid:${episode.episodeUuid} created for assessment ${assessment.assessmentUuid}")

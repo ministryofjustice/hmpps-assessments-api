@@ -29,13 +29,15 @@ class AssessmentUpdateServiceCompleteTest {
   private val authorService: AuthorService = mockk()
   private val auditService: AuditService = mockk()
   private val telemetryService: TelemetryService = mockk()
+  private val episodeService: EpisodeService = mockk()
 
   private val assessmentUpdateService = AssessmentUpdateService(
     assessmentRepository,
     episodeRepository,
     authorService,
     auditService,
-    telemetryService
+    telemetryService,
+    episodeService,
   )
 
   @Test

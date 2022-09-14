@@ -29,13 +29,15 @@ class AssessmentUpdateServiceTest {
   private val authorService: AuthorService = mockk()
   private val auditService: AuditService = mockk()
   private val telemetryService: TelemetryService = mockk()
+  private val episodeService: EpisodeService = mockk()
 
   private val assessmentUpdateService = AssessmentUpdateService(
     assessmentRepository,
     episodeRepository,
     authorService,
     auditService,
-    telemetryService
+    telemetryService,
+    episodeService,
   )
 
   private val assessmentUuid = UUID.randomUUID()
@@ -66,6 +68,7 @@ class AssessmentUpdateServiceTest {
       every { assessmentRepository.save(any()) } returns null
       val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
       every { authorService.getOrCreateAuthor() } returns author
+      justRun { episodeService.removeOrphanedAnswers(any()) }
 
       val episodeDto = assessmentUpdateService.updateEpisode(assessment.episodes.first(), updatedAnswers)
 
@@ -95,6 +98,7 @@ class AssessmentUpdateServiceTest {
       )
       justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
       every { assessmentRepository.save(any()) } returns null
+      justRun { episodeService.removeOrphanedAnswers(any()) }
 
       val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
       every { authorService.getOrCreateAuthor() } returns author
@@ -124,6 +128,7 @@ class AssessmentUpdateServiceTest {
       every { assessmentRepository.save(any()) } returns null
       val author = AuthorEntity(authorUuid = UUID.randomUUID(), userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
       every { authorService.getOrCreateAuthor() } returns author
+      justRun { episodeService.removeOrphanedAnswers(any()) }
 
       val episode = assessmentUpdateService.updateEpisode(assessment.episodes.first(), updatedAnswers)
       verify(exactly = 1) {
@@ -154,6 +159,7 @@ class AssessmentUpdateServiceTest {
       every { assessmentRepository.save(any()) } returns null
       val author = AuthorEntity(authorUuid = UUID.randomUUID(), userId = "2", userName = "USER2", userAuthSource = "source", userFullName = "full name 2")
       every { authorService.getOrCreateAuthor() } returns author
+      justRun { episodeService.removeOrphanedAnswers(any()) }
 
       val episode = assessmentUpdateService.updateEpisode(assessment.episodes.first(), updatedAnswers)
 
@@ -197,6 +203,7 @@ class AssessmentUpdateServiceTest {
 
       val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
       every { authorService.getOrCreateAuthor() } returns author
+      justRun { episodeService.removeOrphanedAnswers(any()) }
 
       val episodeDto = assessmentUpdateService.updateEpisode(assessment.episodes.first(), updatedAnswers)
 
