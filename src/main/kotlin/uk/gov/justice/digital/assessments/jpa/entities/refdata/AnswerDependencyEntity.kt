@@ -7,6 +7,8 @@ class AnswerDependencyEntity(
   val triggerAnswerValue: String,
 ) {
   enum class Operator {
-    NOT
+    NOT,
+    IS,
+    ANY,
   }
 }

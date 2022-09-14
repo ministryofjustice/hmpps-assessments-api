@@ -123,6 +123,57 @@ class EpisodeService(
       AnswerDependencyEntity("placement_preference", "gender_identity", AnswerDependencyEntity.Operator.NOT, "MALE"),
       AnswerDependencyEntity("placement_preferences", "gender_identity", AnswerDependencyEntity.Operator.NOT, "MALE"),
       AnswerDependencyEntity("placement_preference_complete", "gender_identity", AnswerDependencyEntity.Operator.NOT, "MALE"),
+      AnswerDependencyEntity("sex_change_details", "sex_change", AnswerDependencyEntity.Operator.IS, "YES"),
+      AnswerDependencyEntity("history_sexual_offending_details", "history_sexual_offending", AnswerDependencyEntity.Operator.IS, "YES"),
+      AnswerDependencyEntity("poses_risk_to_children_details", "poses_risk_to_children", AnswerDependencyEntity.Operator.IS, "YES"),
+      AnswerDependencyEntity("violent_offences_details", "violent_offences", AnswerDependencyEntity.Operator.IS, "YES"),
+      AnswerDependencyEntity("acquisitive_offending_details", "acquisitive_offending", AnswerDependencyEntity.Operator.IS, "YES"),
+      AnswerDependencyEntity("sgo_identifier_details", "sgo_identifier", AnswerDependencyEntity.Operator.IS, "YES"),
+      AnswerDependencyEntity("control_issues_details", "control_issues", AnswerDependencyEntity.Operator.IS, "YES"),
+      AnswerDependencyEntity("history_of_hate_based_behaviour_details", "history_of_hate_based_behaviour", AnswerDependencyEntity.Operator.IS, "YES"),
+      AnswerDependencyEntity("high_profile_person_details", "high_profile_person", AnswerDependencyEntity.Operator.IS, "YES"),
+      AnswerDependencyEntity("additional_rosh_info_details", "additional_rosh_info", AnswerDependencyEntity.Operator.IS, "YES"),
+      AnswerDependencyEntity("location_exclusion_criteria_details", "location_exclusion_criteria", AnswerDependencyEntity.Operator.IS, "YES"),
+      AnswerDependencyEntity("restricted_placement_details", "restricted_placement", AnswerDependencyEntity.Operator.IS, "YES"),
+      AnswerDependencyEntity("no_female_supervisor_details", "no_female_supervisor", AnswerDependencyEntity.Operator.IS, "YES"),
+      AnswerDependencyEntity("no_male_supervisor_details", "no_male_supervisor", AnswerDependencyEntity.Operator.IS, "YES"),
+      AnswerDependencyEntity("restrictive_orders_details", "restrictive_orders", AnswerDependencyEntity.Operator.IS, "YES"),
+      AnswerDependencyEntity("risk_management_issues_individual_details", "risk_management_issues_individual", AnswerDependencyEntity.Operator.IS, "YES"),
+      AnswerDependencyEntity("risk_management_issues_supervised_group_details", "risk_management_issues_supervised_group", AnswerDependencyEntity.Operator.IS, "YES"),
+      AnswerDependencyEntity("alcohol_drug_issues_details", "alcohol_drug_issues", AnswerDependencyEntity.Operator.IS, "YES"),
+      AnswerDependencyEntity("physical_disability_details", "physical_disability", AnswerDependencyEntity.Operator.IS, "YES"),
+      AnswerDependencyEntity("learning_disability_details", "learning_disability", AnswerDependencyEntity.Operator.IS, "YES"),
+      AnswerDependencyEntity("learning_difficulty_details", "learning_difficulty", AnswerDependencyEntity.Operator.IS, "YES"),
+      AnswerDependencyEntity("mental_health_condition_details", "mental_health_condition", AnswerDependencyEntity.Operator.IS, "YES"),
+      AnswerDependencyEntity("additional_disabilities_details", "additional_disabilities", AnswerDependencyEntity.Operator.IS, "YES"),
+      AnswerDependencyEntity("disabilities_details", "disabilities", AnswerDependencyEntity.Operator.IS, "YES"),
+      AnswerDependencyEntity("allergies_details", "allergies", AnswerDependencyEntity.Operator.IS, "YES"),
+      AnswerDependencyEntity("loss_consciousness_details", "loss_consciousness", AnswerDependencyEntity.Operator.IS, "YES"),
+      AnswerDependencyEntity("epilepsy_details", "epilepsy", AnswerDependencyEntity.Operator.IS, "YES"),
+      AnswerDependencyEntity("pregnancy_pregnant_details", "pregnancy", AnswerDependencyEntity.Operator.IS, "PREGNANT"),
+      AnswerDependencyEntity("pregnancy_recently_given_birth_details", "pregnancy", AnswerDependencyEntity.Operator.IS, "RECENTLY_GIVEN_BIRTH"),
+      AnswerDependencyEntity("other_health_issues_details", "other_health_issues", AnswerDependencyEntity.Operator.IS, "YES"),
+      AnswerDependencyEntity("travel_information_details", "travel_information", AnswerDependencyEntity.Operator.IS, "YES"),
+      AnswerDependencyEntity("driving_licence", "travel_information", AnswerDependencyEntity.Operator.IS, "YES"),
+      AnswerDependencyEntity("vehicle", "travel_information", AnswerDependencyEntity.Operator.IS, "YES"),
+      AnswerDependencyEntity("public_transport", "travel_information", AnswerDependencyEntity.Operator.IS, "YES"),
+      AnswerDependencyEntity("public_transport", "travel_information", AnswerDependencyEntity.Operator.IS, "YES"),
+      AnswerDependencyEntity("caring_commitments_details", "caring_commitments", AnswerDependencyEntity.Operator.IS, "YES"),
+      AnswerDependencyEntity("employment_education_details_fulltime", "employment_education", AnswerDependencyEntity.Operator.IS, "FULLTIME_EDUCATION_EMPLOYMENT"),
+      AnswerDependencyEntity("employment_education_details_parttime", "employment_education", AnswerDependencyEntity.Operator.IS, "PARTTIME_EDUCATION_EMPLOYMENT"),
+      AnswerDependencyEntity("reading_writing_difficulties_details", "reading_writing_difficulties", AnswerDependencyEntity.Operator.IS, "YES"),
+      AnswerDependencyEntity("work_skills_details", "work_skills", AnswerDependencyEntity.Operator.IS, "YES"),
+      AnswerDependencyEntity("future_work_plans_details", "future_work_plans", AnswerDependencyEntity.Operator.IS, "YES"),
+      AnswerDependencyEntity("education_training_need_details", "education_training_need", AnswerDependencyEntity.Operator.IS, "YES"),
+      AnswerDependencyEntity("education_training_need_details", "education_training_need", AnswerDependencyEntity.Operator.IS, "YES"),
+      AnswerDependencyEntity("individual_commitment", "education_training_need", AnswerDependencyEntity.Operator.IS, "YES"),
+      AnswerDependencyEntity("individual_commitment", "education_training_need", AnswerDependencyEntity.Operator.IS, "YES"),
+      AnswerDependencyEntity("individual_commitment_details", "individual_commitment", AnswerDependencyEntity.Operator.IS, "YES"),
+      AnswerDependencyEntity("eligibility_intensive_working_details", "eligibility_intensive_working", AnswerDependencyEntity.Operator.IS, "NO"),
+      AnswerDependencyEntity("recommended_hours_start_order", "eligibility_intensive_working", AnswerDependencyEntity.Operator.IS, "YES"),
+      AnswerDependencyEntity("recommended_hours_midpoint_order", "eligibility_intensive_working", AnswerDependencyEntity.Operator.IS, "YES"),
+      AnswerDependencyEntity("twenty_eight_hours_working_week_details", "eligibility_intensive_working", AnswerDependencyEntity.Operator.IS, "YES"),
+      AnswerDependencyEntity("active_carer_commitments_details", "active_carer_commitments", AnswerDependencyEntity.Operator.ANY, ""),
     )
 
     answerDependencies.groupBy { it.triggerQuestionCode }.forEach { (triggeringQuestion, dependentQuestions) ->
@@ -131,6 +182,8 @@ class EpisodeService(
       dependentQuestions.forEach { answerDependency ->
         val satisfiesDependency = when (answerDependency.operator) {
           AnswerDependencyEntity.Operator.NOT -> triggeringQuestionAnswer.contains(answerDependency.triggerAnswerValue).not()
+          AnswerDependencyEntity.Operator.IS -> triggeringQuestionAnswer.contains(answerDependency.triggerAnswerValue)
+          AnswerDependencyEntity.Operator.ANY -> triggeringQuestionAnswer.isNotEmpty()
         }
 
         if (!satisfiesDependency) {
