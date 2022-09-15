@@ -8,7 +8,6 @@ import uk.gov.justice.digital.assessments.api.GroupQuestionDto
 import uk.gov.justice.digital.assessments.api.TableQuestionDto
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.Answers
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerDependencyEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.CloneAssessmentExcludedQuestionsRepository
 import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
@@ -86,29 +85,6 @@ class EpisodeService(
       }
     }
     return newEpisode
-  }
-
-  fun removeOrphanedAnswers(episode: AssessmentEpisodeEntity) {
-    // TODO: This will be moved to the database as part of a follow-up PR
-    val answerDependencies = listOf(
-      AnswerDependencyEntity("placement_preference", "gender_identity", AnswerDependencyEntity.Operator.NOT, "MALE"),
-      AnswerDependencyEntity("placement_preferences", "gender_identity", AnswerDependencyEntity.Operator.NOT, "MALE"),
-      AnswerDependencyEntity("placement_preference_complete", "gender_identity", AnswerDependencyEntity.Operator.NOT, "MALE"),
-    )
-
-    answerDependencies.groupBy { it.triggerQuestionCode }.forEach { (triggeringQuestion, dependentQuestions) ->
-      val triggeringQuestionAnswer = episode.answers[triggeringQuestion].orEmpty()
-
-      dependentQuestions.forEach { answerDependency ->
-        val satisfiesDependency = when (answerDependency.operator) {
-          AnswerDependencyEntity.Operator.NOT -> triggeringQuestionAnswer.contains(answerDependency.triggerAnswerValue).not()
-        }
-
-        if (!satisfiesDependency) {
-          episode.answers[answerDependency.questionCode] = emptyList()
-        }
-      }
-    }
   }
 
   private fun isAddressField(questionCode: String): Boolean {

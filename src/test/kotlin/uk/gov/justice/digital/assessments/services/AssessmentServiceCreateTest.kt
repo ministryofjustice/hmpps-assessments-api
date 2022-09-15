@@ -107,7 +107,6 @@ class AssessmentServiceCreateTest {
     every { assessmentRepository.save(any()) } returns AssessmentEntity(assessmentId = assessmentId)
     val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
     every { authorService.getOrCreateAuthor() } returns author
-    justRun { episodeService.removeOrphanedAnswers(any()) }
 
     // When
     assessmentsService.createNewAssessment(
@@ -151,7 +150,6 @@ class AssessmentServiceCreateTest {
     every { assessmentRepository.save(any()) } returns AssessmentEntity(assessmentId = assessmentId)
     val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
     every { authorService.getOrCreateAuthor() } returns author
-    justRun { episodeService.removeOrphanedAnswers(any()) }
 
     assessmentsService.createNewAssessment(
       CreateAssessmentDto(
@@ -190,7 +188,6 @@ class AssessmentServiceCreateTest {
       dateOfBirth = LocalDate.of(1989, 1, 1),
       createdDate = LocalDateTime.now(),
     )
-    justRun { episodeService.removeOrphanedAnswers(any()) }
 
     val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
     every { authorService.getOrCreateAuthor() } returns author
@@ -307,7 +304,6 @@ class AssessmentServiceCreateTest {
     every { assessmentRepository.save(any()) } returns AssessmentEntity(assessmentId = assessmentId)
     val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
     every { authorService.getOrCreateAuthor() } returns author
-    justRun { episodeService.removeOrphanedAnswers(any()) }
 
     val assessment = assessmentsService.createNewAssessment(
       CreateAssessmentDto(
