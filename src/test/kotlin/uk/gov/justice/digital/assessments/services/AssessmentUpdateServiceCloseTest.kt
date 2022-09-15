@@ -30,7 +30,6 @@ class AssessmentUpdateServiceCloseTest {
   private val authorService: AuthorService = mockk()
   private val auditService: AuditService = mockk()
   private val telemetryService: TelemetryService = mockk()
-  private val episodeService: EpisodeService = mockk()
 
   private val assessmentUpdateService = AssessmentUpdateService(
     assessmentRepository,
@@ -38,7 +37,6 @@ class AssessmentUpdateServiceCloseTest {
     authorService,
     auditService,
     telemetryService,
-    episodeService,
   )
 
   @Test

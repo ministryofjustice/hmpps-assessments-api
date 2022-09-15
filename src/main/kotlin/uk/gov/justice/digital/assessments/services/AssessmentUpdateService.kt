@@ -14,6 +14,7 @@ import uk.gov.justice.digital.assessments.jpa.repositories.assessments.EpisodeRe
 import uk.gov.justice.digital.assessments.restclient.audit.AuditType
 import uk.gov.justice.digital.assessments.services.exceptions.CannotCloseEpisodeException
 import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
+import uk.gov.justice.digital.assessments.utils.AssessmentUtils
 import java.time.LocalDateTime
 
 @Service
@@ -23,7 +24,6 @@ class AssessmentUpdateService(
   private val authorService: AuthorService,
   private val auditService: AuditService,
   private val telemetryService: TelemetryService,
-  private val episodeService: EpisodeService,
 ) {
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
@@ -53,7 +53,7 @@ class AssessmentUpdateService(
       throw UpdateClosedEpisodeException("Cannot update a closed or completed Episode ${episode.episodeUuid} for assessment ${episode.assessment.assessmentUuid}")
 
     episode.updateEpisodeAnswers(updatedEpisodeAnswers)
-    episodeService.removeOrphanedAnswers(episode)
+    AssessmentUtils.removeOrphanedAnswers(episode)
 
     val currentAuthor = episode.author
     episode.author = authorService.getOrCreateAuthor()

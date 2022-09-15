@@ -25,6 +25,7 @@ import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRe
 import uk.gov.justice.digital.assessments.restclient.audit.AuditType
 import uk.gov.justice.digital.assessments.services.dto.ExternalSource
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
+import uk.gov.justice.digital.assessments.utils.AssessmentUtils
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -276,7 +277,7 @@ class AssessmentService(
     if (isNewEpisode) {
       episodeService.prePopulateFromExternalSources(episode, assessmentType)
       episodeService.prePopulateFromPreviousEpisodes(episode, assessment.episodes)
-      episodeService.removeOrphanedAnswers(episode)
+      AssessmentUtils.removeOrphanedAnswers(episode)
       auditAndLogCreateEpisode(assessment.assessmentUuid, episode, subject?.crn)
     }
     log.info("New episode episode with id:${episode.episodeId} and uuid:${episode.episodeUuid} created for assessment ${assessment.assessmentUuid}")
