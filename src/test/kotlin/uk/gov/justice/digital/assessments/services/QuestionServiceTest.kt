@@ -7,15 +7,11 @@ import io.mockk.verify
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import uk.gov.justice.digital.assessments.api.CheckboxGroupDto
-import uk.gov.justice.digital.assessments.api.GroupQuestionDto
-import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
+import uk.gov.justice.digital.assessments.api.groups.GroupQuestionDto
 import uk.gov.justice.digital.assessments.api.QuestionDto
-import uk.gov.justice.digital.assessments.api.TableQuestionDto
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerGroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.GroupEntity
@@ -60,62 +56,6 @@ class QuestionServiceTest {
     questionCode = "question_code"
   )
 
-  private val groupWithTableUuid = UUID.randomUUID()
-  private val groupWithTableContents = mutableListOf<QuestionGroupEntity>()
-  private val groupWithTable = GroupEntity(
-    groupId = 9,
-    groupUuid = groupWithTableUuid,
-    groupCode = "group with table",
-    contents = groupWithTableContents
-  )
-
-  private val tableQuestionUuid = UUID.randomUUID()
-  private val tableQuestion = QuestionEntity(
-    questionId = 2L,
-    questionUuid = tableQuestionUuid,
-    answerType = "table:children",
-    questionCode = "table_children"
-  )
-
-  private val tableGroupContents = mutableListOf<QuestionGroupEntity>()
-  private val tableGroup = GroupEntity(
-    groupId = 2,
-    groupUuid = UUID.randomUUID(),
-    groupCode = "children",
-    contents = tableGroupContents
-  )
-  private val tableSubGroupContents = mutableListOf<QuestionGroupEntity>()
-  private val tableSubGroup = GroupEntity(
-    groupId = 4,
-    groupUuid = UUID.randomUUID(),
-    groupCode = "children-sub-group",
-    contents = tableSubGroupContents
-  )
-  private val tableSubQuestion1Id = UUID.randomUUID()
-  private val tableSubQuestion2Id = UUID.randomUUID()
-  private val tableSubQuestion3Id = UUID.randomUUID()
-  private val tableSubQuestion4Id = UUID.randomUUID()
-  private val tableSubQuestion1 = QuestionEntity(
-    questionId = 12,
-    questionUuid = tableSubQuestion1Id,
-    questionCode = "table_sub_question_one"
-  )
-  private val tableSubQuestion2 = QuestionEntity(
-    questionId = 14,
-    questionUuid = tableSubQuestion2Id,
-    questionCode = "table_sub_question_two"
-  )
-  private val tableSubQuestion3 = QuestionEntity(
-    questionId = 16,
-    questionUuid = tableSubQuestion3Id,
-    questionCode = "table_sub_question_three"
-  )
-  private val tableSubQuestion4 = QuestionEntity(
-    questionId = 18,
-    questionUuid = tableSubQuestion4Id,
-    questionCode = "table_sub_question_four"
-  )
-
   private val groupWithCheckboxUuid = UUID.randomUUID()
   private val groupWithCheckboxContents = mutableListOf<QuestionGroupEntity>()
   private val groupWithCheckbox = GroupEntity(
@@ -158,89 +98,6 @@ class QuestionServiceTest {
         question = question,
         nestedGroup = null,
         readOnly = false
-      )
-    )
-
-    groupWithTableContents.add(
-      QuestionGroupEntity(
-        questionGroupId = 99,
-        group = groupWithTable,
-        contentUuid = questionUuid,
-        contentType = "question",
-        displayOrder = 1,
-        question = question,
-        nestedGroup = null,
-        readOnly = false
-      )
-    )
-    groupWithTableContents.add(
-      QuestionGroupEntity(
-        questionGroupId = 99,
-        group = groupWithTable,
-        contentUuid = tableQuestionUuid,
-        contentType = "question",
-        displayOrder = 2,
-        question = tableQuestion,
-        nestedGroup = null,
-        readOnly = false
-      )
-    )
-
-    tableGroupContents.add(
-      QuestionGroupEntity(
-        questionGroupId = 100,
-        group = tableGroup,
-        contentUuid = tableSubQuestion1Id,
-        contentType = "question",
-        displayOrder = 1,
-        question = tableSubQuestion1,
-        nestedGroup = null
-      )
-    )
-    tableGroupContents.add(
-      QuestionGroupEntity(
-        questionGroupId = 100,
-        group = tableGroup,
-        contentUuid = tableSubQuestion2Id,
-        contentType = "question",
-        displayOrder = 2,
-        question = tableSubQuestion2,
-        nestedGroup = null
-      )
-    )
-
-    tableSubGroupContents.add(
-      QuestionGroupEntity(
-        questionGroupId = 101,
-        group = tableSubGroup,
-        contentUuid = tableSubQuestion3Id,
-        contentType = "question",
-        displayOrder = 1,
-        question = tableSubQuestion3,
-        nestedGroup = null
-      )
-    )
-    tableSubGroupContents.add(
-      QuestionGroupEntity(
-        questionGroupId = 102,
-        group = tableSubGroup,
-        contentUuid = tableSubQuestion4Id,
-        contentType = "question",
-        displayOrder = 2,
-        question = tableSubQuestion4,
-        nestedGroup = null
-      )
-    )
-
-    tableGroupContents.add(
-      QuestionGroupEntity(
-        questionGroupId = 103,
-        group = tableSubGroup,
-        contentUuid = tableSubGroup.groupUuid,
-        contentType = "group",
-        displayOrder = 3,
-        question = null,
-        nestedGroup = tableSubGroup
       )
     )
 
@@ -312,94 +169,6 @@ class QuestionServiceTest {
     assertThat(groupContents).hasSize(1)
     val questionRef = groupContents[0] as GroupQuestionDto
     assertThat(questionRef.questionId).isEqualTo(questionUuid)
-  }
-
-  @Test
-  fun `get group contents with table`() {
-    every { groupRepository.findByGroupUuid(groupWithTableUuid) } returns groupWithTable
-    every { groupRepository.findByGroupUuid(tableSubGroup.groupUuid) } returns tableSubGroup
-    every { groupRepository.findByGroupCode("children") } returns tableGroup
-    every { questionRepository.findByQuestionUuid(questionUuid) } returns question
-    every { questionRepository.findByQuestionUuid(tableQuestionUuid) } returns tableQuestion
-    every { questionRepository.findByQuestionUuid(tableSubQuestion1Id) } returns tableSubQuestion1
-    every { questionRepository.findByQuestionUuid(tableSubQuestion2Id) } returns tableSubQuestion2
-    every { questionRepository.findByQuestionUuid(tableSubQuestion3Id) } returns tableSubQuestion3
-    every { questionRepository.findByQuestionUuid(tableSubQuestion4Id) } returns tableSubQuestion4
-    every { dependencyService.dependencies() } returns QuestionDependencies(emptyList())
-
-    val groupQuestions = questionService.getGroupContents(groupWithTableUuid)
-
-    assertThat(groupQuestions.groupId).isEqualTo(groupWithTableUuid)
-
-    val groupContents = groupQuestions.contents
-    assertThat(groupContents).hasSize(2)
-
-    val questionRef = groupContents[0] as GroupQuestionDto
-    assertThat(questionRef.questionId).isEqualTo(questionUuid)
-
-    val tableRef = groupContents[1] as TableQuestionDto
-    assertThat(tableRef.tableId).isEqualTo(tableGroup.groupUuid)
-    assertThat(tableRef.contents).hasSize(3)
-    val tableQuestionIds = tableRef.contents.subList(0, 2).map { (it as GroupQuestionDto).questionId }
-    assertThat(tableQuestionIds).contains(tableSubQuestion1Id, tableSubQuestion2Id)
-
-    val subGroupRef = tableRef.contents[2] as GroupWithContentsDto
-    assertThat(subGroupRef.contents).hasSize(2)
-    val subgroupQuestionIds = subGroupRef.contents.map { (it as GroupQuestionDto).questionId }
-    assertThat(subgroupQuestionIds).contains(tableSubQuestion3Id, tableSubQuestion4Id)
-  }
-
-  @Disabled("Removed as inline checkboxes no longer used")
-  @Test
-  fun `get group contents with inline-checkboxes`() {
-    every { groupRepository.findByGroupUuid(groupWithCheckboxUuid) } returns groupWithCheckbox
-    every { groupRepository.findByGroupCode("previous_offences") } returns checkboxGroup
-    every { questionRepository.findByQuestionUuid(checkboxQuestionUuid) } returns checkboxQuestion
-    every { questionRepository.findByQuestionUuid(checkboxSubQuestion1Id) } returns checkboxSubQuestion1
-    every { dependencyService.dependencies() } returns QuestionDependencies(emptyList())
-
-    val groupQuestions = questionService.getGroupContents(groupWithCheckboxUuid)
-
-    assertThat(groupQuestions.groupId).isEqualTo(groupWithCheckboxUuid)
-    val groupContents = groupQuestions.contents
-    assertThat(groupContents).hasSize(1)
-
-    val checkboxRef = groupContents[0] as CheckboxGroupDto
-    assertThat(checkboxRef.checkboxGroupId).isEqualTo(checkboxGroupUuid1)
-    assertThat(checkboxRef.contents).hasSize(1)
-
-    val questionIds = checkboxRef.contents.map { (it as GroupQuestionDto).questionId }
-    assertThat(questionIds).containsOnly(checkboxSubQuestion1Id)
-  }
-
-  @Test
-  fun `all questions in a group`() {
-    every { groupRepository.findByGroupCode("children") } returns tableGroup
-    every { groupRepository.findByGroupCode("childrenSubGroup") } returns tableSubGroup
-    every { groupRepository.findByGroupUuid(tableSubGroup.groupUuid) } returns tableSubGroup
-    every { groupRepository.findByGroupCode(tableSubGroup.groupUuid.toString()) } returns null
-    every { questionRepository.findByQuestionUuid(questionUuid) } returns question
-    every { questionRepository.findByQuestionUuid(tableQuestionUuid) } returns tableQuestion
-    every { questionRepository.findByQuestionUuid(tableSubQuestion1Id) } returns tableSubQuestion1
-    every { questionRepository.findByQuestionUuid(tableSubQuestion2Id) } returns tableSubQuestion2
-    every { questionRepository.findByQuestionUuid(tableSubQuestion3Id) } returns tableSubQuestion3
-    every { questionRepository.findByQuestionUuid(tableSubQuestion4Id) } returns tableSubQuestion4
-    every { dependencyService.dependencies() } returns QuestionDependencies(emptyList())
-
-    val subTableQuestions = questionService.getAllGroupQuestionsByGroupCode("childrenSubGroup")
-    assertThat(subTableQuestions).hasSize(2)
-    val subTableQuestionIds = subTableQuestions.map { it.questionUuid }
-    assertThat(subTableQuestionIds).contains(tableSubQuestion3Id, tableSubQuestion4Id)
-
-    val tableQuestions = questionService.getAllGroupQuestionsByGroupCode("children")
-    assertThat(tableQuestions).hasSize(4)
-    val tableQuestionIds = tableQuestions.map { it.questionUuid }
-    assertThat(tableQuestionIds).contains(
-      tableSubQuestion1Id,
-      tableSubQuestion2Id,
-      tableSubQuestion3Id,
-      tableSubQuestion4Id
-    )
   }
 
   @Test

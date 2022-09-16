@@ -5,13 +5,12 @@ import org.slf4j.LoggerFactory
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.assessments.api.GroupContentDto
-import uk.gov.justice.digital.assessments.api.GroupQuestionDto
-import uk.gov.justice.digital.assessments.api.GroupSectionsDto
-import uk.gov.justice.digital.assessments.api.GroupSummaryDto
-import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
+import uk.gov.justice.digital.assessments.api.groups.GroupContentDto
+import uk.gov.justice.digital.assessments.api.groups.GroupQuestionDto
+import uk.gov.justice.digital.assessments.api.groups.GroupSectionsDto
+import uk.gov.justice.digital.assessments.api.groups.GroupSummaryDto
+import uk.gov.justice.digital.assessments.api.groups.GroupWithContentsDto
 import uk.gov.justice.digital.assessments.api.QuestionDto
-import uk.gov.justice.digital.assessments.api.TableQuestionDto
 import uk.gov.justice.digital.assessments.config.CacheConstants.LIST_QUESTION_GROUPS_CACHE_KEY
 import uk.gov.justice.digital.assessments.config.CacheConstants.QUESTION_CACHE_KEY
 import uk.gov.justice.digital.assessments.config.CacheConstants.QUESTION_GROUP_CONTENTS_CACHE_KEY
@@ -32,7 +31,8 @@ class QuestionService(
   private val questionGroupRepository: QuestionGroupRepository,
   private val groupRepository: GroupRepository,
   private val questionDependencyService: QuestionDependencyService
-) {
+)
+{
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
   }
@@ -129,32 +129,12 @@ class QuestionService(
     val questionEntity = questionRepository.findByQuestionUuid(question.contentUuid)
       ?: throw EntityNotFoundException("Could not get question ${question.contentUuid}")
 
-    return when (questionEntity.answerType?.split(":")?.get(0)) {
-      "table" -> tableGroupQuestion(questionEntity, dependencies)
-      else -> GroupQuestionDto.from(
+    return GroupQuestionDto.from(
         questionEntity,
         question,
         dependencies
       )
     }
-  }
-
-  private fun tableGroupQuestion(
-    questionEntity: QuestionEntity,
-    dependencies: QuestionDependencies
-  ): TableQuestionDto {
-    val group = findGroup(questionEntity)
-    return expandGroupContents(group, null, dependencies, TableQuestionDto::from) as TableQuestionDto
-  }
-
-  private fun findGroup(
-    questionEntity: QuestionEntity
-  ): GroupEntity {
-    val groupName = questionEntity.answerType?.split(":")?.get(1)
-      ?: throw EntityNotFoundException("Could not get group name for question ${questionEntity.questionCode}")
-    return groupRepository.findByGroupCode(groupName)
-      ?: throw EntityNotFoundException("Could not find group $groupName for question ${questionEntity.questionCode}")
-  }
 
   private fun fetchGroupSections(
     group: GroupEntity,
@@ -171,25 +151,6 @@ class QuestionService(
 
   fun getAllQuestions(): QuestionSchemaEntities {
     return QuestionSchemaEntities(questionRepository.findAll())
-  }
-
-  fun getAllGroupQuestionsByGroupCode(groupCode: String): QuestionSchemaEntities {
-    return getAllGroupQuestions(findByGroupCode(groupCode))
-  }
-
-  private fun getAllGroupQuestions(group: GroupEntity): QuestionSchemaEntities {
-    val allQuestions = mutableListOf<QuestionEntity>()
-
-    group.contents.forEach {
-      if (it.contentType == "question")
-        allQuestions.add(questionRepository.findByQuestionUuid(it.contentUuid)!!)
-      if (it.contentType == "group")
-        allQuestions.addAll(
-          getAllGroupQuestions(findByGroupUuid(it.contentUuid))
-        )
-    }
-
-    return QuestionSchemaEntities(allQuestions)
   }
 
   private fun findByGroupCode(groupCode: String): GroupEntity {

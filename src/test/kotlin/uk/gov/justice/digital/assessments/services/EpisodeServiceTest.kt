@@ -19,19 +19,15 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import uk.gov.justice.digital.assessments.api.EmergencyContactDetailsAnswerDto
-import uk.gov.justice.digital.assessments.api.GPDetailsAnswerDto
-import uk.gov.justice.digital.assessments.api.GroupQuestionDto
-import uk.gov.justice.digital.assessments.api.TableQuestionDto
+import uk.gov.justice.digital.assessments.api.answers.EmergencyContactDetailsAnswerDto
+import uk.gov.justice.digital.assessments.api.answers.GPDetailsAnswerDto
+import uk.gov.justice.digital.assessments.api.groups.GroupQuestionDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType.UPW
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.TableRow
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.TableRows
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.Tables
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.CloneAssessmentExcludedQuestionsEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.CloneAssessmentExcludedQuestionsRepository
 import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
@@ -300,7 +296,6 @@ class EpisodeServiceTest {
     val questionDtos = listOf(
       GroupQuestionDto(questionCode = "gender_identity"),
       GroupQuestionDto(questionCode = "question_2"),
-      TableQuestionDto(tableCode = "table_1")
     )
 
     val previousEpisodes = listOf(
@@ -331,24 +326,10 @@ class EpisodeServiceTest {
   }
 
   @Test
-  fun `copies answers and tables from previous episode ignoring excluded questions`() {
+  fun `copies answers from previous episode ignoring excluded questions`() {
     val schemaQuestions = listOf(
       GroupQuestionDto(questionCode = "question_1"),
-      GroupQuestionDto(questionCode = "question_2"),
-      TableQuestionDto(tableCode = "table_1")
-    )
-
-    val tablerow1: TableRow = mutableMapOf(
-      "tablerow_1" to listOf("tablerow_answer_1"),
-      "tablerow_2" to listOf("tablerow_answer_2")
-    )
-
-    val tableRows1: TableRows = mutableListOf(
-      tablerow1
-    )
-
-    var table1: Tables = mutableMapOf(
-      "table_1" to tableRows1
+      GroupQuestionDto(questionCode = "question_2")
     )
 
     val mixedPreviousEpisodes = listOf(
@@ -362,14 +343,6 @@ class EpisodeServiceTest {
           "question_1" to listOf("answer_1"),
           "question_2" to listOf("answer_2")
         )
-      ),
-      AssessmentEpisodeEntity(
-        episodeId = 3,
-        assessmentType = UPW,
-        author = authorEntity,
-        assessment = AssessmentEntity(),
-        endDate = LocalDateTime.now().minusDays(2),
-        tables = table1
       )
     )
     justRun { auditService.createAuditEvent(AuditType.ARN_ASSESSMENT_CLONED, any(), any(), any(), any(), any()) }
@@ -380,11 +353,6 @@ class EpisodeServiceTest {
         12345,
         UPW,
         "question_2"
-      ),
-      CloneAssessmentExcludedQuestionsEntity(
-        23456,
-        UPW,
-        "table_1"
       )
     )
 
@@ -395,31 +363,16 @@ class EpisodeServiceTest {
     )
 
     assertThat(result.answers).containsExactlyEntriesOf(expectedAnswers)
-    assertThat(result.tables).isEmpty()
   }
 
   @Test
-  fun `copies answers and tables from previous episode`() {
+  fun `copies answers from previous episode`() {
     // Given
     justRun { auditService.createAuditEvent(AuditType.ARN_ASSESSMENT_CLONED, any(), any(), any(), any(), any()) }
     justRun { telemetryService.trackAssessmentClonedEvent(any(), any(), any(), any(), any(), any(), any()) }
     val questions = listOf(
       GroupQuestionDto(questionCode = "question_1"),
-      GroupQuestionDto(questionCode = "question_2"),
-      TableQuestionDto(tableCode = "table_1")
-    )
-
-    val tablerow1: TableRow = mutableMapOf(
-      "tablerow_1" to listOf("tablerow_answer_1"),
-      "tablerow_2" to listOf("tablerow_answer_2")
-    )
-
-    val tableRows1: TableRows = mutableListOf(
-      tablerow1
-    )
-
-    val table1: Tables = mutableMapOf(
-      "table_1" to tableRows1
+      GroupQuestionDto(questionCode = "question_2")
     )
 
     val mixedPreviousEpisodes = listOf(
@@ -433,14 +386,6 @@ class EpisodeServiceTest {
           "question_1" to listOf("answer_1"),
           "question_2" to listOf("answer_2")
         )
-      ),
-      AssessmentEpisodeEntity(
-        episodeId = 3,
-        assessmentType = UPW,
-        author = authorEntity,
-        assessment = AssessmentEntity(),
-        endDate = LocalDateTime.now().minusDays(2),
-        tables = table1
       )
     )
     every { assessmentReferenceDataService.getQuestionsForAssessmentType(newEpisode.assessmentType) } returns questions
@@ -453,22 +398,8 @@ class EpisodeServiceTest {
       "question_2" to listOf("answer_2")
     )
 
-    val expectedTableRow: TableRow = mutableMapOf(
-      "tablerow_1" to listOf("tablerow_answer_1"),
-      "tablerow_2" to listOf("tablerow_answer_2")
-    )
-
-    val expectedTableRows: TableRows = mutableListOf(
-      expectedTableRow
-    )
-
-    var expectedTable1: Tables = mutableMapOf(
-      "table_1" to expectedTableRows
-    )
-
     // Then
     assertThat(result.answers).containsExactlyInAnyOrderEntriesOf(expectedAnswers)
-    assertThat(result.tables).containsExactlyInAnyOrderEntriesOf(expectedTable1)
   }
 
   @Test
