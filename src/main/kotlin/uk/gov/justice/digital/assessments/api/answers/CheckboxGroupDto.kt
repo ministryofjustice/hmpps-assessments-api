@@ -1,6 +1,7 @@
-package uk.gov.justice.digital.assessments.api
+package uk.gov.justice.digital.assessments.api.answers
 
 import io.swagger.v3.oas.annotations.media.Schema
+import uk.gov.justice.digital.assessments.api.groups.GroupContentDto
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.GroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionGroupEntity
 import java.util.UUID
@@ -25,7 +26,7 @@ data class CheckboxGroupDto(
   val contents: List<GroupContentDto>
 ) : GroupContentDto {
   companion object {
-    fun from(group: GroupEntity, contents: List<GroupContentDto>, parentGroup: QuestionGroupEntity? = null): CheckboxGroupDto {
+    fun from(group: GroupEntity, contents: List<GroupContentDto>): CheckboxGroupDto {
       return CheckboxGroupDto(
         checkboxGroupId = group.groupUuid,
         checkboxGroupCode = group.groupCode,

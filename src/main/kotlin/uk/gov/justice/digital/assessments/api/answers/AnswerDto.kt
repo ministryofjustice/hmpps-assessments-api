@@ -1,6 +1,7 @@
-package uk.gov.justice.digital.assessments.api
+package uk.gov.justice.digital.assessments.api.answers
 
 import io.swagger.v3.oas.annotations.media.Schema
+import uk.gov.justice.digital.assessments.api.ConditionalsSchemaDto
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerEntity
 import uk.gov.justice.digital.assessments.services.AnswerDependencies
 import java.util.UUID
@@ -21,7 +22,7 @@ data class AnswerDto(
   @Schema(description = "List of questions to display when this answer is selected, and whether to display inline")
   val conditionals: Collection<ConditionalsSchemaDto>? = null,
 
-) {
+  ) {
   companion object {
     fun from(
       answerEntities: Collection<AnswerEntity>?,

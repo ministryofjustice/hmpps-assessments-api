@@ -4,9 +4,9 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
-import uk.gov.justice.digital.assessments.api.GroupContentDto
-import uk.gov.justice.digital.assessments.api.GroupSectionsDto
-import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
+import uk.gov.justice.digital.assessments.api.groups.GroupContentDto
+import uk.gov.justice.digital.assessments.api.groups.GroupSectionsDto
+import uk.gov.justice.digital.assessments.api.groups.GroupWithContentsDto
 import uk.gov.justice.digital.assessments.config.CacheConstants.ASSESSMENT_CACHE_KEY
 import uk.gov.justice.digital.assessments.config.CacheConstants.ASSESSMENT_SUMMARY_CACHE_KEY
 import uk.gov.justice.digital.assessments.config.CacheConstants.QUESTIONS_FOR_ASSESSMENT_TYPE_CACHE_KEY

@@ -1,6 +1,7 @@
-package uk.gov.justice.digital.assessments.api
+package uk.gov.justice.digital.assessments.api.assessments
 
 import io.swagger.v3.oas.annotations.media.Schema
+import uk.gov.justice.digital.assessments.api.DeliusEventType
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 
 data class CreateAssessmentDto(

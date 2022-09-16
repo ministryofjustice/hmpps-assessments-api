@@ -1,12 +1,10 @@
-package uk.gov.justice.digital.assessments.api
+package uk.gov.justice.digital.assessments.api.groups
 
 import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.GroupEntity
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionGroupEntity
 import java.util.UUID
 
-data class GroupWithContentsDto(
-
+data class GroupSectionsDto(
   @Schema(description = "Group Identifier", example = "<uuid>")
   val groupId: UUID,
 
@@ -23,11 +21,11 @@ data class GroupWithContentsDto(
   val helpText: String? = null,
 
   @Schema(description = "Questions and Groups")
-  val contents: List<GroupContentDto>
-) : GroupContentDto {
+  val contents: List<GroupSectionsDto>?
+) {
   companion object {
-    fun from(group: GroupEntity, contents: List<GroupContentDto>, parentGroup: QuestionGroupEntity? = null): GroupWithContentsDto {
-      return GroupWithContentsDto(
+    fun from(group: GroupEntity, contents: List<GroupSectionsDto>?): GroupSectionsDto {
+      return GroupSectionsDto(
         groupId = group.groupUuid,
         groupCode = group.groupCode,
         title = group.heading,

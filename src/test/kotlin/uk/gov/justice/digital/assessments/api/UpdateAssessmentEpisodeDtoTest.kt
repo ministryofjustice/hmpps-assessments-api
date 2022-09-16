@@ -3,6 +3,7 @@ package uk.gov.justice.digital.assessments.api
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import uk.gov.justice.digital.assessments.api.assessments.UpdateAssessmentEpisodeDto
 
 class UpdateAssessmentEpisodeDtoTest {
   @Test

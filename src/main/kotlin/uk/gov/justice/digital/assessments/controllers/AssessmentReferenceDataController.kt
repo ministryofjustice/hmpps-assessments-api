@@ -9,16 +9,15 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RestController
-import uk.gov.justice.digital.assessments.api.GroupContentDto
-import uk.gov.justice.digital.assessments.api.GroupSectionsDto
-import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
+import uk.gov.justice.digital.assessments.api.groups.GroupContentDto
+import uk.gov.justice.digital.assessments.api.groups.GroupSectionsDto
+import uk.gov.justice.digital.assessments.api.groups.GroupWithContentsDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.services.AssessmentReferenceDataService
 import uk.gov.justice.digital.assessments.services.AssessmentService
 
 @RestController
 class AssessmentReferenceDataController(
-  val assessmentService: AssessmentService,
   val assessmentReferenceDataService: AssessmentReferenceDataService
 ) {
   @RequestMapping(path = ["/assessments/{assessmentType}"], method = [RequestMethod.GET])
