@@ -2,7 +2,6 @@ package uk.gov.justice.digital.assessments.api.groups
 
 import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.GroupEntity
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionGroupEntity
 import java.util.UUID
 
 data class GroupWithContentsDto(

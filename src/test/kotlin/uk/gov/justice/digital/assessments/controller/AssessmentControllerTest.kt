@@ -10,9 +10,9 @@ import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.context.jdbc.SqlConfig
 import org.springframework.test.context.jdbc.SqlGroup
 import org.springframework.test.web.reactive.server.expectBody
-import uk.gov.justice.digital.assessments.api.assessments.AssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.api.AssessmentSubjectDto
 import uk.gov.justice.digital.assessments.api.ErrorResponse
+import uk.gov.justice.digital.assessments.api.assessments.AssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.api.assessments.UpdateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import uk.gov.justice.digital.assessments.testutils.Verify

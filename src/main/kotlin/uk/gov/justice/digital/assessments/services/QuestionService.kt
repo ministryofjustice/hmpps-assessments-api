@@ -5,12 +5,12 @@ import org.slf4j.LoggerFactory
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.assessments.api.QuestionDto
 import uk.gov.justice.digital.assessments.api.groups.GroupContentDto
 import uk.gov.justice.digital.assessments.api.groups.GroupQuestionDto
 import uk.gov.justice.digital.assessments.api.groups.GroupSectionsDto
 import uk.gov.justice.digital.assessments.api.groups.GroupSummaryDto
 import uk.gov.justice.digital.assessments.api.groups.GroupWithContentsDto
-import uk.gov.justice.digital.assessments.api.QuestionDto
 import uk.gov.justice.digital.assessments.config.CacheConstants.LIST_QUESTION_GROUPS_CACHE_KEY
 import uk.gov.justice.digital.assessments.config.CacheConstants.QUESTION_CACHE_KEY
 import uk.gov.justice.digital.assessments.config.CacheConstants.QUESTION_GROUP_CONTENTS_CACHE_KEY
@@ -31,8 +31,7 @@ class QuestionService(
   private val questionGroupRepository: QuestionGroupRepository,
   private val groupRepository: GroupRepository,
   private val questionDependencyService: QuestionDependencyService
-)
-{
+) {
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
   }
@@ -88,23 +87,20 @@ class QuestionService(
   private fun getQuestionGroupContents(group: GroupEntity) =
     getQuestionGroupContents(
       group,
-      null,
       questionDependencyService.dependencies()
     )
 
   private fun getQuestionGroupContents(
     group: GroupEntity,
-    parentGroup: QuestionGroupEntity?,
     dependencies: QuestionDependencies
   ): GroupWithContentsDto {
-    return expandGroupContents(group, parentGroup, dependencies, GroupWithContentsDto::from) as GroupWithContentsDto
+    return expandGroupContents(group, dependencies, GroupWithContentsDto::from) as GroupWithContentsDto
   }
 
   private fun expandGroupContents(
     group: GroupEntity,
-    parentGroup: QuestionGroupEntity?,
     dependencies: QuestionDependencies,
-    toDto: (GroupEntity, List<GroupContentDto>, QuestionGroupEntity?) -> GroupContentDto
+    toDto: (GroupEntity, List<GroupContentDto>) -> GroupContentDto
   ): GroupContentDto {
     log.debug("expandGroupContents {}", group.groupUuid)
     val groupContents = group.contents.sortedBy { it.displayOrder }
@@ -114,11 +110,11 @@ class QuestionService(
       .map {
         when (it.contentType) {
           "question" -> getGroupQuestion(it, dependencies)
-          "group" -> getQuestionGroupContents(findByGroupUuid(it.contentUuid), it, dependencies)
+          "group" -> getQuestionGroupContents(findByGroupUuid(it.contentUuid), dependencies)
           else -> throw EntityNotFoundException("Bad group content type")
         }
       }
-    return toDto(group, contents, parentGroup)
+    return toDto(group, contents)
   }
 
   private fun getGroupQuestion(
@@ -130,11 +126,11 @@ class QuestionService(
       ?: throw EntityNotFoundException("Could not get question ${question.contentUuid}")
 
     return GroupQuestionDto.from(
-        questionEntity,
-        question,
-        dependencies
-      )
-    }
+      questionEntity,
+      question,
+      dependencies
+    )
+  }
 
   private fun fetchGroupSections(
     group: GroupEntity,

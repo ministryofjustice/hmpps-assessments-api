@@ -10,8 +10,8 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import uk.gov.justice.digital.assessments.api.groups.GroupQuestionDto
 import uk.gov.justice.digital.assessments.api.QuestionDto
+import uk.gov.justice.digital.assessments.api.groups.GroupQuestionDto
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerGroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.GroupEntity

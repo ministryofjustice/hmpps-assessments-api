@@ -21,8 +21,7 @@ data class AnswerDto(
 
   @Schema(description = "List of questions to display when this answer is selected, and whether to display inline")
   val conditionals: Collection<ConditionalsSchemaDto>? = null,
-
-  ) {
+) {
   companion object {
     fun from(
       answerEntities: Collection<AnswerEntity>?,

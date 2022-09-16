@@ -12,11 +12,11 @@ import org.springframework.test.context.jdbc.SqlConfig
 import org.springframework.test.context.jdbc.SqlGroup
 import org.springframework.test.web.reactive.server.expectBody
 import uk.gov.justice.digital.assessments.api.AnswersDto
+import uk.gov.justice.digital.assessments.api.ErrorResponse
 import uk.gov.justice.digital.assessments.api.assessments.AssessmentDto
 import uk.gov.justice.digital.assessments.api.assessments.AssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.api.assessments.CreateAssessmentDto
 import uk.gov.justice.digital.assessments.api.assessments.CreateAssessmentEpisodeDto
-import uk.gov.justice.digital.assessments.api.ErrorResponse
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import uk.gov.justice.digital.assessments.utils.RequestData
