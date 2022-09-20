@@ -14,7 +14,6 @@ import uk.gov.justice.digital.assessments.api.groups.GroupSectionsDto
 import uk.gov.justice.digital.assessments.api.groups.GroupWithContentsDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.services.AssessmentReferenceDataService
-import uk.gov.justice.digital.assessments.services.AssessmentService
 
 @RestController
 class AssessmentReferenceDataController(
