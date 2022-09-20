@@ -38,7 +38,7 @@ data class QuestionDto(
   @Schema(description = "List of Reference Data Answers")
   val answerDtos: Collection<AnswerDto>,
 
-  ) {
+) {
 
   companion object {
 
