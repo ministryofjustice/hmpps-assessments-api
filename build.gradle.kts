@@ -30,7 +30,7 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-cache")
   implementation("org.springframework.boot:spring-boot-starter-aop")
   implementation("org.springframework.security:spring-security-oauth2-client")
-  implementation("org.springframework.data:spring-data-redis:2.7.2")
+  implementation("org.springframework.data:spring-data-redis:2.7.3")
   implementation("redis.clients:jedis:3.9.0")
   implementation("org.springdoc:springdoc-openapi-ui:1.6.11")
   implementation("org.springdoc:springdoc-openapi-data-rest:1.6.11")
