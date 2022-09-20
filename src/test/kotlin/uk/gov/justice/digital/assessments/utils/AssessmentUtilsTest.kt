@@ -83,9 +83,9 @@ class AssessmentUtilsTest {
 
     AssessmentUtils.removeOrphanedAnswers(episode)
 
-    Assertions.assertThat(episode.answers["employment_education"]).isEqualTo(listOf("PARTTIME_EDUCATION_EMPLOYMENT"))
-    Assertions.assertThat(episode.answers["employment_education_details_fulltime"]).isNull()
-    Assertions.assertThat(episode.answers["employment_education_details_parttime"]).isEqualTo(listOf("Should not be removed"))
+    assertThat(episode.answers["employment_education"]).isEqualTo(listOf("PARTTIME_EDUCATION_EMPLOYMENT"))
+    assertThat(episode.answers["employment_education_details_fulltime"]).isNull()
+    assertThat(episode.answers["employment_education_details_parttime"]).isEqualTo(listOf("Should not be removed"))
   }
 
   @Test
@@ -105,8 +105,8 @@ class AssessmentUtilsTest {
 
     AssessmentUtils.removeOrphanedAnswers(episode)
 
-    Assertions.assertThat(episode.answers["active_carer_commitments"]).isEqualTo(listOf("Should not be removed"))
-    Assertions.assertThat(episode.answers["active_carer_commitments_details"]).isEqualTo(listOf("Should not be removed"))
+    assertThat(episode.answers["active_carer_commitments"]).isEqualTo(listOf("Should not be removed"))
+    assertThat(episode.answers["active_carer_commitments_details"]).isEqualTo(listOf("Should not be removed"))
   }
 
   @Test
@@ -126,7 +126,7 @@ class AssessmentUtilsTest {
 
     AssessmentUtils.removeOrphanedAnswers(episode)
 
-    Assertions.assertThat(episode.answers["active_carer_commitments"]).isEqualTo(emptyList<String>())
-    Assertions.assertThat(episode.answers["active_carer_commitments_details"]).isNull()
+    assertThat(episode.answers["active_carer_commitments"]).isEqualTo(emptyList<String>())
+    assertThat(episode.answers["active_carer_commitments_details"]).isNull()
   }
 }

@@ -129,7 +129,6 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(answers["allergies"]).isEqualTo(listOf("YES"))
       assertThat(answers["allergies_details"]).isEqualTo(listOf("Nut Allergy"))
       assertThat(answers["pregnancy"]).isEqualTo(listOf("NO"))
-      assertThat(answers["pregnancy_pregnant_details"]).isEqualTo(emptyList<String>())
       assertThat(answers["caring_commitments"]).isEqualTo(listOf("YES"))
       assertThat(answers["caring_commitments_details"]).isEqualTo(listOf("Primary Carer"))
       assertThat(answers["reading_writing_difficulties"]).isEqualTo(listOf("YES"))
@@ -299,8 +298,8 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       val answers = assessment.episodes.first().answers
 
       assertThat(answers["pregnancy"]).isEqualTo(listOf("NO"))
-      assertThat(answers["pregnancy_pregnant_details"]).isEmpty()
-      assertThat(answers["pregnancy_recently_given_birth_details"]).isEmpty()
+      assertThat(answers["pregnancy_pregnant_details"]).isNull()
+      assertThat(answers["pregnancy_recently_given_birth_details"]).isNull()
     }
 
     @Test
