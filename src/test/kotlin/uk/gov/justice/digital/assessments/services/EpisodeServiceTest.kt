@@ -44,7 +44,7 @@ class EpisodeServiceTest {
     questionService,
     communityApiRestClient,
     assessmentReferenceDataService,
-    cloneAssessmentExcludedQuestionsRepository
+    cloneAssessmentExcludedQuestionsRepository,
   )
 
   private lateinit var newEpisode: AssessmentEpisodeEntity

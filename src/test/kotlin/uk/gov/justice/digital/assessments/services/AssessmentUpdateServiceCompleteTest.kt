@@ -35,7 +35,7 @@ class AssessmentUpdateServiceCompleteTest {
     episodeRepository,
     authorService,
     auditService,
-    telemetryService
+    telemetryService,
   )
 
   @Test

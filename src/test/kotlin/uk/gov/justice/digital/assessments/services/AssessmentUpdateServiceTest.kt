@@ -35,7 +35,7 @@ class AssessmentUpdateServiceTest {
     episodeRepository,
     authorService,
     auditService,
-    telemetryService
+    telemetryService,
   )
 
   private val assessmentUuid = UUID.randomUUID()
