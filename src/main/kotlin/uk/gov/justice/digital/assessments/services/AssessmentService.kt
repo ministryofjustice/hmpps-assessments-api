@@ -23,6 +23,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRepository
 import uk.gov.justice.digital.assessments.restclient.audit.AuditType
+import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
 import uk.gov.justice.digital.assessments.services.dto.ExternalSource
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import java.time.LocalDateTime
@@ -71,6 +72,7 @@ class AssessmentService(
 
     offenderService.validateUserAccess(subject.crn)
     val offence = offenderService.getOffence(eventType, subject.crn, eventId)
+    val offender = offenderService.getCommunityOffender(subject.crn)
     val episode = createPrePopulatedEpisode(
       assessment,
       reason,
@@ -78,7 +80,8 @@ class AssessmentService(
       source = ExternalSource.DELIUS.name,
       eventId = eventId.toString(),
       offence = offence,
-      subject = subject
+      subject = subject,
+      offender
     )
     log.info("New episode created for assessment $assessmentUuid")
     return AssessmentEpisodeDto.from(episode)
@@ -152,7 +155,9 @@ class AssessmentService(
     if (eventId == null || crn.isNullOrEmpty() || assessmentType == null) {
       throw IllegalStateException("Unable to create Assessment with assessment type: $assessmentType, eventId: $eventId, crn: $crn")
     }
-    val arnAssessment = getOrCreateAssessment(crn, eventId)
+    offenderService.validateUserAccess(crn)
+    val offender = offenderService.getCommunityOffender(crn)
+    val arnAssessment = getOrCreateAssessment(crn, eventId, OffenderDto.from(offender))
     val offence = offenderService.getOffence(eventType, crn, eventId)
 
     val subject = subjectRepository.save(arnAssessment.subject?.copy())
@@ -163,7 +168,8 @@ class AssessmentService(
       ExternalSource.DELIUS.name,
       offence.convictionId.toString(),
       offence,
-      subject
+      subject,
+      offender
     )
     return AssessmentDto.from(arnAssessment)
   }
@@ -176,14 +182,13 @@ class AssessmentService(
     return AssessmentEpisodeDto.from(currentEpisode)
   }
 
-  private fun getOrCreateAssessment(crn: String, eventId: Long): AssessmentEntity {
-    offenderService.validateUserAccess(crn)
+  private fun getOrCreateAssessment(crn: String, eventId: Long, offender: OffenderDto): AssessmentEntity {
+
     val existingSubject = subjectRepository.findByCrn(crn)
     return if (existingSubject != null) {
       log.info("Existing assessment ${existingSubject.getCurrentAssessment()?.assessmentUuid} found for delius event id: $eventId, crn: $crn")
       existingSubject.getCurrentAssessment() ?: throw EntityNotFoundException("Subject $existingSubject doesn't belong to any assessment")
     } else {
-      val offender = offenderService.getOffender(crn)
       createDeliusAssessment(
         crn,
         offender,
@@ -253,7 +258,9 @@ class AssessmentService(
     source: String,
     eventId: String,
     offence: OffenceDto? = null,
-    subject: SubjectEntity?
+    subject: SubjectEntity?,
+    offender: CommunityOffenderDto
+
   ): AssessmentEpisodeEntity {
     log.info("Entered createPrePopulatedEpisode")
     val author = authorService.getOrCreateAuthor()
@@ -274,7 +281,7 @@ class AssessmentService(
       author
     )
     if (isNewEpisode) {
-      episodeService.prePopulateFromExternalSources(episode, assessmentType)
+      episodeService.prePopulateEpisodeFromDelius(episode, offender)
       episodeService.prePopulateFromPreviousEpisodes(episode, assessment.episodes)
       auditAndLogCreateEpisode(assessment.assessmentUuid, episode, subject?.crn)
     }

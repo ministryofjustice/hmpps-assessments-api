@@ -7,6 +7,7 @@ import uk.gov.justice.digital.assessments.api.DeliusEventType
 import uk.gov.justice.digital.assessments.api.OffenceDto
 import uk.gov.justice.digital.assessments.api.OffenderDto
 import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
+import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import uk.gov.justice.digital.assessments.utils.RequestData
 
@@ -30,9 +31,13 @@ class OffenderService(
 
   fun getOffender(crn: String): OffenderDto {
     log.info("Requesting offender details for crn: $crn")
-    val communityOffenderDto = communityApiRestClient.getOffender(crn)
+    return OffenderDto.from(getCommunityOffender(crn))
+  }
+
+  fun getCommunityOffender(crn: String): CommunityOffenderDto {
+    log.info("Entered getCommunityOffender with crn: $crn")
+    return communityApiRestClient.getOffender(crn)
       ?: throw EntityNotFoundException("No offender found for crn: $crn")
-    return OffenderDto.from(communityOffenderDto)
   }
 
   fun getOffenceFromConvictionIndex(crn: String, eventId: Long): OffenceDto {
