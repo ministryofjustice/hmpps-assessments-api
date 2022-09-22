@@ -3,7 +3,7 @@ package uk.gov.justice.digital.assessments.api
 import com.fasterxml.jackson.annotation.JsonProperty
 import uk.gov.justice.digital.assessments.restclient.communityapi.DeliusPersonalCircumstanceDto
 
-class CarerCommitmentsAnswerDto(
+data class CarerCommitmentsAnswerDto(
   @JsonProperty("description")
   val description: String,
 

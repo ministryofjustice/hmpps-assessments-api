@@ -36,7 +36,7 @@ class CommunityOffenderDtoTest {
   }
 
   @Test
-  fun `should map CommunityOffenderDTo to episode answers`() {
+  fun `should map CommunityOffenderDto to episode answers`() {
     // Given
     val json = this::class.java.getResource("/json/deliusOffender.json")?.readText()
     val offenderDto = objectMapper.readValue(json, CommunityOffenderDto::class.java)

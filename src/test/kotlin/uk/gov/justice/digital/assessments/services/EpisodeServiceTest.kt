@@ -32,6 +32,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.refdata.CloneAssessmentEx
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.CloneAssessmentExcludedQuestionsRepository
 import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
+import uk.gov.justice.digital.assessments.restclient.communityapi.DeliusPersonalCircumstancesDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.OffenderProfile
 import uk.gov.justice.digital.assessments.services.dto.ExternalSource
 import uk.gov.justice.digital.assessments.services.dto.ExternalSourceQuestionDto
@@ -100,6 +101,8 @@ class EpisodeServiceTest {
       offenderProfile = OffenderProfile(genderIdentity = "Prefer to self-describe")
     )
 
+    every { communityApiRestClient.getOffenderPersonalCircumstances(any()) } returns DeliusPersonalCircumstancesDto()
+
     // When
     val episodeEntity = episodeService.prePopulateEpisodeFromDelius(newEpisode, offenderDto)
 
@@ -119,6 +122,7 @@ class EpisodeServiceTest {
     val offender = objectMapper.readValue(json, CommunityOffenderDto::class.java)
 
     every { communityApiRestClient.getOffender(crn = CRN) } returns offender
+    every { communityApiRestClient.getOffenderPersonalCircumstances(any()) } returns DeliusPersonalCircumstancesDto()
 
     val questionDtos = listOf(
       GroupQuestionDto(questionCode = "contact_address_house_number"),
@@ -174,6 +178,8 @@ class EpisodeServiceTest {
     every {
       communityApiRestClient.getOffenderJson(crn = CRN, externalSourceEndpoint = ENDPOINT_URL)
     } returns personalContactsJson
+
+    every { communityApiRestClient.getOffenderPersonalCircumstances(any()) } returns DeliusPersonalCircumstancesDto()
 
     val questionDtos = listOf(
       GroupQuestionDto(questionCode = "gp_details"),
@@ -264,6 +270,8 @@ class EpisodeServiceTest {
     every {
       communityApiRestClient.getOffender(crn = CRN)
     } returns offenderDto
+
+    every { communityApiRestClient.getOffenderPersonalCircumstances(any()) } returns DeliusPersonalCircumstancesDto()
 
     val questionDtos = listOf(
       GroupQuestionDto(questionCode = "gender_identity"),

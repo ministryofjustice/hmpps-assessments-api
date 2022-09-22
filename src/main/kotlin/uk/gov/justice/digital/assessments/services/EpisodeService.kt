@@ -11,6 +11,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpi
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.CloneAssessmentExcludedQuestionsRepository
 import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
+import uk.gov.justice.digital.assessments.restclient.communityapi.DeliusPersonalCircumstancesDto
 import java.time.LocalDateTime
 
 @Service
@@ -33,6 +34,8 @@ class EpisodeService(
   ): AssessmentEpisodeEntity {
     log.info("Pre-populating episode from Delius")
     CommunityOffenderDto.from(communityOffenderDto, episode)
+    val offenderPersonalCircumstances = communityApiRestClient.getOffenderPersonalCircumstances(episode.assessment.subject?.crn)
+    DeliusPersonalCircumstancesDto.from(offenderPersonalCircumstances, episode)
     return episode
   }
 

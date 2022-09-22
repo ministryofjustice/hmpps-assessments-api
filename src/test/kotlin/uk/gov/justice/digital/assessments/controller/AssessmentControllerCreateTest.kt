@@ -123,18 +123,17 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(answers["contact_address_town_or_city"]).isEqualTo(listOf("Sheffield"))
       assertThat(answers["contact_address_county"]).isEqualTo(listOf("South Yorkshire"))
       assertThat(answers["contact_address_postcode"]).isEqualTo(listOf("S3 7BS"))
-
       assertThat(answers["language"]).isEqualTo(listOf("French"))
       assertThat(answers["requires_interpreter"]).isEqualTo(listOf("true"))
-      // TODO reinstate tests when rest client calls to personal circumstances and contacts are implemented
-//      assertThat(answers["allergies"]).isEqualTo(listOf("YES"))
-//      assertThat(answers["allergies_details"]).isEqualTo(listOf("Nut Allergy"))
-//      assertThat(answers["pregnancy"]).isEqualTo(listOf("NO"))
-//      assertThat(answers["pregnancy_pregnant_details"]).isEqualTo(emptyList<String>())
-//      assertThat(answers["caring_commitments"]).isEqualTo(listOf("YES"))
-//      assertThat(answers["caring_commitments_details"]).isEqualTo(listOf("Primary Carer"))
-//      assertThat(answers["reading_writing_difficulties"]).isEqualTo(listOf("YES"))
-//      assertThat(answers["reading_writing_difficulties_details"]).isEqualTo(listOf("Cannot read", "Numeracy difficulties", "Communication difficulties"))
+
+      assertThat(answers["allergies"]).isEqualTo(listOf("YES"))
+      assertThat(answers["allergies_details"]).isEqualTo(listOf("Nut Allergy"))
+      assertThat(answers["pregnancy"]).isEqualTo(listOf("NO"))
+      assertThat(answers["pregnancy_pregnant_details"]).isEqualTo(emptyList<String>())
+      assertThat(answers["caring_commitments"]).isEqualTo(listOf("YES"))
+      assertThat(answers["caring_commitments_details"]).isEqualTo(listOf("Primary Carer"))
+      assertThat(answers["reading_writing_difficulties"]).isEqualTo(listOf("YES"))
+      assertThat(answers["reading_writing_difficulties_details"]).isEqualTo(listOf("Cannot read", "Numeracy difficulties", "Communication difficulties"))
 
 //      val contact = getStructuredDataFromAnswer(answers, "emergency_contact_details")
 //      assertThat(contact["emergency_contact_first_name"]).isEqualTo(listOf("Brian"))
@@ -235,7 +234,6 @@ class AssessmentControllerCreateTest : IntegrationTest() {
     }
 
     @Test
-    @Disabled("Reinstate test post implementation of get contact details rest call")
     fun `creating a new UPW assessment from Delius returns carer commitments`() {
       val assessment = createDeliusAssessment("DX5678B", eventID)
 
@@ -279,7 +277,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
     }
 
     @Test
-    fun `should pre-populate answers with the 'mapped' type and  when the 'ifEmpty' flag is set to 'true'`() {
+    fun `should not populate pregnancy related details if offender is not pregnant`() {
 
       val dto = CreateAssessmentDto(
         crn = crn,
@@ -299,10 +297,10 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(assessment?.assessmentUuid).isNotNull
       assertThat(assessment?.episodes).hasSize(1)
       val answers = assessment.episodes.first().answers
-      // TODO reinstate tests when rest client calls to personal circumstances and contacts are implemented
-//      assertThat(answers["pregnancy"]).isEqualTo(listOf("NO"))
-//      assertThat(answers["pregnancy_pregnant_details"]).isEqualTo(emptyList<String>())
-//      assertThat(answers["pregnancy_recently_given_birth_details"]).isEqualTo(emptyList<String>())
+
+      assertThat(answers["pregnancy"]).isEqualTo(listOf("NO"))
+      assertThat(answers["pregnancy_pregnant_details"]).isEmpty()
+      assertThat(answers["pregnancy_recently_given_birth_details"]).isEmpty()
     }
 
     @Test

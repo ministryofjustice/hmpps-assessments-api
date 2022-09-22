@@ -17,6 +17,8 @@ import uk.gov.justice.digital.assessments.api.UploadedUpwDocumentDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityConvictionDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityRegistrations
+import uk.gov.justice.digital.assessments.restclient.communityapi.DeliusPersonalCircumstancesDto
+import uk.gov.justice.digital.assessments.restclient.communityapi.PersonalContact
 import uk.gov.justice.digital.assessments.restclient.communityapi.UserAccessResponse
 import uk.gov.justice.digital.assessments.services.exceptions.ExceptionReason
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiForbiddenException
@@ -30,10 +32,6 @@ class CommunityApiRestClient(
   @Qualifier("communityApiWebClient")
   val webClient: WebClient
 ) {
-
-  fun getOffender(crn: String): CommunityOffenderDto? {
-    return getOffender(offenderCrn = crn, elementClass = CommunityOffenderDto::class.java)
-  }
 
   fun getOffenderJson(crn: String, externalSourceEndpoint: String): String? {
     return getOffender(crn, externalSourceEndpoint, String::class.java)
@@ -65,6 +63,93 @@ class CommunityApiRestClient(
       .bodyToMono(elementClass)
       .block().also {
         log.info("Offender for crn: $offenderCrn, found in ${ExternalService.COMMUNITY_API.name}")
+      }
+  }
+
+  fun getOffender(crn: String): CommunityOffenderDto? {
+    log.info("Client retrieving offender details for crn: $crn")
+    val path = "secure/offenders/crn/$crn/all"
+    return webClient
+      .get()
+      .uri(path)
+      .retrieve()
+      .onStatus(HttpStatus::is4xxClientError) {
+        handle4xxError(
+          it,
+          HttpMethod.GET,
+          path,
+          ExternalService.COMMUNITY_API
+        )
+      }
+      .onStatus(HttpStatus::is5xxServerError) {
+        handle5xxError(
+          "Failed to retrieve offender details for crn: $crn",
+          HttpMethod.GET,
+          path,
+          ExternalService.COMMUNITY_API
+        )
+      }
+      .bodyToMono(CommunityOffenderDto::class.java)
+      .block().also {
+        log.info("Offender for crn: $crn, found in ${ExternalService.COMMUNITY_API.name}")
+      }
+  }
+
+  fun getOffenderPersonalCircumstances(crn: String?): DeliusPersonalCircumstancesDto {
+    log.info("Client retrieving offender personal circumstances for crn: $crn")
+    val path = "secure/offenders/crn/$crn/personalCircumstances"
+    return webClient
+      .get()
+      .uri(path)
+      .retrieve()
+      .onStatus(HttpStatus::is4xxClientError) {
+        handle4xxError(
+          it,
+          HttpMethod.GET,
+          path,
+          ExternalService.COMMUNITY_API
+        )
+      }
+      .onStatus(HttpStatus::is5xxServerError) {
+        handle5xxError(
+          "Failed to retrieve offender personal circumstances for crn: $crn",
+          HttpMethod.GET,
+          path,
+          ExternalService.COMMUNITY_API
+        )
+      }
+      .bodyToMono(DeliusPersonalCircumstancesDto::class.java)
+      .block()!!.also {
+      log.info("Offender personal circumstances for crn: $crn, found in ${ExternalService.COMMUNITY_API.name}")
+    }
+  }
+
+  fun getOffenderPersonalContacts(crn: String): List<PersonalContact>? {
+    log.info("Client retrieving offender personal contacts for crn: $crn")
+    val path = "secure/offenders/crn/$crn/personalContacts"
+    return webClient
+      .get()
+      .uri(path)
+      .retrieve()
+      .onStatus(HttpStatus::is4xxClientError) {
+        handle4xxError(
+          it,
+          HttpMethod.GET,
+          path,
+          ExternalService.COMMUNITY_API
+        )
+      }
+      .onStatus(HttpStatus::is5xxServerError) {
+        handle5xxError(
+          "Failed to retrieve offender personal contacts for crn: $crn",
+          HttpMethod.GET,
+          path,
+          ExternalService.COMMUNITY_API
+        )
+      }
+      .bodyToMono(object : ParameterizedTypeReference<List<PersonalContact>>() {})
+      .block().also {
+        log.info("Offender personal contacts for crn: $crn, found in ${ExternalService.COMMUNITY_API.name}")
       }
   }
 
