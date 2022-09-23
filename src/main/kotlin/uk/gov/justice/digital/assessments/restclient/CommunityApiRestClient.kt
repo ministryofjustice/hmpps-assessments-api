@@ -33,62 +33,10 @@ class CommunityApiRestClient(
   val webClient: WebClient
 ) {
 
-  fun getOffenderJson(crn: String, externalSourceEndpoint: String): String? {
-    return getOffender(crn, externalSourceEndpoint, String::class.java)
-  }
-
-  private fun <T> getOffender(offenderCrn: String, externalPath: String? = null, elementClass: Class<T>): T? {
-    log.info("Client retrieving offender details for crn: $offenderCrn")
-    val path = externalPath?.let { it.replace("\$crn", offenderCrn) } ?: "secure/offenders/crn/$offenderCrn/all"
-    return webClient
-      .get()
-      .uri(path)
-      .retrieve()
-      .onStatus(HttpStatus::is4xxClientError) {
-        handle4xxError(
-          it,
-          HttpMethod.GET,
-          path,
-          ExternalService.COMMUNITY_API
-        )
-      }
-      .onStatus(HttpStatus::is5xxServerError) {
-        handle5xxError(
-          "Failed to retrieve offender details for crn: $offenderCrn",
-          HttpMethod.GET,
-          path,
-          ExternalService.COMMUNITY_API
-        )
-      }
-      .bodyToMono(elementClass)
-      .block().also {
-        log.info("Offender for crn: $offenderCrn, found in ${ExternalService.COMMUNITY_API.name}")
-      }
-  }
-
   fun getOffender(crn: String): CommunityOffenderDto? {
     log.info("Client retrieving offender details for crn: $crn")
     val path = "secure/offenders/crn/$crn/all"
-    return webClient
-      .get()
-      .uri(path)
-      .retrieve()
-      .onStatus(HttpStatus::is4xxClientError) {
-        handle4xxError(
-          it,
-          HttpMethod.GET,
-          path,
-          ExternalService.COMMUNITY_API
-        )
-      }
-      .onStatus(HttpStatus::is5xxServerError) {
-        handle5xxError(
-          "Failed to retrieve offender details for crn: $crn",
-          HttpMethod.GET,
-          path,
-          ExternalService.COMMUNITY_API
-        )
-      }
+    return performHttpGet(path, "Failed to retrieve offender details for crn: $crn")
       .bodyToMono(CommunityOffenderDto::class.java)
       .block().also {
         log.info("Offender for crn: $crn, found in ${ExternalService.COMMUNITY_API.name}")
@@ -98,55 +46,41 @@ class CommunityApiRestClient(
   fun getOffenderPersonalCircumstances(crn: String?): DeliusPersonalCircumstancesDto {
     log.info("Client retrieving offender personal circumstances for crn: $crn")
     val path = "secure/offenders/crn/$crn/personalCircumstances"
-    return webClient
-      .get()
-      .uri(path)
-      .retrieve()
-      .onStatus(HttpStatus::is4xxClientError) {
-        handle4xxError(
-          it,
-          HttpMethod.GET,
-          path,
-          ExternalService.COMMUNITY_API
-        )
-      }
-      .onStatus(HttpStatus::is5xxServerError) {
-        handle5xxError(
-          "Failed to retrieve offender personal circumstances for crn: $crn",
-          HttpMethod.GET,
-          path,
-          ExternalService.COMMUNITY_API
-        )
-      }
+    return performHttpGet(path, "Failed to retrieve offender personal circumstances for crn: $crn")
       .bodyToMono(DeliusPersonalCircumstancesDto::class.java)
       .block()!!.also {
       log.info("Offender personal circumstances for crn: $crn, found in ${ExternalService.COMMUNITY_API.name}")
     }
   }
 
+  private fun performHttpGet(
+    path: String,
+    errorMessage: String
+  ): WebClient.ResponseSpec = webClient
+    .get()
+    .uri(path)
+    .retrieve()
+    .onStatus(HttpStatus::is4xxClientError) {
+      handle4xxError(
+        it,
+        HttpMethod.GET,
+        path,
+        ExternalService.COMMUNITY_API
+      )
+    }
+    .onStatus(HttpStatus::is5xxServerError) {
+      handle5xxError(
+        errorMessage,
+        HttpMethod.GET,
+        path,
+        ExternalService.COMMUNITY_API
+      )
+    }
+
   fun getOffenderPersonalContacts(crn: String?): List<PersonalContact> {
     log.info("Client retrieving offender personal contacts for crn: $crn")
     val path = "secure/offenders/crn/$crn/personalContacts"
-    return webClient
-      .get()
-      .uri(path)
-      .retrieve()
-      .onStatus(HttpStatus::is4xxClientError) {
-        handle4xxError(
-          it,
-          HttpMethod.GET,
-          path,
-          ExternalService.COMMUNITY_API
-        )
-      }
-      .onStatus(HttpStatus::is5xxServerError) {
-        handle5xxError(
-          "Failed to retrieve offender personal contacts for crn: $crn",
-          HttpMethod.GET,
-          path,
-          ExternalService.COMMUNITY_API
-        )
-      }
+    return performHttpGet(path, "Failed to retrieve offender personal contacts for crn: $crn")
       .bodyToMono(object : ParameterizedTypeReference<List<PersonalContact>>() {})
       .block().also {
         log.info("Offender personal contacts for crn: $crn, found in ${ExternalService.COMMUNITY_API.name}")
@@ -156,26 +90,7 @@ class CommunityApiRestClient(
   fun getConvictions(crn: String): List<CommunityConvictionDto>? {
     log.info("Client retrieving conviction details for crn: $crn")
     val path = "secure/offenders/crn/$crn/convictions"
-    return webClient
-      .get()
-      .uri(path)
-      .retrieve()
-      .onStatus(HttpStatus::is4xxClientError) {
-        handle4xxError(
-          it,
-          HttpMethod.GET,
-          path,
-          ExternalService.COMMUNITY_API
-        )
-      }
-      .onStatus(HttpStatus::is5xxServerError) {
-        handle5xxError(
-          "Failed to retrieve conviction details for crn: $crn",
-          HttpMethod.GET,
-          path,
-          ExternalService.COMMUNITY_API
-        )
-      }
+    return performHttpGet(path, "Failed to retrieve conviction details for crn: $crn")
       .bodyToMono(object : ParameterizedTypeReference<List<CommunityConvictionDto>>() {})
       .block()
   }
@@ -183,26 +98,7 @@ class CommunityApiRestClient(
   fun getConviction(crn: String, convictionId: Long): CommunityConvictionDto? {
     log.info("Client retrieving conviction details for crn: $crn")
     val path = "secure/offenders/crn/$crn/convictions/$convictionId"
-    return webClient
-      .get()
-      .uri(path)
-      .retrieve()
-      .onStatus(HttpStatus::is4xxClientError) {
-        handle4xxError(
-          it,
-          HttpMethod.GET,
-          path,
-          ExternalService.COMMUNITY_API
-        )
-      }
-      .onStatus(HttpStatus::is5xxServerError) {
-        handle5xxError(
-          "Failed to retrieve conviction details for crn: $crn and conviction ID $convictionId",
-          HttpMethod.GET,
-          path,
-          ExternalService.COMMUNITY_API
-        )
-      }
+    return performHttpGet(path, "Failed to retrieve conviction details for crn: $crn and conviction ID $convictionId")
       .bodyToMono(CommunityConvictionDto::class.java)
       .block()
   }
@@ -211,26 +107,7 @@ class CommunityApiRestClient(
   fun getRegistrations(crn: String): CommunityRegistrations? {
     log.info("Client retrieving registrations for crn: $crn")
     val path = "secure/offenders/crn/$crn/registrations"
-    return webClient
-      .get()
-      .uri(path)
-      .retrieve()
-      .onStatus(HttpStatus::is4xxClientError) {
-        handle4xxError(
-          it,
-          HttpMethod.GET,
-          path,
-          ExternalService.COMMUNITY_API
-        )
-      }
-      .onStatus(HttpStatus::is5xxServerError) {
-        handle5xxError(
-          "Failed to retrieve registrations for crn: $crn",
-          HttpMethod.GET,
-          path,
-          ExternalService.COMMUNITY_API
-        )
-      }
+    return performHttpGet(path, "Failed to retrieve registrations for crn: $crn")
       .bodyToMono(object : ParameterizedTypeReference<CommunityRegistrations>() {})
       .block()
   }
