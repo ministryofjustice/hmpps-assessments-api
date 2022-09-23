@@ -12,6 +12,7 @@ import uk.gov.justice.digital.assessments.jpa.repositories.refdata.CloneAssessme
 import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.DeliusPersonalCircumstancesDto
+import uk.gov.justice.digital.assessments.restclient.communityapi.PersonalContact
 import java.time.LocalDateTime
 
 @Service
@@ -36,6 +37,8 @@ class EpisodeService(
     CommunityOffenderDto.from(communityOffenderDto, episode)
     val offenderPersonalCircumstances = communityApiRestClient.getOffenderPersonalCircumstances(episode.assessment.subject?.crn)
     DeliusPersonalCircumstancesDto.from(offenderPersonalCircumstances, episode)
+    val offenderPersonalContacts = communityApiRestClient.getOffenderPersonalContacts(episode.assessment.subject?.crn)
+    PersonalContact.from(offenderPersonalContacts, episode)
     return episode
   }
 

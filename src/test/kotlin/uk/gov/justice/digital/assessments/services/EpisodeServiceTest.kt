@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
+import com.fasterxml.jackson.module.kotlin.readValue
 import io.mockk.every
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
@@ -34,8 +35,7 @@ import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.DeliusPersonalCircumstancesDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.OffenderProfile
-import uk.gov.justice.digital.assessments.services.dto.ExternalSource
-import uk.gov.justice.digital.assessments.services.dto.ExternalSourceQuestionDto
+import uk.gov.justice.digital.assessments.restclient.communityapi.PersonalContact
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -43,7 +43,6 @@ import java.time.LocalDateTime
 @DisplayName("Episode Service Tests")
 class EpisodeServiceTest {
 
-  private val questionService: QuestionService = mockk()
   private val communityApiRestClient: CommunityApiRestClient = mockk()
   private val assessmentReferenceDataService: AssessmentReferenceDataService = mockk()
   private val cloneAssessmentExcludedQuestionsRepository: CloneAssessmentExcludedQuestionsRepository = mockk()
@@ -76,6 +75,16 @@ class EpisodeServiceTest {
     objectMapper = objectMapper()
   }
 
+  private fun objectMapper(): ObjectMapper {
+    return ObjectMapper()
+      .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+      .configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true)
+      .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+      .setSerializationInclusion(JsonInclude.Include.NON_NULL)
+      .setSerializationInclusion(JsonInclude.Include.NON_ABSENT)
+      .registerModules(Jdk8Module(), JavaTimeModule(), KotlinModule())
+  }
+
   private fun createEpisode(assessmentType: AssessmentType): AssessmentEpisodeEntity {
     return AssessmentEpisodeEntity(
       episodeId = 1,
@@ -102,6 +111,7 @@ class EpisodeServiceTest {
     )
 
     every { communityApiRestClient.getOffenderPersonalCircumstances(any()) } returns DeliusPersonalCircumstancesDto()
+    every { communityApiRestClient.getOffenderPersonalContacts(any()) } returns emptyList()
 
     // When
     val episodeEntity = episodeService.prePopulateEpisodeFromDelius(newEpisode, offenderDto)
@@ -123,6 +133,7 @@ class EpisodeServiceTest {
 
     every { communityApiRestClient.getOffender(crn = CRN) } returns offender
     every { communityApiRestClient.getOffenderPersonalCircumstances(any()) } returns DeliusPersonalCircumstancesDto()
+    every { communityApiRestClient.getOffenderPersonalContacts(any()) } returns emptyList()
 
     val questionDtos = listOf(
       GroupQuestionDto(questionCode = "contact_address_house_number"),
@@ -170,16 +181,13 @@ class EpisodeServiceTest {
     // Given
     newEpisode = createEpisode(UPW)
 
-    val questions: List<ExternalSourceQuestionDto> = createPersonalContactExternalSourceQuestionList(ENDPOINT_URL)
-    every { questionService.getAllQuestions().withExternalSource(UPW) } returns questions
     every { cloneAssessmentExcludedQuestionsRepository.findAllByAssessmentType(UPW) } returns emptyList()
 
-    val personalContactsJson = this::class.java.getResource("/json/deliusPersonalContacts.json")?.readText()
-    every {
-      communityApiRestClient.getOffenderJson(crn = CRN, externalSourceEndpoint = ENDPOINT_URL)
-    } returns personalContactsJson
+    val personalContactsJson = this::class.java.getResource("/json/deliusPersonalContacts.json")?.readText()!!
 
     every { communityApiRestClient.getOffenderPersonalCircumstances(any()) } returns DeliusPersonalCircumstancesDto()
+    val deliusPersonalContacts: List<PersonalContact> = objectMapper.readValue(personalContactsJson)
+    every { communityApiRestClient.getOffenderPersonalContacts(any()) } returns deliusPersonalContacts
 
     val questionDtos = listOf(
       GroupQuestionDto(questionCode = "gp_details"),
@@ -194,17 +202,16 @@ class EpisodeServiceTest {
     episodeService.prePopulateFromPreviousEpisodes(newEpisode, previousEpisodes)
 
     // Then
-    // TODO reinstate test when rest client call for personal circumstances and details is implemented
-//    val gpDetailsAnswerDtos = episodeEntity.answers["gp_details"] as List<GPDetailsAnswerDto>
-//    assertThat(gpDetailsAnswerDtos.size).isEqualTo(1)
-//    assertThat(gpDetailsAnswerDtos[0].name).isEqualTo(listOf("Charles Europe"))
-//    assertThat(gpDetailsAnswerDtos[0].buildingName).isEqualTo(listOf(null))
-//
-//    val emergencyContactDetailsAnswerDtos =
-//      episodeEntity.answers["emergency_contact_details"] as List<EmergencyContactDetailsAnswerDto>
-//    assertThat(emergencyContactDetailsAnswerDtos.size).isEqualTo(1)
-//    assertThat(emergencyContactDetailsAnswerDtos[0].relationship).isEqualTo(listOf("Friend"))
-//    assertThat(emergencyContactDetailsAnswerDtos[0].buildingName).isEqualTo(listOf("Petty France"))
+    val gpDetailsAnswerDtos = episodeEntity.answers["gp_details"] as List<GPDetailsAnswerDto>
+    assertThat(gpDetailsAnswerDtos.size).isEqualTo(1)
+    assertThat(gpDetailsAnswerDtos[0].name).isEqualTo(listOf("Charles Europe"))
+    assertThat(gpDetailsAnswerDtos[0].buildingName).isEqualTo(listOf(null))
+
+    val emergencyContactDetailsAnswerDtos =
+      episodeEntity.answers["emergency_contact_details"] as List<EmergencyContactDetailsAnswerDto>
+    assertThat(emergencyContactDetailsAnswerDtos.size).isEqualTo(1)
+    assertThat(emergencyContactDetailsAnswerDtos[0].relationship).isEqualTo(listOf("Friend"))
+    assertThat(emergencyContactDetailsAnswerDtos[0].buildingName).isEqualTo(listOf("Petty France"))
   }
 
   private fun createPreviousEpisodePersonalContacts() = listOf(
@@ -239,24 +246,24 @@ class EpisodeServiceTest {
     ),
   )
 
-  private fun createPersonalContactExternalSourceQuestionList(endpoint: String) = listOf(
-    ExternalSourceQuestionDto(
-      "gp_details",
-      ExternalSource.DELIUS.name,
-      "\$[?(@.relationshipType.code=='RT02'&&@.isActive==true)]",
-      "structured",
-      externalSourceEndpoint = endpoint,
-      ifEmpty = false,
-    ),
-    ExternalSourceQuestionDto(
-      "emergency_contact_details",
-      ExternalSource.DELIUS.name,
-      "\$[?(@.relationshipType.code=='ME'&&@.isActive==true)]",
-      "structured",
-      externalSourceEndpoint = endpoint,
-      ifEmpty = false,
-    )
-  )
+  // private fun createPersonalContactExternalSourceQuestionList(endpoint: String) = listOf(
+  //   ExternalSourceQuestionDto(
+  //     "gp_details",
+  //     ExternalSource.DELIUS.name,
+  //     "\$[?(@.relationshipType.code=='RT02'&&@.isActive==true)]",
+  //     "structured",
+  //     externalSourceEndpoint = endpoint,
+  //     ifEmpty = false,
+  //   ),
+  //   ExternalSourceQuestionDto(
+  //     "emergency_contact_details",
+  //     ExternalSource.DELIUS.name,
+  //     "\$[?(@.relationshipType.code=='ME'&&@.isActive==true)]",
+  //     "structured",
+  //     externalSourceEndpoint = endpoint,
+  //     ifEmpty = false,
+  //   )
+  // )
 
   @Test
   fun `should not add answers from previous episode if present in Delius`() {
@@ -272,6 +279,7 @@ class EpisodeServiceTest {
     } returns offenderDto
 
     every { communityApiRestClient.getOffenderPersonalCircumstances(any()) } returns DeliusPersonalCircumstancesDto()
+    every { communityApiRestClient.getOffenderPersonalContacts(any()) } returns emptyList()
 
     val questionDtos = listOf(
       GroupQuestionDto(questionCode = "gender_identity"),
@@ -304,16 +312,6 @@ class EpisodeServiceTest {
       "question_2" to listOf("answer_2"),
     )
     assertThat(episodeEntity.answers).containsAllEntriesOf(expectedAnswers)
-  }
-
-  private fun objectMapper(): ObjectMapper {
-    return ObjectMapper()
-      .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-      .configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true)
-      .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
-      .setSerializationInclusion(JsonInclude.Include.NON_NULL)
-      .setSerializationInclusion(JsonInclude.Include.NON_ABSENT)
-      .registerModules(Jdk8Module(), JavaTimeModule(), KotlinModule())
   }
 
   @Test

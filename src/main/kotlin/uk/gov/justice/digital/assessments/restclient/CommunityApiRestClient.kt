@@ -124,7 +124,7 @@ class CommunityApiRestClient(
     }
   }
 
-  fun getOffenderPersonalContacts(crn: String): List<PersonalContact>? {
+  fun getOffenderPersonalContacts(crn: String?): List<PersonalContact> {
     log.info("Client retrieving offender personal contacts for crn: $crn")
     val path = "secure/offenders/crn/$crn/personalContacts"
     return webClient
