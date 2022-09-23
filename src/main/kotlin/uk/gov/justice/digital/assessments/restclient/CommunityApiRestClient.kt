@@ -116,26 +116,7 @@ class CommunityApiRestClient(
     val path = "/secure/offenders/primaryIdentifiers?includeActiveOnly=true&page=$page&size=$pageSize"
     log.info("Client retrieving CRNs from $path")
 
-    val offendersPage = webClient
-      .get()
-      .uri(path)
-      .retrieve()
-      .onStatus(HttpStatus::is4xxClientError) {
-        handle4xxError(
-          it,
-          HttpMethod.GET,
-          path,
-          ExternalService.COMMUNITY_API
-        )
-      }
-      .onStatus(HttpStatus::is5xxServerError) {
-        handle5xxError(
-          "Failed to retrieve Primary Ids",
-          HttpMethod.GET,
-          path,
-          ExternalService.COMMUNITY_API
-        )
-      }
+    val offendersPage = performHttpGet(path, "Failed to retrieve Primary Ids")
       .bodyToMono(OffendersPage::class.java)
       .block()
 
