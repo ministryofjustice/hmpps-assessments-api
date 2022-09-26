@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.assessments.restclient.communityapi
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import uk.gov.justice.digital.assessments.api.CarerCommitmentsAnswerDto
+import uk.gov.justice.digital.assessments.api.answers.CarerCommitmentsAnswerDto
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 
 @JsonIgnoreProperties(ignoreUnknown = true)

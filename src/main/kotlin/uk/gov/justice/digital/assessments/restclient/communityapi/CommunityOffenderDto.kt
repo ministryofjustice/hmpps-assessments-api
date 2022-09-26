@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.assessments.restclient.communityapi
 
-import uk.gov.justice.digital.assessments.api.DisabilityAnswerDto
+import uk.gov.justice.digital.assessments.api.answers.DisabilityAnswerDto
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 
 data class CommunityOffenderDto(

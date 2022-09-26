@@ -10,7 +10,7 @@ import com.fasterxml.jackson.module.kotlin.KotlinModule
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import uk.gov.justice.digital.assessments.api.CarerCommitmentsAnswerDto
+import uk.gov.justice.digital.assessments.api.answers.CarerCommitmentsAnswerDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
