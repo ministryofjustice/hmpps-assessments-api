@@ -5,13 +5,11 @@ import java.time.LocalDateTime
 import java.util.UUID
 import javax.persistence.Column
 import javax.persistence.Entity
-import javax.persistence.FetchType
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
-import javax.persistence.OneToMany
 import javax.persistence.Table
 
 @Entity(name = "question")
@@ -28,9 +26,6 @@ class QuestionEntity(
 
   @Column(name = "question_code")
   val questionCode: String,
-
-  @OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
-  val externalSources: Collection<ExternalSourceQuestionMappingEntity> = emptyList(),
 
   @Column(name = "question_start")
   val questionStartDate: LocalDateTime? = null,
