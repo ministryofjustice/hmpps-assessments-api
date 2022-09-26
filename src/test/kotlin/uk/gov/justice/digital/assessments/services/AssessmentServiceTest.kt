@@ -26,6 +26,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRepository
 import uk.gov.justice.digital.assessments.restclient.audit.AuditType
+import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -91,6 +92,8 @@ class AssessmentServiceTest {
       subCodeDescription = "Sub-code description"
     )
     every { offenderService.getOffence(any(), crn, eventId) } returns offenceDto
+    val communityOffenderDto = CommunityOffenderDto(dateOfBirth = LocalDate.of(1989, 1, 1).toString())
+    every { offenderService.getCommunityOffender(crn) } returns communityOffenderDto
   }
 
   @Nested
@@ -148,7 +151,7 @@ class AssessmentServiceTest {
         offenceSubCode = offenceSubCode,
         subCodeDescription = subCodeDescription
       )
-      every { episodeService.prePopulateFromExternalSources(any(), assessmentType) } returnsArgument 0
+      every { episodeService.prePopulateEpisodeFromDelius(any(), any()) } returnsArgument 0
       every { episodeService.prePopulateFromPreviousEpisodes(any(), emptyList()) } returnsArgument 0
 
       val episodeDto = assessmentsService.createNewEpisode(

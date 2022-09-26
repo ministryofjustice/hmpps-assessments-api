@@ -15,7 +15,8 @@ data class OffenderDto(
   var offence: OffenceDto? = null,
   val address: Address? = null,
   val firstNameAliases: List<String>? = emptyList(),
-  val surnameAliases: List<String>? = emptyList()
+  val surnameAliases: List<String>? = emptyList(),
+  val dateOfBirthAliases: List<String>? = emptyList()
 ) {
   companion object {
 
@@ -30,7 +31,8 @@ data class OffenderDto(
         pncNumber = communityOffenderDto.otherIds?.pncNumber,
         croNumber = communityOffenderDto.otherIds?.croNumber,
         firstNameAliases = communityOffenderDto.offenderAliases?.mapNotNull { it.firstName },
-        surnameAliases = communityOffenderDto.offenderAliases?.mapNotNull { it.surname }
+        surnameAliases = communityOffenderDto.offenderAliases?.mapNotNull { it.surname },
+        dateOfBirthAliases = communityOffenderDto.offenderAliases?.mapNotNull { it.dateOfBirth }
       )
     }
   }

@@ -16,14 +16,12 @@ import uk.gov.justice.digital.assessments.config.CacheConstants.LIST_QUESTION_GR
 import uk.gov.justice.digital.assessments.config.CacheConstants.QUESTION_CACHE_KEY
 import uk.gov.justice.digital.assessments.config.CacheConstants.QUESTION_GROUP_CONTENTS_CACHE_KEY
 import uk.gov.justice.digital.assessments.config.CacheConstants.QUESTION_GROUP_SECTIONS_CACHE_KEY
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.GroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionGroupEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.GroupRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.QuestionGroupRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.QuestionRepository
-import uk.gov.justice.digital.assessments.services.dto.ExternalSourceQuestionDto
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import java.util.UUID
 
@@ -211,71 +209,4 @@ class QuestionSchemaEntities(
   private val questions = questionsList.associateBy { it.questionCode }
 
   operator fun get(questionCode: String) = questions[questionCode]
-
-  fun withExternalSource(assessmentType: AssessmentType): List<ExternalSourceQuestionDto> {
-    return questions.values
-      .filter { !it.externalSources.isEmpty() }
-      .filter { it.externalSources.any { source -> source.assessmentType == assessmentType } }
-      .map { it.toQuestionDto(assessmentType) }
-      .flatten()
-  }
-
-  private fun QuestionEntity.toQuestionDto(assessmentType: AssessmentType): List<ExternalSourceQuestionDto> {
-    val source = this.externalSources.filter { it.assessmentType == assessmentType }
-    return source.map {
-      ExternalSourceQuestionDto(
-        it.question.questionCode,
-        it.externalSource,
-        it.jsonPathField,
-        it.fieldType,
-        it.externalSourceEndpoint,
-        it.mappedValue,
-        it.ifEmpty
-      )
-    }
-  }
-
-  private class OasysMappingTree {
-    private val sections: MutableMap<String?, LogicalPage> = mutableMapOf()
-
-    fun section(sectionCode: String?) = sections[sectionCode]
-
-    fun addSection(sectionCode: String?): LogicalPage {
-      if (!sections.containsKey(sectionCode))
-        sections[sectionCode] = LogicalPage()
-      return sections[sectionCode]!!
-    }
-  }
-
-  private class LogicalPage {
-    private val logicalPages: MutableMap<Long?, QuestionCode> = mutableMapOf()
-
-    fun logicalPage(logicalPage: Long?) = logicalPages[logicalPage]
-
-    fun addLogicalPage(logicalPage: Long?): QuestionCode {
-      if (!logicalPages.containsKey(logicalPage))
-        logicalPages[logicalPage] = QuestionCode()
-      return logicalPages[logicalPage]!!
-    }
-  }
-
-  private class QuestionCode {
-    private val questionCodes: MutableMap<String?, Questions> = mutableMapOf()
-
-    fun questionCode(questionCode: String?) = questionCodes[questionCode]
-
-    fun addQuestionCode(questionCode: String?): Questions {
-      if (!questionCodes.containsKey(questionCode))
-        questionCodes[questionCode] = Questions()
-      return questionCodes[questionCode]!!
-    }
-  }
-
-  private class Questions(
-    private val questions: MutableList<QuestionEntity> = mutableListOf()
-  ) : List<QuestionEntity> by questions {
-    fun addQuestion(question: QuestionEntity) {
-      questions.add(question)
-    }
-  }
 }

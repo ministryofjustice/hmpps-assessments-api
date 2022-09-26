@@ -5,7 +5,7 @@ import uk.gov.justice.digital.assessments.restclient.communityapi.DeliusDisabili
 import uk.gov.justice.digital.assessments.restclient.communityapi.Provision
 import java.time.LocalDate
 
-class DisabilityAnswerDto(
+data class DisabilityAnswerDto(
   @JsonProperty("code")
   val code: String? = null,
 

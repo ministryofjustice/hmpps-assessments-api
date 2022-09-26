@@ -30,12 +30,16 @@
     ],
     "allowSMS": true,
     "emailAddresses": [
-      "string"
+      "jsmith@email.com"
     ],
     "phoneNumbers": [
       {
-        "number": "string",
+        "number": "07999123456",
         "type": "MOBILE"
+      },
+      {
+        "number": "0207123556",
+        "type": "TELEPHONE"
       }
     ]
   },
@@ -48,18 +52,19 @@
   "firstName": "John",
   "gender": "Male",
   "middleNames": [
-    "string"
+    "Doe",
+    "Larson"
   ],
   "offenderAliases": [
     {
       "dateOfBirth": "2022-05-19",
-      "firstName": "string",
-      "gender": "string",
+      "firstName": "Robert",
+      "gender": "MALE",
       "id": "string",
       "middleNames": [
-        "string"
+        "Franco"
       ],
-      "surname": "string"
+      "surname": "De Niro"
     }
   ],
   "offenderId": 0,
@@ -172,13 +177,85 @@
       {
         "disabilityId": 0,
         "disabilityType": {
-          "code": "ABC123",
-          "description": "Some description"
+          "code": "PC",
+          "description": "Physical disability"
         },
         "endDate": "2022-05-19",
         "isActive": true,
         "lastUpdatedDateTime": "2020-09-20T11:00:00+01:00",
-        "notes": "string",
+        "notes": "notes",
+        "provisions": [
+          {
+            "finishDate": "2022-05-19",
+            "notes": "string",
+            "provisionId": 0,
+            "provisionType": {
+              "code": "ABC123",
+              "description": "Some description"
+            },
+            "startDate": "2022-05-19"
+          }
+        ],
+        "startDate": "2022-05-19"
+      },
+      {
+        "disabilityId": 0,
+        "disabilityType": {
+          "code": "LA",
+          "description": "Learning disability"
+        },
+        "endDate": "2022-05-19",
+        "isActive": true,
+        "lastUpdatedDateTime": "2020-09-20T11:00:00+01:00",
+        "notes": "notes",
+        "provisions": [
+          {
+            "finishDate": "2022-05-19",
+            "notes": "string",
+            "provisionId": 0,
+            "provisionType": {
+              "code": "ABC123",
+              "description": "Some description"
+            },
+            "startDate": "2022-05-19"
+          }
+        ],
+        "startDate": "2022-05-19"
+      },
+      {
+        "disabilityId": 0,
+        "disabilityType": {
+          "code": "LD",
+          "description": "Learning difficulty"
+        },
+        "endDate": "2022-05-19",
+        "isActive": true,
+        "lastUpdatedDateTime": "2020-09-20T11:00:00+01:00",
+        "notes": "notes",
+        "provisions": [
+          {
+            "finishDate": "2022-05-19",
+            "notes": "string",
+            "provisionId": 0,
+            "provisionType": {
+              "code": "ABC123",
+              "description": "Some description"
+            },
+            "startDate": "2022-05-19"
+          }
+        ],
+        "startDate": "2022-05-19"
+      },
+      {
+        "disabilityId": 0,
+        "disabilityType": {
+          "code": "M1",
+          "description": "Mental health condition"
+        },
+        "endDate": "2022-05-19",
+        "isActive": true,
+        "lastUpdatedDateTime": "2020-09-20T11:00:00+01:00",
+        "notes": "notes",
         "provisions": [
           {
             "finishDate": "2022-05-19",
@@ -194,18 +271,18 @@
         "startDate": "2022-05-19"
       }
     ],
-    "ethnicity": "string",
+    "ethnicity": "white",
     "genderIdentity": "Prefer to self-describe",
     "immigrationStatus": "string",
     "nationality": "string",
-    "notes": "string",
+    "notes": "notes",
     "offenderDetails": "string",
     "offenderLanguages": {
       "languageConcerns": "string",
       "otherLanguages": [
         "string"
       ],
-      "primaryLanguage": "string",
+      "primaryLanguage": "Welsh",
       "requiresInterpreter": true
     },
     "previousConviction": {

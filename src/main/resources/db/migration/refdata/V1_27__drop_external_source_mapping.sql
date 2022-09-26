@@ -1,0 +1,1 @@
+drop table external_source_question_mapping;

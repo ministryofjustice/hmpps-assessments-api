@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.assessments.controller
 
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -122,7 +123,6 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(answers["contact_address_town_or_city"]).isEqualTo(listOf("Sheffield"))
       assertThat(answers["contact_address_county"]).isEqualTo(listOf("South Yorkshire"))
       assertThat(answers["contact_address_postcode"]).isEqualTo(listOf("S3 7BS"))
-
       assertThat(answers["language"]).isEqualTo(listOf("French"))
       assertThat(answers["requires_interpreter"]).isEqualTo(listOf("true"))
 
@@ -178,6 +178,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
     }
 
     @Test
+    @Disabled("Reinstate test post implementation of get contact details rest call")
     fun `creating a new UPW assessment from Delius only returns GPs where active flag is true`() {
 
       val assessment = createDeliusAssessment(crn, eventID, AssessmentType.UPW)
@@ -194,6 +195,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
     }
 
     @Test
+    @Disabled("Reinstate test post implementation of get contact details rest call")
     fun `creating a new UPW assessment from Delius returns disabilities`() {
 
       val assessment = createDeliusAssessment(crn, eventID)
@@ -270,12 +272,12 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(assessment?.assessmentUuid).isNotNull
       assertThat(assessment?.episodes).hasSize(1)
       val answers = assessment.episodes.first().answers
-      assertThat(answers["pregnancy"]).isEqualTo(listOf("PREGNANT"))
-      assertThat(answers["pregnancy_pregnant_details"]).isEqualTo(listOf("Some notes"))
+      assertThat(answers["gender"]).isEqualTo(listOf("MALE"))
+      assertThat(answers["gender_identity"]).isEqualTo(listOf("NON_BINARY"))
     }
 
     @Test
-    fun `should pre-populate answers with the 'mapped' type and  when the 'ifEmpty' flag is set to 'true'`() {
+    fun `should not populate pregnancy related details if offender is not pregnant`() {
 
       val dto = CreateAssessmentDto(
         crn = crn,
@@ -295,9 +297,10 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(assessment?.assessmentUuid).isNotNull
       assertThat(assessment?.episodes).hasSize(1)
       val answers = assessment.episodes.first().answers
+
       assertThat(answers["pregnancy"]).isEqualTo(listOf("NO"))
-      assertThat(answers["pregnancy_pregnant_details"]).isEqualTo(emptyList<String>())
-      assertThat(answers["pregnancy_recently_given_birth_details"]).isEqualTo(emptyList<String>())
+      assertThat(answers["pregnancy_pregnant_details"]).isEmpty()
+      assertThat(answers["pregnancy_recently_given_birth_details"]).isEmpty()
     }
 
     @Test

@@ -3,7 +3,7 @@ package uk.gov.justice.digital.assessments.api
 import com.fasterxml.jackson.annotation.JsonProperty
 import uk.gov.justice.digital.assessments.restclient.communityapi.PersonalContact
 
-class GPDetailsAnswerDto(
+data class GPDetailsAnswerDto(
   @JsonProperty("gp_name")
   val name: List<String?> = emptyList(),
 

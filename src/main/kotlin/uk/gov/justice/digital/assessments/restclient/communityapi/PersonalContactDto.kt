@@ -1,8 +1,11 @@
 package uk.gov.justice.digital.assessments.restclient.communityapi
 
+import uk.gov.justice.digital.assessments.api.EmergencyContactDetailsAnswerDto
+import uk.gov.justice.digital.assessments.api.GPDetailsAnswerDto
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import java.time.LocalDateTime
 
-class PersonalContact(
+data class PersonalContact(
   val personalContactId: Long?,
   val relationship: String?,
   val startDate: LocalDateTime?,
@@ -21,7 +24,30 @@ class PersonalContact(
   val lastUpdatedDatetime: LocalDateTime?,
   val address: AddressSummary?,
   val isActive: Boolean?,
-)
+) {
+  companion object {
+    fun from(personalContacts: List<PersonalContact>, episode: AssessmentEpisodeEntity) {
+      mapEmergencyContacts(personalContacts, episode)
+      mapGPDetails(personalContacts, episode)
+    }
+
+    private fun mapGPDetails(
+      personalContacts: List<PersonalContact>,
+      episode: AssessmentEpisodeEntity
+    ) {
+      val gpDetails = personalContacts.filter { it.relationshipType?.code == "RT02" && it.isActive == true }
+      episode.addAnswer("gp_details", GPDetailsAnswerDto.from(gpDetails) as List<Any>)
+    }
+
+    private fun mapEmergencyContacts(
+      personalContacts: List<PersonalContact>,
+      episode: AssessmentEpisodeEntity
+    ) {
+      val emergencyContacts = personalContacts.filter { it.relationshipType?.code == "ME" && it.isActive == true }
+      episode.addAnswer("emergency_contact_details", EmergencyContactDetailsAnswerDto.from(emergencyContacts) as List<Any>)
+    }
+  }
+}
 
 class RelationshipType(
   val code: String?,
