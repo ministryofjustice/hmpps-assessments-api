@@ -11,7 +11,7 @@ private class AnswerDependency(
 class AssessmentUtils {
   companion object {
     private val answerDependencies = listOf(
-      AnswerDependency("gender_identity", setOf("FEMALE", "NON_BINARY", "PREFER_NOT_TO_SAY"), setOf("placement_preference", "placement_preferences", "placement_preference_complete")),
+      AnswerDependency("gender_identity", setOf("FEMALE", "NON_BINARY", "PREFER_TO_SELF_DESCRIBE", "PREFER_NOT_TO_SAY"), setOf("placement_preference", "placement_preferences", "placement_preference_complete")),
     )
 
     fun removeOrphanedAnswers(episode: AssessmentEpisodeEntity) {
