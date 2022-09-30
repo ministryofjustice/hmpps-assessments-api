@@ -21,12 +21,12 @@ data class CommunityOffenderDto(
       val offenderProfile = communityOffenderDto.offenderProfile
       val contactDetails = communityOffenderDto.contactDetails
 
-      episode.addAnswer("first_name", listOf(communityOffenderDto.firstName).orEmpty() as List<Any>)
-      episode.addAnswer("first_name_aliases", communityOffenderDto.offenderAliases?.mapNotNull { it.firstName }.orEmpty())
-      episode.addAnswer("family_name", listOf(communityOffenderDto.surname).orEmpty() as List<Any>)
-      episode.addAnswer("family_name_aliases", communityOffenderDto.offenderAliases?.mapNotNull { it.surname }.orEmpty())
-      episode.addAnswer("dob", listOf(communityOffenderDto.dateOfBirth))
-      episode.addAnswer("dob_aliases", communityOffenderDto.offenderAliases?.mapNotNull { it.dateOfBirth }.orEmpty())
+      episode.addAnswer("first_name", listOfNotNull(communityOffenderDto.firstName) as List<Any>)
+      episode.addAnswer("first_name_aliases", communityOffenderDto.offenderAliases?.mapNotNull { it.firstName })
+      episode.addAnswer("family_name", listOfNotNull(communityOffenderDto.surname) as List<Any>)
+      episode.addAnswer("family_name_aliases", communityOffenderDto.offenderAliases?.mapNotNull { it.surname })
+      episode.addAnswer("dob", listOfNotNull(communityOffenderDto.dateOfBirth))
+      episode.addAnswer("dob_aliases", communityOffenderDto.offenderAliases?.mapNotNull { it.dateOfBirth })
       val addresses = communityOffenderDto.contactDetails?.addresses?.filter { it.status?.code == "M" }
       episode.addAnswer("contact_address_building_name", addresses?.mapNotNull { it.buildingName }.orEmpty() as List<Any>)
       episode.addAnswer("contact_address_house_number", addresses?.mapNotNull { it.addressNumber }.orEmpty() as List<Any>)
@@ -35,21 +35,21 @@ data class CommunityOffenderDto(
       episode.addAnswer("contact_address_town_or_city", addresses?.mapNotNull { it.town }.orEmpty() as List<Any>)
       episode.addAnswer("contact_address_county", addresses?.mapNotNull { it.county }.orEmpty() as List<Any>)
       episode.addAnswer("contact_address_postcode", addresses?.mapNotNull { it.postcode }.orEmpty() as List<Any>)
-      episode.addAnswer("crn", listOf(communityOffenderDto.otherIds?.crn).orEmpty() as List<Any>)
-      episode.addAnswer("pnc", listOf(communityOffenderDto.otherIds?.pncNumber).orEmpty() as List<Any>)
-      episode.addAnswer("ethnicity", listOf(communityOffenderDto.offenderProfile?.ethnicity).orEmpty() as List<Any>)
-      episode.addAnswer("gender", listOf(communityOffenderDto?.gender?.uppercase()).orEmpty() as List<Any>)
-      episode.addAnswer("gender_identity", listOf(mapGenderIdentity(offenderProfile?.genderIdentity)).orEmpty() as List<Any>)
-      episode.addAnswer("language", listOf(offenderProfile?.offenderLanguages?.primaryLanguage).orEmpty() as List<Any>)
-      episode.addAnswer("requires_interpreter", listOf(offenderProfile?.offenderLanguages?.requiresInterpreter.toString()).orEmpty() as List<Any>)
+      episode.addAnswer("crn", listOfNotNull(communityOffenderDto.otherIds?.crn) as List<Any>)
+      episode.addAnswer("pnc", listOfNotNull(communityOffenderDto.otherIds?.pncNumber) as List<Any>)
+      episode.addAnswer("ethnicity", listOfNotNull(communityOffenderDto.offenderProfile?.ethnicity) as List<Any>)
+      episode.addAnswer("gender", listOfNotNull(communityOffenderDto?.gender?.uppercase()) as List<Any>)
+      episode.addAnswer("gender_identity", listOfNotNull(mapGenderIdentity(offenderProfile?.genderIdentity)) as List<Any>)
+      episode.addAnswer("language", listOfNotNull(offenderProfile?.offenderLanguages?.primaryLanguage) as List<Any>)
+      episode.addAnswer("requires_interpreter", listOfNotNull(offenderProfile?.offenderLanguages?.requiresInterpreter.toString()) as List<Any>)
       episode.addAnswer("contact_email_addresses", contactDetails?.emailAddresses.orEmpty() as List<Any>)
       episode.addAnswer(
         "contact_mobile_phone_number",
-        contactDetails?.phoneNumbers?.filter { it.type == "MOBILE" }?.map { it.number }.orEmpty() as List<Any>
+        contactDetails?.phoneNumbers?.filter { it.type == "MOBILE" }?.mapNotNull { it.number }.orEmpty() as List<Any>
       )
       episode.addAnswer(
         "contact_phone_number",
-        contactDetails?.phoneNumbers?.filter { it.type == "TELEPHONE" }?.map { it.number }.orEmpty() as List<Any>
+        contactDetails?.phoneNumbers?.filter { it.type == "TELEPHONE" }?.mapNotNull { it.number }.orEmpty() as List<Any>
       )
 
       val physicalDisabilityCodeTypes = listOf("D", "D02", "RM", "RC", "PC", "VI", "HD")
@@ -81,7 +81,7 @@ data class CommunityOffenderDto(
         "learning_difficulty",
         offenderProfile?.disabilities?.filter {
           it.disabilityType.code == "LD"
-        }?.map { it.disabilityType.code }
+        }?.map { it.disabilityType.code }.orEmpty()
       )
       episode.addAnswer(
         "learning_difficulty_details",

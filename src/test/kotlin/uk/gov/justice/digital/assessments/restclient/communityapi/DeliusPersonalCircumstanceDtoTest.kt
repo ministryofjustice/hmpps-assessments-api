@@ -36,23 +36,55 @@ class DeliusPersonalCircumstanceDtoTest {
   }
 
   @Test
+  fun `should map empty delius values to empty list episode answers`() {
+    // Given
+    val json = this::class.java.getResource("/json/deliusPersonalCircumstancesEmptyValues.json")?.readText()
+    val personalCircumstancesDto = objectMapper.readValue(json, DeliusPersonalCircumstancesDto::class.java)
+    val episodeEntity = createAssessmentEpisodeEntity()
+
+    // When
+    DeliusPersonalCircumstancesDto.from(personalCircumstancesDto, episodeEntity)
+
+    // Then
+    val answers = episodeEntity.answers
+    assertThat(answers["active_carer_commitments"]).isEmpty()
+    assertThat(answers["allergies"]).isEmpty()
+    assertThat(answers["allergies_details"]).isEmpty()
+    assertThat(answers["caring_commitments"]).isEmpty()
+    assertThat(answers["caring_commitments_details"]).isEmpty()
+    assertThat(answers["language_communication_concerns"]).isEmpty()
+    assertThat(answers["language_communication_concerns_details"]).isEmpty()
+    assertThat(answers["numeracy_concerns"]).isEmpty()
+    assertThat(answers["numeracy_concerns_details"]).isEmpty()
+    assertThat(answers["pregnancy_pregnant_details"]).isEmpty()
+    assertThat(answers["pregnancy_recently_given_birth_details"]).isEmpty()
+    assertThat(answers["reading_literacy_concerns"]).isEmpty()
+    assertThat(answers["reading_literacy_concerns_details"]).isEmpty()
+    assertThat(answers["reading_writing_difficulties"]).isEmpty()
+    assertThat(answers["reading_writing_difficulties_details"]).isEmpty()
+  }
+
+  @Test
+  fun `should map to NO answer for pregnancy when pregnancy information is not present`() {
+    // Given
+    val personalCircumstancesDto = DeliusPersonalCircumstancesDto(emptyList())
+    val episodeEntity = createAssessmentEpisodeEntity()
+
+    // When
+    DeliusPersonalCircumstancesDto.from(personalCircumstancesDto, episodeEntity)
+
+    // Then
+    val answers = episodeEntity.answers
+    assertThat(answers["pregnancy"]).isEqualTo(listOf("NO"))
+  }
+
+  @Test
   fun `should map DeliusPersonalCircumstancesDto to episode answers`() {
     // Given
     val json = this::class.java.getResource("/json/deliusPersonalCircumstances.json")?.readText()
     val personalCircumstancesDto = objectMapper.readValue(json, DeliusPersonalCircumstancesDto::class.java)
 
-    val episodeEntity = AssessmentEpisodeEntity(
-      123456L,
-      UUID.randomUUID(),
-      AssessmentEntity(),
-      AssessmentType.UPW,
-      1L,
-      AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
-      LocalDateTime.of(2019, 8, 1, 8, 0),
-      null,
-      "Change of Circs",
-      null
-    )
+    val episodeEntity = createAssessmentEpisodeEntity()
 
     // When
     DeliusPersonalCircumstancesDto.from(personalCircumstancesDto, episodeEntity)
@@ -84,5 +116,21 @@ class DeliusPersonalCircumstanceDtoTest {
     assertThat(answers["reading_literacy_concerns_details"]).isEqualTo(listOf("Cannot read"))
     assertThat(answers["reading_writing_difficulties"]).isEqualTo(listOf("YES"))
     assertThat(answers["reading_writing_difficulties_details"]).isEqualTo(listOf("Cannot read", "Numeracy difficulties", "Communication difficulties"))
+  }
+
+  private fun createAssessmentEpisodeEntity(): AssessmentEpisodeEntity {
+    val episodeEntity = AssessmentEpisodeEntity(
+      123456L,
+      UUID.randomUUID(),
+      AssessmentEntity(),
+      AssessmentType.UPW,
+      1L,
+      AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
+      LocalDateTime.of(2019, 8, 1, 8, 0),
+      null,
+      "Change of Circs",
+      null
+    )
+    return episodeEntity
   }
 }
