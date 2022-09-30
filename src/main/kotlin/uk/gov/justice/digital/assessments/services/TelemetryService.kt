@@ -65,4 +65,3 @@ enum class TelemetryEventType(val eventName: String) {
   ASSESSMENT_COMPLETE("arnAssessmentCompleted"),
   ASSESSMENT_CLONED("arnAssessmentCloned")
 }
-
