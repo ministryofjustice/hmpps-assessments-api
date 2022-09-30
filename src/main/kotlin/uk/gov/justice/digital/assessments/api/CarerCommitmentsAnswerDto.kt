@@ -29,14 +29,14 @@ data class CarerCommitmentsAnswerDto(
       else carerCommitments.map { from(it) }
     }
 
-    fun from(carerCommitment: DeliusPersonalCircumstanceDto): CarerCommitmentsAnswerDto {
+    fun from(deliusPersonalCircumstanceDto: DeliusPersonalCircumstanceDto): CarerCommitmentsAnswerDto {
       return CarerCommitmentsAnswerDto(
-        code = carerCommitment.personalCircumstanceType.code,
-        description = carerCommitment.personalCircumstanceType.description,
-        subType = carerCommitment.personalCircumstanceSubType.description,
-        subTypeCode = carerCommitment.personalCircumstanceSubType.code,
-        notes = carerCommitment.notes,
-        isEvidenced = carerCommitment.evidenced,
+        code = deliusPersonalCircumstanceDto.personalCircumstanceType.code,
+        description = deliusPersonalCircumstanceDto.personalCircumstanceType.description,
+        subType = deliusPersonalCircumstanceDto.personalCircumstanceSubType.description,
+        subTypeCode = deliusPersonalCircumstanceDto.personalCircumstanceSubType.code,
+        notes = deliusPersonalCircumstanceDto.notes,
+        isEvidenced = deliusPersonalCircumstanceDto.evidenced,
       )
     }
   }

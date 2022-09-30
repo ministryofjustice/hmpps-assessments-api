@@ -41,16 +41,20 @@ data class GPDetailsAnswerDto(
     }
 
     fun from(personalContact: PersonalContact): GPDetailsAnswerDto {
+
+      val fullName = listOfNotNull(personalContact.firstName, personalContact.surname)
+        .joinToString(separator = " ")
+
       return GPDetailsAnswerDto(
-        name = listOf("${personalContact.firstName} ${personalContact.surname}"),
-        buildingName = listOf(personalContact.address?.buildingName),
-        addressNumber = listOf(personalContact.address?.addressNumber),
-        streetName = listOf(personalContact.address?.streetName),
-        district = listOf(personalContact.address?.district),
-        town = listOf(personalContact.address?.town),
-        county = listOf(personalContact.address?.county),
-        postcode = listOf(personalContact.address?.postcode),
-        telephoneNumber = listOf(personalContact.address?.telephoneNumber)
+        name = if (fullName.isEmpty()) emptyList() else listOf(fullName),
+        buildingName = listOfNotNull(personalContact.address?.buildingName),
+        addressNumber = listOfNotNull(personalContact.address?.addressNumber),
+        streetName = listOfNotNull(personalContact.address?.streetName),
+        district = listOfNotNull(personalContact.address?.district),
+        town = listOfNotNull(personalContact.address?.town),
+        county = listOfNotNull(personalContact.address?.county),
+        postcode = listOfNotNull(personalContact.address?.postcode),
+        telephoneNumber = listOfNotNull(personalContact.address?.telephoneNumber)
       )
     }
   }

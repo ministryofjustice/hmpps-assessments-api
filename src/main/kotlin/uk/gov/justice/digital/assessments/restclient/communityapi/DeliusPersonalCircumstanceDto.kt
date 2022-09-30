@@ -75,10 +75,10 @@ data class DeliusPersonalCircumstancesDto(
 
       if (pregnancy.isNotEmpty()) {
         episode.addAnswer("pregnancy", listOf("PREGNANT"))
-        episode.addAnswer("pregnancy_pregnant_details", pregnancy.map { it.notes } as List<Any>)
+        episode.addAnswer("pregnancy_pregnant_details", pregnancy.mapNotNull { it.notes } as List<Any>)
       } else if (recentlyGivenBirth.isNotEmpty()) {
         episode.addAnswer("pregnancy", listOf("RECENTLY_GIVEN_BIRTH"))
-        episode.addAnswer("pregnancy_recently_given_birth_details", recentlyGivenBirth.map { it.notes } as List<Any>)
+        episode.addAnswer("pregnancy_recently_given_birth_details", recentlyGivenBirth.mapNotNull { it.notes } as List<Any>)
       } else {
         episode.addAnswer("pregnancy", listOf("NO"))
       }
@@ -94,7 +94,7 @@ data class DeliusPersonalCircumstancesDto(
 
       val numeracyConcerns = yesNoFieldType(numeracy.map { it.personalCircumstanceSubType.code })
       episode.addAnswer("numeracy_concerns", numeracyConcerns)
-      episode.addAnswer("numeracy_concerns_details", numeracy.map { it.notes } as List<Any>)
+      episode.addAnswer("numeracy_concerns_details", numeracy.mapNotNull { it.notes } as List<Any>)
     }
 
     private fun mapLanguageCommunication(
@@ -107,7 +107,7 @@ data class DeliusPersonalCircumstancesDto(
 
       val languageCommunicationConcerns = yesNoFieldType(languageCommunication.map { it.personalCircumstanceSubType.code })
       episode.addAnswer("language_communication_concerns", languageCommunicationConcerns)
-      episode.addAnswer("language_communication_concerns_details", languageCommunication.map { it.notes } as List<Any>)
+      episode.addAnswer("language_communication_concerns_details", languageCommunication.mapNotNull { it.notes } as List<Any>)
     }
 
     private fun mapCarerCommitment(
@@ -116,10 +116,10 @@ data class DeliusPersonalCircumstancesDto(
     ) {
       val carerCommitments =
         personalCircumstancesDto.personalCircumstances.filter { it.personalCircumstanceType.code == "I" }
-      val carerCommitmentsDescription = yesNoFieldType(carerCommitments.map { it.personalCircumstanceSubType.code })
+      val carerCommitmentsDescription = yesNoFieldType(carerCommitments.mapNotNull { it.personalCircumstanceSubType.code })
 
       episode.addAnswer("caring_commitments", carerCommitmentsDescription)
-      episode.addAnswer("caring_commitments_details", carerCommitments.map { it.notes } as List<Any>)
+      episode.addAnswer("caring_commitments_details", carerCommitments.mapNotNull { it.notes } as List<Any>)
     }
 
     private fun mapAllergies(
@@ -131,7 +131,7 @@ data class DeliusPersonalCircumstancesDto(
       }
       val allergyDescription = yesNoFieldType(allergies.map { it.personalCircumstanceSubType.code })
       episode.addAnswer("allergies", allergyDescription)
-      episode.addAnswer("allergies_details", allergies.map { it.notes } as List<Any>)
+      episode.addAnswer("allergies_details", allergies.mapNotNull { it.notes } as List<Any>)
     }
 
     private fun mapActiveCarerCommitments(
