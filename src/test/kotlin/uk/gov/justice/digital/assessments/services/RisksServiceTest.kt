@@ -7,10 +7,9 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import uk.gov.justice.digital.assessments.api.RoshRiskSummaryDto
 import uk.gov.justice.digital.assessments.restclient.AssessRisksAndNeedsApiRestClient
 import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
-import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.RiskInCommunityDto
-import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.RiskSummary
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityRegistration
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityRegistrationElement
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityRegistrations
@@ -158,14 +157,13 @@ class RisksServiceTest {
   inner class GetRoshRiskSummary {
     @Test
     fun `fetchs the ROSH risk summary`() {
-      every { assessRisksAndNeedsApiRestClient.getRoshRiskSummary(crn) } returns RiskSummary(
-        overallRiskLevel = "HIGH",
-        assessedOn = LocalDate.parse("2021-10-10"),
-        riskInCommunity = RiskInCommunityDto(
-          high = listOf("Public"),
-          medium = listOf("Known Adult", "Staff"),
-          low = listOf("Children"),
-        )
+      every { assessRisksAndNeedsApiRestClient.getRoshRiskSummary(crn) } returns RoshRiskSummaryDto(
+        overallRisk = "HIGH",
+        lastUpdated = LocalDate.parse("2021-10-10"),
+        riskToChildrenInCommunity = "LOW",
+        riskToKnownAdultInCommunity = "MEDIUM",
+        riskToStaffInCommunity = "MEDIUM",
+        riskToPublicInCommunity = "HIGH"
       )
 
       val riskSummary = risksService.getRoshRiskSummaryForAssessment(crn)
@@ -180,23 +178,22 @@ class RisksServiceTest {
 
     @Test
     fun `handles when risk is not known`() {
-      every { assessRisksAndNeedsApiRestClient.getRoshRiskSummary(crn) } returns RiskSummary(
-        overallRiskLevel = "HIGH",
-        assessedOn = LocalDate.parse("2021-10-10"),
-        riskInCommunity = RiskInCommunityDto(
-          high = listOf(),
-          medium = listOf(),
-          low = listOf(),
-        )
+      every { assessRisksAndNeedsApiRestClient.getRoshRiskSummary(crn) } returns RoshRiskSummaryDto(
+        overallRisk = "HIGH",
+        lastUpdated = LocalDate.parse("2021-10-10"),
+        riskToChildrenInCommunity = null,
+        riskToKnownAdultInCommunity = null,
+        riskToStaffInCommunity = null,
+        riskToPublicInCommunity = null,
       )
 
       val riskSummary = risksService.getRoshRiskSummaryForAssessment(crn)
 
       assertThat(riskSummary.overallRisk).isEqualTo("HIGH")
-      assertThat(riskSummary.riskToChildrenInCommunity).isEqualTo("NOT_KNOWN")
-      assertThat(riskSummary.riskToKnownAdultInCommunity).isEqualTo("NOT_KNOWN")
-      assertThat(riskSummary.riskToStaffInCommunity).isEqualTo("NOT_KNOWN")
-      assertThat(riskSummary.riskToPublicInCommunity).isEqualTo("NOT_KNOWN")
+      assertThat(riskSummary.riskToChildrenInCommunity).isEqualTo(null)
+      assertThat(riskSummary.riskToKnownAdultInCommunity).isEqualTo(null)
+      assertThat(riskSummary.riskToStaffInCommunity).isEqualTo(null)
+      assertThat(riskSummary.riskToPublicInCommunity).isEqualTo(null)
     }
   }
 }
