@@ -36,23 +36,53 @@ class CommunityOffenderDtoTest {
   }
 
   @Test
+  fun `should map empty delius values to empty list episode answers`() {
+    val json = this::class.java.getResource("/json/deliusOffenderEmptyValues.json")?.readText()
+    val offenderDto = objectMapper.readValue(json, CommunityOffenderDto::class.java)
+    val episodeEntity = createAssessmentEpisodeEntity()
+
+    // When
+    CommunityOffenderDto.from(offenderDto, episodeEntity)
+
+    // Then
+    val answers = episodeEntity.answers
+    assertThat(answers["pnc"]).isEmpty()
+    assertThat(answers["ethnicity"]).isEmpty()
+    assertThat(answers["language"]).isEmpty()
+    assertThat(answers["gender_identity"]).isEmpty()
+    assertThat(answers["first_name"]).isEmpty()
+    assertThat(answers["family_name"]).isEmpty()
+    assertThat(answers["crn"]).isEmpty()
+    assertThat(answers["requires_interpreter"]).isEqualTo(listOf("false"))
+    assertThat(answers["contact_email_addresses"]).isEmpty()
+    assertThat(answers["dob_aliases"]).isEmpty()
+    assertThat(answers["contact_address_building_name"]).isEmpty()
+    assertThat(answers["contact_address_house_number"]).isEmpty()
+    assertThat(answers["contact_address_street_name"]).isEmpty()
+    assertThat(answers["contact_address_district"]).isEmpty()
+    assertThat(answers["contact_address_town_or_city"]).isEmpty()
+    assertThat(answers["contact_address_county"]).isEmpty()
+    assertThat(answers["contact_address_postcode"]).isEmpty()
+    assertThat(answers["contact_mobile_phone_number"]).isEmpty()
+    assertThat(answers["contact_phone_number"]).isEmpty()
+    assertThat(answers["physical_disability"]).isEmpty()
+    assertThat(answers["physical_disability_details"]).isEmpty()
+    assertThat(answers["learning_disability"]).isEmpty()
+    assertThat(answers["learning_disability_details"]).isEmpty()
+    assertThat(answers["learning_difficulty"]).isEmpty()
+    assertThat(answers["learning_difficulty_details"]).isEmpty()
+    assertThat(answers["mental_health_condition"]).isEmpty()
+    assertThat(answers["mental_health_condition_details"]).isEmpty()
+    assertThat(answers["active_disabilities"]).isEmpty()
+  }
+
+  @Test
   fun `should map CommunityOffenderDto to episode answers`() {
     // Given
     val json = this::class.java.getResource("/json/deliusOffender.json")?.readText()
     val offenderDto = objectMapper.readValue(json, CommunityOffenderDto::class.java)
 
-    val episodeEntity = AssessmentEpisodeEntity(
-      123456L,
-      UUID.randomUUID(),
-      AssessmentEntity(),
-      AssessmentType.UPW,
-      1L,
-      AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
-      LocalDateTime.of(2019, 8, 1, 8, 0),
-      null,
-      "Change of Circs",
-      null
-    )
+    val episodeEntity = createAssessmentEpisodeEntity()
 
     // When
     CommunityOffenderDto.from(offenderDto, episodeEntity)
@@ -95,5 +125,21 @@ class CommunityOffenderDtoTest {
       DisabilityAnswerDto(code = "LD", description = "Learning difficulty", notes = "notes", emptyList()),
       DisabilityAnswerDto(code = "PC", description = "Physical disability", notes = "notes", emptyList())
     )
+  }
+
+  private fun createAssessmentEpisodeEntity(): AssessmentEpisodeEntity {
+    val episodeEntity = AssessmentEpisodeEntity(
+      123456L,
+      UUID.randomUUID(),
+      AssessmentEntity(),
+      AssessmentType.UPW,
+      1L,
+      AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
+      LocalDateTime.of(2019, 8, 1, 8, 0),
+      null,
+      "Change of Circs",
+      null
+    )
+    return episodeEntity
   }
 }

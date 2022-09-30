@@ -43,18 +43,7 @@ class PersonalContactTest {
     val json = this::class.java.getResource("/json/deliusPersonalContacts.json")?.readText()!!
     val personalContacts: List<PersonalContact> = objectMapper.readValue(json)
 
-    val episodeEntity = AssessmentEpisodeEntity(
-      123456L,
-      UUID.randomUUID(),
-      AssessmentEntity(),
-      AssessmentType.UPW,
-      1L,
-      AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
-      LocalDateTime.of(2019, 8, 1, 8, 0),
-      null,
-      "Change of Circs",
-      null
-    )
+    val episodeEntity = createAssessmentEpisodeEntity()
 
     // When
     PersonalContact.from(personalContacts, episodeEntity)
@@ -92,5 +81,37 @@ class PersonalContactTest {
     )
 
     assertThat(answers["emergency_contact_details"]).containsExactlyInAnyOrder(emergencyContactDetails)
+  }
+
+  private fun createAssessmentEpisodeEntity(): AssessmentEpisodeEntity {
+    val episodeEntity = AssessmentEpisodeEntity(
+      123456L,
+      UUID.randomUUID(),
+      AssessmentEntity(),
+      AssessmentType.UPW,
+      1L,
+      AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
+      LocalDateTime.of(2019, 8, 1, 8, 0),
+      null,
+      "Change of Circs",
+      null
+    )
+    return episodeEntity
+  }
+
+  @Test
+  fun `should map empty delius values to empty list episode answers`() {
+    // Given
+    val personalContacts: List<PersonalContact> = objectMapper.readValue("[]")
+
+    val episodeEntity = createAssessmentEpisodeEntity()
+
+    // When
+    PersonalContact.from(personalContacts, episodeEntity)
+
+    // Then
+    val answers = episodeEntity.answers
+    assertThat(answers["gp_details"]).isEmpty()
+    assertThat(answers["emergency_contact_details"]).isEmpty()
   }
 }
