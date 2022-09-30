@@ -598,52 +598,55 @@ class EpisodeServiceTest {
 
       episodeService.prePopulateFromPreviousEpisodes(newEpisode, mixedPreviousEpisodes)
 
-      verify(exactly = 1) { auditService.createAuditEvent(
-        AuditType.ARN_ASSESSMENT_CLONED,
-        any(),
-        newEpisode.episodeUuid,
-        CRN,
-        authorEntity,
-        mapOf(
-          "previousEpisodeUUID" to previousEpisodeUuid,
-          "previousEpisodeCompletedDate" to previousEpisodeEndDate)
-      ) }
-      verify(exactly = 1) { telemetryService.trackAssessmentClonedEvent(
-        CRN,
-        authorEntity,
-        any(),
-        newEpisode.episodeUuid,
-        UPW,
-        previousEpisodeUuid,
-        previousEpisodeEndDate)
+      verify(exactly = 1) {
+        auditService.createAuditEvent(
+          AuditType.ARN_ASSESSMENT_CLONED,
+          any(),
+          newEpisode.episodeUuid,
+          CRN,
+          authorEntity,
+          mapOf(
+            "previousEpisodeUUID" to previousEpisodeUuid,
+            "previousEpisodeCompletedDate" to previousEpisodeEndDate
+          )
+        )
       }
-    }
-
-
-    }
-    @Test
-    fun `no audit event when new episode unchanged as no previous episodes`() {
-      val questions = listOf(
-        GroupQuestionDto(questionCode = "question_1"),
-        GroupQuestionDto(questionCode = "question_2"),
-      )
-      every { assessmentReferenceDataService.getQuestionsForAssessmentType(newEpisode.assessmentType) } returns questions
-
-      val emptyPreviousEpisode = emptyList<AssessmentEpisodeEntity>()
-
-      episodeService.prePopulateFromPreviousEpisodes(newEpisode, emptyPreviousEpisode).answers
-
-      verify(exactly = 0) { auditService.createAuditEvent(any(), any(), any(), any(), any()) }
-      verify(exactly = 0) {
+      verify(exactly = 1) {
         telemetryService.trackAssessmentClonedEvent(
+          CRN,
+          authorEntity,
           any(),
-          any(),
-          any(),
-          any(),
-          any(),
-          any(),
-          any()
+          newEpisode.episodeUuid,
+          UPW,
+          previousEpisodeUuid,
+          previousEpisodeEndDate
         )
       }
     }
+  }
+  @Test
+  fun `no audit event when new episode unchanged as no previous episodes`() {
+    val questions = listOf(
+      GroupQuestionDto(questionCode = "question_1"),
+      GroupQuestionDto(questionCode = "question_2"),
+    )
+    every { assessmentReferenceDataService.getQuestionsForAssessmentType(newEpisode.assessmentType) } returns questions
+
+    val emptyPreviousEpisode = emptyList<AssessmentEpisodeEntity>()
+
+    episodeService.prePopulateFromPreviousEpisodes(newEpisode, emptyPreviousEpisode).answers
+
+    verify(exactly = 0) { auditService.createAuditEvent(any(), any(), any(), any(), any()) }
+    verify(exactly = 0) {
+      telemetryService.trackAssessmentClonedEvent(
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any()
+      )
+    }
+  }
 }
