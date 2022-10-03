@@ -205,7 +205,7 @@ class EpisodeServiceTest {
     val gpDetailsAnswerDtos = episodeEntity.answers["gp_details"] as List<GPDetailsAnswerDto>
     assertThat(gpDetailsAnswerDtos.size).isEqualTo(1)
     assertThat(gpDetailsAnswerDtos[0].name).isEqualTo(listOf("Charles Europe"))
-    assertThat(gpDetailsAnswerDtos[0].buildingName).isEqualTo(listOf(null))
+    assertThat(gpDetailsAnswerDtos[0].buildingName).isEmpty()
 
     val emergencyContactDetailsAnswerDtos =
       episodeEntity.answers["emergency_contact_details"] as List<EmergencyContactDetailsAnswerDto>

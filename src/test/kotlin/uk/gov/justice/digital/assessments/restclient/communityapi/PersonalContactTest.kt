@@ -53,7 +53,7 @@ class PersonalContactTest {
 
     val gpDetailsAnswer = GPDetailsAnswerDto(
       name = listOf("Charles Europe"),
-      buildingName = listOf(null),
+      buildingName = emptyList(),
       addressNumber = listOf("32"),
       streetName = listOf("Scotland Street"),
       town = listOf("Sheffield"),

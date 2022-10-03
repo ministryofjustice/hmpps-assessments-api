@@ -51,18 +51,18 @@ data class EmergencyContactDetailsAnswerDto(
     fun from(personalContact: PersonalContact): EmergencyContactDetailsAnswerDto {
       return EmergencyContactDetailsAnswerDto(
 
-        firstName = listOf(personalContact.firstName),
-        familyName = listOf(personalContact.surname),
-        relationship = listOf(personalContact.relationship),
-        addressNumber = listOf(personalContact.address?.addressNumber),
-        buildingName = listOf(personalContact.address?.buildingName),
-        streetName = listOf(personalContact.address?.streetName),
-        district = listOf(personalContact.address?.district),
-        town = listOf(personalContact.address?.town),
-        county = listOf(personalContact.address?.county),
-        postcode = listOf(personalContact.address?.postcode),
-        telephoneNumber = listOf(personalContact.address?.telephoneNumber),
-        mobileNumber = listOf(personalContact.mobileNumber)
+        firstName = listOfNotNull(personalContact.firstName),
+        familyName = listOfNotNull(personalContact.surname),
+        relationship = listOfNotNull(personalContact.relationship),
+        addressNumber = listOfNotNull(personalContact.address?.addressNumber),
+        buildingName = listOfNotNull(personalContact.address?.buildingName),
+        streetName = listOfNotNull(personalContact.address?.streetName),
+        district = listOfNotNull(personalContact.address?.district),
+        town = listOfNotNull(personalContact.address?.town),
+        county = listOfNotNull(personalContact.address?.county),
+        postcode = listOfNotNull(personalContact.address?.postcode),
+        telephoneNumber = listOfNotNull(personalContact.address?.telephoneNumber),
+        mobileNumber = listOfNotNull(personalContact.mobileNumber)
       )
     }
   }
