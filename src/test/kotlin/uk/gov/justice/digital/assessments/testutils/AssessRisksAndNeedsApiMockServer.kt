@@ -170,10 +170,10 @@ class AssessRisksAndNeedsApiMockServer : WireMockServer(9007) {
                 RoshRiskSummaryDto(
                   overallRisk = "HIGH",
                   lastUpdated = LocalDate.parse("2021-10-10"),
-                  riskToPublicInCommunity = "HIGH",
-                  riskToKnownAdultInCommunity = "MEDIUM",
-                  riskToStaffInCommunity = "MEDIUM",
-                  riskToChildrenInCommunity = "LOW",
+                  riskToPublic = "HIGH",
+                  riskToKnownAdult = "MEDIUM",
+                  riskToStaff = "MEDIUM",
+                  riskToChildren = "LOW",
                 )
               )
             )
