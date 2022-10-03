@@ -57,7 +57,7 @@ class AssessRisksAndNeedsApiRestClient {
       .block().also { log.info("Retrieve Risk Predictors $predictorType for crn ${offenderAndOffencesDto.crn}") }
   }
 
-  @Cacheable("roshRiskSummary")
+  @Cacheable("roshRiskWidget")
   fun getRoshRiskSummary(
     crn: String,
   ): RoshRiskSummaryDto? {
