@@ -138,10 +138,10 @@ class AssessRisksAndNeedsApiClientTest : IntegrationTest() {
     @Test
     fun `returns registrations`() {
       val response = assessRiskAndNeedsApiRestClient.getRoshRiskSummary(crn)
-      assertThat(response?.riskToPublic).isEqualTo("HIGH")
-      assertThat(response?.riskToKnownAdult).isEqualTo("MEDIUM")
-      assertThat(response?.riskToStaff).isEqualTo("MEDIUM")
-      assertThat(response?.riskToChildren).isEqualTo("LOW")
+      assertThat(response?.riskInCommunity?.get("Children")).isEqualTo("LOW")
+      assertThat(response?.riskInCommunity?.get("Known Adult")).isEqualTo("MEDIUM")
+      assertThat(response?.riskInCommunity?.get("Staff")).isEqualTo("MEDIUM")
+      assertThat(response?.riskInCommunity?.get("Public")).isEqualTo("HIGH")
       assertThat(response?.lastUpdated).isEqualTo(LocalDate.parse("2021-10-10"))
     }
 

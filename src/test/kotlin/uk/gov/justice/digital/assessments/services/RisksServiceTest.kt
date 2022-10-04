@@ -160,20 +160,22 @@ class RisksServiceTest {
       every { assessRisksAndNeedsApiRestClient.getRoshRiskSummary(crn) } returns RoshRiskSummaryDto(
         overallRisk = "HIGH",
         lastUpdated = LocalDate.parse("2021-10-10"),
-        riskToChildren = "LOW",
-        riskToKnownAdult = "MEDIUM",
-        riskToStaff = "MEDIUM",
-        riskToPublic = "HIGH"
+        riskInCommunity = mapOf(
+          "Public" to "HIGH",
+          "Known Adult" to "MEDIUM",
+          "Staff" to "MEDIUM",
+          "Children" to "LOW",
+        ),
       )
 
       val riskSummary = risksService.getRoshRiskSummaryForAssessment(crn)
 
       assertThat(riskSummary.overallRisk).isEqualTo("HIGH")
       assertThat(riskSummary.lastUpdated).isEqualTo(LocalDate.parse("2021-10-10"))
-      assertThat(riskSummary.riskToChildren).isEqualTo("LOW")
-      assertThat(riskSummary.riskToKnownAdult).isEqualTo("MEDIUM")
-      assertThat(riskSummary.riskToStaff).isEqualTo("MEDIUM")
-      assertThat(riskSummary.riskToPublic).isEqualTo("HIGH")
+      assertThat(riskSummary.riskInCommunity["Children"]).isEqualTo("LOW")
+      assertThat(riskSummary.riskInCommunity["Known Adult"]).isEqualTo("MEDIUM")
+      assertThat(riskSummary.riskInCommunity["Staff"]).isEqualTo("MEDIUM")
+      assertThat(riskSummary.riskInCommunity["Public"]).isEqualTo("HIGH")
     }
 
     @Test
@@ -181,19 +183,21 @@ class RisksServiceTest {
       every { assessRisksAndNeedsApiRestClient.getRoshRiskSummary(crn) } returns RoshRiskSummaryDto(
         overallRisk = "HIGH",
         lastUpdated = LocalDate.parse("2021-10-10"),
-        riskToChildren = null,
-        riskToKnownAdult = null,
-        riskToStaff = null,
-        riskToPublic = null,
+        riskInCommunity = mapOf(
+          "Public" to null,
+          "Known Adult" to null,
+          "Staff" to null,
+          "Children" to null,
+        ),
       )
 
       val riskSummary = risksService.getRoshRiskSummaryForAssessment(crn)
 
       assertThat(riskSummary.overallRisk).isEqualTo("HIGH")
-      assertThat(riskSummary.riskToChildren).isEqualTo(null)
-      assertThat(riskSummary.riskToKnownAdult).isEqualTo(null)
-      assertThat(riskSummary.riskToStaff).isEqualTo(null)
-      assertThat(riskSummary.riskToPublic).isEqualTo(null)
+      assertThat(riskSummary.riskInCommunity["Children"]).isEqualTo(null)
+      assertThat(riskSummary.riskInCommunity["Known Adult"]).isEqualTo(null)
+      assertThat(riskSummary.riskInCommunity["Staff"]).isEqualTo(null)
+      assertThat(riskSummary.riskInCommunity["Public"]).isEqualTo(null)
     }
   }
 }

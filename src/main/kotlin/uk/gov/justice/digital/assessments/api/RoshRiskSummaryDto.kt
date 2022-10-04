@@ -1,8 +1,10 @@
 package uk.gov.justice.digital.assessments.api
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import io.swagger.v3.oas.annotations.media.Schema
 import java.time.LocalDate
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class RoshRiskSummaryDto(
   @Schema(description = "Has a RoSH risk assessment been completed?", example = "true")
   val hasBeenCompleted: Boolean? = null,
@@ -13,15 +15,6 @@ data class RoshRiskSummaryDto(
   @Schema(description = "Assessed on", example = "2021-10-10")
   val lastUpdated: LocalDate? = null,
 
-  @Schema(description = "Risk to children in the community", example = "HIGH")
-  val riskToChildren: String? = null,
-
-  @Schema(description = "Risk to public in the community", example = "HIGH")
-  val riskToPublic: String? = null,
-
-  @Schema(description = "Risk to known adult in the community", example = "HIGH")
-  val riskToKnownAdult: String? = null,
-
-  @Schema(description = "Risk to staff in the community", example = "HIGH")
-  val riskToStaff: String? = null,
+  @Schema(description = "Risk in the community", example = "HIGH")
+  val riskInCommunity: Map<String, String?> = hashMapOf(),
 )
