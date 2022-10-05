@@ -168,8 +168,7 @@ class AssessRisksAndNeedsApiMockServer : WireMockServer(9007) {
             .withBody(
               mapToJson(
                 RoshRiskSummaryDto(
-                  overallRisk = "HIGH",
-                  lastUpdated = LocalDate.parse("2021-10-10"),
+                  assessedOn = LocalDate.parse("2021-10-10"),
                   riskInCommunity = mapOf(
                     "Public" to "HIGH",
                     "Known Adult" to "MEDIUM",

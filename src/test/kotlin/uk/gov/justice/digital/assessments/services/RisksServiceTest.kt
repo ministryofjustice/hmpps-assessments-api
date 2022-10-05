@@ -159,7 +159,7 @@ class RisksServiceTest {
     fun `fetchs the ROSH risk summary`() {
       every { assessRisksAndNeedsApiRestClient.getRoshRiskSummary(crn) } returns RoshRiskSummaryDto(
         overallRisk = "HIGH",
-        lastUpdated = LocalDate.parse("2021-10-10"),
+        assessedOn = LocalDate.parse("2021-10-10"),
         riskInCommunity = mapOf(
           "Public" to "HIGH",
           "Known Adult" to "MEDIUM",
@@ -171,7 +171,7 @@ class RisksServiceTest {
       val riskSummary = risksService.getRoshRiskSummaryForAssessment(crn)
 
       assertThat(riskSummary.overallRisk).isEqualTo("HIGH")
-      assertThat(riskSummary.lastUpdated).isEqualTo(LocalDate.parse("2021-10-10"))
+      assertThat(riskSummary.assessedOn).isEqualTo(LocalDate.parse("2021-10-10"))
       assertThat(riskSummary.riskInCommunity["Children"]).isEqualTo("LOW")
       assertThat(riskSummary.riskInCommunity["Known Adult"]).isEqualTo("MEDIUM")
       assertThat(riskSummary.riskInCommunity["Staff"]).isEqualTo("MEDIUM")
@@ -181,8 +181,7 @@ class RisksServiceTest {
     @Test
     fun `handles when risk is not known`() {
       every { assessRisksAndNeedsApiRestClient.getRoshRiskSummary(crn) } returns RoshRiskSummaryDto(
-        overallRisk = "HIGH",
-        lastUpdated = LocalDate.parse("2021-10-10"),
+        assessedOn = LocalDate.parse("2021-10-10"),
         riskInCommunity = mapOf(
           "Public" to null,
           "Known Adult" to null,
@@ -193,7 +192,7 @@ class RisksServiceTest {
 
       val riskSummary = risksService.getRoshRiskSummaryForAssessment(crn)
 
-      assertThat(riskSummary.overallRisk).isEqualTo("HIGH")
+      assertThat(riskSummary.overallRisk).isEqualTo(null)
       assertThat(riskSummary.riskInCommunity["Children"]).isEqualTo(null)
       assertThat(riskSummary.riskInCommunity["Known Adult"]).isEqualTo(null)
       assertThat(riskSummary.riskInCommunity["Staff"]).isEqualTo(null)
