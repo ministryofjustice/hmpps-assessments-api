@@ -7,10 +7,9 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import uk.gov.justice.digital.assessments.api.RoshRiskSummaryDto
 import uk.gov.justice.digital.assessments.restclient.AssessRisksAndNeedsApiRestClient
 import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
-import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.RiskInCommunityDto
-import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.RiskSummary
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityRegistration
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityRegistrationElement
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityRegistrations
@@ -158,45 +157,46 @@ class RisksServiceTest {
   inner class GetRoshRiskSummary {
     @Test
     fun `fetchs the ROSH risk summary`() {
-      every { assessRisksAndNeedsApiRestClient.getRoshRiskSummary(crn) } returns RiskSummary(
-        overallRiskLevel = "HIGH",
+      every { assessRisksAndNeedsApiRestClient.getRoshRiskSummary(crn) } returns RoshRiskSummaryDto(
+        overallRisk = "HIGH",
         assessedOn = LocalDate.parse("2021-10-10"),
-        riskInCommunity = RiskInCommunityDto(
-          high = listOf("Public"),
-          medium = listOf("Known Adult", "Staff"),
-          low = listOf("Children"),
-        )
+        riskInCommunity = mapOf(
+          "Public" to "HIGH",
+          "Known Adult" to "MEDIUM",
+          "Staff" to "MEDIUM",
+          "Children" to "LOW",
+        ),
       )
 
       val riskSummary = risksService.getRoshRiskSummaryForAssessment(crn)
 
       assertThat(riskSummary.overallRisk).isEqualTo("HIGH")
-      assertThat(riskSummary.lastUpdated).isEqualTo(LocalDate.parse("2021-10-10"))
-      assertThat(riskSummary.riskToChildrenInCommunity).isEqualTo("LOW")
-      assertThat(riskSummary.riskToKnownAdultInCommunity).isEqualTo("MEDIUM")
-      assertThat(riskSummary.riskToStaffInCommunity).isEqualTo("MEDIUM")
-      assertThat(riskSummary.riskToPublicInCommunity).isEqualTo("HIGH")
+      assertThat(riskSummary.assessedOn).isEqualTo(LocalDate.parse("2021-10-10"))
+      assertThat(riskSummary.riskInCommunity["Children"]).isEqualTo("LOW")
+      assertThat(riskSummary.riskInCommunity["Known Adult"]).isEqualTo("MEDIUM")
+      assertThat(riskSummary.riskInCommunity["Staff"]).isEqualTo("MEDIUM")
+      assertThat(riskSummary.riskInCommunity["Public"]).isEqualTo("HIGH")
     }
 
     @Test
     fun `handles when risk is not known`() {
-      every { assessRisksAndNeedsApiRestClient.getRoshRiskSummary(crn) } returns RiskSummary(
-        overallRiskLevel = "HIGH",
+      every { assessRisksAndNeedsApiRestClient.getRoshRiskSummary(crn) } returns RoshRiskSummaryDto(
         assessedOn = LocalDate.parse("2021-10-10"),
-        riskInCommunity = RiskInCommunityDto(
-          high = listOf(),
-          medium = listOf(),
-          low = listOf(),
-        )
+        riskInCommunity = mapOf(
+          "Public" to null,
+          "Known Adult" to null,
+          "Staff" to null,
+          "Children" to null,
+        ),
       )
 
       val riskSummary = risksService.getRoshRiskSummaryForAssessment(crn)
 
-      assertThat(riskSummary.overallRisk).isEqualTo("HIGH")
-      assertThat(riskSummary.riskToChildrenInCommunity).isEqualTo("NOT_KNOWN")
-      assertThat(riskSummary.riskToKnownAdultInCommunity).isEqualTo("NOT_KNOWN")
-      assertThat(riskSummary.riskToStaffInCommunity).isEqualTo("NOT_KNOWN")
-      assertThat(riskSummary.riskToPublicInCommunity).isEqualTo("NOT_KNOWN")
+      assertThat(riskSummary.overallRisk).isEqualTo(null)
+      assertThat(riskSummary.riskInCommunity["Children"]).isEqualTo(null)
+      assertThat(riskSummary.riskInCommunity["Known Adult"]).isEqualTo(null)
+      assertThat(riskSummary.riskInCommunity["Staff"]).isEqualTo(null)
+      assertThat(riskSummary.riskInCommunity["Public"]).isEqualTo(null)
     }
   }
 }

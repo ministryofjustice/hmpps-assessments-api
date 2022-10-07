@@ -7,8 +7,7 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.http.HttpHeader
 import com.github.tomakehurst.wiremock.http.HttpHeaders
-import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.RiskInCommunityDto
-import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.RiskSummary
+import uk.gov.justice.digital.assessments.api.RoshRiskSummaryDto
 import java.time.LocalDate
 import java.util.UUID
 
@@ -162,20 +161,20 @@ class AssessRisksAndNeedsApiMockServer : WireMockServer(9007) {
 
   fun stubGetRoshRiskSummary() {
     stubFor(
-      WireMock.get(WireMock.urlEqualTo("/risks/crn/DX12340A/summary"))
+      WireMock.get(WireMock.urlEqualTo("/risks/crn/DX12340A/widget"))
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
             .withBody(
               mapToJson(
-                RiskSummary(
-                  overallRiskLevel = "HIGH",
+                RoshRiskSummaryDto(
                   assessedOn = LocalDate.parse("2021-10-10"),
-                  riskInCommunity = RiskInCommunityDto(
-                    high = listOf("Public"),
-                    medium = listOf("Known adult", "Staff"),
-                    low = listOf("Children"),
-                  )
+                  riskInCommunity = mapOf(
+                    "Public" to "HIGH",
+                    "Known Adult" to "MEDIUM",
+                    "Staff" to "MEDIUM",
+                    "Children" to "LOW",
+                  ),
                 )
               )
             )
@@ -183,7 +182,7 @@ class AssessRisksAndNeedsApiMockServer : WireMockServer(9007) {
     )
 
     stubFor(
-      WireMock.get(WireMock.urlEqualTo("/risks/crn/invalidNotFound/summary"))
+      WireMock.get(WireMock.urlEqualTo("/risks/crn/invalidNotFound/widget"))
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
@@ -193,7 +192,7 @@ class AssessRisksAndNeedsApiMockServer : WireMockServer(9007) {
     )
 
     stubFor(
-      WireMock.get(WireMock.urlEqualTo("/risks/crn/invalidBadRequest/summary"))
+      WireMock.get(WireMock.urlEqualTo("/risks/crn/invalidBadRequest/widget"))
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
@@ -203,7 +202,7 @@ class AssessRisksAndNeedsApiMockServer : WireMockServer(9007) {
     )
 
     stubFor(
-      WireMock.get(WireMock.urlEqualTo("/risks/crn/invalidUnauthorized/summary"))
+      WireMock.get(WireMock.urlEqualTo("/risks/crn/invalidUnauthorized/widget"))
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
@@ -213,7 +212,7 @@ class AssessRisksAndNeedsApiMockServer : WireMockServer(9007) {
     )
 
     stubFor(
-      WireMock.get(WireMock.urlEqualTo("/risks/crn/invalidForbidden/summary"))
+      WireMock.get(WireMock.urlEqualTo("/risks/crn/invalidForbidden/widget"))
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
@@ -223,7 +222,7 @@ class AssessRisksAndNeedsApiMockServer : WireMockServer(9007) {
     )
 
     stubFor(
-      WireMock.get(WireMock.urlEqualTo("/risks/crn/invalidNotKnow/summary"))
+      WireMock.get(WireMock.urlEqualTo("/risks/crn/invalidNotKnow/widget"))
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))

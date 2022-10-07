@@ -28,9 +28,7 @@ class RisksService(
   fun getRoshRiskSummaryForAssessment(crn: String): RoshRiskSummaryDto {
     log.info("Getting ROSH risk summary for crn: $crn")
 
-    val riskSummary = assessRisksAndNeedsApiRestClient.getRoshRiskSummary(crn)
+    return assessRisksAndNeedsApiRestClient.getRoshRiskSummary(crn)
       ?: throw Exception("Failed to get ROSH risk summary for $crn")
-
-    return RoshRiskSummaryDto.from(riskSummary)
   }
 }

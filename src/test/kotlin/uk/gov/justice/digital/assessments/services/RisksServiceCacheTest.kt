@@ -44,7 +44,7 @@ internal class RisksServiceCacheTest(
     risksService.getRoshRiskSummaryForAssessment(aCRN)
     risksService.getRoshRiskSummaryForAssessment(aCRN)
 
-    assessRisksAndNeedsApiMockServer.verify(exactly(1), getRequestedFor(urlEqualTo("/risks/crn/$aCRN/summary")))
+    assessRisksAndNeedsApiMockServer.verify(exactly(1), getRequestedFor(urlEqualTo("/risks/crn/$aCRN/widget")))
   }
 
   @Test
@@ -59,7 +59,7 @@ internal class RisksServiceCacheTest(
       risksService.getRoshRiskSummaryForAssessment(aCRN)
     }
 
-    assessRisksAndNeedsApiMockServer.verify(exactly(2), getRequestedFor(urlEqualTo("/risks/crn/$aCRN/summary")))
+    assessRisksAndNeedsApiMockServer.verify(exactly(2), getRequestedFor(urlEqualTo("/risks/crn/$aCRN/widget")))
   }
 
   @Test

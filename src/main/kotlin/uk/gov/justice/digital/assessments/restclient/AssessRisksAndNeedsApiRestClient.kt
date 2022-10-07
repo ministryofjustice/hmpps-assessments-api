@@ -8,9 +8,9 @@ import org.springframework.cache.annotation.Cacheable
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
+import uk.gov.justice.digital.assessments.api.RoshRiskSummaryDto
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.OffenderAndOffencesDto
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.RiskPredictorsDto
-import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.RiskSummary
 import uk.gov.justice.digital.assessments.services.dto.PredictorType
 import java.util.UUID
 
@@ -57,13 +57,13 @@ class AssessRisksAndNeedsApiRestClient {
       .block().also { log.info("Retrieve Risk Predictors $predictorType for crn ${offenderAndOffencesDto.crn}") }
   }
 
-  @Cacheable("roshRiskSummary")
+  @Cacheable("roshRiskWidget")
   fun getRoshRiskSummary(
     crn: String,
-  ): RiskSummary? {
+  ): RoshRiskSummaryDto? {
     log.info("Fetching ROSH risk summary for crn $crn")
     val path =
-      "/risks/crn/$crn/summary"
+      "/risks/crn/$crn/widget"
     return webClient
       .get(path)
       .retrieve()
@@ -83,7 +83,7 @@ class AssessRisksAndNeedsApiRestClient {
           ExternalService.ASSESS_RISKS_AND_NEEDS_API
         )
       }
-      .bodyToMono(RiskSummary::class.java)
+      .bodyToMono(RoshRiskSummaryDto::class.java)
       .block().also { log.info("Fetched ROSH risk summary for crn $crn") }
   }
 }
