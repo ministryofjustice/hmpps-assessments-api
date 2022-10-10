@@ -1,8 +1,8 @@
 package uk.gov.justice.digital.assessments.api.assessments
 
 import io.swagger.v3.oas.annotations.media.Schema
-import uk.gov.justice.digital.assessments.api.answers.AnswersDto
 import uk.gov.justice.digital.assessments.api.OffenceDto
+import uk.gov.justice.digital.assessments.api.answers.AnswersDto
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import java.time.LocalDateTime
 import java.util.UUID
