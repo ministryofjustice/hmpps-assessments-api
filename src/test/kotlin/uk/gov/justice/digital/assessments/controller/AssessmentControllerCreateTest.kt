@@ -11,7 +11,7 @@ import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.context.jdbc.SqlConfig
 import org.springframework.test.context.jdbc.SqlGroup
 import org.springframework.test.web.reactive.server.expectBody
-import uk.gov.justice.digital.assessments.api.AnswersDto
+import uk.gov.justice.digital.assessments.api.answers.AnswersDto
 import uk.gov.justice.digital.assessments.api.ErrorResponse
 import uk.gov.justice.digital.assessments.api.assessments.AssessmentDto
 import uk.gov.justice.digital.assessments.api.assessments.AssessmentEpisodeDto

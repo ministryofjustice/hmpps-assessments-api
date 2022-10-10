@@ -2,6 +2,7 @@ package uk.gov.justice.digital.assessments.api
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import uk.gov.justice.digital.assessments.api.answers.CarerCommitmentsAnswerDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.DeliusPersonalCircumstanceDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.PersonalCircumstanceType
 

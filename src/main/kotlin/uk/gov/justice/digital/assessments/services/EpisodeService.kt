@@ -63,6 +63,8 @@ class EpisodeService(
       .map { it.questionCode }
       .filterNot { ignoredQuestionCodes.contains(it) }
 
+    orderedPreviousEpisodes.firstOrNull()?.let { auditAndLogClonedAssessment(newEpisode, it) }
+
     orderedPreviousEpisodes.forEach { episode ->
       val relevantAnswers = episode.answers.filter { questionCodes.contains(it.key) }
       relevantAnswers.forEach { answer ->

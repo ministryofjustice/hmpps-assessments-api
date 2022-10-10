@@ -499,7 +499,6 @@ class EpisodeServiceTest {
   inner class AuditEpisodeCloning {
     @Test
     fun `submits audit event when new episode cloned from previous episode`() {
-      // Given
 
       val questions = listOf(
         GroupQuestionDto(questionCode = "question_1"),
