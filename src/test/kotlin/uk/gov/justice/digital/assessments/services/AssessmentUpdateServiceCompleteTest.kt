@@ -49,6 +49,7 @@ class AssessmentUpdateServiceCompleteTest {
         any(),
         any(),
         any(),
+        any(),
         any()
       )
     }
@@ -72,6 +73,7 @@ class AssessmentUpdateServiceCompleteTest {
     justRun {
       telemetryService.trackAssessmentEvent(
         TelemetryEventType.ASSESSMENT_COMPLETE,
+        any(),
         any(),
         any(),
         any(),

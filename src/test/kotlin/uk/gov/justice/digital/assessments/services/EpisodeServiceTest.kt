@@ -10,10 +10,13 @@ import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.mockk.every
 import io.mockk.junit5.MockKExtension
+import io.mockk.justRun
 import io.mockk.mockk
+import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import uk.gov.justice.digital.assessments.api.EmergencyContactDetailsAnswerDto
@@ -32,12 +35,14 @@ import uk.gov.justice.digital.assessments.jpa.entities.assessments.Tables
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.CloneAssessmentExcludedQuestionsEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.CloneAssessmentExcludedQuestionsRepository
 import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
+import uk.gov.justice.digital.assessments.restclient.audit.AuditType
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.DeliusPersonalCircumstancesDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.OffenderProfile
 import uk.gov.justice.digital.assessments.restclient.communityapi.PersonalContact
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.util.UUID
 
 @ExtendWith(MockKExtension::class)
 @DisplayName("Episode Service Tests")
@@ -46,11 +51,15 @@ class EpisodeServiceTest {
   private val communityApiRestClient: CommunityApiRestClient = mockk()
   private val assessmentReferenceDataService: AssessmentReferenceDataService = mockk()
   private val cloneAssessmentExcludedQuestionsRepository: CloneAssessmentExcludedQuestionsRepository = mockk()
+  private val telemetryService: TelemetryService = mockk()
+  private val auditService: AuditService = mockk()
 
   private val episodeService = EpisodeService(
     communityApiRestClient,
     assessmentReferenceDataService,
     cloneAssessmentExcludedQuestionsRepository,
+    telemetryService,
+    auditService
   )
 
   private lateinit var newEpisode: AssessmentEpisodeEntity
@@ -134,6 +143,8 @@ class EpisodeServiceTest {
     every { communityApiRestClient.getOffender(crn = CRN) } returns offender
     every { communityApiRestClient.getOffenderPersonalCircumstances(any()) } returns DeliusPersonalCircumstancesDto()
     every { communityApiRestClient.getOffenderPersonalContacts(any()) } returns emptyList()
+    justRun { auditService.createAuditEvent(AuditType.ARN_ASSESSMENT_CLONED, any(), any(), any(), any(), any()) }
+    justRun { telemetryService.trackAssessmentClonedEvent(any(), any(), any(), any(), any(), any(), any()) }
 
     val questionDtos = listOf(
       GroupQuestionDto(questionCode = "contact_address_house_number"),
@@ -194,6 +205,9 @@ class EpisodeServiceTest {
       GroupQuestionDto(questionCode = "emergency_contact_details"),
     )
     every { assessmentReferenceDataService.getQuestionsForAssessmentType(newEpisode.assessmentType) } returns questionDtos
+
+    justRun { auditService.createAuditEvent(AuditType.ARN_ASSESSMENT_CLONED, any(), any(), any(), any(), any()) }
+    justRun { telemetryService.trackAssessmentClonedEvent(any(), any(), any(), any(), any(), any(), any()) }
 
     val previousEpisodes = createPreviousEpisodePersonalContacts()
 
@@ -280,6 +294,8 @@ class EpisodeServiceTest {
 
     every { communityApiRestClient.getOffenderPersonalCircumstances(any()) } returns DeliusPersonalCircumstancesDto()
     every { communityApiRestClient.getOffenderPersonalContacts(any()) } returns emptyList()
+    justRun { auditService.createAuditEvent(AuditType.ARN_ASSESSMENT_CLONED, any(), any(), any(), any(), any()) }
+    justRun { telemetryService.trackAssessmentClonedEvent(any(), any(), any(), any(), any(), any(), any()) }
 
     val questionDtos = listOf(
       GroupQuestionDto(questionCode = "gender_identity"),
@@ -356,6 +372,8 @@ class EpisodeServiceTest {
         tables = table1
       )
     )
+    justRun { auditService.createAuditEvent(AuditType.ARN_ASSESSMENT_CLONED, any(), any(), any(), any(), any()) }
+    justRun { telemetryService.trackAssessmentClonedEvent(any(), any(), any(), any(), any(), any(), any()) }
     every { assessmentReferenceDataService.getQuestionsForAssessmentType(newEpisode.assessmentType) } returns schemaQuestions
     every { cloneAssessmentExcludedQuestionsRepository.findAllByAssessmentType(UPW) } returns listOf(
       CloneAssessmentExcludedQuestionsEntity(
@@ -383,6 +401,8 @@ class EpisodeServiceTest {
   @Test
   fun `copies answers and tables from previous episode`() {
     // Given
+    justRun { auditService.createAuditEvent(AuditType.ARN_ASSESSMENT_CLONED, any(), any(), any(), any(), any()) }
+    justRun { telemetryService.trackAssessmentClonedEvent(any(), any(), any(), any(), any(), any(), any()) }
     val questions = listOf(
       GroupQuestionDto(questionCode = "question_1"),
       GroupQuestionDto(questionCode = "question_2"),
@@ -484,6 +504,8 @@ class EpisodeServiceTest {
       GroupQuestionDto(questionCode = "question_2"),
     )
     every { assessmentReferenceDataService.getQuestionsForAssessmentType(newEpisode.assessmentType) } returns questions
+    justRun { auditService.createAuditEvent(AuditType.ARN_ASSESSMENT_CLONED, any(), any(), any(), any(), any()) }
+    justRun { telemetryService.trackAssessmentClonedEvent(any(), any(), any(), any(), any(), any(), any()) }
 
     val result = episodeService.prePopulateFromPreviousEpisodes(newEpisode, previousEpisodesNoAnswers).answers
 
@@ -492,6 +514,8 @@ class EpisodeServiceTest {
 
   @Test
   fun `existing episode older than 55 weeks will be ignored`() {
+    justRun { auditService.createAuditEvent(AuditType.ARN_ASSESSMENT_CLONED, any(), any(), any(), any(), any()) }
+    justRun { telemetryService.trackAssessmentClonedEvent(any(), any(), any(), any(), any(), any(), any()) }
 
     val previousEpisodes = listOf(
       AssessmentEpisodeEntity(
@@ -537,5 +561,92 @@ class EpisodeServiceTest {
     assertThat(result).containsExactlyInAnyOrderEntriesOf(expectedAnswers)
     assertThat(result).doesNotContainKey("question_3")
     assertThat(result).doesNotContainKey("question_4")
+  }
+
+  @Nested
+  @DisplayName("telemetry and audit episode cloning")
+  inner class AuditEpisodeCloning {
+    @Test
+    fun `submits audit event when new episode cloned from previous episode`() {
+      // Given
+
+      val questions = listOf(
+        GroupQuestionDto(questionCode = "question_1"),
+        GroupQuestionDto(questionCode = "question_2"),
+      )
+
+      val previousEpisodeEndDate = LocalDateTime.now().minusDays(1)
+      val previousEpisodeUuid = UUID.randomUUID()
+
+      val mixedPreviousEpisodes = listOf(
+        AssessmentEpisodeEntity(
+          episodeId = 2,
+          episodeUuid = previousEpisodeUuid,
+          assessmentType = UPW,
+          author = authorEntity,
+          assessment = AssessmentEntity(),
+          endDate = previousEpisodeEndDate,
+          answers = mutableMapOf(
+            "question_1" to listOf("answer_1"),
+            "question_2" to listOf("answer_2")
+          )
+        )
+      )
+      every { assessmentReferenceDataService.getQuestionsForAssessmentType(newEpisode.assessmentType) } returns questions
+      justRun { auditService.createAuditEvent(AuditType.ARN_ASSESSMENT_CLONED, any(), any(), any(), any(), any()) }
+      justRun { telemetryService.trackAssessmentClonedEvent(any(), any(), any(), any(), any(), any(), any()) }
+
+      episodeService.prePopulateFromPreviousEpisodes(newEpisode, mixedPreviousEpisodes)
+
+      verify(exactly = 1) {
+        auditService.createAuditEvent(
+          AuditType.ARN_ASSESSMENT_CLONED,
+          any(),
+          newEpisode.episodeUuid,
+          CRN,
+          authorEntity,
+          mapOf(
+            "previousEpisodeUUID" to previousEpisodeUuid,
+            "previousEpisodeCompletedDate" to previousEpisodeEndDate
+          )
+        )
+      }
+      verify(exactly = 1) {
+        telemetryService.trackAssessmentClonedEvent(
+          CRN,
+          authorEntity,
+          any(),
+          newEpisode.episodeUuid,
+          UPW,
+          previousEpisodeUuid,
+          previousEpisodeEndDate
+        )
+      }
+    }
+  }
+  @Test
+  fun `no audit event when new episode unchanged as no previous episodes`() {
+    val questions = listOf(
+      GroupQuestionDto(questionCode = "question_1"),
+      GroupQuestionDto(questionCode = "question_2"),
+    )
+    every { assessmentReferenceDataService.getQuestionsForAssessmentType(newEpisode.assessmentType) } returns questions
+
+    val emptyPreviousEpisode = emptyList<AssessmentEpisodeEntity>()
+
+    episodeService.prePopulateFromPreviousEpisodes(newEpisode, emptyPreviousEpisode).answers
+
+    verify(exactly = 0) { auditService.createAuditEvent(any(), any(), any(), any(), any()) }
+    verify(exactly = 0) {
+      telemetryService.trackAssessmentClonedEvent(
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any(),
+        any()
+      )
+    }
   }
 }

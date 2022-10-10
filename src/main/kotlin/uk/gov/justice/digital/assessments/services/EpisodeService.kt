@@ -10,6 +10,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.assessments.Answers
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.CloneAssessmentExcludedQuestionsRepository
 import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
+import uk.gov.justice.digital.assessments.restclient.audit.AuditType
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.DeliusPersonalCircumstancesDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.PersonalContact
@@ -20,7 +21,9 @@ import java.time.LocalDateTime
 class EpisodeService(
   private val communityApiRestClient: CommunityApiRestClient,
   private val assessmentReferenceDataService: AssessmentReferenceDataService,
-  private val cloneAssessmentExcludedQuestionsRepository: CloneAssessmentExcludedQuestionsRepository
+  private val cloneAssessmentExcludedQuestionsRepository: CloneAssessmentExcludedQuestionsRepository,
+  private val telemetryService: TelemetryService,
+  private val auditService: AuditService
 ) {
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
@@ -65,27 +68,39 @@ class EpisodeService(
       .map { it.tableCode }
       .filterNot { ignoredQuestionCodes.contains(it) }
 
+    orderedPreviousEpisodes.firstOrNull()?.let { auditAndLogClonedAssessment(newEpisode, it) }
+
     orderedPreviousEpisodes.forEach { episode ->
       val relevantAnswers = episode.answers.filter { questionCodes.contains(it.key) }
       relevantAnswers.forEach { answer ->
         log.info("Delius value for question code: ${answer.key} is: ${newEpisode.answers[answer.key]}")
         log.info("Question code: ${answer.key} has answer: ${answer.value} in previous episode.")
-        if ((newEpisode.answers[answer.key] == null || newEpisode.answers[answer.key]?.isEmpty() == true) &&
+        if ((newEpisodeAnswerIsNull(newEpisode, answer) || newEpisodeAnswerIsEmpty(newEpisode, answer)) &&
           !isAddressPrePopulatedFromDelius(newEpisode.answers, answer)
         ) {
-          newEpisode.answers.put(answer.key, answer.value)
+          newEpisode.answers[answer.key] = answer.value
         }
       }
 
       val relevantTables = episode.tables.filter { tableCodes.contains(it.key) }
       relevantTables.forEach {
-        if (newEpisode.tables[it.key] == null || newEpisode.answers[it.key]?.isEmpty() == true) {
+        if (newEpisode.tables[it.key] == null || newEpisodeAnswerIsEmpty(newEpisode, it)) {
           newEpisode.tables.putIfAbsent(it.key, it.value)
         }
       }
     }
     return newEpisode
   }
+
+  private fun newEpisodeAnswerIsEmpty(
+    newEpisode: AssessmentEpisodeEntity,
+    answer: Map.Entry<String, List<Any>>
+  ) = newEpisode.answers[answer.key]?.isEmpty() == true
+
+  private fun newEpisodeAnswerIsNull(
+    newEpisode: AssessmentEpisodeEntity,
+    answer: Map.Entry<String, List<Any>>
+  ) = newEpisode.answers[answer.key] == null
 
   private fun isAddressField(questionCode: String): Boolean {
     return CONTACT_ADDRESS_FIELDS.contains(questionCode)
@@ -94,5 +109,30 @@ class EpisodeService(
   private fun isAddressPrePopulatedFromDelius(newEpisodeAnswers: Answers, previousEpisodeAnswer: Map.Entry<String, List<Any>>): Boolean {
     // only check for existence of a value for address fields
     return isAddressField(previousEpisodeAnswer.key) && newEpisodeAnswers[previousEpisodeAnswer.key]?.isEmpty() == true
+  }
+
+  private fun auditAndLogClonedAssessment(episode: AssessmentEpisodeEntity, previousEpisode: AssessmentEpisodeEntity) {
+    auditService.createAuditEvent(
+      AuditType.ARN_ASSESSMENT_CLONED,
+      episode.assessment.assessmentUuid,
+      episode.episodeUuid,
+      episode.assessment.subject?.crn,
+      episode.author,
+      mapOf(
+        "previousEpisodeUUID" to previousEpisode.episodeUuid,
+        "previousEpisodeCompletedDate" to previousEpisode.endDate!!
+      )
+    )
+    episode.assessment.subject?.crn?.let {
+      telemetryService.trackAssessmentClonedEvent(
+        it,
+        episode.author,
+        episode.assessment.assessmentUuid,
+        episode.episodeUuid,
+        episode.assessmentType,
+        previousEpisode.episodeUuid,
+        previousEpisode.endDate!!
+      )
+    }
   }
 }
