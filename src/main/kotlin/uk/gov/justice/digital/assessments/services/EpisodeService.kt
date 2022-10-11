@@ -4,8 +4,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.assessments.api.GroupQuestionDto
-import uk.gov.justice.digital.assessments.api.TableQuestionDto
+import uk.gov.justice.digital.assessments.api.groups.GroupQuestionDto
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.Answers
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.CloneAssessmentExcludedQuestionsRepository
@@ -64,10 +63,6 @@ class EpisodeService(
       .map { it.questionCode }
       .filterNot { ignoredQuestionCodes.contains(it) }
 
-    val tableCodes = questions.filterIsInstance<TableQuestionDto>()
-      .map { it.tableCode }
-      .filterNot { ignoredQuestionCodes.contains(it) }
-
     orderedPreviousEpisodes.firstOrNull()?.let { auditAndLogClonedAssessment(newEpisode, it) }
 
     orderedPreviousEpisodes.forEach { episode ->
@@ -79,13 +74,6 @@ class EpisodeService(
           !isAddressPrePopulatedFromDelius(newEpisode.answers, answer)
         ) {
           newEpisode.answers[answer.key] = answer.value
-        }
-      }
-
-      val relevantTables = episode.tables.filter { tableCodes.contains(it.key) }
-      relevantTables.forEach {
-        if (newEpisode.tables[it.key] == null || newEpisodeAnswerIsEmpty(newEpisode, it)) {
-          newEpisode.tables.putIfAbsent(it.key, it.value)
         }
       }
     }

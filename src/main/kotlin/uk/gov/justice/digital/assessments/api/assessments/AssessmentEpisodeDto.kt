@@ -1,8 +1,9 @@
-package uk.gov.justice.digital.assessments.api
+package uk.gov.justice.digital.assessments.api.assessments
 
 import io.swagger.v3.oas.annotations.media.Schema
+import uk.gov.justice.digital.assessments.api.OffenceDto
+import uk.gov.justice.digital.assessments.api.answers.AnswersDto
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.Tables
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -35,9 +36,6 @@ data class AssessmentEpisodeDto(
   @Schema(description = "Offence codes")
   val offence: OffenceDto,
 
-  @Schema(description = "Tables associated with this episode")
-  val tables: Tables? = null,
-
   @Schema(description = "Date last edited")
   val lastEditedDate: LocalDateTime? = null,
 
@@ -54,18 +52,17 @@ data class AssessmentEpisodeDto(
       episode: AssessmentEpisodeEntity,
     ): AssessmentEpisodeDto {
       return AssessmentEpisodeDto(
-        episode.episodeUuid,
-        episode.assessment.assessmentUuid,
-        episode.oasysSetPk,
-        episode.changeReason,
-        episode.createdDate,
-        episode.endDate,
-        episode.author.userFullName,
-        episode.answers,
-        OffenceDto.from(episode.offence),
-        episode.tables,
-        episode.lastEditedDate,
-        episode.closedDate,
+        episodeUuid = episode.episodeUuid,
+        assessmentUuid = episode.assessment.assessmentUuid,
+        oasysAssessmentId = episode.oasysSetPk,
+        reasonForChange = episode.changeReason,
+        created = episode.createdDate,
+        ended = episode.endDate,
+        userFullName = episode.author.userFullName,
+        answers = episode.answers,
+        offence = OffenceDto.from(episode.offence),
+        lastEditedDate = episode.lastEditedDate,
+        closedDate = episode.closedDate
       )
     }
   }

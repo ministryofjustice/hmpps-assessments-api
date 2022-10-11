@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RestController
-import uk.gov.justice.digital.assessments.api.AssessmentDto
-import uk.gov.justice.digital.assessments.api.AssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.api.AssessmentSubjectDto
-import uk.gov.justice.digital.assessments.api.CreateAssessmentDto
-import uk.gov.justice.digital.assessments.api.CreateAssessmentEpisodeDto
-import uk.gov.justice.digital.assessments.api.UpdateAssessmentEpisodeDto
+import uk.gov.justice.digital.assessments.api.assessments.AssessmentDto
+import uk.gov.justice.digital.assessments.api.assessments.AssessmentEpisodeDto
+import uk.gov.justice.digital.assessments.api.assessments.CreateAssessmentDto
+import uk.gov.justice.digital.assessments.api.assessments.CreateAssessmentEpisodeDto
+import uk.gov.justice.digital.assessments.api.assessments.UpdateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.services.AssessmentService
 import uk.gov.justice.digital.assessments.services.AssessmentUpdateService
 import java.util.UUID

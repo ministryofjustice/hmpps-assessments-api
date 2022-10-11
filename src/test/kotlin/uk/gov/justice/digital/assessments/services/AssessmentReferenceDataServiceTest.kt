@@ -8,8 +8,8 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
-import uk.gov.justice.digital.assessments.api.GroupSectionsDto
-import uk.gov.justice.digital.assessments.api.GroupWithContentsDto
+import uk.gov.justice.digital.assessments.api.groups.GroupSectionsDto
+import uk.gov.justice.digital.assessments.api.groups.GroupWithContentsDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.AssessmentGroupsEntity

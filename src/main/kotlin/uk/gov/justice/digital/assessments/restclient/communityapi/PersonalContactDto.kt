@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.assessments.restclient.communityapi
 
-import uk.gov.justice.digital.assessments.api.EmergencyContactDetailsAnswerDto
-import uk.gov.justice.digital.assessments.api.GPDetailsAnswerDto
+import uk.gov.justice.digital.assessments.api.answers.EmergencyContactDetailsAnswerDto
+import uk.gov.justice.digital.assessments.api.answers.GPDetailsAnswerDto
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import java.time.LocalDateTime
 

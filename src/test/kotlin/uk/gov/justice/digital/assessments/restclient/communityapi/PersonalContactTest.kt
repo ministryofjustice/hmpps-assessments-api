@@ -11,8 +11,8 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import uk.gov.justice.digital.assessments.api.EmergencyContactDetailsAnswerDto
-import uk.gov.justice.digital.assessments.api.GPDetailsAnswerDto
+import uk.gov.justice.digital.assessments.api.answers.EmergencyContactDetailsAnswerDto
+import uk.gov.justice.digital.assessments.api.answers.GPDetailsAnswerDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity

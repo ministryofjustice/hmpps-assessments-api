@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.assessments.api
+package uk.gov.justice.digital.assessments.api.answers
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import uk.gov.justice.digital.assessments.restclient.communityapi.PersonalContact

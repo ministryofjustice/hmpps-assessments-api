@@ -1,8 +1,7 @@
-package uk.gov.justice.digital.assessments.api
+package uk.gov.justice.digital.assessments.api.groups
 
 import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.GroupEntity
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionGroupEntity
 import java.util.UUID
 
 data class GroupWithContentsDto(
@@ -26,7 +25,7 @@ data class GroupWithContentsDto(
   val contents: List<GroupContentDto>
 ) : GroupContentDto {
   companion object {
-    fun from(group: GroupEntity, contents: List<GroupContentDto>, parentGroup: QuestionGroupEntity? = null): GroupWithContentsDto {
+    fun from(group: GroupEntity, contents: List<GroupContentDto>): GroupWithContentsDto {
       return GroupWithContentsDto(
         groupId = group.groupUuid,
         groupCode = group.groupCode,

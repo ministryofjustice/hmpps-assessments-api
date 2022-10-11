@@ -3,6 +3,9 @@ package uk.gov.justice.digital.assessments.api
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import uk.gov.justice.digital.assessments.api.groups.GroupContentDto
+import uk.gov.justice.digital.assessments.api.groups.GroupQuestionDto
+import uk.gov.justice.digital.assessments.api.groups.GroupWithContentsDto
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.GroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionGroupEntity
@@ -141,7 +144,7 @@ class GroupWithContentsDtoTest {
     val contentsDto: List<GroupContentDto> = contents.map {
       when (it.contentType) {
         "question" -> GroupQuestionDto.from(it.question!!, it, QuestionDependencies(emptyList()))
-        "group" -> GroupWithContentsDto.from(it.nestedGroup!!, emptyList(), it)
+        "group" -> GroupWithContentsDto.from(it.nestedGroup!!, emptyList())
         else -> throw Exception("oh no")
       }
     }

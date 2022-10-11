@@ -1,6 +1,7 @@
-package uk.gov.justice.digital.assessments.api
+package uk.gov.justice.digital.assessments.api.assessments
 
 import io.swagger.v3.oas.annotations.media.Schema
+import uk.gov.justice.digital.assessments.api.SubjectDto
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
 import java.time.LocalDateTime
