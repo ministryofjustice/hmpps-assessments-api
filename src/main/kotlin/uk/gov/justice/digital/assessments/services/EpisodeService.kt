@@ -37,10 +37,21 @@ class EpisodeService(
   ): AssessmentEpisodeEntity {
     log.info("Pre-populating episode from Delius")
     CommunityOffenderDto.from(communityOffenderDto, episode)
-    val offenderPersonalCircumstances = communityApiRestClient.getOffenderPersonalCircumstances(episode.assessment.subject?.crn)
-    DeliusPersonalCircumstancesDto.from(offenderPersonalCircumstances, episode)
-    val offenderPersonalContacts = communityApiRestClient.getOffenderPersonalContacts(episode.assessment.subject?.crn)
-    PersonalContact.from(offenderPersonalContacts, episode)
+
+    try {
+      val offenderPersonalCircumstances = communityApiRestClient.getOffenderPersonalCircumstances(episode.assessment.subject?.crn)
+      DeliusPersonalCircumstancesDto.from(offenderPersonalCircumstances, episode)
+    } catch (ex: Exception) {
+      log.info("Unable to prepopulate from personal circumstances: ${ex.message}")
+    }
+
+    try {
+      val offenderPersonalContacts = communityApiRestClient.getOffenderPersonalContacts(episode.assessment.subject?.crn)
+      PersonalContact.from(offenderPersonalContacts, episode)
+    } catch (ex: Exception) {
+      log.info("Unable to prepopulate from personal contacts: ${ex.message}")
+    }
+
     return episode
   }
 
