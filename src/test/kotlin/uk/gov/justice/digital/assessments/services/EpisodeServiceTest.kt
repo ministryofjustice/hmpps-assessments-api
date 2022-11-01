@@ -18,7 +18,9 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.extension.ExtendWith
+import org.springframework.http.HttpMethod
 import uk.gov.justice.digital.assessments.api.answers.EmergencyContactDetailsAnswerDto
 import uk.gov.justice.digital.assessments.api.answers.GPDetailsAnswerDto
 import uk.gov.justice.digital.assessments.api.groups.GroupQuestionDto
@@ -31,11 +33,13 @@ import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.CloneAssessmentExcludedQuestionsEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.CloneAssessmentExcludedQuestionsRepository
 import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
+import uk.gov.justice.digital.assessments.restclient.ExternalService
 import uk.gov.justice.digital.assessments.restclient.audit.AuditType
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.DeliusPersonalCircumstancesDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.OffenderProfile
 import uk.gov.justice.digital.assessments.restclient.communityapi.PersonalContact
+import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiUnknownException
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
@@ -123,6 +127,48 @@ class EpisodeServiceTest {
 
     // Then
     assertThat(episodeEntity.answers).containsEntry("gender_identity", listOf("PREFER_TO_SELF_DESCRIBE"))
+  }
+
+  @Test
+  fun `should catch exceptions thrown when fetching personal circumstances`() {
+    newEpisode = createEpisode(UPW)
+
+    val offenderDto = CommunityOffenderDto(
+      dateOfBirth = LocalDate.of(1989, 1, 1).toString(),
+      gender = "MALE",
+      offenderProfile = OffenderProfile(genderIdentity = "Prefer to self-describe")
+    )
+
+    every { communityApiRestClient.getOffenderPersonalCircumstances(any()) } throws ExternalApiUnknownException(
+      msg = "Something went wrong",
+      method = HttpMethod.GET,
+      url = "/foo/bar",
+      client = ExternalService.COMMUNITY_API,
+    )
+    every { communityApiRestClient.getOffenderPersonalContacts(any()) } returns emptyList()
+
+    assertDoesNotThrow { episodeService.prePopulateEpisodeFromDelius(newEpisode, offenderDto) }
+  }
+
+  @Test
+  fun `should catch exceptions thrown when fetching personal contacts`() {
+    newEpisode = createEpisode(UPW)
+
+    val offenderDto = CommunityOffenderDto(
+      dateOfBirth = LocalDate.of(1989, 1, 1).toString(),
+      gender = "MALE",
+      offenderProfile = OffenderProfile(genderIdentity = "Prefer to self-describe")
+    )
+
+    every { communityApiRestClient.getOffenderPersonalCircumstances(any()) } returns DeliusPersonalCircumstancesDto()
+    every { communityApiRestClient.getOffenderPersonalContacts(any()) } throws ExternalApiUnknownException(
+      msg = "Something went wrong",
+      method = HttpMethod.GET,
+      url = "/foo/bar",
+      client = ExternalService.COMMUNITY_API,
+    )
+
+    assertDoesNotThrow { episodeService.prePopulateEpisodeFromDelius(newEpisode, offenderDto) }
   }
 
   @Test
