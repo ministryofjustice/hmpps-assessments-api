@@ -1,8 +1,8 @@
 
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.5.5"
-  kotlin("plugin.spring") version "1.7.10"
-  kotlin("plugin.jpa") version "1.7.10"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.5.7"
+  kotlin("plugin.spring") version "1.7.20"
+  kotlin("plugin.jpa") version "1.7.20"
 }
 
 allOpen {
@@ -37,9 +37,9 @@ dependencies {
   implementation("org.springdoc:springdoc-openapi-kotlin:1.6.12")
   implementation("commons-io:commons-io:2.11.0")
   implementation("com.zaxxer:HikariCP:5.0.1")
-  implementation("com.vladmihalcea:hibernate-types-52:2.19.2")
+  implementation("com.vladmihalcea:hibernate-types-52:2.20.0")
   implementation("com.beust:klaxon:5.6")
-  implementation("com.google.code.gson:gson:2.9.1")
+  implementation("com.google.code.gson:gson:2.10")
   implementation("com.google.guava:guava:31.1-jre")
   implementation("org.apache.commons:commons-lang3:3.12.0")
   implementation("org.postgresql:postgresql:42.5.0")
