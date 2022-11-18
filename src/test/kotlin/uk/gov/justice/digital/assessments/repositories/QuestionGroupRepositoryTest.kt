@@ -24,7 +24,7 @@ class QuestionGroupRepositoryTest(@Autowired val questionGroupRepository: Questi
   @Test
   fun `list group summaries`() {
     val groupSummaries = questionGroupRepository.listGroups()
-    assertThat(groupSummaries).hasSize(24)
+    assertThat(groupSummaries).hasSize(26)
 
     val groupInfo = groupSummaries.find { it.groupCode == "placement_gender_preferences" }
 
