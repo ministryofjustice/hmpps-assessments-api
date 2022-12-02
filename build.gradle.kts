@@ -1,8 +1,8 @@
 
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.5.7"
-  kotlin("plugin.spring") version "1.7.21"
-  kotlin("plugin.jpa") version "1.7.21"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.7.0"
+  kotlin("plugin.spring") version "1.7.22"
+  kotlin("plugin.jpa") version "1.7.22"
 }
 
 allOpen {
@@ -30,11 +30,11 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-cache")
   implementation("org.springframework.boot:spring-boot-starter-aop")
   implementation("org.springframework.security:spring-security-oauth2-client")
-  implementation("org.springframework.data:spring-data-redis:2.7.5")
+  implementation("org.springframework.data:spring-data-redis:2.7.6")
   implementation("redis.clients:jedis:3.9.0")
-  implementation("org.springdoc:springdoc-openapi-ui:1.6.12")
-  implementation("org.springdoc:springdoc-openapi-data-rest:1.6.12")
-  implementation("org.springdoc:springdoc-openapi-kotlin:1.6.12")
+  implementation("org.springdoc:springdoc-openapi-ui:1.6.13")
+  implementation("org.springdoc:springdoc-openapi-data-rest:1.6.13")
+  implementation("org.springdoc:springdoc-openapi-kotlin:1.6.13")
   implementation("commons-io:commons-io:2.11.0")
   implementation("com.zaxxer:HikariCP:5.0.1")
   implementation("com.vladmihalcea:hibernate-types-52:2.20.0")
@@ -42,7 +42,7 @@ dependencies {
   implementation("com.google.code.gson:gson:2.10")
   implementation("com.google.guava:guava:31.1-jre")
   implementation("org.apache.commons:commons-lang3:3.12.0")
-  implementation("org.postgresql:postgresql:42.5.0")
+  implementation("org.postgresql:postgresql:42.5.1")
   implementation("org.flywaydb:flyway-core")
   runtimeOnly("com.h2database:h2:1.4.200")
   implementation("net.logstash.logback:logstash-logback-encoder:7.2")
@@ -54,7 +54,7 @@ dependencies {
     exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     exclude(module = "mockito-core")
   }
-  testImplementation("com.ninja-squad:springmockk:3.1.1")
+  testImplementation("com.ninja-squad:springmockk:3.1.2")
   testImplementation("io.jsonwebtoken:jjwt:0.9.1")
   testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
 }
