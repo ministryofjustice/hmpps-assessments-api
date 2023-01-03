@@ -27,6 +27,7 @@ import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffen
 import uk.gov.justice.digital.assessments.services.dto.ExternalSource
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import uk.gov.justice.digital.assessments.utils.AssessmentUtils
+import java.time.Clock
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -39,7 +40,8 @@ class AssessmentService(
   private val episodeService: EpisodeService,
   private val offenderService: OffenderService,
   private val auditService: AuditService,
-  private val telemetryService: TelemetryService
+  private val telemetryService: TelemetryService,
+  private val clock: Clock
 ) {
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
@@ -90,7 +92,7 @@ class AssessmentService(
 
   fun getAssessmentSubject(assessmentUuid: UUID): AssessmentSubjectDto {
     val assessment = getAssessmentByUuid(assessmentUuid)
-    return AssessmentSubjectDto.from(assessment.subject)
+    return AssessmentSubjectDto.from(assessment.subject, clock)
       ?: throw EntityNotFoundException("No subject found for $assessmentUuid")
   }
 
