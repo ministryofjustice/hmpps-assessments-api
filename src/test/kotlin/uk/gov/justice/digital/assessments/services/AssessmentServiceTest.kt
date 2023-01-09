@@ -28,8 +28,11 @@ import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRe
 import uk.gov.justice.digital.assessments.restclient.audit.AuditType
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
+import java.time.Clock
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.util.UUID
 
 @ExtendWith(MockKExtension::class)
@@ -43,6 +46,7 @@ class AssessmentServiceTest {
   private val offenderService: OffenderService = mockk()
   private val auditService: AuditService = mockk()
   private val telemetryService: TelemetryService = mockk()
+  private val clock: Clock = Clock.fixed(Instant.now(), ZoneId.of("Europe/London"))
 
   private val assessmentsService = AssessmentService(
     assessmentRepository,
@@ -52,7 +56,8 @@ class AssessmentServiceTest {
     episodeService,
     offenderService,
     auditService,
-    telemetryService
+    telemetryService,
+    clock
   )
 
   private val assessmentUuid = UUID.randomUUID()

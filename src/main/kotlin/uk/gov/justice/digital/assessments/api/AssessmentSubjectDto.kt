@@ -2,6 +2,7 @@ package uk.gov.justice.digital.assessments.api
 
 import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
+import java.time.Clock
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.Period
@@ -25,14 +26,12 @@ class AssessmentSubjectDto(
 
   @Schema(description = "Subject Record created Date", example = "2020-01-02T16:00:00")
   val createdDate: LocalDateTime? = null,
+
+  @Schema(description = "Calculated age of subject", example = "22")
+  val age: Int? = null
 ) {
-
-  // TODO: Refactor age so it's not calculated here using LocalDate.now()
-  // Instead calculate in the service from a current date that can be mocked out
-  val age: Int? get() = dob?.let { Period.between(dob, LocalDate.now()).years }
-
   companion object {
-    fun from(subject: SubjectEntity?): AssessmentSubjectDto? {
+    fun from(subject: SubjectEntity?, clock: Clock): AssessmentSubjectDto? {
       if (subject == null) return null
       return AssessmentSubjectDto(
         subject.name,
@@ -40,8 +39,14 @@ class AssessmentSubjectDto(
         subject.crn,
         subject.dateOfBirth,
         subject.gender,
-        subject.createdDate
+        subject.createdDate,
+        calculateAge(subject.dateOfBirth, clock)
       )
+    }
+
+    fun calculateAge(dob: LocalDate?, clock: Clock): Int? {
+      val agePeriod = dob?.let { Period.between(dob, LocalDate.now(clock)) }
+      return agePeriod?.years
     }
   }
 }
