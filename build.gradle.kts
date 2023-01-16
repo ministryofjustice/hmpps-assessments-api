@@ -1,6 +1,6 @@
 
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.8.0"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.8.1"
   kotlin("plugin.spring") version "1.8.0"
   kotlin("plugin.jpa") version "1.8.0"
 }
@@ -30,7 +30,7 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-cache")
   implementation("org.springframework.boot:spring-boot-starter-aop")
   implementation("org.springframework.security:spring-security-oauth2-client")
-  implementation("org.springframework.data:spring-data-redis:3.0.0")
+  implementation("org.springframework.data:spring-data-redis:3.0.1")
   implementation("redis.clients:jedis:4.3.1")
   implementation("org.springdoc:springdoc-openapi-ui:1.6.14")
   implementation("org.springdoc:springdoc-openapi-data-rest:1.6.14")
