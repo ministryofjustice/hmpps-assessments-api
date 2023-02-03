@@ -20,17 +20,18 @@ class AuthAwareTokenConverter : Converter<Jwt, AbstractAuthenticationToken> {
   }
 
   private fun findPrincipal(claims: Map<String, Any?>): Principal {
-    return if (claims.containsKey("user_name") && claims.containsKey("user_id") &&
-      claims.containsKey("name") && claims.containsKey("auth_source")
-    ) {
+    return if (claims["grant_type"] != "client_credentials") {
       Principal(
         claims["user_name"] as String,
         claims["user_id"] as String,
         claims["name"] as String,
-        claims["auth_source"] as String
+        claims["auth_source"] as String,
       )
     } else {
-      Principal(claims["client_id"] as String)
+      Principal(
+        claims["sub"] as String,
+        claims["client_id"] as String,
+      )
     }
   }
 
