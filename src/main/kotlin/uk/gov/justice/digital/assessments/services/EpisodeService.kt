@@ -79,8 +79,6 @@ class EpisodeService(
     orderedPreviousEpisodes.forEach { episode ->
       val relevantAnswers = episode.answers.filter { questionCodes.contains(it.key) }
       relevantAnswers.forEach { answer ->
-        log.info("Delius value for question code: ${answer.key} is: ${newEpisode.answers[answer.key]}")
-        log.info("Question code: ${answer.key} has answer: ${answer.value} in previous episode.")
         if ((newEpisodeAnswerIsNull(newEpisode, answer) || newEpisodeAnswerIsEmpty(newEpisode, answer)) &&
           !isAddressPrePopulatedFromDelius(newEpisode.answers, answer)
         ) {

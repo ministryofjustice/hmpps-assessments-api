@@ -151,7 +151,7 @@ class AssessmentController(
       ApiResponse(responseCode = "200", description = "OK")
     ]
   )
-  @PreAuthorize("hasRole('ROLE_PROBATION')")
+  @PreAuthorize("hasAnyRole('ROLE_PROBATION', 'ROLE_ARN_READ_ONLY')")
   fun getEpisodeForAssessment(
     @Parameter(
       description = "Assessment ID",

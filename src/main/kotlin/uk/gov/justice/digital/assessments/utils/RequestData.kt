@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory
 import org.slf4j.MDC
 import org.springframework.web.servlet.HandlerInterceptor
 import uk.gov.justice.digital.assessments.config.AuthAwareAuthenticationToken
-import uk.gov.justice.digital.assessments.services.exceptions.UserAreaHeaderIsMandatoryException
 import uk.gov.justice.digital.assessments.services.exceptions.UserIsMandatoryException
 import java.time.Duration
 import java.time.LocalDateTime
@@ -26,7 +25,6 @@ class RequestData(excludeUris: String?) : HandlerInterceptor {
     MDC.put(USER_ID_HEADER, initialiseUserId(request))
     MDC.put(USER_AUTH_SOURCE_HEADER, initialiseAuthSource(request))
     MDC.put(USER_FULL_NAME_HEADER, initialiseFullName(request))
-    MDC.put(USER_AREA_HEADER, request.getHeader(USER_AREA_HEADER_NAME))
 
     if (excludeUriRegex.matcher(request.requestURI).matches()) {
       MDC.put(SKIP_LOGGING, "true")
@@ -92,13 +90,7 @@ class RequestData(excludeUris: String?) : HandlerInterceptor {
     const val USER_AUTH_SOURCE_HEADER = "authSource"
     const val USER_FULL_NAME_HEADER = "userFullName"
     const val USER_ID_HEADER = "userId"
-    const val USER_AREA_HEADER = "userArea"
-    const val USER_AREA_HEADER_NAME = "x-user-area"
     val isLoggingAllowed: Boolean = "true" != MDC.get(SKIP_LOGGING)
-
-    fun getAreaCode(): String {
-      return MDC.get(USER_AREA_HEADER) ?: throw UserAreaHeaderIsMandatoryException("Area Code Header is mandatory")
-    }
 
     fun getUserId(): String {
       return MDC.get(USER_ID_HEADER) ?: throw UserIsMandatoryException("User Id is mandatory to access this method")

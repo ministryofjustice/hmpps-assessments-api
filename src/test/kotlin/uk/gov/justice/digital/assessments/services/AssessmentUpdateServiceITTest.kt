@@ -49,7 +49,6 @@ class AssessmentUpdateServiceITTest : IntegrationTest() {
       .build()
     val authorities: Collection<GrantedAuthority> = AuthorityUtils.createAuthorityList("SCOPE_read")
     SecurityContextHolder.getContext().authentication = JwtAuthenticationToken(jwt, authorities)
-    MDC.put(RequestData.USER_AREA_HEADER, "WWS")
     MDC.put(RequestData.USER_ID_HEADER, "1")
     MDC.put(RequestData.USER_NAME_HEADER, "SWITHLAM")
     MDC.put(RequestData.USER_FULL_NAME_HEADER, "Stuart Withlam")

@@ -23,9 +23,6 @@ import uk.gov.justice.digital.assessments.restclient.communityapi.UserAccessResp
 import uk.gov.justice.digital.assessments.services.exceptions.ExceptionReason
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiForbiddenException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiUnknownException
-import uk.gov.justice.digital.assessments.utils.offenderStubResource.OffendersPage
-import uk.gov.justice.digital.assessments.utils.offenderStubResource.PrimaryId
-import javax.persistence.EntityNotFoundException
 
 @Component
 class CommunityApiRestClient(
@@ -110,18 +107,6 @@ class CommunityApiRestClient(
     return performHttpGet(path, "Failed to retrieve registrations for crn: $crn")
       .bodyToMono(object : ParameterizedTypeReference<CommunityRegistrations>() {})
       .block()
-  }
-
-  fun getPrimaryIds(page: Int, pageSize: Int): List<PrimaryId>? {
-    val path = "/secure/offenders/primaryIdentifiers?includeActiveOnly=true&page=$page&size=$pageSize"
-    log.info("Client retrieving CRNs from $path")
-
-    val offendersPage = performHttpGet(path, "Failed to retrieve Primary Ids")
-      .bodyToMono(OffendersPage::class.java)
-      .block()
-
-    log.info("Retrieved ${offendersPage?.content?.size} offender stubs")
-    return offendersPage?.content ?: throw EntityNotFoundException("Failed to retrieve CRNs from Community API")
   }
 
   @Cacheable("verifyUserAccess")

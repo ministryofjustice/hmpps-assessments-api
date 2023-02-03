@@ -44,7 +44,6 @@ abstract class IntegrationTest {
   internal lateinit var jwtHelper: JwtAuthHelper
 
   companion object {
-    internal val assessmentUpdateMockServer = AssessmentUpdateMockServer()
     internal val communityApiMockServer = CommunityApiMockServer()
     internal val assessmentApiMockServer = AssessmentApiMockServer()
     internal val assessRisksAndNeedsApiMockServer = AssessRisksAndNeedsApiMockServer()
@@ -54,7 +53,6 @@ abstract class IntegrationTest {
     @BeforeAll
     @JvmStatic
     fun startMocks() {
-      assessmentUpdateMockServer.start()
       communityApiMockServer.start()
       assessmentApiMockServer.start()
       assessRisksAndNeedsApiMockServer.start()
@@ -65,7 +63,6 @@ abstract class IntegrationTest {
     @AfterAll
     @JvmStatic
     fun stopMocks() {
-      assessmentUpdateMockServer.stop()
       communityApiMockServer.stop()
       assessmentApiMockServer.stop()
       assessRisksAndNeedsApiMockServer.stop()
@@ -83,7 +80,6 @@ abstract class IntegrationTest {
   @BeforeEach
   fun resetStubs() {
     redisTemplate.opsForValue().set("user:1", UserDetails("STUARTWHITLAM"))
-    assessmentUpdateMockServer.stubCreateOffender()
     communityApiMockServer.resetAll()
     communityApiMockServer.stubGetOffender()
     communityApiMockServer.stubGetOffenderPersonalContacts()
