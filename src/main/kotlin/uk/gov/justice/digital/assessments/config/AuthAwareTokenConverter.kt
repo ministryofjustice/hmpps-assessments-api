@@ -19,10 +19,10 @@ class AuthAwareTokenConverter : Converter<Jwt, AbstractAuthenticationToken> {
     return AuthAwareAuthenticationToken(jwt, principal, authorities)
   }
 
-  private fun isNotClientCredentialsGrantType(claims: Map<String, Any?>) = claims["grant_type"] != null && claims["grant_type"] != "client_credentials"
+  private fun isUserGrantType(claims: Map<String, Any?>) = claims.containsKey("grant_type") && claims["grant_type"] == "authorization_code"
 
   private fun findPrincipal(claims: Map<String, Any?>): Principal {
-    return if (isNotClientCredentialsGrantType(claims)) {
+    return if (isUserGrantType(claims)) {
       Principal(
         claims["user_name"] as String,
         claims["user_id"] as String,
