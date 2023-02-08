@@ -21,6 +21,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEnt
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
+import uk.gov.justice.digital.assessments.jpa.repositories.assessments.EpisodeRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRepository
 import uk.gov.justice.digital.assessments.restclient.ExternalService
 import uk.gov.justice.digital.assessments.restclient.audit.AuditType.ARN_ASSESSMENT_CREATED
@@ -48,6 +49,7 @@ class AssessmentServiceCreateTest {
   private val auditService: AuditService = mockk()
   private val telemetryService: TelemetryService = mockk()
   private val clock: Clock = Clock.fixed(Instant.now(), ZoneId.of("Europe/London"))
+  private val episodeRepository: EpisodeRepository = mockk()
 
   private val assessmentsService = AssessmentService(
     assessmentRepository,
@@ -58,7 +60,8 @@ class AssessmentServiceCreateTest {
     offenderService,
     auditService,
     telemetryService,
-    clock
+    clock,
+    episodeRepository,
   )
 
   private val assessmentUuid = UUID.randomUUID()

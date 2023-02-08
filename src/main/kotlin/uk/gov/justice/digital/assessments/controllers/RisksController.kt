@@ -25,7 +25,7 @@ class RisksController(
       ApiResponse(responseCode = "200", description = "OK")
     ]
   )
-  @PreAuthorize("hasRole('ROLE_PROBATION')")
+  @PreAuthorize("hasAnyRole('ROLE_PROBATION','ROLE_ARN_READ_ONLY')")
   fun getRegistrationsForAssessment(
     @Parameter(
       description = "CRN",
@@ -43,7 +43,7 @@ class RisksController(
       ApiResponse(responseCode = "200", description = "OK")
     ]
   )
-  @PreAuthorize("hasRole('ROLE_PROBATION')")
+  @PreAuthorize("hasAnyRole('ROLE_PROBATION','ROLE_ARN_READ_ONLY')")
   fun getRoshRiskSummaryForAssessment(
     @Parameter(
       description = "CRN",

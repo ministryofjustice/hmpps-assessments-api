@@ -55,7 +55,7 @@ class AssessmentController(
       ApiResponse(responseCode = "200", description = "OK")
     ]
   )
-  @PreAuthorize("hasRole('ROLE_PROBATION')")
+  @PreAuthorize("hasAnyRole('ROLE_PROBATION','ROLE_ARN_READ_ONLY')")
   fun getAssessmentSubject(
     @Parameter(
       description = "Assessment UUID",
@@ -151,7 +151,7 @@ class AssessmentController(
       ApiResponse(responseCode = "200", description = "OK")
     ]
   )
-  @PreAuthorize("hasAnyRole('ROLE_PROBATION', 'ROLE_ARN_READ_ONLY')")
+  @PreAuthorize("hasRole('ROLE_PROBATION')")
   fun getEpisodeForAssessment(
     @Parameter(
       description = "Assessment ID",
@@ -165,6 +165,25 @@ class AssessmentController(
     ) @PathVariable episodeUuid: UUID
   ): AssessmentEpisodeDto {
     return AssessmentEpisodeDto.from(assessmentService.getEpisode(assessmentUuid, episodeUuid))
+  }
+
+  @RequestMapping(path = ["/episode/{episodeUuid}"], method = [RequestMethod.GET])
+  @Operation(description = "Get an episode")
+  @ApiResponses(
+    value = [
+      ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
+      ApiResponse(responseCode = "200", description = "OK")
+    ]
+  )
+  @PreAuthorize("hasRole('ROLE_ARN_READ_ONLY')")
+  fun getEpisode(
+    @Parameter(
+      description = "Episode UUID",
+      required = true,
+      example = "08206a0b-563a-49b3-8cd2-b21fabdc79ca"
+    ) @PathVariable episodeUuid: UUID
+  ): AssessmentEpisodeDto {
+    return AssessmentEpisodeDto.from(assessmentService.getEpisodeById(episodeUuid))
   }
 
   @RequestMapping(path = ["/assessments/{assessmentUuid}/episodes/{episodeUuid}"], method = [RequestMethod.POST])
