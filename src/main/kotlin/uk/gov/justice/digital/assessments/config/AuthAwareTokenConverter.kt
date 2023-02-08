@@ -19,18 +19,23 @@ class AuthAwareTokenConverter : Converter<Jwt, AbstractAuthenticationToken> {
     return AuthAwareAuthenticationToken(jwt, principal, authorities)
   }
 
+  private fun isUserGrantType(claims: Map<String, Any?>) = claims.containsKey("grant_type") && claims["grant_type"] == "authorization_code"
+
   private fun findPrincipal(claims: Map<String, Any?>): Principal {
-    return if (claims.containsKey("user_name") && claims.containsKey("user_id") &&
-      claims.containsKey("name") && claims.containsKey("auth_source")
-    ) {
+    return if (isUserGrantType(claims)) {
       Principal(
         claims["user_name"] as String,
         claims["user_id"] as String,
         claims["name"] as String,
-        claims["auth_source"] as String
+        claims["auth_source"] as String,
+        false,
       )
     } else {
-      Principal(claims["client_id"] as String)
+      Principal(
+        userName = claims["sub"] as String,
+        userId = claims["client_id"] as String,
+        isClientGrantType = true
+      )
     }
   }
 
@@ -59,5 +64,6 @@ class Principal(
   val userName: String,
   val userId: String? = null,
   val name: String? = null,
-  val authSource: String? = null
+  val authSource: String? = null,
+  val isClientGrantType: Boolean = false,
 )

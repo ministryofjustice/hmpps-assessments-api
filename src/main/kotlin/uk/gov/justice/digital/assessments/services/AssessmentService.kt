@@ -27,6 +27,7 @@ import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffen
 import uk.gov.justice.digital.assessments.services.dto.ExternalSource
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import uk.gov.justice.digital.assessments.utils.AssessmentUtils
+import uk.gov.justice.digital.assessments.utils.RequestData
 import java.time.Clock
 import java.time.LocalDateTime
 import java.util.UUID
@@ -228,7 +229,9 @@ class AssessmentService(
     log.debug("Entered getAssessmentByUuid($assessmentUuid)")
     val assessment = assessmentRepository.findByAssessmentUuid(assessmentUuid)
       ?: throw EntityNotFoundException("Assessment $assessmentUuid not found")
-    assessment.subject?.crn?.let { offenderService.validateUserAccess(it) }
+    if (!RequestData.isClientGrantType()) {
+      assessment.subject?.crn?.let { offenderService.validateUserAccess(it) }
+    }
     return assessment
   }
 

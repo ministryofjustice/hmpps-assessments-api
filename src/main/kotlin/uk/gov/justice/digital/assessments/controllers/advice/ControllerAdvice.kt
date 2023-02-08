@@ -20,12 +20,13 @@ import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiEntityN
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiForbiddenException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiInvalidRequestException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiUnknownException
+import uk.gov.justice.digital.assessments.services.exceptions.MdcPropertyException
 import uk.gov.justice.digital.assessments.services.exceptions.MultipleExternalSourcesException
 import uk.gov.justice.digital.assessments.services.exceptions.OASysUserPermissionException
 import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
 import uk.gov.justice.digital.assessments.services.exceptions.UserAreaHeaderIsMandatoryException
-import uk.gov.justice.digital.assessments.services.exceptions.UserIsMandatoryException
 import uk.gov.justice.digital.assessments.services.exceptions.UserNotAuthorisedException
+import org.springframework.security.access.AccessDeniedException as SpringSecurityAccessDeniedException
 
 @ControllerAdvice
 class ControllerAdvice {
@@ -164,10 +165,17 @@ class ControllerAdvice {
     return ResponseEntity(ErrorResponse(status = 400, developerMessage = e.message), HttpStatus.BAD_REQUEST)
   }
 
-  @ExceptionHandler(UserIsMandatoryException::class)
+  @ExceptionHandler(MdcPropertyException::class)
   @ResponseStatus(HttpStatus.FORBIDDEN)
-  fun handle(e: UserIsMandatoryException): ResponseEntity<ErrorResponse?> {
+  fun handle(e: MdcPropertyException): ResponseEntity<ErrorResponse?> {
     log.info("UserIdIsMandatoryException: {}", e.message)
+    return ResponseEntity(ErrorResponse(status = 403, developerMessage = e.message), HttpStatus.FORBIDDEN)
+  }
+
+  @ExceptionHandler(SpringSecurityAccessDeniedException::class)
+  @ResponseStatus(HttpStatus.FORBIDDEN)
+  fun handle(e: SpringSecurityAccessDeniedException): ResponseEntity<ErrorResponse?> {
+    log.info("SpringSecurityAccessDeniedException: {}", e.message)
     return ResponseEntity(ErrorResponse(status = 403, developerMessage = e.message), HttpStatus.FORBIDDEN)
   }
 

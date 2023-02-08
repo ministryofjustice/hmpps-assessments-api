@@ -5,8 +5,7 @@ import org.slf4j.LoggerFactory
 import org.slf4j.MDC
 import org.springframework.web.servlet.HandlerInterceptor
 import uk.gov.justice.digital.assessments.config.AuthAwareAuthenticationToken
-import uk.gov.justice.digital.assessments.services.exceptions.UserAreaHeaderIsMandatoryException
-import uk.gov.justice.digital.assessments.services.exceptions.UserIsMandatoryException
+import uk.gov.justice.digital.assessments.services.exceptions.MdcPropertyException
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -26,7 +25,7 @@ class RequestData(excludeUris: String?) : HandlerInterceptor {
     MDC.put(USER_ID_HEADER, initialiseUserId(request))
     MDC.put(USER_AUTH_SOURCE_HEADER, initialiseAuthSource(request))
     MDC.put(USER_FULL_NAME_HEADER, initialiseFullName(request))
-    MDC.put(USER_AREA_HEADER, request.getHeader(USER_AREA_HEADER_NAME))
+    MDC.put(HAS_USER_TOKEN, initialiseIsClientGrantType(request))
 
     if (excludeUriRegex.matcher(request.requestURI).matches()) {
       MDC.put(SKIP_LOGGING, "true")
@@ -83,6 +82,10 @@ class RequestData(excludeUris: String?) : HandlerInterceptor {
     return if (authSource.isNullOrEmpty()) null else authSource
   }
 
+  private fun initialiseIsClientGrantType(request: HttpServletRequest): String? {
+    return if (request.userPrincipal != null) (request.userPrincipal as AuthAwareAuthenticationToken).principal.isClientGrantType.toString() else null
+  }
+
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
     const val SKIP_LOGGING = "skipLogging"
@@ -92,20 +95,15 @@ class RequestData(excludeUris: String?) : HandlerInterceptor {
     const val USER_AUTH_SOURCE_HEADER = "authSource"
     const val USER_FULL_NAME_HEADER = "userFullName"
     const val USER_ID_HEADER = "userId"
-    const val USER_AREA_HEADER = "userArea"
-    const val USER_AREA_HEADER_NAME = "x-user-area"
+    const val HAS_USER_TOKEN = "hasUserToken"
     val isLoggingAllowed: Boolean = "true" != MDC.get(SKIP_LOGGING)
 
-    fun getAreaCode(): String {
-      return MDC.get(USER_AREA_HEADER) ?: throw UserAreaHeaderIsMandatoryException("Area Code Header is mandatory")
-    }
-
     fun getUserId(): String {
-      return MDC.get(USER_ID_HEADER) ?: throw UserIsMandatoryException("User Id is mandatory to access this method")
+      return MDC.get(USER_ID_HEADER) ?: throw MdcPropertyException("User Id is mandatory to access this method")
     }
 
     fun getUserName(): String {
-      return MDC.get(USER_NAME_HEADER) ?: throw UserIsMandatoryException("User Name is mandatory to access this method")
+      return MDC.get(USER_NAME_HEADER) ?: throw MdcPropertyException("User Name is mandatory to access this method")
     }
 
     fun getUserFullName(): String? {
@@ -114,6 +112,10 @@ class RequestData(excludeUris: String?) : HandlerInterceptor {
 
     fun getUserAuthSource(): String? {
       return MDC.get(USER_AUTH_SOURCE_HEADER)
+    }
+
+    fun isClientGrantType(): Boolean {
+      return MDC.get(HAS_USER_TOKEN).toBoolean()
     }
   }
 }

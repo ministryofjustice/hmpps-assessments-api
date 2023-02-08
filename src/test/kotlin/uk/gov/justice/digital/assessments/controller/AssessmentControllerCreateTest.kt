@@ -19,7 +19,6 @@ import uk.gov.justice.digital.assessments.api.assessments.CreateAssessmentDto
 import uk.gov.justice.digital.assessments.api.assessments.CreateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
-import uk.gov.justice.digital.assessments.utils.RequestData
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
@@ -261,7 +260,6 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       )
       val assessment = webTestClient.post().uri("/assessments")
         .bodyValue(dto)
-        .header(RequestData.USER_AREA_HEADER_NAME, "WWS")
         .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
         .exchange()
         .expectStatus().isOk
@@ -286,7 +284,6 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       )
       val assessment = webTestClient.post().uri("/assessments")
         .bodyValue(dto)
-        .header(RequestData.USER_AREA_HEADER_NAME, "WWS")
         .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
         .exchange()
         .expectStatus().isOk
@@ -357,7 +354,6 @@ class AssessmentControllerCreateTest : IntegrationTest() {
     )
     return webTestClient.post().uri("/assessments")
       .bodyValue(dto)
-      .header(RequestData.USER_AREA_HEADER_NAME, "WWS")
       .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
       .exchange()
       .expectStatus().isOk

@@ -16,7 +16,6 @@ import uk.gov.justice.digital.assessments.api.assessments.AssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.api.assessments.UpdateAssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import uk.gov.justice.digital.assessments.testutils.Verify
-import uk.gov.justice.digital.assessments.utils.RequestData
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -311,7 +310,6 @@ class AssessmentControllerTest : IntegrationTest() {
 
     private fun completeAndAssertEpisode(endpointUrl: String, episodeEndDate: LocalDateTime) {
       val assessmentEpisode = webTestClient.post().uri(endpointUrl)
-        .header(RequestData.USER_AREA_HEADER_NAME, "WWS")
         .headers(setAuthorisation(fullName = "NEW USER", roles = listOf("ROLE_PROBATION")))
         .exchange()
         .expectStatus().isOk
@@ -366,7 +364,6 @@ class AssessmentControllerTest : IntegrationTest() {
     @Test
     fun `close assessment episode returns episode`() {
       val assessmentEpisode = webTestClient.get().uri("/assessments/$assessmentUuid/episodes/$episodeUuid/close")
-        .header(RequestData.USER_AREA_HEADER_NAME, "WWS")
         .headers(setAuthorisation(fullName = "NEW USER", roles = listOf("ROLE_PROBATION")))
         .exchange()
         .expectStatus().isOk

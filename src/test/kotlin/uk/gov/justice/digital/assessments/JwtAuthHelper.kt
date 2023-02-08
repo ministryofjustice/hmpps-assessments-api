@@ -32,7 +32,8 @@ class JwtAuthHelper {
     scope: List<String>? = listOf(),
     roles: List<String>? = listOf(),
     expiryTime: Duration = Duration.ofHours(1),
-    jwtId: String = UUID.randomUUID().toString()
+    jwtId: String = UUID.randomUUID().toString(),
+    grantType: String = "authorization_code",
   ): String {
     val claims = HashMap<String, Any>()
     claims["user_name"] = subject
@@ -40,6 +41,7 @@ class JwtAuthHelper {
     claims["auth_source"] = "delius"
     claims["user_id"] = "1"
     claims["client_id"] = "hmpps-assessments-api"
+    claims["grant_type"] = grantType
     if (!roles.isNullOrEmpty()) claims["authorities"] = roles
     if (!scope.isNullOrEmpty()) claims["scope"] = scope
     return Jwts.builder()
