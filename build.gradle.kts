@@ -1,8 +1,8 @@
 
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.8.1"
-  kotlin("plugin.spring") version "1.8.0"
-  kotlin("plugin.jpa") version "1.8.0"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "4.8.3"
+  kotlin("plugin.spring") version "1.8.10"
+  kotlin("plugin.jpa") version "1.8.10"
 }
 
 allOpen {
@@ -30,7 +30,7 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-cache")
   implementation("org.springframework.boot:spring-boot-starter-aop")
   implementation("org.springframework.security:spring-security-oauth2-client")
-  implementation("org.springframework.data:spring-data-redis:3.0.1")
+  implementation("org.springframework.data:spring-data-redis:3.0.2")
   implementation("redis.clients:jedis:4.3.1")
   implementation("org.springdoc:springdoc-openapi-ui:1.6.14")
   implementation("org.springdoc:springdoc-openapi-data-rest:1.6.14")
@@ -42,10 +42,10 @@ dependencies {
   implementation("com.google.code.gson:gson:2.10.1")
   implementation("com.google.guava:guava:31.1-jre")
   implementation("org.apache.commons:commons-lang3:3.12.0")
-  implementation("org.postgresql:postgresql:42.5.1")
+  implementation("org.postgresql:postgresql:42.5.4")
   implementation("org.flywaydb:flyway-core")
   runtimeOnly("com.h2database:h2:1.4.200")
-  implementation("net.logstash.logback:logstash-logback-encoder:7.2")
+  implementation("net.logstash.logback:logstash-logback-encoder:7.3")
 
   testRuntimeOnly("com.h2database:h2:1.4.200")
   testAnnotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
