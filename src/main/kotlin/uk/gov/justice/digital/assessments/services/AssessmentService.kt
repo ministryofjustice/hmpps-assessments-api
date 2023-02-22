@@ -21,6 +21,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
+import uk.gov.justice.digital.assessments.jpa.repositories.assessments.EpisodeRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRepository
 import uk.gov.justice.digital.assessments.restclient.audit.AuditType
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
@@ -42,7 +43,8 @@ class AssessmentService(
   private val offenderService: OffenderService,
   private val auditService: AuditService,
   private val telemetryService: TelemetryService,
-  private val clock: Clock
+  private val clock: Clock,
+  private val episodeRepository: EpisodeRepository,
 ) {
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
@@ -212,6 +214,11 @@ class AssessmentService(
       }
         ?: throw IllegalStateException("Answer Code not found for question ${question.questionUuid} answer value $answer")
     }.toSet()
+  }
+
+  fun getEpisodeById(episodeUuid: UUID): AssessmentEpisodeEntity {
+    return episodeRepository.findByEpisodeUuid(episodeUuid)
+      ?: throw EntityNotFoundException("No episode found for ID:  $episodeUuid")
   }
 
   fun getEpisode(assessmentUuid: UUID, episodeUuid: UUID): AssessmentEpisodeEntity {
