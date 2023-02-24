@@ -3,7 +3,7 @@
 
 generic-service:
   ingress:
-    host: hmpps-arn-risks-api.hmpps.service.justice.gov.uk
+    host: api.hmpps-assessments.service.justice.gov.uk
 
   env:
     OAUTH_ENDPOINT_URL: https://sign-in.hmpps.service.justice.gov.uk/auth
