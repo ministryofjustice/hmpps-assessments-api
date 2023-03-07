@@ -26,6 +26,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.EpisodeRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRepository
+import uk.gov.justice.digital.assessments.restclient.DeliusIntegrationRestClient
 import uk.gov.justice.digital.assessments.restclient.audit.AuditType
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
@@ -47,6 +48,7 @@ class AssessmentServiceTest {
   private val offenderService: OffenderService = mockk()
   private val auditService: AuditService = mockk()
   private val telemetryService: TelemetryService = mockk()
+  private val deliusIntegrationRestClient: DeliusIntegrationRestClient = mockk()
   private val clock: Clock = Clock.fixed(Instant.now(), ZoneId.of("Europe/London"))
   private val episodeRepository: EpisodeRepository = mockk()
 
@@ -59,6 +61,7 @@ class AssessmentServiceTest {
     offenderService,
     auditService,
     telemetryService,
+    deliusIntegrationRestClient,
     clock,
     episodeRepository,
   )

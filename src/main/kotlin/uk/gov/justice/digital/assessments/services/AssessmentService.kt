@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.assessments.api.AssessmentSubjectDto
 import uk.gov.justice.digital.assessments.api.DeliusEventType
-import uk.gov.justice.digital.assessments.api.OffenceDto
 import uk.gov.justice.digital.assessments.api.OffenderDto
 import uk.gov.justice.digital.assessments.api.answers.AnswerDto
 import uk.gov.justice.digital.assessments.api.answers.AssessmentAnswersDto
@@ -23,8 +22,8 @@ import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.EpisodeRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRepository
+import uk.gov.justice.digital.assessments.restclient.DeliusIntegrationRestClient
 import uk.gov.justice.digital.assessments.restclient.audit.AuditType
-import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
 import uk.gov.justice.digital.assessments.services.dto.ExternalSource
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import uk.gov.justice.digital.assessments.utils.AssessmentUtils
@@ -43,6 +42,7 @@ class AssessmentService(
   private val offenderService: OffenderService,
   private val auditService: AuditService,
   private val telemetryService: TelemetryService,
+  private val deliusIntegrationRestClient: DeliusIntegrationRestClient,
   private val clock: Clock,
   private val episodeRepository: EpisodeRepository,
 ) {
@@ -56,8 +56,7 @@ class AssessmentService(
       return createFromDelius(
         newAssessment.deliusEventId,
         newAssessment.crn,
-        newAssessment.assessmentSchemaCode,
-        newAssessment.deliusEventType
+        newAssessment.assessmentSchemaCode
       )
     }
     throw IllegalStateException("Empty create assessment request")
@@ -77,17 +76,13 @@ class AssessmentService(
       ?: throw EntityNotFoundException("No CRN found for subject for assessment $assessmentUuid")
 
     offenderService.validateUserAccess(subject.crn)
-    val offence = offenderService.getOffence(eventType, subject.crn, eventId)
-    val offender = offenderService.getCommunityOffender(subject.crn)
     val episode = createPrePopulatedEpisode(
       assessment,
       reason,
       assessmentType = assessmentType,
       source = ExternalSource.DELIUS.name,
-      eventId = eventId.toString(),
-      offence = offence,
-      subject = subject,
-      offender
+      eventId = eventId,
+      subject = subject
     )
     log.info("New episode created for assessment $assessmentUuid")
     return AssessmentEpisodeDto.from(episode)
@@ -156,7 +151,6 @@ class AssessmentService(
     eventId: Long?,
     crn: String?,
     assessmentType: AssessmentType?,
-    eventType: DeliusEventType
   ): AssessmentDto {
     if (eventId == null || crn.isNullOrEmpty() || assessmentType == null) {
       throw IllegalStateException("Unable to create Assessment with assessment type: $assessmentType, eventId: $eventId, crn: $crn")
@@ -164,18 +158,15 @@ class AssessmentService(
     offenderService.validateUserAccess(crn)
     val offender = offenderService.getCommunityOffender(crn)
     val arnAssessment = getOrCreateAssessment(crn, eventId, OffenderDto.from(offender))
-    val offence = offenderService.getOffence(eventType, crn, eventId)
-
     val subject = subjectRepository.save(arnAssessment.subject?.copy())
+      ?: throw EntityNotFoundException("Unable to save null subject with crn: $crn")
     createPrePopulatedEpisode(
       arnAssessment,
       "",
       assessmentType,
       ExternalSource.DELIUS.name,
-      offence.convictionId.toString(),
-      offence,
-      subject,
-      offender
+      eventId,
+      subject
     )
     return AssessmentDto.from(arnAssessment)
   }
@@ -269,35 +260,33 @@ class AssessmentService(
     reason: String,
     assessmentType: AssessmentType,
     source: String,
-    eventId: String,
-    offence: OffenceDto? = null,
-    subject: SubjectEntity?,
-    offender: CommunityOffenderDto
-
+    eventId: Long,
+    subject: SubjectEntity
   ): AssessmentEpisodeEntity {
     log.info("Entered createPrePopulatedEpisode")
     val author = authorService.getOrCreateAuthor()
     val isNewEpisode = !assessment.hasCurrentEpisode()
     log.info("isNewEpisode is $isNewEpisode")
+    val caseDetails = deliusIntegrationRestClient.getCaseDetails(subject.crn, eventId)
     val episode = assessment.newEpisode(
       reason,
       assessmentType = assessmentType,
       offence = OffenceEntity(
         source = source,
-        sourceId = eventId,
-        offenceCode = offence?.offenceCode,
-        codeDescription = offence?.codeDescription,
-        offenceSubCode = offence?.offenceSubCode,
-        subCodeDescription = offence?.subCodeDescription,
-        sentenceDate = offence?.sentenceDate
+        sourceId = eventId.toString(),
+        offenceCode = caseDetails?.sentence?.mainOffence?.category?.code,
+        codeDescription = caseDetails?.sentence?.mainOffence?.category?.description,
+        offenceSubCode = caseDetails?.sentence?.mainOffence?.subCategory?.code,
+        subCodeDescription = caseDetails?.sentence?.mainOffence?.subCategory?.description,
+        sentenceDate = caseDetails?.sentence?.startDate
       ),
       author
     )
     if (isNewEpisode) {
-      episodeService.prePopulateEpisodeFromDelius(episode, offender)
+      episodeService.prePopulateEpisodeFromDelius(episode, caseDetails)
       episodeService.prePopulateFromPreviousEpisodes(episode, assessment.episodes)
       AssessmentUtils.removeOrphanedAnswers(episode)
-      auditAndLogCreateEpisode(assessment.assessmentUuid, episode, subject?.crn)
+      auditAndLogCreateEpisode(assessment.assessmentUuid, episode, subject.crn)
     }
     log.info("New episode episode with id:${episode.episodeId} and uuid:${episode.episodeUuid} created for assessment ${assessment.assessmentUuid}")
     return episode

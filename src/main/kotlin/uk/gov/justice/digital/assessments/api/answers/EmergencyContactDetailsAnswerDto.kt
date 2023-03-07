@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.assessments.api.answers
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import uk.gov.justice.digital.assessments.restclient.communityapi.PersonalContact
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.PersonalContact
 
 data class EmergencyContactDetailsAnswerDto(
 
@@ -43,16 +43,16 @@ data class EmergencyContactDetailsAnswerDto(
 ) {
   companion object {
 
-    fun from(personalContacts: List<PersonalContact>): List<EmergencyContactDetailsAnswerDto> {
-      return if (personalContacts.isEmpty()) emptyList()
+    fun from(personalContacts: List<PersonalContact>?): List<EmergencyContactDetailsAnswerDto> {
+      return if (personalContacts.isNullOrEmpty()) emptyList()
       else personalContacts.map { from(it) }
     }
 
     fun from(personalContact: PersonalContact): EmergencyContactDetailsAnswerDto {
       return EmergencyContactDetailsAnswerDto(
 
-        firstName = listOfNotNull(personalContact.firstName),
-        familyName = listOfNotNull(personalContact.surname),
+        firstName = listOfNotNull(personalContact.name.forename),
+        familyName = listOfNotNull(personalContact.name.surname),
         relationship = listOfNotNull(personalContact.relationship),
         addressNumber = listOfNotNull(personalContact.address?.addressNumber),
         buildingName = listOfNotNull(personalContact.address?.buildingName),
@@ -61,7 +61,7 @@ data class EmergencyContactDetailsAnswerDto(
         town = listOfNotNull(personalContact.address?.town),
         county = listOfNotNull(personalContact.address?.county),
         postcode = listOfNotNull(personalContact.address?.postcode),
-        telephoneNumber = listOfNotNull(personalContact.address?.telephoneNumber),
+        telephoneNumber = listOfNotNull(personalContact.telephoneNumber),
         mobileNumber = listOfNotNull(personalContact.mobileNumber)
       )
     }

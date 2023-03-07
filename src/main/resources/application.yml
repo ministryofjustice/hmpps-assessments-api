@@ -45,6 +45,13 @@ spring:
             client-authentication-method: basic
             authorization-grant-type: client_credentials
             provider: oauth-service
+          delius-integration-client:
+            client-name: delius-integration-client
+            client-id: ${delius-integration-client-id:delius-integration-client}
+            client-secret: ${delius-integration-client-secret:clientsecret}
+            client-authentication-method: basic
+            authorization-grant-type: client_credentials
+            provider: oauth-service
         provider:
           oauth-service:
             token-uri: ${oauth.endpoint.url:http://localhost:9090/auth}/oauth/token
@@ -141,6 +148,9 @@ assessment-api:
   base-url: http://localhost:9080
 
 assess-risks-and-needs-api:
+  base-url: http://localhost:9080
+
+delius-integration:
   base-url: http://localhost:9080
 
 stub:

@@ -45,6 +45,7 @@ abstract class IntegrationTest {
 
   companion object {
     internal val communityApiMockServer = CommunityApiMockServer()
+    internal val deliusIntegrationMockServer = DeliusIntegrationMockServer()
     internal val assessmentApiMockServer = AssessmentApiMockServer()
     internal val assessRisksAndNeedsApiMockServer = AssessRisksAndNeedsApiMockServer()
     internal val auditApiMockServer = AuditMockServer()
@@ -58,6 +59,7 @@ abstract class IntegrationTest {
       assessRisksAndNeedsApiMockServer.start()
       auditApiMockServer.start()
       oauthMockServer.start()
+      deliusIntegrationMockServer.start()
     }
 
     @AfterAll
@@ -68,6 +70,7 @@ abstract class IntegrationTest {
       assessRisksAndNeedsApiMockServer.stop()
       auditApiMockServer.stop()
       oauthMockServer.stop()
+      deliusIntegrationMockServer.stop()
     }
   }
 
@@ -94,6 +97,7 @@ abstract class IntegrationTest {
     assessRisksAndNeedsApiMockServer.resetAll()
     auditApiMockServer.stubAuditEvents()
     oauthMockServer.stubGrantToken()
+    deliusIntegrationMockServer.stubGetOffenderPersonalCircumstances()
     RequestContextHolder.getRequestAttributes()
     startSession()
     startRequest()

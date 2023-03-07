@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.assessments.api.answers
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import uk.gov.justice.digital.assessments.restclient.communityapi.PersonalContact
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.PersonalContact
 
 data class GPDetailsAnswerDto(
   @JsonProperty("gp_name")
@@ -35,14 +35,14 @@ data class GPDetailsAnswerDto(
   val telephoneNumber: List<String?> = emptyList(),
 ) {
   companion object {
-    fun from(personalContacts: List<PersonalContact>): List<GPDetailsAnswerDto> {
-      return if (personalContacts.isEmpty()) emptyList()
+    fun from(personalContacts: List<PersonalContact>?): List<GPDetailsAnswerDto> {
+      return if (personalContacts.isNullOrEmpty()) emptyList()
       else personalContacts.map { from(it) }
     }
 
     fun from(personalContact: PersonalContact): GPDetailsAnswerDto {
 
-      val fullName = listOfNotNull(personalContact.firstName, personalContact.surname)
+      val fullName = listOfNotNull(personalContact.name.forename, personalContact.name.surname)
         .joinToString(separator = " ")
 
       return GPDetailsAnswerDto(
@@ -54,7 +54,7 @@ data class GPDetailsAnswerDto(
         town = listOfNotNull(personalContact.address?.town),
         county = listOfNotNull(personalContact.address?.county),
         postcode = listOfNotNull(personalContact.address?.postcode),
-        telephoneNumber = listOfNotNull(personalContact.address?.telephoneNumber)
+        telephoneNumber = listOfNotNull(personalContact.telephoneNumber, personalContact.mobileNumber)
       )
     }
   }

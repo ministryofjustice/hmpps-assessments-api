@@ -8,17 +8,13 @@ import uk.gov.justice.digital.assessments.api.groups.GroupQuestionDto
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.Answers
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.CloneAssessmentExcludedQuestionsRepository
-import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
 import uk.gov.justice.digital.assessments.restclient.audit.AuditType
-import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
-import uk.gov.justice.digital.assessments.restclient.communityapi.DeliusPersonalCircumstancesDto
-import uk.gov.justice.digital.assessments.restclient.communityapi.PersonalContact
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.CaseDetails
 import java.time.LocalDateTime
 
 @Service
 @Transactional("refDataTransactionManager")
 class EpisodeService(
-  private val communityApiRestClient: CommunityApiRestClient,
   private val assessmentReferenceDataService: AssessmentReferenceDataService,
   private val cloneAssessmentExcludedQuestionsRepository: CloneAssessmentExcludedQuestionsRepository,
   private val telemetryService: TelemetryService,
@@ -32,27 +28,13 @@ class EpisodeService(
 
   fun prePopulateEpisodeFromDelius(
     episode: AssessmentEpisodeEntity,
-    communityOffenderDto: CommunityOffenderDto
+    caseDetails: CaseDetails?
 
-  ): AssessmentEpisodeEntity {
+  ) {
     log.info("Pre-populating episode from Delius")
-    CommunityOffenderDto.from(communityOffenderDto, episode)
-
-    try {
-      val offenderPersonalCircumstances = communityApiRestClient.getOffenderPersonalCircumstances(episode.assessment.subject?.crn)
-      DeliusPersonalCircumstancesDto.from(offenderPersonalCircumstances, episode)
-    } catch (ex: Exception) {
-      log.info("Unable to prepopulate from personal circumstances: ${ex.message}")
+    if (caseDetails != null) {
+      episode.updateFrom(caseDetails)
     }
-
-    try {
-      val offenderPersonalContacts = communityApiRestClient.getOffenderPersonalContacts(episode.assessment.subject?.crn)
-      PersonalContact.from(offenderPersonalContacts, episode)
-    } catch (ex: Exception) {
-      log.info("Unable to prepopulate from personal contacts: ${ex.message}")
-    }
-
-    return episode
   }
 
   fun prePopulateFromPreviousEpisodes(

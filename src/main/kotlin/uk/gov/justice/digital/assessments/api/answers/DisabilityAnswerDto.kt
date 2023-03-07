@@ -3,6 +3,7 @@ package uk.gov.justice.digital.assessments.api.answers
 import com.fasterxml.jackson.annotation.JsonProperty
 import uk.gov.justice.digital.assessments.restclient.communityapi.DeliusDisabilityDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.Provision
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.Disability
 import java.time.LocalDate
 
 data class DisabilityAnswerDto(
@@ -37,6 +38,14 @@ data class DisabilityAnswerDto(
         description = deliusDisability.disabilityType.description,
         notes = deliusDisability.notes,
         adjustments = deliusDisability.provisions?.filter(this::whereActive)?.map { it.provisionType?.description }
+      )
+    }
+    fun from(deliusDisability: Disability): DisabilityAnswerDto {
+      return DisabilityAnswerDto(
+        code = deliusDisability.type.code,
+        description = deliusDisability.type.description,
+        notes = deliusDisability.notes,
+        adjustments = deliusDisability.provisions
       )
     }
   }
