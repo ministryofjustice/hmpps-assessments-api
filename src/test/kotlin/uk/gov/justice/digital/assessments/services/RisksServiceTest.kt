@@ -86,7 +86,7 @@ class RisksServiceTest {
     }
 
     @Test
-    fun `returns active and non-excluded registrations as flags`() {
+    fun `returns registrations as risk flags`() {
       every { communityApiRestClient.getRegistrations(crn) } returns CommunityRegistrations(
         listOf(
           CommunityRegistration(
@@ -95,15 +95,6 @@ class RisksServiceTest {
             riskColour = "Red",
             registerCategory = CommunityRegistrationElement("RC12", "Hate Crime - Disability"),
             type = CommunityRegistrationElement("IRMO", "Hate Crime"),
-            startDate = LocalDate.parse("2021-10-10"),
-          ),
-          CommunityRegistration(
-            active = true,
-            warnUser = true,
-            riskColour = "Red",
-            registerCategory = CommunityRegistrationElement("M2", "MAPPA Cat 2"),
-            registerLevel = CommunityRegistrationElement("M1", "MAPPA Level 1"),
-            type = CommunityRegistrationElement("MAPP", "MAPPA"),
             startDate = LocalDate.parse("2021-10-10"),
           ),
         )
@@ -116,42 +107,8 @@ class RisksServiceTest {
       assertThat(registrations.flags.first().description).isEqualTo("Hate Crime")
       assertThat(registrations.flags.first().colour).isEqualTo("Red")
     }
-
-    @Test
-    fun `returns active registrations when added to community API but not in excluded list`() {
-      every { communityApiRestClient.getRegistrations(crn) } returns CommunityRegistrations(
-        listOf(
-          CommunityRegistration(
-            active = true,
-            warnUser = true,
-            riskColour = "Red",
-            registerCategory = CommunityRegistrationElement("RC12", "Hate Crime - Disability"),
-            type = CommunityRegistrationElement("IRMO", "Hate Crime"),
-            startDate = LocalDate.parse("2021-10-10"),
-          ),
-          CommunityRegistration(
-            active = true,
-            warnUser = true,
-            riskColour = "Green",
-            registerCategory = CommunityRegistrationElement("T2", "TEST CATEGORY"),
-            registerLevel = CommunityRegistrationElement("T1", "TEST Level"),
-            type = CommunityRegistrationElement("TEST", "TEST REGISTRATION"),
-            startDate = LocalDate.parse("2021-10-10"),
-          ),
-        )
-      )
-
-      val registrations = risksService.getRegistrationsForAssessment(crn)
-
-      assertThat(registrations.flags.size).isEqualTo(2)
-      assertThat(registrations.flags.first().code).isEqualTo("IRMO")
-      assertThat(registrations.flags.first().description).isEqualTo("Hate Crime")
-      assertThat(registrations.flags.first().colour).isEqualTo("Red")
-      assertThat(registrations.flags[1].code).isEqualTo("TEST")
-      assertThat(registrations.flags[1].description).isEqualTo("TEST REGISTRATION")
-      assertThat(registrations.flags[1].colour).isEqualTo("Green")
-    }
   }
+
   @Nested
   @DisplayName("get ROSH risk summary")
   inner class GetRoshRiskSummary {
