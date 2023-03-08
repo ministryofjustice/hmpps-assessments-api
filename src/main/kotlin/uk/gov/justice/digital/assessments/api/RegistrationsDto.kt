@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.assessments.api
 
 import io.swagger.v3.oas.annotations.media.Schema
-import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityRegistration
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.CaseDetails
 import java.time.LocalDate
 
 data class RegistrationsDto(
@@ -12,13 +12,18 @@ data class RegistrationsDto(
   val flags: List<Flag> = emptyList(),
 ) {
   companion object {
-    fun from(registrations: List<CommunityRegistration>): RegistrationsDto {
-      val mappa = registrations.firstOrNull { it.type.code == "MAPP" }
-
-      return RegistrationsDto( // the below will need updating to match the returned DTO
-        mappa?.let { Mappa(it.registerLevel?.code, it.registerLevel?.description, it.registerCategory?.code, it.registerCategory?.description, it.startDate) },
-        registrations
-          .map { Flag(it.type.code, it.type.description, it.riskColour) }
+    fun from(caseDetails: CaseDetails): RegistrationsDto {
+      return RegistrationsDto(
+        caseDetails.mappaRegistration?.let {
+          Mappa(
+            it.level.code,
+            it.level.description,
+            it.category.code,
+            it.category.description,
+            it.startDate,
+          )
+        },
+        caseDetails.registerFlags.orEmpty().map { Flag(it.code, it.description, it.riskColour.orEmpty()) }
       )
     }
   }
