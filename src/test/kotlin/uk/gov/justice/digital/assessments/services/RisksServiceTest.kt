@@ -8,22 +8,53 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.assessments.api.RoshRiskSummaryDto
+import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.OffenceEntity
+import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
+import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRepository
 import uk.gov.justice.digital.assessments.restclient.AssessRisksAndNeedsApiRestClient
-import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
-import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityRegistration
-import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityRegistrationElement
-import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityRegistrations
+import uk.gov.justice.digital.assessments.restclient.DeliusIntegrationRestClient
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.CaseDetails
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.MappaRegistration
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.Name
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.RegisterFlag
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.Type
 import java.time.LocalDate
 
 class RisksServiceTest {
-  private val communityApiRestClient: CommunityApiRestClient = mockk()
   private val assessRisksAndNeedsApiRestClient: AssessRisksAndNeedsApiRestClient = mockk()
-  private val risksService = RisksService(communityApiRestClient, assessRisksAndNeedsApiRestClient)
+  private val subjectRepository: SubjectRepository = mockk()
+  private val deliusIntegrationRestClient: DeliusIntegrationRestClient = mockk()
+
+  private val risksService = RisksService(
+    assessRisksAndNeedsApiRestClient,
+    subjectRepository,
+    deliusIntegrationRestClient,
+  )
 
   private val crn = "A123456"
 
   @BeforeEach
   private fun setup() {
+    every { subjectRepository.findByCrn(crn) } returns SubjectEntity(
+      crn = crn,
+      dateOfBirth = LocalDate.of(1969, 1, 1),
+      assessments = listOf(
+        AssessmentEntity(
+          episodes = mutableListOf(
+            AssessmentEpisodeEntity(
+              assessment = AssessmentEntity(),
+              assessmentType = AssessmentType.UPW,
+              author = AuthorEntity(userId = "robm", userName = "Robert Muldoon"),
+              offence = OffenceEntity(sourceId = "1", sentenceDate = LocalDate.of(2023, 1, 1)),
+            )
+          )
+        )
+      )
+    )
   }
 
   @Nested
@@ -31,7 +62,12 @@ class RisksServiceTest {
   inner class GetOffenderRegistrations {
     @Test
     fun `handles when there are no registrations`() {
-      every { communityApiRestClient.getRegistrations(crn) } returns CommunityRegistrations(emptyList())
+      every { deliusIntegrationRestClient.getCaseDetails(crn, 1) } returns CaseDetails(
+        crn = crn,
+        name = Name(forename = "Dennis", surname = "Nedry"),
+        dateOfBirth = LocalDate.of(1969, 1, 1),
+        registerFlags = emptyList()
+      )
 
       val registrations = risksService.getRegistrationsForAssessment(crn)
 
@@ -41,18 +77,16 @@ class RisksServiceTest {
 
     @Test
     fun `returns MAPPA information when available`() {
-      every { communityApiRestClient.getRegistrations(crn) } returns CommunityRegistrations(
-        listOf(
-          CommunityRegistration(
-            active = true,
-            warnUser = true,
-            riskColour = "Red",
-            registerCategory = CommunityRegistrationElement("M2", "MAPPA Cat 2"),
-            registerLevel = CommunityRegistrationElement("M1", "MAPPA Level 1"),
-            type = CommunityRegistrationElement("MAPP", "MAPPA"),
-            startDate = LocalDate.parse("2021-10-10"),
-          ),
-        )
+      every { deliusIntegrationRestClient.getCaseDetails(crn, 1) } returns CaseDetails(
+        crn = crn,
+        name = Name(forename = "Dennis", surname = "Nedry"),
+        dateOfBirth = LocalDate.of(1969, 1, 1),
+        mappaRegistration = MappaRegistration(
+          startDate = LocalDate.of(2023, 1, 1),
+          level = Type("M1", "MAPPA Level 1"),
+          category = Type(code = "M2", description = "MAPPA Cat 2")
+        ),
+        registerFlags = emptyList()
       )
 
       val registrations = risksService.getRegistrationsForAssessment(crn)
@@ -62,21 +96,21 @@ class RisksServiceTest {
       assertThat(registrations.mappa?.levelDescription).isEqualTo("MAPPA Level 1")
       assertThat(registrations.mappa?.category).isEqualTo("M2")
       assertThat(registrations.mappa?.categoryDescription).isEqualTo("MAPPA Cat 2")
-      assertThat(registrations.mappa?.startDate).isEqualTo(LocalDate.parse("2021-10-10"))
+      assertThat(registrations.mappa?.startDate).isEqualTo(LocalDate.parse("2023-01-01"))
     }
 
     @Test
     fun `handles when there is no MAPPA information`() {
-      every { communityApiRestClient.getRegistrations(crn) } returns CommunityRegistrations(
-        listOf(
-          CommunityRegistration(
-            active = true,
-            warnUser = true,
+      every { deliusIntegrationRestClient.getCaseDetails(crn, 1) } returns CaseDetails(
+        crn = crn,
+        name = Name(forename = "Dennis", surname = "Nedry"),
+        dateOfBirth = LocalDate.of(1969, 1, 1),
+        registerFlags = listOf(
+          RegisterFlag(
+            code = "IRMO",
+            description = "Hate Crime",
             riskColour = "Red",
-            registerCategory = CommunityRegistrationElement("RC12", "Hate Crime - Disability"),
-            type = CommunityRegistrationElement("IRMO", "Hate Crime"),
-            startDate = LocalDate.parse("2021-10-10"),
-          ),
+          )
         )
       )
 
@@ -87,16 +121,16 @@ class RisksServiceTest {
 
     @Test
     fun `returns registrations as risk flags`() {
-      every { communityApiRestClient.getRegistrations(crn) } returns CommunityRegistrations(
-        listOf(
-          CommunityRegistration(
-            active = true,
-            warnUser = true,
+      every { deliusIntegrationRestClient.getCaseDetails(crn, 1) } returns CaseDetails(
+        crn = crn,
+        name = Name(forename = "Dennis", surname = "Nedry"),
+        dateOfBirth = LocalDate.of(1969, 1, 1),
+        registerFlags = listOf(
+          RegisterFlag(
+            code = "IRMO",
+            description = "Hate Crime",
             riskColour = "Red",
-            registerCategory = CommunityRegistrationElement("RC12", "Hate Crime - Disability"),
-            type = CommunityRegistrationElement("IRMO", "Hate Crime"),
-            startDate = LocalDate.parse("2021-10-10"),
-          ),
+          )
         )
       )
 
