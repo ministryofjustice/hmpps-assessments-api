@@ -38,7 +38,7 @@ data class CommunityOffenderDto(
       episode.addAnswer("crn", listOfNotNull(communityOffenderDto.otherIds?.crn) as List<Any>)
       episode.addAnswer("pnc", listOfNotNull(communityOffenderDto.otherIds?.pncNumber) as List<Any>)
       episode.addAnswer("ethnicity", listOfNotNull(communityOffenderDto.offenderProfile?.ethnicity) as List<Any>)
-      episode.addAnswer("gender", listOfNotNull(communityOffenderDto?.gender?.uppercase()) as List<Any>)
+      episode.addAnswer("gender", listOfNotNull(communityOffenderDto.gender?.uppercase()) as List<Any>)
       episode.addAnswer("gender_identity", listOfNotNull(mapGenderIdentity(offenderProfile?.genderIdentity)) as List<Any>)
       episode.addAnswer("language", listOfNotNull(offenderProfile?.offenderLanguages?.primaryLanguage) as List<Any>)
       episode.addAnswer("requires_interpreter", listOfNotNull(offenderProfile?.offenderLanguages?.requiresInterpreter.toString()) as List<Any>)

@@ -29,6 +29,11 @@ import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRe
 import uk.gov.justice.digital.assessments.restclient.DeliusIntegrationRestClient
 import uk.gov.justice.digital.assessments.restclient.audit.AuditType
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.Address
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.CaseDetails
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.Name
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.PersonalContact
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.RelationshipType
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import java.time.Clock
 import java.time.Instant
@@ -165,6 +170,7 @@ class AssessmentServiceTest {
       every { episodeService.prePopulateEpisodeFromDelius(any(), any()) } returnsArgument 0
       every { episodeService.prePopulateFromPreviousEpisodes(any(), emptyList()) } returnsArgument 0
 
+      every { deliusIntegrationRestClient.getCaseDetails(crn, eventId) } returns caseDetails()
       val episodeDto = assessmentsService.createNewEpisode(
         assessmentUuid,
         eventId,
@@ -613,6 +619,71 @@ class AssessmentServiceTest {
           questionId = 3,
           questionUuid = questionSchemaUuid3,
           questionCode = questionCode3
+        )
+      )
+    )
+  }
+
+  private fun caseDetails(): CaseDetails {
+    return CaseDetails(
+      crn = "crn",
+      name = Name(
+        forename = "forename",
+        middleName = "middlename",
+        surname = "surname"
+      ),
+      dateOfBirth = LocalDate.of(1989, 1, 1),
+      genderIdentity = "PREFER TO SELF DESCRIBE",
+
+      mainAddress = Address(
+        buildingName = "HMPPS Digital Studio",
+        addressNumber = "32",
+        district = "Sheffield City Centre",
+        county = "South Yorkshire",
+        postcode = "S3 7BS",
+        town = "Sheffield"
+      ),
+      personalContacts = listOf(
+        PersonalContact(
+          relationship = "GP",
+          relationshipType = RelationshipType(
+            code = "RT02",
+            description = "Primary GP"
+          ),
+          name = Name(
+            forename = "Charles",
+            surname = "Europe"
+          ),
+          mobileNumber = "07123456789",
+          address = Address(
+            addressNumber = "32",
+            streetName = "Scotland Street",
+            district = "Sheffield",
+            town = "Sheffield",
+            county = "South Yorkshire",
+            postcode = "S3 7DQ"
+          )
+        ),
+        PersonalContact(
+          relationship = "Emergency Contact",
+          relationshipType = RelationshipType(
+            code = "ME",
+            description = "Father"
+          ),
+          name = Name(
+            forename = "UPW",
+            surname = "Testing"
+          ),
+          telephoneNumber = "020 2000 0000",
+          address = Address(
+            buildingName = "Petty France",
+            addressNumber = "102",
+            streetName = "Central London",
+            district = "London",
+            town = "London",
+            county = "London",
+            postcode = "SW1H 9AJ"
+          )
         )
       )
     )

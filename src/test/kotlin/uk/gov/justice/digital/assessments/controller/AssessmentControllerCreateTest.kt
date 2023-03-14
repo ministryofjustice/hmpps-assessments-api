@@ -104,15 +104,15 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(answers!!["first_name"]).isEqualTo(listOf("John"))
       assertThat(answers["first_name_aliases"]).isEqualTo(listOf("John", "Jonny"))
       assertThat(answers["family_name"]).isEqualTo(listOf("Smith"))
-      assertThat(answers["family_name_aliases"]).isEqualTo(listOf("Smithy"))
+      assertThat(answers["family_name_aliases"]).isEqualTo(listOf("Smithy", "Smith"))
       assertThat(answers["dob"]).isEqualTo(listOf("1979-08-18"))
-      assertThat(answers["dob_aliases"]).isEqualTo(listOf("1979-09-18", "1979-08-18"))
+      assertThat(answers["dob_aliases"]).isEqualTo(listOf("1979-09-18", "1979-08-17"))
       assertThat(answers["crn"]).isEqualTo(listOf("DX5678A"))
       assertThat(answers["pnc"]).isEqualTo(listOf("A/1234560BA"))
-      assertThat(answers["ethnicity"]).isEqualTo(listOf("Asian"))
+      assertThat(answers["ethnicity"]).isEqualTo(listOf("Asian or Asian British: Pakistani"))
       assertThat(answers["gender"]).isEqualTo(listOf("MALE"))
       assertThat(answers["gender_identity"]).isEqualTo(listOf("NON_BINARY"))
-      assertThat(answers["contact_email_addresses"]).isEqualTo(listOf("address1@gmail.com", "address2@gmail.com"))
+      assertThat(answers["contact_email_addresses"]).isEqualTo(listOf("address1@gmail.com"))
       assertThat(answers["contact_mobile_phone_number"]).isEqualTo(listOf("071838893"))
       assertThat(answers["contact_phone_number"]).isEqualTo(listOf("0123456999"))
       assertThat(answers["contact_address_building_name"]).isEqualTo(listOf("HMPPS Digital Studio"))
@@ -122,21 +122,21 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(answers["contact_address_town_or_city"]).isEqualTo(listOf("Sheffield"))
       assertThat(answers["contact_address_county"]).isEqualTo(listOf("South Yorkshire"))
       assertThat(answers["contact_address_postcode"]).isEqualTo(listOf("S3 7BS"))
-      assertThat(answers["language"]).isEqualTo(listOf("French"))
+      assertThat(answers["language"]).isEqualTo(listOf("Urdu"))
       assertThat(answers["requires_interpreter"]).isEqualTo(listOf("true"))
 
       assertThat(answers["allergies"]).isEqualTo(listOf("YES"))
-      assertThat(answers["allergies_details"]).isEqualTo(listOf("Nut Allergy"))
+      assertThat(answers["allergies_details"]).isEqualTo(listOf("Comment added by Natalie Wood on 14/03/2023 at 10:07\nNut Allergy"))
       assertThat(answers["pregnancy"]).isEqualTo(listOf("NO"))
       assertThat(answers["pregnancy_pregnant_details"]).isEqualTo(emptyList<String>())
       assertThat(answers["caring_commitments"]).isEqualTo(listOf("YES"))
-      assertThat(answers["caring_commitments_details"]).isEqualTo(listOf("Primary Carer"))
+      assertThat(answers["caring_commitments_details"]).isEqualTo(listOf("Comment added by Natalie Wood on 14/03/2023 at 10:07\nPrimary Carer"))
       assertThat(answers["reading_writing_difficulties"]).isEqualTo(listOf("YES"))
-      assertThat(answers["reading_writing_difficulties_details"]).isEqualTo(listOf("Cannot read", "Numeracy difficulties", "Communication difficulties"))
+      assertThat(answers["reading_writing_difficulties_details"]).isEqualTo(listOf("Comment added by Natalie Wood on 14/03/2023 at 10:06\nCannot read\n---------------------------------------------------------\nComment added by Natalie Wood on 14/03/2023 at 10:06\nNumeracy difficulties\n---------------------------------------------------------\nComment added by Natalie Wood on 14/03/2023 at 10:06\nCommunication difficulties"))
 
       val contact = getStructuredDataFromAnswer(answers, "emergency_contact_details")
       assertThat(contact["emergency_contact_first_name"]).isEqualTo(listOf("Brian"))
-      assertThat(contact["emergency_contact_family_name"]).isEqualTo(listOf("Contact"))
+      assertThat(contact["emergency_contact_family_name"]).isEqualTo(listOf("Smith"))
       assertThat(contact["emergency_contact_relationship"]).isEqualTo(listOf("Father"))
       assertThat(contact["emergency_contact_address_house_number"]).isEqualTo(listOf("36"))
       assertThat(contact["emergency_contact_address_street_name"]).isEqualTo(listOf("Fifth Street"))
@@ -144,10 +144,10 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(contact["emergency_contact_address_town_or_city"]).isEqualTo(listOf("London"))
       assertThat(contact["emergency_contact_address_county"]).isEqualTo(listOf("South London"))
       assertThat(contact["emergency_contact_mobile_phone_number"]).isEqualTo(listOf("07333567890"))
-      assertThat(contact["emergency_contact_address_postcode"]).isEqualTo(listOf("South City Centre"))
+      assertThat(contact["emergency_contact_address_postcode"]).isEqualTo(listOf("W10 4DN"))
       assertThat(contact["emergency_contact_phone_number"]).isEqualTo(listOf("0133456789"))
 
-      val gp1 = getStructuredDataFromAnswer(answers, "gp_details")
+      val gp1 = getStructuredDataFromAnswer(answers, "gp_details", 1)
       assertThat(gp1["gp_name"]).isEqualTo(listOf("Nick Riviera"))
       assertThat(gp1["gp_practice_name"]).isEqualTo(emptyList<String>())
       assertThat(gp1["gp_address_building_name"]).isEqualTo(listOf("The practice"))
@@ -159,7 +159,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(gp1["gp_address_postcode"]).isEqualTo(listOf("E5 7BS"))
       assertThat(gp1["gp_phone_number"]).isEqualTo(listOf("0233456789"))
 
-      val gp2 = getStructuredDataFromAnswer(answers, "gp_details", 1)
+      val gp2 = getStructuredDataFromAnswer(answers, "gp_details")
       assertThat(gp2["gp_name"]).isEqualTo(listOf("Steve Wilson"))
       assertThat(gp2["gp_address_building_name"]).isEqualTo(listOf("The Building"))
       assertThat(gp2["gp_address_house_number"]).isEqualTo(listOf("77"))
@@ -246,7 +246,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(carerCommitment["code"]).isEqualTo("I")
       assertThat(carerCommitment["subType"]).isEqualTo("Is a Primary Carer")
       assertThat(carerCommitment["subTypeCode"]).isEqualTo("I02")
-      assertThat(carerCommitment["notes"]).isEqualTo("Some notes")
+      assertThat(carerCommitment["notes"]).isEqualTo("Comment added by Natalie Wood on 14/03/2023 at 10:07\nPrimary Carer")
       assertThat(carerCommitment["isEvidenced"]).isEqualTo(true)
     }
 
@@ -269,7 +269,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
 
       assertThat(assessment?.assessmentUuid).isNotNull
       assertThat(assessment?.episodes).hasSize(1)
-      val answers = assessment.episodes.first().answers
+      val answers = assessment!!.episodes.first().answers
       assertThat(answers["gender"]).isEqualTo(listOf("MALE"))
       assertThat(answers["gender_identity"]).isEqualTo(listOf("NON_BINARY"))
     }
@@ -312,7 +312,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
     @Test
     fun `creating an assessment for a delius event id and crn when one already exists in ARN returns the existing assessment`() {
       val existingCrn = "CRN1"
-      val existingEventId = 12345L
+      val existingEventId = 123456L
       val existingAssessment = createDeliusAssessment(existingCrn, existingEventId)
       val assessmentDto = createDeliusAssessment(existingCrn, existingEventId)
 
@@ -338,11 +338,11 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       assertThat(episode?.assessmentUuid).isEqualTo(UUID.fromString("49c8d211-68dc-4692-a6e2-d58468127356"))
       assertThat(episode?.created).isEqualToIgnoringMinutes(LocalDateTime.now())
 
-      assertThat(episode?.offence?.offenceCode).isEqualTo("046")
-      assertThat(episode?.offence?.codeDescription).isEqualTo("Stealing from shops and stalls (shoplifting)")
+      assertThat(episode?.offence?.offenceCode).isEqualTo("150")
+      assertThat(episode?.offence?.codeDescription).isEqualTo("Merchant Shipping Acts")
       assertThat(episode?.offence?.offenceSubCode).isEqualTo("00")
-      assertThat(episode?.offence?.subCodeDescription).isEqualTo("Stealing from shops and stalls (shoplifting)")
-      assertThat(episode?.offence?.sentenceDate).isEqualTo(LocalDate.of(2014, 8, 25))
+      assertThat(episode?.offence?.subCodeDescription).isEqualTo("Merchant Shipping Acts")
+      assertThat(episode?.offence?.sentenceDate).isEqualTo(LocalDate.of(2023, 1, 26))
     }
   }
 

@@ -214,7 +214,7 @@ data class AssessmentEpisodeEntity(
     }
     val readingWritingDescription = yesNoFieldType(readingWriting?.map { it.subType?.description })
     episode.addAnswer("reading_writing_difficulties", readingWritingDescription)
-    episode.addAnswer("reading_writing_difficulties_details", readingWriting?.map { it.notes } as List<Any>)
+    episode.addAnswer("reading_writing_difficulties_details", readingWriting?.mapNotNull { it.notes } as List<Any>)
   }
 
   private fun mapReadingLiteracy(
@@ -227,7 +227,7 @@ data class AssessmentEpisodeEntity(
     val readingLiteracyConcernsDescription =
       yesNoFieldType(readingLiteracyConcerns?.map { it.subType?.description })
     episode.addAnswer("reading_literacy_concerns", readingLiteracyConcernsDescription)
-    episode.addAnswer("reading_literacy_concerns_details", readingLiteracyConcerns?.map { it.notes } as List<Any>)
+    episode.addAnswer("reading_literacy_concerns_details", readingLiteracyConcerns?.mapNotNull { it.notes } as List<Any>)
   }
 
   private fun mapPregnancy(
@@ -247,10 +247,10 @@ data class AssessmentEpisodeEntity(
 
     if (pregnancy?.isNotEmpty() == true) {
       episode.addAnswer("pregnancy", listOf("PREGNANT"))
-      episode.addAnswer("pregnancy_pregnant_details", pregnancy.map { it.notes } as List<Any>)
+      episode.addAnswer("pregnancy_pregnant_details", pregnancy.mapNotNull { it.notes } as List<Any>)
     } else if (recentlyGivenBirth?.isNotEmpty() == true) {
       episode.addAnswer("pregnancy", listOf("RECENTLY_GIVEN_BIRTH"))
-      episode.addAnswer("pregnancy_recently_given_birth_details", recentlyGivenBirth.map { it.notes } as List<Any>)
+      episode.addAnswer("pregnancy_recently_given_birth_details", recentlyGivenBirth.mapNotNull { it.notes } as List<Any>)
     } else {
       episode.addAnswer("pregnancy", listOf("NO"))
     }
@@ -266,7 +266,7 @@ data class AssessmentEpisodeEntity(
 
     val numeracyConcerns = yesNoFieldType(numeracy?.map { it.subType?.code })
     episode.addAnswer("numeracy_concerns", numeracyConcerns)
-    episode.addAnswer("numeracy_concerns_details", numeracy?.map { it.notes } as List<Any>)
+    episode.addAnswer("numeracy_concerns_details", numeracy?.mapNotNull { it.notes } as List<Any>)
   }
 
   private fun mapLanguageCommunication(
@@ -279,7 +279,7 @@ data class AssessmentEpisodeEntity(
 
     val languageCommunicationConcerns = yesNoFieldType(languageCommunication?.map { it.subType?.code })
     episode.addAnswer("language_communication_concerns", languageCommunicationConcerns)
-    episode.addAnswer("language_communication_concerns_details", languageCommunication?.map { it.notes } as List<Any>)
+    episode.addAnswer("language_communication_concerns_details", languageCommunication?.mapNotNull { it.notes } as List<Any>)
   }
 
   private fun mapCarerCommitment(
@@ -291,7 +291,7 @@ data class AssessmentEpisodeEntity(
     val carerCommitmentsDescription = yesNoFieldType(carerCommitments?.mapNotNull { it.subType?.code })
 
     episode.addAnswer("caring_commitments", carerCommitmentsDescription)
-    episode.addAnswer("caring_commitments_details", carerCommitments?.map { it.notes } as List<Any>)
+    episode.addAnswer("caring_commitments_details", carerCommitments?.mapNotNull { it.notes } as List<Any>)
   }
 
   private fun mapAllergies(
@@ -303,7 +303,7 @@ data class AssessmentEpisodeEntity(
     }
     val allergyDescription = yesNoFieldType(allergies?.map { it.subType?.code })
     episode.addAnswer("allergies", allergyDescription)
-    episode.addAnswer("allergies_details", allergies?.map { it.notes } as List<Any>)
+    episode.addAnswer("allergies_details", allergies?.mapNotNull { it.notes } as List<Any>)
   }
 
   private fun mapActiveCarerCommitments(
@@ -320,7 +320,7 @@ data class AssessmentEpisodeEntity(
     caseDetails: CaseDetails,
     episode: AssessmentEpisodeEntity
   ) {
-    val gpDetails = caseDetails.personalContacts?.filter { it.relationship == "GP" }
+    val gpDetails = caseDetails.personalContacts?.filter { it.relationshipType.code == "RT02" }
     episode.addAnswer("gp_details", GPDetailsAnswerDto.from(gpDetails) as List<Any>)
   }
 
@@ -328,7 +328,7 @@ data class AssessmentEpisodeEntity(
     caseDetails: CaseDetails,
     episode: AssessmentEpisodeEntity
   ) {
-    val emergencyContacts = caseDetails.personalContacts?.filter { it.relationship == "Emergency Contact" }
+    val emergencyContacts = caseDetails.personalContacts?.filter { it.relationshipType.code == "ME" }
     episode.addAnswer("emergency_contact_details", EmergencyContactDetailsAnswerDto.from(emergencyContacts) as List<Any>)
   }
 

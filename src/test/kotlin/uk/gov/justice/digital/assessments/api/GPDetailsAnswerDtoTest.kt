@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.assessments.api.answers.GPDetailsAnswerDto
 import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.Name
 import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.PersonalContact
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.RelationshipType
 
 class GPDetailsAnswerDtoTest {
 
@@ -30,6 +31,10 @@ class GPDetailsAnswerDtoTest {
   private fun createEmptyPersonalContact(): PersonalContact {
     return PersonalContact(
       relationship = "",
+      relationshipType = RelationshipType(
+        code = "",
+        description = ""
+      ),
       name = Name(
         forename = "",
         middleName = null,

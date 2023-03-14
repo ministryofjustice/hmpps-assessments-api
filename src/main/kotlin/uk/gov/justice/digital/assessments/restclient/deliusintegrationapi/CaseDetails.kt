@@ -38,7 +38,7 @@ data class PhoneNumber(
 data class Disability(
   val type: Type,
   val provisions: List<String>? = null,
-  val notes: String
+  val notes: String?
 )
 data class Language(
   val requiresInterpreter: Boolean = false,
@@ -80,12 +80,13 @@ data class Address(
 data class PersonalCircumstance(
   val type: Type,
   val subType: Type? = null,
-  val notes: String,
+  val notes: String?,
   val evidenced: Boolean,
 )
 
 data class PersonalContact(
   val relationship: String,
+  val relationshipType: RelationshipType,
   val name: Name,
   val telephoneNumber: String? = null,
   val mobileNumber: String? = null,
@@ -101,4 +102,9 @@ data class Name(
   val forename: String,
   val middleName: String? = null,
   val surname: String,
+)
+
+class RelationshipType(
+  val code: String?,
+  val description: String?,
 )

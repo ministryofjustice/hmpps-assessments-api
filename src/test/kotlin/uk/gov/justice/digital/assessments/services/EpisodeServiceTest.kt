@@ -34,6 +34,7 @@ import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.Addres
 import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.CaseDetails
 import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.Name
 import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.PersonalContact
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.RelationshipType
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
@@ -583,6 +584,10 @@ class EpisodeServiceTest {
       personalContacts = listOf(
         PersonalContact(
           relationship = "GP",
+          relationshipType = RelationshipType(
+            code = "RT02",
+            description = "Primary GP"
+          ),
           name = Name(
             forename = "Charles",
             surname = "Europe"
@@ -599,6 +604,10 @@ class EpisodeServiceTest {
         ),
         PersonalContact(
           relationship = "Emergency Contact",
+          relationshipType = RelationshipType(
+            code = "ME",
+            description = "Father"
+          ),
           name = Name(
             forename = "UPW",
             surname = "Testing"

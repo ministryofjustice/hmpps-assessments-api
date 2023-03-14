@@ -62,16 +62,6 @@ class CommunityApiRestClient(
       )
     }
 
-  // fun getOffenderPersonalContacts(crn: String?): List<PersonalContact> {
-  //   log.info("Client retrieving offender personal contacts for crn: $crn")
-  //   val path = "secure/offenders/crn/$crn/personalContacts"
-  //   return performHttpGet(path, "Failed to retrieve offender personal contacts for crn: $crn")
-  //     .bodyToMono(object : ParameterizedTypeReference<List<PersonalContact>>() {})
-  //     .block().also {
-  //       log.info("Offender personal contacts for crn: $crn, found in ${ExternalService.COMMUNITY_API.name}")
-  //     }
-  // }
-
   fun getConvictions(crn: String): List<CommunityConvictionDto>? {
     log.info("Client retrieving conviction details for crn: $crn")
     val path = "secure/offenders/crn/$crn/convictions"
