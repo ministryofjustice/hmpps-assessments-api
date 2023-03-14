@@ -2,17 +2,13 @@ package uk.gov.justice.digital.assessments.api
 
 import io.swagger.v3.oas.annotations.media.Schema
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.OffenceEntity
-import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityConvictionDto
-import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenceDto.Companion.getMainOffence
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.Sentence
 import java.time.LocalDate
 
 data class OffenceDto(
 
   @Schema(description = "Conviction ID")
   val convictionId: Long? = null,
-
-  @Schema(description = "Conviction Index")
-  val convictionIndex: Long? = null,
 
   @Schema(description = "Offence category code")
   val offenceCode: String? = null,
@@ -31,16 +27,14 @@ data class OffenceDto(
 ) {
 
   companion object {
-    fun from(convictionDto: CommunityConvictionDto): OffenceDto {
-      val offence = getMainOffence(convictionDto.offences)
+    fun from(sentence: Sentence, convictionId: Long?): OffenceDto {
       return OffenceDto(
-        convictionId = convictionDto.convictionId,
-        convictionIndex = convictionDto.index,
-        offenceCode = offence.detail?.mainCategoryCode,
-        codeDescription = offence.detail?.mainCategoryDescription,
-        offenceSubCode = offence.detail?.subCategoryCode,
-        subCodeDescription = offence.detail?.subCategoryDescription,
-        sentenceDate = convictionDto.sentence?.startDate
+        convictionId = convictionId,
+        offenceCode = sentence.mainOffence.category.code,
+        codeDescription = sentence.mainOffence.category.description,
+        offenceSubCode = sentence.mainOffence.subCategory.code,
+        subCodeDescription = sentence.mainOffence.subCategory.description,
+        sentenceDate = sentence.startDate
       )
     }
 

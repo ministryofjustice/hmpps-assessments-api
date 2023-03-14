@@ -17,12 +17,10 @@ class UpdateClosedEpisodeException(msg: String?) : RuntimeException(msg)
 class EntityNotFoundException(msg: String?) : RuntimeException(msg)
 class UserAreaHeaderIsMandatoryException(msg: String?) : RuntimeException(msg)
 class MdcPropertyException(msg: String?) : RuntimeException(msg)
-class PredictorCalculationException(msg: String?) : RuntimeException(msg)
 class MultipleExternalSourcesException(msg: String?) : RuntimeException(msg)
 class CrnIsMandatoryException(msg: String?) : RuntimeException(msg)
-class ExternalSourceEndpointIsMandatoryException(msg: String?) : RuntimeException(msg)
-class ExternalSourceAnswerException(msg: String?) : RuntimeException(msg)
 class AuditFailureException(msg: String?) : RuntimeException(msg)
+class EventTypeNotKnown(msg: String?) : RuntimeException(msg)
 
 class OASysUserPermissionException(
   msg: String?,

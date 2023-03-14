@@ -9,7 +9,7 @@ data class CreateAssessmentDto(
   val deliusEventId: Long? = null,
 
   @Schema(description = "Delius Event Type", example = "EVENT_ID", required = false)
-  val deliusEventType: DeliusEventType = DeliusEventType.EVENT_INDEX,
+  val deliusEventType: DeliusEventType = DeliusEventType.EVENT_ID,
 
   @Schema(description = "Offender CRN", example = "CRN1")
   val crn: String? = null,

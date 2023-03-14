@@ -20,7 +20,7 @@ internal class OffenderControllerTest : IntegrationTest() {
   fun `should handle request when EventType is absent`() {
 
     val crn = "DX5678A"
-    val eventId = 1
+    val eventId = 123456
     val path = "/offender/crn/$crn/eventId/$eventId"
 
     val offenderDto = webTestClient.get().uri(path)
@@ -44,13 +44,12 @@ internal class OffenderControllerTest : IntegrationTest() {
         firstNameAliases = listOf("John", "Jonny"),
         surnameAliases = listOf("Smithy"),
         offence = OffenceDto(
-          convictionId = 2500000223,
-          convictionIndex = 1,
-          offenceCode = "046",
-          codeDescription = "Stealing from shops and stalls (shoplifting)",
+          convictionId = 123456,
+          offenceCode = "150",
+          codeDescription = "Merchant Shipping Acts",
           offenceSubCode = "00",
-          subCodeDescription = "Stealing from shops and stalls (shoplifting)",
-          sentenceDate = LocalDate.of(2014, 8, 25)
+          subCodeDescription = "Merchant Shipping Acts",
+          sentenceDate = LocalDate.of(2023, 1, 26)
         )
       )
     )
@@ -89,12 +88,11 @@ internal class OffenderControllerTest : IntegrationTest() {
         surnameAliases = listOf("Smithy"),
         offence = OffenceDto(
           convictionId = expectedConvictionId,
-          convictionIndex = 1,
-          offenceCode = "046",
-          codeDescription = "Stealing from shops and stalls (shoplifting)",
+          offenceCode = "150",
+          codeDescription = "Merchant Shipping Acts",
           offenceSubCode = "00",
-          subCodeDescription = "Stealing from shops and stalls (shoplifting)",
-          sentenceDate = LocalDate.of(2014, 8, 25)
+          subCodeDescription = "Merchant Shipping Acts",
+          sentenceDate = LocalDate.of(2023, 1, 26)
         )
       )
     )
@@ -105,7 +103,6 @@ internal class OffenderControllerTest : IntegrationTest() {
     fun getConvictionData(): List<Arguments> {
 
       return listOf(
-        Arguments.of(DeliusEventType.EVENT_INDEX, 2500000223, 1),
         Arguments.of(DeliusEventType.EVENT_ID, 123456, 123456),
       )
     }

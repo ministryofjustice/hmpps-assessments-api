@@ -100,8 +100,7 @@ class AssessmentServiceTest {
   @BeforeEach
   internal fun setUp() {
     val offenceDto = OffenceDto(
-      convictionId = 123,
-      convictionIndex = eventId,
+      convictionId = eventId,
       offenceCode = "Code",
       codeDescription = "Code description",
       offenceSubCode = "Sub-code",
@@ -161,7 +160,7 @@ class AssessmentServiceTest {
       )
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
       every { assessment.subject } returns SubjectEntity(crn = crn, dateOfBirth = LocalDate.now())
-      every { offenderService.getOffenceFromConvictionIndex(crn, eventId) } returns OffenceDto(
+      every { offenderService.getOffenceFromConvictionId(crn, eventId) } returns OffenceDto(
         offenceCode = offenceCode,
         codeDescription = codeDescription,
         offenceSubCode = offenceSubCode,
@@ -176,7 +175,7 @@ class AssessmentServiceTest {
         eventId,
         "Change of Circs",
         assessmentType,
-        DeliusEventType.EVENT_INDEX
+        DeliusEventType.EVENT_ID
       )
 
       assertThat(episodeDto.assessmentUuid).isEqualTo(assessmentUuid)

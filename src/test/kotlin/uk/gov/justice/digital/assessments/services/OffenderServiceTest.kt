@@ -10,13 +10,15 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import uk.gov.justice.digital.assessments.api.DeliusEventType
 import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
-import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityConvictionDto
-import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenceDetail
-import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenceDto
+import uk.gov.justice.digital.assessments.restclient.DeliusIntegrationRestClient
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.IDs
 import uk.gov.justice.digital.assessments.restclient.communityapi.OffenderAlias
-import uk.gov.justice.digital.assessments.restclient.communityapi.Sentence
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.Address
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.CaseDetails
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.MainOffence
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.Name
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.Type
 import java.time.LocalDate
 
 @ExtendWith(MockKExtension::class)
@@ -24,69 +26,23 @@ import java.time.LocalDate
 class OffenderServiceTest {
 
   private val communityApiRestClient: CommunityApiRestClient = mockk()
-  private val offenderService: OffenderService = OffenderService(communityApiRestClient)
+  private val deliusIntegrationRestClient: DeliusIntegrationRestClient = mockk()
+  private val offenderService: OffenderService = OffenderService(communityApiRestClient, deliusIntegrationRestClient)
 
   private val oasysOffenderPk = 101L
   private val crn = "DX12340A"
   private val eventId = 1L
-  private val convictionId = 123456L
 
   @Test
-  fun `should invoke community service Api with conviction Id when Delius EventType is EventId`() {
+  fun `should invoke delius integration with conviction Id when Delius EventType is EventId`() {
     // given
-    every { communityApiRestClient.getConviction(crn, eventId) } returns CommunityConvictionDto(
-      index = 1L,
-      convictionId = 23423L,
-      sentence = Sentence(LocalDate.now()),
-      offences = listOf(
-        CommunityOffenceDto(
-          offenceId = "234234",
-          mainOffence = true,
-          detail = CommunityOffenceDetail(
-            mainCategoryCode = "code",
-            mainCategoryDescription = "categoryDescription",
-            subCategoryCode = "sub category code",
-            subCategoryDescription = "sub category description"
-          )
-        )
-      )
-    )
+    every { deliusIntegrationRestClient.getCaseDetails(crn, eventId) } returns caseDetails()
 
     // when
     offenderService.getOffence(DeliusEventType.EVENT_ID, crn, eventId)
 
     // then
-    verify() { communityApiRestClient.getConviction(crn, eventId) }
-  }
-
-  @Test
-  fun `should invoke community service Api with conviction Id when Delius EventType is Event index`() {
-    // given
-    every { communityApiRestClient.getConvictions(crn) } returns listOf(
-      CommunityConvictionDto(
-        index = 1L,
-        convictionId = 23423L,
-        sentence = Sentence(LocalDate.now()),
-        offences = listOf(
-          CommunityOffenceDto(
-            offenceId = "234234",
-            mainOffence = true,
-            detail = CommunityOffenceDetail(
-              mainCategoryCode = "code",
-              mainCategoryDescription = "categoryDescription",
-              subCategoryCode = "sub category code",
-              subCategoryDescription = "sub category description"
-            )
-          )
-        )
-      )
-    )
-
-    // when
-    offenderService.getOffence(DeliusEventType.EVENT_INDEX, crn, eventId)
-
-    // then
-    verify() { communityApiRestClient.getConvictions(crn) }
+    verify { deliusIntegrationRestClient.getCaseDetails(crn, eventId) }
   }
 
   @Test
@@ -99,92 +55,16 @@ class OffenderServiceTest {
   }
 
   @Test
-  fun `return offence for convictions`() {
-    every { communityApiRestClient.getConvictions(crn) } returns validCommunityConvictionsDto()
-
-    val offenceDto = offenderService.getOffenceFromConvictionIndex(crn, eventId)
-    assertThat(offenceDto.convictionId).isEqualTo(636401162L)
-    assertThat(offenceDto.convictionIndex).isEqualTo(1)
-    assertThat(offenceDto.offenceCode).isEqualTo("Code")
-    assertThat(offenceDto.codeDescription).isEqualTo("Code description")
-    assertThat(offenceDto.offenceSubCode).isEqualTo("Sub code")
-    assertThat(offenceDto.subCodeDescription).isEqualTo("Sub code description")
-
-    verify(exactly = 1) { communityApiRestClient.getConvictions(any()) }
-  }
-
-  @Test
   fun `return offence for conviction`() {
-    every { communityApiRestClient.getConviction(crn, convictionId) } returns validCommunityConvictionsDto()[0]
+    every { deliusIntegrationRestClient.getCaseDetails(crn, eventId) } returns caseDetails()
 
-    val offenceDto = offenderService.getOffenceFromConvictionId(crn, convictionId)
-    assertThat(offenceDto.convictionId).isEqualTo(636401162L)
-    assertThat(offenceDto.convictionIndex).isEqualTo(1)
+    val offenceDto = offenderService.getOffenceFromConvictionId(crn, eventId)
     assertThat(offenceDto.offenceCode).isEqualTo("Code")
     assertThat(offenceDto.codeDescription).isEqualTo("Code description")
     assertThat(offenceDto.offenceSubCode).isEqualTo("Sub code")
     assertThat(offenceDto.subCodeDescription).isEqualTo("Sub code description")
 
-    verify(exactly = 1) { communityApiRestClient.getConviction(crn, convictionId) }
-  }
-
-  private fun validCommunityConvictionsDto(): List<CommunityConvictionDto> {
-    return listOf(
-      CommunityConvictionDto(
-        convictionId = 636401162L,
-        offences = listOf(
-          CommunityOffenceDto(
-            offenceId = "offence1",
-            mainOffence = true,
-            detail = CommunityOffenceDetail(
-              mainCategoryCode = "Code",
-              mainCategoryDescription = "Code description",
-              subCategoryCode = "Sub code",
-              subCategoryDescription = "Sub code description"
-            )
-          ),
-          CommunityOffenceDto(
-            offenceId = "offence2",
-            mainOffence = false,
-            detail = CommunityOffenceDetail(
-              mainCategoryCode = "Code",
-              mainCategoryDescription = "Code description",
-              subCategoryCode = "Sub code",
-              subCategoryDescription = "Sub code description"
-            )
-          )
-        ),
-        sentence = Sentence(startDate = LocalDate.of(2020, 2, 1)),
-        index = 1,
-      ),
-      CommunityConvictionDto(
-        convictionId = 1234567,
-        offences = listOf(
-          CommunityOffenceDto(
-            offenceId = "offenceA",
-            mainOffence = true,
-            detail = CommunityOffenceDetail(
-              mainCategoryCode = "Code",
-              mainCategoryDescription = "Code description",
-              subCategoryCode = "Sub code",
-              subCategoryDescription = "Sub code description"
-            )
-          ),
-          CommunityOffenceDto(
-            offenceId = "offenceB",
-            mainOffence = false,
-            detail = CommunityOffenceDetail(
-              mainCategoryCode = "Code",
-              mainCategoryDescription = "Code description",
-              subCategoryCode = "Sub code",
-              subCategoryDescription = "Sub code description"
-            )
-          )
-        ),
-        sentence = Sentence(startDate = LocalDate.of(2020, 2, 1)),
-        index = 2
-      )
-    )
+    verify(exactly = 1) { deliusIntegrationRestClient.getCaseDetails(crn, eventId) }
   }
 
   private fun validCommunityOffenderDto(): CommunityOffenderDto {
@@ -204,6 +84,41 @@ class OffenderServiceTest {
         OffenderAlias(
           firstName = "firstName",
           surname = "surname"
+        )
+      )
+    )
+  }
+
+  private fun caseDetails(): CaseDetails {
+    return CaseDetails(
+      crn = "crn",
+      name = Name(
+        forename = "forename",
+        middleName = "middlename",
+        surname = "surname"
+      ),
+      dateOfBirth = LocalDate.of(1989, 1, 1),
+      genderIdentity = "PREFER TO SELF DESCRIBE",
+
+      mainAddress = Address(
+        buildingName = "HMPPS Digital Studio",
+        addressNumber = "32",
+        district = "Sheffield City Centre",
+        county = "South Yorkshire",
+        postcode = "S3 7BS",
+        town = "Sheffield"
+      ),
+      sentence = uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.Sentence(
+        startDate = LocalDate.of(2020, 2, 1),
+        mainOffence = MainOffence(
+          category = Type(
+            code = "Code",
+            description = "Code description"
+          ),
+          subCategory = Type(
+            code = "Sub code",
+            description = "Sub code description"
+          )
         )
       )
     )
