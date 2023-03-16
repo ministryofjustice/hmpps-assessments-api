@@ -9,7 +9,7 @@ class DeliusIntegrationMockServer : WireMockServer(9097) {
 
   fun stubGetCaseData() {
     stubFor(
-      WireMock.get(WireMock.urlPathMatching("/case-data/(?:DX5678A|X1356|CRN1|X1355)/123456"))
+      WireMock.get(WireMock.urlPathMatching("/case-data/(?:DX5678A|X1356|CRN1|X1355|X1346)/123456"))
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
@@ -20,7 +20,7 @@ class DeliusIntegrationMockServer : WireMockServer(9097) {
     )
 
     stubFor(
-      WireMock.get(WireMock.urlPathMatching("/case-data/(?:DX5678A|X1356|CRN1|X1355)/1"))
+      WireMock.get(WireMock.urlPathMatching("/case-data/(?:DX5678A|X1356|CRN1|X1355|X1346)/1"))
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
@@ -252,7 +252,24 @@ class DeliusIntegrationMockServer : WireMockServer(9097) {
             }
         }
     ],
-    "registerFlags": [],
+    "mappaRegistration": {
+      "startDate": "2022-01-01",
+      "level": {
+        "code": "M1",
+        "description": "MAPPA Level 1"
+      },
+      "category": {
+        "code": "M2",
+        "description": "MAPPA Cat 2"
+      }
+    },
+    "registerFlags": [
+      {
+        "code": "STRG",
+        "description": "Street gangs",
+        "riskColour": "Red"
+      }
+    ],
     "sentence": {
         "startDate": "2023-01-26",
         "mainOffence": {
