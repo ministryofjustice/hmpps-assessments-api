@@ -178,23 +178,6 @@ class AssessmentControllerCreateTest : IntegrationTest() {
 
     @Test
     @Disabled("Reinstate test post implementation of get contact details rest call")
-    fun `creating a new UPW assessment from Delius only returns GPs where active flag is true`() {
-
-      val assessment = createDeliusAssessment(crn, eventID, AssessmentType.UPW)
-      val answers = assessment?.episodes?.first()?.answers
-
-      val gpDetails = answers?.get("gp_details") as List<*>
-      val gp1 = gpDetails[0] as Map<*, *>
-      assertThat(gp1["gp_name"]).isEqualTo(listOf("Nick Riviera"))
-
-      val gp2 = gpDetails[1] as Map<*, *>
-      assertThat(gp2["gp_name"]).isEqualTo(listOf("Steve Wilson"))
-
-      assertThat(gpDetails).hasSize(2)
-    }
-
-    @Test
-    @Disabled("Reinstate test post implementation of get contact details rest call")
     fun `creating a new UPW assessment from Delius returns disabilities`() {
 
       val assessment = createDeliusAssessment(crn, eventID)

@@ -3,49 +3,77 @@ package uk.gov.justice.digital.assessments.api
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
-import uk.gov.justice.digital.assessments.restclient.communityapi.IDs
-import uk.gov.justice.digital.assessments.restclient.communityapi.OffenderAlias
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.Address
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.Alias
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.CaseDetails
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.MainOffence
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.Name
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.Sentence
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.Type
+import java.time.LocalDate
 
 @DisplayName("Offender DTO Tests")
 class OffenderDtoTest {
 
   @Test
   fun `builds valid offender DTO from Community Offender`() {
-    val communityOffenderDto = CommunityOffenderDto(
-      offenderId = 101L,
-      firstName = "John",
-      middleNames = listOf("firstMiddleName", "secondMiddleName"),
-      surname = "Smith",
-      previousSurname = null,
-      dateOfBirth = "1979-08-18",
-      gender = "F",
-      otherIds = IDs(
-        crn = "DX12340A",
-        pncNumber = "A/1234560BA"
+    val caseDetails = CaseDetails(
+      crn = "crn",
+      name = Name(
+        forename = "forename",
+        middleName = "middleName",
+        surname = "surname"
       ),
-      offenderAliases = listOf(
-        OffenderAlias(
-          firstName = "firstName",
-          surname = "surname"
+      dateOfBirth = LocalDate.of(1989, 1, 1),
+      genderIdentity = "PREFER TO SELF DESCRIBE",
+      aliases = listOf(
+        Alias(
+          name = Name(
+            forename = "firstName",
+            surname = "surname"
+          ),
+          dateOfBirth = LocalDate.of(1988, 1, 2)
         ),
-        OffenderAlias(
-          firstName = "firstName2",
-          surname = "surname2"
+        Alias(
+          name = Name(
+            forename = "firstName2",
+            surname = "surname2"
+          ),
+          dateOfBirth = LocalDate.of(1988, 1, 2)
+        )
+      ),
+      mainAddress = Address(
+        buildingName = "HMPPS Digital Studio",
+        addressNumber = "32",
+        district = "Sheffield City Centre",
+        county = "South Yorkshire",
+        postcode = "S3 7BS",
+        town = "Sheffield"
+      ),
+      sentence = Sentence(
+        startDate = LocalDate.of(2020, 2, 1),
+        mainOffence = MainOffence(
+          category = Type(
+            code = "Code",
+            description = "Code description"
+          ),
+          subCategory = Type(
+            code = "Sub code",
+            description = "Sub code description"
+          )
         )
       )
     )
 
-    val offenderDto = OffenderDto.from(communityOffenderDto)
+    val offenderDto = OffenderDto.from(caseDetails)
 
-    assertThat(offenderDto.offenderId).isEqualTo(communityOffenderDto.offenderId)
-    assertThat(offenderDto.firstName).isEqualTo(communityOffenderDto.firstName)
-    assertThat(offenderDto.surname).isEqualTo(communityOffenderDto.surname)
-    assertThat(offenderDto.dateOfBirth).isEqualTo(communityOffenderDto.dateOfBirth)
-    assertThat(offenderDto.gender).isEqualTo(communityOffenderDto.gender)
-    assertThat(offenderDto.crn).isEqualTo(communityOffenderDto.otherIds?.crn)
-    assertThat(offenderDto.pncNumber).isEqualTo(communityOffenderDto.otherIds?.pncNumber)
-    assertThat(offenderDto.croNumber).isEqualTo(communityOffenderDto.otherIds?.croNumber)
+    assertThat(offenderDto.firstName).isEqualTo(caseDetails.name.forename)
+    assertThat(offenderDto.surname).isEqualTo(caseDetails.name.surname)
+    assertThat(offenderDto.dateOfBirth).isEqualTo(caseDetails.dateOfBirth)
+    assertThat(offenderDto.gender).isEqualTo(caseDetails.gender)
+    assertThat(offenderDto.crn).isEqualTo(caseDetails.crn)
+    assertThat(offenderDto.pncNumber).isEqualTo(caseDetails.pncNumber)
+    assertThat(offenderDto.croNumber).isEqualTo(caseDetails.croNumber)
     assertThat(offenderDto.firstNameAliases).containsExactly("firstName", "firstName2")
     assertThat(offenderDto.surnameAliases).containsExactly("surname", "surname2")
   }

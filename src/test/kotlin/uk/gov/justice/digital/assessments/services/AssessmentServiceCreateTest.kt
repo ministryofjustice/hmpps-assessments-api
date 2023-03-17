@@ -26,7 +26,6 @@ import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRe
 import uk.gov.justice.digital.assessments.restclient.DeliusIntegrationRestClient
 import uk.gov.justice.digital.assessments.restclient.ExternalService
 import uk.gov.justice.digital.assessments.restclient.audit.AuditType.ARN_ASSESSMENT_CREATED
-import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
 import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.Address
 import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.CaseDetails
 import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.Name
@@ -77,8 +76,6 @@ class AssessmentServiceCreateTest {
   private val assessmentType = AssessmentType.UPW
 
   private val crn = "X12345"
-  private var communityOffenderDto = CommunityOffenderDto(dateOfBirth = LocalDate.of(1989, 1, 1).toString())
-
   private val eventId = 1L
 
   @BeforeEach
@@ -95,7 +92,7 @@ class AssessmentServiceCreateTest {
     justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
     justRun { telemetryService.trackAssessmentEvent(ASSESSMENT_CREATED, any(), any(), any(), any(), any()) }
     every { offenderService.validateUserAccess(crn) } returns mockk()
-    every { offenderService.getCommunityOffender(crn) } returns communityOffenderDto
+    every { offenderService.getDeliusOffender(crn, eventId) } returns caseDetails()
     every { deliusIntegrationRestClient.getCaseDetails(crn, eventId) } returns caseDetails()
   }
 
@@ -216,7 +213,7 @@ class AssessmentServiceCreateTest {
   @Test
   fun `throw exception if offender is not returned from Delius`() {
     every { subjectRepository.findByCrn(crn) } returns null
-    every { offenderService.getCommunityOffender("X12345") } throws EntityNotFoundException("")
+    every { offenderService.getDeliusOffender("X12345", eventId) } throws EntityNotFoundException("")
 
     assertThrows<EntityNotFoundException> {
       assessmentsService.createNewAssessment(

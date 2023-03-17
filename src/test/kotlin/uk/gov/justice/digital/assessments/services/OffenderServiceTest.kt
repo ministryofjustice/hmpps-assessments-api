@@ -5,15 +5,13 @@ import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import uk.gov.justice.digital.assessments.api.DeliusEventType
 import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
 import uk.gov.justice.digital.assessments.restclient.DeliusIntegrationRestClient
-import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
-import uk.gov.justice.digital.assessments.restclient.communityapi.IDs
-import uk.gov.justice.digital.assessments.restclient.communityapi.OffenderAlias
 import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.Address
 import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.CaseDetails
 import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.MainOffence
@@ -29,35 +27,33 @@ class OffenderServiceTest {
   private val deliusIntegrationRestClient: DeliusIntegrationRestClient = mockk()
   private val offenderService: OffenderService = OffenderService(communityApiRestClient, deliusIntegrationRestClient)
 
-  private val oasysOffenderPk = 101L
   private val crn = "DX12340A"
   private val eventId = 1L
 
+  @BeforeEach
+  fun setup() {
+    every { deliusIntegrationRestClient.getCaseDetails(crn, eventId) } returns caseDetails()
+  }
+
   @Test
   fun `should invoke delius integration with conviction Id when Delius EventType is EventId`() {
-    // given
-    every { deliusIntegrationRestClient.getCaseDetails(crn, eventId) } returns caseDetails()
-
-    // when
     offenderService.getOffence(DeliusEventType.EVENT_ID, crn, eventId)
 
-    // then
     verify { deliusIntegrationRestClient.getCaseDetails(crn, eventId) }
   }
 
   @Test
   fun `return offender`() {
-    every { communityApiRestClient.getOffender(crn) } returns validCommunityOffenderDto()
+    val offenderDto = offenderService.getOffender(crn, eventId)
 
-    val offenderDto = offenderService.getOffender(crn)
-    assertThat(offenderDto.offenderId).isEqualTo(oasysOffenderPk)
-    verify(exactly = 1) { communityApiRestClient.getOffender(any()) }
+    assertThat(offenderDto.crn).isEqualTo(crn)
+    assertThat(offenderDto.firstName).isEqualTo("forename")
+    assertThat(offenderDto.surname).isEqualTo("surname")
+    verify(exactly = 1) { deliusIntegrationRestClient.getCaseDetails(crn, eventId) }
   }
 
   @Test
   fun `return offence for conviction`() {
-    every { deliusIntegrationRestClient.getCaseDetails(crn, eventId) } returns caseDetails()
-
     val offenceDto = offenderService.getOffenceFromConvictionId(crn, eventId)
     assertThat(offenceDto.offenceCode).isEqualTo("Code")
     assertThat(offenceDto.codeDescription).isEqualTo("Code description")
@@ -67,34 +63,12 @@ class OffenderServiceTest {
     verify(exactly = 1) { deliusIntegrationRestClient.getCaseDetails(crn, eventId) }
   }
 
-  private fun validCommunityOffenderDto(): CommunityOffenderDto {
-    return CommunityOffenderDto(
-      offenderId = 101L,
-      firstName = "John",
-      middleNames = listOf("firstMiddleName", "secondMiddleName"),
-      surname = "Smith",
-      previousSurname = null,
-      dateOfBirth = "1979-08-18",
-      gender = "F",
-      otherIds = IDs(
-        crn = "DX12340A",
-        pncNumber = "A/1234560BA"
-      ),
-      offenderAliases = listOf(
-        OffenderAlias(
-          firstName = "firstName",
-          surname = "surname"
-        )
-      )
-    )
-  }
-
   private fun caseDetails(): CaseDetails {
     return CaseDetails(
-      crn = "crn",
+      crn = "DX12340A",
       name = Name(
         forename = "forename",
-        middleName = "middlename",
+        middleName = "middleName",
         surname = "surname"
       ),
       dateOfBirth = LocalDate.of(1989, 1, 1),

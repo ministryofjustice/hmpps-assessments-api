@@ -1,6 +1,6 @@
 package uk.gov.justice.digital.assessments.controller
 
-import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
@@ -31,18 +31,17 @@ internal class OffenderControllerTest : IntegrationTest() {
       .returnResult()
       .responseBody
 
-    Assertions.assertThat(offenderDto).isEqualTo(
+    assertThat(offenderDto).isEqualTo(
       OffenderDto(
-        offenderId = 101,
         firstName = "John",
         surname = "Smith",
         dateOfBirth = LocalDate.of(1979, 8, 18),
-        dateOfBirthAliases = listOf("1979-09-18", "1979-08-18"),
+        dateOfBirthAliases = listOf("1979-09-18", "1979-08-17"),
         gender = "Male",
         crn = crn,
         pncNumber = "A/1234560BA",
         firstNameAliases = listOf("John", "Jonny"),
-        surnameAliases = listOf("Smithy"),
+        surnameAliases = listOf("Smithy", "Smith"),
         offence = OffenceDto(
           convictionId = 123456,
           offenceCode = "150",
@@ -74,18 +73,17 @@ internal class OffenderControllerTest : IntegrationTest() {
       .returnResult()
       .responseBody
 
-    Assertions.assertThat(offenderDto).isEqualTo(
+    assertThat(offenderDto).isEqualTo(
       OffenderDto(
-        offenderId = 101,
         firstName = "John",
         surname = "Smith",
         dateOfBirth = LocalDate.of(1979, 8, 18),
-        dateOfBirthAliases = listOf("1979-09-18", "1979-08-18"),
+        dateOfBirthAliases = listOf("1979-09-18", "1979-08-17"),
         gender = "Male",
         crn = crn,
         pncNumber = "A/1234560BA",
         firstNameAliases = listOf("John", "Jonny"),
-        surnameAliases = listOf("Smithy"),
+        surnameAliases = listOf("Smithy", "Smith"),
         offence = OffenceDto(
           convictionId = expectedConvictionId,
           offenceCode = "150",

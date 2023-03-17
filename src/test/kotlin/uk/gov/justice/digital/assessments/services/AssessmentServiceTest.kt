@@ -28,7 +28,6 @@ import uk.gov.justice.digital.assessments.jpa.repositories.assessments.EpisodeRe
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRepository
 import uk.gov.justice.digital.assessments.restclient.DeliusIntegrationRestClient
 import uk.gov.justice.digital.assessments.restclient.audit.AuditType
-import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
 import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.Address
 import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.CaseDetails
 import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.Name
@@ -107,8 +106,7 @@ class AssessmentServiceTest {
       subCodeDescription = "Sub-code description"
     )
     every { offenderService.getOffence(any(), crn, eventId) } returns offenceDto
-    val communityOffenderDto = CommunityOffenderDto(dateOfBirth = LocalDate.of(1989, 1, 1).toString())
-    every { offenderService.getCommunityOffender(crn) } returns communityOffenderDto
+    every { offenderService.getDeliusOffender(crn, eventId) } returns caseDetails()
   }
 
   @Nested

@@ -156,7 +156,7 @@ class AssessmentService(
       throw IllegalStateException("Unable to create Assessment with assessment type: $assessmentType, eventId: $eventId, crn: $crn")
     }
     offenderService.validateUserAccess(crn)
-    val offender = offenderService.getCommunityOffender(crn)
+    val offender = offenderService.getDeliusOffender(crn, eventId)
     val arnAssessment = getOrCreateAssessment(crn, eventId, OffenderDto.from(offender))
     val subject = subjectRepository.save(arnAssessment.subject?.copy())
       ?: throw EntityNotFoundException("Unable to save null subject with crn: $crn")

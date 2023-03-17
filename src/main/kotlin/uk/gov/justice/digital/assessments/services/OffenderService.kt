@@ -8,7 +8,7 @@ import uk.gov.justice.digital.assessments.api.OffenceDto
 import uk.gov.justice.digital.assessments.api.OffenderDto
 import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
 import uk.gov.justice.digital.assessments.restclient.DeliusIntegrationRestClient
-import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.CaseDetails
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import uk.gov.justice.digital.assessments.services.exceptions.EventTypeNotKnown
 import uk.gov.justice.digital.assessments.utils.RequestData
@@ -30,15 +30,15 @@ class OffenderService(
     } else throw EventTypeNotKnown("Unknown event Type: $eventType")
   }
 
-  fun getOffender(crn: String): OffenderDto {
+  fun getOffender(crn: String, eventId: Long): OffenderDto {
     log.info("Requesting offender details for crn: $crn")
-    return OffenderDto.from(getCommunityOffender(crn))
+    return OffenderDto.from(getDeliusOffender(crn, eventId))
   }
 
-  fun getCommunityOffender(crn: String): CommunityOffenderDto {
+  fun getDeliusOffender(crn: String, eventId: Long): CaseDetails {
     log.info("Entered getCommunityOffender with crn: $crn")
-    return communityApiRestClient.getOffender(crn)
-      ?: throw EntityNotFoundException("No offender found for crn: $crn")
+    return deliusIntegrationRestClient.getCaseDetails(crn, eventId)
+      ?: throw EntityNotFoundException("No Case Details found for crn: $crn, eventId: $eventId")
   }
 
   fun getOffenceFromConvictionId(crn: String, convictionId: Long): OffenceDto {

@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.reactive.function.client.WebClient
 import uk.gov.justice.digital.assessments.api.UploadedUpwDocumentDto
-import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityRegistrations
 import uk.gov.justice.digital.assessments.restclient.communityapi.UserAccessResponse
 import uk.gov.justice.digital.assessments.services.exceptions.ExceptionReason
@@ -26,16 +25,6 @@ class CommunityApiRestClient(
   @Qualifier("communityApiWebClient")
   val webClient: WebClient
 ) {
-
-  fun getOffender(crn: String): CommunityOffenderDto? {
-    log.info("Client retrieving offender details for crn: $crn")
-    val path = "secure/offenders/crn/$crn/all"
-    return performHttpGet(path, "Failed to retrieve offender details for crn: $crn")
-      .bodyToMono(CommunityOffenderDto::class.java)
-      .block().also {
-        log.info("Offender for crn: $crn, found in ${ExternalService.COMMUNITY_API.name}")
-      }
-  }
 
   private fun performHttpGet(
     path: String,
