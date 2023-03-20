@@ -127,6 +127,6 @@ class AssessmentReferenceDataControllerTest : IntegrationTest() {
       .returnResult()
       .responseBody
 
-    assertThat(assessmentGroup).hasSize(165)
+    assertThat(assessmentGroup).hasSize(167)
   }
 }
