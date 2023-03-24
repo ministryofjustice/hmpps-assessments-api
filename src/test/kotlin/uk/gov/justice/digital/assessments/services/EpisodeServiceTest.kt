@@ -238,25 +238,6 @@ class EpisodeServiceTest {
     ),
   )
 
-  // private fun createPersonalContactExternalSourceQuestionList(endpoint: String) = listOf(
-  //   ExternalSourceQuestionDto(
-  //     "gp_details",
-  //     ExternalSource.DELIUS.name,
-  //     "\$[?(@.relationshipType.code=='RT02'&&@.isActive==true)]",
-  //     "structured",
-  //     externalSourceEndpoint = endpoint,
-  //     ifEmpty = false,
-  //   ),
-  //   ExternalSourceQuestionDto(
-  //     "emergency_contact_details",
-  //     ExternalSource.DELIUS.name,
-  //     "\$[?(@.relationshipType.code=='ME'&&@.isActive==true)]",
-  //     "structured",
-  //     externalSourceEndpoint = endpoint,
-  //     ifEmpty = false,
-  //   )
-  // )
-
   @Test
   fun `should not add answers from previous episode if present in Delius`() {
     // Given
@@ -265,15 +246,6 @@ class EpisodeServiceTest {
 
     every { cloneAssessmentExcludedQuestionsRepository.findAllByAssessmentType(UPW) } returns emptyList()
 
-    // val json = this::class.java.getResource("/json/deliusOffender.json")?.readText()
-    // val offenderDto = objectMapper.readValue(json, CommunityOffenderDto::class.java)
-    //
-    // every {
-    //   communityApiRestClient.getOffender(crn = CRN)
-    // } returns offenderDto
-    //
-    // every { communityApiRestClient.getOffenderPersonalCircumstances(any()) } returns DeliusPersonalCircumstancesDto()
-    // every { communityApiRestClient.getOffenderPersonalContacts(any()) } returns emptyList()
     justRun { auditService.createAuditEvent(AuditType.ARN_ASSESSMENT_CLONED, any(), any(), any(), any(), any()) }
     justRun { telemetryService.trackAssessmentClonedEvent(any(), any(), any(), any(), any(), any(), any()) }
 
