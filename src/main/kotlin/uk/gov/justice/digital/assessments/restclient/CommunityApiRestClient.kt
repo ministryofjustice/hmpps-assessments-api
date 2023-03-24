@@ -49,22 +49,6 @@ class CommunityApiRestClient(
         ExternalService.COMMUNITY_API
       )
     }
-  //
-  // fun getConvictions(crn: String): List<CommunityConvictionDto>? {
-  //   log.info("Client retrieving conviction details for crn: $crn")
-  //   val path = "secure/offenders/crn/$crn/convictions"
-  //   return performHttpGet(path, "Failed to retrieve conviction details for crn: $crn")
-  //     .bodyToMono(object : ParameterizedTypeReference<List<CommunityConvictionDto>>() {})
-  //     .block()
-  // }
-  //
-  // fun getConviction(crn: String, convictionId: Long): CommunityConvictionDto? {
-  //   log.info("Client retrieving conviction details for crn: $crn")
-  //   val path = "secure/offenders/crn/$crn/convictions/$convictionId"
-  //   return performHttpGet(path, "Failed to retrieve conviction details for crn: $crn and conviction ID $convictionId")
-  //     .bodyToMono(CommunityConvictionDto::class.java)
-  //     .block()
-  // }
 
   @Cacheable("riskRegistrations")
   fun getRegistrations(crn: String): CommunityRegistrations? {
