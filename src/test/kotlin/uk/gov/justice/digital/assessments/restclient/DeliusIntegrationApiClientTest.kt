@@ -33,42 +33,42 @@ class DeliusIntegrationApiClientTest : IntegrationTest() {
     }
 
     @Test
-    fun `get Delius Offender returns not found`() {
+    fun `get Delius Case Details returns not found`() {
       assertThrows<ExternalApiEntityNotFoundException> {
         deliusIntegrationRestClient.getCaseDetails("invalidNotFound", eventId)
       }
     }
 
     @Test
-    fun `get Delius Offender returns bad request`() {
+    fun `get Delius Case Details returns bad request`() {
       assertThrows<ExternalApiInvalidRequestException> {
         deliusIntegrationRestClient.getCaseDetails("invalidBadRequest", eventId)
       }
     }
 
     @Test
-    fun `get Delius Offender returns unauthorised`() {
+    fun `get Delius Case Details returns unauthorised`() {
       assertThrows<ExternalApiAuthorisationException> {
         deliusIntegrationRestClient.getCaseDetails("invalidUnauthorized", eventId)
       }
     }
 
     @Test
-    fun `get Delius Offender returns forbidden`() {
+    fun `get Delius Case Details returns forbidden`() {
       assertThrows<ExternalApiForbiddenException> {
         deliusIntegrationRestClient.getCaseDetails("invalidForbidden", eventId)
       }
     }
 
     @Test
-    fun `get Delius Offender returns unknown exception`() {
+    fun `get Delius Case Details returns unknown exception`() {
       assertThrows<ExternalApiUnknownException> {
         deliusIntegrationRestClient.getCaseDetails("invalidNotKnow", eventId)
       }
     }
 
     @Test
-    fun `get Delius Offender returns offender DTO with aliases`() {
+    fun `get Delius Case Details returns offender with aliases`() {
       val caseDetailsDto = deliusIntegrationRestClient.getCaseDetails(crn, eventId)
       assertThat(caseDetailsDto?.name?.forename).isEqualTo("John")
       assertThat(caseDetailsDto?.name?.surname).isEqualTo("Smith")
@@ -79,7 +79,7 @@ class DeliusIntegrationApiClientTest : IntegrationTest() {
     }
 
     @Test
-    fun `get Delius Convictions returns conviction DTO`() {
+    fun `get Delius Case Details returns offence details`() {
       val caseDetailsDto = deliusIntegrationRestClient.getCaseDetails(crn, eventId)
       assertThat(caseDetailsDto?.sentence?.mainOffence?.category?.code).isEqualTo("150")
       assertThat(caseDetailsDto?.sentence?.mainOffence?.category?.description).isEqualTo("Merchant Shipping Acts")
