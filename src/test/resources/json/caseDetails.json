@@ -45,8 +45,45 @@
     "county": "South Yorkshire",
     "postcode": "S3 7BS"
   },
+  "pncNumber": "2004/0712343H",
   "ethnicity": "Asian or Asian British: Pakistani",
-  "disabilities": [],
+  "disabilities": [
+    {
+      "type": {
+        "code": "LDI",
+        "description": "Learning Disability"
+      },
+      "notes": "Comment added by Natalie Wood on 20/03/2023 at 16:19\nLearning note"
+    },
+    {
+      "type": {
+        "code": "MHR",
+        "description": "Mental Health related disabilities"
+      },
+      "notes": "Comment added by Natalie Wood on 20/03/2023 at 16:19\nMental health note"
+    },
+    {
+      "type": {
+        "code": "MRD",
+        "description": "Mobility related Disabilities"
+      },
+      "notes": "Comment added by Natalie Wood on 20/03/2023 at 16:18\nmobility note"
+    }
+  ],
+  "provisions": [
+    {
+      "type": {
+        "code": "22",
+        "description": "Handrails"
+      }
+    },
+    {
+      "type": {
+        "code": "12",
+        "description": "Behavioural responses/Body language"
+      }
+    }
+  ],
   "language": {
     "requiresInterpreter": true,
     "primaryLanguage": "Urdu"
@@ -72,7 +109,7 @@
         "code": "G01",
         "description": "Reading/Literacy Concerns"
       },
-      "notes": "Comment added by Natalie Wood on 14/03/2023 at 10:06\nCannot read\n---------------------------------------------------------\nComment added by Natalie Wood on 14/03/2023 at 10:06\nNumeracy difficulties\n---------------------------------------------------------\nComment added by Natalie Wood on 14/03/2023 at 10:06\nCommunication difficulties",
+      "notes": "Comment added by Natalie Wood on 14/03/2023 at 10:06\nCannot read",
       "evidenced": false
     },
     {
@@ -97,6 +134,28 @@
         "description": "Is a Primary Carer"
       },
       "notes": "Comment added by Natalie Wood on 14/03/2023 at 10:07\nPrimary Carer",
+      "evidenced": false
+    },
+    {
+      "type": {
+        "code": "G",
+        "description": "Literacy and Numeracy"
+      },
+      "subType": {
+        "code": "G03",
+        "description": "Language/Communication Concerns"
+      },
+      "evidenced": true
+    },
+    {
+      "type": {
+        "code": "G",
+        "description": "Literacy and Numeracy"
+      },
+      "subType": {
+        "code": "G02",
+        "description": "Numeracy Concerns"
+      },
       "evidenced": false
     }
   ],

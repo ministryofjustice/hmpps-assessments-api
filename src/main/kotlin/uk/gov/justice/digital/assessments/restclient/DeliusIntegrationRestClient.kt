@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.CaseDetails
-import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.PersonalDetails
 
 @Component
 class DeliusIntegrationRestClient {
@@ -25,16 +24,6 @@ class DeliusIntegrationRestClient {
       .bodyToMono(CaseDetails::class.java)
       .block().also {
         log.info("Case details found for crn: $crn, eventId: $eventId, found in ${ExternalService.DELIUS_INTEGRATIONS.name}")
-      }
-  }
-
-  fun getPersonalDetails(crn: String, eventId: Long): PersonalDetails? {
-    log.info("Client retrieving case personal details for crn: $crn")
-    val path = "/case-data/$crn/$eventId"
-    return performHttpGet(path, "Failed to retrieve case personal  details for crn: $crn")
-      .bodyToMono(PersonalDetails::class.java)
-      .block().also {
-        log.info("Case personal details found for crn: $crn, eventId: $eventId, found in ${ExternalService.DELIUS_INTEGRATIONS.name}")
       }
   }
 

@@ -22,7 +22,7 @@ data class CaseDetails(
   val mappaRegistration: MappaRegistration? = null,
   val registerFlags: List<RegisterFlag>? = listOf(),
   val sentence: Sentence? = null
-
+  // TODO update disabilities and adjustments to new dto
 )
 
 data class Alias(
