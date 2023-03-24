@@ -25,9 +25,8 @@ import java.util.UUID
 class DocumentServiceTest {
 
   private val assessmentService: AssessmentService = mockk()
-  private val offenderService: OffenderService = mockk()
   private val communityApiRestClient: CommunityApiRestClient = mockk()
-  private val documentService: DocumentService = DocumentService(assessmentService, offenderService, communityApiRestClient)
+  private val documentService: DocumentService = DocumentService(assessmentService, communityApiRestClient)
 
   @Test
   fun `uploads a document to community-api`() {

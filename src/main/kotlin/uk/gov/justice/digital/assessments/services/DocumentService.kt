@@ -12,7 +12,6 @@ import java.util.UUID
 @Service
 class DocumentService(
   val assessmentService: AssessmentService,
-  val offenderService: OffenderService,
   val communityApiRestClient: CommunityApiRestClient
 ) {
   fun uploadUpwDocument(assessmentId: UUID, episodeId: UUID, fileData: MultipartFile): UploadedUpwDocumentDto? {

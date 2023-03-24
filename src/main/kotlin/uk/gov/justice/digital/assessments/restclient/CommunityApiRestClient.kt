@@ -14,11 +14,7 @@ import org.springframework.stereotype.Component
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.reactive.function.client.WebClient
 import uk.gov.justice.digital.assessments.api.UploadedUpwDocumentDto
-import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityConvictionDto
-import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
 import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityRegistrations
-import uk.gov.justice.digital.assessments.restclient.communityapi.DeliusPersonalCircumstancesDto
-import uk.gov.justice.digital.assessments.restclient.communityapi.PersonalContact
 import uk.gov.justice.digital.assessments.restclient.communityapi.UserAccessResponse
 import uk.gov.justice.digital.assessments.services.exceptions.ExceptionReason
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiForbiddenException
@@ -29,26 +25,6 @@ class CommunityApiRestClient(
   @Qualifier("communityApiWebClient")
   val webClient: WebClient
 ) {
-
-  fun getOffender(crn: String): CommunityOffenderDto? {
-    log.info("Client retrieving offender details for crn: $crn")
-    val path = "secure/offenders/crn/$crn/all"
-    return performHttpGet(path, "Failed to retrieve offender details for crn: $crn")
-      .bodyToMono(CommunityOffenderDto::class.java)
-      .block().also {
-        log.info("Offender for crn: $crn, found in ${ExternalService.COMMUNITY_API.name}")
-      }
-  }
-
-  fun getOffenderPersonalCircumstances(crn: String?): DeliusPersonalCircumstancesDto {
-    log.info("Client retrieving offender personal circumstances for crn: $crn")
-    val path = "secure/offenders/crn/$crn/personalCircumstances"
-    return performHttpGet(path, "Failed to retrieve offender personal circumstances for crn: $crn")
-      .bodyToMono(DeliusPersonalCircumstancesDto::class.java)
-      .block()!!.also {
-      log.info("Offender personal circumstances for crn: $crn, found in ${ExternalService.COMMUNITY_API.name}")
-    }
-  }
 
   private fun performHttpGet(
     path: String,
@@ -73,32 +49,6 @@ class CommunityApiRestClient(
         ExternalService.COMMUNITY_API
       )
     }
-
-  fun getOffenderPersonalContacts(crn: String?): List<PersonalContact> {
-    log.info("Client retrieving offender personal contacts for crn: $crn")
-    val path = "secure/offenders/crn/$crn/personalContacts"
-    return performHttpGet(path, "Failed to retrieve offender personal contacts for crn: $crn")
-      .bodyToMono(object : ParameterizedTypeReference<List<PersonalContact>>() {})
-      .block().also {
-        log.info("Offender personal contacts for crn: $crn, found in ${ExternalService.COMMUNITY_API.name}")
-      }
-  }
-
-  fun getConvictions(crn: String): List<CommunityConvictionDto>? {
-    log.info("Client retrieving conviction details for crn: $crn")
-    val path = "secure/offenders/crn/$crn/convictions"
-    return performHttpGet(path, "Failed to retrieve conviction details for crn: $crn")
-      .bodyToMono(object : ParameterizedTypeReference<List<CommunityConvictionDto>>() {})
-      .block()
-  }
-
-  fun getConviction(crn: String, convictionId: Long): CommunityConvictionDto? {
-    log.info("Client retrieving conviction details for crn: $crn")
-    val path = "secure/offenders/crn/$crn/convictions/$convictionId"
-    return performHttpGet(path, "Failed to retrieve conviction details for crn: $crn and conviction ID $convictionId")
-      .bodyToMono(CommunityConvictionDto::class.java)
-      .block()
-  }
 
   @Cacheable("riskRegistrations")
   fun getRegistrations(crn: String): CommunityRegistrations? {

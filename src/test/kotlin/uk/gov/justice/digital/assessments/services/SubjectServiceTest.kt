@@ -8,15 +8,12 @@ import org.junit.jupiter.api.assertThrows
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
-import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRepository
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import java.time.LocalDate
 import java.util.UUID
 
 class SubjectServiceTest {
   private val assessmentRepository: AssessmentRepository = mockk()
-  private val subjectRepository: SubjectRepository = mockk()
-
   private val subjectService = SubjectService(assessmentRepository)
 
   @Test

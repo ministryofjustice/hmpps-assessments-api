@@ -41,6 +41,8 @@ class WebClientConfig {
   private lateinit var communityApiBaseUrl: String
   @Value("\${audit.base-url}")
   private lateinit var auditBaseUrl: String
+  @Value("\${delius-integration.base-url}")
+  private lateinit var deliusIntegrationBaseUrl: String
   @Value("\${feature.flags.disable-auth:false}")
   private val disableAuthentication = false
   @Value("\${web.client.connect-timeout-ms}")
@@ -112,6 +114,30 @@ class WebClientConfig {
     return manager
   }
 
+  @Bean
+  fun deliusIntegrationClient(
+    @Qualifier(value = "authorizedClientManager") authorizedClientManager: OAuth2AuthorizedClientManager,
+  ): AuthenticatingRestClient {
+    val webClient = webClientFactory(
+      authorizedClientManager,
+      deliusIntegrationBaseUrl,
+    )
+
+    return AuthenticatingRestClient(webClient, "delius-integration-client", disableAuthentication)
+  }
+
+  @Bean
+  fun auditWebClient(
+    @Qualifier(value = "authorizedClientManager") authorizedClientManager: OAuth2AuthorizedClientManager,
+  ): AuthenticatingRestClient {
+    val webClient = webClientFactory(
+      authorizedClientManager,
+      auditBaseUrl,
+    )
+
+    return AuthenticatingRestClient(webClient, "audit-client", disableAuthentication)
+  }
+
   @RequestScope
   @Bean
   fun communityApiWebClient(clientRegistrationRepository: ClientRegistrationRepository): WebClient? {
@@ -125,18 +151,6 @@ class WebClientConfig {
       .apply(oauth2.oauth2Configuration())
       .baseUrl(communityApiBaseUrl)
       .build()
-  }
-
-  @Bean
-  fun auditWebClient(
-    @Qualifier(value = "authorizedClientManager") authorizedClientManager: OAuth2AuthorizedClientManager,
-  ): AuthenticatingRestClient {
-    val webClient = webClientFactory(
-      authorizedClientManager,
-      auditBaseUrl,
-    )
-
-    return AuthenticatingRestClient(webClient, "audit-client", disableAuthentication)
   }
 
   private fun webClientFactory(

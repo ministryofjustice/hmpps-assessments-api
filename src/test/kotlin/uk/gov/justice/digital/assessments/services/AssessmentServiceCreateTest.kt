@@ -23,9 +23,14 @@ import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.EpisodeRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRepository
+import uk.gov.justice.digital.assessments.restclient.DeliusIntegrationRestClient
 import uk.gov.justice.digital.assessments.restclient.ExternalService
 import uk.gov.justice.digital.assessments.restclient.audit.AuditType.ARN_ASSESSMENT_CREATED
-import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.Address
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.CaseDetails
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.Name
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.PersonalContact
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.RelationshipType
 import uk.gov.justice.digital.assessments.services.TelemetryEventType.ASSESSMENT_CREATED
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiForbiddenException
@@ -50,6 +55,7 @@ class AssessmentServiceCreateTest {
   private val telemetryService: TelemetryService = mockk()
   private val clock: Clock = Clock.fixed(Instant.now(), ZoneId.of("Europe/London"))
   private val episodeRepository: EpisodeRepository = mockk()
+  private val deliusIntegrationRestClient: DeliusIntegrationRestClient = mockk()
 
   private val assessmentsService = AssessmentService(
     assessmentRepository,
@@ -60,6 +66,7 @@ class AssessmentServiceCreateTest {
     offenderService,
     auditService,
     telemetryService,
+    deliusIntegrationRestClient,
     clock,
     episodeRepository,
   )
@@ -69,16 +76,13 @@ class AssessmentServiceCreateTest {
   private val assessmentType = AssessmentType.UPW
 
   private val crn = "X12345"
-  private var communityOffenderDto = CommunityOffenderDto(dateOfBirth = LocalDate.of(1989, 1, 1).toString())
-
   private val eventId = 1L
 
   @BeforeEach
   fun setup() {
     MDC.put(RequestData.USER_NAME_HEADER, "User name")
     val offenceDto = OffenceDto(
-      convictionId = 123,
-      convictionIndex = eventId,
+      convictionId = eventId,
       offenceCode = "Code",
       codeDescription = "Code description",
       offenceSubCode = "Sub-code",
@@ -88,48 +92,8 @@ class AssessmentServiceCreateTest {
     justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
     justRun { telemetryService.trackAssessmentEvent(ASSESSMENT_CREATED, any(), any(), any(), any(), any()) }
     every { offenderService.validateUserAccess(crn) } returns mockk()
-    every { offenderService.getCommunityOffender(crn) } returns communityOffenderDto
-  }
-
-  @Test
-  fun `create new offender with new assessment from delius event index and crn`() {
-    // Given
-    every { subjectRepository.findByCrn(crn) } returns null
-    every { offenderService.getOffenceFromConvictionIndex(crn, eventId) } returns OffenceDto(
-      convictionId = 123,
-      convictionIndex = eventId,
-      offenceCode = "Code",
-      codeDescription = "Code description",
-      offenceSubCode = "Sub-code",
-      subCodeDescription = "Sub-code description"
-    )
-    every { episodeService.prePopulateEpisodeFromDelius(any(), communityOffenderDto) } returnsArgument 0
-    every { episodeService.prePopulateFromPreviousEpisodes(any(), any()) } returnsArgument 0
-    every { subjectRepository.save(any()) } returns SubjectEntity(
-      name = "name",
-      pnc = "PNC",
-      crn = crn,
-      dateOfBirth = LocalDate.of(1989, 1, 1),
-      createdDate = LocalDateTime.now(),
-    )
-    every { assessmentRepository.save(any()) } returns AssessmentEntity(assessmentId = assessmentId)
-    val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
-    every { authorService.getOrCreateAuthor() } returns author
-
-    // When
-    assessmentsService.createNewAssessment(
-      CreateAssessmentDto(
-        deliusEventId = eventId,
-        crn = crn,
-        assessmentSchemaCode = assessmentType
-      )
-    )
-    // Then
-    verify(exactly = 1) { assessmentRepository.save(any()) }
-  }
-
-  private fun createOffenderDto(): CommunityOffenderDto {
-    return CommunityOffenderDto(dateOfBirth = "12-03-1976")
+    every { offenderService.getDeliusOffender(crn, eventId) } returns caseDetails()
+    every { deliusIntegrationRestClient.getCaseDetails(crn, eventId) } returns caseDetails()
   }
 
   @Test
@@ -137,8 +101,7 @@ class AssessmentServiceCreateTest {
     every { subjectRepository.findByCrn(crn) } returns null
 
     val offenceDto = OffenceDto(
-      convictionId = 123,
-      convictionIndex = eventId,
+      convictionId = eventId,
       offenceCode = "Code",
       codeDescription = "Code description",
       offenceSubCode = "Sub-code",
@@ -146,7 +109,7 @@ class AssessmentServiceCreateTest {
     )
     every { offenderService.getOffenceFromConvictionId(crn, eventId) } returns offenceDto
     every { offenderService.getOffence(DeliusEventType.EVENT_ID, crn, eventId) } returns offenceDto
-    every { episodeService.prePopulateEpisodeFromDelius(any(), communityOffenderDto) } returnsArgument 0
+    every { episodeService.prePopulateEpisodeFromDelius(any(), any()) } returnsArgument 0
     every { episodeService.prePopulateFromPreviousEpisodes(any(), any()) } returnsArgument 0
     every { subjectRepository.save(any()) } returns SubjectEntity(
       name = "name",
@@ -179,15 +142,14 @@ class AssessmentServiceCreateTest {
         dateOfBirth = LocalDate.of(1989, 1, 1),
         crn = crn
       )
-    every { offenderService.getOffenceFromConvictionIndex(crn, eventId) } returns OffenceDto(
-      convictionId = 123,
-      convictionIndex = eventId,
+    every { offenderService.getOffenceFromConvictionId(crn, eventId) } returns OffenceDto(
+      convictionId = eventId,
       offenceCode = "Code",
       codeDescription = "Code description",
       offenceSubCode = "Sub-code",
       subCodeDescription = "Sub-code description"
     )
-    every { episodeService.prePopulateEpisodeFromDelius(any(), communityOffenderDto) } returnsArgument 0
+    every { episodeService.prePopulateEpisodeFromDelius(any(), any()) } returnsArgument 0
     every { episodeService.prePopulateFromPreviousEpisodes(any(), any()) } returnsArgument 0
     every { subjectRepository.save(any()) } returns SubjectEntity(
       name = "name",
@@ -224,15 +186,14 @@ class AssessmentServiceCreateTest {
         dateOfBirth = LocalDate.of(1989, 1, 1),
         crn = crn
       )
-    every { offenderService.getOffenceFromConvictionIndex(crn, eventId) } returns OffenceDto(
-      convictionId = 123,
-      convictionIndex = eventId,
+    every { offenderService.getOffenceFromConvictionId(crn, eventId) } returns OffenceDto(
+      convictionId = eventId,
       offenceCode = "Code",
       codeDescription = "Code description",
       offenceSubCode = "Sub-code",
       subCodeDescription = "Sub-code description"
     )
-    every { episodeService.prePopulateEpisodeFromDelius(any(), createOffenderDto()) } returnsArgument 0
+    every { episodeService.prePopulateEpisodeFromDelius(any(), caseDetails()) } returnsArgument 0
     every { subjectRepository.save(any()) } returns SubjectEntity(
       name = "name",
       pnc = "PNC",
@@ -246,13 +207,13 @@ class AssessmentServiceCreateTest {
       CreateAssessmentDto(deliusEventId = eventId, crn = crn, assessmentSchemaCode = assessmentType)
     )
     // Then
-    verify(exactly = 0) { episodeService.prePopulateEpisodeFromDelius(any(), createOffenderDto()) }
+    verify(exactly = 0) { episodeService.prePopulateEpisodeFromDelius(any(), caseDetails()) }
   }
 
   @Test
   fun `throw exception if offender is not returned from Delius`() {
     every { subjectRepository.findByCrn(crn) } returns null
-    every { offenderService.getCommunityOffender("X12345") } throws EntityNotFoundException("")
+    every { offenderService.getDeliusOffender("X12345", eventId) } throws EntityNotFoundException("")
 
     assertThrows<EntityNotFoundException> {
       assessmentsService.createNewAssessment(
@@ -292,15 +253,14 @@ class AssessmentServiceCreateTest {
   @Test
   fun `audit create assessment from delius`() {
     every { subjectRepository.findByCrn(crn) } returns null
-    every { offenderService.getOffenceFromConvictionIndex(crn, eventId) } returns OffenceDto(
-      convictionId = 123,
-      convictionIndex = eventId,
+    every { offenderService.getOffenceFromConvictionId(crn, eventId) } returns OffenceDto(
+      convictionId = eventId,
       offenceCode = "Code",
       codeDescription = "Code description",
       offenceSubCode = "Sub-code",
       subCodeDescription = "Sub-code description"
     )
-    every { episodeService.prePopulateEpisodeFromDelius(any(), communityOffenderDto) } returnsArgument 0
+    every { episodeService.prePopulateEpisodeFromDelius(any(), any()) } returnsArgument 0
     every { episodeService.prePopulateFromPreviousEpisodes(any(), any()) } returnsArgument 0
     every { subjectRepository.save(any()) } returns SubjectEntity(
       name = "name",
@@ -324,7 +284,7 @@ class AssessmentServiceCreateTest {
       auditService.createAuditEvent(
         ARN_ASSESSMENT_CREATED,
         assessment.assessmentUuid,
-        assessment.episodes?.first()?.episodeUuid,
+        assessment.episodes.first().episodeUuid,
         crn,
         any(),
         any()
@@ -336,7 +296,7 @@ class AssessmentServiceCreateTest {
         crn,
         author,
         assessment.assessmentUuid,
-        assessment.episodes?.first()?.episodeUuid!!,
+        assessment.episodes.first().episodeUuid!!,
         assessmentType
       )
     }
@@ -357,9 +317,8 @@ class AssessmentServiceCreateTest {
         dateOfBirth = LocalDate.of(1989, 1, 1),
         crn = crn
       )
-    every { offenderService.getOffenceFromConvictionIndex(crn, eventId) } returns OffenceDto(
-      convictionId = 123,
-      convictionIndex = eventId,
+    every { offenderService.getOffenceFromConvictionId(crn, eventId) } returns OffenceDto(
+      convictionId = eventId,
       offenceCode = "Code",
       codeDescription = "Code description",
       offenceSubCode = "Sub-code",
@@ -384,5 +343,70 @@ class AssessmentServiceCreateTest {
     verify(exactly = 0) { assessmentRepository.save(any()) }
     verify(exactly = 0) { auditService.createAuditEvent(any(), any(), any(), any(), any()) }
     verify(exactly = 0) { telemetryService.trackAssessmentEvent(any(), any(), any(), any(), any(), any()) }
+  }
+
+  private fun caseDetails(): CaseDetails {
+    return CaseDetails(
+      crn = "crn",
+      name = Name(
+        forename = "forename",
+        middleName = "middlename",
+        surname = "surname"
+      ),
+      dateOfBirth = LocalDate.of(1989, 1, 1),
+      genderIdentity = "PREFER TO SELF DESCRIBE",
+
+      mainAddress = Address(
+        buildingName = "HMPPS Digital Studio",
+        addressNumber = "32",
+        district = "Sheffield City Centre",
+        county = "South Yorkshire",
+        postcode = "S3 7BS",
+        town = "Sheffield"
+      ),
+      personalContacts = listOf(
+        PersonalContact(
+          relationship = "GP",
+          relationshipType = RelationshipType(
+            code = "RT02",
+            description = "Primary GP"
+          ),
+          name = Name(
+            forename = "Charles",
+            surname = "Europe"
+          ),
+          mobileNumber = "07123456789",
+          address = Address(
+            addressNumber = "32",
+            streetName = "Scotland Street",
+            district = "Sheffield",
+            town = "Sheffield",
+            county = "South Yorkshire",
+            postcode = "S3 7DQ"
+          )
+        ),
+        PersonalContact(
+          relationship = "Emergency Contact",
+          relationshipType = RelationshipType(
+            code = "ME",
+            description = "Father"
+          ),
+          name = Name(
+            forename = "UPW",
+            surname = "Testing"
+          ),
+          telephoneNumber = "020 2000 0000",
+          address = Address(
+            buildingName = "Petty France",
+            addressNumber = "102",
+            streetName = "Central London",
+            district = "London",
+            town = "London",
+            county = "London",
+            postcode = "SW1H 9AJ"
+          )
+        )
+      )
+    )
   }
 }

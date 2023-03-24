@@ -1,0 +1,133 @@
+{
+  "crn": "X615013",
+  "name": {
+    "forename": "Eula",
+    "surname": "Schmeler"
+  },
+  "dateOfBirth": "1979-08-18",
+  "gender": "Female",
+  "genderIdentity": "Non-Binary",
+  "aliases": [
+    {
+      "name": {
+        "forename": "John",
+        "middleName": "",
+        "surname": "Smith"
+      },
+      "dateOfBirth": "1979-09-18"
+    },
+    {
+      "name": {
+        "forename": "Jonny",
+        "middleName": "",
+        "surname": "Smith"
+      },
+      "dateOfBirth": "1979-08-17"
+    }
+  ],
+  "emailAddress": "address1@gmail.com",
+  "phoneNumbers": [
+    {
+      "type": "MOBILE",
+      "number": "071838893"
+    },
+    {
+      "type": "TELEPHONE",
+      "number": "0123456999"
+    }
+  ],
+  "mainAddress": {
+    "buildingName": "HMPPS Digital Studio",
+    "addressNumber": "32",
+    "streetName": "SCOTLAND STREET",
+    "district": "Sheffield City Centre",
+    "town": "Sheffield",
+    "county": "South Yorkshire",
+    "postcode": "S3 7BS"
+  },
+  "ethnicity": "Asian or Asian British: Pakistani",
+  "disabilities": [],
+  "language": {
+    "requiresInterpreter": true,
+    "primaryLanguage": "Urdu"
+  },
+  "personalContacts": [
+    {
+      "relationship": "GP (secondary)",
+      "relationshipType": {
+        "code": "RT02",
+        "description": "GP"
+      },
+      "name": {
+        "forename": "Steve",
+        "surname": "Wilson"
+      },
+      "mobileNumber": "0776 666 6666",
+      "address": {
+        "buildingName": "The Building",
+        "addressNumber": "77",
+        "streetName": "Some Street",
+        "district": "Some City Centre",
+        "town": "London",
+        "county": "Essex",
+        "postcode": "NW10 1EP"
+      }
+    },
+    {
+      "relationship": "Father",
+      "relationshipType": {
+        "code": "ME",
+        "description": "Emergency Contact"
+      },
+      "name": {
+        "forename": "Brian",
+        "surname": "Smith"
+      },
+      "telephoneNumber": "0133456789",
+      "mobileNumber": "07333567890",
+      "address": {
+        "addressNumber": "36",
+        "streetName": "Fifth Street",
+        "district": "South City Centre",
+        "town": "London",
+        "county": "South London",
+        "postcode": "W10 4DN"
+      }
+    },
+    {
+      "relationship": "GP",
+      "relationshipType": {
+        "code": "RT02",
+        "description": "GP"
+      },
+      "name": {
+        "forename": "Nick",
+        "surname": "Riviera"
+      },
+      "telephoneNumber": "0233456789",
+      "address": {
+        "buildingName": "The practice",
+        "addressNumber": "38",
+        "streetName": "East Street",
+        "district": "East City Centre",
+        "town": "Bristol",
+        "county": "East London",
+        "postcode": "E5 7BS"
+      }
+    }
+  ],
+  "registerFlags": [],
+  "sentence": {
+    "startDate": "2023-01-26",
+    "mainOffence": {
+      "category": {
+        "code": "150",
+        "description": "Merchant Shipping Acts"
+      },
+      "subCategory": {
+        "code": "00",
+        "description": "Merchant Shipping Acts"
+      }
+    }
+  }
+}

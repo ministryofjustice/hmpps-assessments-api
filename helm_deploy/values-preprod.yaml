@@ -9,6 +9,7 @@ generic-service:
     OAUTH_ENDPOINT_URL: https://sign-in-preprod.hmpps.service.justice.gov.uk/auth
     ASSESSMENT_UPDATE_API_BASE_URL: https://offender-assessments-updates-preprod.hmpps.service.justice.gov.uk
     COMMUNITY_API_BASE_URL: https://community-api.pre-prod.delius.probation.hmpps.dsd.io/
+    DELIUS_INTEGRATION_BASE_URL: https://unpaid-work-and-delius-preprod.hmpps.service.justice.gov.uk
     ASSESSMENT_API_BASE_URL: https://offender-prprod.aks-live-1.studio-hosting.service.justice.gov.uk
     ASSESS_RISKS_AND_NEEDS_API_BASE_URL: https://assess-risks-and-needs-preprod.hmpps.service.justice.gov.uk/
     AUDIT_BASE_URL: https://audit-api-preprod.hmpps.service.justice.gov.uk

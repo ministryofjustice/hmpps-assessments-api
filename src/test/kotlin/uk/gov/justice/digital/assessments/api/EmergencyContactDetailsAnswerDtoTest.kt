@@ -3,7 +3,9 @@ package uk.gov.justice.digital.assessments.api
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.assessments.api.answers.EmergencyContactDetailsAnswerDto
-import uk.gov.justice.digital.assessments.restclient.communityapi.PersonalContact
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.Name
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.PersonalContact
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.RelationshipType
 
 class EmergencyContactDetailsAnswerDtoTest {
 
@@ -17,9 +19,6 @@ class EmergencyContactDetailsAnswerDtoTest {
     val emergencyContactDetailsAnswerDto = EmergencyContactDetailsAnswerDto.from(personalContact)
 
     // Then
-    assertThat(emergencyContactDetailsAnswerDto.firstName).isEmpty()
-    assertThat(emergencyContactDetailsAnswerDto.familyName).isEmpty()
-    assertThat(emergencyContactDetailsAnswerDto.relationship).isEmpty()
     assertThat(emergencyContactDetailsAnswerDto.buildingName).isEmpty()
     assertThat(emergencyContactDetailsAnswerDto.addressNumber).isEmpty()
     assertThat(emergencyContactDetailsAnswerDto.streetName).isEmpty()
@@ -33,24 +32,19 @@ class EmergencyContactDetailsAnswerDtoTest {
 
   private fun createEmptyPersonalContact(): PersonalContact {
     return PersonalContact(
-      personalContactId = null,
-      relationship = null,
-      startDate = null,
-      endDate = null,
-      title = null,
-      firstName = null,
-      otherNames = null,
-      surname = null,
-      previousSurname = null,
+      relationship = "",
+      relationshipType = RelationshipType(
+        code = "",
+        description = ""
+      ),
+      name = Name(
+        forename = "",
+        middleName = null,
+        surname = ""
+      ),
+      telephoneNumber = null,
       mobileNumber = null,
-      emailAddress = null,
-      notes = null,
-      gender = null,
-      relationshipType = null,
-      createdDatetime = null,
-      lastUpdatedDatetime = null,
-      address = null,
-      isActive = null
+      address = null
     )
   }
 }

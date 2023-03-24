@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
-import com.fasterxml.jackson.module.kotlin.readValue
 import io.mockk.every
 import io.mockk.junit5.MockKExtension
 import io.mockk.justRun
@@ -18,9 +17,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.extension.ExtendWith
-import org.springframework.http.HttpMethod
 import uk.gov.justice.digital.assessments.api.answers.EmergencyContactDetailsAnswerDto
 import uk.gov.justice.digital.assessments.api.answers.GPDetailsAnswerDto
 import uk.gov.justice.digital.assessments.api.groups.GroupQuestionDto
@@ -32,14 +29,12 @@ import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.CloneAssessmentExcludedQuestionsEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.CloneAssessmentExcludedQuestionsRepository
-import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
-import uk.gov.justice.digital.assessments.restclient.ExternalService
 import uk.gov.justice.digital.assessments.restclient.audit.AuditType
-import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
-import uk.gov.justice.digital.assessments.restclient.communityapi.DeliusPersonalCircumstancesDto
-import uk.gov.justice.digital.assessments.restclient.communityapi.OffenderProfile
-import uk.gov.justice.digital.assessments.restclient.communityapi.PersonalContact
-import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiUnknownException
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.Address
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.CaseDetails
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.Name
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.PersonalContact
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.RelationshipType
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
@@ -48,14 +43,12 @@ import java.util.UUID
 @DisplayName("Episode Service Tests")
 class EpisodeServiceTest {
 
-  private val communityApiRestClient: CommunityApiRestClient = mockk()
   private val assessmentReferenceDataService: AssessmentReferenceDataService = mockk()
   private val cloneAssessmentExcludedQuestionsRepository: CloneAssessmentExcludedQuestionsRepository = mockk()
   private val telemetryService: TelemetryService = mockk()
   private val auditService: AuditService = mockk()
 
   private val episodeService = EpisodeService(
-    communityApiRestClient,
     assessmentReferenceDataService,
     cloneAssessmentExcludedQuestionsRepository,
     telemetryService,
@@ -68,13 +61,10 @@ class EpisodeServiceTest {
     userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"
   )
 
-  private var communityOffenderDto = CommunityOffenderDto(dateOfBirth = LocalDate.of(1989, 1, 1).toString())
-
   private lateinit var objectMapper: ObjectMapper
 
   companion object {
     private const val CRN: String = "someCrn"
-    private const val ENDPOINT_URL = "some/endpoint"
   }
 
   @BeforeEach
@@ -91,7 +81,9 @@ class EpisodeServiceTest {
       .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
       .setSerializationInclusion(JsonInclude.Include.NON_NULL)
       .setSerializationInclusion(JsonInclude.Include.NON_ABSENT)
-      .registerModules(Jdk8Module(), JavaTimeModule(), KotlinModule())
+      .registerModules(
+        Jdk8Module(), JavaTimeModule(), KotlinModule.Builder().build()
+      )
   }
 
   private fun createEpisode(assessmentType: AssessmentType): AssessmentEpisodeEntity {
@@ -110,81 +102,30 @@ class EpisodeServiceTest {
 
   @Test
   fun `should pre-populate gender identity answers from Delius as an external source for a UPW assessment type`() {
-    // Given
     newEpisode = createEpisode(UPW)
-
-    val offenderDto = CommunityOffenderDto(
-      dateOfBirth = LocalDate.of(1989, 1, 1).toString(),
-      gender = "MALE",
-      offenderProfile = OffenderProfile(genderIdentity = "Prefer to self-describe")
+    val caseDetails = CaseDetails(
+      crn = "crn",
+      name = Name(
+        forename = "forename",
+        middleName = "middlename",
+        surname = "surname"
+      ),
+      dateOfBirth = LocalDate.of(1989, 1, 1),
+      genderIdentity = "PREFER TO SELF DESCRIBE"
     )
+    episodeService.prePopulateEpisodeFromDelius(newEpisode, caseDetails)
 
-    every { communityApiRestClient.getOffenderPersonalCircumstances(any()) } returns DeliusPersonalCircumstancesDto()
-    every { communityApiRestClient.getOffenderPersonalContacts(any()) } returns emptyList()
-
-    // When
-    val episodeEntity = episodeService.prePopulateEpisodeFromDelius(newEpisode, offenderDto)
-
-    // Then
-    assertThat(episodeEntity.answers).containsEntry("gender_identity", listOf("PREFER_TO_SELF_DESCRIBE"))
-  }
-
-  @Test
-  fun `should catch exceptions thrown when fetching personal circumstances`() {
-    newEpisode = createEpisode(UPW)
-
-    val offenderDto = CommunityOffenderDto(
-      dateOfBirth = LocalDate.of(1989, 1, 1).toString(),
-      gender = "MALE",
-      offenderProfile = OffenderProfile(genderIdentity = "Prefer to self-describe")
-    )
-
-    every { communityApiRestClient.getOffenderPersonalCircumstances(any()) } throws ExternalApiUnknownException(
-      msg = "Something went wrong",
-      method = HttpMethod.GET,
-      url = "/foo/bar",
-      client = ExternalService.COMMUNITY_API,
-    )
-    every { communityApiRestClient.getOffenderPersonalContacts(any()) } returns emptyList()
-
-    assertDoesNotThrow { episodeService.prePopulateEpisodeFromDelius(newEpisode, offenderDto) }
-  }
-
-  @Test
-  fun `should catch exceptions thrown when fetching personal contacts`() {
-    newEpisode = createEpisode(UPW)
-
-    val offenderDto = CommunityOffenderDto(
-      dateOfBirth = LocalDate.of(1989, 1, 1).toString(),
-      gender = "MALE",
-      offenderProfile = OffenderProfile(genderIdentity = "Prefer to self-describe")
-    )
-
-    every { communityApiRestClient.getOffenderPersonalCircumstances(any()) } returns DeliusPersonalCircumstancesDto()
-    every { communityApiRestClient.getOffenderPersonalContacts(any()) } throws ExternalApiUnknownException(
-      msg = "Something went wrong",
-      method = HttpMethod.GET,
-      url = "/foo/bar",
-      client = ExternalService.COMMUNITY_API,
-    )
-
-    assertDoesNotThrow { episodeService.prePopulateEpisodeFromDelius(newEpisode, offenderDto) }
+    assertThat(newEpisode.answers).containsEntry("gender_identity", listOf("PREFER_TO_SELF_DESCRIBE"))
   }
 
   @Test
   fun `should not add contact address from previous episode if present in Delius`() {
     // Given
     newEpisode = createEpisode(UPW)
+    val caseDetails = caseDetails()
 
     every { cloneAssessmentExcludedQuestionsRepository.findAllByAssessmentType(UPW) } returns emptyList()
 
-    val json = this::class.java.getResource("/json/deliusOffender.json")?.readText()
-
-    val offender = objectMapper.readValue(json, CommunityOffenderDto::class.java)
-
-    every { communityApiRestClient.getOffender(crn = CRN) } returns offender
-    every { communityApiRestClient.getOffenderPersonalCircumstances(any()) } returns DeliusPersonalCircumstancesDto()
-    every { communityApiRestClient.getOffenderPersonalContacts(any()) } returns emptyList()
     justRun { auditService.createAuditEvent(AuditType.ARN_ASSESSMENT_CLONED, any(), any(), any(), any(), any()) }
     justRun { telemetryService.trackAssessmentClonedEvent(any(), any(), any(), any(), any(), any(), any()) }
 
@@ -215,7 +156,7 @@ class EpisodeServiceTest {
     )
 
     // When
-    val episodeEntity = episodeService.prePopulateEpisodeFromDelius(newEpisode, offender)
+    episodeService.prePopulateEpisodeFromDelius(newEpisode, caseDetails)
     episodeService.prePopulateFromPreviousEpisodes(newEpisode, previousEpisodes)
 
     // Then
@@ -226,21 +167,16 @@ class EpisodeServiceTest {
       "contact_address_postcode" to listOf("S3 7BS"),
       "contact_address_town_or_city" to listOf("Sheffield")
     )
-    assertThat(episodeEntity.answers).containsAllEntriesOf(expectedAnswers)
+    assertThat(newEpisode.answers).containsAllEntriesOf(expectedAnswers)
   }
 
   @Test
   fun `should not add personal contacts from previous episode if present in Delius`() {
     // Given
     newEpisode = createEpisode(UPW)
+    val caseDetails = caseDetails()
 
     every { cloneAssessmentExcludedQuestionsRepository.findAllByAssessmentType(UPW) } returns emptyList()
-
-    val personalContactsJson = this::class.java.getResource("/json/deliusPersonalContacts.json")?.readText()!!
-
-    every { communityApiRestClient.getOffenderPersonalCircumstances(any()) } returns DeliusPersonalCircumstancesDto()
-    val deliusPersonalContacts: List<PersonalContact> = objectMapper.readValue(personalContactsJson)
-    every { communityApiRestClient.getOffenderPersonalContacts(any()) } returns deliusPersonalContacts
 
     val questionDtos = listOf(
       GroupQuestionDto(questionCode = "gp_details"),
@@ -254,19 +190,19 @@ class EpisodeServiceTest {
     val previousEpisodes = createPreviousEpisodePersonalContacts()
 
     // When
-    val episodeEntity = episodeService.prePopulateEpisodeFromDelius(newEpisode, communityOffenderDto)
+    episodeService.prePopulateEpisodeFromDelius(newEpisode, caseDetails)
     episodeService.prePopulateFromPreviousEpisodes(newEpisode, previousEpisodes)
 
     // Then
-    val gpDetailsAnswerDtos = episodeEntity.answers["gp_details"] as List<GPDetailsAnswerDto>
+    val gpDetailsAnswerDtos = newEpisode.answers["gp_details"] as List<GPDetailsAnswerDto>
     assertThat(gpDetailsAnswerDtos.size).isEqualTo(1)
     assertThat(gpDetailsAnswerDtos[0].name).isEqualTo(listOf("Charles Europe"))
     assertThat(gpDetailsAnswerDtos[0].buildingName).isEmpty()
 
     val emergencyContactDetailsAnswerDtos =
-      episodeEntity.answers["emergency_contact_details"] as List<EmergencyContactDetailsAnswerDto>
+      newEpisode.answers["emergency_contact_details"] as List<EmergencyContactDetailsAnswerDto>
     assertThat(emergencyContactDetailsAnswerDtos.size).isEqualTo(1)
-    assertThat(emergencyContactDetailsAnswerDtos[0].relationship).isEqualTo(listOf("Friend"))
+    assertThat(emergencyContactDetailsAnswerDtos[0].relationship).isEqualTo(listOf("Emergency Contact"))
     assertThat(emergencyContactDetailsAnswerDtos[0].buildingName).isEqualTo(listOf("Petty France"))
   }
 
@@ -302,40 +238,14 @@ class EpisodeServiceTest {
     ),
   )
 
-  // private fun createPersonalContactExternalSourceQuestionList(endpoint: String) = listOf(
-  //   ExternalSourceQuestionDto(
-  //     "gp_details",
-  //     ExternalSource.DELIUS.name,
-  //     "\$[?(@.relationshipType.code=='RT02'&&@.isActive==true)]",
-  //     "structured",
-  //     externalSourceEndpoint = endpoint,
-  //     ifEmpty = false,
-  //   ),
-  //   ExternalSourceQuestionDto(
-  //     "emergency_contact_details",
-  //     ExternalSource.DELIUS.name,
-  //     "\$[?(@.relationshipType.code=='ME'&&@.isActive==true)]",
-  //     "structured",
-  //     externalSourceEndpoint = endpoint,
-  //     ifEmpty = false,
-  //   )
-  // )
-
   @Test
   fun `should not add answers from previous episode if present in Delius`() {
     // Given
     newEpisode = createEpisode(UPW)
+    val caseDetails = caseDetails()
+
     every { cloneAssessmentExcludedQuestionsRepository.findAllByAssessmentType(UPW) } returns emptyList()
 
-    val json = this::class.java.getResource("/json/deliusOffender.json")?.readText()
-    val offenderDto = objectMapper.readValue(json, CommunityOffenderDto::class.java)
-
-    every {
-      communityApiRestClient.getOffender(crn = CRN)
-    } returns offenderDto
-
-    every { communityApiRestClient.getOffenderPersonalCircumstances(any()) } returns DeliusPersonalCircumstancesDto()
-    every { communityApiRestClient.getOffenderPersonalContacts(any()) } returns emptyList()
     justRun { auditService.createAuditEvent(AuditType.ARN_ASSESSMENT_CLONED, any(), any(), any(), any(), any()) }
     justRun { telemetryService.trackAssessmentClonedEvent(any(), any(), any(), any(), any(), any(), any()) }
 
@@ -360,7 +270,7 @@ class EpisodeServiceTest {
     every { assessmentReferenceDataService.getQuestionsForAssessmentType(newEpisode.assessmentType) } returns questionDtos
 
     // When
-    val episodeEntity = episodeService.prePopulateEpisodeFromDelius(newEpisode, offenderDto)
+    episodeService.prePopulateEpisodeFromDelius(newEpisode, caseDetails)
     episodeService.prePopulateFromPreviousEpisodes(newEpisode, previousEpisodes)
 
     // Then
@@ -368,7 +278,7 @@ class EpisodeServiceTest {
       "gender_identity" to listOf("PREFER_TO_SELF_DESCRIBE"),
       "question_2" to listOf("answer_2"),
     )
-    assertThat(episodeEntity.answers).containsAllEntriesOf(expectedAnswers)
+    assertThat(newEpisode.answers).containsAllEntriesOf(expectedAnswers)
   }
 
   @Test
@@ -624,5 +534,70 @@ class EpisodeServiceTest {
         any()
       )
     }
+  }
+
+  private fun caseDetails(): CaseDetails {
+    return CaseDetails(
+      crn = "crn",
+      name = Name(
+        forename = "forename",
+        middleName = "middlename",
+        surname = "surname"
+      ),
+      dateOfBirth = LocalDate.of(1989, 1, 1),
+      genderIdentity = "PREFER TO SELF DESCRIBE",
+
+      mainAddress = Address(
+        buildingName = "HMPPS Digital Studio",
+        addressNumber = "32",
+        district = "Sheffield City Centre",
+        county = "South Yorkshire",
+        postcode = "S3 7BS",
+        town = "Sheffield"
+      ),
+      personalContacts = listOf(
+        PersonalContact(
+          relationship = "GP",
+          relationshipType = RelationshipType(
+            code = "RT02",
+            description = "Primary GP"
+          ),
+          name = Name(
+            forename = "Charles",
+            surname = "Europe"
+          ),
+          mobileNumber = "07123456789",
+          address = Address(
+            addressNumber = "32",
+            streetName = "Scotland Street",
+            district = "Sheffield",
+            town = "Sheffield",
+            county = "South Yorkshire",
+            postcode = "S3 7DQ"
+          )
+        ),
+        PersonalContact(
+          relationship = "Emergency Contact",
+          relationshipType = RelationshipType(
+            code = "ME",
+            description = "Father"
+          ),
+          name = Name(
+            forename = "UPW",
+            surname = "Testing"
+          ),
+          telephoneNumber = "020 2000 0000",
+          address = Address(
+            buildingName = "Petty France",
+            addressNumber = "102",
+            streetName = "Central London",
+            district = "London",
+            town = "London",
+            county = "London",
+            postcode = "SW1H 9AJ"
+          )
+        )
+      )
+    )
   }
 }

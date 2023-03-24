@@ -26,8 +26,13 @@ import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.EpisodeRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRepository
+import uk.gov.justice.digital.assessments.restclient.DeliusIntegrationRestClient
 import uk.gov.justice.digital.assessments.restclient.audit.AuditType
-import uk.gov.justice.digital.assessments.restclient.communityapi.CommunityOffenderDto
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.Address
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.CaseDetails
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.Name
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.PersonalContact
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.RelationshipType
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
 import java.time.Clock
 import java.time.Instant
@@ -47,6 +52,7 @@ class AssessmentServiceTest {
   private val offenderService: OffenderService = mockk()
   private val auditService: AuditService = mockk()
   private val telemetryService: TelemetryService = mockk()
+  private val deliusIntegrationRestClient: DeliusIntegrationRestClient = mockk()
   private val clock: Clock = Clock.fixed(Instant.now(), ZoneId.of("Europe/London"))
   private val episodeRepository: EpisodeRepository = mockk()
 
@@ -59,6 +65,7 @@ class AssessmentServiceTest {
     offenderService,
     auditService,
     telemetryService,
+    deliusIntegrationRestClient,
     clock,
     episodeRepository,
   )
@@ -92,16 +99,14 @@ class AssessmentServiceTest {
   @BeforeEach
   internal fun setUp() {
     val offenceDto = OffenceDto(
-      convictionId = 123,
-      convictionIndex = eventId,
+      convictionId = eventId,
       offenceCode = "Code",
       codeDescription = "Code description",
       offenceSubCode = "Sub-code",
       subCodeDescription = "Sub-code description"
     )
     every { offenderService.getOffence(any(), crn, eventId) } returns offenceDto
-    val communityOffenderDto = CommunityOffenderDto(dateOfBirth = LocalDate.of(1989, 1, 1).toString())
-    every { offenderService.getCommunityOffender(crn) } returns communityOffenderDto
+    every { offenderService.getDeliusOffender(crn, eventId) } returns caseDetails()
   }
 
   @Nested
@@ -153,7 +158,7 @@ class AssessmentServiceTest {
       )
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
       every { assessment.subject } returns SubjectEntity(crn = crn, dateOfBirth = LocalDate.now())
-      every { offenderService.getOffenceFromConvictionIndex(crn, eventId) } returns OffenceDto(
+      every { offenderService.getOffenceFromConvictionId(crn, eventId) } returns OffenceDto(
         offenceCode = offenceCode,
         codeDescription = codeDescription,
         offenceSubCode = offenceSubCode,
@@ -162,12 +167,13 @@ class AssessmentServiceTest {
       every { episodeService.prePopulateEpisodeFromDelius(any(), any()) } returnsArgument 0
       every { episodeService.prePopulateFromPreviousEpisodes(any(), emptyList()) } returnsArgument 0
 
+      every { deliusIntegrationRestClient.getCaseDetails(crn, eventId) } returns caseDetails()
       val episodeDto = assessmentsService.createNewEpisode(
         assessmentUuid,
         eventId,
         "Change of Circs",
         assessmentType,
-        DeliusEventType.EVENT_INDEX
+        DeliusEventType.EVENT_ID
       )
 
       assertThat(episodeDto.assessmentUuid).isEqualTo(assessmentUuid)
@@ -610,6 +616,71 @@ class AssessmentServiceTest {
           questionId = 3,
           questionUuid = questionSchemaUuid3,
           questionCode = questionCode3
+        )
+      )
+    )
+  }
+
+  private fun caseDetails(): CaseDetails {
+    return CaseDetails(
+      crn = "crn",
+      name = Name(
+        forename = "forename",
+        middleName = "middlename",
+        surname = "surname"
+      ),
+      dateOfBirth = LocalDate.of(1989, 1, 1),
+      genderIdentity = "PREFER TO SELF DESCRIBE",
+
+      mainAddress = Address(
+        buildingName = "HMPPS Digital Studio",
+        addressNumber = "32",
+        district = "Sheffield City Centre",
+        county = "South Yorkshire",
+        postcode = "S3 7BS",
+        town = "Sheffield"
+      ),
+      personalContacts = listOf(
+        PersonalContact(
+          relationship = "GP",
+          relationshipType = RelationshipType(
+            code = "RT02",
+            description = "Primary GP"
+          ),
+          name = Name(
+            forename = "Charles",
+            surname = "Europe"
+          ),
+          mobileNumber = "07123456789",
+          address = Address(
+            addressNumber = "32",
+            streetName = "Scotland Street",
+            district = "Sheffield",
+            town = "Sheffield",
+            county = "South Yorkshire",
+            postcode = "S3 7DQ"
+          )
+        ),
+        PersonalContact(
+          relationship = "Emergency Contact",
+          relationshipType = RelationshipType(
+            code = "ME",
+            description = "Father"
+          ),
+          name = Name(
+            forename = "UPW",
+            surname = "Testing"
+          ),
+          telephoneNumber = "020 2000 0000",
+          address = Address(
+            buildingName = "Petty France",
+            addressNumber = "102",
+            streetName = "Central London",
+            district = "London",
+            town = "London",
+            county = "London",
+            postcode = "SW1H 9AJ"
+          )
         )
       )
     )

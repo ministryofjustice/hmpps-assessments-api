@@ -45,6 +45,7 @@ abstract class IntegrationTest {
 
   companion object {
     internal val communityApiMockServer = CommunityApiMockServer()
+    internal val deliusIntegrationMockServer = DeliusIntegrationMockServer()
     internal val assessmentApiMockServer = AssessmentApiMockServer()
     internal val assessRisksAndNeedsApiMockServer = AssessRisksAndNeedsApiMockServer()
     internal val auditApiMockServer = AuditMockServer()
@@ -58,6 +59,7 @@ abstract class IntegrationTest {
       assessRisksAndNeedsApiMockServer.start()
       auditApiMockServer.start()
       oauthMockServer.start()
+      deliusIntegrationMockServer.start()
     }
 
     @AfterAll
@@ -68,6 +70,7 @@ abstract class IntegrationTest {
       assessRisksAndNeedsApiMockServer.stop()
       auditApiMockServer.stop()
       oauthMockServer.stop()
+      deliusIntegrationMockServer.stop()
     }
   }
 
@@ -82,10 +85,7 @@ abstract class IntegrationTest {
     redisTemplate.opsForValue().set("user:1", UserDetails("STUARTWHITLAM"))
     communityApiMockServer.resetAll()
     communityApiMockServer.stubGetOffender()
-    communityApiMockServer.stubGetOffenderPersonalContacts()
-    communityApiMockServer.stubGetOffenderPersonalCircumstances()
-    communityApiMockServer.stubGetOffenderPersonalContactsPregnant()
-    communityApiMockServer.stubGetOffenderPersonalCircumstancesPregnant()
+
     communityApiMockServer.stubGetOffenderRegistrations()
     communityApiMockServer.stubGetConvictions()
     communityApiMockServer.stubGetUserAccess()
@@ -94,6 +94,7 @@ abstract class IntegrationTest {
     assessRisksAndNeedsApiMockServer.resetAll()
     auditApiMockServer.stubAuditEvents()
     oauthMockServer.stubGrantToken()
+    deliusIntegrationMockServer.stubGetCaseData()
     RequestContextHolder.getRequestAttributes()
     startSession()
     startRequest()
