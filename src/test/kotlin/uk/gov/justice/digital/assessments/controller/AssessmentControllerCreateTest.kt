@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.assessments.controller
 
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -177,7 +176,6 @@ class AssessmentControllerCreateTest : IntegrationTest() {
     }
 
     @Test
-    @Disabled("Reinstate test post implementation of get contact details rest call")
     fun `creating a new UPW assessment from Delius returns disabilities`() {
 
       val assessment = createDeliusAssessment(crn, eventID)
@@ -187,32 +185,20 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       val activeDisabilities = answers["active_disabilities"] as List<*>
       assertThat(activeDisabilities).hasSize(3)
 
-      val mentalHealth = activeDisabilities[0] as Map<*, *>
-      assertThat(mentalHealth["code"]).isEqualTo("MI")
-      assertThat(mentalHealth["description"]).isEqualTo("Mental Illness")
-      assertThat(mentalHealth["disability_notes"]).isEqualTo("Comment added by Natalie Wood on 23/05/2022 at 12:05\nHas depression")
-      assertThat(mentalHealth["disability_adjustments"]).isEqualTo(listOf("Behavioural responses/Body language"))
+      val learning = activeDisabilities[0] as Map<*, *>
+      assertThat(learning["code"]).isEqualTo("LDI")
+      assertThat(learning["description"]).isEqualTo("Learning Disability")
+      assertThat(learning["disability_notes"]).isEqualTo("Comment added by Natalie Wood on 20/03/2023 at 16:19\nLearning note")
 
-      val visual = activeDisabilities[1] as Map<*, *>
-      assertThat(visual["code"]).isEqualTo("VI")
-      assertThat(visual["description"]).isEqualTo("Visual Impairment")
-      assertThat(visual["disability_notes"]).isEqualTo(
-        "Comment added by Natalie Wood on 23/05/2022 at 12:03\n" +
-          "Blind in the left eye\n" +
-          "---------------------------------------------------------\n" +
-          "Comment added by Natalie Wood on 23/05/2022 at 12:05\n" +
-          "Partially sighted in the right eye\n" +
-          "---------------------------------------------------------\n" +
-          "Comment added by Natalie Wood on 23/05/2022 at 12:05\n" +
-          "Cataracts"
-      )
-      assertThat(visual["disability_adjustments"]).isEqualTo(listOf("Improved signage", "Audio/Braille/Moon"))
+      val mentalHealth = activeDisabilities[1] as Map<*, *>
+      assertThat(mentalHealth["code"]).isEqualTo("MHR")
+      assertThat(mentalHealth["description"]).isEqualTo("Mental Health related disabilities")
+      assertThat(mentalHealth["disability_notes"]).isEqualTo("Comment added by Natalie Wood on 20/03/2023 at 16:19\nMental health note")
 
       val mobility = activeDisabilities[2] as Map<*, *>
-      assertThat(mobility["code"]).isEqualTo("RM")
-      assertThat(mobility["description"]).isEqualTo("Reduced Mobility")
-      assertThat(mobility["disability_notes"]).isEqualTo("Comment added by Natalie Wood on 23/05/2022 at 12:04\nStiff arm")
-      assertThat(mobility["disability_adjustments"]).isEqualTo(listOf("Handrails"))
+      assertThat(mobility["code"]).isEqualTo("MRD")
+      assertThat(mobility["description"]).isEqualTo("Mobility related Disabilities")
+      assertThat(mobility["disability_notes"]).isEqualTo("Comment added by Natalie Wood on 20/03/2023 at 16:18\nmobility note")
     }
 
     @Test
@@ -276,7 +262,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
 
       assertThat(assessment?.assessmentUuid).isNotNull
       assertThat(assessment?.episodes).hasSize(1)
-      val answers = assessment.episodes.first().answers
+      val answers = assessment!!.episodes.first().answers
 
       assertThat(answers["pregnancy"]).isEqualTo(listOf("NO"))
       assertThat(answers["pregnancy_pregnant_details"]).isEmpty()

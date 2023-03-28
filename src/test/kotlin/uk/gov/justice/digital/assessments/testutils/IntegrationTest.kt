@@ -84,10 +84,6 @@ abstract class IntegrationTest {
   fun resetStubs() {
     redisTemplate.opsForValue().set("user:1", UserDetails("STUARTWHITLAM"))
     communityApiMockServer.resetAll()
-    communityApiMockServer.stubGetOffender()
-
-    communityApiMockServer.stubGetOffenderRegistrations()
-    communityApiMockServer.stubGetConvictions()
     communityApiMockServer.stubGetUserAccess()
     communityApiMockServer.stubUploadDocument()
     assessmentApiMockServer.stubGetAssessment()

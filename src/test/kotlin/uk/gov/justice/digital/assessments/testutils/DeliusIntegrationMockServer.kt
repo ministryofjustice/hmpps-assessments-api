@@ -144,7 +144,29 @@ class DeliusIntegrationMockServer : WireMockServer(9097) {
         "postcode": "S3 7BS"
     },
     "ethnicity": "Asian or Asian British: Pakistani",
-    "disabilities": [],
+    "disabilities": [
+        {
+          "type": {
+            "code": "LDI",
+            "description": "Learning Disability"
+          },
+          "notes": "Comment added by Natalie Wood on 20/03/2023 at 16:19\nLearning note"
+        },
+        {
+          "type": {
+            "code": "MHR",
+            "description": "Mental Health related disabilities"
+          },
+          "notes": "Comment added by Natalie Wood on 20/03/2023 at 16:19\nMental health note"
+        },
+        {
+          "type": {
+            "code": "MRD",
+            "description": "Mobility related Disabilities"
+          },
+          "notes": "Comment added by Natalie Wood on 20/03/2023 at 16:18\nmobility note"
+        }
+      ],    
     "language": {
         "requiresInterpreter": true,
         "primaryLanguage": "Urdu"

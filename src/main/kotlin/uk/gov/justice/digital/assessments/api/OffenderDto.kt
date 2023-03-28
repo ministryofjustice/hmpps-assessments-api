@@ -18,7 +18,7 @@ data class OffenderDto(
 ) {
   companion object {
 
-    fun from(caseDetails: CaseDetails): OffenderDto {
+    fun from(caseDetails: CaseDetails, eventId: Long?): OffenderDto {
       return OffenderDto(
         firstName = caseDetails.name.forename,
         surname = caseDetails.name.surname,
@@ -27,6 +27,7 @@ data class OffenderDto(
         crn = caseDetails.crn,
         pncNumber = caseDetails.pncNumber,
         croNumber = caseDetails.croNumber,
+        offence = OffenceDto.from(caseDetails.sentence, eventId),
         firstNameAliases = caseDetails.aliases?.map { it.name.forename },
         surnameAliases = caseDetails.aliases?.map { it.name.surname },
         dateOfBirthAliases = caseDetails.aliases?.map { it.dateOfBirth.toString() }

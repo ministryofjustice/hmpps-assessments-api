@@ -9,7 +9,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import uk.gov.justice.digital.assessments.api.DeliusEventType
 import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
 import uk.gov.justice.digital.assessments.restclient.DeliusIntegrationRestClient
 import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.Address
@@ -36,30 +35,12 @@ class OffenderServiceTest {
   }
 
   @Test
-  fun `should invoke delius integration with conviction Id when Delius EventType is EventId`() {
-    offenderService.getOffence(DeliusEventType.EVENT_ID, crn, eventId)
-
-    verify { deliusIntegrationRestClient.getCaseDetails(crn, eventId) }
-  }
-
-  @Test
   fun `return offender`() {
     val offenderDto = offenderService.getOffender(crn, eventId)
 
     assertThat(offenderDto.crn).isEqualTo(crn)
     assertThat(offenderDto.firstName).isEqualTo("forename")
     assertThat(offenderDto.surname).isEqualTo("surname")
-    verify(exactly = 1) { deliusIntegrationRestClient.getCaseDetails(crn, eventId) }
-  }
-
-  @Test
-  fun `return offence for conviction`() {
-    val offenceDto = offenderService.getOffenceFromConvictionId(crn, eventId)
-    assertThat(offenceDto.offenceCode).isEqualTo("Code")
-    assertThat(offenceDto.codeDescription).isEqualTo("Code description")
-    assertThat(offenceDto.offenceSubCode).isEqualTo("Sub code")
-    assertThat(offenceDto.subCodeDescription).isEqualTo("Sub code description")
-
     verify(exactly = 1) { deliusIntegrationRestClient.getCaseDetails(crn, eventId) }
   }
 

@@ -29,11 +29,11 @@ class OffenceDtoTest {
 
     val offenceDto = OffenceDto.from(sentence, 1)
 
-    assertThat(offenceDto.convictionId).isEqualTo(1)
-    assertThat(offenceDto.sentenceDate).isEqualTo(LocalDate.of(2020, 2, 1))
-    assertThat(offenceDto.offenceCode).isEqualTo("main category code")
-    assertThat(offenceDto.codeDescription).isEqualTo("code description 1")
-    assertThat(offenceDto.offenceSubCode).isEqualTo("subcategory code")
-    assertThat(offenceDto.subCodeDescription).isEqualTo("code description 2")
+    assertThat(offenceDto?.convictionId).isEqualTo(1)
+    assertThat(offenceDto?.sentenceDate).isEqualTo(LocalDate.of(2020, 2, 1))
+    assertThat(offenceDto?.offenceCode).isEqualTo("main category code")
+    assertThat(offenceDto?.codeDescription).isEqualTo("code description 1")
+    assertThat(offenceDto?.offenceSubCode).isEqualTo("subcategory code")
+    assertThat(offenceDto?.subCodeDescription).isEqualTo("code description 2")
   }
 }

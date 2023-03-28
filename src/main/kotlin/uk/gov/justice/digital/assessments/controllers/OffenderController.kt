@@ -42,8 +42,6 @@ class OffenderController(val offenderService: OffenderService) {
   ): OffenderDto? {
     log.debug("Entered getOffenderDetails($crn, $eventType, $eventId)")
 
-    val offenderDto = offenderService.getOffender(crn, eventId)
-    offenderDto.offence = offenderService.getOffence(eventType, crn, eventId)
-    return offenderDto
+    return offenderService.getOffender(crn, eventId)
   }
 }

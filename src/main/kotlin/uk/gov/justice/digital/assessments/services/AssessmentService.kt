@@ -7,8 +7,6 @@ import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.assessments.api.AssessmentSubjectDto
 import uk.gov.justice.digital.assessments.api.DeliusEventType
 import uk.gov.justice.digital.assessments.api.OffenderDto
-import uk.gov.justice.digital.assessments.api.answers.AnswerDto
-import uk.gov.justice.digital.assessments.api.answers.AssessmentAnswersDto
 import uk.gov.justice.digital.assessments.api.assessments.AssessmentDto
 import uk.gov.justice.digital.assessments.api.assessments.AssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.api.assessments.CreateAssessmentDto
@@ -17,12 +15,9 @@ import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEnt
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.OffenceEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerEntity
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.EpisodeRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRepository
-import uk.gov.justice.digital.assessments.restclient.DeliusIntegrationRestClient
 import uk.gov.justice.digital.assessments.restclient.audit.AuditType
 import uk.gov.justice.digital.assessments.services.dto.ExternalSource
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
@@ -37,12 +32,10 @@ class AssessmentService(
   private val assessmentRepository: AssessmentRepository,
   private val subjectRepository: SubjectRepository,
   private val authorService: AuthorService,
-  private val questionService: QuestionService,
   private val episodeService: EpisodeService,
   private val offenderService: OffenderService,
   private val auditService: AuditService,
   private val telemetryService: TelemetryService,
-  private val deliusIntegrationRestClient: DeliusIntegrationRestClient,
   private val clock: Clock,
   private val episodeRepository: EpisodeRepository,
 ) {
@@ -104,49 +97,6 @@ class AssessmentService(
     return AssessmentEpisodeDto.from(getCurrentEpisode(assessmentUuid))
   }
 
-  fun getCurrentAssessmentCodedAnswers(assessmentUuid: UUID): AssessmentAnswersDto {
-    val questions = questionService.getAllQuestions()
-    val assessment = getAssessmentByUuid(assessmentUuid)
-    val answers: MutableMap<String, Collection<AnswerDto>> =
-      mapAssessmentQuestionAndAnswerCodes(assessment, questions)
-    return AssessmentAnswersDto(assessmentUuid, answers)
-  }
-
-  private fun mapAssessmentQuestionAndAnswerCodes(
-    assessment: AssessmentEntity,
-    questions: QuestionSchemaEntities
-  ): MutableMap<String, Collection<AnswerDto>> {
-    val answers: MutableMap<String, Collection<AnswerDto>> = mutableMapOf()
-
-    assessment.episodes.sortedWith(compareBy(nullsLast()) { it.endDate }).forEach {
-      val episodeAnswers = mapAssessmentQuestionAndAnswerCodes(it, questions)
-      answers += episodeAnswers
-    }
-
-    return answers
-  }
-
-  private fun mapAssessmentQuestionAndAnswerCodes(
-    episode: AssessmentEpisodeEntity,
-    questions: QuestionSchemaEntities
-  ): MutableMap<String, Collection<AnswerDto>> {
-    val answers: MutableMap<String, Collection<AnswerDto>> = mutableMapOf()
-
-    episode.answers.forEach { episodeAnswer ->
-      val question = questions[episodeAnswer.key]
-        ?: throw IllegalStateException("Question not found for UUID ${episodeAnswer.key}")
-
-      if (question.answerGroup != null) {
-        val questionCode = question.questionCode
-        val answerSchema = matchAnswers(episodeAnswer, question)
-        if (answerSchema.isNotEmpty()) {
-          answers[questionCode] = AnswerDto.from(answerSchema)
-        }
-      }
-    }
-    return answers
-  }
-
   private fun createFromDelius(
     eventId: Long?,
     crn: String?,
@@ -156,8 +106,8 @@ class AssessmentService(
       throw IllegalStateException("Unable to create Assessment with assessment type: $assessmentType, eventId: $eventId, crn: $crn")
     }
     offenderService.validateUserAccess(crn)
-    val offender = offenderService.getDeliusOffender(crn, eventId)
-    val arnAssessment = getOrCreateAssessment(crn, eventId, OffenderDto.from(offender))
+    val caseDetails = offenderService.getDeliusCaseDetails(crn, eventId)
+    val arnAssessment = getOrCreateAssessment(crn, eventId, OffenderDto.from(caseDetails, eventId))
     val subject = subjectRepository.save(arnAssessment.subject?.copy())
       ?: throw EntityNotFoundException("Unable to save null subject with crn: $crn")
     createPrePopulatedEpisode(
@@ -192,19 +142,6 @@ class AssessmentService(
         eventId
       )
     }
-  }
-
-  private fun matchAnswers(
-    episodeAnswer: Map.Entry<String, List<Any>>,
-    question: QuestionEntity
-  ): Set<AnswerEntity> {
-    val answerSchemas = question.answerEntities
-    return episodeAnswer.value.map { answer ->
-      answerSchemas.firstOrNull { answerSchema ->
-        answer == answerSchema.value
-      }
-        ?: throw IllegalStateException("Answer Code not found for question ${question.questionUuid} answer value $answer")
-    }.toSet()
   }
 
   fun getEpisodeById(episodeUuid: UUID): AssessmentEpisodeEntity {
@@ -267,18 +204,18 @@ class AssessmentService(
     val author = authorService.getOrCreateAuthor()
     val isNewEpisode = !assessment.hasCurrentEpisode()
     log.info("isNewEpisode is $isNewEpisode")
-    val caseDetails = deliusIntegrationRestClient.getCaseDetails(subject.crn, eventId)
+    val caseDetails = offenderService.getDeliusCaseDetails(subject.crn, eventId)
     val episode = assessment.newEpisode(
       reason,
       assessmentType = assessmentType,
       offence = OffenceEntity(
         source = source,
         sourceId = eventId.toString(),
-        offenceCode = caseDetails?.sentence?.mainOffence?.category?.code,
-        codeDescription = caseDetails?.sentence?.mainOffence?.category?.description,
-        offenceSubCode = caseDetails?.sentence?.mainOffence?.subCategory?.code,
-        subCodeDescription = caseDetails?.sentence?.mainOffence?.subCategory?.description,
-        sentenceDate = caseDetails?.sentence?.startDate
+        offenceCode = caseDetails.sentence?.mainOffence?.category?.code,
+        codeDescription = caseDetails.sentence?.mainOffence?.category?.description,
+        offenceSubCode = caseDetails.sentence?.mainOffence?.subCategory?.code,
+        subCodeDescription = caseDetails.sentence?.mainOffence?.subCategory?.description,
+        sentenceDate = caseDetails.sentence?.startDate
       ),
       author
     )
