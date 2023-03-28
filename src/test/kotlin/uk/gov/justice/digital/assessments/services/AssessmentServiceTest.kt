@@ -13,16 +13,12 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import uk.gov.justice.digital.assessments.api.DeliusEventType
-import uk.gov.justice.digital.assessments.api.OffenceDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.OffenceEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerEntity
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.AnswerGroupEntity
-import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.EpisodeRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRepository
@@ -47,7 +43,6 @@ class AssessmentServiceTest {
   private val assessmentRepository: AssessmentRepository = mockk()
   private val subjectRepository: SubjectRepository = mockk()
   private val authorService: AuthorService = mockk()
-  private val questionService: QuestionService = mockk()
   private val episodeService: EpisodeService = mockk()
   private val offenderService: OffenderService = mockk()
   private val auditService: AuditService = mockk()
@@ -60,7 +55,6 @@ class AssessmentServiceTest {
     assessmentRepository,
     subjectRepository,
     authorService,
-    questionService,
     episodeService,
     offenderService,
     auditService,
@@ -76,17 +70,6 @@ class AssessmentServiceTest {
 
   private val episodeId1 = 1L
   private val episodeId2 = 2L
-  private val episodeId3 = 3L
-
-  private val questionSchemaUuid1 = UUID.randomUUID()
-  private val questionSchemaUuid2 = UUID.randomUUID()
-  private val questionSchemaUuid3 = UUID.randomUUID()
-  private val questionCode1 = "Q1"
-  private val questionCode2 = "Q2"
-  private val questionCode3 = "question_code_3"
-  private val answer1Uuid = UUID.randomUUID()
-  private val answer2Uuid = UUID.randomUUID()
-  private val answer3Uuid = UUID.randomUUID()
 
   private val crn = "DX12345A"
   private val eventId = 1L
@@ -98,15 +81,7 @@ class AssessmentServiceTest {
 
   @BeforeEach
   internal fun setUp() {
-    val offenceDto = OffenceDto(
-      convictionId = eventId,
-      offenceCode = "Code",
-      codeDescription = "Code description",
-      offenceSubCode = "Sub-code",
-      subCodeDescription = "Sub-code description"
-    )
-    every { offenderService.getOffence(any(), crn, eventId) } returns offenceDto
-    every { offenderService.getDeliusOffender(crn, eventId) } returns caseDetails()
+    every { offenderService.getDeliusCaseDetails(crn, eventId) } returns caseDetails()
   }
 
   @Nested
@@ -158,12 +133,6 @@ class AssessmentServiceTest {
       )
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
       every { assessment.subject } returns SubjectEntity(crn = crn, dateOfBirth = LocalDate.now())
-      every { offenderService.getOffenceFromConvictionId(crn, eventId) } returns OffenceDto(
-        offenceCode = offenceCode,
-        codeDescription = codeDescription,
-        offenceSubCode = offenceSubCode,
-        subCodeDescription = subCodeDescription
-      )
       every { episodeService.prePopulateEpisodeFromDelius(any(), any()) } returnsArgument 0
       every { episodeService.prePopulateFromPreviousEpisodes(any(), emptyList()) } returnsArgument 0
 
@@ -345,280 +314,6 @@ class AssessmentServiceTest {
         .isInstanceOf(EntityNotFoundException::class.java)
         .hasMessage("Assessment $assessmentUuid not found")
     }
-  }
-
-  @Nested
-  @DisplayName("coded answers")
-  inner class CodedAnswers {
-    @Test
-    fun `fetch answers for all episodes`() {
-
-      setupQuestionCodes()
-
-      val assessment = AssessmentEntity(
-        assessmentId = assessmentId,
-        episodes = mutableListOf(
-          AssessmentEpisodeEntity(
-            episodeId = episodeId1,
-            answers = mutableMapOf(questionCode1 to listOf("YES")),
-            createdDate = LocalDateTime.now(),
-            assessmentType = AssessmentType.UPW,
-            author = AuthorEntity(
-              userId = "1",
-              userName = "USER",
-              userAuthSource = "source",
-              userFullName = "full name"
-            ),
-            assessment = AssessmentEntity()
-          ),
-          AssessmentEpisodeEntity(
-            episodeId = episodeId2,
-            answers = mutableMapOf(questionCode2 to listOf("NO")),
-            createdDate = LocalDateTime.now(),
-            assessmentType = AssessmentType.UPW,
-            author = AuthorEntity(
-              userId = "1",
-              userName = "USER",
-              userAuthSource = "source",
-              userFullName = "full name"
-            ),
-            assessment = AssessmentEntity()
-          )
-        )
-      )
-      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
-
-      val result = assessmentsService.getCurrentAssessmentCodedAnswers(assessmentUuid)
-
-      assertThat(result.assessmentUuid).isEqualTo(assessmentUuid)
-      assertThat(result.answers["Q1"]?.first()?.answerUuid).isEqualTo(answer1Uuid)
-      assertThat(result.answers["Q2"]?.first()?.answerUuid).isEqualTo(answer3Uuid)
-    }
-
-    @Test
-    fun `overwrite older episode answers with newer episode answers`() {
-      setupQuestionCodes()
-
-      val assessment = AssessmentEntity(
-        assessmentId = assessmentId,
-        episodes = mutableListOf(
-          AssessmentEpisodeEntity(
-            episodeId = episodeId1,
-            endDate = LocalDateTime.of(2020, 10, 1, 9, 0, 0),
-            answers = mutableMapOf(
-              questionCode1 to listOf("YES")
-            ),
-            createdDate = LocalDateTime.now(),
-            assessmentType = AssessmentType.UPW,
-            author = AuthorEntity(
-              userId = "1",
-              userName = "USER",
-              userAuthSource = "source",
-              userFullName = "full name"
-            ),
-            assessment = AssessmentEntity()
-          ),
-          AssessmentEpisodeEntity(
-            episodeId = episodeId3,
-            endDate = LocalDateTime.of(2020, 10, 2, 10, 0, 0),
-            answers = mutableMapOf(
-              questionCode2 to listOf("MAYBE")
-            ),
-            createdDate = LocalDateTime.now(),
-            assessmentType = AssessmentType.UPW,
-            author = AuthorEntity(
-              userId = "1",
-              userName = "USER",
-              userAuthSource = "source",
-              userFullName = "full name"
-            ),
-            assessment = AssessmentEntity()
-          ),
-          AssessmentEpisodeEntity(
-            episodeId = episodeId2,
-            endDate = LocalDateTime.of(2020, 10, 2, 9, 0, 0),
-            answers = mutableMapOf(
-              questionCode2 to listOf("NO")
-            ),
-            createdDate = LocalDateTime.now(),
-            assessmentType = AssessmentType.UPW,
-            author = AuthorEntity(
-              userId = "1",
-              userName = "USER",
-              userAuthSource = "source",
-              userFullName = "full name"
-            ),
-            assessment = AssessmentEntity()
-          ),
-        )
-      )
-      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
-      val result = assessmentsService.getCurrentAssessmentCodedAnswers(assessmentUuid)
-      assertThat(result.answers["Q1"]?.first()?.answerUuid).isEqualTo(answer1Uuid)
-      assertThat(result.answers["Q2"]?.first()?.answerUuid).isEqualTo(answer2Uuid)
-    }
-
-    @Test
-    fun `overwrite older episode answers latest episode answers`() {
-      setupQuestionCodes()
-      val assessment = AssessmentEntity(
-        assessmentId = assessmentId,
-        episodes = mutableListOf(
-          AssessmentEpisodeEntity(
-            episodeId = episodeId1,
-            endDate = LocalDateTime.of(2020, 10, 1, 9, 0, 0),
-            answers = mutableMapOf(
-              questionCode1 to listOf("YES")
-            ),
-            createdDate = LocalDateTime.now(),
-            assessmentType = AssessmentType.UPW,
-            author = AuthorEntity(
-              userId = "1",
-              userName = "USER",
-              userAuthSource = "source",
-              userFullName = "full name"
-            ),
-            assessment = AssessmentEntity()
-          ),
-          AssessmentEpisodeEntity(
-            episodeId = episodeId3,
-            endDate = null,
-            answers = mutableMapOf(
-              questionCode2 to listOf("NO")
-            ),
-            createdDate = LocalDateTime.now(),
-            assessmentType = AssessmentType.UPW,
-            author = AuthorEntity(
-              userId = "1",
-              userName = "USER",
-              userAuthSource = "source",
-              userFullName = "full name"
-            ),
-            assessment = AssessmentEntity()
-          ),
-          AssessmentEpisodeEntity(
-            episodeId = episodeId2,
-            endDate = LocalDateTime.of(2020, 10, 2, 9, 0, 0),
-            answers = mutableMapOf(
-              questionCode2 to listOf("MAYBE")
-            ),
-            createdDate = LocalDateTime.now(),
-            assessmentType = AssessmentType.UPW,
-            author = AuthorEntity(
-              userId = "1",
-              userName = "USER",
-              userAuthSource = "source",
-              userFullName = "full name"
-            ),
-            assessment = AssessmentEntity()
-          ),
-        )
-      )
-      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
-
-      val result = assessmentsService.getCurrentAssessmentCodedAnswers(assessmentUuid)
-      assertThat(result.answers["Q1"]?.first()?.answerUuid).isEqualTo(answer1Uuid)
-      assertThat(result.answers["Q2"]?.first()?.answerUuid).isEqualTo(answer3Uuid)
-    }
-
-    @Test
-    fun `only fetch coded answers`() {
-      setupQuestionCodes()
-
-      val assessment = AssessmentEntity(
-        assessmentId = assessmentId,
-        episodes = mutableListOf(
-          AssessmentEpisodeEntity(
-            episodeId = episodeId1,
-            answers = mutableMapOf(
-              questionCode1 to listOf("YES"),
-              questionCode3 to listOf("free text")
-            ),
-            createdDate = LocalDateTime.now(),
-            assessmentType = AssessmentType.UPW,
-            author = AuthorEntity(
-              userId = "1",
-              userName = "USER",
-              userAuthSource = "source",
-              userFullName = "full name"
-            ),
-            assessment = AssessmentEntity()
-          )
-        )
-      )
-      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
-      val result = assessmentsService.getCurrentAssessmentCodedAnswers(assessmentUuid)
-
-      assertThat(result.assessmentUuid).isEqualTo(assessmentUuid)
-      assertThat(result.answers["Q1"]?.first()?.answerUuid).isEqualTo(answer1Uuid)
-      assertThat(result.answers).doesNotContainKey("Q2")
-    }
-
-    @Test
-    fun `throw exception when answer code lookup fails`() {
-      setupQuestionCodes()
-
-      val assessment = AssessmentEntity(
-        assessmentId = assessmentId,
-        episodes = mutableListOf(
-          AssessmentEpisodeEntity(
-            episodeId = episodeId1,
-            answers = mutableMapOf(
-              questionCode1 to listOf("NO")
-            ),
-            createdDate = LocalDateTime.now(),
-            assessmentType = AssessmentType.UPW,
-            author = AuthorEntity(
-              userId = "1",
-              userName = "USER",
-              userAuthSource = "source",
-              userFullName = "full name"
-            ),
-            assessment = AssessmentEntity()
-          )
-        )
-      )
-      every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
-      assertThatThrownBy { assessmentsService.getCurrentAssessmentCodedAnswers(assessmentUuid) }
-        .isInstanceOf(IllegalStateException::class.java)
-        .hasMessage("Answer Code not found for question $questionSchemaUuid1 answer value NO")
-    }
-  }
-
-  private fun setupQuestionCodes() {
-    val dummy = AnswerGroupEntity(answerGroupId = 99)
-
-    val yes =
-      AnswerEntity(answerId = 1, answerUuid = answer1Uuid, value = "YES", answerGroup = dummy)
-    val maybe =
-      AnswerEntity(answerId = 2, answerUuid = answer2Uuid, value = "MAYBE", answerGroup = dummy)
-    val no =
-      AnswerEntity(answerId = 3, answerUuid = answer3Uuid, value = "NO", answerGroup = dummy)
-
-    val group1 = AnswerGroupEntity(answerGroupId = 1, answerEntities = listOf(yes))
-    val group2 = AnswerGroupEntity(answerGroupId = 2, answerEntities = listOf(maybe, no))
-
-    every { questionService.getAllQuestions() } returns QuestionSchemaEntities(
-      listOf(
-        QuestionEntity(
-          questionId = 1,
-          questionUuid = questionSchemaUuid1,
-          questionCode = questionCode1,
-          answerGroup = group1
-        ),
-        QuestionEntity(
-          questionId = 2,
-          questionUuid = questionSchemaUuid2,
-          questionCode = questionCode2,
-          answerGroup = group2
-        ),
-        QuestionEntity(
-          questionId = 3,
-          questionUuid = questionSchemaUuid3,
-          questionCode = questionCode3
-        )
-      )
-    )
   }
 
   private fun caseDetails(): CaseDetails {
