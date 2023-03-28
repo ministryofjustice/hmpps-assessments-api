@@ -59,7 +59,6 @@ class AssessmentServiceTest {
     offenderService,
     auditService,
     telemetryService,
-    deliusIntegrationRestClient,
     clock,
     episodeRepository,
   )

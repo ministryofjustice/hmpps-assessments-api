@@ -18,7 +18,6 @@ import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.EpisodeRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRepository
-import uk.gov.justice.digital.assessments.restclient.DeliusIntegrationRestClient
 import uk.gov.justice.digital.assessments.restclient.audit.AuditType
 import uk.gov.justice.digital.assessments.services.dto.ExternalSource
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
@@ -37,7 +36,6 @@ class AssessmentService(
   private val offenderService: OffenderService,
   private val auditService: AuditService,
   private val telemetryService: TelemetryService,
-  private val deliusIntegrationRestClient: DeliusIntegrationRestClient,
   private val clock: Clock,
   private val episodeRepository: EpisodeRepository,
 ) {
@@ -206,18 +204,18 @@ class AssessmentService(
     val author = authorService.getOrCreateAuthor()
     val isNewEpisode = !assessment.hasCurrentEpisode()
     log.info("isNewEpisode is $isNewEpisode")
-    val caseDetails = deliusIntegrationRestClient.getCaseDetails(subject.crn, eventId)
+    val caseDetails = offenderService.getDeliusCaseDetails(subject.crn, eventId)
     val episode = assessment.newEpisode(
       reason,
       assessmentType = assessmentType,
       offence = OffenceEntity(
         source = source,
         sourceId = eventId.toString(),
-        offenceCode = caseDetails?.sentence?.mainOffence?.category?.code,
-        codeDescription = caseDetails?.sentence?.mainOffence?.category?.description,
-        offenceSubCode = caseDetails?.sentence?.mainOffence?.subCategory?.code,
-        subCodeDescription = caseDetails?.sentence?.mainOffence?.subCategory?.description,
-        sentenceDate = caseDetails?.sentence?.startDate
+        offenceCode = caseDetails.sentence?.mainOffence?.category?.code,
+        codeDescription = caseDetails.sentence?.mainOffence?.category?.description,
+        offenceSubCode = caseDetails.sentence?.mainOffence?.subCategory?.code,
+        subCodeDescription = caseDetails.sentence?.mainOffence?.subCategory?.description,
+        sentenceDate = caseDetails.sentence?.startDate
       ),
       author
     )
