@@ -13,10 +13,26 @@ import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
+import org.springframework.test.context.jdbc.Sql
+import org.springframework.test.context.jdbc.SqlConfig
+import org.springframework.test.context.jdbc.SqlGroup
+import org.springframework.transaction.annotation.Transactional
+import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiEntityNotFoundException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiUnknownException
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import uk.gov.justice.digital.assessments.utils.RequestData
 
+@SqlGroup(
+  Sql(
+    scripts = ["classpath:assessments/before-test.sql"],
+    config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED)
+  ),
+  Sql(
+    scripts = ["classpath:assessments/after-test.sql"],
+    config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED),
+    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
+  )
+)
 internal class RisksServiceCacheTest(
   @Autowired
   val risksService: RisksService
@@ -39,52 +55,54 @@ internal class RisksServiceCacheTest(
 
   @Test
   fun `multiple calls to ROSH risk summary are cached when valid response`() {
-    val aCRN = "DX12340A"
+    val crn = "DX12340A"
 
-    risksService.getRoshRiskSummaryForAssessment(aCRN)
-    risksService.getRoshRiskSummaryForAssessment(aCRN)
+    risksService.getRoshRiskSummaryForAssessment(crn)
+    risksService.getRoshRiskSummaryForAssessment(crn)
 
-    assessRisksAndNeedsApiMockServer.verify(exactly(1), getRequestedFor(urlEqualTo("/risks/crn/$aCRN/widget")))
+    assessRisksAndNeedsApiMockServer.verify(exactly(1), getRequestedFor(urlEqualTo("/risks/crn/$crn/widget")))
   }
 
   @Test
   fun `multiple calls to ROSH risk summary are not cached when any exception occurs`() {
-    val aCRN = "invalidNotKnow"
+    val crn = "invalidNotKnow"
 
     assertThrows<ExternalApiUnknownException> {
-      risksService.getRoshRiskSummaryForAssessment(aCRN)
+      risksService.getRoshRiskSummaryForAssessment(crn)
     }
 
     assertThrows<ExternalApiUnknownException> {
-      risksService.getRoshRiskSummaryForAssessment(aCRN)
+      risksService.getRoshRiskSummaryForAssessment(crn)
     }
 
-    assessRisksAndNeedsApiMockServer.verify(exactly(2), getRequestedFor(urlEqualTo("/risks/crn/$aCRN/widget")))
+    assessRisksAndNeedsApiMockServer.verify(exactly(2), getRequestedFor(urlEqualTo("/risks/crn/$crn/widget")))
   }
 
   @Test
+  @Transactional("assessmentsTransactionManager")
   fun `multiple calls to risk registrations are cached when valid response`() {
-    val aCRN = "DX12340A"
+    val crn = "X1346"
 
-    risksService.getRegistrationsForAssessment(aCRN)
-    risksService.getRegistrationsForAssessment(aCRN)
+    risksService.getRegistrationsForAssessment(crn)
+    risksService.getRegistrationsForAssessment(crn)
 
-    communityApiMockServer.verify(exactly(1), getRequestedFor(urlEqualTo("/secure/offenders/crn/$aCRN/registrations")))
+    deliusIntegrationMockServer.verify(exactly(1), getRequestedFor(urlEqualTo("/case-data/$crn/1")))
   }
 
   @Test
-  fun `multiple calls to risk registrations are not cached when any exception occurs`() {
-    val aCRN = "invalidNotKnow"
+  @Transactional("assessmentsTransactionManager")
+  fun `multiple calls to risk registrations are not cached when an exception occurs`() {
+    val crn = "X1404"
 
-    assertThrows<ExternalApiUnknownException> {
-      risksService.getRegistrationsForAssessment(aCRN)
+    assertThrows<ExternalApiEntityNotFoundException> {
+      risksService.getRegistrationsForAssessment(crn)
     }
 
-    assertThrows<ExternalApiUnknownException> {
-      risksService.getRegistrationsForAssessment(aCRN)
+    assertThrows<ExternalApiEntityNotFoundException> {
+      risksService.getRegistrationsForAssessment(crn)
     }
 
-    communityApiMockServer.verify(exactly(2), getRequestedFor(urlEqualTo("/secure/offenders/crn/$aCRN/registrations")))
+    deliusIntegrationMockServer.verify(exactly(2), getRequestedFor(urlEqualTo("/case-data/$crn/1")))
   }
 
   companion object {
