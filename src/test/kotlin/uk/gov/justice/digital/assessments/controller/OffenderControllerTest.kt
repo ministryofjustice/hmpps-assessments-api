@@ -2,9 +2,6 @@ package uk.gov.justice.digital.assessments.controller
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.Arguments
-import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
 import org.springframework.test.web.reactive.server.expectBody
 import uk.gov.justice.digital.assessments.api.DeliusEventType
@@ -54,15 +51,13 @@ internal class OffenderControllerTest : IntegrationTest() {
     )
   }
 
-  @ParameterizedTest(name = "Delius Event type = {0}")
-  @MethodSource("getConvictionData")
-  fun `should return offence details Dto given provided parameters`(
-    eventType: DeliusEventType,
-    expectedConvictionId: Long,
-    eventId: Long
-  ) {
+  @Test
+  fun `should return offence details Dto`() {
 
     val crn = "DX5678A"
+    val eventId = 123456L
+    val expectedConvictionId = 123456L
+    val eventType = DeliusEventType.EVENT_ID
     val path = "/offender/crn/$crn/eventType/$eventType/eventId/$eventId"
 
     val offenderDto = webTestClient.get().uri(path)
@@ -94,15 +89,5 @@ internal class OffenderControllerTest : IntegrationTest() {
         )
       )
     )
-  }
-
-  companion object {
-    @JvmStatic
-    fun getConvictionData(): List<Arguments> {
-
-      return listOf(
-        Arguments.of(DeliusEventType.EVENT_ID, 123456, 123456),
-      )
-    }
   }
 }
