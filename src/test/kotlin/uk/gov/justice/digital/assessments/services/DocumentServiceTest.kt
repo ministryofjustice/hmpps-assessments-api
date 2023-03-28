@@ -33,12 +33,12 @@ class DocumentServiceTest {
     val episodeId = UUID.randomUUID()
     val assessmentId = UUID.randomUUID()
     val crn = "X1234A"
-    val convictionId = 987L
+    val eventId = 987L
 
     val fileData = multiPartFile()
 
-    every { assessmentService.getEpisode(assessmentId, episodeId) } returns assessmentEpisode(crn, convictionId.toString())
-    every { communityApiRestClient.uploadDocumentToDelius(crn, convictionId, fileData) } returns UploadedUpwDocumentDto()
+    every { assessmentService.getEpisode(assessmentId, episodeId) } returns assessmentEpisode(crn, eventId.toString())
+    every { communityApiRestClient.uploadDocumentToDelius(crn, eventId, fileData) } returns UploadedUpwDocumentDto()
 
     documentService.uploadUpwDocument(assessmentId, episodeId, fileData)
   }
@@ -77,12 +77,12 @@ class DocumentServiceTest {
     val episodeId = UUID.randomUUID()
     val assessmentId = UUID.randomUUID()
     val crn = "X1234A"
-    val convictionId = 987L
+    val eventId = 987L
 
     val fileData = multiPartFile()
 
-    every { assessmentService.getEpisode(assessmentId, episodeId) } returns assessmentEpisode(crn, convictionId.toString())
-    every { communityApiRestClient.uploadDocumentToDelius(crn, convictionId, fileData) } throws ExternalApiUnknownException("Something went wrong", HttpMethod.POST, "/foo/bar", ExternalService.COMMUNITY_API)
+    every { assessmentService.getEpisode(assessmentId, episodeId) } returns assessmentEpisode(crn, eventId.toString())
+    every { communityApiRestClient.uploadDocumentToDelius(crn, eventId, fileData) } throws ExternalApiUnknownException("Something went wrong", HttpMethod.POST, "/foo/bar", ExternalService.COMMUNITY_API)
 
     assertThrows<ExternalApiUnknownException> {
       documentService.uploadUpwDocument(assessmentId, episodeId, fileData)

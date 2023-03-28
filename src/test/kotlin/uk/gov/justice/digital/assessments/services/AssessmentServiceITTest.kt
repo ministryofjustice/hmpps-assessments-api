@@ -85,7 +85,7 @@ class AssessmentServiceITTest : IntegrationTest() {
 
   @Test
   @Transactional("assessmentsTransactionManager")
-  fun `Should create assessment with Delius Conviction ID`() {
+  fun `Should create assessment with Delius Event ID`() {
 
     val crn = "X1356"
     val assessmentResponse =

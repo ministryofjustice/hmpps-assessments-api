@@ -7,7 +7,7 @@ import java.time.LocalDate
 
 data class OffenceDto(
 
-  @Schema(description = "Conviction ID")
+  @Schema(description = "Conviction ID/Delius Event ID")
   val convictionId: Long? = null,
 
   @Schema(description = "Offence category code")
