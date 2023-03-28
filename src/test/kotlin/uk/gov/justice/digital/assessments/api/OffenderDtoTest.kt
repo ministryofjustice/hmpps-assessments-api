@@ -65,7 +65,7 @@ class OffenderDtoTest {
       )
     )
 
-    val offenderDto = OffenderDto.from(caseDetails)
+    val offenderDto = OffenderDto.from(caseDetails, 1)
 
     assertThat(offenderDto.firstName).isEqualTo(caseDetails.name.forename)
     assertThat(offenderDto.surname).isEqualTo(caseDetails.name.surname)

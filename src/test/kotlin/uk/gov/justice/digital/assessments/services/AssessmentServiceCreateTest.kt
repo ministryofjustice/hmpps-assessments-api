@@ -14,7 +14,6 @@ import org.junit.jupiter.api.extension.ExtendWith
 import org.slf4j.MDC
 import org.springframework.http.HttpMethod
 import uk.gov.justice.digital.assessments.api.DeliusEventType
-import uk.gov.justice.digital.assessments.api.OffenceDto
 import uk.gov.justice.digital.assessments.api.assessments.CreateAssessmentDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
@@ -48,7 +47,6 @@ class AssessmentServiceCreateTest {
   private val assessmentRepository: AssessmentRepository = mockk()
   private val subjectRepository: SubjectRepository = mockk()
   private val authorService: AuthorService = mockk()
-  private val questionService: QuestionService = mockk()
   private val episodeService: EpisodeService = mockk()
   private val offenderService: OffenderService = mockk()
   private val auditService: AuditService = mockk()
@@ -61,7 +59,6 @@ class AssessmentServiceCreateTest {
     assessmentRepository,
     subjectRepository,
     authorService,
-    questionService,
     episodeService,
     offenderService,
     auditService,
@@ -81,34 +78,16 @@ class AssessmentServiceCreateTest {
   @BeforeEach
   fun setup() {
     MDC.put(RequestData.USER_NAME_HEADER, "User name")
-    val offenceDto = OffenceDto(
-      convictionId = eventId,
-      offenceCode = "Code",
-      codeDescription = "Code description",
-      offenceSubCode = "Sub-code",
-      subCodeDescription = "Sub-code description"
-    )
-    every { offenderService.getOffence(any(), crn, eventId) } returns offenceDto
     justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
     justRun { telemetryService.trackAssessmentEvent(ASSESSMENT_CREATED, any(), any(), any(), any(), any()) }
     every { offenderService.validateUserAccess(crn) } returns mockk()
-    every { offenderService.getDeliusOffender(crn, eventId) } returns caseDetails()
+    every { offenderService.getDeliusCaseDetails(crn, eventId) } returns caseDetails()
     every { deliusIntegrationRestClient.getCaseDetails(crn, eventId) } returns caseDetails()
   }
 
   @Test
   fun `create new offender with new assessment from delius event ID and crn`() {
     every { subjectRepository.findByCrn(crn) } returns null
-
-    val offenceDto = OffenceDto(
-      convictionId = eventId,
-      offenceCode = "Code",
-      codeDescription = "Code description",
-      offenceSubCode = "Sub-code",
-      subCodeDescription = "Sub-code description"
-    )
-    every { offenderService.getOffenceFromConvictionId(crn, eventId) } returns offenceDto
-    every { offenderService.getOffence(DeliusEventType.EVENT_ID, crn, eventId) } returns offenceDto
     every { episodeService.prePopulateEpisodeFromDelius(any(), any()) } returnsArgument 0
     every { episodeService.prePopulateFromPreviousEpisodes(any(), any()) } returnsArgument 0
     every { subjectRepository.save(any()) } returns SubjectEntity(
@@ -142,13 +121,6 @@ class AssessmentServiceCreateTest {
         dateOfBirth = LocalDate.of(1989, 1, 1),
         crn = crn
       )
-    every { offenderService.getOffenceFromConvictionId(crn, eventId) } returns OffenceDto(
-      convictionId = eventId,
-      offenceCode = "Code",
-      codeDescription = "Code description",
-      offenceSubCode = "Sub-code",
-      subCodeDescription = "Sub-code description"
-    )
     every { episodeService.prePopulateEpisodeFromDelius(any(), any()) } returnsArgument 0
     every { episodeService.prePopulateFromPreviousEpisodes(any(), any()) } returnsArgument 0
     every { subjectRepository.save(any()) } returns SubjectEntity(
@@ -186,13 +158,6 @@ class AssessmentServiceCreateTest {
         dateOfBirth = LocalDate.of(1989, 1, 1),
         crn = crn
       )
-    every { offenderService.getOffenceFromConvictionId(crn, eventId) } returns OffenceDto(
-      convictionId = eventId,
-      offenceCode = "Code",
-      codeDescription = "Code description",
-      offenceSubCode = "Sub-code",
-      subCodeDescription = "Sub-code description"
-    )
     every { episodeService.prePopulateEpisodeFromDelius(any(), caseDetails()) } returnsArgument 0
     every { subjectRepository.save(any()) } returns SubjectEntity(
       name = "name",
@@ -213,7 +178,7 @@ class AssessmentServiceCreateTest {
   @Test
   fun `throw exception if offender is not returned from Delius`() {
     every { subjectRepository.findByCrn(crn) } returns null
-    every { offenderService.getDeliusOffender("X12345", eventId) } throws EntityNotFoundException("")
+    every { offenderService.getDeliusCaseDetails("X12345", eventId) } throws EntityNotFoundException("")
 
     assertThrows<EntityNotFoundException> {
       assessmentsService.createNewAssessment(
@@ -253,13 +218,6 @@ class AssessmentServiceCreateTest {
   @Test
   fun `audit create assessment from delius`() {
     every { subjectRepository.findByCrn(crn) } returns null
-    every { offenderService.getOffenceFromConvictionId(crn, eventId) } returns OffenceDto(
-      convictionId = eventId,
-      offenceCode = "Code",
-      codeDescription = "Code description",
-      offenceSubCode = "Sub-code",
-      subCodeDescription = "Sub-code description"
-    )
     every { episodeService.prePopulateEpisodeFromDelius(any(), any()) } returnsArgument 0
     every { episodeService.prePopulateFromPreviousEpisodes(any(), any()) } returnsArgument 0
     every { subjectRepository.save(any()) } returns SubjectEntity(
@@ -317,13 +275,6 @@ class AssessmentServiceCreateTest {
         dateOfBirth = LocalDate.of(1989, 1, 1),
         crn = crn
       )
-    every { offenderService.getOffenceFromConvictionId(crn, eventId) } returns OffenceDto(
-      convictionId = eventId,
-      offenceCode = "Code",
-      codeDescription = "Code description",
-      offenceSubCode = "Sub-code",
-      subCodeDescription = "Sub-code description"
-    )
     every { subjectRepository.save(any()) } returns SubjectEntity(
       name = "name",
       pnc = "PNC",

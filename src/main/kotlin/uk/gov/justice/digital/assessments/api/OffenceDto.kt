@@ -27,9 +27,10 @@ data class OffenceDto(
 ) {
 
   companion object {
-    fun from(sentence: Sentence, convictionId: Long?): OffenceDto {
-      return OffenceDto(
-        convictionId = convictionId,
+    fun from(sentence: Sentence?, eventId: Long?): OffenceDto? {
+      return if (sentence == null) null
+      else OffenceDto(
+        convictionId = eventId,
         offenceCode = sentence.mainOffence.category.code,
         codeDescription = sentence.mainOffence.category.description,
         offenceSubCode = sentence.mainOffence.subCategory.code,
