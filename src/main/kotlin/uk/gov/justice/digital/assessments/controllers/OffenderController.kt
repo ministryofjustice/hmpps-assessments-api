@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RestController
-import uk.gov.justice.digital.assessments.api.DeliusEventType
 import uk.gov.justice.digital.assessments.api.OffenderDto
 import uk.gov.justice.digital.assessments.services.OffenderService
 
@@ -24,7 +23,6 @@ class OffenderController(val offenderService: OffenderService) {
   @RequestMapping(
     path = [
       "/offender/crn/{crn}/eventId/{eventId}",
-      "/offender/crn/{crn}/eventType/{eventType}/eventId/{eventId}"
     ],
     method = [RequestMethod.GET]
   )
@@ -37,10 +35,9 @@ class OffenderController(val offenderService: OffenderService) {
   )
   fun getOffenderDetails(
     @Parameter(description = "Offender CRN", required = true) @PathVariable crn: String,
-    @Parameter(description = "Delius Event type", required = false) @PathVariable eventType: DeliusEventType?,
     @Parameter(description = "Delius Event ID", required = true) @PathVariable eventId: Long
   ): OffenderDto? {
-    log.debug("Entered getOffenderDetails($crn, $eventType, $eventId)")
+    log.debug("Entered getOffenderDetails($crn, $eventId)")
 
     return offenderService.getOffender(crn, eventId)
   }

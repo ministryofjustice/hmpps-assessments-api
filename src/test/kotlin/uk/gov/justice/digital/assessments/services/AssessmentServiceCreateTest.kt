@@ -13,7 +13,6 @@ import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.slf4j.MDC
 import org.springframework.http.HttpMethod
-import uk.gov.justice.digital.assessments.api.DeliusEventType
 import uk.gov.justice.digital.assessments.api.assessments.CreateAssessmentDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
@@ -104,8 +103,7 @@ class AssessmentServiceCreateTest {
       CreateAssessmentDto(
         deliusEventId = eventId,
         crn = crn,
-        assessmentSchemaCode = assessmentType,
-        deliusEventType = DeliusEventType.EVENT_ID
+        assessmentSchemaCode = assessmentType
       )
     )
     verify(exactly = 1) { assessmentRepository.save(any()) }

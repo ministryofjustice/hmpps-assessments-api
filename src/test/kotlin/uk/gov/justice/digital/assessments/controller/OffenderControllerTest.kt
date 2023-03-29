@@ -4,7 +4,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
 import org.springframework.test.web.reactive.server.expectBody
-import uk.gov.justice.digital.assessments.api.DeliusEventType
 import uk.gov.justice.digital.assessments.api.OffenceDto
 import uk.gov.justice.digital.assessments.api.OffenderDto
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
@@ -57,8 +56,7 @@ internal class OffenderControllerTest : IntegrationTest() {
     val crn = "DX5678A"
     val eventId = 123456L
     val expectedConvictionId = 123456L
-    val eventType = DeliusEventType.EVENT_ID
-    val path = "/offender/crn/$crn/eventType/$eventType/eventId/$eventId"
+    val path = "/offender/crn/$crn/eventId/$eventId"
 
     val offenderDto = webTestClient.get().uri(path)
       .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
