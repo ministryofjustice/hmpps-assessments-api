@@ -3,18 +3,10 @@ package uk.gov.justice.digital.assessments.services
 import io.mockk.every
 import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import uk.gov.justice.digital.assessments.api.RoshRiskSummaryDto
-import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.OffenceEntity
-import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
-import uk.gov.justice.digital.assessments.jpa.repositories.assessments.SubjectRepository
 import uk.gov.justice.digital.assessments.restclient.AssessRisksAndNeedsApiRestClient
 import uk.gov.justice.digital.assessments.restclient.DeliusIntegrationRestClient
 import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.CaseDetails
@@ -26,50 +18,28 @@ import java.time.LocalDate
 
 class RisksServiceTest {
   private val assessRisksAndNeedsApiRestClient: AssessRisksAndNeedsApiRestClient = mockk()
-  private val subjectRepository: SubjectRepository = mockk()
   private val deliusIntegrationRestClient: DeliusIntegrationRestClient = mockk()
 
   private val risksService = RisksService(
     assessRisksAndNeedsApiRestClient,
-    subjectRepository,
     deliusIntegrationRestClient,
   )
 
-  private val crn = "A123456"
-
-  @BeforeEach
-  private fun setup() {
-    every { subjectRepository.findByCrn(crn) } returns SubjectEntity(
-      crn = crn,
-      dateOfBirth = LocalDate.of(1969, 1, 1),
-      assessments = listOf(
-        AssessmentEntity(
-          episodes = mutableListOf(
-            AssessmentEpisodeEntity(
-              assessment = AssessmentEntity(),
-              assessmentType = AssessmentType.UPW,
-              author = AuthorEntity(userId = "robm", userName = "Robert Muldoon"),
-              offence = OffenceEntity(sourceId = "1", sentenceDate = LocalDate.of(2023, 1, 1)),
-            )
-          )
-        )
-      )
-    )
-  }
+  private val crn = "X1356"
 
   @Nested
   @DisplayName("get offender registrations")
   inner class GetOffenderRegistrations {
     @Test
     fun `handles when there are no registrations`() {
-      every { deliusIntegrationRestClient.getCaseDetails(crn, 1) } returns CaseDetails(
+      every { deliusIntegrationRestClient.getCaseDetails(crn, 123456) } returns CaseDetails(
         crn = crn,
         name = Name(forename = "Dennis", surname = "Nedry"),
         dateOfBirth = LocalDate.of(1969, 1, 1),
         registerFlags = emptyList()
       )
 
-      val registrations = risksService.getRegistrationsForAssessment(crn)
+      val registrations = risksService.getRegistrationsForAssessment(crn, 123456)
 
       assertThat(registrations.mappa).isNull()
       assertThat(registrations.flags.size).isEqualTo(0)
@@ -77,7 +47,7 @@ class RisksServiceTest {
 
     @Test
     fun `returns MAPPA information when available`() {
-      every { deliusIntegrationRestClient.getCaseDetails(crn, 1) } returns CaseDetails(
+      every { deliusIntegrationRestClient.getCaseDetails(crn, 123456) } returns CaseDetails(
         crn = crn,
         name = Name(forename = "Dennis", surname = "Nedry"),
         dateOfBirth = LocalDate.of(1969, 1, 1),
@@ -89,7 +59,7 @@ class RisksServiceTest {
         registerFlags = emptyList()
       )
 
-      val registrations = risksService.getRegistrationsForAssessment(crn)
+      val registrations = risksService.getRegistrationsForAssessment(crn, 123456)
 
       assertThat(registrations.mappa).isNotNull
       assertThat(registrations.mappa?.level).isEqualTo("M1")
@@ -101,7 +71,7 @@ class RisksServiceTest {
 
     @Test
     fun `handles when there is no MAPPA information`() {
-      every { deliusIntegrationRestClient.getCaseDetails(crn, 1) } returns CaseDetails(
+      every { deliusIntegrationRestClient.getCaseDetails(crn, 123456) } returns CaseDetails(
         crn = crn,
         name = Name(forename = "Dennis", surname = "Nedry"),
         dateOfBirth = LocalDate.of(1969, 1, 1),
@@ -114,14 +84,14 @@ class RisksServiceTest {
         )
       )
 
-      val registrations = risksService.getRegistrationsForAssessment(crn)
+      val registrations = risksService.getRegistrationsForAssessment(crn, 123456)
 
       assertThat(registrations.mappa).isNull()
     }
 
     @Test
     fun `returns registrations as risk flags`() {
-      every { deliusIntegrationRestClient.getCaseDetails(crn, 1) } returns CaseDetails(
+      every { deliusIntegrationRestClient.getCaseDetails(crn, 123456) } returns CaseDetails(
         crn = crn,
         name = Name(forename = "Dennis", surname = "Nedry"),
         dateOfBirth = LocalDate.of(1969, 1, 1),
@@ -134,7 +104,7 @@ class RisksServiceTest {
         )
       )
 
-      val registrations = risksService.getRegistrationsForAssessment(crn)
+      val registrations = risksService.getRegistrationsForAssessment(crn, 123456)
 
       assertThat(registrations.flags.size).isEqualTo(1)
       assertThat(registrations.flags.first().code).isEqualTo("IRMO")
