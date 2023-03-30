@@ -85,7 +85,6 @@ abstract class IntegrationTest {
     redisTemplate.opsForValue().set("user:1", UserDetails("STUARTWHITLAM"))
     communityApiMockServer.resetAll()
     communityApiMockServer.stubGetUserAccess()
-    communityApiMockServer.stubUploadDocument()
     assessmentApiMockServer.stubGetAssessment()
     assessRisksAndNeedsApiMockServer.resetAll()
     auditApiMockServer.stubAuditEvents()

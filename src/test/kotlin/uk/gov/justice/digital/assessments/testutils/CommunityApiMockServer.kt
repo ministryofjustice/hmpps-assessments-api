@@ -63,49 +63,6 @@ class CommunityApiMockServer : WireMockServer(9096) {
     )
   }
 
-  fun stubUploadDocument() {
-    stubFor(
-      WireMock.post(WireMock.urlEqualTo("/secure/offenders/crn/X1355/convictions/1/document"))
-        .willReturn(
-          WireMock.aResponse()
-            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
-            .withStatus(201)
-            .withBody(
-              """
-              {
-                "id": 2500356804,
-                "documentName": "file.txt",
-                "crn": "X1355",
-                "dateLastModified": "2021-11-11T17:51:22",
-                "lastModifiedUser": "Name,User",
-                "creationDate": "2021-11-11T17:51:22"
-              }
-              """.trimIndent()
-            )
-        )
-    )
-
-    mockDocumentUploadErrorResponse(400)
-    mockDocumentUploadErrorResponse(401)
-    mockDocumentUploadErrorResponse(403)
-    mockDocumentUploadErrorResponse(404)
-    mockDocumentUploadErrorResponse(500)
-    mockDocumentUploadErrorResponse(501)
-    mockDocumentUploadErrorResponse(502)
-    mockDocumentUploadErrorResponse(503)
-  }
-
-  private fun mockDocumentUploadErrorResponse(statusCode: Int) {
-    stubFor(
-      WireMock.post(WireMock.urlEqualTo("/secure/offenders/crn/X1$statusCode/convictions/2500000223/document"))
-        .willReturn(
-          WireMock.aResponse()
-            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
-            .withStatus(statusCode)
-        )
-    )
-  }
-
   private val laoSuccess = """{
       "exclusionMessage": null,
       "restrictionMessage": null,
