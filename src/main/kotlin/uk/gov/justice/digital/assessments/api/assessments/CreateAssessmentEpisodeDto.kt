@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.assessments.api.assessments
 
 import io.swagger.v3.oas.annotations.media.Schema
-import uk.gov.justice.digital.assessments.api.DeliusEventType
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 
 data class CreateAssessmentEpisodeDto(
@@ -12,8 +11,6 @@ data class CreateAssessmentEpisodeDto(
   val eventID: Long,
 
   @Schema(description = "Assessment Schema Code", example = "ROSH")
-  val assessmentType: AssessmentType,
+  val assessmentType: AssessmentType
 
-  @Schema(description = "Delius Event Type", example = "EVENT_ID", required = false)
-  val deliusEventType: DeliusEventType = DeliusEventType.EVENT_ID
 )

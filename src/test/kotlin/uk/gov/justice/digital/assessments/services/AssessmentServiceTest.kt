@@ -12,7 +12,6 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import uk.gov.justice.digital.assessments.api.DeliusEventType
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
@@ -141,7 +140,6 @@ class AssessmentServiceTest {
         eventId,
         "Change of Circs",
         assessmentType,
-        DeliusEventType.EVENT_ID
       )
 
       assertThat(episodeDto.assessmentUuid).isEqualTo(assessmentUuid)

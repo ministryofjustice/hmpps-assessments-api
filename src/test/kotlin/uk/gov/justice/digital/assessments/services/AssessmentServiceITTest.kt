@@ -16,7 +16,6 @@ import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.context.jdbc.SqlConfig
 import org.springframework.test.context.jdbc.SqlGroup
 import org.springframework.transaction.annotation.Transactional
-import uk.gov.justice.digital.assessments.api.DeliusEventType
 import uk.gov.justice.digital.assessments.api.assessments.CreateAssessmentDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
@@ -93,8 +92,7 @@ class AssessmentServiceITTest : IntegrationTest() {
         CreateAssessmentDto(
           deliusEventId = 123456L,
           crn = crn,
-          assessmentSchemaCode = AssessmentType.UPW,
-          deliusEventType = DeliusEventType.EVENT_ID
+          assessmentSchemaCode = AssessmentType.UPW
         )
       )
     assertThat(assessmentResponse.assessmentUuid).isNotNull

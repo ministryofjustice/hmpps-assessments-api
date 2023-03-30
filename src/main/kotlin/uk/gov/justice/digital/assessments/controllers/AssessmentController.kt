@@ -87,7 +87,6 @@ class AssessmentController(
       createAssessmentEpisodeDto.eventID,
       createAssessmentEpisodeDto.changeReason,
       createAssessmentEpisodeDto.assessmentType,
-      createAssessmentEpisodeDto.deliusEventType
     )
   }
 

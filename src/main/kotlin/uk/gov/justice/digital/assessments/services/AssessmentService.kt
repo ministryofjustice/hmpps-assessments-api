@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.assessments.api.AssessmentSubjectDto
-import uk.gov.justice.digital.assessments.api.DeliusEventType
 import uk.gov.justice.digital.assessments.api.OffenderDto
 import uk.gov.justice.digital.assessments.api.assessments.AssessmentDto
 import uk.gov.justice.digital.assessments.api.assessments.AssessmentEpisodeDto
@@ -61,7 +60,6 @@ class AssessmentService(
     eventId: Long,
     reason: String,
     assessmentType: AssessmentType,
-    eventType: DeliusEventType
   ): AssessmentEpisodeDto {
     log.info("Entered createNewEpisode with uuid: $assessmentUuid and type: $assessmentType")
     val assessment = getAssessmentByUuid(assessmentUuid)
