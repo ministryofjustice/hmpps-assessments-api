@@ -29,7 +29,7 @@ class OffenceDtoTest {
 
     val offenceDto = OffenceDto.from(sentence, 1)
 
-    assertThat(offenceDto?.convictionId).isEqualTo(1)
+    assertThat(offenceDto?.eventId).isEqualTo(1)
     assertThat(offenceDto?.sentenceDate).isEqualTo(LocalDate.of(2020, 2, 1))
     assertThat(offenceDto?.offenceCode).isEqualTo("main category code")
     assertThat(offenceDto?.codeDescription).isEqualTo("code description 1")

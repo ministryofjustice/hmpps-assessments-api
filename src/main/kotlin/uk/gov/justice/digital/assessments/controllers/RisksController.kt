@@ -17,7 +17,7 @@ import uk.gov.justice.digital.assessments.services.RisksService
 class RisksController(
   val risksService: RisksService,
 ) {
-  @RequestMapping(path = ["/assessments/{crn}/registrations"], method = [RequestMethod.GET])
+  @RequestMapping(path = ["/assessments/{crn}/event/{eventId}/registrations"], method = [RequestMethod.GET])
   @Operation(description = "Get Mappa and risk flags for the assessment")
   @ApiResponses(
     value = [
@@ -30,9 +30,13 @@ class RisksController(
     @Parameter(
       description = "CRN",
       required = true
+    ) @PathVariable eventId: Long,
+    @Parameter(
+      description = "CRN",
+      required = true
     ) @PathVariable crn: String
   ): RegistrationsDto {
-    return risksService.getRegistrationsForAssessment(crn)
+    return risksService.getRegistrationsForAssessment(crn, eventId)
   }
 
   @RequestMapping(path = ["/assessments/{crn}/ROSH/summary"], method = [RequestMethod.GET])

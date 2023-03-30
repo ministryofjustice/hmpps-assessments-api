@@ -42,7 +42,7 @@ class DeliusIntegrationMockServer : WireMockServer(9097) {
     )
 
     stubFor(
-      WireMock.get(WireMock.urlPathMatching("/case-data/(?:invalidNotFound|X1404)/(?:123456|1)"))
+      WireMock.get(WireMock.urlPathMatching("/case-data/(?:invalidNotFound|X1404)/123456"))
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))

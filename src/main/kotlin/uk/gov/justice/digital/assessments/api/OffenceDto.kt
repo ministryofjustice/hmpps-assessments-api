@@ -7,8 +7,8 @@ import java.time.LocalDate
 
 data class OffenceDto(
 
-  @Schema(description = "Conviction ID/Delius Event ID")
-  val convictionId: Long? = null,
+  @Schema(description = "Delius Event ID")
+  val eventId: Long? = null,
 
   @Schema(description = "Offence category code")
   val offenceCode: String? = null,
@@ -30,7 +30,7 @@ data class OffenceDto(
     fun from(sentence: Sentence?, eventId: Long?): OffenceDto? {
       return if (sentence == null) null
       else OffenceDto(
-        convictionId = eventId,
+        eventId = eventId,
         offenceCode = sentence.mainOffence.category.code,
         codeDescription = sentence.mainOffence.category.description,
         offenceSubCode = sentence.mainOffence.subCategory.code,
@@ -41,6 +41,7 @@ data class OffenceDto(
 
     fun from(offenceEntity: OffenceEntity?): OffenceDto {
       return OffenceDto(
+        eventId = offenceEntity?.sourceId?.toLong(),
         offenceCode = offenceEntity?.offenceCode,
         codeDescription = offenceEntity?.codeDescription,
         offenceSubCode = offenceEntity?.offenceSubCode,

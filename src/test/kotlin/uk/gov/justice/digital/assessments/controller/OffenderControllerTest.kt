@@ -39,7 +39,7 @@ internal class OffenderControllerTest : IntegrationTest() {
         firstNameAliases = listOf("John", "Jonny"),
         surnameAliases = listOf("Smithy", "Smith"),
         offence = OffenceDto(
-          convictionId = 123456,
+          eventId = 123456,
           offenceCode = "150",
           codeDescription = "Merchant Shipping Acts",
           offenceSubCode = "00",
@@ -55,7 +55,7 @@ internal class OffenderControllerTest : IntegrationTest() {
 
     val crn = "DX5678A"
     val eventId = 123456L
-    val expectedConvictionId = 123456L
+    val expectedEventId = 123456L
     val path = "/offender/crn/$crn/eventId/$eventId"
 
     val offenderDto = webTestClient.get().uri(path)
@@ -78,7 +78,7 @@ internal class OffenderControllerTest : IntegrationTest() {
         firstNameAliases = listOf("John", "Jonny"),
         surnameAliases = listOf("Smithy", "Smith"),
         offence = OffenceDto(
-          convictionId = expectedConvictionId,
+          eventId = expectedEventId,
           offenceCode = "150",
           codeDescription = "Merchant Shipping Acts",
           offenceSubCode = "00",

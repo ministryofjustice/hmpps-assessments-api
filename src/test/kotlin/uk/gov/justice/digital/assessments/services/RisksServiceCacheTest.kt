@@ -13,26 +13,12 @@ import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.oauth2.jwt.Jwt
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
-import org.springframework.test.context.jdbc.Sql
-import org.springframework.test.context.jdbc.SqlConfig
-import org.springframework.test.context.jdbc.SqlGroup
 import org.springframework.transaction.annotation.Transactional
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiEntityNotFoundException
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiUnknownException
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 import uk.gov.justice.digital.assessments.utils.RequestData
 
-@SqlGroup(
-  Sql(
-    scripts = ["classpath:assessments/before-test.sql"],
-    config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED)
-  ),
-  Sql(
-    scripts = ["classpath:assessments/after-test.sql"],
-    config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED),
-    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
-  )
-)
 internal class RisksServiceCacheTest(
   @Autowired
   val risksService: RisksService
@@ -83,10 +69,10 @@ internal class RisksServiceCacheTest(
   fun `multiple calls to risk registrations are cached when valid response`() {
     val crn = "X1346"
 
-    risksService.getRegistrationsForAssessment(crn)
-    risksService.getRegistrationsForAssessment(crn)
+    risksService.getRegistrationsForAssessment(crn, 123456)
+    risksService.getRegistrationsForAssessment(crn, 123456)
 
-    deliusIntegrationMockServer.verify(exactly(1), getRequestedFor(urlEqualTo("/case-data/$crn/1")))
+    deliusIntegrationMockServer.verify(exactly(1), getRequestedFor(urlEqualTo("/case-data/$crn/123456")))
   }
 
   @Test
@@ -95,14 +81,14 @@ internal class RisksServiceCacheTest(
     val crn = "X1404"
 
     assertThrows<ExternalApiEntityNotFoundException> {
-      risksService.getRegistrationsForAssessment(crn)
+      risksService.getRegistrationsForAssessment(crn, 123456)
     }
 
     assertThrows<ExternalApiEntityNotFoundException> {
-      risksService.getRegistrationsForAssessment(crn)
+      risksService.getRegistrationsForAssessment(crn, 123456)
     }
 
-    deliusIntegrationMockServer.verify(exactly(2), getRequestedFor(urlEqualTo("/case-data/$crn/1")))
+    deliusIntegrationMockServer.verify(exactly(2), getRequestedFor(urlEqualTo("/case-data/$crn/123456")))
   }
 
   companion object {
