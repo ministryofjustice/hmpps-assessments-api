@@ -31,14 +31,6 @@ class AssessmentEntity(
   @Enumerated(EnumType.STRING)
   val assessmentType: AssessmentType,
 
-  // todo: remove this unused field from the db with flyway migration
-  @Column(name = "oasys_assessment_type")
-  val oasysAssessmentType: String? = null,
-
-  @Column(name = "oasys_create_assessment_at")
-  @Enumerated(EnumType.STRING)
-  val oasysCreateAssessmentAt: OasysCreateAssessmentAt? = null,
-
   @Column(name = "assessment_name")
   val assessmentName: String? = null,
 

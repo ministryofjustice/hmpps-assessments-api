@@ -27,9 +27,6 @@ data class SubjectEntity(
   @Column(name = "name")
   val name: String? = null,
 
-  @Column(name = "oasys_offender_pk")
-  val oasysOffenderPk: Long? = null,
-
   @Column(name = "pnc")
   val pnc: String? = null,
 

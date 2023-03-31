@@ -112,7 +112,6 @@ class AssessmentUpdateServiceCompleteTest {
 
   private fun assessmentEntity(): AssessmentEntity {
     val subject = SubjectEntity(
-      oasysOffenderPk = 9999,
       dateOfBirth = LocalDate.of(1989, 1, 1),
       crn = "X1345"
     )
@@ -130,7 +129,6 @@ class AssessmentUpdateServiceCompleteTest {
         assessment = assessment,
         assessmentType = AssessmentType.UPW,
         changeReason = "Change of Circs 2",
-        oasysSetPk = 7777,
         createdDate = LocalDateTime.now(),
         author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
       )
