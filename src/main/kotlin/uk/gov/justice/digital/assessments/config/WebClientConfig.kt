@@ -31,10 +31,6 @@ import java.util.concurrent.TimeUnit
 
 @Configuration
 class WebClientConfig {
-  @Value("\${assessment-update-api.base-url}")
-  private lateinit var assessmentUpdateBaseUrl: String
-  @Value("\${assessment-api.base-url}")
-  private lateinit var assessmentApiBaseUrl: String
   @Value("\${assess-risks-and-needs-api.base-url}")
   private lateinit var assessRisksAndNeedsBaseUrl: String
   @Value("\${community-api.base-url}")
@@ -53,30 +49,6 @@ class WebClientConfig {
   private val writeTimeoutMs: Long = 0
   @Value("\${web.client.byte-buffer-size}")
   val bufferByteSize: Int = Int.MAX_VALUE
-
-  @Bean
-  fun assessmentUpdateWebClient(
-    @Qualifier(value = "authorizedClientManager") authorizedClientManager: OAuth2AuthorizedClientManager,
-  ): AuthenticatingRestClient {
-    val webClient = webClientFactory(
-      authorizedClientManager,
-      assessmentUpdateBaseUrl,
-    )
-
-    return AuthenticatingRestClient(webClient, "assessment-update-client", disableAuthentication)
-  }
-
-  @Bean
-  fun assessmentApiWebClient(
-    @Qualifier(value = "authorizedClientManager") authorizedClientManager: OAuth2AuthorizedClientManager,
-  ): AuthenticatingRestClient {
-    val webClient = webClientFactory(
-      authorizedClientManager,
-      assessmentApiBaseUrl,
-    )
-
-    return AuthenticatingRestClient(webClient, "assessment-api-client", disableAuthentication)
-  }
 
   @Bean
   fun assessRisksAndNeedsApiWebClient(

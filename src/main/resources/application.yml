@@ -10,20 +10,6 @@ spring:
     oauth2:
       client:
         registration:
-          assessment-update-client:
-            client-name: assessment-update-api-client
-            client-id: ${assessment-update-api-id:sentence-plan-api-client}
-            client-secret: ${assessment-update-api-client-secret:clientsecret}
-            client-authentication-method: basic
-            authorization-grant-type: client_credentials
-            provider: oauth-service
-          assessment-api-client:
-            client-name: assessment-api-client
-            client-id: ${assessment-api-id:sentence-plan-api-client}
-            client-secret: ${assessment-api-client-secret:clientsecret}
-            client-authentication-method: basic
-            authorization-grant-type: client_credentials
-            provider: oauth-service
           assess-risks-and-needs-api-client:
             client-name: assess-risks-and-needs-api-client
             client-id: ${assess-risks-and-needs-api-id:sentence-plan-api-client}
@@ -135,16 +121,10 @@ web:
     write-timeout-ms: 5000
     byte-buffer-size: 20971520
 
-assessment-update-api:
-  base-url: http://localhost:9080
-
 community-api:
   base-url: http://localhost:9080
 
 audit:
-  base-url: http://localhost:9080
-
-assessment-api:
   base-url: http://localhost:9080
 
 assess-risks-and-needs-api:
