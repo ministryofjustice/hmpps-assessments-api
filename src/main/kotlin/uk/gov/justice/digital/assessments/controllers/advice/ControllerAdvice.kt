@@ -22,7 +22,6 @@ import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiInvalid
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiUnknownException
 import uk.gov.justice.digital.assessments.services.exceptions.MdcPropertyException
 import uk.gov.justice.digital.assessments.services.exceptions.MultipleExternalSourcesException
-import uk.gov.justice.digital.assessments.services.exceptions.OASysUserPermissionException
 import uk.gov.justice.digital.assessments.services.exceptions.UpdateClosedEpisodeException
 import uk.gov.justice.digital.assessments.services.exceptions.UserAreaHeaderIsMandatoryException
 import uk.gov.justice.digital.assessments.services.exceptions.UserNotAuthorisedException
@@ -40,16 +39,6 @@ class ControllerAdvice {
   fun handle(e: UserNotAuthorisedException): ResponseEntity<ErrorResponse?> {
     log.error("UserNotAuthorisedException: ${e.message} with extra information ${e.extraInfoMessage}")
     return ResponseEntity(ErrorResponse(status = 403, developerMessage = e.message), HttpStatus.FORBIDDEN)
-  }
-
-  @ExceptionHandler(OASysUserPermissionException::class)
-  @ResponseStatus(HttpStatus.FORBIDDEN)
-  fun handle(e: OASysUserPermissionException): ResponseEntity<ErrorResponse?> {
-    log.error("OASysUserPermissionException: ${e.message} with extra information ${e.extraInfoMessage}")
-    return ResponseEntity(
-      ErrorResponse(status = 403, developerMessage = e.message, reason = e.reason.toString()),
-      HttpStatus.FORBIDDEN
-    )
   }
 
   @ExceptionHandler(UpdateClosedEpisodeException::class)

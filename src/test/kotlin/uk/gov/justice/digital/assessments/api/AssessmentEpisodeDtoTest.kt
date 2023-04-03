@@ -39,7 +39,6 @@ class AssessmentEpisodeDtoTest {
       UUID.randomUUID(),
       assessmentEntity,
       AssessmentType.UPW,
-      1L,
       AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
       LocalDateTime.of(2019, 8, 1, 8, 0),
       null,
@@ -55,7 +54,6 @@ class AssessmentEpisodeDtoTest {
     assertThat(episodeDto.ended).isEqualTo(episodeEntity.endDate)
     assertThat(episodeDto.reasonForChange).isEqualTo(episodeEntity.changeReason)
     assertThat(episodeDto.episodeUuid).isEqualTo(episodeEntity.episodeUuid)
-    assertThat(episodeDto.oasysAssessmentId).isEqualTo(episodeEntity.oasysSetPk)
     assertThat(episodeDto.offence.offenceCode).isEqualTo(offenceEntity.offenceCode)
     assertThat(episodeDto.offence.codeDescription).isEqualTo(offenceEntity.codeDescription)
     assertThat(episodeDto.offence.offenceSubCode).isEqualTo(offenceEntity.offenceSubCode)

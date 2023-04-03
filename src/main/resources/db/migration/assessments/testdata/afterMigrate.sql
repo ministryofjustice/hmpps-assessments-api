@@ -1,7 +1,7 @@
 SET search_path TO hmppsassessmentsapi;
 
-insert into subject (subject_uuid, name, pnc, crn, date_of_birth, gender, created_date, oasys_offender_pk) values
-('fac28f68-0012-46b9-8de8-6ff2bdbe1c22', 'Gary Hart', null, 'X259950', '1977-08-15', 'MALE', '2021-07-12 16:42:06', 7308807)
+insert into subject (subject_uuid, name, pnc, crn, date_of_birth, gender, created_date) values
+('fac28f68-0012-46b9-8de8-6ff2bdbe1c22', 'Gary Hart', null, 'X259950', '1977-08-15', 'MALE', '2021-07-12 16:42:06')
     ON CONFLICT DO NOTHING;
 
 INSERT INTO assessment (assessment_uuid, subject_uuid, created_date, completed_date )
@@ -16,8 +16,8 @@ INSERT INTO author (author_uuid, user_id, user_source, user_name, user_full_name
 VALUES ('56e16a74-d373-4695-915f-16b6596d594b', '128878', 'delius' ,'AALONSO', 'A Alonso')
 ON CONFLICT DO NOTHING;
 
-INSERT INTO assessed_episode (episode_uuid, author_uuid, created_date, end_date, change_reason, assessment_schema_code, assessment_uuid, answers, tables, oasys_set_pk, offence_uuid )
-VALUES ('7231b3e7-f002-4a53-b398-fcd34c1d3e97', '56e16a74-d373-4695-915f-16b6596d594b', '2021-01-01 08:11:53.177109', null, 'new episode', 'ROSH', 'fb6b7c33-07fc-4c4c-a009-8d60f66952c4','{}','{}', 9519347, '877323d1-1e0f-42f3-b5b5-f44b0e5bcb88')
+INSERT INTO assessed_episode (episode_uuid, author_uuid, created_date, end_date, change_reason, assessment_schema_code, assessment_uuid, answers, tables, offence_uuid )
+VALUES ('7231b3e7-f002-4a53-b398-fcd34c1d3e97', '56e16a74-d373-4695-915f-16b6596d594b', '2021-01-01 08:11:53.177109', null, 'new episode', 'ROSH', 'fb6b7c33-07fc-4c4c-a009-8d60f66952c4','{}','{}', '877323d1-1e0f-42f3-b5b5-f44b0e5bcb88')
 ON CONFLICT DO NOTHING;
 
 -- RSR assessment

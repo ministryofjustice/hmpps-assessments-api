@@ -294,7 +294,6 @@ class CaseDetailsDtoTest {
       UUID.randomUUID(),
       AssessmentEntity(),
       AssessmentType.UPW,
-      1L,
       AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
       LocalDateTime.of(2019, 8, 1, 8, 0),
       null,

@@ -49,9 +49,6 @@ data class AssessmentEpisodeEntity(
   @Enumerated(EnumType.STRING)
   val assessmentType: AssessmentType,
 
-  @Column(name = "oasys_set_pk")
-  val oasysSetPk: Long? = null,
-
   @ManyToOne(cascade = [CascadeType.ALL])
   @JoinColumn(name = "author_uuid", referencedColumnName = "author_uuid")
   var author: AuthorEntity,

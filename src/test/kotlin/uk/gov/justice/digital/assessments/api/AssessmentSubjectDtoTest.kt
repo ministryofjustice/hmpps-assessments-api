@@ -21,7 +21,6 @@ class AssessmentSubjectDtoTest {
       1,
       UUID.randomUUID(),
       "name",
-      12345,
       "pnc",
       "crn",
       LocalDate.of(2001, 8, 1),
