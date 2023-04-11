@@ -16,7 +16,7 @@ import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiUnknown
 @Component
 class CommunityApiRestClient(
   @Qualifier("communityApiWebClient")
-  val webClient: WebClient
+  val webClient: WebClient,
 ) {
 
   @Cacheable("verifyUserAccess")
@@ -36,16 +36,16 @@ class CommunityApiRestClient(
               path,
               ExternalService.COMMUNITY_API,
               listOfNotNull(error.exclusionMessage, error.restrictionMessage),
-              ExceptionReason.LAO_PERMISSION
+              ExceptionReason.LAO_PERMISSION,
             )
           }
-      })
+      },)
       .onStatus(HttpStatus::is4xxClientError) {
         handle4xxError(
           it,
           HttpMethod.GET,
           path,
-          ExternalService.COMMUNITY_API
+          ExternalService.COMMUNITY_API,
         )
       }
       .onStatus(HttpStatus::is5xxServerError) {
@@ -53,7 +53,7 @@ class CommunityApiRestClient(
           "Failed to retrieve LAO details for crn: $crn",
           HttpMethod.GET,
           path,
-          ExternalService.COMMUNITY_API
+          ExternalService.COMMUNITY_API,
         )
       }
       .bodyToMono(UserAccessResponse::class.java)
@@ -61,7 +61,7 @@ class CommunityApiRestClient(
       "No response returned from delius LAO check for crn $crn",
       HttpMethod.GET,
       path,
-      ExternalService.COMMUNITY_API
+      ExternalService.COMMUNITY_API,
     )
   }
 

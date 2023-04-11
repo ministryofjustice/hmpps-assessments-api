@@ -8,7 +8,7 @@ import uk.gov.justice.digital.assessments.jpa.repositories.refdata.CloneAssessme
 import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 
 class CloneAssessmentExcludedQuestionsRepositoryTest(
-  @Autowired val cloneAssessmentExcludedQuestionsRepository: CloneAssessmentExcludedQuestionsRepository
+  @Autowired val cloneAssessmentExcludedQuestionsRepository: CloneAssessmentExcludedQuestionsRepository,
 ) : IntegrationTest() {
 
   @Test
@@ -31,7 +31,7 @@ class CloneAssessmentExcludedQuestionsRepositoryTest(
       "employment_training_complete",
       "eligibility_intensive_working_complete",
       "individual_availability_complete",
-      "equipment_complete"
+      "equipment_complete",
     )
   }
 }

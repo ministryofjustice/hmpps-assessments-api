@@ -21,7 +21,7 @@ class SubjectServiceTest {
     val assessmentUuid = UUID.randomUUID()
     val subject = SubjectEntity(
       dateOfBirth = LocalDate.of(1989, 1, 1),
-      crn = "X1345"
+      crn = "X1345",
     )
     every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns AssessmentEntity(subject = subject)
 
@@ -42,7 +42,7 @@ class SubjectServiceTest {
     val assessmentUuid = UUID.randomUUID()
 
     every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns AssessmentEntity(
-      subject = null
+      subject = null,
     )
 
     assertThrows<EntityNotFoundException> { (subjectService.getSubjectForAssessment(assessmentUuid)) }

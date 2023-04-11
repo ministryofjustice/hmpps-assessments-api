@@ -34,7 +34,7 @@ class AuthAwareTokenConverter : Converter<Jwt, AbstractAuthenticationToken> {
       Principal(
         userName = claims["sub"] as String,
         userId = claims["client_id"] as String,
-        isClientGrantType = true
+        isClientGrantType = true,
       )
     }
   }
@@ -53,7 +53,7 @@ class AuthAwareTokenConverter : Converter<Jwt, AbstractAuthenticationToken> {
 class AuthAwareAuthenticationToken(
   jwt: Jwt,
   private val aPrincipal: Principal,
-  authorities: Collection<GrantedAuthority>
+  authorities: Collection<GrantedAuthority>,
 ) : JwtAuthenticationToken(jwt, authorities) {
   override fun getPrincipal(): Principal {
     return aPrincipal

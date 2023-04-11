@@ -21,7 +21,7 @@ data class GroupSectionsDto(
   val helpText: String? = null,
 
   @Schema(description = "Questions and Groups")
-  val contents: List<GroupSectionsDto>?
+  val contents: List<GroupSectionsDto>?,
 ) {
   companion object {
     fun from(group: GroupEntity, contents: List<GroupSectionsDto>?): GroupSectionsDto {
@@ -31,7 +31,7 @@ data class GroupSectionsDto(
         title = group.heading,
         subheading = group.subheading,
         helpText = group.helpText,
-        contents = contents
+        contents = contents,
       )
     }
   }

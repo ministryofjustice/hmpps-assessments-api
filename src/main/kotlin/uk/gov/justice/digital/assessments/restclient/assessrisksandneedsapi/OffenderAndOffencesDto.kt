@@ -23,7 +23,7 @@ data class OffenderAndOffencesDto(
   val totalNonContactSexualOffences: Int?,
   val earliestReleaseDate: String,
   val hasCompletedInterview: Boolean,
-  val dynamicScoringOffences: DynamicScoringOffences? = null
+  val dynamicScoringOffences: DynamicScoringOffences? = null,
 )
 
 data class DynamicScoringOffences(
@@ -38,12 +38,12 @@ data class DynamicScoringOffences(
   val temperControlIssues: String?,
   val proCriminalAttitudes: String?,
   val previousOffences: PreviousOffences? = null,
-  val currentOffences: CurrentOffences? = null
+  val currentOffences: CurrentOffences? = null,
 )
 
 data class CurrentOffences(
   val firearmPossession: Boolean?,
-  val offencesWithWeapon: Boolean?
+  val offencesWithWeapon: Boolean?,
 )
 
 data class PreviousOffences(
@@ -55,7 +55,7 @@ data class PreviousOffences(
   val kidnapping: Boolean?,
   val firearmPossession: Boolean?,
   val robbery: Boolean?,
-  val offencesWithWeapon: Boolean?
+  val offencesWithWeapon: Boolean?,
 )
 
 data class CurrentOffence(val offenceCode: String, val offenceSubcode: String)

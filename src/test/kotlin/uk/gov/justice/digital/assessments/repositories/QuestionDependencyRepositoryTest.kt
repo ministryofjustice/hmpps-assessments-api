@@ -8,7 +8,7 @@ import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 
 class QuestionDependencyRepositoryTest(
   @Autowired
-  val questionDependencyRepository: QuestionDependencyRepository
+  val questionDependencyRepository: QuestionDependencyRepository,
 ) : IntegrationTest() {
   @Test
   fun `fetch all dependencies`() {

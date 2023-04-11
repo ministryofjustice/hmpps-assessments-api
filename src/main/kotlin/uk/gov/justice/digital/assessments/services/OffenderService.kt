@@ -13,7 +13,7 @@ import uk.gov.justice.digital.assessments.utils.RequestData
 @Service
 class OffenderService(
   private val communityApiRestClient: CommunityApiRestClient,
-  private val deliusIntegrationRestClient: DeliusIntegrationRestClient
+  private val deliusIntegrationRestClient: DeliusIntegrationRestClient,
 ) {
 
   fun getOffender(crn: String, eventId: Long): OffenderDto {

@@ -44,8 +44,11 @@ data class EmergencyContactDetailsAnswerDto(
   companion object {
 
     fun from(personalContacts: List<PersonalContact>?): List<EmergencyContactDetailsAnswerDto> {
-      return if (personalContacts.isNullOrEmpty()) emptyList()
-      else personalContacts.map { from(it) }
+      return if (personalContacts.isNullOrEmpty()) {
+        emptyList()
+      } else {
+        personalContacts.map { from(it) }
+      }
     }
 
     fun from(personalContact: PersonalContact): EmergencyContactDetailsAnswerDto {
@@ -62,7 +65,7 @@ data class EmergencyContactDetailsAnswerDto(
         county = listOfNotNull(personalContact.address?.county),
         postcode = listOfNotNull(personalContact.address?.postcode),
         telephoneNumber = listOfNotNull(personalContact.telephoneNumber),
-        mobileNumber = listOfNotNull(personalContact.mobileNumber)
+        mobileNumber = listOfNotNull(personalContact.mobileNumber),
       )
     }
   }

@@ -25,13 +25,13 @@ import java.util.UUID
 @SqlGroup(
   Sql(
     scripts = ["classpath:assessments/before-test.sql"],
-    config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED)
+    config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED),
   ),
   Sql(
     scripts = ["classpath:assessments/after-test.sql"],
     config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED),
-    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
-  )
+    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
+  ),
 )
 @AutoConfigureWebTestClient
 class AssessmentUpdateServiceITTest : IntegrationTest() {
@@ -64,7 +64,7 @@ class AssessmentUpdateServiceITTest : IntegrationTest() {
     val updateAssessmentResponse =
       assessmentUpdateService.updateEpisode(assessmentEpisode!!, UpdateAssessmentEpisodeDto(mutableMapOf()))
     assertThat(updateAssessmentResponse).isEqualTo(
-      AssessmentEpisodeDto.from(assessmentEpisode)
+      AssessmentEpisodeDto.from(assessmentEpisode),
     )
   }
 
@@ -81,7 +81,7 @@ class AssessmentUpdateServiceITTest : IntegrationTest() {
 
     // Then
     assertThat(updateAssessmentResponse).isEqualTo(
-      AssessmentEpisodeDto.from(assessmentEpisode)
+      AssessmentEpisodeDto.from(assessmentEpisode),
     )
   }
 }

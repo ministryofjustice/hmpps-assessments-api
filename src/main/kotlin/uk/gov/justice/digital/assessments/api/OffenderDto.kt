@@ -14,7 +14,7 @@ data class OffenderDto(
   var offence: OffenceDto? = null,
   val firstNameAliases: List<String>? = emptyList(),
   val surnameAliases: List<String>? = emptyList(),
-  val dateOfBirthAliases: List<String>? = emptyList()
+  val dateOfBirthAliases: List<String>? = emptyList(),
 ) {
   companion object {
 
@@ -30,7 +30,7 @@ data class OffenderDto(
         offence = OffenceDto.from(caseDetails.sentence, eventId),
         firstNameAliases = caseDetails.aliases?.map { it.name.forename },
         surnameAliases = caseDetails.aliases?.map { it.name.surname },
-        dateOfBirthAliases = caseDetails.aliases?.map { it.dateOfBirth.toString() }
+        dateOfBirthAliases = caseDetails.aliases?.map { it.dateOfBirth.toString() },
       )
     }
   }

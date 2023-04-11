@@ -21,24 +21,24 @@ data class CaseDetails(
   val personalContacts: List<PersonalContact>? = listOf(),
   val mappaRegistration: MappaRegistration? = null,
   val registerFlags: List<RegisterFlag>? = listOf(),
-  val sentence: Sentence? = null
+  val sentence: Sentence? = null,
   // TODO update disabilities and adjustments to new dto
 )
 
 data class Alias(
   val name: Name,
-  val dateOfBirth: LocalDate
+  val dateOfBirth: LocalDate,
 )
 
 data class PhoneNumber(
   val type: String,
-  val number: String
+  val number: String,
 )
 
 data class Disability(
   val type: Type,
   val provisions: List<String>? = null,
-  val notes: String?
+  val notes: String?,
 )
 data class Language(
   val requiresInterpreter: Boolean = false,
@@ -48,13 +48,13 @@ data class Language(
 data class MappaRegistration(
   val startDate: LocalDate,
   val level: Type,
-  val category: Type
+  val category: Type,
 )
 
 data class RegisterFlag(
   val code: String,
   val description: String,
-  val riskColour: String? = null
+  val riskColour: String? = null,
 )
 
 data class Sentence(
@@ -64,7 +64,7 @@ data class Sentence(
 
 data class MainOffence(
   val category: Type,
-  val subCategory: Type
+  val subCategory: Type,
 )
 
 data class Address(
@@ -74,7 +74,7 @@ data class Address(
   val district: String? = null,
   val town: String? = null,
   val county: String? = null,
-  val postcode: String? = null
+  val postcode: String? = null,
 )
 
 data class PersonalCircumstance(

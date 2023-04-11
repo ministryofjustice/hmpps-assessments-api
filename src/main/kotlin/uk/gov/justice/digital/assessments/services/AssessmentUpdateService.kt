@@ -32,7 +32,7 @@ class AssessmentUpdateService(
   @Transactional("assessmentsTransactionManager")
   fun updateEpisode(
     episode: AssessmentEpisodeEntity,
-    updatedEpisodeAnswers: UpdateAssessmentEpisodeDto
+    updatedEpisodeAnswers: UpdateAssessmentEpisodeDto,
   ): AssessmentEpisodeDto {
     return updateEpisode(episode, updatedEpisodeAnswers.answers)
   }
@@ -40,17 +40,18 @@ class AssessmentUpdateService(
   @Transactional("assessmentsTransactionManager")
   fun updateCurrentEpisode(
     episode: AssessmentEpisodeEntity,
-    updatedEpisodeAnswers: UpdateAssessmentEpisodeDto
+    updatedEpisodeAnswers: UpdateAssessmentEpisodeDto,
   ): AssessmentEpisodeDto {
     return updateEpisode(episode, updatedEpisodeAnswers.answers)
   }
 
   private fun updateEpisode(
     episode: AssessmentEpisodeEntity,
-    updatedEpisodeAnswers: AnswersDto
+    updatedEpisodeAnswers: AnswersDto,
   ): AssessmentEpisodeDto {
-    if (episode.isComplete() || episode.isClosed())
+    if (episode.isComplete() || episode.isClosed()) {
       throw UpdateClosedEpisodeException("Cannot update a closed or completed Episode ${episode.episodeUuid} for assessment ${episode.assessment.assessmentUuid}")
+    }
 
     episode.updateEpisodeAnswers(updatedEpisodeAnswers)
     AssessmentUtils.removeOrphanedAnswers(episode)
@@ -69,7 +70,7 @@ class AssessmentUpdateService(
   }
 
   fun AssessmentEpisodeEntity.updateEpisodeAnswers(
-    updatedEpisodeAnswers: AnswersDto
+    updatedEpisodeAnswers: AnswersDto,
   ) {
     for (updatedAnswer in updatedEpisodeAnswers) {
       this.answers.let {
@@ -80,7 +81,7 @@ class AssessmentUpdateService(
 
   @Transactional("assessmentsTransactionManager")
   fun completeEpisode(
-    episode: AssessmentEpisodeEntity
+    episode: AssessmentEpisodeEntity,
   ): AssessmentEpisodeDto {
     episode.author = authorService.getOrCreateAuthor()
     episode.lastEditedDate = LocalDateTime.now()
@@ -96,7 +97,7 @@ class AssessmentUpdateService(
 
   @Transactional("assessmentsTransactionManager")
   fun closeEpisode(
-    episode: AssessmentEpisodeEntity
+    episode: AssessmentEpisodeEntity,
   ): AssessmentEpisodeDto {
     if (!episode.isComplete()) {
       episode.author = authorService.getOrCreateAuthor()
@@ -105,7 +106,9 @@ class AssessmentUpdateService(
 
       auditAndLogClosedAssessment(episode)
       log.info("Closed episode ${episode.episodeUuid} for assessment ${episode.assessment.assessmentUuid}")
-    } else throw CannotCloseEpisodeException("Cannot close a completed episode", "Episode already completed on ${episode.endDate}")
+    } else {
+      throw CannotCloseEpisodeException("Cannot close a completed episode", "Episode already completed on ${episode.endDate}")
+    }
 
     return AssessmentEpisodeDto.from(episode)
   }
@@ -116,7 +119,7 @@ class AssessmentUpdateService(
       episode.assessment.assessmentUuid,
       episode.episodeUuid,
       episode.assessment.subject?.crn,
-      episode.author
+      episode.author,
     )
     if (currentAuthor != episode.author) {
       auditService.createAuditEvent(
@@ -125,7 +128,7 @@ class AssessmentUpdateService(
         episode.episodeUuid,
         episode.assessment.subject?.crn,
         episode.author,
-        mapOf("assignedFrom" to currentAuthor.userName, "assignedTo" to episode.author.userName)
+        mapOf("assignedFrom" to currentAuthor.userName, "assignedTo" to episode.author.userName),
       )
       episode.assessment.subject?.crn?.let {
         telemetryService.trackAssessmentEvent(
@@ -134,7 +137,7 @@ class AssessmentUpdateService(
           episode.author,
           episode.assessment.assessmentUuid,
           episode.episodeUuid,
-          episode.assessmentType
+          episode.assessmentType,
         )
       }
     }
@@ -146,7 +149,7 @@ class AssessmentUpdateService(
       episode.assessment.assessmentUuid,
       episode.episodeUuid,
       episode.assessment.subject?.crn,
-      episode.author
+      episode.author,
     )
     episode.assessment.subject?.crn?.let {
       telemetryService.trackAssessmentEvent(
@@ -155,7 +158,7 @@ class AssessmentUpdateService(
         episode.author,
         episode.assessment.assessmentUuid,
         episode.episodeUuid,
-        episode.assessmentType
+        episode.assessmentType,
       )
     }
   }
@@ -166,7 +169,7 @@ class AssessmentUpdateService(
       episode.assessment.assessmentUuid,
       episode.episodeUuid,
       episode.assessment.subject?.crn,
-      episode.author
+      episode.author,
     )
     episode.assessment.subject?.crn?.let {
       telemetryService.trackAssessmentEvent(
@@ -175,7 +178,7 @@ class AssessmentUpdateService(
         episode.author,
         episode.assessment.assessmentUuid,
         episode.episodeUuid,
-        episode.assessmentType
+        episode.assessmentType,
       )
     }
   }

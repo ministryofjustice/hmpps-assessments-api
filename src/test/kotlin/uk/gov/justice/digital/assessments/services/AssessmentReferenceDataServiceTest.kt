@@ -39,14 +39,14 @@ class AssessmentReferenceDataServiceTest {
       "subheading",
       "help!",
       LocalDateTime.of(2019, 8, 1, 8, 0),
-      null
+      null,
     )
 
     val groupsEntity = AssessmentGroupsEntity(1, UUID.randomUUID(), group)
     every { assessmentRepository.findByAssessmentType(assessmentType) } returns AssessmentEntity(
       1,
       groupsEntity,
-      assessmentType
+      assessmentType,
     )
     val groupWithContentsDto = GroupWithContentsDto(groupUuid, "simple-group", contents = emptyList())
     every { questionService.getGroupContents(groupUuid) } returns groupWithContentsDto
@@ -77,14 +77,14 @@ class AssessmentReferenceDataServiceTest {
       "subheading",
       "help!",
       LocalDateTime.of(2019, 8, 1, 8, 0),
-      null
+      null,
     )
 
     val groupsEntity = AssessmentGroupsEntity(1, UUID.randomUUID(), group)
     every { assessmentRepository.findByAssessmentType(assessmentType) } returns AssessmentEntity(
       1,
       groupsEntity,
-      assessmentType
+      assessmentType,
     )
     val groupSectionsDto = GroupSectionsDto(groupUuid, groupCode, contents = emptyList())
     every { questionService.getGroupSections(groupCode) } returns groupSectionsDto

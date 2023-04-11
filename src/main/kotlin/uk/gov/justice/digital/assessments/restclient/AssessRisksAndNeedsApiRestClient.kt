@@ -29,7 +29,7 @@ class AssessRisksAndNeedsApiRestClient {
     predictorType: PredictorType,
     offenderAndOffencesDto: OffenderAndOffencesDto,
     final: Boolean,
-    episodeUuid: UUID
+    episodeUuid: UUID,
   ): RiskPredictorsDto? {
     log.info("Calculating Risk Predictors for $predictorType")
     val path =
@@ -42,7 +42,7 @@ class AssessRisksAndNeedsApiRestClient {
           it,
           HttpMethod.POST,
           path,
-          ExternalService.ASSESS_RISKS_AND_NEEDS_API
+          ExternalService.ASSESS_RISKS_AND_NEEDS_API,
         )
       }
       .onStatus(HttpStatus::is5xxServerError) {
@@ -50,7 +50,7 @@ class AssessRisksAndNeedsApiRestClient {
           "Failed to calculate and retrieve Risk Predictors $predictorType for crn ${offenderAndOffencesDto.crn}",
           HttpMethod.POST,
           path,
-          ExternalService.ASSESS_RISKS_AND_NEEDS_API
+          ExternalService.ASSESS_RISKS_AND_NEEDS_API,
         )
       }
       .bodyToMono(RiskPredictorsDto::class.java)
@@ -72,7 +72,7 @@ class AssessRisksAndNeedsApiRestClient {
           it,
           HttpMethod.POST,
           path,
-          ExternalService.ASSESS_RISKS_AND_NEEDS_API
+          ExternalService.ASSESS_RISKS_AND_NEEDS_API,
         )
       }
       .onStatus(HttpStatus::is5xxServerError) {
@@ -80,7 +80,7 @@ class AssessRisksAndNeedsApiRestClient {
           "Failed to fetch ROSH risk summary for crn $crn",
           HttpMethod.POST,
           path,
-          ExternalService.ASSESS_RISKS_AND_NEEDS_API
+          ExternalService.ASSESS_RISKS_AND_NEEDS_API,
         )
       }
       .bodyToMono(RoshRiskSummaryDto::class.java)

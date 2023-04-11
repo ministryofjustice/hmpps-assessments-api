@@ -57,9 +57,9 @@ class AuditServiceTest {
             assessmentUuid = assessmentUUID,
             episodeUuid = episodeUUID,
             author = authorEntity,
-            null
-          )
-        )
+            null,
+          ),
+        ),
       )
       justRun { auditRestClient.createAuditEvent(capture(actualAuditEvent)) }
       auditService.createAuditEvent(auditType, assessmentUUID, episodeUUID, crn, authorEntity, null)
@@ -83,9 +83,9 @@ class AuditServiceTest {
             assessmentUuid = assessmentUUID,
             episodeUuid = episodeUUID,
             author = authorEntity,
-            additionalDetails = mapOf("allocatedFrom" to "user 1")
-          )
-        )
+            additionalDetails = mapOf("allocatedFrom" to "user 1"),
+          ),
+        ),
       )
 
       justRun { auditRestClient.createAuditEvent(capture(actualAuditEvent)) }
@@ -110,9 +110,9 @@ class AuditServiceTest {
             assessmentUuid = assessmentUUID,
             episodeUuid = episodeUUID,
             author = authorEntity,
-            null
-          )
-        )
+            null,
+          ),
+        ),
       )
 
       every { auditRestClient.createAuditEvent(capture(actualAuditEvent)) } throws AuditFailureException("An error occurred")

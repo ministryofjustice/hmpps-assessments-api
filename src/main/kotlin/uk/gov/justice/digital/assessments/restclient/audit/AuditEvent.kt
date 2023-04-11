@@ -9,7 +9,7 @@ data class AuditEvent(
   val `when`: Instant,
   val who: String?,
   val service: String?,
-  val details: String?
+  val details: String?,
 )
 
 data class AuditDetail(
@@ -17,7 +17,7 @@ data class AuditDetail(
   val assessmentUuid: UUID,
   val episodeUuid: UUID?,
   val author: AuthorEntity?,
-  val additionalDetails: Any?
+  val additionalDetails: Any?,
 )
 
 enum class AuditType {
@@ -26,5 +26,5 @@ enum class AuditType {
   ARN_ASSESSMENT_CLOSED,
   ARN_ASSESSMENT_REASSIGNED,
   ARN_ASSESSMENT_COMPLETED,
-  ARN_ASSESSMENT_CLONED
+  ARN_ASSESSMENT_CLONED,
 }

@@ -27,13 +27,13 @@ import java.util.UUID
 @SqlGroup(
   Sql(
     scripts = ["classpath:assessments/before-test.sql"],
-    config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED)
+    config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED),
   ),
   Sql(
     scripts = ["classpath:assessments/after-test.sql"],
     config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED),
-    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
-  )
+    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
+  ),
 )
 @AutoConfigureWebTestClient
 class AssessmentServiceITTest : IntegrationTest() {
@@ -60,15 +60,14 @@ class AssessmentServiceITTest : IntegrationTest() {
   @Test
   @Transactional("assessmentsTransactionManager")
   fun `Should create assessment`() {
-
     val crn = "X1356"
     val assessmentResponse =
       assessmentService.createNewAssessment(
         CreateAssessmentDto(
           deliusEventId = 1L,
           crn = crn,
-          assessmentSchemaCode = AssessmentType.UPW
-        )
+          assessmentSchemaCode = AssessmentType.UPW,
+        ),
       )
     assertThat(assessmentResponse.assessmentUuid).isNotNull
     assertThat(assessmentResponse.subject).isNotNull
@@ -85,15 +84,14 @@ class AssessmentServiceITTest : IntegrationTest() {
   @Test
   @Transactional("assessmentsTransactionManager")
   fun `Should create assessment with Delius Event ID`() {
-
     val crn = "X1356"
     val assessmentResponse =
       assessmentService.createNewAssessment(
         CreateAssessmentDto(
           deliusEventId = 123456L,
           crn = crn,
-          assessmentSchemaCode = AssessmentType.UPW
-        )
+          assessmentSchemaCode = AssessmentType.UPW,
+        ),
       )
     assertThat(assessmentResponse.assessmentUuid).isNotNull
     assertThat(assessmentResponse.subject).isNotNull
@@ -108,15 +106,14 @@ class AssessmentServiceITTest : IntegrationTest() {
 
   @Test
   fun `Trying to create assessment twice only creates one assessment and returns previously created second time`() {
-
     val crn = "X1356"
     val assessmentResponse =
       assessmentService.createNewAssessment(
         CreateAssessmentDto(
           deliusEventId = 1L,
           crn = crn,
-          assessmentSchemaCode = AssessmentType.UPW
-        )
+          assessmentSchemaCode = AssessmentType.UPW,
+        ),
       )
     val assessmentUuid = assessmentResponse.assessmentUuid
     assertThat(assessmentUuid).isNotNull
@@ -128,8 +125,8 @@ class AssessmentServiceITTest : IntegrationTest() {
         CreateAssessmentDto(
           deliusEventId = 1L,
           crn = crn,
-          assessmentSchemaCode = AssessmentType.UPW
-        )
+          assessmentSchemaCode = AssessmentType.UPW,
+        ),
       )
 
     assertThat(assessmentSecondResponse.assessmentUuid).isEqualTo(assessmentUuid)
@@ -139,15 +136,14 @@ class AssessmentServiceITTest : IntegrationTest() {
 
   @Test
   fun `Trying to create assessment with invalid LAO access throws error `() {
-
     val crn = "OX123456"
     val exception = assertThrows<ExternalApiForbiddenException> {
       assessmentService.createNewAssessment(
         CreateAssessmentDto(
           deliusEventId = 1L,
           crn = crn,
-          assessmentSchemaCode = AssessmentType.UPW
-        )
+          assessmentSchemaCode = AssessmentType.UPW,
+        ),
       )
     }
     assertThat(exception.moreInfo).containsAll(listOf("excluded", "restricted"))
@@ -155,7 +151,6 @@ class AssessmentServiceITTest : IntegrationTest() {
 
   @Test
   fun `Trying to get assessment with invalid LAO access throws error `() {
-
     val exception = assertThrows<ExternalApiForbiddenException> {
       assessmentService.getAssessmentByUuid(UUID.fromString("6e60784e-584e-4762-952d-d7288e31d4f4"))
     }

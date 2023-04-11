@@ -26,7 +26,7 @@ import java.time.Duration
 @ContextConfiguration
 @SpringBootTest(
   classes = [HmppsAssessmentApiApplication::class],
-  webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
+  webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
 )
 @ActiveProfiles(profiles = ["test"])
 abstract class IntegrationTest {
@@ -126,14 +126,14 @@ abstract class IntegrationTest {
   internal fun setAuthorisation(
     user: String = "offender-assessment-api",
     fullName: String = "Full Name",
-    roles: List<String> = listOf("ROLE_PROBATION")
+    roles: List<String> = listOf("ROLE_PROBATION"),
   ): (HttpHeaders) -> Unit {
     val token = jwtHelper.createJwt(
       subject = user,
       fullName = fullName,
       scope = listOf("read"),
       expiryTime = Duration.ofHours(1L),
-      roles = roles
+      roles = roles,
     )
 
     return { it.set(HttpHeaders.AUTHORIZATION, "Bearer $token") }

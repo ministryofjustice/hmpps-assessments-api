@@ -14,9 +14,9 @@ class DeliusIntegrationMockServer : WireMockServer(9097) {
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
             .withBody(
-              crnWithPersonalContactsAndCircumstances()
-            )
-        )
+              crnWithPersonalContactsAndCircumstances(),
+            ),
+        ),
     )
 
     stubFor(
@@ -25,9 +25,9 @@ class DeliusIntegrationMockServer : WireMockServer(9097) {
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
             .withBody(
-              crnWithPersonalContactsAndCircumstances()
-            )
-        )
+              crnWithPersonalContactsAndCircumstances(),
+            ),
+        ),
     )
 
     stubFor(
@@ -36,9 +36,9 @@ class DeliusIntegrationMockServer : WireMockServer(9097) {
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
             .withBody(
-              crnWithPersonalContactsAndCircumstances()
-            )
-        )
+              crnWithPersonalContactsAndCircumstances(),
+            ),
+        ),
     )
 
     stubFor(
@@ -47,8 +47,8 @@ class DeliusIntegrationMockServer : WireMockServer(9097) {
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
             .withStatus(404)
-            .withBody("{\"status\":\"404\",\"developerMessage\":\"The case details are not found\"}")
-        )
+            .withBody("{\"status\":\"404\",\"developerMessage\":\"The case details are not found\"}"),
+        ),
     )
 
     stubFor(
@@ -57,8 +57,8 @@ class DeliusIntegrationMockServer : WireMockServer(9097) {
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
             .withStatus(400)
-            .withBody("{\"status\":\"400\",\"developerMessage\":\"Invalid CRN invalidBadRequest\"}")
-        )
+            .withBody("{\"status\":\"400\",\"developerMessage\":\"Invalid CRN invalidBadRequest\"}"),
+        ),
     )
 
     stubFor(
@@ -67,8 +67,8 @@ class DeliusIntegrationMockServer : WireMockServer(9097) {
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
             .withStatus(401)
-            .withBody("{\"status\":\"401\",\"developerMessage\":\"Not authorised\"}")
-        )
+            .withBody("{\"status\":\"401\",\"developerMessage\":\"Not authorised\"}"),
+        ),
     )
 
     stubFor(
@@ -77,8 +77,8 @@ class DeliusIntegrationMockServer : WireMockServer(9097) {
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
             .withStatus(403)
-            .withBody("{\"status\":\"403\",\"developerMessage\":\"Forbidden\"}")
-        )
+            .withBody("{\"status\":\"403\",\"developerMessage\":\"Forbidden\"}"),
+        ),
     )
 
     stubFor(
@@ -87,13 +87,12 @@ class DeliusIntegrationMockServer : WireMockServer(9097) {
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
             .withStatus(422)
-            .withBody("{\"status\":\"422\",\"developerMessage\":\"unprocessable\"}")
-        )
+            .withBody("{\"status\":\"422\",\"developerMessage\":\"unprocessable\"}"),
+        ),
     )
   }
 
   private fun crnWithPersonalContactsAndCircumstances(): String {
-
     return """
 {
     "crn": "DX5678A",

@@ -103,8 +103,8 @@ class AssessmentServiceCreateTest {
       CreateAssessmentDto(
         deliusEventId = eventId,
         crn = crn,
-        assessmentSchemaCode = assessmentType
-      )
+        assessmentSchemaCode = assessmentType,
+      ),
     )
     verify(exactly = 1) { assessmentRepository.save(any()) }
   }
@@ -116,7 +116,7 @@ class AssessmentServiceCreateTest {
       SubjectEntity(
         assessments = listOf(AssessmentEntity(assessmentId = assessmentId, assessmentUuid = assessmentUuid)),
         dateOfBirth = LocalDate.of(1989, 1, 1),
-        crn = crn
+        crn = crn,
       )
     every { episodeService.prePopulateEpisodeFromDelius(any(), any()) } returnsArgument 0
     every { episodeService.prePopulateFromPreviousEpisodes(any(), any()) } returnsArgument 0
@@ -153,7 +153,7 @@ class AssessmentServiceCreateTest {
       SubjectEntity(
         assessments = listOf(assessment),
         dateOfBirth = LocalDate.of(1989, 1, 1),
-        crn = crn
+        crn = crn,
       )
     every { episodeService.prePopulateEpisodeFromDelius(any(), caseDetails()) } returnsArgument 0
     every { subjectRepository.save(any()) } returns SubjectEntity(
@@ -166,7 +166,7 @@ class AssessmentServiceCreateTest {
 
     // When
     assessmentsService.createNewAssessment(
-      CreateAssessmentDto(deliusEventId = eventId, crn = crn, assessmentSchemaCode = assessmentType)
+      CreateAssessmentDto(deliusEventId = eventId, crn = crn, assessmentSchemaCode = assessmentType),
     )
     // Then
     verify(exactly = 0) { episodeService.prePopulateEpisodeFromDelius(any(), caseDetails()) }
@@ -182,8 +182,8 @@ class AssessmentServiceCreateTest {
         CreateAssessmentDto(
           deliusEventId = eventId,
           crn = crn,
-          assessmentSchemaCode = assessmentType
-        )
+          assessmentSchemaCode = assessmentType,
+        ),
       )
     }
 
@@ -196,7 +196,7 @@ class AssessmentServiceCreateTest {
       "User does not have permission to access offender with CRN $crn",
       HttpMethod.GET,
       "",
-      ExternalService.COMMUNITY_API
+      ExternalService.COMMUNITY_API,
     )
 
     val exception = assertThrows<ExternalApiForbiddenException> {
@@ -204,8 +204,8 @@ class AssessmentServiceCreateTest {
         CreateAssessmentDto(
           deliusEventId = eventId,
           crn = crn,
-          assessmentSchemaCode = assessmentType
-        )
+          assessmentSchemaCode = assessmentType,
+        ),
       )
     }
     assertThat(exception.message).isEqualTo("User does not have permission to access offender with CRN $crn")
@@ -232,8 +232,8 @@ class AssessmentServiceCreateTest {
       CreateAssessmentDto(
         deliusEventId = eventId,
         crn = crn,
-        assessmentSchemaCode = assessmentType
-      )
+        assessmentSchemaCode = assessmentType,
+      ),
     )
     verify(exactly = 1) {
       auditService.createAuditEvent(
@@ -242,7 +242,7 @@ class AssessmentServiceCreateTest {
         assessment.episodes.first().episodeUuid,
         crn,
         any(),
-        any()
+        any(),
       )
     }
     verify(exactly = 1) {
@@ -252,7 +252,7 @@ class AssessmentServiceCreateTest {
         author,
         assessment.assessmentUuid,
         assessment.episodes.first().episodeUuid!!,
-        assessmentType
+        assessmentType,
       )
     }
   }
@@ -262,7 +262,7 @@ class AssessmentServiceCreateTest {
     val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
     val assessment = AssessmentEntity(
       assessmentId = assessmentId,
-      assessmentUuid = assessmentUuid
+      assessmentUuid = assessmentUuid,
     )
     assessment.newEpisode("reason", assessmentType, null, author)
 
@@ -270,7 +270,7 @@ class AssessmentServiceCreateTest {
       SubjectEntity(
         assessments = listOf(assessment),
         dateOfBirth = LocalDate.of(1989, 1, 1),
-        crn = crn
+        crn = crn,
       )
     every { subjectRepository.save(any()) } returns SubjectEntity(
       name = "name",
@@ -285,8 +285,8 @@ class AssessmentServiceCreateTest {
       CreateAssessmentDto(
         deliusEventId = eventId,
         crn = crn,
-        assessmentSchemaCode = assessmentType
-      )
+        assessmentSchemaCode = assessmentType,
+      ),
     )
     verify(exactly = 0) { assessmentRepository.save(any()) }
     verify(exactly = 0) { auditService.createAuditEvent(any(), any(), any(), any(), any()) }
@@ -299,7 +299,7 @@ class AssessmentServiceCreateTest {
       name = Name(
         forename = "forename",
         middleName = "middlename",
-        surname = "surname"
+        surname = "surname",
       ),
       dateOfBirth = LocalDate.of(1989, 1, 1),
       genderIdentity = "PREFER TO SELF DESCRIBE",
@@ -310,18 +310,18 @@ class AssessmentServiceCreateTest {
         district = "Sheffield City Centre",
         county = "South Yorkshire",
         postcode = "S3 7BS",
-        town = "Sheffield"
+        town = "Sheffield",
       ),
       personalContacts = listOf(
         PersonalContact(
           relationship = "GP",
           relationshipType = RelationshipType(
             code = "RT02",
-            description = "Primary GP"
+            description = "Primary GP",
           ),
           name = Name(
             forename = "Charles",
-            surname = "Europe"
+            surname = "Europe",
           ),
           mobileNumber = "07123456789",
           address = Address(
@@ -330,18 +330,18 @@ class AssessmentServiceCreateTest {
             district = "Sheffield",
             town = "Sheffield",
             county = "South Yorkshire",
-            postcode = "S3 7DQ"
-          )
+            postcode = "S3 7DQ",
+          ),
         ),
         PersonalContact(
           relationship = "Emergency Contact",
           relationshipType = RelationshipType(
             code = "ME",
-            description = "Father"
+            description = "Father",
           ),
           name = Name(
             forename = "UPW",
-            surname = "Testing"
+            surname = "Testing",
           ),
           telephoneNumber = "020 2000 0000",
           address = Address(
@@ -351,10 +351,10 @@ class AssessmentServiceCreateTest {
             district = "London",
             town = "London",
             county = "London",
-            postcode = "SW1H 9AJ"
-          )
-        )
-      )
+            postcode = "SW1H 9AJ",
+          ),
+        ),
+      ),
     )
   }
 }

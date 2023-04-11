@@ -31,7 +31,7 @@ class DeliusIntegrationRestClient {
 
   private fun performHttpGet(
     path: String,
-    errorMessage: String
+    errorMessage: String,
   ): WebClient.ResponseSpec = webClient
     .get(path)
     .retrieve()
@@ -40,7 +40,7 @@ class DeliusIntegrationRestClient {
         it,
         HttpMethod.GET,
         path,
-        ExternalService.DELIUS_INTEGRATIONS
+        ExternalService.DELIUS_INTEGRATIONS,
       )
     }
     .onStatus(HttpStatus::is5xxServerError) {
@@ -48,7 +48,7 @@ class DeliusIntegrationRestClient {
         errorMessage,
         HttpMethod.GET,
         path,
-        ExternalService.DELIUS_INTEGRATIONS
+        ExternalService.DELIUS_INTEGRATIONS,
       )
     }
 

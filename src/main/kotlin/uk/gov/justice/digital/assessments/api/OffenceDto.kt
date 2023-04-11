@@ -23,20 +23,23 @@ data class OffenceDto(
   val subCodeDescription: String? = null,
 
   @Schema(description = "Sentence start date for conviction")
-  val sentenceDate: LocalDate? = null
+  val sentenceDate: LocalDate? = null,
 ) {
 
   companion object {
     fun from(sentence: Sentence?, eventId: Long?): OffenceDto? {
-      return if (sentence == null) null
-      else OffenceDto(
-        eventId = eventId,
-        offenceCode = sentence.mainOffence.category.code,
-        codeDescription = sentence.mainOffence.category.description,
-        offenceSubCode = sentence.mainOffence.subCategory.code,
-        subCodeDescription = sentence.mainOffence.subCategory.description,
-        sentenceDate = sentence.startDate
-      )
+      return if (sentence == null) {
+        null
+      } else {
+        OffenceDto(
+          eventId = eventId,
+          offenceCode = sentence.mainOffence.category.code,
+          codeDescription = sentence.mainOffence.category.description,
+          offenceSubCode = sentence.mainOffence.subCategory.code,
+          subCodeDescription = sentence.mainOffence.subCategory.description,
+          sentenceDate = sentence.startDate,
+        )
+      }
     }
 
     fun from(offenceEntity: OffenceEntity?): OffenceDto {
@@ -46,7 +49,7 @@ data class OffenceDto(
         codeDescription = offenceEntity?.codeDescription,
         offenceSubCode = offenceEntity?.offenceSubCode,
         subCodeDescription = offenceEntity?.subCodeDescription,
-        sentenceDate = offenceEntity?.sentenceDate
+        sentenceDate = offenceEntity?.sentenceDate,
       )
     }
   }

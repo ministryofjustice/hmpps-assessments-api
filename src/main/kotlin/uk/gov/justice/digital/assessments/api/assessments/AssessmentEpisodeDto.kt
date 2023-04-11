@@ -58,7 +58,7 @@ data class AssessmentEpisodeDto(
         answers = episode.answers,
         offence = OffenceDto.from(episode.offence),
         lastEditedDate = episode.lastEditedDate,
-        closedDate = episode.closedDate
+        closedDate = episode.closedDate,
       )
     }
   }

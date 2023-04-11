@@ -22,7 +22,7 @@ class AuditService(
   @Value("\${spring.application.name}")
   private val serviceName: String,
   private val mapper: ObjectMapper,
-  private val clock: Clock = Clock.systemUTC()
+  private val clock: Clock = Clock.systemUTC(),
 ) {
 
   companion object {
@@ -30,7 +30,6 @@ class AuditService(
   }
 
   fun createAuditEvent(auditType: AuditType, assessmentUUID: UUID, episodeUUID: UUID?, crn: String?, author: AuthorEntity?, additionalDetails: Map<String, Any>? = null) {
-
     val auditEvent = AuditEvent(
       what = auditType.name,
       who = RequestData.getUserName(),
@@ -42,9 +41,9 @@ class AuditService(
           assessmentUuid = assessmentUUID,
           episodeUuid = episodeUUID,
           author = author,
-          additionalDetails
-        )
-      )
+          additionalDetails,
+        ),
+      ),
     )
     // Initially log audit failures as errors,
     // so they can be alerted on but do not prevent the user completing the transaction

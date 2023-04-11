@@ -11,6 +11,6 @@ data class CreateAssessmentEpisodeDto(
   val eventID: Long,
 
   @Schema(description = "Assessment Schema Code", example = "ROSH")
-  val assessmentType: AssessmentType
+  val assessmentType: AssessmentType,
 
 )

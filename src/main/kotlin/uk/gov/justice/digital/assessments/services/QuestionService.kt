@@ -30,7 +30,7 @@ class QuestionService(
   private val questionRepository: QuestionRepository,
   private val questionGroupRepository: QuestionGroupRepository,
   private val groupRepository: GroupRepository,
-  private val questionDependencyService: QuestionDependencyService
+  private val questionDependencyService: QuestionDependencyService,
 ) {
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
@@ -87,12 +87,12 @@ class QuestionService(
   private fun getQuestionGroupContents(group: GroupEntity) =
     getQuestionGroupContents(
       group,
-      questionDependencyService.dependencies()
+      questionDependencyService.dependencies(),
     )
 
   private fun getQuestionGroupContents(
     group: GroupEntity,
-    dependencies: QuestionDependencies
+    dependencies: QuestionDependencies,
   ): GroupWithContentsDto {
     return expandGroupContents(group, dependencies, GroupWithContentsDto::from) as GroupWithContentsDto
   }
@@ -100,7 +100,7 @@ class QuestionService(
   private fun expandGroupContents(
     group: GroupEntity,
     dependencies: QuestionDependencies,
-    toDto: (GroupEntity, List<GroupContentDto>) -> GroupContentDto
+    toDto: (GroupEntity, List<GroupContentDto>) -> GroupContentDto,
   ): GroupContentDto {
     log.debug("expandGroupContents {}", group.groupUuid)
     val groupContents = group.contents.sortedBy { it.displayOrder }
@@ -119,7 +119,7 @@ class QuestionService(
 
   private fun getGroupQuestion(
     question: QuestionGroupEntity,
-    dependencies: QuestionDependencies
+    dependencies: QuestionDependencies,
   ): GroupContentDto {
     log.debug("getGroupQuestion {}", question.contentUuid)
     val questionEntity = questionRepository.findByQuestionUuid(question.contentUuid)
@@ -128,13 +128,13 @@ class QuestionService(
     return GroupQuestionDto.from(
       questionEntity,
       question,
-      dependencies
+      dependencies,
     )
   }
 
   private fun fetchGroupSections(
     group: GroupEntity,
-    depth: Int = 0
+    depth: Int = 0,
   ): GroupSectionsDto {
     val groupContents = if (depth != 2) group.contents.sortedBy { it.displayOrder } else null
 
@@ -161,7 +161,7 @@ class QuestionService(
 }
 
 class QuestionSchemaEntities(
-  questionsList: List<QuestionEntity>
+  questionsList: List<QuestionEntity>,
 ) : List<QuestionEntity> by questionsList {
   private val questions = questionsList.associateBy { it.questionCode }
 

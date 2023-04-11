@@ -10,7 +10,10 @@ import java.time.LocalDateTime
 
 class AssessmentUtilsTest {
   private val authorEntity = AuthorEntity(
-    userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"
+    userId = "1",
+    userName = "USER",
+    userAuthSource = "source",
+    userFullName = "full name",
   )
 
   @Test
@@ -28,7 +31,7 @@ class AssessmentUtilsTest {
           "placement_preferences" to listOf("Should not be removed"),
           "placement_preference_complete" to listOf("Should not be removed"),
           "some_other_question" to listOf("Should not be removed"),
-        )
+        ),
       )
 
     AssessmentUtils.removeOrphanedAnswers(episode)
@@ -54,7 +57,7 @@ class AssessmentUtilsTest {
           "placement_preferences" to listOf("Should be removed"),
           "placement_preference_complete" to listOf("Should be removed"),
           "some_other_question" to listOf("Should not be removed"),
-        )
+        ),
       )
 
     AssessmentUtils.removeOrphanedAnswers(episode)

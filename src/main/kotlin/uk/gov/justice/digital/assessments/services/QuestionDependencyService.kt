@@ -10,7 +10,7 @@ import java.util.UUID
 
 @Service
 class QuestionDependencyService(
-  private val questionDependencyRepository: QuestionDependencyRepository
+  private val questionDependencyRepository: QuestionDependencyRepository,
 ) {
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
@@ -34,10 +34,11 @@ class QuestionDependencies(questionDeps: Collection<QuestionDependencyEntity>) {
     val triggers = mutableMapOf<Pair<UUID, String>, MutableSet<ConditionalsSchemaDto>>()
     for (dep in questionDeps) {
       val trigger = Pair(dep.triggerQuestionUuid, dep.triggerAnswerValue)
-      if (triggers.containsKey(trigger))
+      if (triggers.containsKey(trigger)) {
         triggers[trigger]?.add(ConditionalsSchemaDto(dep.subjectQuestionSchema.questionCode, dep.displayInline))
-      else
+      } else {
         triggers[trigger] = mutableSetOf(ConditionalsSchemaDto(dep.subjectQuestionSchema.questionCode, dep.displayInline))
+      }
     }
     return triggers
   }

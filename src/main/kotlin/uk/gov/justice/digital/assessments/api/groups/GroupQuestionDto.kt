@@ -39,7 +39,7 @@ data class GroupQuestionDto(
     fun from(
       questionEntity: QuestionEntity,
       questionGroupEntity: QuestionGroupEntity,
-      questionDependencies: QuestionDependencies
+      questionDependencies: QuestionDependencies,
     ): GroupQuestionDto {
       return GroupQuestionDto(
         questionId = questionEntity.questionUuid,
@@ -52,8 +52,8 @@ data class GroupQuestionDto(
         referenceDataCategory = questionEntity.referenceDataCategory,
         answerDtos = AnswerDto.from(
           questionEntity.answerEntities,
-          questionDependencies.answerTriggers(questionEntity.questionUuid)
-        )
+          questionDependencies.answerTriggers(questionEntity.questionUuid),
+        ),
       )
     }
   }

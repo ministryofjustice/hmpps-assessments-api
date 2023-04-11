@@ -52,13 +52,16 @@ class EpisodeServiceTest {
     assessmentReferenceDataService,
     cloneAssessmentExcludedQuestionsRepository,
     telemetryService,
-    auditService
+    auditService,
   )
 
   private lateinit var newEpisode: AssessmentEpisodeEntity
 
   private val authorEntity = AuthorEntity(
-    userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"
+    userId = "1",
+    userName = "USER",
+    userAuthSource = "source",
+    userFullName = "full name",
   )
 
   private lateinit var objectMapper: ObjectMapper
@@ -82,7 +85,9 @@ class EpisodeServiceTest {
       .setSerializationInclusion(JsonInclude.Include.NON_NULL)
       .setSerializationInclusion(JsonInclude.Include.NON_ABSENT)
       .registerModules(
-        Jdk8Module(), JavaTimeModule(), KotlinModule.Builder().build()
+        Jdk8Module(),
+        JavaTimeModule(),
+        KotlinModule.Builder().build(),
       )
   }
 
@@ -94,9 +99,9 @@ class EpisodeServiceTest {
       assessment = AssessmentEntity(
         subject = SubjectEntity(
           crn = CRN,
-          dateOfBirth = LocalDate.parse("1999-12-31")
-        )
-      )
+          dateOfBirth = LocalDate.parse("1999-12-31"),
+        ),
+      ),
     )
   }
 
@@ -108,10 +113,10 @@ class EpisodeServiceTest {
       name = Name(
         forename = "forename",
         middleName = "middlename",
-        surname = "surname"
+        surname = "surname",
       ),
       dateOfBirth = LocalDate.of(1989, 1, 1),
-      genderIdentity = "PREFER TO SELF DESCRIBE"
+      genderIdentity = "PREFER TO SELF DESCRIBE",
     )
     episodeService.prePopulateEpisodeFromDelius(newEpisode, caseDetails)
 
@@ -150,8 +155,8 @@ class EpisodeServiceTest {
           "contact_address_building_name" to listOf("The Gables"),
           "contact_address_street_name" to listOf("High Street"),
           "contact_address_postcode" to listOf("S11 8JK"),
-          "contact_address_town_or_city" to listOf("Leeds")
-        )
+          "contact_address_town_or_city" to listOf("Leeds"),
+        ),
       ),
     )
 
@@ -165,7 +170,7 @@ class EpisodeServiceTest {
       "contact_address_building_name" to listOf("HMPPS Digital Studio"),
       "contact_address_street_name" to emptyList(),
       "contact_address_postcode" to listOf("S3 7BS"),
-      "contact_address_town_or_city" to listOf("Sheffield")
+      "contact_address_town_or_city" to listOf("Sheffield"),
     )
     assertThat(newEpisode.answers).containsAllEntriesOf(expectedAnswers)
   }
@@ -217,24 +222,24 @@ class EpisodeServiceTest {
         "gp_details" to listOf(
           GPDetailsAnswerDto(
             name = listOf("Some previous episode name"),
-            buildingName = listOf("Some previous episode building name")
+            buildingName = listOf("Some previous episode building name"),
           ),
           GPDetailsAnswerDto(
             name = listOf("Some other previous episode name"),
-            buildingName = listOf("Some other previous episode building name")
-          )
+            buildingName = listOf("Some other previous episode building name"),
+          ),
         ),
         "emergency_contact_details" to listOf(
           EmergencyContactDetailsAnswerDto(
             relationship = listOf("Some previous episode relationship"),
-            buildingName = listOf("Some previous episode building name")
+            buildingName = listOf("Some previous episode building name"),
           ),
           EmergencyContactDetailsAnswerDto(
             relationship = listOf("Some other previous episode relationship"),
-            buildingName = listOf("Some other previous episode building name")
-          )
+            buildingName = listOf("Some other previous episode building name"),
+          ),
         ),
-      )
+      ),
     ),
   )
 
@@ -263,8 +268,8 @@ class EpisodeServiceTest {
         endDate = LocalDateTime.now().minusDays(1),
         answers = mutableMapOf(
           "gender_identity" to listOf("NON_BINARY"),
-          "question_2" to listOf("answer_2")
-        )
+          "question_2" to listOf("answer_2"),
+        ),
       ),
     )
     every { assessmentReferenceDataService.getQuestionsForAssessmentType(newEpisode.assessmentType) } returns questionDtos
@@ -285,7 +290,7 @@ class EpisodeServiceTest {
   fun `copies answers from previous episode ignoring excluded questions`() {
     val schemaQuestions = listOf(
       GroupQuestionDto(questionCode = "question_1"),
-      GroupQuestionDto(questionCode = "question_2")
+      GroupQuestionDto(questionCode = "question_2"),
     )
 
     val mixedPreviousEpisodes = listOf(
@@ -297,9 +302,9 @@ class EpisodeServiceTest {
         endDate = LocalDateTime.now().minusDays(1),
         answers = mutableMapOf(
           "question_1" to listOf("answer_1"),
-          "question_2" to listOf("answer_2")
-        )
-      )
+          "question_2" to listOf("answer_2"),
+        ),
+      ),
     )
     justRun { auditService.createAuditEvent(AuditType.ARN_ASSESSMENT_CLONED, any(), any(), any(), any(), any()) }
     justRun { telemetryService.trackAssessmentClonedEvent(any(), any(), any(), any(), any(), any(), any()) }
@@ -308,14 +313,14 @@ class EpisodeServiceTest {
       CloneAssessmentExcludedQuestionsEntity(
         12345,
         UPW,
-        "question_2"
-      )
+        "question_2",
+      ),
     )
 
     val result = episodeService.prePopulateFromPreviousEpisodes(newEpisode, mixedPreviousEpisodes)
 
     val expectedAnswers = mutableMapOf(
-      "question_1" to listOf("answer_1")
+      "question_1" to listOf("answer_1"),
     )
 
     assertThat(result.answers).containsExactlyEntriesOf(expectedAnswers)
@@ -328,7 +333,7 @@ class EpisodeServiceTest {
     justRun { telemetryService.trackAssessmentClonedEvent(any(), any(), any(), any(), any(), any(), any()) }
     val questions = listOf(
       GroupQuestionDto(questionCode = "question_1"),
-      GroupQuestionDto(questionCode = "question_2")
+      GroupQuestionDto(questionCode = "question_2"),
     )
 
     val mixedPreviousEpisodes = listOf(
@@ -340,9 +345,9 @@ class EpisodeServiceTest {
         endDate = LocalDateTime.now().minusDays(1),
         answers = mutableMapOf(
           "question_1" to listOf("answer_1"),
-          "question_2" to listOf("answer_2")
-        )
-      )
+          "question_2" to listOf("answer_2"),
+        ),
+      ),
     )
     every { assessmentReferenceDataService.getQuestionsForAssessmentType(newEpisode.assessmentType) } returns questions
 
@@ -351,7 +356,7 @@ class EpisodeServiceTest {
 
     val expectedAnswers = mutableMapOf(
       "question_1" to listOf("answer_1"),
-      "question_2" to listOf("answer_2")
+      "question_2" to listOf("answer_2"),
     )
 
     // Then
@@ -382,8 +387,8 @@ class EpisodeServiceTest {
         author = authorEntity,
         assessment = AssessmentEntity(),
         endDate = LocalDateTime.now().minusDays(1),
-        answers = mutableMapOf()
-      )
+        answers = mutableMapOf(),
+      ),
     )
 
     val questions = listOf(
@@ -413,8 +418,8 @@ class EpisodeServiceTest {
         endDate = LocalDateTime.now().minusWeeks(1),
         answers = mutableMapOf(
           "question_1" to listOf("answer_1"),
-          "question_2" to listOf("answer_2")
-        )
+          "question_2" to listOf("answer_2"),
+        ),
       ),
       AssessmentEpisodeEntity(
         episodeId = 3,
@@ -424,16 +429,16 @@ class EpisodeServiceTest {
         endDate = LocalDateTime.now().minusWeeks(55).minusDays(1),
         answers = mutableMapOf(
           "question_3" to listOf("answer_3"),
-          "question_4" to listOf("answer_4")
-        )
-      )
+          "question_4" to listOf("answer_4"),
+        ),
+      ),
     )
 
     val schemaQuestions = listOf(
       GroupQuestionDto(questionCode = "question_1"),
       GroupQuestionDto(questionCode = "question_2"),
       GroupQuestionDto(questionCode = "question_3"),
-      GroupQuestionDto(questionCode = "question_4")
+      GroupQuestionDto(questionCode = "question_4"),
     )
 
     every { assessmentReferenceDataService.getQuestionsForAssessmentType(newEpisode.assessmentType) } returns schemaQuestions
@@ -442,7 +447,7 @@ class EpisodeServiceTest {
 
     val expectedAnswers = mutableMapOf(
       "question_1" to listOf("answer_1"),
-      "question_2" to listOf("answer_2")
+      "question_2" to listOf("answer_2"),
     )
 
     assertThat(result).containsExactlyInAnyOrderEntriesOf(expectedAnswers)
@@ -455,7 +460,6 @@ class EpisodeServiceTest {
   inner class AuditEpisodeCloning {
     @Test
     fun `submits audit event when new episode cloned from previous episode`() {
-
       val questions = listOf(
         GroupQuestionDto(questionCode = "question_1"),
         GroupQuestionDto(questionCode = "question_2"),
@@ -474,9 +478,9 @@ class EpisodeServiceTest {
           endDate = previousEpisodeEndDate,
           answers = mutableMapOf(
             "question_1" to listOf("answer_1"),
-            "question_2" to listOf("answer_2")
-          )
-        )
+            "question_2" to listOf("answer_2"),
+          ),
+        ),
       )
       every { assessmentReferenceDataService.getQuestionsForAssessmentType(newEpisode.assessmentType) } returns questions
       justRun { auditService.createAuditEvent(AuditType.ARN_ASSESSMENT_CLONED, any(), any(), any(), any(), any()) }
@@ -493,8 +497,8 @@ class EpisodeServiceTest {
           authorEntity,
           mapOf(
             "previousEpisodeUUID" to previousEpisodeUuid,
-            "previousEpisodeCompletedDate" to previousEpisodeEndDate
-          )
+            "previousEpisodeCompletedDate" to previousEpisodeEndDate,
+          ),
         )
       }
       verify(exactly = 1) {
@@ -505,11 +509,12 @@ class EpisodeServiceTest {
           newEpisode.episodeUuid,
           UPW,
           previousEpisodeUuid,
-          previousEpisodeEndDate
+          previousEpisodeEndDate,
         )
       }
     }
   }
+
   @Test
   fun `no audit event when new episode unchanged as no previous episodes`() {
     val questions = listOf(
@@ -531,7 +536,7 @@ class EpisodeServiceTest {
         any(),
         any(),
         any(),
-        any()
+        any(),
       )
     }
   }
@@ -542,7 +547,7 @@ class EpisodeServiceTest {
       name = Name(
         forename = "forename",
         middleName = "middlename",
-        surname = "surname"
+        surname = "surname",
       ),
       dateOfBirth = LocalDate.of(1989, 1, 1),
       genderIdentity = "PREFER TO SELF DESCRIBE",
@@ -553,18 +558,18 @@ class EpisodeServiceTest {
         district = "Sheffield City Centre",
         county = "South Yorkshire",
         postcode = "S3 7BS",
-        town = "Sheffield"
+        town = "Sheffield",
       ),
       personalContacts = listOf(
         PersonalContact(
           relationship = "GP",
           relationshipType = RelationshipType(
             code = "RT02",
-            description = "Primary GP"
+            description = "Primary GP",
           ),
           name = Name(
             forename = "Charles",
-            surname = "Europe"
+            surname = "Europe",
           ),
           mobileNumber = "07123456789",
           address = Address(
@@ -573,18 +578,18 @@ class EpisodeServiceTest {
             district = "Sheffield",
             town = "Sheffield",
             county = "South Yorkshire",
-            postcode = "S3 7DQ"
-          )
+            postcode = "S3 7DQ",
+          ),
         ),
         PersonalContact(
           relationship = "Emergency Contact",
           relationshipType = RelationshipType(
             code = "ME",
-            description = "Father"
+            description = "Father",
           ),
           name = Name(
             forename = "UPW",
-            surname = "Testing"
+            surname = "Testing",
           ),
           telephoneNumber = "020 2000 0000",
           address = Address(
@@ -594,10 +599,10 @@ class EpisodeServiceTest {
             district = "London",
             town = "London",
             county = "London",
-            postcode = "SW1H 9AJ"
-          )
-        )
-      )
+            postcode = "SW1H 9AJ",
+          ),
+        ),
+      ),
     )
   }
 }

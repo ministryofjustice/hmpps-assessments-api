@@ -43,5 +43,5 @@ class QuestionGroupEntity(
   var question: QuestionEntity?,
 
   @Transient
-  var nestedGroup: GroupEntity?
+  var nestedGroup: GroupEntity?,
 ) : Serializable

@@ -67,7 +67,7 @@ class CacheConfiguration {
         QUESTION_CACHE_KEY,
         LIST_QUESTION_GROUPS_CACHE_KEY,
         QUESTION_GROUP_CONTENTS_CACHE_KEY,
-        QUESTION_GROUP_SECTIONS_CACHE_KEY
+        QUESTION_GROUP_SECTIONS_CACHE_KEY,
       ).forEach {
         builder.withCacheConfiguration(it, defaultConfigWithRefDataTtl)
       }

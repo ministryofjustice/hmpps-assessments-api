@@ -24,18 +24,18 @@ class OffenderController(val offenderService: OffenderService) {
     path = [
       "/offender/crn/{crn}/eventId/{eventId}",
     ],
-    method = [RequestMethod.GET]
+    method = [RequestMethod.GET],
   )
   @Operation(description = "Get offender information")
   @ApiResponses(
     value = [
       ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
-      ApiResponse(responseCode = "200", description = "OK")
-    ]
+      ApiResponse(responseCode = "200", description = "OK"),
+    ],
   )
   fun getOffenderDetails(
     @Parameter(description = "Offender CRN", required = true) @PathVariable crn: String,
-    @Parameter(description = "Delius Event ID", required = true) @PathVariable eventId: Long
+    @Parameter(description = "Delius Event ID", required = true) @PathVariable eventId: Long,
   ): OffenderDto? {
     log.debug("Entered getOffenderDetails($crn, $eventId)")
 

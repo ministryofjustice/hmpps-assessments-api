@@ -7,14 +7,14 @@ import uk.gov.justice.digital.assessments.utils.RequestData
 
 @Service
 class AuthorService(
-  private val authorRepository: AuthorRepository
+  private val authorRepository: AuthorRepository,
 ) {
 
   fun getOrCreateAuthor(): AuthorEntity {
     val author = RequestData.getUserAuthSource()?.let { it ->
       authorRepository.findByUserIdAndUserAuthSource(
         RequestData.getUserId(),
-        it
+        it,
       )
     }
 
@@ -23,7 +23,7 @@ class AuthorService(
         userId = RequestData.getUserId(),
         userName = RequestData.getUserName(),
         userAuthSource = RequestData.getUserAuthSource(),
-        userFullName = RequestData.getUserFullName()
+        userFullName = RequestData.getUserFullName(),
       )
       return authorRepository.save(newAuthor)
     }

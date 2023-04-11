@@ -11,9 +11,8 @@ import uk.gov.justice.digital.assessments.testutils.IntegrationTest
 
 @SqlGroup(
   Sql(scripts = ["classpath:subject/before-test.sql"], config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED)),
-  Sql(scripts = ["classpath:subject/after-test.sql"], config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED), executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+  Sql(scripts = ["classpath:subject/after-test.sql"], config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED), executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD),
 )
-
 class SubjectRepositoryTest(@Autowired val subjectRepository: SubjectRepository) : IntegrationTest() {
   val crn = "dummy-crn-1"
 

@@ -10,7 +10,6 @@ class QuestionDtoTest {
 
   @Test
   fun `builds valid Question Schema DTO`() {
-
     val questionEntity = QuestionEntity(
       1L,
       UUID.randomUUID(),

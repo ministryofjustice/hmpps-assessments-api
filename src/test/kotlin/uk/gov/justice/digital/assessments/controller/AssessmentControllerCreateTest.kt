@@ -25,13 +25,13 @@ import java.util.UUID
 @SqlGroup(
   Sql(
     scripts = ["classpath:assessments/before-test.sql"],
-    config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED)
+    config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED),
   ),
   Sql(
     scripts = ["classpath:assessments/after-test.sql"],
     config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED),
-    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
-  )
+    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
+  ),
 )
 @AutoConfigureWebTestClient(timeout = "6000000")
 class AssessmentControllerCreateTest : IntegrationTest() {
@@ -58,8 +58,8 @@ class AssessmentControllerCreateTest : IntegrationTest() {
           CreateAssessmentDto(
             crn = "OX1232456",
             deliusEventId = eventID,
-            assessmentSchemaCode = AssessmentType.UPW
-          )
+            assessmentSchemaCode = AssessmentType.UPW,
+          ),
         )
         .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
         .exchange()
@@ -79,7 +79,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
             "crn": "CRN1",
             "deliusEventId": "1",
             "assessmentSchemaCode": "ROSH"
-          }"""
+          }""",
         )
         .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
         .exchange()
@@ -87,14 +87,13 @@ class AssessmentControllerCreateTest : IntegrationTest() {
         .expectBody<ErrorResponse>()
         .consumeWith {
           assertThat(it.responseBody?.developerMessage).contains(
-            "Cannot deserialize value of type `uk.gov.justice.digital.assessments.jpa.entities.AssessmentType` from String \"ROSH\""
+            "Cannot deserialize value of type `uk.gov.justice.digital.assessments.jpa.entities.AssessmentType` from String \"ROSH\"",
           )
         }
     }
 
     @Test
     fun `creating a new UPW assessment from crn and delius event id returns assessment with pre-populated Delius answers`() {
-
       val assessment = createDeliusAssessment(crn, eventID)
 
       assertThat(assessment?.assessmentUuid).isNotNull
@@ -177,7 +176,6 @@ class AssessmentControllerCreateTest : IntegrationTest() {
 
     @Test
     fun `creating a new UPW assessment from Delius returns disabilities`() {
-
       val assessment = createDeliusAssessment(crn, eventID)
 
       val answers = assessment?.episodes?.first()?.answers!!
@@ -221,11 +219,10 @@ class AssessmentControllerCreateTest : IntegrationTest() {
 
     @Test
     fun `should pre-populate answers with the 'mapped' type`() {
-
       val dto = CreateAssessmentDto(
         crn = "DX5678B",
         deliusEventId = eventID,
-        assessmentSchemaCode = AssessmentType.UPW
+        assessmentSchemaCode = AssessmentType.UPW,
       )
       val assessment = webTestClient.post().uri("/assessments")
         .bodyValue(dto)
@@ -245,11 +242,10 @@ class AssessmentControllerCreateTest : IntegrationTest() {
 
     @Test
     fun `should not populate pregnancy related details if offender is not pregnant`() {
-
       val dto = CreateAssessmentDto(
         crn = crn,
         deliusEventId = eventID,
-        assessmentSchemaCode = AssessmentType.UPW
+        assessmentSchemaCode = AssessmentType.UPW,
       )
       val assessment = webTestClient.post().uri("/assessments")
         .bodyValue(dto)
@@ -271,7 +267,6 @@ class AssessmentControllerCreateTest : IntegrationTest() {
 
     @Test
     fun `creating a new assessment from crn and delius event id returns assessment`() {
-
       val assessment = createDeliusAssessment(crn, eventID)
 
       assertThat(assessment?.assessmentUuid).isNotNull
@@ -319,7 +314,7 @@ class AssessmentControllerCreateTest : IntegrationTest() {
     val dto = CreateAssessmentDto(
       crn = crn,
       deliusEventId = deliusId,
-      assessmentSchemaCode = assessmentSchemaCode
+      assessmentSchemaCode = assessmentSchemaCode,
     )
     return webTestClient.post().uri("/assessments")
       .bodyValue(dto)

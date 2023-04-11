@@ -54,7 +54,7 @@ class ControllerAdvice {
     log.error("DuplicateOffenderRecordException: ${e.message} with extra information ${e.extraInfoMessage}")
     return ResponseEntity(
       ErrorResponse(status = 400, developerMessage = e.message, reason = e.reason.toString()),
-      HttpStatus.BAD_REQUEST
+      HttpStatus.BAD_REQUEST,
     )
   }
 
@@ -98,7 +98,7 @@ class ControllerAdvice {
   fun handle(e: ExternalApiEntityNotFoundException): ResponseEntity<ErrorResponse?> {
     log.info(
       "ApiClientEntityNotFoundException for external client ${e.client} method ${e.method} and url ${e.url}: {}",
-      e.message
+      e.message,
     )
     return ResponseEntity(ErrorResponse(status = 404, developerMessage = e.message), HttpStatus.NOT_FOUND)
   }
@@ -108,7 +108,7 @@ class ControllerAdvice {
   fun handle(e: ExternalApiUnknownException): ResponseEntity<ErrorResponse?> {
     log.error(
       "ExternalClientUnknownException for external client ${e.client} method ${e.method} and url ${e.url}: {}",
-      e.message
+      e.message,
     )
     return ResponseEntity(ErrorResponse(status = 500, developerMessage = e.message), HttpStatus.INTERNAL_SERVER_ERROR)
   }
@@ -118,7 +118,7 @@ class ControllerAdvice {
   fun handle(e: ExternalApiInvalidRequestException): ResponseEntity<ErrorResponse?> {
     log.error(
       "InvalidRequestException for external client ${e.client} method ${e.method} and url ${e.url}: {}",
-      e.message
+      e.message,
     )
     return ResponseEntity(ErrorResponse(status = 400, developerMessage = e.message), HttpStatus.BAD_REQUEST)
   }
@@ -128,7 +128,7 @@ class ControllerAdvice {
   fun handle(e: ExternalApiAuthorisationException): ResponseEntity<ErrorResponse?> {
     log.error(
       "ApiClientAuthorisationException for external client ${e.client} method ${e.method} and url ${e.url}: {}",
-      e.message
+      e.message,
     )
     return ResponseEntity(ErrorResponse(status = 401, developerMessage = e.message), HttpStatus.UNAUTHORIZED)
   }
@@ -173,16 +173,16 @@ class ControllerAdvice {
   fun handle(e: ExternalApiForbiddenException): ResponseEntity<ErrorResponse?> {
     log.error(
       "ApiClientForbiddenException for external client ${e.client} method ${e.method} and url ${e.url}: {}",
-      e.message
+      e.message,
     )
     return ResponseEntity(
       ErrorResponse(
         status = 403,
         developerMessage = e.message,
         moreInfo = e.moreInfo,
-        reason = e.reason.toString()
+        reason = e.reason.toString(),
       ),
-      HttpStatus.FORBIDDEN
+      HttpStatus.FORBIDDEN,
     )
   }
 
@@ -201,9 +201,9 @@ class ControllerAdvice {
       ErrorResponse(
         status = 500,
         developerMessage = "Internal Server Error. Check Logs",
-        userMessage = "An unexpected error has occurred"
+        userMessage = "An unexpected error has occurred",
       ),
-      HttpStatus.INTERNAL_SERVER_ERROR
+      HttpStatus.INTERNAL_SERVER_ERROR,
     )
   }
 }

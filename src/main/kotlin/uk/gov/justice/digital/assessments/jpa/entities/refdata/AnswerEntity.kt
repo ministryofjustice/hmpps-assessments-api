@@ -36,5 +36,5 @@ class AnswerEntity(
   val value: String? = null,
 
   @Column(name = "text")
-  val text: String? = null
+  val text: String? = null,
 )

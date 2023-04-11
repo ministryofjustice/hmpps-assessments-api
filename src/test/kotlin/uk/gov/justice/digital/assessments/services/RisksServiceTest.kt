@@ -36,7 +36,7 @@ class RisksServiceTest {
         crn = crn,
         name = Name(forename = "Dennis", surname = "Nedry"),
         dateOfBirth = LocalDate.of(1969, 1, 1),
-        registerFlags = emptyList()
+        registerFlags = emptyList(),
       )
 
       val registrations = risksService.getRegistrationsForAssessment(crn, 123456)
@@ -54,9 +54,9 @@ class RisksServiceTest {
         mappaRegistration = MappaRegistration(
           startDate = LocalDate.of(2023, 1, 1),
           level = Type("M1", "MAPPA Level 1"),
-          category = Type(code = "M2", description = "MAPPA Cat 2")
+          category = Type(code = "M2", description = "MAPPA Cat 2"),
         ),
-        registerFlags = emptyList()
+        registerFlags = emptyList(),
       )
 
       val registrations = risksService.getRegistrationsForAssessment(crn, 123456)
@@ -80,8 +80,8 @@ class RisksServiceTest {
             code = "IRMO",
             description = "Hate Crime",
             riskColour = "Red",
-          )
-        )
+          ),
+        ),
       )
 
       val registrations = risksService.getRegistrationsForAssessment(crn, 123456)
@@ -100,8 +100,8 @@ class RisksServiceTest {
             code = "IRMO",
             description = "Hate Crime",
             riskColour = "Red",
-          )
-        )
+          ),
+        ),
       )
 
       val registrations = risksService.getRegistrationsForAssessment(crn, 123456)

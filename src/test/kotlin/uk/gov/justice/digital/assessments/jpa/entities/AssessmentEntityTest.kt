@@ -40,9 +40,9 @@ class AssessmentEntityTest {
         codeDescription = "Code description",
         offenceSubCode = "Sub-code",
         subCodeDescription = "Sub-code description",
-        sentenceDate = LocalDate.of(2000, 1, 1)
+        sentenceDate = LocalDate.of(2000, 1, 1),
       ),
-      author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
+      author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
     )
     assertThat(newEpisode.episodeId).isNull()
     assertThat(newEpisode.changeReason).isEqualTo("Change of Circs")
@@ -60,9 +60,9 @@ class AssessmentEntityTest {
           createdDate = LocalDateTime.now(),
           assessmentType = AssessmentType.UPW,
           author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
-          assessment = AssessmentEntity()
-        )
-      )
+          assessment = AssessmentEntity(),
+        ),
+      ),
     )
     assertThat(assessment.episodes).hasSize(1)
     val newEpisode = assessment.newEpisode(
@@ -73,9 +73,9 @@ class AssessmentEntityTest {
         codeDescription = "Code description",
         offenceSubCode = "Sub-code",
         subCodeDescription = "Sub-code description",
-        sentenceDate = LocalDate.of(2000, 1, 1)
+        sentenceDate = LocalDate.of(2000, 1, 1),
       ),
-      author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
+      author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
     )
     assertThat(newEpisode.episodeId).isEqualTo(episodeId)
     assertThat(newEpisode.changeReason).isEqualTo("Change of Circs")
@@ -93,9 +93,9 @@ class AssessmentEntityTest {
           createdDate = LocalDateTime.now(),
           assessmentType = AssessmentType.UPW,
           author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
-          assessment = AssessmentEntity()
-        )
-      )
+          assessment = AssessmentEntity(),
+        ),
+      ),
     )
     val episode = assessment.getCurrentEpisode()
     assertThat(episode?.episodeId).isEqualTo(episodeId)
@@ -114,9 +114,9 @@ class AssessmentEntityTest {
           endDate = LocalDateTime.now().minusDays(1),
           assessmentType = AssessmentType.UPW,
           author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
-          assessment = AssessmentEntity()
-        )
-      )
+          assessment = AssessmentEntity(),
+        ),
+      ),
     )
     val episode = assessment.getCurrentEpisode()
     assertThat(episode).isNull()

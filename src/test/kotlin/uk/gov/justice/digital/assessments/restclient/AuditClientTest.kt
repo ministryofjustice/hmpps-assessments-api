@@ -35,16 +35,15 @@ class AuditClientTest : IntegrationTest() {
           "user id",
           "AUser",
           "DELIUS",
-          "Full Name"
+          "Full Name",
         ),
-        null
-      )
-    )
+        null,
+      ),
+    ),
   )
 
   @Test
   fun `submit new audit event`() {
-
     assertDoesNotThrow {
       auditClient.createAuditEvent(auditEvent)
     }
@@ -52,7 +51,6 @@ class AuditClientTest : IntegrationTest() {
 
   @Test
   fun `throws exception when submit new audit event fails`() {
-
     assertThrows<AuditFailureException> {
       auditClient.createAuditEvent(auditEvent.copy(who = "error-user@justice.gov.uk"))
     }

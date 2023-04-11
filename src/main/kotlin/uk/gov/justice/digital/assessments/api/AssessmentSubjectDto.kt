@@ -28,7 +28,7 @@ class AssessmentSubjectDto(
   val createdDate: LocalDateTime? = null,
 
   @Schema(description = "Calculated age of subject", example = "22")
-  val age: Int? = null
+  val age: Int? = null,
 ) {
   companion object {
     fun from(subject: SubjectEntity?, clock: Clock): AssessmentSubjectDto? {
@@ -40,7 +40,7 @@ class AssessmentSubjectDto(
         subject.dateOfBirth,
         subject.gender,
         subject.createdDate,
-        calculateAge(subject.dateOfBirth, clock)
+        calculateAge(subject.dateOfBirth, clock),
       )
     }
 

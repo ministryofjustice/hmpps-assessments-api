@@ -10,7 +10,7 @@ import java.util.UUID
 
 class QuestionDependenciesTest(
   @Autowired
-  private val questionDependencyService: QuestionDependencyService
+  private val questionDependencyService: QuestionDependencyService,
 ) : IntegrationTest() {
   val subjectUuid: UUID = UUID.fromString("e7f8205b-1f2a-4578-943c-154d2a6ee11e")
   val subjectQuestionCode: String = "cultural_religious_adjustment_details"

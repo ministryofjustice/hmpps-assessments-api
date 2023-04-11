@@ -23,7 +23,7 @@ data class DisabilityAnswerDto(
         code = deliusDisability.type.code,
         description = deliusDisability.type.description,
         notes = deliusDisability.notes,
-        adjustments = deliusDisability.provisions
+        adjustments = deliusDisability.provisions,
       )
     }
   }

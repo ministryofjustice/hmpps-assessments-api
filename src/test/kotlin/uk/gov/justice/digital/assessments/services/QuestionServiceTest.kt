@@ -36,7 +36,7 @@ class QuestionServiceTest {
     questionRepository,
     questionGroupRepository,
     groupRepository,
-    dependencyService
+    dependencyService,
   )
 
   private val questionId = 1L
@@ -48,12 +48,12 @@ class QuestionServiceTest {
     groupId = 1,
     groupUuid = groupUuid,
     groupCode = "Test Group",
-    contents = contents
+    contents = contents,
   )
   private val question = QuestionEntity(
     questionId = questionId,
     questionUuid = questionUuid,
-    questionCode = "question_code"
+    questionCode = "question_code",
   )
 
   private val groupWithCheckboxUuid = UUID.randomUUID()
@@ -62,14 +62,14 @@ class QuestionServiceTest {
     groupId = 10,
     groupUuid = groupWithCheckboxUuid,
     groupCode = "group with checkboxes",
-    contents = groupWithCheckboxContents
+    contents = groupWithCheckboxContents,
   )
   private val checkboxQuestionUuid = UUID.randomUUID()
   private val checkboxQuestion = QuestionEntity(
     questionId = 2L,
     questionUuid = checkboxQuestionUuid,
     answerType = "inline-checkboxes:previous_offences",
-    questionCode = "question_code_previous_offences"
+    questionCode = "question_code_previous_offences",
   )
   private val checkboxGroupContents = mutableListOf<QuestionGroupEntity>()
   val checkboxGroupUuid1 = UUID.randomUUID()
@@ -77,13 +77,13 @@ class QuestionServiceTest {
     groupId = 11,
     groupUuid = checkboxGroupUuid1,
     groupCode = "previous_offences",
-    contents = checkboxGroupContents
+    contents = checkboxGroupContents,
   )
   private val checkboxSubQuestion1Id = UUID.randomUUID()
   private val checkboxSubQuestion1 = QuestionEntity(
     questionId = 17,
     questionUuid = checkboxSubQuestion1Id,
-    questionCode = "question_code"
+    questionCode = "question_code",
   )
 
   @BeforeEach
@@ -97,8 +97,8 @@ class QuestionServiceTest {
         displayOrder = 1,
         question = question,
         nestedGroup = null,
-        readOnly = false
-      )
+        readOnly = false,
+      ),
     )
 
     groupWithCheckboxContents.add(
@@ -110,8 +110,8 @@ class QuestionServiceTest {
         displayOrder = 1,
         question = checkboxQuestion,
         nestedGroup = null,
-        readOnly = false
-      )
+        readOnly = false,
+      ),
     )
     checkboxGroupContents.add(
       QuestionGroupEntity(
@@ -121,8 +121,8 @@ class QuestionServiceTest {
         contentType = "question",
         displayOrder = 1,
         question = checkboxSubQuestion1,
-        nestedGroup = null
-      )
+        nestedGroup = null,
+      ),
     )
   }
 
@@ -131,7 +131,7 @@ class QuestionServiceTest {
     every { questionRepository.findByQuestionUuid(questionUuid) } returns QuestionEntity(
       questionId = questionId,
       questionUuid = questionUuid,
-      questionCode = "question_code"
+      questionCode = "question_code",
     )
 
     val questionSchemaDto = questionService.getQuestion(questionUuid)
@@ -142,8 +142,8 @@ class QuestionServiceTest {
         questionId = questionId,
         questionUuid = questionUuid,
         questionCode = "question_code",
-        answerDtos = emptySet()
-      )
+        answerDtos = emptySet(),
+      ),
     )
   }
 
@@ -182,7 +182,7 @@ class QuestionServiceTest {
         override val contentCount = 5L
         override val groupCount = 2L
         override val questionCount = 3L
-      }
+      },
     )
 
     val summaries = questionService.listGroups()
@@ -240,7 +240,7 @@ class QuestionServiceTest {
       questionId = 2,
       questionUuid = UUID.randomUUID(),
       questionCode = "second_question",
-      answerGroup = answerSchemaGroup
+      answerGroup = answerSchemaGroup,
     )
 
     val thirdQuestion = QuestionEntity(
@@ -257,7 +257,7 @@ class QuestionServiceTest {
         group = questionGroup,
         question = null,
         nestedGroup = null,
-      )
+      ),
     )
 
     childQuestionGroupContents.add(
@@ -268,7 +268,7 @@ class QuestionServiceTest {
         group = childQuestionGroup,
         question = firstQuestion,
         nestedGroup = null,
-      )
+      ),
     )
 
     questionGroupContents.add(
@@ -279,7 +279,7 @@ class QuestionServiceTest {
         group = questionGroup,
         question = secondQuestion,
         nestedGroup = null,
-      )
+      ),
     )
 
     questionGroupContents.add(
@@ -290,7 +290,7 @@ class QuestionServiceTest {
         group = questionGroup,
         question = thirdQuestion,
         nestedGroup = null,
-      )
+      ),
     )
 
     val questionDependencies = QuestionDependencies(
@@ -301,8 +301,8 @@ class QuestionServiceTest {
           triggerAnswerValue = "YES",
           subjectQuestionSchema = thirdQuestion,
           displayInline = true,
-        )
-      )
+        ),
+      ),
     )
 
     every { dependencyService.dependencies() } returns questionDependencies
@@ -325,7 +325,7 @@ class QuestionServiceTest {
     assertThat(
       result
         .map { it as GroupQuestionDto }
-        .map { it.questionId }
+        .map { it.questionId },
     ).contains(
       firstQuestion.questionUuid,
       secondQuestion.questionUuid,
@@ -336,7 +336,7 @@ class QuestionServiceTest {
       .filter { it.questionId == secondQuestion.questionUuid }
       .forEach {
         assertThat(
-          it.answerDtos?.first()?.conditionals?.first()?.conditional
+          it.answerDtos?.first()?.conditionals?.first()?.conditional,
         ).isEqualTo(thirdQuestion.questionCode)
       }
   }

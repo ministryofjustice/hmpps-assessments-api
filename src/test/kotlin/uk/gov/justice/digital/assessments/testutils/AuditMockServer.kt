@@ -20,8 +20,8 @@ class AuditMockServer : WireMockServer(9008) {
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
             .withStatus(500)
-            .withBody(auditError)
-        )
+            .withBody(auditError),
+        ),
     )
 
     stubFor(
@@ -29,8 +29,8 @@ class AuditMockServer : WireMockServer(9008) {
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
-            .withStatus(201)
-        )
+            .withStatus(201),
+        ),
     )
   }
 

@@ -27,13 +27,12 @@ class TelemetryServiceTest {
 
   @Test
   fun `logs custom event to application insights`() {
-
     val expectedProperties = mapOf(
       "author" to author.userName,
       "crn" to crn,
       "assessmentUUID" to assessmentUuid.toString(),
       "episodeUUID" to episodeUuid.toString(),
-      "assessmentType" to assessmentType.name
+      "assessmentType" to assessmentType.name,
     )
 
     justRun { telemetryClient.trackEvent("arnAssessmentCreated", any(), any()) }

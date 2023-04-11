@@ -5,5 +5,5 @@ import uk.gov.justice.digital.assessments.api.answers.AnswersDto
 
 class UpdateAssessmentEpisodeDto(
   @Schema(description = "Answers associated with this episode")
-  val answers: AnswersDto = mapOf()
+  val answers: AnswersDto = mapOf(),
 )

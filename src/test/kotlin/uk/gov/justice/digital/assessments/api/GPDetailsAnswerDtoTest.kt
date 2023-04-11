@@ -33,16 +33,16 @@ class GPDetailsAnswerDtoTest {
       relationship = "",
       relationshipType = RelationshipType(
         code = "",
-        description = ""
+        description = "",
       ),
       name = Name(
         forename = "",
         middleName = null,
-        surname = ""
+        surname = "",
       ),
       telephoneNumber = null,
       mobileNumber = null,
-      address = null
+      address = null,
     )
   }
 }

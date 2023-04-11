@@ -58,7 +58,7 @@ class AssessRisksAndNeedsApiClientTest : IntegrationTest() {
     assessRisksAndNeedsApiMockServer.stubGetRSRPredictorsForOffenderAndOffencesWithCurrentOffences(
       final,
       episodeUuid,
-      "X1345"
+      "X1345",
     )
     val offenderAndOffencesDto = OffenderAndOffencesDto(
       crn = "X1345",
@@ -100,20 +100,20 @@ class AssessRisksAndNeedsApiClientTest : IntegrationTest() {
           kidnapping = true,
           firearmPossession = true,
           robbery = true,
-          offencesWithWeapon = true
+          offencesWithWeapon = true,
         ),
         currentOffences = CurrentOffences(
           firearmPossession = true,
-          offencesWithWeapon = true
-        )
-      )
+          offencesWithWeapon = true,
+        ),
+      ),
     )
 
     val riskPredictors = assessRiskAndNeedsApiRestClient.getRiskPredictors(
       PredictorType.RSR,
       offenderAndOffencesDto,
       final,
-      episodeUuid
+      episodeUuid,
     )
     assertThat(riskPredictors).isEqualTo(
       RiskPredictorsDto(
@@ -124,8 +124,8 @@ class AssessRisksAndNeedsApiClientTest : IntegrationTest() {
           "OSPC" to Score(level = ScoreLevel.NOT_APPLICABLE, score = BigDecimal("0"), isValid = false),
           "OSPI" to Score(level = ScoreLevel.NOT_APPLICABLE, score = BigDecimal("0"), isValid = false),
         ),
-        calculatedAt = "2021-08-09 14:46:48"
-      )
+        calculatedAt = "2021-08-09 14:46:48",
+      ),
     )
   }
 

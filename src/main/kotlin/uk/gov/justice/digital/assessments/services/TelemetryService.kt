@@ -9,7 +9,7 @@ import java.util.UUID
 
 @Service
 class TelemetryService(
-  private val telemetryClient: TelemetryClient
+  private val telemetryClient: TelemetryClient,
 ) {
 
   fun trackAssessmentEvent(
@@ -19,14 +19,14 @@ class TelemetryService(
     assessmentUuid: UUID,
     episodeUuid: UUID,
     assessmentType: AssessmentType,
-    additionalFields: Map<String, String>? = null
+    additionalFields: Map<String, String>? = null,
   ) {
     val properties = mutableMapOf(
       "author" to author.userName,
       "crn" to crn,
       "assessmentUUID" to assessmentUuid.toString(),
       "episodeUUID" to episodeUuid.toString(),
-      "assessmentType" to assessmentType.name
+      "assessmentType" to assessmentType.name,
     )
     if (additionalFields != null) {
       properties.putAll(additionalFields)
@@ -41,7 +41,7 @@ class TelemetryService(
     episodeUuid: UUID,
     assessmentType: AssessmentType,
     clonedFromEpisodeUUID: UUID,
-    clonedFromCompletedDate: LocalDateTime
+    clonedFromCompletedDate: LocalDateTime,
   ) {
     trackAssessmentEvent(
       TelemetryEventType.ASSESSMENT_CLONED,
@@ -52,8 +52,8 @@ class TelemetryService(
       assessmentType,
       mapOf(
         "mostRecentEpisodeUUID" to clonedFromEpisodeUUID.toString(),
-        "mostRecentEpisodeCompletedDate" to clonedFromCompletedDate.toString()
-      )
+        "mostRecentEpisodeCompletedDate" to clonedFromCompletedDate.toString(),
+      ),
     )
   }
 }
@@ -63,5 +63,5 @@ enum class TelemetryEventType(val eventName: String) {
   ASSESSMENT_CLOSED("arnAssessmentClosed"),
   ASSESSMENT_REALLOCATED("arnAssessmentReallocated"),
   ASSESSMENT_COMPLETE("arnAssessmentCompleted"),
-  ASSESSMENT_CLONED("arnAssessmentCloned")
+  ASSESSMENT_CLONED("arnAssessmentCloned"),
 }

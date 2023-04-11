@@ -39,8 +39,8 @@ class AssessmentController(
   @ApiResponses(
     value = [
       ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
-      ApiResponse(responseCode = "200", description = "OK")
-    ]
+      ApiResponse(responseCode = "200", description = "OK"),
+    ],
   )
   @PreAuthorize("hasRole('ROLE_PROBATION')")
   fun createNewAssessment(@RequestBody createAssessmentDto: CreateAssessmentDto): AssessmentDto {
@@ -52,15 +52,15 @@ class AssessmentController(
   @ApiResponses(
     value = [
       ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
-      ApiResponse(responseCode = "200", description = "OK")
-    ]
+      ApiResponse(responseCode = "200", description = "OK"),
+    ],
   )
   @PreAuthorize("hasAnyRole('ROLE_PROBATION','ROLE_ARN_READ_ONLY')")
   fun getAssessmentSubject(
     @Parameter(
       description = "Assessment UUID",
-      required = true
-    ) @PathVariable assessmentUuid: UUID
+      required = true,
+    ) @PathVariable assessmentUuid: UUID,
   ): AssessmentSubjectDto {
     return assessmentService.getAssessmentSubject(assessmentUuid)
   }
@@ -70,16 +70,16 @@ class AssessmentController(
   @ApiResponses(
     value = [
       ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
-      ApiResponse(responseCode = "200", description = "OK")
-    ]
+      ApiResponse(responseCode = "200", description = "OK"),
+    ],
   )
   @PreAuthorize("hasRole('ROLE_PROBATION')")
   fun createNewAssessmentEpisode(
     @Parameter(description = "Assessment UUID", required = true, example = "1234") @PathVariable assessmentUuid: UUID,
     @Parameter(
       description = "Reason for the new Episode of Change",
-      required = true
-    ) @RequestBody createAssessmentEpisodeDto: CreateAssessmentEpisodeDto
+      required = true,
+    ) @RequestBody createAssessmentEpisodeDto: CreateAssessmentEpisodeDto,
   ): AssessmentEpisodeDto? {
     log.debug("Entered createNewAssessmentEpisode")
     return assessmentService.createNewEpisode(
@@ -95,16 +95,16 @@ class AssessmentController(
   @ApiResponses(
     value = [
       ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
-      ApiResponse(responseCode = "200", description = "OK")
-    ]
+      ApiResponse(responseCode = "200", description = "OK"),
+    ],
   )
   @PreAuthorize("hasRole('ROLE_PROBATION')")
   fun getAllEpisodesForAssessment(
     @Parameter(
       description = "Assessment UUID",
       required = true,
-      example = "1234"
-    ) @PathVariable assessmentUuid: UUID
+      example = "1234",
+    ) @PathVariable assessmentUuid: UUID,
   ): Collection<AssessmentEpisodeDto>? {
     return assessmentService.getAssessmentEpisodes(assessmentUuid)
   }
@@ -114,16 +114,16 @@ class AssessmentController(
   @ApiResponses(
     value = [
       ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
-      ApiResponse(responseCode = "200", description = "OK")
-    ]
+      ApiResponse(responseCode = "200", description = "OK"),
+    ],
   )
   @PreAuthorize("hasRole('ROLE_PROBATION')")
   fun getCurrentEpisodeForAssessment(
     @Parameter(
       description = "Assessment ID",
       required = true,
-      example = "1234"
-    ) @PathVariable assessmentUuid: UUID
+      example = "1234",
+    ) @PathVariable assessmentUuid: UUID,
   ): AssessmentEpisodeDto {
     return assessmentService.getCurrentAssessmentEpisode(assessmentUuid)
   }
@@ -133,8 +133,8 @@ class AssessmentController(
   @ApiResponses(
     value = [
       ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
-      ApiResponse(responseCode = "200", description = "OK")
-    ]
+      ApiResponse(responseCode = "200", description = "OK"),
+    ],
   )
   @PreAuthorize("hasRole('ROLE_PROBATION')")
   fun getCurrentEpisode(@PathVariable crn: String): AssessmentEpisodeDto {
@@ -147,21 +147,21 @@ class AssessmentController(
   @ApiResponses(
     value = [
       ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
-      ApiResponse(responseCode = "200", description = "OK")
-    ]
+      ApiResponse(responseCode = "200", description = "OK"),
+    ],
   )
   @PreAuthorize("hasRole('ROLE_PROBATION')")
   fun getEpisodeForAssessment(
     @Parameter(
       description = "Assessment ID",
       required = true,
-      example = "1234"
+      example = "1234",
     ) @PathVariable assessmentUuid: UUID,
     @Parameter(
       description = "Episode ID",
       required = true,
-      example = "1234"
-    ) @PathVariable episodeUuid: UUID
+      example = "1234",
+    ) @PathVariable episodeUuid: UUID,
   ): AssessmentEpisodeDto {
     return AssessmentEpisodeDto.from(assessmentService.getEpisode(assessmentUuid, episodeUuid))
   }
@@ -171,16 +171,16 @@ class AssessmentController(
   @ApiResponses(
     value = [
       ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
-      ApiResponse(responseCode = "200", description = "OK")
-    ]
+      ApiResponse(responseCode = "200", description = "OK"),
+    ],
   )
   @PreAuthorize("hasRole('ROLE_ARN_READ_ONLY')")
   fun getEpisode(
     @Parameter(
       description = "Episode UUID",
       required = true,
-      example = "08206a0b-563a-49b3-8cd2-b21fabdc79ca"
-    ) @PathVariable episodeUuid: UUID
+      example = "08206a0b-563a-49b3-8cd2-b21fabdc79ca",
+    ) @PathVariable episodeUuid: UUID,
   ): AssessmentEpisodeDto {
     return AssessmentEpisodeDto.from(assessmentService.getEpisodeById(episodeUuid))
   }
@@ -191,14 +191,14 @@ class AssessmentController(
     value = [
       ApiResponse(responseCode = "200", description = "OK"),
       ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
-      ApiResponse(responseCode = "422", description = "The update couldn't be processed")
-    ]
+      ApiResponse(responseCode = "422", description = "The update couldn't be processed"),
+    ],
   )
   @PreAuthorize("hasRole('ROLE_PROBATION')")
   fun updateAssessmentEpisode(
     @Parameter(description = "Assessment UUID", required = true, example = "1234") @PathVariable assessmentUuid: UUID,
     @Parameter(description = "Episode UUID", required = true) @PathVariable episodeUuid: UUID,
-    @Parameter(description = "Episode Answers", required = true) @RequestBody episodeAnswers: UpdateAssessmentEpisodeDto
+    @Parameter(description = "Episode Answers", required = true) @RequestBody episodeAnswers: UpdateAssessmentEpisodeDto,
   ): ResponseEntity<AssessmentEpisodeDto> {
     val episode = assessmentService.getEpisode(assessmentUuid, episodeUuid)
     return updateResponse(assessmentUpdateService.updateEpisode(episode, episodeAnswers))
@@ -210,8 +210,8 @@ class AssessmentController(
     value = [
       ApiResponse(responseCode = "200", description = "OK"),
       ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
-      ApiResponse(responseCode = "422", description = "The update couldn't be processed")
-    ]
+      ApiResponse(responseCode = "422", description = "The update couldn't be processed"),
+    ],
   )
   @PreAuthorize("hasRole('ROLE_PROBATION')")
   fun closeAssessmentEpisode(
@@ -228,18 +228,18 @@ class AssessmentController(
     value = [
       ApiResponse(responseCode = "200", description = "OK"),
       ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
-      ApiResponse(responseCode = "422", description = "The update couldn't be processed")
-    ]
+      ApiResponse(responseCode = "422", description = "The update couldn't be processed"),
+    ],
   )
   @PreAuthorize("hasRole('ROLE_PROBATION')")
   fun updateAssessmentEpisode(
     @Parameter(description = "Assessment UUID", required = true, example = "1234") @PathVariable assessmentUuid: UUID,
-    @Parameter(description = "Episode Answers", required = true) @RequestBody episodeAnswers: UpdateAssessmentEpisodeDto
+    @Parameter(description = "Episode Answers", required = true) @RequestBody episodeAnswers: UpdateAssessmentEpisodeDto,
   ): ResponseEntity<AssessmentEpisodeDto> {
     val currentEpisode = assessmentService.getCurrentEpisode(assessmentUuid)
 
     return updateResponse(
-      assessmentUpdateService.updateCurrentEpisode(currentEpisode, episodeAnswers)
+      assessmentUpdateService.updateCurrentEpisode(currentEpisode, episodeAnswers),
     )
   }
 
@@ -250,8 +250,8 @@ class AssessmentController(
     value = [
       ApiResponse(responseCode = "200", description = "OK"),
       ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
-      ApiResponse(responseCode = "422", description = "The update couldn't be processed")
-    ]
+      ApiResponse(responseCode = "422", description = "The update couldn't be processed"),
+    ],
   )
   @PreAuthorize("hasRole('ROLE_PROBATION')")
   fun completeAssessmentCurrentEpisode(
@@ -267,8 +267,8 @@ class AssessmentController(
     value = [
       ApiResponse(responseCode = "200", description = "OK"),
       ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
-      ApiResponse(responseCode = "422", description = "The update couldn't be processed")
-    ]
+      ApiResponse(responseCode = "422", description = "The update couldn't be processed"),
+    ],
   )
   @PreAuthorize("hasRole('ROLE_PROBATION')")
   fun completeAssessmentEpisode(
@@ -280,7 +280,7 @@ class AssessmentController(
   }
 
   private fun updateResponse(
-    assessmentEpisode: AssessmentEpisodeDto
+    assessmentEpisode: AssessmentEpisodeDto,
   ): ResponseEntity<AssessmentEpisodeDto> {
     return ResponseEntity(assessmentEpisode, HttpStatus.OK)
   }

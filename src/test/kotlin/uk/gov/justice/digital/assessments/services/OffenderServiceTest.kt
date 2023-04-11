@@ -50,7 +50,7 @@ class OffenderServiceTest {
       name = Name(
         forename = "forename",
         middleName = "middleName",
-        surname = "surname"
+        surname = "surname",
       ),
       dateOfBirth = LocalDate.of(1989, 1, 1),
       genderIdentity = "PREFER TO SELF DESCRIBE",
@@ -61,21 +61,21 @@ class OffenderServiceTest {
         district = "Sheffield City Centre",
         county = "South Yorkshire",
         postcode = "S3 7BS",
-        town = "Sheffield"
+        town = "Sheffield",
       ),
       sentence = uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.Sentence(
         startDate = LocalDate.of(2020, 2, 1),
         mainOffence = MainOffence(
           category = Type(
             code = "Code",
-            description = "Code description"
+            description = "Code description",
           ),
           subCategory = Type(
             code = "Sub code",
-            description = "Sub code description"
-          )
-        )
-      )
+            description = "Sub code description",
+          ),
+        ),
+      ),
     )
   }
 }

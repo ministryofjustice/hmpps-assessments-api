@@ -8,7 +8,7 @@ import java.util.UUID
 
 @Service
 class SubjectService(
-  private val assessmentRepository: AssessmentRepository
+  private val assessmentRepository: AssessmentRepository,
 ) {
 
   fun getSubjectForAssessment(assessmentUuid: UUID): SubjectEntity {
