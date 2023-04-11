@@ -26,7 +26,7 @@ class AuditRestClient {
   internal lateinit var auditPathTemplate: String
 
   fun createAuditEvent(
-    auditEvent: AuditEvent
+    auditEvent: AuditEvent,
   ) {
     AssessRisksAndNeedsApiRestClient.log.info("Submitting audit event ${auditEvent.what} for User ${auditEvent.who}")
     val path = "$auditPathTemplate/audit"
@@ -37,8 +37,8 @@ class AuditRestClient {
         Mono.error(
           AuditFailureException(
             "Failed to Audit event ${auditEvent.what} " +
-              "for User ${auditEvent.who} by user ${auditEvent.who} for reason ${it.message}"
-          )
+              "for User ${auditEvent.who} by user ${auditEvent.who} for reason ${it.message}",
+          ),
         )
       }
       .block().also { log.info("Audited event ${auditEvent.what} for User ${auditEvent.who}") }

@@ -18,7 +18,7 @@ import java.util.UUID
 @Service
 class AssessmentReferenceDataService(
   private val assessmentRepository: AssessmentRepository,
-  private val questionService: QuestionService
+  private val questionService: QuestionService,
 ) {
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)

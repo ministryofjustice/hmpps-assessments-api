@@ -13,8 +13,8 @@ class CommunityApiMockServer : WireMockServer(9096) {
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
-            .withBody(laoSuccess)
-        )
+            .withBody(laoSuccess),
+        ),
     )
     stubFor(
       WireMock.get(WireMock.urlPathMatching("/secure/offenders/crn/(OX[a-zA-Z0-9]*)/user/([a-zA-Z0-9/-]*)/userAccess"))
@@ -22,8 +22,8 @@ class CommunityApiMockServer : WireMockServer(9096) {
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
             .withStatus(403)
-            .withBody(laoFailure)
-        )
+            .withBody(laoFailure),
+        ),
     )
     stubFor(
       WireMock.get(WireMock.urlPathMatching("/secure/offenders/crn/invalidNotFound/user/([a-zA-Z0-9/-]*)/userAccess"))
@@ -31,8 +31,8 @@ class CommunityApiMockServer : WireMockServer(9096) {
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
             .withStatus(404)
-            .withBody("{\"status\":\"404\",\"developerMessage\":\"The offender is not found\"}")
-        )
+            .withBody("{\"status\":\"404\",\"developerMessage\":\"The offender is not found\"}"),
+        ),
     )
     stubFor(
       WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/invalidBadRequest/user/user1/userAccess"))
@@ -40,8 +40,8 @@ class CommunityApiMockServer : WireMockServer(9096) {
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
             .withStatus(400)
-            .withBody("{\"status\":\"400\",\"developerMessage\":\"Invalid CRN invalidBadRequest\"}")
-        )
+            .withBody("{\"status\":\"400\",\"developerMessage\":\"Invalid CRN invalidBadRequest\"}"),
+        ),
     )
     stubFor(
       WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/invalidUnauthorized/user/user1/userAccess"))
@@ -49,8 +49,8 @@ class CommunityApiMockServer : WireMockServer(9096) {
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
             .withStatus(401)
-            .withBody("{\"status\":\"401\",\"developerMessage\":\"Not authorised\"}")
-        )
+            .withBody("{\"status\":\"401\",\"developerMessage\":\"Not authorised\"}"),
+        ),
     )
     stubFor(
       WireMock.get(WireMock.urlEqualTo("/secure/offenders/crn/invalidNotKnow/user/user1/userAccess"))
@@ -58,8 +58,8 @@ class CommunityApiMockServer : WireMockServer(9096) {
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
             .withStatus(422)
-            .withBody("{\"status\":\"422\",\"developerMessage\":\"unprocessable\"}")
-        )
+            .withBody("{\"status\":\"422\",\"developerMessage\":\"unprocessable\"}"),
+        ),
     )
   }
 

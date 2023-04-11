@@ -22,7 +22,7 @@ data class CheckboxGroupDto(
   val helpText: String? = null,
 
   @Schema(description = "Questions and Groups")
-  val contents: List<GroupContentDto>
+  val contents: List<GroupContentDto>,
 ) : GroupContentDto {
   companion object {
     fun from(group: GroupEntity, contents: List<GroupContentDto>): CheckboxGroupDto {
@@ -32,7 +32,7 @@ data class CheckboxGroupDto(
         title = group.heading,
         subheading = group.subheading,
         helpText = group.helpText,
-        contents = contents
+        contents = contents,
       )
     }
   }

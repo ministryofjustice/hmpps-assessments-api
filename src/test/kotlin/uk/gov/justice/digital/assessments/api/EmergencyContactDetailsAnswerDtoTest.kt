@@ -11,7 +11,6 @@ class EmergencyContactDetailsAnswerDtoTest {
 
   @Test
   fun `should map empty delius values to empty list values in dto`() {
-
     // Given
     val personalContact = createEmptyPersonalContact()
 
@@ -35,16 +34,16 @@ class EmergencyContactDetailsAnswerDtoTest {
       relationship = "",
       relationshipType = RelationshipType(
         code = "",
-        description = ""
+        description = "",
       ),
       name = Name(
         forename = "",
         middleName = null,
-        surname = ""
+        surname = "",
       ),
       telephoneNumber = null,
       mobileNumber = null,
-      address = null
+      address = null,
     )
   }
 }

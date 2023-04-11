@@ -22,7 +22,7 @@ data class AssessmentDto(
   val subject: SubjectDto? = null,
 
   @Schema(description = "assessment episodes")
-  var episodes: Collection<AssessmentEpisodeDto> = emptyList()
+  var episodes: Collection<AssessmentEpisodeDto> = emptyList(),
 
 ) {
 
@@ -34,7 +34,7 @@ data class AssessmentDto(
         assessment.createdDate,
         assessment.completedDate,
         assessment.subject.toSubjectDto(),
-        assessment.let { AssessmentEpisodeDto.from(it.episodes) }
+        assessment.let { AssessmentEpisodeDto.from(it.episodes) },
       )
     }
 
@@ -46,7 +46,7 @@ data class AssessmentDto(
           it.pnc,
           it.crn,
           it.dateOfBirth,
-          it.gender
+          it.gender,
         )
       }
     }

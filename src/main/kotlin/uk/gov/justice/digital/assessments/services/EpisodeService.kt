@@ -18,7 +18,7 @@ class EpisodeService(
   private val assessmentReferenceDataService: AssessmentReferenceDataService,
   private val cloneAssessmentExcludedQuestionsRepository: CloneAssessmentExcludedQuestionsRepository,
   private val telemetryService: TelemetryService,
-  private val auditService: AuditService
+  private val auditService: AuditService,
 ) {
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
@@ -28,7 +28,7 @@ class EpisodeService(
 
   fun prePopulateEpisodeFromDelius(
     episode: AssessmentEpisodeEntity,
-    caseDetails: CaseDetails?
+    caseDetails: CaseDetails?,
 
   ) {
     log.info("Pre-populating episode from Delius")
@@ -39,7 +39,7 @@ class EpisodeService(
 
   fun prePopulateFromPreviousEpisodes(
     newEpisode: AssessmentEpisodeEntity,
-    previousEpisodes: List<AssessmentEpisodeEntity>
+    previousEpisodes: List<AssessmentEpisodeEntity>,
   ): AssessmentEpisodeEntity {
     log.debug("Entered prepopulateFromPreviousEpisodes")
     val orderedPreviousEpisodes = previousEpisodes.filter {
@@ -73,12 +73,12 @@ class EpisodeService(
 
   private fun newEpisodeAnswerIsEmpty(
     newEpisode: AssessmentEpisodeEntity,
-    answer: Map.Entry<String, List<Any>>
+    answer: Map.Entry<String, List<Any>>,
   ) = newEpisode.answers[answer.key]?.isEmpty() == true
 
   private fun newEpisodeAnswerIsNull(
     newEpisode: AssessmentEpisodeEntity,
-    answer: Map.Entry<String, List<Any>>
+    answer: Map.Entry<String, List<Any>>,
   ) = newEpisode.answers[answer.key] == null
 
   private fun isAddressField(questionCode: String): Boolean {
@@ -99,8 +99,8 @@ class EpisodeService(
       episode.author,
       mapOf(
         "previousEpisodeUUID" to previousEpisode.episodeUuid,
-        "previousEpisodeCompletedDate" to previousEpisode.endDate!!
-      )
+        "previousEpisodeCompletedDate" to previousEpisode.endDate!!,
+      ),
     )
     episode.assessment.subject?.crn?.let {
       telemetryService.trackAssessmentClonedEvent(
@@ -110,7 +110,7 @@ class EpisodeService(
         episode.episodeUuid,
         episode.assessmentType,
         previousEpisode.episodeUuid,
-        previousEpisode.endDate!!
+        previousEpisode.endDate!!,
       )
     }
   }

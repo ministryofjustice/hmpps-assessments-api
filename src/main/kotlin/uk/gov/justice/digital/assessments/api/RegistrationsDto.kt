@@ -23,7 +23,7 @@ data class RegistrationsDto(
             it.startDate,
           )
         },
-        caseDetails.registerFlags.orEmpty().map { Flag(it.code, it.description, it.riskColour.orEmpty()) }
+        caseDetails.registerFlags.orEmpty().map { Flag(it.code, it.description, it.riskColour.orEmpty()) },
       )
     }
   }

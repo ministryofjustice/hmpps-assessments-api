@@ -29,7 +29,7 @@ import javax.persistence.Table
 @Table(name = "assessed_episode", schema = "hmppsassessmentsapi")
 @TypeDefs(
   TypeDef(name = "json", typeClass = JsonStringType::class),
-  TypeDef(name = "jsonb", typeClass = JsonBinaryType::class)
+  TypeDef(name = "jsonb", typeClass = JsonBinaryType::class),
 )
 data class AssessmentEpisodeEntity(
 
@@ -93,12 +93,12 @@ data class AssessmentEpisodeEntity(
   }
 
   fun addAnswer(questionCode: String, answers: List<Any>?) {
-    if (answers != null)
+    if (answers != null) {
       this.answers[questionCode] = this.answers[questionCode].orEmpty().plus(answers).toSet().toList()
+    }
   }
 
   fun updateFrom(caseDetails: CaseDetails) {
-
     this.addAnswer("first_name", listOfNotNull(caseDetails.name.forename) as List<Any>)
     this.addAnswer("first_name_aliases", caseDetails.aliases?.map { it.name.forename })
     this.addAnswer("family_name", listOfNotNull(caseDetails.name.surname) as List<Any>)
@@ -122,11 +122,11 @@ data class AssessmentEpisodeEntity(
     this.addAnswer("contact_email_addresses", listOfNotNull(caseDetails.emailAddress) as List<Any>)
     this.addAnswer(
       "contact_mobile_phone_number",
-      caseDetails.phoneNumbers?.filter { it.type == "MOBILE" }?.map { it.number }.orEmpty() as List<Any>
+      caseDetails.phoneNumbers?.filter { it.type == "MOBILE" }?.map { it.number }.orEmpty() as List<Any>,
     )
     this.addAnswer(
       "contact_phone_number",
-      caseDetails.phoneNumbers?.filter { it.type == "TELEPHONE" }?.map { it.number }.orEmpty() as List<Any>
+      caseDetails.phoneNumbers?.filter { it.type == "TELEPHONE" }?.map { it.number }.orEmpty() as List<Any>,
     )
 
     val physicalDisabilityCodeTypes = listOf("D", "D02", "RM", "RC", "PC", "VI", "HD")
@@ -134,54 +134,54 @@ data class AssessmentEpisodeEntity(
       "physical_disability",
       caseDetails.disabilities?.filter {
         it.type.code in physicalDisabilityCodeTypes
-      }?.map { it.type.code }.orEmpty()
+      }?.map { it.type.code }.orEmpty(),
     )
     this.addAnswer(
       "physical_disability_details",
       caseDetails.disabilities?.filter {
         it.type.code in physicalDisabilityCodeTypes
-      }?.map { it.type.description }.orEmpty()
+      }?.map { it.type.description }.orEmpty(),
     )
     this.addAnswer(
       "learning_disability",
       caseDetails.disabilities?.filter {
         it.type.code == "LA"
-      }?.map { it.type.code }.orEmpty()
+      }?.map { it.type.code }.orEmpty(),
     )
     this.addAnswer(
       "learning_disability_details",
       caseDetails.disabilities?.filter {
         it.type.code == "LA"
-      }?.map { it.type.description }.orEmpty()
+      }?.map { it.type.description }.orEmpty(),
     )
     this.addAnswer(
       "learning_difficulty",
       caseDetails.disabilities?.filter {
         it.type.code == "LD"
-      }?.map { it.type.code }.orEmpty()
+      }?.map { it.type.code }.orEmpty(),
     )
     this.addAnswer(
       "learning_difficulty_details",
       caseDetails.disabilities?.filter {
         it.type.code == "LD"
-      }?.map { it.type.description }.orEmpty()
+      }?.map { it.type.description }.orEmpty(),
     )
     val mentalHealthConditionCodeTypes = listOf("D", "D01", "M1")
     this.addAnswer(
       "mental_health_condition",
       caseDetails.disabilities?.filter {
         it.type.code in mentalHealthConditionCodeTypes
-      }?.map { it.type.code }.orEmpty()
+      }?.map { it.type.code }.orEmpty(),
     )
     this.addAnswer(
       "mental_health_condition_details",
       caseDetails.disabilities?.filter {
         it.type.code in mentalHealthConditionCodeTypes
-      }?.map { it.type.description }.orEmpty()
+      }?.map { it.type.description }.orEmpty(),
     )
     this.addAnswer(
       "active_disabilities",
-      caseDetails.disabilities?.map { DisabilityAnswerDto.from(it) }.orEmpty()
+      caseDetails.disabilities?.map { DisabilityAnswerDto.from(it) }.orEmpty(),
     )
 
     mapActiveCarerCommitments(caseDetails, this)
@@ -204,7 +204,7 @@ data class AssessmentEpisodeEntity(
 
   private fun mapReadingWriting(
     caseDetails: CaseDetails,
-    episode: AssessmentEpisodeEntity
+    episode: AssessmentEpisodeEntity,
   ) {
     val readingWriting = caseDetails.personalCircumstances?.filter {
       it.type.code == "G"
@@ -216,7 +216,7 @@ data class AssessmentEpisodeEntity(
 
   private fun mapReadingLiteracy(
     caseDetails: CaseDetails,
-    episode: AssessmentEpisodeEntity
+    episode: AssessmentEpisodeEntity,
   ) {
     val readingLiteracyConcerns = caseDetails.personalCircumstances?.filter {
       it.subType?.code == "G01"
@@ -229,7 +229,7 @@ data class AssessmentEpisodeEntity(
 
   private fun mapPregnancy(
     caseDetails: CaseDetails,
-    episode: AssessmentEpisodeEntity
+    episode: AssessmentEpisodeEntity,
   ) {
     val pregnancy = caseDetails.personalCircumstances?.filter {
       it.type.code == "PM" && it.subType?.code == "D06"
@@ -255,7 +255,7 @@ data class AssessmentEpisodeEntity(
 
   private fun mapNumeracyConcerns(
     caseDetails: CaseDetails,
-    episode: AssessmentEpisodeEntity
+    episode: AssessmentEpisodeEntity,
   ) {
     val numeracy = caseDetails.personalCircumstances?.filter {
       it.subType?.code == "G02"
@@ -268,7 +268,7 @@ data class AssessmentEpisodeEntity(
 
   private fun mapLanguageCommunication(
     caseDetails: CaseDetails,
-    episode: AssessmentEpisodeEntity
+    episode: AssessmentEpisodeEntity,
   ) {
     val languageCommunication = caseDetails.personalCircumstances?.filter {
       it.subType?.code == "G03"
@@ -281,7 +281,7 @@ data class AssessmentEpisodeEntity(
 
   private fun mapCarerCommitment(
     caseDetails: CaseDetails,
-    episode: AssessmentEpisodeEntity
+    episode: AssessmentEpisodeEntity,
   ) {
     val carerCommitments =
       caseDetails.personalCircumstances?.filter { it.type.code == "I" }
@@ -293,7 +293,7 @@ data class AssessmentEpisodeEntity(
 
   private fun mapAllergies(
     caseDetails: CaseDetails,
-    episode: AssessmentEpisodeEntity
+    episode: AssessmentEpisodeEntity,
   ) {
     val allergies = caseDetails.personalCircumstances?.filter {
       it.type.code == "D" && it.subType?.code == "D03"
@@ -305,7 +305,7 @@ data class AssessmentEpisodeEntity(
 
   private fun mapActiveCarerCommitments(
     caseDetails: CaseDetails,
-    episode: AssessmentEpisodeEntity
+    episode: AssessmentEpisodeEntity,
   ) {
     val activeCarerCommitments = caseDetails.personalCircumstances?.filter {
       it.type.code == "I"
@@ -315,7 +315,7 @@ data class AssessmentEpisodeEntity(
 
   private fun mapGPDetails(
     caseDetails: CaseDetails,
-    episode: AssessmentEpisodeEntity
+    episode: AssessmentEpisodeEntity,
   ) {
     val gpDetails = caseDetails.personalContacts?.filter { it.relationshipType.code == "RT02" }
     episode.addAnswer("gp_details", GPDetailsAnswerDto.from(gpDetails) as List<Any>)
@@ -323,7 +323,7 @@ data class AssessmentEpisodeEntity(
 
   private fun mapEmergencyContacts(
     caseDetails: CaseDetails,
-    episode: AssessmentEpisodeEntity
+    episode: AssessmentEpisodeEntity,
   ) {
     val emergencyContacts = caseDetails.personalContacts?.filter { it.relationshipType.code == "ME" }
     episode.addAnswer("emergency_contact_details", EmergencyContactDetailsAnswerDto.from(emergencyContacts) as List<Any>)

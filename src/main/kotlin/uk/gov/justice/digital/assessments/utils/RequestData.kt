@@ -40,12 +40,11 @@ class RequestData(excludeUris: String?) : HandlerInterceptor {
     request: HttpServletRequest,
     response: HttpServletResponse,
     handler: Any,
-    ex: Exception?
+    ex: Exception?,
   ) {
-
     val status = response.status
     val start = LocalDateTime.parse(
-      request.getAttribute("startTime").toString()
+      request.getAttribute("startTime").toString(),
     )
     val duration = Duration.between(start, LocalDateTime.now()).toMillis()
 

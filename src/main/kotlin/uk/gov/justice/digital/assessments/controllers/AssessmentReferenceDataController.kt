@@ -17,23 +17,23 @@ import uk.gov.justice.digital.assessments.services.AssessmentReferenceDataServic
 
 @RestController
 class AssessmentReferenceDataController(
-  val assessmentReferenceDataService: AssessmentReferenceDataService
+  val assessmentReferenceDataService: AssessmentReferenceDataService,
 ) {
   @RequestMapping(path = ["/assessments/{assessmentType}"], method = [RequestMethod.GET])
   @Operation(description = "Gets an assessment with all questions in the assessment group for a particular assessment type")
   @ApiResponses(
     value = [
       ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
-      ApiResponse(responseCode = "200", description = "OK")
-    ]
+      ApiResponse(responseCode = "200", description = "OK"),
+    ],
   )
   @PreAuthorize("hasRole('ROLE_PROBATION')")
   fun getAssessmentReferenceData(
     @Parameter(
       description = "Assessment Type Code",
       required = true,
-      example = "ROSH"
-    ) @PathVariable assessmentType: AssessmentType
+      example = "ROSH",
+    ) @PathVariable assessmentType: AssessmentType,
   ): GroupWithContentsDto {
     return assessmentReferenceDataService.getAssessmentForAssessmentType(assessmentType)
   }
@@ -43,16 +43,16 @@ class AssessmentReferenceDataController(
   @ApiResponses(
     value = [
       ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
-      ApiResponse(responseCode = "200", description = "OK")
-    ]
+      ApiResponse(responseCode = "200", description = "OK"),
+    ],
   )
   @PreAuthorize("hasRole('ROLE_PROBATION')")
   fun getAssessmentSummary(
     @Parameter(
       description = "Assessment Type Code",
       required = true,
-      example = "ROSH"
-    ) @PathVariable assessmentType: AssessmentType
+      example = "ROSH",
+    ) @PathVariable assessmentType: AssessmentType,
   ): GroupSectionsDto {
     return assessmentReferenceDataService.getAssessmentSummary(assessmentType)
   }
@@ -62,8 +62,8 @@ class AssessmentReferenceDataController(
   @ApiResponses(
     value = [
       ApiResponse(responseCode = "404", description = "Questions not found for Assessment type"),
-      ApiResponse(responseCode = "200", description = "OK")
-    ]
+      ApiResponse(responseCode = "200", description = "OK"),
+    ],
   )
   @PreAuthorize("hasRole('ROLE_PROBATION')")
   fun getQuestionsForAssessmentSchemaCode(@PathVariable("assessmentType") assessmentType: String): List<GroupContentDto> {

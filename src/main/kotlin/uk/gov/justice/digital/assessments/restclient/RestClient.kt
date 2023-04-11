@@ -14,7 +14,7 @@ class RestClient(
 ) {
   fun get(
     uri: String,
-    queryParams: MultiValueMap<String, String>? = null
+    queryParams: MultiValueMap<String, String>? = null,
   ): WebClient.RequestHeadersSpec<*> {
     val spec = webClient
       .get()
@@ -32,7 +32,7 @@ class RestClient(
 
   fun <T> post(
     uri: String,
-    body: T
+    body: T,
   ): WebClient.RequestHeadersSpec<*> {
     val spec = webClient
       .post()

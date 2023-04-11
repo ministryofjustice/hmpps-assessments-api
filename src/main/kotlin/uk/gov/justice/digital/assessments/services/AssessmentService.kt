@@ -48,7 +48,7 @@ class AssessmentService(
       return createFromDelius(
         newAssessment.deliusEventId,
         newAssessment.crn,
-        newAssessment.assessmentSchemaCode
+        newAssessment.assessmentSchemaCode,
       )
     }
     throw IllegalStateException("Empty create assessment request")
@@ -73,7 +73,7 @@ class AssessmentService(
       assessmentType = assessmentType,
       source = ExternalSource.DELIUS.name,
       eventId = eventId,
-      subject = subject
+      subject = subject,
     )
     log.info("New episode created for assessment $assessmentUuid")
     return AssessmentEpisodeDto.from(episode)
@@ -114,7 +114,7 @@ class AssessmentService(
       assessmentType,
       ExternalSource.DELIUS.name,
       eventId,
-      subject
+      subject,
     )
     return AssessmentDto.from(arnAssessment)
   }
@@ -128,7 +128,6 @@ class AssessmentService(
   }
 
   private fun getOrCreateAssessment(crn: String, eventId: Long, offender: OffenderDto): AssessmentEntity {
-
     val existingSubject = subjectRepository.findByCrn(crn)
     return if (existingSubject != null) {
       log.info("Existing assessment ${existingSubject.getCurrentAssessment()?.assessmentUuid} found for delius event id: $eventId, crn: $crn")
@@ -137,7 +136,7 @@ class AssessmentService(
       createDeliusAssessment(
         crn,
         offender,
-        eventId
+        eventId,
       )
     }
   }
@@ -181,7 +180,7 @@ class AssessmentService(
         dateOfBirth = offender.dateOfBirth,
         createdDate = LocalDateTime.now(),
         gender = offender.gender?.uppercase(),
-      )
+      ),
     )
     val assessment = AssessmentEntity(subject = subjectEntity)
     log.info("About to save delius assessment: ${assessment.assessmentUuid}")
@@ -196,7 +195,7 @@ class AssessmentService(
     assessmentType: AssessmentType,
     source: String,
     eventId: Long,
-    subject: SubjectEntity
+    subject: SubjectEntity,
   ): AssessmentEpisodeEntity {
     log.info("Entered createPrePopulatedEpisode")
     val author = authorService.getOrCreateAuthor()
@@ -213,9 +212,9 @@ class AssessmentService(
         codeDescription = caseDetails.sentence?.mainOffence?.category?.description,
         offenceSubCode = caseDetails.sentence?.mainOffence?.subCategory?.code,
         subCodeDescription = caseDetails.sentence?.mainOffence?.subCategory?.description,
-        sentenceDate = caseDetails.sentence?.startDate
+        sentenceDate = caseDetails.sentence?.startDate,
       ),
-      author
+      author,
     )
     if (isNewEpisode) {
       episodeService.prePopulateEpisodeFromDelius(episode, caseDetails)
@@ -230,14 +229,14 @@ class AssessmentService(
   private fun auditAndLogCreateEpisode(
     assessmentUuid: UUID,
     episode: AssessmentEpisodeEntity,
-    crn: String?
+    crn: String?,
   ) {
     auditService.createAuditEvent(
       AuditType.ARN_ASSESSMENT_CREATED,
       assessmentUuid,
       episode.episodeUuid,
       crn,
-      episode.author
+      episode.author,
     )
     telemetryService.trackAssessmentEvent(
       TelemetryEventType.ASSESSMENT_CREATED,
@@ -245,7 +244,7 @@ class AssessmentService(
       episode.author,
       assessmentUuid,
       episode.episodeUuid,
-      episode.assessmentType
+      episode.assessmentType,
     )
   }
 }

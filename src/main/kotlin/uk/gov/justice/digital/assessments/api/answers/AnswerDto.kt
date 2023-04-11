@@ -25,7 +25,7 @@ data class AnswerDto(
   companion object {
     fun from(
       answerEntities: Collection<AnswerEntity>?,
-      answerDependencies: AnswerDependencies = { null }
+      answerDependencies: AnswerDependencies = { null },
     ): Collection<AnswerDto> {
       if (answerEntities.isNullOrEmpty()) return emptySet()
       return answerEntities.map {
@@ -35,14 +35,14 @@ data class AnswerDto(
 
     fun from(
       answerEntity: AnswerEntity,
-      answerDependencies: AnswerDependencies
+      answerDependencies: AnswerDependencies,
     ): AnswerDto {
       return AnswerDto(
         answerEntity.answerUuid,
         answerEntity.answerCode,
         answerEntity.value,
         answerEntity.text,
-        answerDependencies(answerEntity.value)
+        answerDependencies(answerEntity.value),
       )
     }
   }

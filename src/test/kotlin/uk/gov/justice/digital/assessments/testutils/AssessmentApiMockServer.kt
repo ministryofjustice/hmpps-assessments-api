@@ -7,14 +7,13 @@ import com.github.tomakehurst.wiremock.http.HttpHeaders
 
 class AssessmentApiMockServer : WireMockServer(9004) {
   fun stubGetAssessment() {
-
     stubFor(
       WireMock.get(WireMock.urlEqualTo("/assessments/oasysSetId/1"))
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
-            .withBody(assessmentJson)
-        )
+            .withBody(assessmentJson),
+        ),
     )
 
     stubFor(
@@ -23,8 +22,8 @@ class AssessmentApiMockServer : WireMockServer(9004) {
           WireMock.aResponse()
             .withBody(getAssessmentNotFoundJson)
             .withStatus(404)
-            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
-        )
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json"))),
+        ),
     )
 
     stubFor(
@@ -32,8 +31,8 @@ class AssessmentApiMockServer : WireMockServer(9004) {
         .willReturn(
           WireMock.aResponse()
             .withStatus(500)
-            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
-        )
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json"))),
+        ),
     )
 
     stubFor(
@@ -42,8 +41,8 @@ class AssessmentApiMockServer : WireMockServer(9004) {
           WireMock.aResponse()
             .withBody("ERROR")
             .withStatus(400)
-            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
-        )
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json"))),
+        ),
     )
 
     stubFor(
@@ -51,20 +50,20 @@ class AssessmentApiMockServer : WireMockServer(9004) {
         .willReturn(
           WireMock.aResponse()
             .withStatus(400)
-            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
-        )
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json"))),
+        ),
     )
 
     stubFor(
       WireMock.get(
-        WireMock.urlEqualTo("/assessments/latest/DX5678A?status=SIGNED&status=COMPLETE&types=LAYER_1&types=LAYER_3&cloneable=false")
+        WireMock.urlEqualTo("/assessments/latest/DX5678A?status=SIGNED&status=COMPLETE&types=LAYER_1&types=LAYER_3&cloneable=false"),
       )
         .willReturn(
           WireMock.aResponse()
             .withStatus(200)
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
-            .withBody(cloneableAssessment)
-        )
+            .withBody(cloneableAssessment),
+        ),
     )
 
     stubFor(
@@ -74,8 +73,8 @@ class AssessmentApiMockServer : WireMockServer(9004) {
           WireMock.aResponse()
             .withStatus(200)
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
-            .withBody(filteredReferenceDataJson)
-        )
+            .withBody(filteredReferenceDataJson),
+        ),
     )
 
     stubFor(
@@ -84,8 +83,8 @@ class AssessmentApiMockServer : WireMockServer(9004) {
         .willReturn(
           WireMock.aResponse()
             .withStatus(500)
-            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
-        )
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json"))),
+        ),
     )
 
     stubFor(
@@ -95,8 +94,8 @@ class AssessmentApiMockServer : WireMockServer(9004) {
           WireMock.aResponse()
             .withStatus(400)
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
-            .withBody(referenceData400Error)
-        )
+            .withBody(referenceData400Error),
+        ),
     )
 
     stubFor(
@@ -106,8 +105,8 @@ class AssessmentApiMockServer : WireMockServer(9004) {
           WireMock.aResponse()
             .withStatus(401)
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
-            .withBody(referenceData401Error)
-        )
+            .withBody(referenceData401Error),
+        ),
     )
 
     stubFor(
@@ -117,8 +116,8 @@ class AssessmentApiMockServer : WireMockServer(9004) {
           WireMock.aResponse()
             .withStatus(404)
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
-            .withBody(referenceData404Error)
-        )
+            .withBody(referenceData404Error),
+        ),
     )
   }
 
@@ -129,8 +128,8 @@ class AssessmentApiMockServer : WireMockServer(9004) {
           WireMock.aResponse()
             .withStatus(200)
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
-            .withBody(offenderStubs)
-        )
+            .withBody(offenderStubs),
+        ),
     )
   }
 

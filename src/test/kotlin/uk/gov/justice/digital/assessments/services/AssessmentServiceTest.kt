@@ -96,7 +96,7 @@ class AssessmentServiceTest {
           any(),
           any(),
           any(),
-          any()
+          any(),
         )
       }
       every { assessment.assessmentUuid } returns assessmentUuid
@@ -112,7 +112,7 @@ class AssessmentServiceTest {
           "Change of Circs",
           assessmentType = assessmentType,
           offence = any(),
-          author = author
+          author = author,
         )
       } returns AssessmentEpisodeEntity(
         episodeId = episodeId1,
@@ -125,7 +125,7 @@ class AssessmentServiceTest {
           codeDescription = codeDescription,
           offenceSubCode = offenceSubCode,
           subCodeDescription = subCodeDescription,
-          sentenceDate = LocalDate.of(2000, 1, 1)
+          sentenceDate = LocalDate.of(2000, 1, 1),
         ),
         author = author,
       )
@@ -152,7 +152,7 @@ class AssessmentServiceTest {
           episodeDto.episodeUuid,
           crn,
           any(),
-          any()
+          any(),
         )
       }
     }
@@ -168,9 +168,12 @@ class AssessmentServiceTest {
             createdDate = LocalDateTime.now(),
             assessmentType = AssessmentType.UPW,
             author = AuthorEntity(
-              userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"
+              userId = "1",
+              userName = "USER",
+              userAuthSource = "source",
+              userFullName = "full name",
             ),
-            assessment = AssessmentEntity()
+            assessment = AssessmentEntity(),
           ),
           AssessmentEpisodeEntity(
             episodeId = episodeId2,
@@ -181,11 +184,11 @@ class AssessmentServiceTest {
               userId = "1",
               userName = "USER",
               userAuthSource = "source",
-              userFullName = "full name"
+              userFullName = "full name",
             ),
-            assessment = AssessmentEntity()
-          )
-        )
+            assessment = AssessmentEntity(),
+          ),
+        ),
       )
 
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
@@ -215,13 +218,13 @@ class AssessmentServiceTest {
                   userId = "1",
                   userName = "USER",
                   userAuthSource = "source",
-                  userFullName = "full name"
+                  userFullName = "full name",
                 ),
-                assessment = AssessmentEntity()
-              )
-            )
-          )
-        )
+                assessment = AssessmentEntity(),
+              ),
+            ),
+          ),
+        ),
       )
 
       // When
@@ -244,7 +247,6 @@ class AssessmentServiceTest {
 
     @Test
     fun `throw exception if assessment does not exist`() {
-
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns null
 
       assertThatThrownBy { assessmentsService.getAssessmentEpisodes(assessmentUuid) }
@@ -268,9 +270,9 @@ class AssessmentServiceTest {
               userId = "1",
               userName = "USER",
               userAuthSource = "source",
-              userFullName = "full name"
+              userFullName = "full name",
             ),
-            assessment = AssessmentEntity()
+            assessment = AssessmentEntity(),
           ),
           AssessmentEpisodeEntity(
             episodeId = episodeId2,
@@ -282,11 +284,11 @@ class AssessmentServiceTest {
               userId = "1",
               userName = "USER",
               userAuthSource = "source",
-              userFullName = "full name"
+              userFullName = "full name",
             ),
-            assessment = AssessmentEntity()
-          )
-        )
+            assessment = AssessmentEntity(),
+          ),
+        ),
       )
       every { assessmentRepository.findByAssessmentUuid(assessmentUuid) } returns assessment
 
@@ -319,7 +321,7 @@ class AssessmentServiceTest {
       name = Name(
         forename = "forename",
         middleName = "middlename",
-        surname = "surname"
+        surname = "surname",
       ),
       dateOfBirth = LocalDate.of(1989, 1, 1),
       genderIdentity = "PREFER TO SELF DESCRIBE",
@@ -330,18 +332,18 @@ class AssessmentServiceTest {
         district = "Sheffield City Centre",
         county = "South Yorkshire",
         postcode = "S3 7BS",
-        town = "Sheffield"
+        town = "Sheffield",
       ),
       personalContacts = listOf(
         PersonalContact(
           relationship = "GP",
           relationshipType = RelationshipType(
             code = "RT02",
-            description = "Primary GP"
+            description = "Primary GP",
           ),
           name = Name(
             forename = "Charles",
-            surname = "Europe"
+            surname = "Europe",
           ),
           mobileNumber = "07123456789",
           address = Address(
@@ -350,18 +352,18 @@ class AssessmentServiceTest {
             district = "Sheffield",
             town = "Sheffield",
             county = "South Yorkshire",
-            postcode = "S3 7DQ"
-          )
+            postcode = "S3 7DQ",
+          ),
         ),
         PersonalContact(
           relationship = "Emergency Contact",
           relationshipType = RelationshipType(
             code = "ME",
-            description = "Father"
+            description = "Father",
           ),
           name = Name(
             forename = "UPW",
-            surname = "Testing"
+            surname = "Testing",
           ),
           telephoneNumber = "020 2000 0000",
           address = Address(
@@ -371,10 +373,10 @@ class AssessmentServiceTest {
             district = "London",
             town = "London",
             county = "London",
-            postcode = "SW1H 9AJ"
-          )
-        )
-      )
+            postcode = "SW1H 9AJ",
+          ),
+        ),
+      ),
     )
   }
 }

@@ -22,13 +22,13 @@ import java.util.UUID
 @SqlGroup(
   Sql(
     scripts = ["classpath:assessments/before-test.sql"],
-    config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED)
+    config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED),
   ),
   Sql(
     scripts = ["classpath:assessments/after-test.sql"],
     config = SqlConfig(transactionMode = SqlConfig.TransactionMode.ISOLATED),
-    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD
-  )
+    executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD,
+  ),
 )
 @AutoConfigureWebTestClient
 class AssessmentControllerTest : IntegrationTest() {
@@ -136,7 +136,6 @@ class AssessmentControllerTest : IntegrationTest() {
 
     @Test
     fun `get episodes returns forbidden when user does not have LAO permission`() {
-
       webTestClient.get().uri("/assessments/$laoFailureAssessmentUuid/episodes")
         .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
         .exchange()
@@ -150,7 +149,6 @@ class AssessmentControllerTest : IntegrationTest() {
 
     @Test
     fun `get current episode returns forbidden when user does not have LAO permission`() {
-
       webTestClient.get().uri("/assessments/$laoFailureAssessmentUuid/episodes/current")
         .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
         .exchange()
@@ -170,7 +168,7 @@ class AssessmentControllerTest : IntegrationTest() {
     fun `updates episode answers`() {
       val newQuestionCode = "question_code"
       val updateEpisodeDto = UpdateAssessmentEpisodeDto(
-        mapOf(newQuestionCode to listOf("new free text"))
+        mapOf(newQuestionCode to listOf("new free text")),
       )
       val episode =
         webTestClient.post().uri("/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259")
@@ -192,7 +190,7 @@ class AssessmentControllerTest : IntegrationTest() {
     fun `updates episode answers returns forbidden when user does not have LAO permission`() {
       val newQuestionCode = "question_code"
       val updateEpisodeDto = UpdateAssessmentEpisodeDto(
-        mapOf(newQuestionCode to listOf("new free text"))
+        mapOf(newQuestionCode to listOf("new free text")),
       )
       webTestClient.post().uri("/assessments/$laoFailureAssessmentUuid/episodes/$laoFailureEpisodeUuid")
         .bodyValue(updateEpisodeDto)
@@ -229,7 +227,7 @@ class AssessmentControllerTest : IntegrationTest() {
         "/assessments/$assessmentUuid/episodes/f3569440-efd5-4289-8fdd-4560360e5259",
         questionCode,
         jsonString,
-        "USERNAME"
+        "USERNAME",
       )
 
       Verify.singleAnswer(episode.answers[questionCode]!! as List<String>, expectedAnswer)
@@ -240,7 +238,7 @@ class AssessmentControllerTest : IntegrationTest() {
       endpoint: String,
       questionCode: String,
       jsonString: String,
-      user: String
+      user: String,
     ): AssessmentEpisodeDto {
       val episode = webTestClient.post().uri(endpoint)
         .contentType(MediaType.APPLICATION_JSON)
@@ -262,7 +260,7 @@ class AssessmentControllerTest : IntegrationTest() {
     fun `does not update episode answers if episode is closed`() {
       val newQuestionCode = "new_question_code"
       val updateEpisodeDto = UpdateAssessmentEpisodeDto(
-        mapOf(newQuestionCode to listOf("new free text"))
+        mapOf(newQuestionCode to listOf("new free text")),
       )
       webTestClient.post().uri("/assessments/$assessmentUuid/episodes/d7aafe55-0cff-4f20-a57a-b66d79eb9c91")
         .bodyValue(updateEpisodeDto)
@@ -304,7 +302,7 @@ class AssessmentControllerTest : IntegrationTest() {
       val completedEpisodeUuid = "df43079f-c263-4690-b77e-f8689aa4a093"
       completeAndAssertEpisode(
         "/assessments/$assessmentUuid/episodes/$completedEpisodeUuid/complete",
-        LocalDateTime.of(2021, 1, 2, 0, 0)
+        LocalDateTime.of(2021, 1, 2, 0, 0),
       )
     }
 

@@ -58,8 +58,8 @@ data class QuestionDto(
         questionEntity?.questionHelpText,
         questionEntity?.referenceDataCategory,
         AnswerDto.from(
-          questionEntity?.answerEntities
-        )
+          questionEntity?.answerEntities,
+        ),
       )
     }
   }

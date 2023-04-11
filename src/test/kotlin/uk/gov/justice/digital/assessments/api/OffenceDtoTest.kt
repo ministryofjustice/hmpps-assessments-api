@@ -18,13 +18,13 @@ class OffenceDtoTest {
       mainOffence = MainOffence(
         category = Type(
           code = "main category code",
-          description = "code description 1"
+          description = "code description 1",
         ),
         subCategory = Type(
           code = "subcategory code",
-          description = "code description 2"
-        )
-      )
+          description = "code description 2",
+        ),
+      ),
     )
 
     val offenceDto = OffenceDto.from(sentence, 1)

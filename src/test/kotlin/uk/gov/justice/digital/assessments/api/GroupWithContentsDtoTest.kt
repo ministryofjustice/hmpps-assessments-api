@@ -24,7 +24,7 @@ class GroupWithContentsDtoTest {
     null,
     "Freetext",
     "Question text",
-    "Question help text"
+    "Question help text",
   )
   private val additionalQuestion = QuestionEntity(
     1L,
@@ -35,7 +35,7 @@ class GroupWithContentsDtoTest {
     null,
     "Freetext",
     "Question text",
-    "Question help text"
+    "Question help text",
   )
 
   private val groupWithOneQuestion = GroupEntity(
@@ -46,7 +46,7 @@ class GroupWithContentsDtoTest {
     "subheading",
     "help!",
     LocalDateTime.of(2019, 8, 1, 8, 0),
-    null
+    null,
   )
 
   private val groupWithOneQuestionQuestion = QuestionGroupEntity(
@@ -58,7 +58,7 @@ class GroupWithContentsDtoTest {
     1,
     false,
     question,
-    null
+    null,
   )
 
   private val groupWithTwoQuestions = GroupEntity(
@@ -69,7 +69,7 @@ class GroupWithContentsDtoTest {
     "subheading",
     "help!",
     LocalDateTime.of(2019, 8, 1, 8, 0),
-    null
+    null,
   )
 
   private val groupWithTwoQuestionsFirstQuestion = QuestionGroupEntity(
@@ -81,7 +81,7 @@ class GroupWithContentsDtoTest {
     1,
     false,
     question,
-    null
+    null,
   )
   private val groupWithTwoQuestionsSecondQuestion = QuestionGroupEntity(
     1L,
@@ -92,7 +92,7 @@ class GroupWithContentsDtoTest {
     2,
     false,
     additionalQuestion,
-    null
+    null,
   )
 
   private val groupWithNestedGroup = GroupEntity(
@@ -103,7 +103,7 @@ class GroupWithContentsDtoTest {
     "subheading",
     "help!",
     LocalDateTime.of(2019, 8, 1, 8, 0),
-    null
+    null,
   )
 
   private val groupWithNestedGroupFirstQuestion = QuestionGroupEntity(
@@ -115,7 +115,7 @@ class GroupWithContentsDtoTest {
     1,
     false,
     question,
-    null
+    null,
   )
   private val groupWithNestedGroupGroup = QuestionGroupEntity(
     2L,
@@ -126,7 +126,7 @@ class GroupWithContentsDtoTest {
     2,
     false,
     null,
-    groupWithTwoQuestions
+    groupWithTwoQuestions,
   )
   private val groupWithNestedGroupSecondQuestion = QuestionGroupEntity(
     3L,
@@ -137,7 +137,7 @@ class GroupWithContentsDtoTest {
     3,
     false,
     additionalQuestion,
-    null
+    null,
   )
 
   private fun makeQuestionGroupDto(group: GroupEntity, vararg contents: QuestionGroupEntity): GroupWithContentsDto {
@@ -169,7 +169,7 @@ class GroupWithContentsDtoTest {
     val dto = makeQuestionGroupDto(
       groupWithTwoQuestions,
       groupWithTwoQuestionsFirstQuestion,
-      groupWithTwoQuestionsSecondQuestion
+      groupWithTwoQuestionsSecondQuestion,
     )
 
     assertGroupDetails(dto, groupWithTwoQuestions)
@@ -186,7 +186,7 @@ class GroupWithContentsDtoTest {
       groupWithNestedGroup,
       groupWithNestedGroupFirstQuestion,
       groupWithNestedGroupGroup,
-      groupWithNestedGroupSecondQuestion
+      groupWithNestedGroupSecondQuestion,
     )
 
     assertGroupDetails(dto, groupWithNestedGroup)

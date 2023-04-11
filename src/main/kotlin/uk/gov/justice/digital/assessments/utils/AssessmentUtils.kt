@@ -32,12 +32,12 @@ class AssessmentUtils {
 
     private fun doesNotMatchTriggeringValues(
       triggerAnswerValues: Set<String>,
-      currentAnswers: List<Any>
+      currentAnswers: List<Any>,
     ): Boolean = triggerAnswerValues.isNotEmpty() && currentAnswers.intersect(triggerAnswerValues).isEmpty()
 
     private fun hasNoTriggerValuesButNotAnswered(
       triggerAnswerValues: Set<String>,
-      currentAnswers: List<Any>
+      currentAnswers: List<Any>,
     ): Boolean = triggerAnswerValues.isEmpty() && isNotAnswered(currentAnswers)
   }
 }

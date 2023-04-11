@@ -50,7 +50,7 @@ class AssessmentUpdateServiceCompleteTest {
         any(),
         any(),
         any(),
-        any()
+        any(),
       )
     }
 
@@ -78,7 +78,7 @@ class AssessmentUpdateServiceCompleteTest {
         any(),
         any(),
         any(),
-        any()
+        any(),
       )
     }
     every { assessmentRepository.findByAssessmentUuid(any()) } returns assessment
@@ -95,7 +95,7 @@ class AssessmentUpdateServiceCompleteTest {
         episode.episodeUuid,
         assessment.subject?.crn,
         author,
-        any()
+        any(),
       )
     }
     verify(exactly = 1) {
@@ -105,7 +105,7 @@ class AssessmentUpdateServiceCompleteTest {
         author,
         episode.assessmentUuid,
         episode.episodeUuid!!,
-        AssessmentType.UPW
+        AssessmentType.UPW,
       )
     }
   }
@@ -113,14 +113,14 @@ class AssessmentUpdateServiceCompleteTest {
   private fun assessmentEntity(): AssessmentEntity {
     val subject = SubjectEntity(
       dateOfBirth = LocalDate.of(1989, 1, 1),
-      crn = "X1345"
+      crn = "X1345",
     )
     val episodes = mutableListOf<AssessmentEpisodeEntity>()
     val assessment = AssessmentEntity(
       assessmentUuid = UUID.fromString("7b4de6d5-4488-4c29-a909-7d3fdf15393d"),
       assessmentId = 1,
       episodes = episodes,
-      subject = subject
+      subject = subject,
     )
     episodes.add(
       AssessmentEpisodeEntity(
@@ -131,7 +131,7 @@ class AssessmentUpdateServiceCompleteTest {
         changeReason = "Change of Circs 2",
         createdDate = LocalDateTime.now(),
         author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
-      )
+      ),
     )
     return assessment
   }

@@ -22,19 +22,19 @@ class RisksController(
   @ApiResponses(
     value = [
       ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
-      ApiResponse(responseCode = "200", description = "OK")
-    ]
+      ApiResponse(responseCode = "200", description = "OK"),
+    ],
   )
   @PreAuthorize("hasAnyRole('ROLE_PROBATION','ROLE_ARN_READ_ONLY')")
   fun getRegistrationsForAssessment(
     @Parameter(
       description = "CRN",
-      required = true
+      required = true,
     ) @PathVariable eventId: Long,
     @Parameter(
       description = "CRN",
-      required = true
-    ) @PathVariable crn: String
+      required = true,
+    ) @PathVariable crn: String,
   ): RegistrationsDto {
     return risksService.getRegistrationsForAssessment(crn, eventId)
   }
@@ -44,15 +44,15 @@ class RisksController(
   @ApiResponses(
     value = [
       ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
-      ApiResponse(responseCode = "200", description = "OK")
-    ]
+      ApiResponse(responseCode = "200", description = "OK"),
+    ],
   )
   @PreAuthorize("hasAnyRole('ROLE_PROBATION','ROLE_ARN_READ_ONLY')")
   fun getRoshRiskSummaryForAssessment(
     @Parameter(
       description = "CRN",
-      required = true
-    ) @PathVariable crn: String
+      required = true,
+    ) @PathVariable crn: String,
   ): RoshRiskSummaryDto {
     return risksService.getRoshRiskSummaryForAssessment(crn)
   }

@@ -15,7 +15,7 @@ import uk.gov.justice.digital.assessments.utils.RequestData
 
 internal class OffenderServiceCacheTest(
   @Autowired
-  val offenderService: OffenderService
+  val offenderService: OffenderService,
 ) : IntegrationTest() {
   @BeforeEach
   fun setup() {

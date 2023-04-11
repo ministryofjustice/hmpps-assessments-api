@@ -36,12 +36,14 @@ data class GPDetailsAnswerDto(
 ) {
   companion object {
     fun from(personalContacts: List<PersonalContact>?): List<GPDetailsAnswerDto> {
-      return if (personalContacts.isNullOrEmpty()) emptyList()
-      else personalContacts.map { from(it) }
+      return if (personalContacts.isNullOrEmpty()) {
+        emptyList()
+      } else {
+        personalContacts.map { from(it) }
+      }
     }
 
     fun from(personalContact: PersonalContact): GPDetailsAnswerDto {
-
       val fullName = listOfNotNull(personalContact.name.forename, personalContact.name.surname)
         .joinToString(separator = " ")
 
@@ -54,7 +56,7 @@ data class GPDetailsAnswerDto(
         town = listOfNotNull(personalContact.address?.town),
         county = listOfNotNull(personalContact.address?.county),
         postcode = listOfNotNull(personalContact.address?.postcode),
-        telephoneNumber = listOfNotNull(personalContact.telephoneNumber, personalContact.mobileNumber)
+        telephoneNumber = listOfNotNull(personalContact.telephoneNumber, personalContact.mobileNumber),
       )
     }
   }

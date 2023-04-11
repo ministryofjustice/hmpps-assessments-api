@@ -43,5 +43,5 @@ class GroupEntity(
   val groupEnd: LocalDateTime? = null,
 
   @OneToMany(mappedBy = "group", fetch = FetchType.LAZY)
-  val contents: Collection<QuestionGroupEntity> = emptyList()
+  val contents: Collection<QuestionGroupEntity> = emptyList(),
 ) : Serializable

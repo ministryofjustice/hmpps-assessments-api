@@ -35,7 +35,9 @@ class CaseDetailsDtoTest {
       .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
       .setSerializationInclusion(JsonInclude.Include.NON_NULL).setSerializationInclusion(JsonInclude.Include.NON_ABSENT)
       .registerModules(
-        Jdk8Module(), JavaTimeModule(), KotlinModule.Builder().build()
+        Jdk8Module(),
+        JavaTimeModule(),
+        KotlinModule.Builder().build(),
       )
   }
 
@@ -193,7 +195,7 @@ class CaseDetailsDtoTest {
       notes = "Comment added by Natalie Wood on 14/03/2023 at 10:07\nPrimary Carer",
       subType = "Is a Primary Carer",
       subTypeCode = "I02",
-      isEvidenced = false
+      isEvidenced = false,
     )
     assertThat(answers["active_carer_commitments"]).isEqualTo(listOf(carerCommitmentsAnswerDto))
     assertThat(answers["allergies"]).isEqualTo(listOf("YES"))
@@ -237,7 +239,7 @@ class CaseDetailsDtoTest {
       telephoneNumber = listOf("0233456789"),
       district = listOf("East City Centre"),
       county = listOf("East London"),
-      postcode = listOf("E5 7BS")
+      postcode = listOf("E5 7BS"),
     )
     val gpDetailsAnswer2 = GPDetailsAnswerDto(
       name = listOf("Steve Wilson"),
@@ -248,7 +250,7 @@ class CaseDetailsDtoTest {
       telephoneNumber = listOf("0776 666 6666"),
       district = listOf("Some City Centre"),
       county = listOf("Essex"),
-      postcode = listOf("NW10 1EP")
+      postcode = listOf("NW10 1EP"),
     )
 
     assertThat(answers["gp_details"]).containsExactlyInAnyOrder(gpDetailsAnswer, gpDetailsAnswer2)
@@ -265,7 +267,7 @@ class CaseDetailsDtoTest {
       county = listOf("South London"),
       postcode = listOf("W10 4DN"),
       telephoneNumber = listOf("0133456789"),
-      mobileNumber = listOf("07333567890")
+      mobileNumber = listOf("07333567890"),
     )
 
     assertThat(answers["emergency_contact_details"]).containsExactlyInAnyOrder(emergencyContactDetails)
@@ -298,7 +300,7 @@ class CaseDetailsDtoTest {
       LocalDateTime.of(2019, 8, 1, 8, 0),
       null,
       "Change of Circs",
-      null
+      null,
     )
   }
 }

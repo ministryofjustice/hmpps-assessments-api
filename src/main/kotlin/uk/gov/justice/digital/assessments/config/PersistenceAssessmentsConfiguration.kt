@@ -18,7 +18,7 @@ import javax.sql.DataSource
 @EnableJpaRepositories(
   basePackages = ["uk.gov.justice.digital.assessments.jpa.repositories.assessments"],
   entityManagerFactoryRef = "assessmentsEntityManager",
-  transactionManagerRef = "assessmentsTransactionManager"
+  transactionManagerRef = "assessmentsTransactionManager",
 )
 class PersistenceAssessmentsConfiguration : WebMvcConfigurer {
 
@@ -31,7 +31,7 @@ class PersistenceAssessmentsConfiguration : WebMvcConfigurer {
     val em = LocalContainerEntityManagerFactoryBean()
     em.dataSource = assessmentsDataSource()
     em.setPackagesToScan(
-      "uk.gov.justice.digital.assessments.jpa.entities.assessments"
+      "uk.gov.justice.digital.assessments.jpa.entities.assessments",
     )
     val vendorAdapter = HibernateJpaVendorAdapter()
     em.jpaVendorAdapter = vendorAdapter

@@ -21,7 +21,7 @@ import uk.gov.justice.digital.assessments.utils.RequestData
 
 internal class RisksServiceCacheTest(
   @Autowired
-  val risksService: RisksService
+  val risksService: RisksService,
 ) : IntegrationTest() {
   @BeforeEach
   fun setup() {

@@ -13,8 +13,8 @@ class OAuthMockServer : WireMockServer(9010) {
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
-            .withBody(GsonBuilder().create().toJson(mapOf("access_token" to "ABCDE", "token_type" to "bearer")))
-        )
+            .withBody(GsonBuilder().create().toJson(mapOf("access_token" to "ABCDE", "token_type" to "bearer"))),
+        ),
     )
   }
 }

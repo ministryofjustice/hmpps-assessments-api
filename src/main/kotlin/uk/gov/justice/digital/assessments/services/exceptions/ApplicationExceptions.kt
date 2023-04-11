@@ -6,7 +6,7 @@ import uk.gov.justice.digital.assessments.services.exceptions.ExceptionReason.DU
 
 enum class ExceptionReason {
   DUPLICATE_OFFENDER_RECORD,
-  LAO_PERMISSION
+  LAO_PERMISSION,
 }
 
 // Internal Service Exceptions
@@ -22,7 +22,7 @@ class AuditFailureException(msg: String?) : RuntimeException(msg)
 class DuplicateOffenderRecordException(
   msg: String?,
   val extraInfoMessage: String?,
-  val reason: ExceptionReason = DUPLICATE_OFFENDER_RECORD
+  val reason: ExceptionReason = DUPLICATE_OFFENDER_RECORD,
 ) : RuntimeException(msg)
 
 class CannotCloseEpisodeException(
@@ -35,14 +35,14 @@ class ExternalApiEntityNotFoundException(
   msg: String,
   val method: HttpMethod,
   val url: String,
-  val client: ExternalService
+  val client: ExternalService,
 ) : RuntimeException(msg)
 
 class ExternalApiAuthorisationException(
   msg: String,
   val method: HttpMethod,
   val url: String,
-  val client: ExternalService
+  val client: ExternalService,
 ) : RuntimeException(msg)
 
 class ExternalApiForbiddenException(
@@ -51,19 +51,19 @@ class ExternalApiForbiddenException(
   val url: String,
   val client: ExternalService,
   val moreInfo: List<String> = emptyList(),
-  val reason: ExceptionReason? = null
+  val reason: ExceptionReason? = null,
 ) : RuntimeException(msg)
 
 class ExternalApiInvalidRequestException(
   msg: String,
   val method: HttpMethod,
   val url: String,
-  val client: ExternalService
+  val client: ExternalService,
 ) : RuntimeException(msg)
 
 class ExternalApiUnknownException(
   msg: String,
   val method: HttpMethod,
   val url: String,
-  val client: ExternalService
+  val client: ExternalService,
 ) : RuntimeException(msg)

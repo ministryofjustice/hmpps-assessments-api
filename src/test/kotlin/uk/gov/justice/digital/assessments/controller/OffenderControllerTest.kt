@@ -14,7 +14,6 @@ internal class OffenderControllerTest : IntegrationTest() {
 
   @Test
   fun `should handle request when EventType is absent`() {
-
     val crn = "DX5678A"
     val eventId = 123456
     val path = "/offender/crn/$crn/eventId/$eventId"
@@ -44,15 +43,14 @@ internal class OffenderControllerTest : IntegrationTest() {
           codeDescription = "Merchant Shipping Acts",
           offenceSubCode = "00",
           subCodeDescription = "Merchant Shipping Acts",
-          sentenceDate = LocalDate.of(2023, 1, 26)
-        )
-      )
+          sentenceDate = LocalDate.of(2023, 1, 26),
+        ),
+      ),
     )
   }
 
   @Test
   fun `should return offence details Dto`() {
-
     val crn = "DX5678A"
     val eventId = 123456L
     val expectedEventId = 123456L
@@ -83,9 +81,9 @@ internal class OffenderControllerTest : IntegrationTest() {
           codeDescription = "Merchant Shipping Acts",
           offenceSubCode = "00",
           subCodeDescription = "Merchant Shipping Acts",
-          sentenceDate = LocalDate.of(2023, 1, 26)
-        )
-      )
+          sentenceDate = LocalDate.of(2023, 1, 26),
+        ),
+      ),
     )
   }
 }

@@ -16,13 +16,12 @@ class AssessmentEpisodeDtoTest {
 
   @Test
   fun `Builds valid Assessment Episode DTO`() {
-
     val assessmentId = 1L
     val assessmentEntity = AssessmentEntity(
       assessmentId,
       UUID.randomUUID(),
       LocalDateTime.of(2019, 8, 1, 8, 0),
-      LocalDateTime.of(2020, 8, 1, 8, 0)
+      LocalDateTime.of(2020, 8, 1, 8, 0),
     )
 
     val offenceEntity = OffenceEntity(
@@ -32,7 +31,7 @@ class AssessmentEpisodeDtoTest {
       codeDescription = "Code description",
       offenceSubCode = "SUBCODE",
       subCodeDescription = "Subcode description",
-      sentenceDate = LocalDate.of(2000, 1, 1)
+      sentenceDate = LocalDate.of(2000, 1, 1),
     )
     val episodeEntity = AssessmentEpisodeEntity(
       assessmentId,
@@ -43,7 +42,7 @@ class AssessmentEpisodeDtoTest {
       LocalDateTime.of(2019, 8, 1, 8, 0),
       null,
       "Change of Circs",
-      offenceEntity
+      offenceEntity,
     )
 
     val episodeDto = AssessmentEpisodeDto.from(episodeEntity)

@@ -9,13 +9,13 @@ data class RiskPredictorsDto(
   val type: PredictorType,
   val scoreType: ScoreType,
   val scores: Map<String, Score>,
-  val errors: List<String> = emptyList()
+  val errors: List<String> = emptyList(),
 )
 
 data class Score(
   val level: ScoreLevel?,
   val score: BigDecimal?,
-  val isValid: Boolean
+  val isValid: Boolean,
 )
 
 enum class ScoreLevel(val type: String) {

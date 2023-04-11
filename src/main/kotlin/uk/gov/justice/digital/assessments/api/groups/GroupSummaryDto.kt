@@ -21,7 +21,7 @@ class GroupSummaryDto(
   val groupCount: Long,
 
   @Schema(description = "Number of question in this group", example = "5")
-  val questionCount: Long
+  val questionCount: Long,
 ) {
   companion object {
     fun from(entity: GroupSummaryEntity): GroupSummaryDto {
@@ -31,7 +31,7 @@ class GroupSummaryDto(
         entity.heading,
         entity.contentCount,
         entity.groupCount,
-        entity.questionCount
+        entity.questionCount,
       )
     }
   }

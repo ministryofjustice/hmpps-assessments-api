@@ -14,7 +14,6 @@ class AssessmentSubjectDtoTest {
 
   @Test
   fun `builds valid Assessment Subject DTO with calculated age`() {
-
     val clock = Clock.fixed(Instant.parse("2022-03-06T12:18:05Z"), ZoneId.of("Europe/London"))
 
     val subjectEntity = SubjectEntity(
@@ -25,7 +24,7 @@ class AssessmentSubjectDtoTest {
       "crn",
       LocalDate.of(2001, 8, 1),
       "Male",
-      LocalDateTime.of(2020, 8, 1, 8, 0)
+      LocalDateTime.of(2020, 8, 1, 8, 0),
     )
 
     val assessmentSubjectDto = AssessmentSubjectDto.from(subjectEntity, clock)

@@ -59,7 +59,7 @@ class AssessmentEntity(
     changeReason: String,
     assessmentType: AssessmentType,
     offence: OffenceEntity?,
-    author: AuthorEntity
+    author: AuthorEntity,
   ): AssessmentEpisodeEntity {
     val currentEpisode = getCurrentEpisode()
     if (currentEpisode != null) {
@@ -71,7 +71,7 @@ class AssessmentEntity(
       changeReason = changeReason,
       author = author,
       assessmentType = assessmentType,
-      offence = offence
+      offence = offence,
     )
     episodes.add(newEpisode)
     return newEpisode

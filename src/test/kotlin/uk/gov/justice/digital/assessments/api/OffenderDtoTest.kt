@@ -22,7 +22,7 @@ class OffenderDtoTest {
       name = Name(
         forename = "forename",
         middleName = "middleName",
-        surname = "surname"
+        surname = "surname",
       ),
       dateOfBirth = LocalDate.of(1989, 1, 1),
       genderIdentity = "PREFER TO SELF DESCRIBE",
@@ -30,17 +30,17 @@ class OffenderDtoTest {
         Alias(
           name = Name(
             forename = "firstName",
-            surname = "surname"
+            surname = "surname",
           ),
-          dateOfBirth = LocalDate.of(1988, 1, 2)
+          dateOfBirth = LocalDate.of(1988, 1, 2),
         ),
         Alias(
           name = Name(
             forename = "firstName2",
-            surname = "surname2"
+            surname = "surname2",
           ),
-          dateOfBirth = LocalDate.of(1988, 1, 2)
-        )
+          dateOfBirth = LocalDate.of(1988, 1, 2),
+        ),
       ),
       mainAddress = Address(
         buildingName = "HMPPS Digital Studio",
@@ -48,21 +48,21 @@ class OffenderDtoTest {
         district = "Sheffield City Centre",
         county = "South Yorkshire",
         postcode = "S3 7BS",
-        town = "Sheffield"
+        town = "Sheffield",
       ),
       sentence = Sentence(
         startDate = LocalDate.of(2020, 2, 1),
         mainOffence = MainOffence(
           category = Type(
             code = "Code",
-            description = "Code description"
+            description = "Code description",
           ),
           subCategory = Type(
             code = "Sub code",
-            description = "Sub code description"
-          )
-        )
-      )
+            description = "Sub code description",
+          ),
+        ),
+      ),
     )
 
     val offenderDto = OffenderDto.from(caseDetails, 1)

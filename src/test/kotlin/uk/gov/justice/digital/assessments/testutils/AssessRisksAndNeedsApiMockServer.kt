@@ -16,7 +16,7 @@ class AssessRisksAndNeedsApiMockServer : WireMockServer(9007) {
 
   fun stubGetRSRPredictorsForOffenderAndOffences(
     final: Boolean,
-    episodeUuid: UUID
+    episodeUuid: UUID,
   ) {
     stubFor(
       WireMock.post(WireMock.urlEqualTo("/risks/predictors/RSR?final=$final&source=ASSESSMENTS_API&sourceId=$episodeUuid"))
@@ -73,15 +73,16 @@ class AssessRisksAndNeedsApiMockServer : WireMockServer(9007) {
               "   } " +
               "}" +
               "}",
-            true, true
-          )
+            true,
+            true,
+          ),
         )
         .willReturn(
           WireMock.aResponse()
             .withStatus(200)
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
-            .withBody(riskRsrPredictors)
-        )
+            .withBody(riskRsrPredictors),
+        ),
     )
   }
 
@@ -90,7 +91,7 @@ class AssessRisksAndNeedsApiMockServer : WireMockServer(9007) {
     episodeUuid: UUID,
     crn: String,
     offenceCode: String = "138",
-    offenceSubCode: String = "00"
+    offenceSubCode: String = "00",
   ) {
     stubFor(
       WireMock.post(WireMock.urlEqualTo("/risks/predictors/RSR?final=$final&source=ASSESSMENTS_API&sourceId=$episodeUuid"))
@@ -147,15 +148,16 @@ class AssessRisksAndNeedsApiMockServer : WireMockServer(9007) {
               "   } " +
               "}" +
               "}",
-            true, true
-          )
+            true,
+            true,
+          ),
         )
         .willReturn(
           WireMock.aResponse()
             .withStatus(200)
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
-            .withBody(riskRsrPredictors)
-        )
+            .withBody(riskRsrPredictors),
+        ),
     )
   }
 
@@ -175,10 +177,10 @@ class AssessRisksAndNeedsApiMockServer : WireMockServer(9007) {
                     "Staff" to "MEDIUM",
                     "Children" to "LOW",
                   ),
-                )
-              )
-            )
-        )
+                ),
+              ),
+            ),
+        ),
     )
 
     stubFor(
@@ -187,8 +189,8 @@ class AssessRisksAndNeedsApiMockServer : WireMockServer(9007) {
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
             .withStatus(404)
-            .withBody("{\"status\":\"404\",\"developerMessage\":\"The offender is not found\"}")
-        )
+            .withBody("{\"status\":\"404\",\"developerMessage\":\"The offender is not found\"}"),
+        ),
     )
 
     stubFor(
@@ -197,8 +199,8 @@ class AssessRisksAndNeedsApiMockServer : WireMockServer(9007) {
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
             .withStatus(400)
-            .withBody("{\"status\":\"400\",\"developerMessage\":\"Invalid CRN invalidBadRequest\"}")
-        )
+            .withBody("{\"status\":\"400\",\"developerMessage\":\"Invalid CRN invalidBadRequest\"}"),
+        ),
     )
 
     stubFor(
@@ -207,8 +209,8 @@ class AssessRisksAndNeedsApiMockServer : WireMockServer(9007) {
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
             .withStatus(401)
-            .withBody("{\"status\":\"401\",\"developerMessage\":\"Not authorised\"}")
-        )
+            .withBody("{\"status\":\"401\",\"developerMessage\":\"Not authorised\"}"),
+        ),
     )
 
     stubFor(
@@ -217,8 +219,8 @@ class AssessRisksAndNeedsApiMockServer : WireMockServer(9007) {
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
             .withStatus(403)
-            .withBody("{\"status\":\"403\",\"developerMessage\":\"Forbidden\"}")
-        )
+            .withBody("{\"status\":\"403\",\"developerMessage\":\"Forbidden\"}"),
+        ),
     )
 
     stubFor(
@@ -227,8 +229,8 @@ class AssessRisksAndNeedsApiMockServer : WireMockServer(9007) {
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
             .withStatus(422)
-            .withBody("{\"status\":\"422\",\"developerMessage\":\"unprocessable\"}")
-        )
+            .withBody("{\"status\":\"422\",\"developerMessage\":\"unprocessable\"}"),
+        ),
     )
   }
 

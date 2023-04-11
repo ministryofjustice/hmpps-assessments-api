@@ -33,20 +33,28 @@ import java.util.concurrent.TimeUnit
 class WebClientConfig {
   @Value("\${assess-risks-and-needs-api.base-url}")
   private lateinit var assessRisksAndNeedsBaseUrl: String
+
   @Value("\${community-api.base-url}")
   private lateinit var communityApiBaseUrl: String
+
   @Value("\${audit.base-url}")
   private lateinit var auditBaseUrl: String
+
   @Value("\${delius-integration.base-url}")
   private lateinit var deliusIntegrationBaseUrl: String
+
   @Value("\${feature.flags.disable-auth:false}")
   private val disableAuthentication = false
+
   @Value("\${web.client.connect-timeout-ms}")
   private val connectTimeoutMs: Long = 100000
+
   @Value("\${web.client.read-timeout-ms}")
   private val readTimeoutMs: Long = 0
+
   @Value("\${web.client.write-timeout-ms}")
   private val writeTimeoutMs: Long = 0
+
   @Value("\${web.client.byte-buffer-size}")
   val bufferByteSize: Int = Int.MAX_VALUE
 
@@ -115,8 +123,8 @@ class WebClientConfig {
   fun communityApiWebClient(clientRegistrationRepository: ClientRegistrationRepository): WebClient? {
     val oauth2 = ServletOAuth2AuthorizedClientExchangeFilterFunction(
       communityAuthorizedClientManager(
-        clientRegistrationRepository
-      )
+        clientRegistrationRepository,
+      ),
     )
     oauth2.setDefaultClientRegistrationId("community-api-client")
     return WebClient.builder()
@@ -155,16 +163,15 @@ class WebClientConfig {
   @Bean
   fun authorizedClientManager(
     clientRegistrationRepository: ClientRegistrationRepository?,
-    authorizedClientRepository: OAuth2AuthorizedClientRepository?
+    authorizedClientRepository: OAuth2AuthorizedClientRepository?,
   ): OAuth2AuthorizedClientManager {
-
     val authorizedClientProvider = OAuth2AuthorizedClientProviderBuilder.builder()
       .clientCredentials()
       .build()
 
     val authorizedClientManager = DefaultOAuth2AuthorizedClientManager(
       clientRegistrationRepository,
-      authorizedClientRepository
+      authorizedClientRepository,
     )
 
     authorizedClientManager.setAuthorizedClientProvider(authorizedClientProvider)

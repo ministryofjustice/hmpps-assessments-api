@@ -15,16 +15,17 @@ open class AuthenticatingRestClient(
     val request = webClient
       .get()
       .uri {
-        uriBuilder ->
+          uriBuilder ->
         uriBuilder.path(path)
           .queryParams(queryParams)
           .build()
       }
       .accept(MediaType.APPLICATION_JSON)
-    return if (disableAuth)
+    return if (disableAuth) {
       request
-    else
+    } else {
       request.attributes(clientRegistrationId(oauthClient))
+    }
   }
 
   fun post(path: String, body: Any): WebClient.RequestHeadersSpec<*> {
@@ -32,10 +33,11 @@ open class AuthenticatingRestClient(
       .post()
       .uri(path)
       .accept(MediaType.APPLICATION_JSON)
-    val authed = if (disableAuth)
+    val authed = if (disableAuth) {
       request
-    else
+    } else {
       request.attributes(clientRegistrationId(oauthClient))
+    }
     return authed.bodyValue(body)
   }
 
@@ -44,10 +46,11 @@ open class AuthenticatingRestClient(
       .put()
       .uri(path)
       .accept(MediaType.APPLICATION_JSON)
-    val authed = if (disableAuth)
+    val authed = if (disableAuth) {
       request
-    else
+    } else {
       request.attributes(clientRegistrationId(oauthClient))
+    }
     return authed.bodyValue(body)
   }
 }

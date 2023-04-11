@@ -22,7 +22,7 @@ interface QuestionGroupRepository : JpaRepository<QuestionGroupEntity, String> {
       "from hmppsassessmentsschemas.question_group qg " +
       "left join hmppsassessmentsschemas.grouping g on qg.group_uuid = g.group_uuid " +
       "group by g.group_uuid, g.heading, g.group_code",
-    nativeQuery = true
+    nativeQuery = true,
   )
   fun listGroups(): Collection<GroupSummaryEntity>
 }
