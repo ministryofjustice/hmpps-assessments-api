@@ -44,10 +44,10 @@ dependencies {
   implementation("org.apache.commons:commons-lang3:3.12.0")
   implementation("org.postgresql:postgresql:42.6.0")
   implementation("org.flywaydb:flyway-core")
-  runtimeOnly("com.h2database:h2:1.4.200")
+  runtimeOnly("com.h2database:h2:2.1.214")
   implementation("net.logstash.logback:logstash-logback-encoder:7.3")
 
-  testRuntimeOnly("com.h2database:h2:1.4.200")
+  testRuntimeOnly("com.h2database:h2:2.1.214")
   testAnnotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
   testImplementation("org.springframework.boot:spring-boot-starter-test") {
