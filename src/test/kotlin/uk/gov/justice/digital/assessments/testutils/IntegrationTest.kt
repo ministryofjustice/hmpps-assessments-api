@@ -6,7 +6,6 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.http.HttpHeaders
 import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.mock.web.MockHttpSession
@@ -19,7 +18,6 @@ import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.web.context.request.ServletRequestAttributes
 import uk.gov.justice.digital.assessments.HmppsAssessmentApiApplication
 import uk.gov.justice.digital.assessments.JwtAuthHelper
-import uk.gov.justice.digital.assessments.redis.entities.UserDetails
 import java.time.Duration
 
 @Suppress("SpringJavaInjectionPointsAutowiringInspection")
@@ -36,9 +34,6 @@ abstract class IntegrationTest {
 
   @Autowired
   internal lateinit var webTestClient: WebTestClient
-
-  @Autowired
-  internal lateinit var redisTemplate: RedisTemplate<String, UserDetails>
 
   @Autowired
   internal lateinit var jwtHelper: JwtAuthHelper
@@ -82,7 +77,6 @@ abstract class IntegrationTest {
 
   @BeforeEach
   fun resetStubs() {
-    redisTemplate.opsForValue().set("user:1", UserDetails("STUARTWHITLAM"))
     communityApiMockServer.resetAll()
     communityApiMockServer.stubGetUserAccess()
     assessmentApiMockServer.stubGetAssessment()
@@ -97,7 +91,6 @@ abstract class IntegrationTest {
 
   @AfterEach
   fun resetRedis() {
-    redisTemplate.delete(redisTemplate.keys("*"))
     endRequest()
     endSession()
   }

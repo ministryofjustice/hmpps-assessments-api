@@ -30,6 +30,10 @@ class ClientTrackingConfiguration(private val clientTrackingInterceptor: ClientT
 @Configuration
 class ClientTrackingInterceptor : HandlerInterceptor {
   override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
+    val addr = retrieveIpFromRemoteAddr(request)
+    val currentSpan = Span.current()
+    currentSpan.setAttribute("clientIpAddress", addr)
+
     val token = request.getHeader(HttpHeaders.AUTHORIZATION)
     val bearer = "Bearer "
     if (StringUtils.startsWithIgnoreCase(token, bearer)) {
@@ -55,4 +59,10 @@ class ClientTrackingInterceptor : HandlerInterceptor {
   companion object {
     private val log = LoggerFactory.getLogger(this::class.java)
   }
+}
+
+fun retrieveIpFromRemoteAddr(request: HttpServletRequest): String {
+  val remoteAddr = request.remoteAddr
+  val colonCount = remoteAddr.chars().filter { ch: Int -> ch == ':'.code }.count()
+  return if (colonCount == 1L) StringUtils.split(remoteAddr, ":")[0] else remoteAddr
 }

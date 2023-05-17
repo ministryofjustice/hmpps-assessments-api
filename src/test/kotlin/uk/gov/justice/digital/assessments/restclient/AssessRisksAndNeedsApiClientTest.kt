@@ -133,7 +133,7 @@ class AssessRisksAndNeedsApiClientTest : IntegrationTest() {
   @DisplayName("get ROSH risk summary")
   inner class GetRoshRiskSummary {
 
-    val crn = "DX12340A"
+    val crn = "DX12340B"
 
     @Test
     fun `returns registrations`() {

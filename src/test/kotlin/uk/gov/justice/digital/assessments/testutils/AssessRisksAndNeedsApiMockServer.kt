@@ -91,7 +91,7 @@ class AssessRisksAndNeedsApiMockServer : WireMockServer(9007) {
 
   fun stubGetRoshRiskSummary() {
     stubFor(
-      WireMock.get(WireMock.urlEqualTo("/risks/crn/DX12340A/widget"))
+      WireMock.get(WireMock.urlPathMatching("/risks/crn/(DX12340A|DX12340B)/widget"))
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))

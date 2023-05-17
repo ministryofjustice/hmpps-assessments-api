@@ -60,7 +60,7 @@ data class AssessmentEpisodeEntity(
   val offence: OffenceEntity? = null,
 
   @Type(JsonType::class)
-  @Column(columnDefinition = "jsonb", name = "answers")
+  @Column(name = "answers", columnDefinition = "jsonb")
   var answers: Answers = mutableMapOf(),
 
   @Column(name = "last_edited_date")
