@@ -4,9 +4,6 @@ import org.assertj.core.api.Assertions
 
 class Verify {
   companion object {
-    fun emptyAnswer(answers: List<String>) {
-      Assertions.assertThat(answers.size).isEqualTo(0)
-    }
     fun singleAnswer(answers: List<Any>, vararg expected: Any) {
       Assertions.assertThat(answers.size).isEqualTo(1)
       val expectedAnswer = listOf(expected.first())

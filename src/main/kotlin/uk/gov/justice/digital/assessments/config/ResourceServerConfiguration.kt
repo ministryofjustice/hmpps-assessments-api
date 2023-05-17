@@ -18,7 +18,7 @@ class ResourceServerConfiguration {
       .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
       // Can't have CSRF protection as requires session
       .and().csrf().disable()
-      .authorizeHttpRequests() {
+      .authorizeHttpRequests {
         it.requestMatchers(
           "/webjars/**", "/favicon.ico", "/csrf",
           "/health/**", "/info", "/ping",

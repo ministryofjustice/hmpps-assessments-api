@@ -56,9 +56,3 @@ class ClientTrackingInterceptor : HandlerInterceptor {
     private val log = LoggerFactory.getLogger(this::class.java)
   }
 }
-
-fun retrieveIpFromRemoteAddr(request: HttpServletRequest): String {
-  val remoteAddr = request.remoteAddr
-  val colonCount = remoteAddr.count { it == ':' }
-  return if (colonCount == 1) remoteAddr.split(":")[0] else remoteAddr
-}

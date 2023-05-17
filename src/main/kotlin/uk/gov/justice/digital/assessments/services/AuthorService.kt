@@ -11,7 +11,7 @@ class AuthorService(
 ) {
 
   fun getOrCreateAuthor(): AuthorEntity {
-    val author = RequestData.getUserAuthSource()?.let { it ->
+    val author = RequestData.getUserAuthSource()?.let {
       authorRepository.findByUserIdAndUserAuthSource(
         RequestData.getUserId(),
         it,

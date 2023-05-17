@@ -44,20 +44,6 @@ class RestClient(
       .withAuth(SecurityContextHolder.getContext().authentication as JwtAuthenticationToken)
   }
 
-  fun <T> patch(
-    uri: String,
-    body: T,
-  ): WebClient.RequestHeadersSpec<*> {
-    val spec = webClient
-      .patch()
-      .uri(uri)
-      .bodyValue(body)
-
-    return spec
-      .withDefaultHeaders()
-      .withAuth(SecurityContextHolder.getContext().authentication as JwtAuthenticationToken)
-  }
-
   private fun WebClient.RequestHeadersSpec<*>.withDefaultHeaders(): WebClient.RequestHeadersSpec<*> {
     return this
       .accept(MediaType.APPLICATION_JSON)

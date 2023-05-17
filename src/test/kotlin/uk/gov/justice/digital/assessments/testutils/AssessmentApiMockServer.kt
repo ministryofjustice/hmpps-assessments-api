@@ -121,18 +121,6 @@ class AssessmentApiMockServer : WireMockServer(9004) {
     )
   }
 
-  fun stubOffenderStubs() {
-    stubFor(
-      WireMock.get(WireMock.urlEqualTo("/offender/stub"))
-        .willReturn(
-          WireMock.aResponse()
-            .withStatus(200)
-            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
-            .withBody(offenderStubs),
-        ),
-    )
-  }
-
   companion object {
 
     val assessmentJson =
