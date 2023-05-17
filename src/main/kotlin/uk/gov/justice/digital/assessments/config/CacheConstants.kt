@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.assessments.config
 
 object CacheConstants {
-
   const val ASSESSMENT_CACHE_KEY: String = "AssessmentService:assessment1"
   const val QUESTIONS_FOR_ASSESSMENT_TYPE_CACHE_KEY: String = "AssessmentService:questionsForAssessmentType1"
   const val ASSESSMENT_SUMMARY_CACHE_KEY: String = "AssessmentService:assessmentSummary1"

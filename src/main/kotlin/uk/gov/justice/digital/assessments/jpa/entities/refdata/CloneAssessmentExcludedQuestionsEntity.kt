@@ -1,13 +1,13 @@
 package uk.gov.justice.digital.assessments.jpa.entities.refdata
 
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
+import jakarta.persistence.Id
+import jakarta.persistence.Table
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import java.io.Serializable
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.EnumType
-import javax.persistence.Enumerated
-import javax.persistence.Id
-import javax.persistence.Table
 
 @Entity
 @Table(name = "clone_assessment_excluded_questions", schema = "hmppsassessmentsschemas")

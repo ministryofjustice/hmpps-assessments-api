@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.http.HttpMethod
-import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.assessments.api.RoshRiskSummaryDto
 import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.OffenderAndOffencesDto
@@ -37,7 +36,7 @@ class AssessRisksAndNeedsApiRestClient {
     return webClient
       .post(path, offenderAndOffencesDto)
       .retrieve()
-      .onStatus(HttpStatus::is4xxClientError) {
+      .onStatus({ it.is4xxClientError }) {
         handle4xxError(
           it,
           HttpMethod.POST,
@@ -45,7 +44,7 @@ class AssessRisksAndNeedsApiRestClient {
           ExternalService.ASSESS_RISKS_AND_NEEDS_API,
         )
       }
-      .onStatus(HttpStatus::is5xxServerError) {
+      .onStatus({ it.is5xxServerError }) {
         handle5xxError(
           "Failed to calculate and retrieve Risk Predictors $predictorType for crn ${offenderAndOffencesDto.crn}",
           HttpMethod.POST,
@@ -67,7 +66,7 @@ class AssessRisksAndNeedsApiRestClient {
     return webClient
       .get(path)
       .retrieve()
-      .onStatus(HttpStatus::is4xxClientError) {
+      .onStatus({ it.is4xxClientError }) {
         handle4xxError(
           it,
           HttpMethod.POST,
@@ -75,7 +74,7 @@ class AssessRisksAndNeedsApiRestClient {
           ExternalService.ASSESS_RISKS_AND_NEEDS_API,
         )
       }
-      .onStatus(HttpStatus::is5xxServerError) {
+      .onStatus({ it.is5xxServerError }) {
         handle5xxError(
           "Failed to fetch ROSH risk summary for crn $crn",
           HttpMethod.POST,

@@ -1,10 +1,18 @@
 package uk.gov.justice.digital.assessments.jpa.entities.assessments
 
-import com.vladmihalcea.hibernate.type.json.JsonBinaryType
-import com.vladmihalcea.hibernate.type.json.JsonStringType
+import com.vladmihalcea.hibernate.type.json.JsonType
+import jakarta.persistence.CascadeType
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
+import jakarta.persistence.Id
+import jakarta.persistence.JoinColumn
+import jakarta.persistence.ManyToOne
+import jakarta.persistence.Table
 import org.hibernate.annotations.Type
-import org.hibernate.annotations.TypeDef
-import org.hibernate.annotations.TypeDefs
 import uk.gov.justice.digital.assessments.api.answers.CarerCommitmentsAnswerDto
 import uk.gov.justice.digital.assessments.api.answers.DisabilityAnswerDto
 import uk.gov.justice.digital.assessments.api.answers.EmergencyContactDetailsAnswerDto
@@ -13,24 +21,9 @@ import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.CaseDetails
 import java.time.LocalDateTime
 import java.util.UUID
-import javax.persistence.CascadeType
-import javax.persistence.Column
-import javax.persistence.Entity
-import javax.persistence.EnumType
-import javax.persistence.Enumerated
-import javax.persistence.GeneratedValue
-import javax.persistence.GenerationType
-import javax.persistence.Id
-import javax.persistence.JoinColumn
-import javax.persistence.ManyToOne
-import javax.persistence.Table
 
 @Entity
 @Table(name = "assessed_episode", schema = "hmppsassessmentsapi")
-@TypeDefs(
-  TypeDef(name = "json", typeClass = JsonStringType::class),
-  TypeDef(name = "jsonb", typeClass = JsonBinaryType::class),
-)
 data class AssessmentEpisodeEntity(
 
   @Id
@@ -66,7 +59,7 @@ data class AssessmentEpisodeEntity(
   @JoinColumn(name = "offence_uuid", referencedColumnName = "offence_uuid")
   val offence: OffenceEntity? = null,
 
-  @Type(type = "json")
+  @Type(JsonType::class)
   @Column(columnDefinition = "jsonb", name = "answers")
   var answers: Answers = mutableMapOf(),
 

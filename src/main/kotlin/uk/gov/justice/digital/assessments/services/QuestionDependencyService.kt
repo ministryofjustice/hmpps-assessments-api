@@ -20,7 +20,7 @@ class QuestionDependencyService(
     log.debug("Getting all QuestionDependencies")
     val qd = questionDependencyRepository.findAll()
     log.debug("Getting all QuestionDependencies - end")
-    return QuestionDependencies(qd)
+    return QuestionDependencies(qd as Collection<QuestionDependencyEntity>)
   }
 }
 

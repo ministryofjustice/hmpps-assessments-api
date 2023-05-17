@@ -33,25 +33,30 @@ class CacheConfiguration {
   @Value("\${cache.ttlMinutes.default}")
   var defaultCacheTtlMinutes: Long = 5
 
-  @Bean
-  fun defaultRedisCacheConfiguration(): RedisCacheConfiguration {
-    return getDefaultCacheConfiguration()
-      .entryTtl(Duration.ofMinutes(defaultCacheTtlMinutes))
+  private fun objectMapper(): ObjectMapper {
+    return ObjectMapper()
+      .registerModules(
+        Jdk8Module(),
+        JavaTimeModule(),
+        KotlinModule.Builder().build(),
+      )
+      .apply {
+        activateDefaultTyping(polymorphicTypeValidator, ObjectMapper.DefaultTyping.EVERYTHING, JsonTypeInfo.As.PROPERTY)
+      }
   }
 
   private fun getDefaultCacheConfiguration(): RedisCacheConfiguration {
-    return RedisCacheConfiguration.defaultCacheConfig()
+    return RedisCacheConfiguration
+      .defaultCacheConfig()
       .disableCachingNullValues()
       .serializeKeysWith(SerializationPair.fromSerializer(StringRedisSerializer()))
       .serializeValuesWith(SerializationPair.fromSerializer(GenericJackson2JsonRedisSerializer(objectMapper().configure(FAIL_ON_UNKNOWN_PROPERTIES, false))))
   }
 
-  private fun objectMapper(): ObjectMapper {
-    return ObjectMapper()
-      .registerModules(Jdk8Module(), JavaTimeModule(), KotlinModule())
-      .apply {
-        activateDefaultTyping(polymorphicTypeValidator, ObjectMapper.DefaultTyping.EVERYTHING, JsonTypeInfo.As.PROPERTY)
-      }
+  @Bean
+  fun defaultRedisCacheConfiguration(): RedisCacheConfiguration {
+    return getDefaultCacheConfiguration()
+      .entryTtl(Duration.ofMinutes(defaultCacheTtlMinutes))
   }
 
   @Bean

@@ -6,9 +6,9 @@ plugins {
 }
 
 allOpen {
-  annotation("javax.persistence.Entity")
-  annotation("javax.persistence.Embeddable")
-  annotation("javax.persistence.MappedSuperclass")
+  annotation("jakarta.persistence.Entity")
+  annotation("jakarta.persistence.Embeddable")
+  annotation("jakarta.persistence.MappedSuperclass")
 }
 
 configurations {
@@ -32,22 +32,20 @@ dependencies {
   implementation("org.springframework.security:spring-security-oauth2-client")
   implementation("org.springframework.data:spring-data-redis:3.0.5")
   implementation("redis.clients:jedis:4.4.0")
-  implementation("org.springdoc:springdoc-openapi-ui:1.7.0")
-  implementation("org.springdoc:springdoc-openapi-data-rest:1.7.0")
-  implementation("org.springdoc:springdoc-openapi-kotlin:1.7.0")
-  implementation("commons-io:commons-io:2.11.0")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2")
+  implementation("commons-io:commons-io:2.12.0")
   implementation("com.zaxxer:HikariCP:5.0.1")
-  implementation("com.vladmihalcea:hibernate-types-52:2.21.1")
+  implementation("com.vladmihalcea:hibernate-types-60:2.21.1")
   implementation("com.beust:klaxon:5.6")
   implementation("com.google.code.gson:gson:2.10.1")
   implementation("com.google.guava:guava:31.1-jre")
   implementation("org.apache.commons:commons-lang3:3.12.0")
   implementation("org.postgresql:postgresql:42.6.0")
   implementation("org.flywaydb:flyway-core")
-  runtimeOnly("com.h2database:h2:1.4.200")
+  runtimeOnly("com.h2database:h2:2.1.214")
   implementation("net.logstash.logback:logstash-logback-encoder:7.3")
 
-  testRuntimeOnly("com.h2database:h2:1.4.200")
+  testRuntimeOnly("com.h2database:h2:2.1.214")
   testAnnotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
   testImplementation("org.springframework.boot:spring-boot-starter-test") {
@@ -55,8 +53,9 @@ dependencies {
     exclude(module = "mockito-core")
   }
   testImplementation("com.ninja-squad:springmockk:4.0.2")
-  testImplementation("io.jsonwebtoken:jjwt:0.9.1")
-  testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
+  testImplementation("io.jsonwebtoken:jjwt-impl:0.11.5")
+  testImplementation("io.jsonwebtoken:jjwt-jackson:0.11.5")
+  testImplementation("com.github.tomakehurst:wiremock-jre8-standalone:2.35.0")
 }
 repositories {
   mavenCentral()

@@ -1,7 +1,6 @@
 package uk.gov.justice.digital.assessments.config
 
 import com.microsoft.applicationinsights.web.internal.RequestTelemetryContext
-import com.microsoft.applicationinsights.web.internal.ThreadContext
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.data.MapEntry.entry
 import org.junit.jupiter.api.AfterEach
@@ -50,7 +49,6 @@ class ClientTrackingConfigurationTest {
     val token = jwtAuthHelper.createJwt("AUTH_ADM")
     req.addHeader(HttpHeaders.AUTHORIZATION, "Bearer $token")
     clientTrackingInterceptor.preHandle(req, res, "null")
-    val insightTelemetry = ThreadContext.getRequestTelemetryContext().httpRequestTelemetry.properties
     assertThat(insightTelemetry).contains(entry("username", "AUTH_ADM"), entry("clientId", "hmpps-assessments-api"))
   }
 
@@ -59,7 +57,6 @@ class ClientTrackingConfigurationTest {
     val token = jwtAuthHelper.createJwt("Fred", expiryTime = Duration.ofHours(-1L))
     req.addHeader(HttpHeaders.AUTHORIZATION, "Bearer $token")
     clientTrackingInterceptor.preHandle(req, res, "null")
-    val insightTelemetry = ThreadContext.getRequestTelemetryContext().httpRequestTelemetry.properties
     assertThat(insightTelemetry).contains(entry("username", "Fred"), entry("clientId", "hmpps-assessments-api"))
   }
 
@@ -68,7 +65,6 @@ class ClientTrackingConfigurationTest {
     val SOME_IP_ADDRESS = "12.13.14.15"
     req.remoteAddr = SOME_IP_ADDRESS
     clientTrackingInterceptor.preHandle(req, res, "null")
-    val insightTelemetry = ThreadContext.getRequestTelemetryContext().httpRequestTelemetry.properties
     assertThat(insightTelemetry).contains(entry("clientIpAddress", SOME_IP_ADDRESS))
   }
 
@@ -77,7 +73,6 @@ class ClientTrackingConfigurationTest {
     val SOME_IP_ADDRESS = "12.13.14.15"
     req.remoteAddr = "$SOME_IP_ADDRESS:6789"
     clientTrackingInterceptor.preHandle(req, res, "null")
-    val insightTelemetry = ThreadContext.getRequestTelemetryContext().httpRequestTelemetry.properties
     assertThat(insightTelemetry).contains(entry("clientIpAddress", SOME_IP_ADDRESS))
   }
 
@@ -86,7 +81,6 @@ class ClientTrackingConfigurationTest {
     val SOME_IP_ADDRESS = "2001:db8:3333:4444:CCCC:DDDD:EEEE:FFFF"
     req.remoteAddr = SOME_IP_ADDRESS
     clientTrackingInterceptor.preHandle(req, res, "null")
-    val insightTelemetry = ThreadContext.getRequestTelemetryContext().httpRequestTelemetry.properties
     assertThat(insightTelemetry).contains(entry("clientIpAddress", SOME_IP_ADDRESS))
   }
 }

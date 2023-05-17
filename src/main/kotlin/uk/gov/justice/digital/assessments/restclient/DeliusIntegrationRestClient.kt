@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.http.HttpMethod
-import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.CaseDetails
@@ -35,7 +34,7 @@ class DeliusIntegrationRestClient {
   ): WebClient.ResponseSpec = webClient
     .get(path)
     .retrieve()
-    .onStatus(HttpStatus::is4xxClientError) {
+    .onStatus({ it.is4xxClientError }) {
       handle4xxError(
         it,
         HttpMethod.GET,
@@ -43,7 +42,7 @@ class DeliusIntegrationRestClient {
         ExternalService.DELIUS_INTEGRATIONS,
       )
     }
-    .onStatus(HttpStatus::is5xxServerError) {
+    .onStatus({ it.is5xxServerError }) {
       handle5xxError(
         errorMessage,
         HttpMethod.GET,
