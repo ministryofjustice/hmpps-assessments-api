@@ -14,28 +14,28 @@ spring:
             client-name: assess-risks-and-needs-api-client
             client-id: ${assess-risks-and-needs-api-id:sentence-plan-api-client}
             client-secret: ${assess-risks-and-needs-api-client-secret:clientsecret}
-            client-authentication-method: basic
+            client-authentication-method: client_secret_basic
             authorization-grant-type: client_credentials
             provider: oauth-service
           community-api-client:
             client-name: community-api-client
             client-id: ${community-api-client-id:community-api-client}
             client-secret: ${community-api-client-secret:clientsecret}
-            client-authentication-method: basic
+            client-authentication-method: client_secret_basic
             authorization-grant-type: client_credentials
             provider: oauth-service
           audit-client:
             client-name: audit-client
             client-id: ${audit-client-id:community-api-client}
             client-secret: ${audit-client-secret:clientsecret}
-            client-authentication-method: basic
+            client-authentication-method: client_secret_basic
             authorization-grant-type: client_credentials
             provider: oauth-service
           delius-integration-client:
             client-name: delius-integration-client
             client-id: ${delius-integration-client-id:delius-integration-client}
             client-secret: ${delius-integration-client-secret:clientsecret}
-            client-authentication-method: basic
+            client-authentication-method: client_secret_basic
             authorization-grant-type: client_credentials
             provider: oauth-service
         provider:
