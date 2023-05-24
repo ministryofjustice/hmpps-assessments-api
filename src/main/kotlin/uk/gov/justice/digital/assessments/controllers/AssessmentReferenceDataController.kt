@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RestController
 import uk.gov.justice.digital.assessments.api.groups.GroupContentDto
 import uk.gov.justice.digital.assessments.api.groups.GroupSectionsDto
-import uk.gov.justice.digital.assessments.api.groups.GroupWithContentsDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.services.AssessmentReferenceDataService
 
@@ -19,25 +18,6 @@ import uk.gov.justice.digital.assessments.services.AssessmentReferenceDataServic
 class AssessmentReferenceDataController(
   val assessmentReferenceDataService: AssessmentReferenceDataService,
 ) {
-  @RequestMapping(path = ["/assessments/{assessmentType}"], method = [RequestMethod.GET])
-  @Operation(description = "Gets an assessment with all questions in the assessment group for a particular assessment type")
-  @ApiResponses(
-    value = [
-      ApiResponse(responseCode = "401", description = "Invalid JWT Token"),
-      ApiResponse(responseCode = "200", description = "OK"),
-    ],
-  )
-  @PreAuthorize("hasRole('ROLE_PROBATION')")
-  fun getAssessmentReferenceData(
-    @Parameter(
-      description = "Assessment Type Code",
-      required = true,
-      example = "ROSH",
-    ) @PathVariable assessmentType: AssessmentType,
-  ): GroupWithContentsDto {
-    return assessmentReferenceDataService.getAssessmentForAssessmentType(assessmentType)
-  }
-
   @RequestMapping(path = ["/assessments/{assessmentType}/summary"], method = [RequestMethod.GET])
   @Operation(description = "Gets Summary information for an assessment type")
   @ApiResponses(

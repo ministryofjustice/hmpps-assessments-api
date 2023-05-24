@@ -25,7 +25,7 @@ internal class RisksServiceCacheTest(
 ) : IntegrationTest() {
   @BeforeEach
   fun setup() {
-    MDC.put(RequestData.USER_NAME_HEADER, Companion.USERNAME)
+    MDC.put(RequestData.USER_NAME_HEADER, USERNAME)
   }
 
   @BeforeEach

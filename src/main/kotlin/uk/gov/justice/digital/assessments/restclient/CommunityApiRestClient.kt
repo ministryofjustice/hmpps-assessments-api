@@ -40,7 +40,7 @@ class CommunityApiRestClient(
             )
           }
       },)
-      .onStatus(HttpStatus::is4xxClientError) {
+      .onStatus({ it.is4xxClientError }) {
         handle4xxError(
           it,
           HttpMethod.GET,
@@ -48,7 +48,7 @@ class CommunityApiRestClient(
           ExternalService.COMMUNITY_API,
         )
       }
-      .onStatus(HttpStatus::is5xxServerError) {
+      .onStatus({ it.is5xxServerError }) {
         handle5xxError(
           "Failed to retrieve LAO details for crn: $crn",
           HttpMethod.GET,

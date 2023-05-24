@@ -1,9 +1,9 @@
 package uk.gov.justice.digital.assessments.config
 
+import jakarta.annotation.PostConstruct
 import org.flywaydb.core.Flyway
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Configuration
-import javax.annotation.PostConstruct
 import javax.sql.DataSource
 
 @Configuration

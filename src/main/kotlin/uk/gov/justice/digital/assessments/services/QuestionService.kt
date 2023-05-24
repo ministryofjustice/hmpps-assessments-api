@@ -13,7 +13,6 @@ import uk.gov.justice.digital.assessments.api.groups.GroupSummaryDto
 import uk.gov.justice.digital.assessments.api.groups.GroupWithContentsDto
 import uk.gov.justice.digital.assessments.config.CacheConstants.LIST_QUESTION_GROUPS_CACHE_KEY
 import uk.gov.justice.digital.assessments.config.CacheConstants.QUESTION_CACHE_KEY
-import uk.gov.justice.digital.assessments.config.CacheConstants.QUESTION_GROUP_CONTENTS_CACHE_KEY
 import uk.gov.justice.digital.assessments.config.CacheConstants.QUESTION_GROUP_SECTIONS_CACHE_KEY
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.GroupEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.QuestionEntity
@@ -46,11 +45,6 @@ class QuestionService(
   @Cacheable(LIST_QUESTION_GROUPS_CACHE_KEY)
   fun listGroups(): Collection<GroupSummaryDto> {
     return questionGroupRepository.listGroups().map { GroupSummaryDto.from(it) }
-  }
-
-  @Cacheable(QUESTION_GROUP_CONTENTS_CACHE_KEY)
-  fun getGroupContents(groupCode: String): GroupWithContentsDto {
-    return getQuestionGroupContents(findByGroupCode(groupCode))
   }
 
   fun getGroupContents(groupUuid: UUID): GroupWithContentsDto {
@@ -144,11 +138,6 @@ class QuestionService(
 
     return GroupSectionsDto.from(group, contents)
   }
-
-  fun getAllQuestions(): QuestionSchemaEntities {
-    return QuestionSchemaEntities(questionRepository.findAll())
-  }
-
   private fun findByGroupCode(groupCode: String): GroupEntity {
     return groupRepository.findByGroupCode(groupCode) ?: throw EntityNotFoundException("Group not found: $groupCode")
   }

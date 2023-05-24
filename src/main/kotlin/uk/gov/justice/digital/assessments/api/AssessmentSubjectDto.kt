@@ -44,7 +44,7 @@ class AssessmentSubjectDto(
       )
     }
 
-    fun calculateAge(dob: LocalDate?, clock: Clock): Int? {
+    private fun calculateAge(dob: LocalDate?, clock: Clock): Int? {
       val agePeriod = dob?.let { Period.between(dob, LocalDate.now(clock)) }
       return agePeriod?.years
     }

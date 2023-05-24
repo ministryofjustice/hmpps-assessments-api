@@ -16,7 +16,7 @@ import java.util.UUID
 @ExtendWith(MockKExtension::class)
 class TelemetryServiceTest {
 
-  val telemetryClient: TelemetryClient = mockk<TelemetryClient>()
+  val telemetryClient: TelemetryClient = mockk()
   val telemetryService = TelemetryService(telemetryClient)
   val assessmentUuid = UUID.randomUUID()
   val episodeUuid = UUID.randomUUID()

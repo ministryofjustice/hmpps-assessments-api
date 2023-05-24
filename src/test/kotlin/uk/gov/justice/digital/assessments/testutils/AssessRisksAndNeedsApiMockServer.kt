@@ -14,78 +14,6 @@ import java.util.UUID
 class AssessRisksAndNeedsApiMockServer : WireMockServer(9007) {
   private val objectMapper: ObjectMapper = jacksonObjectMapper().registerModules(JavaTimeModule())
 
-  fun stubGetRSRPredictorsForOffenderAndOffences(
-    final: Boolean,
-    episodeUuid: UUID,
-  ) {
-    stubFor(
-      WireMock.post(WireMock.urlEqualTo("/risks/predictors/RSR?final=$final&source=ASSESSMENTS_API&sourceId=$episodeUuid"))
-        .withRequestBody(
-          WireMock.equalToJson(
-            "{ " +
-              "\"crn\": \"X1345\"," +
-              "\"gender\" : \"MALE\"," +
-              "\"dob\" : [ 2001, 1, 1 ]," +
-              "\"assessmentDate\" : [ 2021, 1, 1, 0, 0 ]," +
-              "\"currentOffence\" : {" +
-              "    \"offenceCode\" : \"054\"," +
-              "    \"offenceSubcode\" : \"09\"" +
-              "}," +
-              "\"dateOfFirstSanction\" : \"2020-01-01\"," +
-              "\"totalOffences\" : 10," +
-              "\"totalViolentOffences\" : 8," +
-              "\"dateOfCurrentConviction\" : \"2020-12-18\"," +
-              "\"hasAnySexualOffences\" : true," +
-              "\"isCurrentSexualOffence\" : true," +
-              "\"isCurrentOffenceVictimStranger\" : true," +
-              "\"mostRecentSexualOffenceDate\" : \"2020-12-11\"," +
-              "\"totalSexualOffencesInvolvingAnAdult\" : 5," +
-              "\"totalSexualOffencesInvolvingAChild\" : 3," +
-              "\"totalSexualOffencesInvolvingChildImages\" : 2," +
-              "\"totalNonContactSexualOffences\" : 2," +
-              "\"earliestReleaseDate\" : \"2021-11-01\"," +
-              "\"hasCompletedInterview\" : true," +
-              "\"dynamicScoringOffences\" : {" +
-              "   \"hasSuitableAccommodation\" : \"MISSING\"," +
-              "   \"employment\": \"NOT_AVAILABLE_FOR_WORK\"," +
-              "   \"currentRelationshipWithPartner\" : \"SIGNIFICANT_PROBLEMS\"," +
-              "   \"evidenceOfDomesticViolence\" : true," +
-              "   \"isPerpetrator\" : true," +
-              "   \"alcoholUseIssues\" : \"SIGNIFICANT_PROBLEMS\"," +
-              "   \"bingeDrinkingIssues\" : \"SIGNIFICANT_PROBLEMS\"," +
-              "   \"impulsivityIssues\" : \"SOME_PROBLEMS\"," +
-              "   \"temperControlIssues\" : \"SIGNIFICANT_PROBLEMS\"," +
-              "   \"proCriminalAttitudes\" : \"SOME_PROBLEMS\"," +
-              "   \"previousOffences\" : {" +
-              "   \"murderAttempt\" : true," +
-              "   \"wounding\" : true," +
-              "   \"aggravatedBurglary\" : true," +
-              "   \"arson\" : true," +
-              "   \"criminalDamage\" : true," +
-              "   \"kidnapping\" : true," +
-              "   \"firearmPossession\" : true," +
-              "   \"robbery\" : true," +
-              "   \"offencesWithWeapon\" : true" +
-              "   }," +
-              "   \"currentOffences\" : { " +
-              "   \"firearmPossession\" :null, " +
-              "   \"offencesWithWeapon\" : null " +
-              "   } " +
-              "}" +
-              "}",
-            true,
-            true,
-          ),
-        )
-        .willReturn(
-          WireMock.aResponse()
-            .withStatus(200)
-            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
-            .withBody(riskRsrPredictors),
-        ),
-    )
-  }
-
   fun stubGetRSRPredictorsForOffenderAndOffencesWithCurrentOffences(
     final: Boolean,
     episodeUuid: UUID,
@@ -163,7 +91,7 @@ class AssessRisksAndNeedsApiMockServer : WireMockServer(9007) {
 
   fun stubGetRoshRiskSummary() {
     stubFor(
-      WireMock.get(WireMock.urlEqualTo("/risks/crn/DX12340A/widget"))
+      WireMock.get(WireMock.urlPathMatching("/risks/crn/(DX12340A|DX12340B)/widget"))
         .willReturn(
           WireMock.aResponse()
             .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))

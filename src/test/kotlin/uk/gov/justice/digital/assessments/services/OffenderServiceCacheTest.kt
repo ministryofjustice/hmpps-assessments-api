@@ -19,7 +19,7 @@ internal class OffenderServiceCacheTest(
 ) : IntegrationTest() {
   @BeforeEach
   fun setup() {
-    MDC.put(RequestData.USER_NAME_HEADER, Companion.USERNAME)
+    MDC.put(RequestData.USER_NAME_HEADER, USERNAME)
   }
 
   @Test
@@ -29,7 +29,7 @@ internal class OffenderServiceCacheTest(
     offenderService.validateUserAccess(aCRN)
     offenderService.validateUserAccess(aCRN)
 
-    communityApiMockServer.verify(exactly(1), getRequestedFor(urlEqualTo("/secure/offenders/crn/$aCRN/user/${Companion.USERNAME}/userAccess")))
+    communityApiMockServer.verify(exactly(1), getRequestedFor(urlEqualTo("/secure/offenders/crn/$aCRN/user/$USERNAME/userAccess")))
   }
 
   @Test
@@ -44,7 +44,7 @@ internal class OffenderServiceCacheTest(
       offenderService.validateUserAccess(aCRN)
     }
 
-    communityApiMockServer.verify(exactly(2), getRequestedFor(urlEqualTo("/secure/offenders/crn/$aCRN/user/${Companion.USERNAME}/userAccess")))
+    communityApiMockServer.verify(exactly(2), getRequestedFor(urlEqualTo("/secure/offenders/crn/$aCRN/user/$USERNAME/userAccess")))
   }
 
   @Test
