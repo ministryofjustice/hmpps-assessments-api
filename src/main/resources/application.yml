@@ -6,6 +6,7 @@ spring:
     cache-names: verifyUserAccess, roshRiskWidget
     redis:
       time-to-live: 300000
+      cache-null-values: false
   security:
     oauth2:
       client:
@@ -141,10 +142,6 @@ assess-risks-and-needs-api:
 
 delius-integration:
   base-url: http://localhost:9080
-
-stub:
-  restricted: ""
-  offset: 0
 
 cache:
   ttlDays:
