@@ -27,7 +27,7 @@ services:
       - /var/lib/postgresql
 
   redis:
-    image: "redis:6.2.3-alpine"
+    image: "redis:7.0.11-alpine"
     networks:
       - hmpps
     ports:

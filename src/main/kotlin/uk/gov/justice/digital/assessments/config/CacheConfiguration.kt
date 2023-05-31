@@ -40,14 +40,14 @@ class CacheConfiguration {
       .apply {
         activateDefaultTyping(polymorphicTypeValidator, ObjectMapper.DefaultTyping.EVERYTHING, JsonTypeInfo.As.PROPERTY)
       }
+      .configure(FAIL_ON_UNKNOWN_PROPERTIES, false)
   }
 
   private fun getDefaultCacheConfiguration(): RedisCacheConfiguration {
     return RedisCacheConfiguration
       .defaultCacheConfig()
-      .disableCachingNullValues()
       .serializeKeysWith(SerializationPair.fromSerializer(StringRedisSerializer()))
-      .serializeValuesWith(SerializationPair.fromSerializer(GenericJackson2JsonRedisSerializer(objectMapper().configure(FAIL_ON_UNKNOWN_PROPERTIES, false))))
+      .serializeValuesWith(SerializationPair.fromSerializer(GenericJackson2JsonRedisSerializer(objectMapper())))
   }
 
   @Bean
