@@ -32,6 +32,9 @@ class CloneAssessmentExcludedQuestionsRepositoryTest(
       "eligibility_intensive_working_complete",
       "individual_availability_complete",
       "equipment_complete",
+      "current_disabilities",
+      "current_provisions",
+      "active_disabilities",
     )
   }
 }

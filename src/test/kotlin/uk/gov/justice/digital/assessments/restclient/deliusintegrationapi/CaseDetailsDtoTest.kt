@@ -75,7 +75,6 @@ class CaseDetailsDtoTest {
     assertThat(answers["learning_difficulty_details"]).isEmpty()
     assertThat(answers["mental_health_condition"]).isEmpty()
     assertThat(answers["mental_health_condition_details"]).isEmpty()
-    assertThat(answers["active_disabilities"]).isEmpty()
   }
 
   @Test
