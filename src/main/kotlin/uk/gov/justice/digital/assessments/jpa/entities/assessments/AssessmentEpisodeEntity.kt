@@ -17,6 +17,7 @@ import uk.gov.justice.digital.assessments.api.answers.CarerCommitmentsAnswerDto
 import uk.gov.justice.digital.assessments.api.answers.DisabilityAnswerDto
 import uk.gov.justice.digital.assessments.api.answers.EmergencyContactDetailsAnswerDto
 import uk.gov.justice.digital.assessments.api.answers.GPDetailsAnswerDto
+import uk.gov.justice.digital.assessments.api.answers.ProvisionAnswerDto
 import uk.gov.justice.digital.assessments.jpa.entities.AssessmentType
 import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.CaseDetails
 import java.time.LocalDateTime
@@ -173,8 +174,13 @@ data class AssessmentEpisodeEntity(
       }?.map { it.type.description }.orEmpty(),
     )
     this.addAnswer(
-      "active_disabilities",
+      "current_disabilities",
       caseDetails.disabilities?.map { DisabilityAnswerDto.from(it) }.orEmpty(),
+    )
+
+    this.addAnswer(
+      "current_provisions",
+      caseDetails.provisions?.map { ProvisionAnswerDto.from(it) }.orEmpty(),
     )
 
     mapActiveCarerCommitments(caseDetails, this)
