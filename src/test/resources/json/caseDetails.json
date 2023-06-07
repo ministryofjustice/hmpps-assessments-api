@@ -50,37 +50,25 @@
   "disabilities": [
     {
       "type": {
-        "code": "LDI",
-        "description": "Learning Disability"
+        "code": "LM1",
+        "description": "Limited movement"
       },
-      "notes": "Comment added by Natalie Wood on 20/03/2023 at 16:19\nLearning note"
-    },
-    {
-      "type": {
-        "code": "MHR",
-        "description": "Mental Health related disabilities"
+      "condition": {
+        "code": "LM2",
+        "description": "Prosthetic leg"
       },
-      "notes": "Comment added by Natalie Wood on 20/03/2023 at 16:19\nMental health note"
-    },
-    {
-      "type": {
-        "code": "MRD",
-        "description": "Mobility related Disabilities"
-      },
-      "notes": "Comment added by Natalie Wood on 20/03/2023 at 16:18\nmobility note"
+      "notes": "notes about this disability"
     }
   ],
   "provisions": [
     {
       "type": {
-        "code": "22",
+        "code": "ACC1",
+        "description": "Accessibility"
+      },
+      "category": {
+        "code": "HAND1",
         "description": "Handrails"
-      }
-    },
-    {
-      "type": {
-        "code": "12",
-        "description": "Behavioural responses/Body language"
       }
     }
   ],
