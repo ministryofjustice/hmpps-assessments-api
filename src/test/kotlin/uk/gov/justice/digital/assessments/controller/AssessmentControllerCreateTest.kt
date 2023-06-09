@@ -210,16 +210,23 @@ class AssessmentControllerCreateTest : IntegrationTest() {
       val learning = activeDisabilities[0]
       assertThat(learning.type.code).isEqualTo("LDI")
       assertThat(learning.type.description).isEqualTo("Learning Disability")
+      assertThat(learning.condition.code).isEqualTo("LD2")
+      assertThat(learning.condition.description).isEqualTo("Learning Disability Condition")
       assertThat(learning.notes).isEqualTo("notes about this disability")
 
       val mentalHealth = activeDisabilities[1]
       assertThat(mentalHealth.type.code).isEqualTo("MHR")
       assertThat(mentalHealth.type.description).isEqualTo("Mental Health related disabilities")
+      assertThat(mentalHealth.condition.code).isEqualTo("MHR2")
+      assertThat(mentalHealth.condition.description).isEqualTo("Mental Health related disabilities condition")
       assertThat(mentalHealth.notes).isEqualTo("notes about this disability")
 
       val mobility = activeDisabilities[2]
       assertThat(mobility.type.code).isEqualTo("MRD")
       assertThat(mobility.type.description).isEqualTo("Mobility related Disabilities")
+      // Test when condition not specified
+      assertThat(mobility.condition.code).isEqualTo("EMPTY")
+      assertThat(mobility.condition.description).isEqualTo("Not specified")
       assertThat(mobility.notes).isEqualTo("notes about this disability")
     }
 
