@@ -38,13 +38,13 @@ data class PhoneNumber(
 
 data class Disability(
   val type: Type,
-  val condition: Type,
+  val condition: Type = Type(code = "EMPTY", description = "Not specified"),
   val notes: String?,
 )
 
 data class Provision(
   val type: Type,
-  val category: Type,
+  val category: Type = Type(code = "EMPTY", description = "Not specified"),
 )
 
 data class Language(

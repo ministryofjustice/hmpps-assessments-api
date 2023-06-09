@@ -171,10 +171,6 @@ class DeliusIntegrationMockServer : WireMockServer(9097) {
           "code": "MRD",
           "description": "Mobility related Disabilities"
         },
-        "condition": {
-          "code": "MRD2",
-          "description": "Mobility related Disabilities condition"
-        },
         "notes": "notes about this disability"
       }
     ],
