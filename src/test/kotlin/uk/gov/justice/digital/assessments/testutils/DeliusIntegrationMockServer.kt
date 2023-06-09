@@ -144,28 +144,52 @@ class DeliusIntegrationMockServer : WireMockServer(9097) {
     },
     "ethnicity": "Asian or Asian British: Pakistani",
     "disabilities": [
-        {
-          "type": {
-            "code": "LDI",
-            "description": "Learning Disability"
-          },
-          "notes": "Comment added by Natalie Wood on 20/03/2023 at 16:19\nLearning note"
+      {
+        "type": {
+          "code": "LDI",
+          "description": "Learning Disability"
         },
-        {
-          "type": {
-            "code": "MHR",
-            "description": "Mental Health related disabilities"
-          },
-          "notes": "Comment added by Natalie Wood on 20/03/2023 at 16:19\nMental health note"
+        "condition": {
+          "code": "LD2",
+          "description": "Learning Disability Condition"
         },
-        {
-          "type": {
-            "code": "MRD",
-            "description": "Mobility related Disabilities"
-          },
-          "notes": "Comment added by Natalie Wood on 20/03/2023 at 16:18\nmobility note"
+        "notes": "notes about this disability"
+      },
+      {
+        "type": {
+          "code": "MHR",
+          "description": "Mental Health related disabilities"
+        },
+        "condition": {
+          "code": "MHR2",
+          "description": "Mental Health related disabilities condition"
+        },
+        "notes": "notes about this disability"
+      },
+      {
+        "type": {
+          "code": "MRD",
+          "description": "Mobility related Disabilities"
+        },
+        "condition": {
+          "code": "MRD2",
+          "description": "Mobility related Disabilities condition"
+        },
+        "notes": "notes about this disability"
+      }
+    ],
+    "provisions": [
+      {
+        "type": {
+          "code": "ACC1",
+          "description": "Accessibility"
+        },
+        "category": {
+          "code": "HAND1",
+          "description": "Handrails"
         }
-      ],    
+      }
+    ],
     "language": {
         "requiresInterpreter": true,
         "primaryLanguage": "Urdu"

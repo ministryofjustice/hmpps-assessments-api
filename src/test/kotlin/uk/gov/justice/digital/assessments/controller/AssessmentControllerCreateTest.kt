@@ -1,5 +1,12 @@
 package uk.gov.justice.digital.assessments.controller
 
+import com.fasterxml.jackson.annotation.JsonInclude
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.SerializationFeature
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -12,6 +19,7 @@ import org.springframework.test.context.jdbc.SqlGroup
 import org.springframework.test.web.reactive.server.expectBody
 import uk.gov.justice.digital.assessments.api.ErrorResponse
 import uk.gov.justice.digital.assessments.api.answers.AnswersDto
+import uk.gov.justice.digital.assessments.api.answers.DisabilityAnswerDto
 import uk.gov.justice.digital.assessments.api.assessments.AssessmentDto
 import uk.gov.justice.digital.assessments.api.assessments.AssessmentEpisodeDto
 import uk.gov.justice.digital.assessments.api.assessments.CreateAssessmentDto
@@ -35,6 +43,22 @@ import java.util.UUID
 )
 @AutoConfigureWebTestClient(timeout = "6000000")
 class AssessmentControllerCreateTest : IntegrationTest() {
+
+  private fun objectMapper(): ObjectMapper {
+    return ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+      .configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true)
+      .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+      .setSerializationInclusion(JsonInclude.Include.NON_NULL).setSerializationInclusion(JsonInclude.Include.NON_ABSENT)
+      .registerModules(
+        Jdk8Module(),
+        JavaTimeModule(),
+        KotlinModule.Builder().build(),
+      )
+  }
+
+  private fun toJsonString(input: Any): String {
+    return objectMapper().writeValueAsString(input)
+  }
 
   @Nested
   @DisplayName("Creating assessments from Delius")
@@ -98,8 +122,8 @@ class AssessmentControllerCreateTest : IntegrationTest() {
 
       assertThat(assessment?.assessmentUuid).isNotNull
       assertThat(assessment?.episodes).hasSize(1)
-      val answers = assessment?.episodes?.first()?.answers
-      assertThat(answers!!["first_name"]).isEqualTo(listOf("John"))
+      val answers = assessment?.episodes?.first()?.answers.orEmpty()
+      assertThat(answers["first_name"]).isEqualTo(listOf("John"))
       assertThat(answers["first_name_aliases"]).isEqualTo(listOf("John", "Jonny"))
       assertThat(answers["family_name"]).isEqualTo(listOf("Smith"))
       assertThat(answers["family_name_aliases"]).isEqualTo(listOf("Smithy", "Smith"))
@@ -178,25 +202,25 @@ class AssessmentControllerCreateTest : IntegrationTest() {
     fun `creating a new UPW assessment from Delius returns disabilities`() {
       val assessment = createDeliusAssessment(crn, eventID)
 
-      val answers = assessment?.episodes?.first()?.answers!!
+      val answers = assessment?.episodes?.first()?.answers.orEmpty()
 
-      val activeDisabilities = answers["active_disabilities"] as List<*>
+      val activeDisabilities = answers["current_disabilities"].orEmpty().map { objectMapper().readValue(toJsonString(it), DisabilityAnswerDto::class.java) }
       assertThat(activeDisabilities).hasSize(3)
 
-      val learning = activeDisabilities[0] as Map<*, *>
-      assertThat(learning["code"]).isEqualTo("LDI")
-      assertThat(learning["description"]).isEqualTo("Learning Disability")
-      assertThat(learning["disability_notes"]).isEqualTo("Comment added by Natalie Wood on 20/03/2023 at 16:19\nLearning note")
+      val learning = activeDisabilities[0]
+      assertThat(learning.type.code).isEqualTo("LDI")
+      assertThat(learning.type.description).isEqualTo("Learning Disability")
+      assertThat(learning.notes).isEqualTo("notes about this disability")
 
-      val mentalHealth = activeDisabilities[1] as Map<*, *>
-      assertThat(mentalHealth["code"]).isEqualTo("MHR")
-      assertThat(mentalHealth["description"]).isEqualTo("Mental Health related disabilities")
-      assertThat(mentalHealth["disability_notes"]).isEqualTo("Comment added by Natalie Wood on 20/03/2023 at 16:19\nMental health note")
+      val mentalHealth = activeDisabilities[1]
+      assertThat(mentalHealth.type.code).isEqualTo("MHR")
+      assertThat(mentalHealth.type.description).isEqualTo("Mental Health related disabilities")
+      assertThat(mentalHealth.notes).isEqualTo("notes about this disability")
 
-      val mobility = activeDisabilities[2] as Map<*, *>
-      assertThat(mobility["code"]).isEqualTo("MRD")
-      assertThat(mobility["description"]).isEqualTo("Mobility related Disabilities")
-      assertThat(mobility["disability_notes"]).isEqualTo("Comment added by Natalie Wood on 20/03/2023 at 16:18\nmobility note")
+      val mobility = activeDisabilities[2]
+      assertThat(mobility.type.code).isEqualTo("MRD")
+      assertThat(mobility.type.description).isEqualTo("Mobility related Disabilities")
+      assertThat(mobility.notes).isEqualTo("notes about this disability")
     }
 
     @Test
