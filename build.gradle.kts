@@ -53,7 +53,7 @@ dependencies {
   testImplementation("com.ninja-squad:springmockk:4.0.2")
   testImplementation("io.jsonwebtoken:jjwt-impl:0.11.5")
   testImplementation("io.jsonwebtoken:jjwt-jackson:0.11.5")
-  testImplementation("com.github.tomakehurst:wiremock-jre8-standalone:2.35.1")
+  testImplementation("com.github.tomakehurst:wiremock-jre8-standalone:3.0.1")
 }
 repositories {
   mavenCentral()
