@@ -68,7 +68,8 @@ spring:
       host: localhost
       port: 6379
       password:
-      ssl: false
+      ssl:
+        enabled: false
       client-name: hmpps-assessments-api
       repositories:
         enabled: false
