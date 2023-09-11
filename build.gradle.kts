@@ -1,8 +1,8 @@
 
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "5.1.4"
-  kotlin("plugin.spring") version "1.8.21"
-  kotlin("plugin.jpa") version "1.8.21"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "5.4.1"
+  kotlin("plugin.spring") version "1.9.10"
+  kotlin("plugin.jpa") version "1.9.10"
 }
 
 allOpen {
@@ -30,19 +30,19 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-cache")
   implementation("org.springframework.boot:spring-boot-starter-aop")
   implementation("org.springframework.security:spring-security-oauth2-client")
-  implementation("org.springframework.data:spring-data-redis:3.0.6")
-  implementation("redis.clients:jedis:4.4.1")
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0")
-  implementation("commons-io:commons-io:2.12.0")
+  implementation("org.springframework.data:spring-data-redis:3.1.3")
+  implementation("redis.clients:jedis:4.4.4")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
+  implementation("commons-io:commons-io:2.13.0")
   implementation("com.zaxxer:HikariCP:5.0.1")
   implementation("com.vladmihalcea:hibernate-types-60:2.21.1")
   implementation("com.beust:klaxon:5.6")
   implementation("com.google.code.gson:gson:2.10.1")
-  implementation("com.google.guava:guava:32.0.0-jre")
-  implementation("org.apache.commons:commons-lang3:3.12.0")
+  implementation("com.google.guava:guava:32.1.2-jre")
+  implementation("org.apache.commons:commons-lang3:3.13.0")
   implementation("org.postgresql:postgresql:42.6.0")
   implementation("org.flywaydb:flyway-core")
-  implementation("net.logstash.logback:logstash-logback-encoder:7.3")
+  implementation("net.logstash.logback:logstash-logback-encoder:7.4")
 
   testAnnotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
@@ -53,7 +53,7 @@ dependencies {
   testImplementation("com.ninja-squad:springmockk:4.0.2")
   testImplementation("io.jsonwebtoken:jjwt-impl:0.11.5")
   testImplementation("io.jsonwebtoken:jjwt-jackson:0.11.5")
-  testImplementation("com.github.tomakehurst:wiremock-jre8-standalone:2.35.0")
+  testImplementation("com.github.tomakehurst:wiremock-jre8-standalone:2.35.1")
 }
 repositories {
   mavenCentral()
