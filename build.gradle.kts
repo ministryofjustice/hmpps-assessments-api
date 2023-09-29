@@ -33,7 +33,7 @@ dependencies {
   implementation("org.springframework.data:spring-data-redis:3.1.4")
   implementation("redis.clients:jedis:4.4.5")
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
-  implementation("commons-io:commons-io:2.13.0")
+  implementation("commons-io:commons-io:2.14.0")
   implementation("com.zaxxer:HikariCP:5.0.1")
   implementation("com.vladmihalcea:hibernate-types-60:2.21.1")
   implementation("com.beust:klaxon:5.6")
