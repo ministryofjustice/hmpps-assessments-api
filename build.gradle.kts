@@ -1,8 +1,8 @@
 
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "5.8.0"
-  kotlin("plugin.spring") version "1.9.20"
-  kotlin("plugin.jpa") version "1.9.20"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "5.10.0"
+  kotlin("plugin.spring") version "1.9.21"
+  kotlin("plugin.jpa") version "1.9.21"
 }
 
 allOpen {
@@ -30,17 +30,17 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-cache")
   implementation("org.springframework.boot:spring-boot-starter-aop")
   implementation("org.springframework.security:spring-security-oauth2-client")
-  implementation("org.springframework.data:spring-data-redis:3.1.5")
+  implementation("org.springframework.data:spring-data-redis:3.2.0")
   implementation("redis.clients:jedis:4.4.6")
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
-  implementation("commons-io:commons-io:2.15.0")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
+  implementation("commons-io:commons-io:2.15.1")
   implementation("com.zaxxer:HikariCP:5.1.0")
   implementation("com.vladmihalcea:hibernate-types-60:2.21.1")
   implementation("com.beust:klaxon:5.6")
   implementation("com.google.code.gson:gson:2.10.1")
   implementation("com.google.guava:guava:32.1.3-jre")
-  implementation("org.apache.commons:commons-lang3:3.13.0")
-  implementation("org.postgresql:postgresql:42.6.0")
+  implementation("org.apache.commons:commons-lang3:3.14.0")
+  implementation("org.postgresql:postgresql:42.7.0")
   implementation("org.flywaydb:flyway-core")
   implementation("net.logstash.logback:logstash-logback-encoder:7.4")
 
