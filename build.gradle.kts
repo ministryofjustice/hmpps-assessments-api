@@ -40,7 +40,7 @@ dependencies {
   implementation("com.google.code.gson:gson:2.10.1")
   implementation("com.google.guava:guava:32.1.3-jre")
   implementation("org.apache.commons:commons-lang3:3.14.0")
-  implementation("org.postgresql:postgresql:42.7.0")
+  implementation("org.postgresql:postgresql:42.7.1")
   implementation("org.flywaydb:flyway-core")
   implementation("net.logstash.logback:logstash-logback-encoder:7.4")
 
