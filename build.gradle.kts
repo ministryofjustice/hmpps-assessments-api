@@ -31,7 +31,7 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-aop")
   implementation("org.springframework.security:spring-security-oauth2-client")
   implementation("org.springframework.data:spring-data-redis:3.2.0")
-  implementation("redis.clients:jedis:4.4.6")
+  implementation("redis.clients:jedis:5.1.0")
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
   implementation("commons-io:commons-io:2.15.1")
   implementation("com.zaxxer:HikariCP:5.1.0")
