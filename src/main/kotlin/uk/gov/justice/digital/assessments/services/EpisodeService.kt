@@ -8,7 +8,7 @@ import uk.gov.justice.digital.assessments.api.groups.GroupQuestionDto
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.Answers
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AssessmentEpisodeEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.CloneAssessmentExcludedQuestionsRepository
-import uk.gov.justice.digital.assessments.restclient.audit.AuditType
+import uk.gov.justice.digital.assessments.restclient.AuditType
 import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.CaseDetails
 import java.time.LocalDateTime
 

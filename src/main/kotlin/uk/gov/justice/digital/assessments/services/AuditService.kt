@@ -6,11 +6,10 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
-import uk.gov.justice.digital.assessments.restclient.AuditRestClient
-import uk.gov.justice.digital.assessments.restclient.audit.AuditDetail
-import uk.gov.justice.digital.assessments.restclient.audit.AuditEvent
-import uk.gov.justice.digital.assessments.restclient.audit.AuditType
-import uk.gov.justice.digital.assessments.services.exceptions.AuditFailureException
+import uk.gov.justice.digital.assessments.restclient.AuditClient
+import uk.gov.justice.digital.assessments.restclient.AuditDetail
+import uk.gov.justice.digital.assessments.restclient.AuditType
+import uk.gov.justice.digital.assessments.restclient.AuditableEvent
 import uk.gov.justice.digital.assessments.utils.RequestData
 import java.time.Clock
 import java.time.Instant
@@ -18,10 +17,10 @@ import java.util.UUID
 
 @Service
 class AuditService(
-  private val auditClient: AuditRestClient,
   @Value("\${spring.application.name}")
   private val serviceName: String,
-  private val mapper: ObjectMapper,
+  private val objectMapper: ObjectMapper,
+  private val auditClient: AuditClient,
   private val clock: Clock = Clock.systemUTC(),
 ) {
 
@@ -30,27 +29,26 @@ class AuditService(
   }
 
   fun createAuditEvent(auditType: AuditType, assessmentUUID: UUID, episodeUUID: UUID?, crn: String?, author: AuthorEntity?, additionalDetails: Map<String, Any>? = null) {
-    val auditEvent = AuditEvent(
-      what = auditType.name,
+    val event = AuditableEvent(
       who = RequestData.getUserName(),
-      service = serviceName,
+      what = auditType.name,
       `when` = Instant.now(clock),
-      details = mapper.writeValueAsString(
-        AuditDetail(
-          crn = crn,
-          assessmentUuid = assessmentUUID,
-          episodeUuid = episodeUUID,
-          author = author,
-          additionalDetails,
-        ),
-      ),
+      service = serviceName,
+      details = AuditDetail(
+        crn = crn,
+        assessmentUuid = assessmentUUID,
+        episodeUuid = episodeUUID,
+        author = author,
+        additionalDetails,
+      ).toJson(),
     )
-    // Initially log audit failures as errors,
-    // so they can be alerted on but do not prevent the user completing the transaction
+
     try {
-      auditClient.createAuditEvent(auditEvent)
-    } catch (e: AuditFailureException) {
+      auditClient.sendEvent(event)
+    } catch (e: Exception) {
       log.error(e.message)
     }
   }
+
+  private fun Any.toJson() = objectMapper.writeValueAsString(this)
 }

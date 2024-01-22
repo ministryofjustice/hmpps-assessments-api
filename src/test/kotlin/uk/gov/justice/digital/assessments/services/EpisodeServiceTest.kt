@@ -29,7 +29,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.entities.refdata.CloneAssessmentExcludedQuestionsEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.refdata.CloneAssessmentExcludedQuestionsRepository
-import uk.gov.justice.digital.assessments.restclient.audit.AuditType
+import uk.gov.justice.digital.assessments.restclient.AuditType
 import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.Address
 import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.CaseDetails
 import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.Name

@@ -16,7 +16,7 @@ import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.SubjectEntity
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.AssessmentRepository
 import uk.gov.justice.digital.assessments.jpa.repositories.assessments.EpisodeRepository
-import uk.gov.justice.digital.assessments.restclient.audit.AuditType
+import uk.gov.justice.digital.assessments.restclient.AuditType
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
