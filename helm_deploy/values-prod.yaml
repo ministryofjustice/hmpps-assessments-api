@@ -20,3 +20,6 @@ generic-prometheus-alerts:
   enabled: true
   targetApplication: hmpps-assessments-api
   alertSeverity: hmpps-assess-risks-and-needs
+
+dataExtractor:
+  enabled: false
