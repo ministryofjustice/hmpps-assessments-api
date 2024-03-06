@@ -71,7 +71,6 @@ workflows:
           env: "dev"
           context:
             - hmpps-common-vars
-            - hmpps-assessments-dev-live
           filters:
             branches:
               only:
