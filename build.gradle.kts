@@ -43,7 +43,7 @@ dependencies {
   implementation("org.apache.commons:commons-lang3:3.14.0")
   implementation("org.postgresql:postgresql:42.7.1")
   implementation("org.flywaydb:flyway-core")
-  implementation("net.logstash.logback:logstash-logback-encoder:7.4")
+  implementation("net.logstash.logback:logstash-logback-encoder:8.0")
 
   testAnnotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
