@@ -1,8 +1,8 @@
 
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "5.13.0"
-  kotlin("plugin.spring") version "1.9.22"
-  kotlin("plugin.jpa") version "1.9.22"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "5.15.6"
+  kotlin("plugin.spring") version "1.9.25"
+  kotlin("plugin.jpa") version "1.9.25"
 }
 
 allOpen {
@@ -30,18 +30,18 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-cache")
   implementation("org.springframework.boot:spring-boot-starter-aop")
   implementation("org.springframework.security:spring-security-oauth2-client")
-  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:2.1.1")
-  implementation("org.springframework.data:spring-data-redis:3.2.1")
-  implementation("redis.clients:jedis:5.1.0")
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
-  implementation("commons-io:commons-io:2.15.1")
+  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:2.2.1")
+  implementation("org.springframework.data:spring-data-redis:3.3.2")
+  implementation("redis.clients:jedis:5.1.4")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
+  implementation("commons-io:commons-io:2.16.1")
   implementation("com.zaxxer:HikariCP:5.1.0")
   implementation("com.vladmihalcea:hibernate-types-60:2.21.1")
   implementation("com.beust:klaxon:5.6")
-  implementation("com.google.code.gson:gson:2.10.1")
-  implementation("com.google.guava:guava:33.0.0-jre")
-  implementation("org.apache.commons:commons-lang3:3.14.0")
-  implementation("org.postgresql:postgresql:42.7.1")
+  implementation("com.google.code.gson:gson:2.11.0")
+  implementation("com.google.guava:guava:33.2.1-jre")
+  implementation("org.apache.commons:commons-lang3:3.16.0")
+  implementation("org.postgresql:postgresql:42.7.3")
   implementation("org.flywaydb:flyway-core")
   implementation("net.logstash.logback:logstash-logback-encoder:7.4")
 
@@ -52,9 +52,9 @@ dependencies {
     exclude(module = "mockito-core")
   }
   testImplementation("com.ninja-squad:springmockk:4.0.2")
-  testImplementation("io.jsonwebtoken:jjwt-impl:0.12.3")
-  testImplementation("io.jsonwebtoken:jjwt-jackson:0.12.3")
-  testImplementation("org.wiremock:wiremock-standalone:3.4.1")
+  testImplementation("io.jsonwebtoken:jjwt-impl:0.12.6")
+  testImplementation("io.jsonwebtoken:jjwt-jackson:0.12.6")
+  testImplementation("org.wiremock:wiremock-standalone:3.9.1")
 }
 repositories {
   mavenCentral()
