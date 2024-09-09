@@ -18,16 +18,9 @@ spring:
             client-authentication-method: client_secret_basic
             authorization-grant-type: client_credentials
             provider: oauth-service
-          community-api-client:
-            client-name: community-api-client
-            client-id: ${community-api-client-id:community-api-client}
-            client-secret: ${community-api-client-secret:clientsecret}
-            client-authentication-method: client_secret_basic
-            authorization-grant-type: client_credentials
-            provider: oauth-service
           audit-client:
             client-name: audit-client
-            client-id: ${audit-client-id:community-api-client}
+            client-id: ${audit-client-id:delius-integration-client}
             client-secret: ${audit-client-secret:clientsecret}
             client-authentication-method: client_secret_basic
             authorization-grant-type: client_credentials
@@ -131,9 +124,6 @@ web:
     read-timeout-ms: 50000
     write-timeout-ms: 5000
     byte-buffer-size: 20971520
-
-community-api:
-  base-url: http://localhost:9080
 
 audit:
   base-url: http://localhost:9080

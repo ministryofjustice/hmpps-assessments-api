@@ -327,4 +327,75 @@ class DeliusIntegrationMockServer : WireMockServer(9097) {
 }
     """.trimIndent()
   }
+
+  fun stubGetUserAccess() {
+    stubFor(
+      WireMock.get(WireMock.urlPathMatching("/users/([a-zA-Z0-9/-]*)/access/(?:X1|DX|CRN)[a-zA-Z0-9]*"))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withBody(laoSuccess),
+        ),
+    )
+    stubFor(
+      WireMock.get(WireMock.urlPathMatching("/users/([a-zA-Z0-9/-]*)/access/(OX[a-zA-Z0-9]*)"))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withBody(laoFailure),
+        ),
+    )
+    stubFor(
+      WireMock.get(WireMock.urlPathMatching("/users/([a-zA-Z0-9/-]*)/access/invalidNotFound"))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withStatus(404)
+            .withBody("{\"status\":\"404\",\"message\":\"The offender is not found\"}"),
+        ),
+    )
+    stubFor(
+      WireMock.get(WireMock.urlEqualTo("/users/user1/access/invalidBadRequest"))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withStatus(400)
+            .withBody("{\"status\":\"400\",\"message\":\"invalidBadRequest\"}"),
+        ),
+    )
+    stubFor(
+      WireMock.get(WireMock.urlEqualTo("/users/user1/access/invalidNotAuthorised"))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withStatus(401)
+            .withBody("{\"status\":\"401\",\"message\":\"Not authorised\"}"),
+        ),
+    )
+    stubFor(
+      WireMock.get(WireMock.urlEqualTo("/users/user1/access/invalidNotKnow"))
+        .willReturn(
+          WireMock.aResponse()
+            .withHeaders(HttpHeaders(HttpHeader("Content-Type", "application/json")))
+            .withStatus(422)
+            .withBody("{\"status\":\"422\",\"developerMessage\":\"unprocessable\"}"),
+        ),
+    )
+  }
+
+  private val laoSuccess = """{
+      "exclusionMessage": null,
+      "restrictionMessage": null,
+      "userExcluded": false,
+      "userRestricted": false
+    }
+  """.trimIndent()
+
+  private val laoFailure = """{
+      "exclusionMessage": "excluded",
+      "restrictionMessage": "restricted",
+      "userExcluded": true,
+      "userRestricted": true
+    }
+  """.trimIndent()
 }

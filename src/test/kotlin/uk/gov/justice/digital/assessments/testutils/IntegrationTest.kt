@@ -39,7 +39,6 @@ abstract class IntegrationTest {
   internal lateinit var jwtHelper: JwtAuthHelper
 
   companion object {
-    internal val communityApiMockServer = CommunityApiMockServer()
     internal val deliusIntegrationMockServer = DeliusIntegrationMockServer()
     internal val assessmentApiMockServer = AssessmentApiMockServer()
     internal val assessRisksAndNeedsApiMockServer = AssessRisksAndNeedsApiMockServer()
@@ -49,7 +48,6 @@ abstract class IntegrationTest {
     @BeforeAll
     @JvmStatic
     fun startMocks() {
-      communityApiMockServer.start()
       assessmentApiMockServer.start()
       assessRisksAndNeedsApiMockServer.start()
       auditApiMockServer.start()
@@ -60,7 +58,6 @@ abstract class IntegrationTest {
     @AfterAll
     @JvmStatic
     fun stopMocks() {
-      communityApiMockServer.stop()
       assessmentApiMockServer.stop()
       assessRisksAndNeedsApiMockServer.stop()
       auditApiMockServer.stop()
@@ -77,13 +74,13 @@ abstract class IntegrationTest {
 
   @BeforeEach
   fun resetStubs() {
-    communityApiMockServer.resetAll()
-    communityApiMockServer.stubGetUserAccess()
+    deliusIntegrationMockServer.resetAll()
     assessmentApiMockServer.stubGetAssessment()
     assessRisksAndNeedsApiMockServer.resetAll()
     auditApiMockServer.stubAuditEvents()
     oauthMockServer.stubGrantToken()
     deliusIntegrationMockServer.stubGetCaseData()
+    deliusIntegrationMockServer.stubGetUserAccess()
     RequestContextHolder.getRequestAttributes()
     startSession()
     startRequest()

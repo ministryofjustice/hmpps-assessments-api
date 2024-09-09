@@ -7,7 +7,6 @@ generic-service:
 
   env:
     OAUTH_ENDPOINT_URL: https://sign-in-dev.hmpps.service.justice.gov.uk/auth
-    COMMUNITY_API_BASE_URL: https://community-api-secure.test.delius.probation.hmpps.dsd.io/
     DELIUS_INTEGRATION_BASE_URL : https://unpaid-work-and-delius-dev.hmpps.service.justice.gov.uk
     ASSESS_RISKS_AND_NEEDS_API_BASE_URL: https://assess-risks-and-needs-dev.hmpps.service.justice.gov.uk/
     AUDIT_BASE_URL: https://audit-api-dev.hmpps.service.justice.gov.uk

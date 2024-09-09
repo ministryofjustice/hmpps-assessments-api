@@ -29,7 +29,7 @@ internal class OffenderServiceCacheTest(
     offenderService.validateUserAccess(aCRN)
     offenderService.validateUserAccess(aCRN)
 
-    communityApiMockServer.verify(exactly(1), getRequestedFor(urlEqualTo("/secure/offenders/crn/$aCRN/user/$USERNAME/userAccess")))
+    deliusIntegrationMockServer.verify(exactly(1), getRequestedFor(urlEqualTo("/users/$USERNAME/access/$aCRN")))
   }
 
   @Test
@@ -44,7 +44,7 @@ internal class OffenderServiceCacheTest(
       offenderService.validateUserAccess(aCRN)
     }
 
-    communityApiMockServer.verify(exactly(2), getRequestedFor(urlEqualTo("/secure/offenders/crn/$aCRN/user/$USERNAME/userAccess")))
+    deliusIntegrationMockServer.verify(exactly(2), getRequestedFor(urlEqualTo("/users/$USERNAME/access/$aCRN")))
   }
 
   @Test
@@ -61,10 +61,10 @@ internal class OffenderServiceCacheTest(
       offenderService.validateUserAccess(aCRN)
     }
 
-    communityApiMockServer.verify(exactly(2), getRequestedFor(urlEqualTo("/secure/offenders/crn/$aCRN/user/user1/userAccess")))
+    deliusIntegrationMockServer.verify(exactly(2), getRequestedFor(urlEqualTo("/users/$USERNAME/access/$aCRN")))
   }
 
   companion object {
-    const val USERNAME = "TestUser1"
+    const val USERNAME = "user1"
   }
 }
