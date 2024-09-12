@@ -8,8 +8,8 @@ import org.springframework.cache.annotation.Cacheable
 import org.springframework.http.HttpMethod
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
-import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.UserAccessResponse
 import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.CaseDetails
+import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.UserAccessResponse
 import uk.gov.justice.digital.assessments.services.exceptions.ExceptionReason
 import uk.gov.justice.digital.assessments.services.exceptions.ExternalApiForbiddenException
 
@@ -40,7 +40,7 @@ class DeliusIntegrationRestClient {
       .block()
 
     if (response != null) {
-      if(response.userExcluded || response.userRestricted){
+      if (response.userExcluded || response.userRestricted) {
         throw ExternalApiForbiddenException(
           "User does not have permission to access offender with CRN $crn",
           HttpMethod.GET,
