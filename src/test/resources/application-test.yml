@@ -22,9 +22,6 @@ assessment-update-api:
 assessment-api:
   base-url: http://localhost:9004
 
-community-api:
-  base-url: http://localhost:9096
-
 delius-integration:
   base-url: http://localhost:9097
 

@@ -9,7 +9,6 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
 import uk.gov.justice.digital.assessments.restclient.DeliusIntegrationRestClient
 import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.Address
 import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.CaseDetails
@@ -22,9 +21,8 @@ import java.time.LocalDate
 @DisplayName("Offender Service Tests")
 class OffenderServiceTest {
 
-  private val communityApiRestClient: CommunityApiRestClient = mockk()
   private val deliusIntegrationRestClient: DeliusIntegrationRestClient = mockk()
-  private val offenderService: OffenderService = OffenderService(communityApiRestClient, deliusIntegrationRestClient)
+  private val offenderService: OffenderService = OffenderService(deliusIntegrationRestClient)
 
   private val crn = "DX12340A"
   private val eventId = 1L

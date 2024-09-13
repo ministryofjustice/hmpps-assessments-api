@@ -9,19 +9,12 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
-import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.oauth2.client.AuthorizedClientServiceOAuth2AuthorizedClientManager
-import org.springframework.security.oauth2.client.InMemoryOAuth2AuthorizedClientService
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientProviderBuilder
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService
-import org.springframework.security.oauth2.client.endpoint.DefaultClientCredentialsTokenResponseClient
-import org.springframework.security.oauth2.client.endpoint.OAuth2ClientCredentialsGrantRequest
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository
 import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizedClientManager
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction
-import org.springframework.web.context.annotation.RequestScope
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.netty.http.client.HttpClient
 import uk.gov.justice.digital.assessments.restclient.AuthenticatingRestClient
@@ -33,9 +26,6 @@ import java.util.concurrent.TimeUnit
 class WebClientConfig {
   @Value("\${assess-risks-and-needs-api.base-url}")
   private lateinit var assessRisksAndNeedsBaseUrl: String
-
-  @Value("\${community-api.base-url}")
-  private lateinit var communityApiBaseUrl: String
 
   @Value("\${audit.base-url}")
   private lateinit var auditBaseUrl: String
@@ -70,30 +60,6 @@ class WebClientConfig {
     return RestClient(webClient, "assess-risks-and-needs-api-client")
   }
 
-  fun communityAuthorizedClientManager(clients: ClientRegistrationRepository?): OAuth2AuthorizedClientManager? {
-    val service: OAuth2AuthorizedClientService = InMemoryOAuth2AuthorizedClientService(clients)
-    val manager = AuthorizedClientServiceOAuth2AuthorizedClientManager(clients, service)
-
-    val defaultClientCredentialsTokenResponseClient = DefaultClientCredentialsTokenResponseClient()
-
-    val authentication = SecurityContextHolder.getContext().authentication
-
-    defaultClientCredentialsTokenResponseClient.setRequestEntityConverter { grantRequest: OAuth2ClientCredentialsGrantRequest ->
-      val converter = CustomOAuth2ClientCredentialsGrantRequestEntityConverter()
-      val username = authentication.name
-      converter.enhanceWithUsername(grantRequest, username)
-    }
-
-    val authorizedClientProvider = OAuth2AuthorizedClientProviderBuilder.builder()
-      .clientCredentials { clientCredentialsGrantBuilder: OAuth2AuthorizedClientProviderBuilder.ClientCredentialsGrantBuilder ->
-        clientCredentialsGrantBuilder.accessTokenResponseClient(defaultClientCredentialsTokenResponseClient)
-      }
-      .build()
-
-    manager.setAuthorizedClientProvider(authorizedClientProvider)
-    return manager
-  }
-
   @Bean
   fun deliusIntegrationClient(
     @Qualifier(value = "authorizedClientManager") authorizedClientManager: OAuth2AuthorizedClientManager,
@@ -116,21 +82,6 @@ class WebClientConfig {
     )
 
     return AuthenticatingRestClient(webClient, "audit-client", disableAuthentication)
-  }
-
-  @RequestScope
-  @Bean
-  fun communityApiWebClient(clientRegistrationRepository: ClientRegistrationRepository): WebClient? {
-    val oauth2 = ServletOAuth2AuthorizedClientExchangeFilterFunction(
-      communityAuthorizedClientManager(
-        clientRegistrationRepository,
-      ),
-    )
-    oauth2.setDefaultClientRegistrationId("community-api-client")
-    return WebClient.builder()
-      .apply(oauth2.oauth2Configuration())
-      .baseUrl(communityApiBaseUrl)
-      .build()
   }
 
   private fun webClientFactory(

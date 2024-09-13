@@ -13,7 +13,6 @@ A Spring Boot app to manage Risk and Need Assessments across HMPPS.
 * OAuth  [(running in a container)](#oauth-security)
 * Offender Assessments Updates Service
 * [Offender Assessments API](https://github.com/ministryofjustice/offender-assessments-api-kotlin)
-* [HMPPS Community API - Wiremock](https://github.com/ministryofjustice/community-api)
 
 #### OAuth security
 In order to run the service locally, [Nomis OAuth Service](https://github.com/ministryofjustice/nomis-oauth2-server/) is required. This can be run locally using the [docker-compose.yml](docker-compose.yml) file which will pull down the latest version.  From the command line run:
@@ -72,7 +71,6 @@ will apply ktlint styles to intellij and also add a pre-commit hook to format al
 - Add the following environment variables as a single semicolon delimited line to point to the dev downstream services: 
   - OAUTH_ENDPOINT_URL=https://sign-in-dev.hmpps.service.justice.gov.uk/auth;
   - ASSESSMENT_UPDATE_API_BASE_URL=https://asmnt-updte-dev.aks-dev-1.studio-hosting.service.justice.gov.uk;
-  - COMMUNITY_API_BASE_URL=https://community-api-secure.test.delius.probation.hmpps.dsd.io/;
   - ASSESSMENT_API_BASE_URL=https://offender-dev.aks-dev-1.studio-hosting.service.justice.gov.uk;
   - ASSESS_RISKS_AND_NEEDS_API_BASE_URL=https://assess-risks-and-needs-dev.hmpps.service.justice.gov.uk/;
   - AUDIT_BASE_URL=https://audit-api-dev.hmpps.service.justice.gov.uk;
@@ -80,8 +78,6 @@ will apply ktlint styles to intellij and also add a pre-commit hook to format al
   - ASSESSMENT_API_CLIENT_SECRET=\<speak to another dev to get this\>;
   - ASSESS_RISKS_AND_NEEDS_API_ID=\<speak to another dev to get this\>;
   - ASSESS_RISKS_AND_NEEDS_API_CLIENT_SECRET=\<speak to another dev to get this\>;
-  - COMMUNITY_API_CLIENT_ID=\<speak to another dev to get this\>;
-  - COMMUNITY_API_CLIENT_SECRET=\<speak to another dev to get this\>;
   - AUDIT_CLIENT_ID=\<speak to another dev to get this\>;
   - AUDIT_CLIENT_SECRET=\<speak to another dev to get this\>;
 - Run `docker-compose up redis postgres` to start the cache layer and database

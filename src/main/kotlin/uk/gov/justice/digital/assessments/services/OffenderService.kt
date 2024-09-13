@@ -4,7 +4,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import uk.gov.justice.digital.assessments.api.OffenderDto
-import uk.gov.justice.digital.assessments.restclient.CommunityApiRestClient
 import uk.gov.justice.digital.assessments.restclient.DeliusIntegrationRestClient
 import uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.CaseDetails
 import uk.gov.justice.digital.assessments.services.exceptions.EntityNotFoundException
@@ -12,7 +11,6 @@ import uk.gov.justice.digital.assessments.utils.RequestData
 
 @Service
 class OffenderService(
-  private val communityApiRestClient: CommunityApiRestClient,
   private val deliusIntegrationRestClient: DeliusIntegrationRestClient,
 ) {
 
@@ -28,7 +26,7 @@ class OffenderService(
   }
 
   fun validateUserAccess(crn: String) {
-    communityApiRestClient.verifyUserAccess(crn, RequestData.getUserName())
+    deliusIntegrationRestClient.verifyUserAccess(crn, RequestData.getUserName())
   }
 
   companion object {

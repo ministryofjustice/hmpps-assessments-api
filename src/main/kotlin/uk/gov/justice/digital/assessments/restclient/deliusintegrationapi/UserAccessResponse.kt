@@ -1,4 +1,4 @@
-package uk.gov.justice.digital.assessments.restclient.communityapi
+package uk.gov.justice.digital.assessments.restclient.deliusintegrationapi
 
 data class UserAccessResponse(
   val exclusionMessage: String?,

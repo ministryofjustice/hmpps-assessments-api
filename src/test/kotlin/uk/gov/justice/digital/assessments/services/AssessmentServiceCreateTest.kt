@@ -196,7 +196,7 @@ class AssessmentServiceCreateTest {
       "User does not have permission to access offender with CRN $crn",
       HttpMethod.GET,
       "",
-      ExternalService.COMMUNITY_API,
+      ExternalService.DELIUS_INTEGRATIONS,
     )
 
     val exception = assertThrows<ExternalApiForbiddenException> {
