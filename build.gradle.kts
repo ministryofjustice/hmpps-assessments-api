@@ -30,7 +30,7 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-cache")
   implementation("org.springframework.boot:spring-boot-starter-aop")
   implementation("org.springframework.security:spring-security-oauth2-client")
-  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:2.1.1")
+  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:4.5.0")
   implementation("org.springframework.data:spring-data-redis:3.2.1")
   implementation("redis.clients:jedis:5.1.0")
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
