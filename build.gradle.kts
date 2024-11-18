@@ -35,7 +35,7 @@ dependencies {
   implementation("redis.clients:jedis:5.1.0")
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
   implementation("commons-io:commons-io:2.15.1")
-  implementation("com.zaxxer:HikariCP:5.1.0")
+  implementation("com.zaxxer:HikariCP:6.2.1")
   implementation("com.vladmihalcea:hibernate-types-60:2.21.1")
   implementation("com.beust:klaxon:5.6")
   implementation("com.google.code.gson:gson:2.10.1")
