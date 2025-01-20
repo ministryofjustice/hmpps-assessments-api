@@ -1,36 +1,21 @@
 version: 2.1
 
 orbs:
-  hmpps: ministryofjustice/hmpps@7
+  hmpps: ministryofjustice/hmpps@8.2
+  mem: circleci/rememborb@0.0.2
 
 parameters:
   alerts-slack-channel:
     type: string
-    default: "hmpps-assessments-notifications"
-
-executors:
-  java:
-    docker:
-      - image: cimg/openjdk:17.0
-        environment:
-          _JAVA_OPTIONS: -Xmx1024m -XX:ParallelGCThreads=2 -XX:ConcGCThreads=2
-            -XX:ParallelGCThreads=2
-            -Djava.util.concurrent.ForkJoinPool.common.parallelism=2
-            -Dorg.gradle.daemon=false
-          DATABASE_USERNAME: postgres
-      - image: cimg/redis:7.0.11
-        environment:
-          ALLOW_EMPTY_PASSWORD: yes
-      - image: cimg/postgres:14.8
-        environment:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: dev
-          POSTGRES_DB: postgres
-    working_directory: ~/app
+    default: hmpps-assessments-notifications
+  releases-slack-channel:
+    type: string
+    default: hmpps-assessments-notifications
 
 jobs:
   validate:
-    executor: java
+    machine:
+      image: ubuntu-2204:current
     steps:
       - checkout
       - restore_cache:
@@ -38,8 +23,11 @@ jobs:
             - gradle-{{ checksum "build.gradle.kts" }}
             - gradle-
       - run:
-          command: ./gradlew -Dorg.gradle.jvmargs="--illegal-access=permit"
-            -Dkotlin.daemon.jvm.options="--illegal-access=permit" check
+          command: make dev-up lint test-coverage
+      - run:
+          name: Store container logs
+          command: make save-logs OUTPUT_LOGS_DIR=~/docker-logs
+          when: on_fail
       - save_cache:
           paths:
             - ~/.gradle
@@ -48,6 +36,74 @@ jobs:
           path: build/test-results
       - store_artifacts:
           path: build/reports/tests
+      - store_artifacts:
+          path: build/reports/kover/html
+          destination: kover
+      - store_artifacts:
+          path: ~/docker-logs
+
+  e2e_test:
+    machine:
+      image: ubuntu-2204:current
+      resource_class: medium
+    parallelism: 10
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/app
+      - run:
+          name: Extract saved container image
+          command: docker load --input ~/app/docker_cache/build_image.tar
+      - mem/recall:
+          env_var: APP_VERSION
+      - run:
+          name: Stand up a test environment
+          command: |
+            export API_IMAGE_TAG=$APP_VERSION
+            make test-up
+      - run:
+          name: Clone UI repository
+          command: git clone git@github.com:ministryofjustice/hmpps-risk-assessment-ui.git e2e-test-ui
+      - restore_cache:
+          key: dependency-cache-{{ checksum "e2e-test-ui/package-lock.json" }}
+      - run:
+          name: Install Node and npm for running Cypress
+          command: |
+            sudo apt-get update
+            sudo apt-get install nodejs npm
+      - run:
+          name: Install Dependencies
+          command: |
+            cd e2e-test-ui
+            npm i --no-audit
+      - save_cache:
+          key: dependency-cache-{{ checksum "e2e-test-ui/package-lock.json" }}
+          paths:
+            - e2e-test-ui/node_modules
+            - ~/.cache
+      - run:
+          name: Clear the visual regression diffs directory
+          command: rm -rf e2e-test-ui/cypress/snapshots/diff
+      - run:
+          name: Run the end-to-end tests
+          command: |
+            cd e2e-test-ui
+            make e2e-ci
+      - run:
+          name: Check for visual regression diffs
+          command: if test -d e2e-test-ui/cypress/snapshots/diff; then exit 1; fi
+      - run:
+          name: Store container logs
+          command: make save-logs OUTPUT_LOGS_DIR=~/docker-logs PROJECT_NAME="community-payback-assessment-test"
+          when: on_fail
+      - store_test_results:
+          path: e2e-test-ui/test_results
+      - store_artifacts:
+          path: e2e-test-ui/cypress/screenshots
+      - store_artifacts:
+          path: e2e-test-ui/cypress/snapshots/diff
+      - store_artifacts:
+          path: ~/docker-logs
 
 workflows:
   version: 2
@@ -58,10 +114,37 @@ workflows:
             tags:
               ignore: /.*/
       - hmpps/helm_lint:
-          name: helm_lint
+          name: helm_lint_dev
           env: "dev"
+      - hmpps/helm_lint:
+          name: helm_lint_preprod
+          env: preprod
+      - hmpps/helm_lint:
+          name: helm_lint_prod
+          env: prod
       - hmpps/build_docker:
           name: build_docker
+          publish: false
+          persist_container_image: true
+          jira_update: true
+          pipeline_id: << pipeline.id >>
+          pipeline_number: << pipeline.number >>
+          context: hmpps-common-vars
+      - e2e_test:
+          context: hmpps-common-vars
+          requires:
+            - build_docker
+      - hmpps/publish_docker:
+          name: publish_docker
+          publish_latest_tag: true
+          context: hmpps-common-vars
+          requires:
+            - validate
+            - build_docker
+            - e2e_test
+            - helm_lint_dev
+            - helm_lint_preprod
+            - helm_lint_prod
           filters:
             branches:
               only:
@@ -69,40 +152,70 @@ workflows:
       - hmpps/deploy_env:
           name: deploy_dev
           env: "dev"
-          context:
-            - hmpps-common-vars
+          jira_update: true
+          pipeline_id: << pipeline.id >>
+          pipeline_number: << pipeline.number >>
+          context: hmpps-common-vars
           filters:
             branches:
               only:
                 - main
           requires:
-            - validate
-            - helm_lint
-            - build_docker
+            - publish_docker
+          helm_timeout: 5m
       - request-preprod-approval:
           type: approval
+          filters:
+            branches:
+              only:
+                - main
           requires:
             - deploy_dev
       - hmpps/deploy_env:
           name: deploy_preprod
           env: "preprod"
+          jira_update: true
+          jira_env_type: staging
+          pipeline_id: << pipeline.id >>
+          pipeline_number: << pipeline.number >>
           context:
             - hmpps-common-vars
             - hmpps-assessments-preprod-live
+          filters:
+            branches:
+              only:
+                - main
           requires:
             - request-preprod-approval
+          helm_timeout: 5m
       - request-prod-approval:
           type: approval
+          filters:
+            branches:
+              only:
+                - main
           requires:
             - deploy_preprod
       - hmpps/deploy_env:
           name: deploy_prod
           env: "prod"
+          jira_update: true
+          jira_env_type: production
+          pipeline_id: << pipeline.id >>
+          pipeline_number: << pipeline.number >>
+          slack_notification: true
+          slack_channel_name: << pipeline.parameters.releases-slack-channel >>
           context:
             - hmpps-common-vars
             - hmpps-assessments-prod-live
+          filters:
+            branches:
+              only:
+                - main
           requires:
             - request-prod-approval
+          helm_timeout: 5m
+
   security:
     triggers:
       - schedule:
@@ -113,7 +226,7 @@ workflows:
                 - main
     jobs:
       - hmpps/gradle_owasp_dependency_check:
-          cache_key: v2_1
+          jdk_tag: "21.0"
           slack_channel: << pipeline.parameters.alerts-slack-channel >>
           context:
             - hmpps-common-vars
