@@ -1,7 +1,8 @@
 {
+  "id" : "c6a96af2-5cf6-4370-b8b8-f9ce01ae6c1c",
   "request": {
     "method": "GET",
-    "url": "/ping"
+    "url": "/delius/health/ping"
   },
   "response": {
     "headers": {

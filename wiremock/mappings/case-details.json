@@ -1,0 +1,63 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/case-data/X463280/([0-9]*)"
+      },
+      "priority": 1,
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "case-details/X463280.json",
+        "transformers": ["response-template"]
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/case-data/X371443/([0-9]*)"
+      },
+      "priority": 1,
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "case-details/X371443.json",
+        "transformers": ["response-template"]
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/case-data/Y([A-Z0-9]*)/([0-9]*)"
+      },
+      "priority": 1,
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "case-details/generic-full.json",
+        "transformers": ["response-template"]
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/case-data/([A-Z0-9]*)/([0-9]*)"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "case-details/generic.json",
+        "transformers": ["response-template"]
+      }
+    }
+  ]
+}

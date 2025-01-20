@@ -1,0 +1,13 @@
+{
+  "request": {
+    "method": "GET",
+    "urlPathPattern": "/users/([a-zA-Z0-9/-/.]*)/access/([A-Z0-9]*)"
+  },
+  "response": {
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "status": 200,
+    "bodyFileName": "verify-access/allowed.json"
+  }
+}

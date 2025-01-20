@@ -1,0 +1,10 @@
+{
+  "assessedOn": "2021-10-10",
+  "overallRisk": "HIGH",
+  "riskInCommunity": {
+    "Public": "HIGH",
+    "Known Adult": "MEDIUM",
+    "Staff": "VERY_HIGH",
+    "Children": "LOW"
+  }
+}
