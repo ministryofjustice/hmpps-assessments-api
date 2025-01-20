@@ -43,18 +43,12 @@ class QuestionService(
   }
 
   @Cacheable(LIST_QUESTION_GROUPS_CACHE_KEY)
-  fun listGroups(): Collection<GroupSummaryDto> {
-    return questionGroupRepository.listGroups().map { GroupSummaryDto.from(it) }
-  }
+  fun listGroups(): Collection<GroupSummaryDto> = questionGroupRepository.listGroups().map { GroupSummaryDto.from(it) }
 
-  fun getGroupContents(groupUuid: UUID): GroupWithContentsDto {
-    return getQuestionGroupContents(findByGroupUuid(groupUuid))
-  }
+  fun getGroupContents(groupUuid: UUID): GroupWithContentsDto = getQuestionGroupContents(findByGroupUuid(groupUuid))
 
   @Cacheable(QUESTION_GROUP_SECTIONS_CACHE_KEY)
-  fun getGroupSections(groupCode: String): GroupSectionsDto {
-    return fetchGroupSections(findByGroupCode(groupCode))
-  }
+  fun getGroupSections(groupCode: String): GroupSectionsDto = fetchGroupSections(findByGroupCode(groupCode))
 
   fun flattenQuestionsForGroup(groupUuid: UUID, dependencies: QuestionDependencies): List<GroupContentDto> {
     val group = findByGroupUuid(groupUuid)
@@ -78,18 +72,15 @@ class QuestionService(
     return flattenQuestionsForGroup(groupUuid, dependencies)
   }
 
-  private fun getQuestionGroupContents(group: GroupEntity) =
-    getQuestionGroupContents(
-      group,
-      questionDependencyService.dependencies(),
-    )
+  private fun getQuestionGroupContents(group: GroupEntity) = getQuestionGroupContents(
+    group,
+    questionDependencyService.dependencies(),
+  )
 
   private fun getQuestionGroupContents(
     group: GroupEntity,
     dependencies: QuestionDependencies,
-  ): GroupWithContentsDto {
-    return expandGroupContents(group, dependencies, GroupWithContentsDto::from) as GroupWithContentsDto
-  }
+  ): GroupWithContentsDto = expandGroupContents(group, dependencies, GroupWithContentsDto::from) as GroupWithContentsDto
 
   private fun expandGroupContents(
     group: GroupEntity,
@@ -138,9 +129,7 @@ class QuestionService(
 
     return GroupSectionsDto.from(group, contents)
   }
-  private fun findByGroupCode(groupCode: String): GroupEntity {
-    return groupRepository.findByGroupCode(groupCode) ?: throw EntityNotFoundException("Group not found: $groupCode")
-  }
+  private fun findByGroupCode(groupCode: String): GroupEntity = groupRepository.findByGroupCode(groupCode) ?: throw EntityNotFoundException("Group not found: $groupCode")
 
   private fun findByGroupUuid(uuid: UUID): GroupEntity {
     log.debug("findByGroupUuid {}", uuid)

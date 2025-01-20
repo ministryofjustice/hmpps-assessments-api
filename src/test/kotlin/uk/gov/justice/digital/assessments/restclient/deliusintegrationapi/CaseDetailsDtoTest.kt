@@ -29,17 +29,15 @@ class CaseDetailsDtoTest {
   fun setUp() {
     objectMapper = objectMapper()
   }
-  private fun objectMapper(): ObjectMapper {
-    return ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-      .configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true)
-      .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
-      .setSerializationInclusion(JsonInclude.Include.NON_NULL).setSerializationInclusion(JsonInclude.Include.NON_ABSENT)
-      .registerModules(
-        Jdk8Module(),
-        JavaTimeModule(),
-        KotlinModule.Builder().build(),
-      )
-  }
+  private fun objectMapper(): ObjectMapper = ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+    .configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true)
+    .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+    .setSerializationInclusion(JsonInclude.Include.NON_NULL).setSerializationInclusion(JsonInclude.Include.NON_ABSENT)
+    .registerModules(
+      Jdk8Module(),
+      JavaTimeModule(),
+      KotlinModule.Builder().build(),
+    )
 
   @Test
   fun `should map empty delius values to empty list episode answers`() {
@@ -289,17 +287,15 @@ class CaseDetailsDtoTest {
     assertThat(answers["emergency_contact_details"]).isEmpty()
   }
 
-  private fun createAssessmentEpisodeEntity(): AssessmentEpisodeEntity {
-    return AssessmentEpisodeEntity(
-      123456L,
-      UUID.randomUUID(),
-      AssessmentEntity(),
-      AssessmentType.UPW,
-      AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
-      LocalDateTime.of(2019, 8, 1, 8, 0),
-      null,
-      "Change of Circs",
-      null,
-    )
-  }
+  private fun createAssessmentEpisodeEntity(): AssessmentEpisodeEntity = AssessmentEpisodeEntity(
+    123456L,
+    UUID.randomUUID(),
+    AssessmentEntity(),
+    AssessmentType.UPW,
+    AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
+    LocalDateTime.of(2019, 8, 1, 8, 0),
+    null,
+    "Change of Circs",
+    null,
+  )
 }

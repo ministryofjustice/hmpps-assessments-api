@@ -18,20 +18,18 @@ data class OffenderDto(
 ) {
   companion object {
 
-    fun from(caseDetails: CaseDetails, eventId: Long?): OffenderDto {
-      return OffenderDto(
-        firstName = caseDetails.name.forename,
-        surname = caseDetails.name.surname,
-        dateOfBirth = caseDetails.dateOfBirth,
-        gender = caseDetails.gender,
-        crn = caseDetails.crn,
-        pncNumber = caseDetails.pncNumber,
-        croNumber = caseDetails.croNumber,
-        offence = OffenceDto.from(caseDetails.sentence, eventId),
-        firstNameAliases = caseDetails.aliases?.map { it.name.forename },
-        surnameAliases = caseDetails.aliases?.map { it.name.surname },
-        dateOfBirthAliases = caseDetails.aliases?.map { it.dateOfBirth.toString() },
-      )
-    }
+    fun from(caseDetails: CaseDetails, eventId: Long?): OffenderDto = OffenderDto(
+      firstName = caseDetails.name.forename,
+      surname = caseDetails.name.surname,
+      dateOfBirth = caseDetails.dateOfBirth,
+      gender = caseDetails.gender,
+      crn = caseDetails.crn,
+      pncNumber = caseDetails.pncNumber,
+      croNumber = caseDetails.croNumber,
+      offence = OffenceDto.from(caseDetails.sentence, eventId),
+      firstNameAliases = caseDetails.aliases?.map { it.name.forename },
+      surnameAliases = caseDetails.aliases?.map { it.name.surname },
+      dateOfBirthAliases = caseDetails.aliases?.map { it.dateOfBirth.toString() },
+    )
   }
 }

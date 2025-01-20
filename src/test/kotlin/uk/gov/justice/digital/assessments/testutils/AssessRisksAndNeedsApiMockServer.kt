@@ -176,7 +176,5 @@ class AssessRisksAndNeedsApiMockServer : WireMockServer(9007) {
         }
     """.trimIndent()
 
-  private fun mapToJson(dto: Any): String {
-    return objectMapper.writeValueAsString(dto)
-  }
+  private fun mapToJson(dto: Any): String = objectMapper.writeValueAsString(dto)
 }

@@ -41,25 +41,21 @@ data class AssessmentEpisodeDto(
 ) {
   companion object {
 
-    fun from(episodes: MutableCollection<AssessmentEpisodeEntity>): Collection<AssessmentEpisodeDto> {
-      return episodes.map { from(it) }.toSet()
-    }
+    fun from(episodes: MutableCollection<AssessmentEpisodeEntity>): Collection<AssessmentEpisodeDto> = episodes.map { from(it) }.toSet()
 
     fun from(
       episode: AssessmentEpisodeEntity,
-    ): AssessmentEpisodeDto {
-      return AssessmentEpisodeDto(
-        episodeUuid = episode.episodeUuid,
-        assessmentUuid = episode.assessment.assessmentUuid,
-        reasonForChange = episode.changeReason,
-        created = episode.createdDate,
-        ended = episode.endDate,
-        userFullName = episode.author.userFullName,
-        answers = episode.answers,
-        offence = OffenceDto.from(episode.offence),
-        lastEditedDate = episode.lastEditedDate,
-        closedDate = episode.closedDate,
-      )
-    }
+    ): AssessmentEpisodeDto = AssessmentEpisodeDto(
+      episodeUuid = episode.episodeUuid,
+      assessmentUuid = episode.assessment.assessmentUuid,
+      reasonForChange = episode.changeReason,
+      created = episode.createdDate,
+      ended = episode.endDate,
+      userFullName = episode.author.userFullName,
+      answers = episode.answers,
+      offence = OffenceDto.from(episode.offence),
+      lastEditedDate = episode.lastEditedDate,
+      closedDate = episode.closedDate,
+    )
   }
 }

@@ -44,21 +44,17 @@ import java.util.UUID
 @AutoConfigureWebTestClient(timeout = "6000000")
 class AssessmentControllerCreateTest : IntegrationTest() {
 
-  private fun objectMapper(): ObjectMapper {
-    return ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-      .configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true)
-      .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
-      .setSerializationInclusion(JsonInclude.Include.NON_NULL).setSerializationInclusion(JsonInclude.Include.NON_ABSENT)
-      .registerModules(
-        Jdk8Module(),
-        JavaTimeModule(),
-        KotlinModule.Builder().build(),
-      )
-  }
+  private fun objectMapper(): ObjectMapper = ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+    .configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true)
+    .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+    .setSerializationInclusion(JsonInclude.Include.NON_NULL).setSerializationInclusion(JsonInclude.Include.NON_ABSENT)
+    .registerModules(
+      Jdk8Module(),
+      JavaTimeModule(),
+      KotlinModule.Builder().build(),
+    )
 
-  private fun toJsonString(input: Any): String {
-    return objectMapper().writeValueAsString(input)
-  }
+  private fun toJsonString(input: Any): String = objectMapper().writeValueAsString(input)
 
   @Nested
   @DisplayName("Creating assessments from Delius")

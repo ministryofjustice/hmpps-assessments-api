@@ -398,27 +398,21 @@ class AssessmentControllerTest : IntegrationTest() {
     return subject!!
   }
 
-  private fun fetchEpisodes(assessmentUuid: String): List<AssessmentEpisodeDto> {
-    return webTestClient.get().uri("/assessments/$assessmentUuid/episodes")
-      .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
-      .exchange()
-      .expectStatus().isOk
-      .expectBody<List<AssessmentEpisodeDto>>()
-      .returnResult()
-      .responseBody!!
-  }
+  private fun fetchEpisodes(assessmentUuid: String): List<AssessmentEpisodeDto> = webTestClient.get().uri("/assessments/$assessmentUuid/episodes")
+    .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
+    .exchange()
+    .expectStatus().isOk
+    .expectBody<List<AssessmentEpisodeDto>>()
+    .returnResult()
+    .responseBody!!
 
-  private fun fetchCurrentEpisode(assessmentUuid: String): AssessmentEpisodeDto {
-    return fetchEpisode(assessmentUuid, episodeId)
-  }
+  private fun fetchCurrentEpisode(assessmentUuid: String): AssessmentEpisodeDto = fetchEpisode(assessmentUuid, episodeId)
 
-  private fun fetchEpisode(assessmentUuid: String, episodeId: String): AssessmentEpisodeDto {
-    return webTestClient.get().uri("/assessments/$assessmentUuid/episodes/$episodeId")
-      .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
-      .exchange()
-      .expectStatus().isOk
-      .expectBody<AssessmentEpisodeDto>()
-      .returnResult()
-      .responseBody!!
-  }
+  private fun fetchEpisode(assessmentUuid: String, episodeId: String): AssessmentEpisodeDto = webTestClient.get().uri("/assessments/$assessmentUuid/episodes/$episodeId")
+    .headers(setAuthorisation(roles = listOf("ROLE_PROBATION")))
+    .exchange()
+    .expectStatus().isOk
+    .expectBody<AssessmentEpisodeDto>()
+    .returnResult()
+    .responseBody!!
 }

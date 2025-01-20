@@ -42,38 +42,36 @@ class OffenderServiceTest {
     verify(exactly = 1) { deliusIntegrationRestClient.getCaseDetails(crn, eventId) }
   }
 
-  private fun caseDetails(): CaseDetails {
-    return CaseDetails(
-      crn = "DX12340A",
-      name = Name(
-        forename = "forename",
-        middleName = "middleName",
-        surname = "surname",
-      ),
-      dateOfBirth = LocalDate.of(1989, 1, 1),
-      genderIdentity = "PREFER TO SELF DESCRIBE",
+  private fun caseDetails(): CaseDetails = CaseDetails(
+    crn = "DX12340A",
+    name = Name(
+      forename = "forename",
+      middleName = "middleName",
+      surname = "surname",
+    ),
+    dateOfBirth = LocalDate.of(1989, 1, 1),
+    genderIdentity = "PREFER TO SELF DESCRIBE",
 
-      mainAddress = Address(
-        buildingName = "HMPPS Digital Studio",
-        addressNumber = "32",
-        district = "Sheffield City Centre",
-        county = "South Yorkshire",
-        postcode = "S3 7BS",
-        town = "Sheffield",
-      ),
-      sentence = uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.Sentence(
-        startDate = LocalDate.of(2020, 2, 1),
-        mainOffence = MainOffence(
-          category = Type(
-            code = "Code",
-            description = "Code description",
-          ),
-          subCategory = Type(
-            code = "Sub code",
-            description = "Sub code description",
-          ),
+    mainAddress = Address(
+      buildingName = "HMPPS Digital Studio",
+      addressNumber = "32",
+      district = "Sheffield City Centre",
+      county = "South Yorkshire",
+      postcode = "S3 7BS",
+      town = "Sheffield",
+    ),
+    sentence = uk.gov.justice.digital.assessments.restclient.deliusintegrationapi.Sentence(
+      startDate = LocalDate.of(2020, 2, 1),
+      mainOffence = MainOffence(
+        category = Type(
+          code = "Code",
+          description = "Code description",
+        ),
+        subCategory = Type(
+          code = "Sub code",
+          description = "Sub code description",
         ),
       ),
-    )
-  }
+    ),
+  )
 }

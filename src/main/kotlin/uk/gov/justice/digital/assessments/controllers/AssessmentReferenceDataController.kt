@@ -33,9 +33,7 @@ class AssessmentReferenceDataController(
       required = true,
       example = "ROSH",
     ) @PathVariable assessmentType: AssessmentType,
-  ): GroupSectionsDto {
-    return assessmentReferenceDataService.getAssessmentSummary(assessmentType)
-  }
+  ): GroupSectionsDto = assessmentReferenceDataService.getAssessmentSummary(assessmentType)
 
   @RequestMapping(path = ["/assessments/{assessmentType}/questions"], method = [RequestMethod.GET])
   @Operation(description = "Retrieve questions for Assessment type")
@@ -46,7 +44,5 @@ class AssessmentReferenceDataController(
     ],
   )
   @PreAuthorize("hasRole('ROLE_PROBATION')")
-  fun getQuestionsForAssessmentSchemaCode(@PathVariable("assessmentType") assessmentType: String): List<GroupContentDto> {
-    return assessmentReferenceDataService.getQuestionsForAssessmentType(AssessmentType.valueOf(assessmentType))
-  }
+  fun getQuestionsForAssessmentSchemaCode(@PathVariable("assessmentType") assessmentType: String): List<GroupContentDto> = assessmentReferenceDataService.getQuestionsForAssessmentType(AssessmentType.valueOf(assessmentType))
 }

@@ -45,10 +45,7 @@ class QuestionDependencies(questionDeps: Collection<QuestionDependencyEntity>) {
 
   fun hasDependency(subjectUuid: UUID): Boolean = subjects.contains(subjectUuid)
 
-  fun triggersDependency(triggerUuid: UUID, answerValue: String?): Set<ConditionalsSchemaDto>? =
-    triggers[Pair(triggerUuid, answerValue)]
+  fun triggersDependency(triggerUuid: UUID, answerValue: String?): Set<ConditionalsSchemaDto>? = triggers[Pair(triggerUuid, answerValue)]
 
-  fun answerTriggers(triggerUuid: UUID): AnswerDependencies {
-    return { answerValue: String? -> triggersDependency(triggerUuid, answerValue) }
-  }
+  fun answerTriggers(triggerUuid: UUID): AnswerDependencies = { answerValue: String? -> triggersDependency(triggerUuid, answerValue) }
 }

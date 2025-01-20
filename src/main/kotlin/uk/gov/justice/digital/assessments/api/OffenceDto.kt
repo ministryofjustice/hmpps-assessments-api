@@ -27,30 +27,26 @@ data class OffenceDto(
 ) {
 
   companion object {
-    fun from(sentence: Sentence?, eventId: Long?): OffenceDto? {
-      return if (sentence == null) {
-        null
-      } else {
-        OffenceDto(
-          eventId = eventId,
-          offenceCode = sentence.mainOffence.category.code,
-          codeDescription = sentence.mainOffence.category.description,
-          offenceSubCode = sentence.mainOffence.subCategory.code,
-          subCodeDescription = sentence.mainOffence.subCategory.description,
-          sentenceDate = sentence.startDate,
-        )
-      }
-    }
-
-    fun from(offenceEntity: OffenceEntity?): OffenceDto {
-      return OffenceDto(
-        eventId = offenceEntity?.sourceId?.toLong(),
-        offenceCode = offenceEntity?.offenceCode,
-        codeDescription = offenceEntity?.codeDescription,
-        offenceSubCode = offenceEntity?.offenceSubCode,
-        subCodeDescription = offenceEntity?.subCodeDescription,
-        sentenceDate = offenceEntity?.sentenceDate,
+    fun from(sentence: Sentence?, eventId: Long?): OffenceDto? = if (sentence == null) {
+      null
+    } else {
+      OffenceDto(
+        eventId = eventId,
+        offenceCode = sentence.mainOffence.category.code,
+        codeDescription = sentence.mainOffence.category.description,
+        offenceSubCode = sentence.mainOffence.subCategory.code,
+        subCodeDescription = sentence.mainOffence.subCategory.description,
+        sentenceDate = sentence.startDate,
       )
     }
+
+    fun from(offenceEntity: OffenceEntity?): OffenceDto = OffenceDto(
+      eventId = offenceEntity?.sourceId?.toLong(),
+      offenceCode = offenceEntity?.offenceCode,
+      codeDescription = offenceEntity?.codeDescription,
+      offenceSubCode = offenceEntity?.offenceSubCode,
+      subCodeDescription = offenceEntity?.subCodeDescription,
+      sentenceDate = offenceEntity?.sentenceDate,
+    )
   }
 }

@@ -92,8 +92,7 @@ class DeliusIntegrationMockServer : WireMockServer(9097) {
     )
   }
 
-  private fun crnWithPersonalContactsAndCircumstances(): String {
-    return """
+  private fun crnWithPersonalContactsAndCircumstances(): String = """
 {
     "crn": "DX5678A",
     "pncNumber": "A/1234560BA",
@@ -325,8 +324,7 @@ class DeliusIntegrationMockServer : WireMockServer(9097) {
         }
     }
 }
-    """.trimIndent()
-  }
+  """.trimIndent()
 
   fun stubGetUserAccess() {
     stubFor(

@@ -25,14 +25,10 @@ class AssessmentReferenceDataService(
   }
 
   @Cacheable(ASSESSMENT_CACHE_KEY)
-  fun getAssessmentForAssessmentType(assessmentType: AssessmentType): GroupWithContentsDto {
-    return questionService.getGroupContents(getAssessmentGroupUuid(assessmentType))
-  }
+  fun getAssessmentForAssessmentType(assessmentType: AssessmentType): GroupWithContentsDto = questionService.getGroupContents(getAssessmentGroupUuid(assessmentType))
 
   @Cacheable(QUESTIONS_FOR_ASSESSMENT_TYPE_CACHE_KEY)
-  fun getQuestionsForAssessmentType(assessmentType: AssessmentType): List<GroupContentDto> {
-    return questionService.getFlatQuestionsForGroup(getAssessmentGroupUuid(assessmentType))
-  }
+  fun getQuestionsForAssessmentType(assessmentType: AssessmentType): List<GroupContentDto> = questionService.getFlatQuestionsForGroup(getAssessmentGroupUuid(assessmentType))
 
   @Cacheable(ASSESSMENT_SUMMARY_CACHE_KEY)
   fun getAssessmentSummary(assessmentType: AssessmentType): GroupSectionsDto {

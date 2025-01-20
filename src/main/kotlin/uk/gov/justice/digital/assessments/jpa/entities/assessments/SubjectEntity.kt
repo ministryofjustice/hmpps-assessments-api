@@ -46,7 +46,5 @@ data class SubjectEntity(
   val assessments: Collection<AssessmentEntity>? = emptyList(),
 ) : Serializable {
 
-  fun getCurrentAssessment(): AssessmentEntity? {
-    return assessments?.maxByOrNull { it.createdDate }
-  }
+  fun getCurrentAssessment(): AssessmentEntity? = assessments?.maxByOrNull { it.createdDate }
 }

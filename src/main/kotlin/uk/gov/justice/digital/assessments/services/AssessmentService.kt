@@ -91,9 +91,7 @@ class AssessmentService(
     return AssessmentEpisodeDto.from(assessment.episodes)
   }
 
-  fun getCurrentAssessmentEpisode(assessmentUuid: UUID): AssessmentEpisodeDto {
-    return AssessmentEpisodeDto.from(getCurrentEpisode(assessmentUuid))
-  }
+  fun getCurrentAssessmentEpisode(assessmentUuid: UUID): AssessmentEpisodeDto = AssessmentEpisodeDto.from(getCurrentEpisode(assessmentUuid))
 
   private fun createFromDelius(
     eventId: Long?,
@@ -141,15 +139,11 @@ class AssessmentService(
     }
   }
 
-  fun getEpisodeById(episodeUuid: UUID): AssessmentEpisodeEntity {
-    return episodeRepository.findByEpisodeUuid(episodeUuid)
-      ?: throw EntityNotFoundException("No episode found for ID:  $episodeUuid")
-  }
+  fun getEpisodeById(episodeUuid: UUID): AssessmentEpisodeEntity = episodeRepository.findByEpisodeUuid(episodeUuid)
+    ?: throw EntityNotFoundException("No episode found for ID:  $episodeUuid")
 
-  fun getEpisode(assessmentUuid: UUID, episodeUuid: UUID): AssessmentEpisodeEntity {
-    return getAssessmentByUuid(assessmentUuid).episodes.firstOrNull { it.episodeUuid == episodeUuid }
-      ?: throw EntityNotFoundException("No Episode $episodeUuid for $assessmentUuid")
-  }
+  fun getEpisode(assessmentUuid: UUID, episodeUuid: UUID): AssessmentEpisodeEntity = getAssessmentByUuid(assessmentUuid).episodes.firstOrNull { it.episodeUuid == episodeUuid }
+    ?: throw EntityNotFoundException("No Episode $episodeUuid for $assessmentUuid")
 
   fun getCurrentEpisode(assessmentUuid: UUID): AssessmentEpisodeEntity {
     val assessment = getAssessmentByUuid(assessmentUuid)

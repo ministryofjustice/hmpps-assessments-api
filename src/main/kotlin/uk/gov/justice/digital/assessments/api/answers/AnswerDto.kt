@@ -36,14 +36,12 @@ data class AnswerDto(
     fun from(
       answerEntity: AnswerEntity,
       answerDependencies: AnswerDependencies,
-    ): AnswerDto {
-      return AnswerDto(
-        answerEntity.answerUuid,
-        answerEntity.answerCode,
-        answerEntity.value,
-        answerEntity.text,
-        answerDependencies(answerEntity.value),
-      )
-    }
+    ): AnswerDto = AnswerDto(
+      answerEntity.answerUuid,
+      answerEntity.answerCode,
+      answerEntity.value,
+      answerEntity.text,
+      answerDependencies(answerEntity.value),
+    )
   }
 }

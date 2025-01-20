@@ -25,15 +25,13 @@ data class GroupWithContentsDto(
   val contents: List<GroupContentDto>,
 ) : GroupContentDto {
   companion object {
-    fun from(group: GroupEntity, contents: List<GroupContentDto>): GroupWithContentsDto {
-      return GroupWithContentsDto(
-        groupId = group.groupUuid,
-        groupCode = group.groupCode,
-        title = group.heading,
-        subheading = group.subheading,
-        helpText = group.helpText,
-        contents = contents,
-      )
-    }
+    fun from(group: GroupEntity, contents: List<GroupContentDto>): GroupWithContentsDto = GroupWithContentsDto(
+      groupId = group.groupUuid,
+      groupCode = group.groupCode,
+      title = group.heading,
+      subheading = group.subheading,
+      helpText = group.helpText,
+      contents = contents,
+    )
   }
 }

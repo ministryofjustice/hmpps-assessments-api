@@ -33,17 +33,13 @@ class AssessmentUpdateService(
   fun updateEpisode(
     episode: AssessmentEpisodeEntity,
     updatedEpisodeAnswers: UpdateAssessmentEpisodeDto,
-  ): AssessmentEpisodeDto {
-    return updateEpisode(episode, updatedEpisodeAnswers.answers)
-  }
+  ): AssessmentEpisodeDto = updateEpisode(episode, updatedEpisodeAnswers.answers)
 
   @Transactional("assessmentsTransactionManager")
   fun updateCurrentEpisode(
     episode: AssessmentEpisodeEntity,
     updatedEpisodeAnswers: UpdateAssessmentEpisodeDto,
-  ): AssessmentEpisodeDto {
-    return updateEpisode(episode, updatedEpisodeAnswers.answers)
-  }
+  ): AssessmentEpisodeDto = updateEpisode(episode, updatedEpisodeAnswers.answers)
 
   private fun updateEpisode(
     episode: AssessmentEpisodeEntity,

@@ -42,25 +42,21 @@ data class QuestionDto(
 
   companion object {
 
-    fun from(questions: Collection<QuestionEntity>?): List<QuestionDto> {
-      return questions?.map { from(it) }?.toList().orEmpty()
-    }
+    fun from(questions: Collection<QuestionEntity>?): List<QuestionDto> = questions?.map { from(it) }?.toList().orEmpty()
 
-    fun from(questionEntity: QuestionEntity?): QuestionDto {
-      return QuestionDto(
-        questionEntity?.questionId,
-        questionEntity?.questionUuid,
-        questionEntity?.questionCode,
-        questionEntity?.questionStartDate,
-        questionEntity?.questionEndDate,
-        questionEntity?.answerType,
-        questionEntity?.questionText,
-        questionEntity?.questionHelpText,
-        questionEntity?.referenceDataCategory,
-        AnswerDto.from(
-          questionEntity?.answerEntities,
-        ),
-      )
-    }
+    fun from(questionEntity: QuestionEntity?): QuestionDto = QuestionDto(
+      questionEntity?.questionId,
+      questionEntity?.questionUuid,
+      questionEntity?.questionCode,
+      questionEntity?.questionStartDate,
+      questionEntity?.questionEndDate,
+      questionEntity?.answerType,
+      questionEntity?.questionText,
+      questionEntity?.questionHelpText,
+      questionEntity?.referenceDataCategory,
+      AnswerDto.from(
+        questionEntity?.answerEntities,
+      ),
+    )
   }
 }

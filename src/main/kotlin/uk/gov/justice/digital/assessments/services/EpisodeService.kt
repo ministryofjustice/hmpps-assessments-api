@@ -22,14 +22,13 @@ class EpisodeService(
 ) {
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
-    private const val cloneEpisodeOffset: Long = 55
+    private const val CLONE_EPISODE_OFFSET: Long = 55
     private val CONTACT_ADDRESS_FIELDS = listOf("contact_address_house_number", "contact_address_building_name", "contact_address_street_name", "contact_address_postcode", "contact_address_town_or_city", "contact_address_county", "contact_address_district")
   }
 
   fun prePopulateEpisodeFromDelius(
     episode: AssessmentEpisodeEntity,
     caseDetails: CaseDetails?,
-
   ) {
     log.info("Pre-populating episode from Delius")
     if (caseDetails != null) {
@@ -43,7 +42,7 @@ class EpisodeService(
   ): AssessmentEpisodeEntity {
     log.debug("Entered prepopulateFromPreviousEpisodes")
     val orderedPreviousEpisodes = previousEpisodes.filter {
-      it.endDate?.isAfter(LocalDateTime.now().minusWeeks(cloneEpisodeOffset)) ?: false && it.isComplete()
+      it.endDate?.isAfter(LocalDateTime.now().minusWeeks(CLONE_EPISODE_OFFSET)) ?: false && it.isComplete()
     }.sortedByDescending { it.endDate }
 
     val questions =
@@ -81,9 +80,7 @@ class EpisodeService(
     answer: Map.Entry<String, List<Any>>,
   ) = newEpisode.answers[answer.key] == null
 
-  private fun isAddressField(questionCode: String): Boolean {
-    return CONTACT_ADDRESS_FIELDS.contains(questionCode)
-  }
+  private fun isAddressField(questionCode: String): Boolean = CONTACT_ADDRESS_FIELDS.contains(questionCode)
 
   private fun isAddressPrePopulatedFromDelius(newEpisodeAnswers: Answers, previousEpisodeAnswer: Map.Entry<String, List<Any>>): Boolean {
     // only check for existence of a value for address fields

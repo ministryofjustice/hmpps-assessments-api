@@ -42,18 +42,12 @@ class AssessmentEntity(
   val subject: SubjectEntity? = null,
 ) : Serializable {
 
-  fun getCurrentEpisode(): AssessmentEpisodeEntity? {
-    return episodes.firstOrNull { !it.isComplete() && !it.isClosed() }
-  }
+  fun getCurrentEpisode(): AssessmentEpisodeEntity? = episodes.firstOrNull { !it.isComplete() && !it.isClosed() }
 
-  fun hasCurrentEpisode(): Boolean {
-    return episodes.indexOfFirst { !it.isComplete() && !it.isClosed() } >= 0
-  }
+  fun hasCurrentEpisode(): Boolean = episodes.indexOfFirst { !it.isComplete() && !it.isClosed() } >= 0
 
-  fun getLatestInProgressOrCompleteEpisodeOfType(assessmentType: AssessmentType): AssessmentEpisodeEntity? {
-    return episodes.filter { it.assessmentType == assessmentType && !it.isClosed() }
-      .maxByOrNull { it.createdDate }
-  }
+  fun getLatestInProgressOrCompleteEpisodeOfType(assessmentType: AssessmentType): AssessmentEpisodeEntity? = episodes.filter { it.assessmentType == assessmentType && !it.isClosed() }
+    .maxByOrNull { it.createdDate }
 
   fun newEpisode(
     changeReason: String,

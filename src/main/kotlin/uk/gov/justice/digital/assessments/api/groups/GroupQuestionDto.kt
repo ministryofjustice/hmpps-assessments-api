@@ -40,21 +40,19 @@ data class GroupQuestionDto(
       questionEntity: QuestionEntity,
       questionGroupEntity: QuestionGroupEntity,
       questionDependencies: QuestionDependencies,
-    ): GroupQuestionDto {
-      return GroupQuestionDto(
-        questionId = questionEntity.questionUuid,
-        questionCode = questionEntity.questionCode,
-        answerType = questionEntity.answerType,
-        questionText = questionEntity.questionText,
-        helpText = questionEntity.questionHelpText,
-        readOnly = questionGroupEntity.readOnly,
-        conditional = questionDependencies.hasDependency(questionEntity.questionUuid),
-        referenceDataCategory = questionEntity.referenceDataCategory,
-        answerDtos = AnswerDto.from(
-          questionEntity.answerEntities,
-          questionDependencies.answerTriggers(questionEntity.questionUuid),
-        ),
-      )
-    }
+    ): GroupQuestionDto = GroupQuestionDto(
+      questionId = questionEntity.questionUuid,
+      questionCode = questionEntity.questionCode,
+      answerType = questionEntity.answerType,
+      questionText = questionEntity.questionText,
+      helpText = questionEntity.questionHelpText,
+      readOnly = questionGroupEntity.readOnly,
+      conditional = questionDependencies.hasDependency(questionEntity.questionUuid),
+      referenceDataCategory = questionEntity.referenceDataCategory,
+      answerDtos = AnswerDto.from(
+        questionEntity.answerEntities,
+        questionDependencies.answerTriggers(questionEntity.questionUuid),
+      ),
+    )
   }
 }
