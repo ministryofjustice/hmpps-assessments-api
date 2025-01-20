@@ -24,10 +24,10 @@ data class CarerCommitmentsAnswerDto(
 ) {
   companion object {
 
-    fun from(carerCommitments: List<PersonalCircumstance>?): List<CarerCommitmentsAnswerDto> = if (carerCommitments?.isNullOrEmpty() == true) {
-      emptyList()
-    } else {
+    fun from(carerCommitments: List<PersonalCircumstance>?): List<CarerCommitmentsAnswerDto> = if (carerCommitments?.isNotEmpty() == true) {
       carerCommitments.map { from(it) }
+    } else {
+      emptyList()
     }
 
     fun from(deliusPersonalCircumstanceDto: PersonalCircumstance): CarerCommitmentsAnswerDto = CarerCommitmentsAnswerDto(
