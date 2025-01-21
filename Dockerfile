@@ -26,4 +26,4 @@ COPY --from=build --chown=appuser:appgroup /app/build/libs/applicationinsights-a
 COPY --from=build --chown=appuser:appgroup /app/applicationinsights.json /app
 USER 2000
 #ENTRYPOINT ["java", "-XX:+AlwaysActAsServerClassMachine", "-javaagent:/app/agent.jar", "-jar", "/app/app.jar"]
-ENTRYPOINT ["java", "-Dcom.sun.management.jmxremote.local.only=false", "-javaagent:/app/agent.jar", "-Djava.security.egd=file:/dev/./urandom", "-jar /app/app.jar"]
+ENTRYPOINT ["java", "-Dcom.sun.management.jmxremote.local.only=false", "-javaagent:/app/agent.jar", "-Djava.security.egd=file:/dev/./urandom", "-jar", "/app/app.jar"]
