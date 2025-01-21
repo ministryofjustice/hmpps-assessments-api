@@ -66,10 +66,12 @@ update: ## Downloads the latest versions of containers.
 
 save-logs: ## Saves docker container logs in a directory defined by OUTPUT_LOGS_DIR=
 	mkdir -p ${OUTPUT_LOGS_DIR}
-	docker logs ${PROJECT_NAME}-api-1 > ${OUTPUT_LOGS_DIR}/san-api.log
-	docker logs ${PROJECT_NAME}-ui-1 > ${OUTPUT_LOGS_DIR}/san-ui.log
+	docker logs ${PROJECT_NAME}-api-1 > ${OUTPUT_LOGS_DIR}/api.log
+	docker logs ${PROJECT_NAME}-ui-1 > ${OUTPUT_LOGS_DIR}/ui.log
 	docker logs ${PROJECT_NAME}-hmpps-auth-1 > ${OUTPUT_LOGS_DIR}/hmpps-auth.log
-	docker logs ${PROJECT_NAME}-wiremock-1 > ${OUTPUT_LOGS_DIR}/wiremock.log
+	docker logs ${PROJECT_NAME}-delius-1 > ${OUTPUT_LOGS_DIR}/delius.log
+	docker logs ${PROJECT_NAME}-arns-api-1 > ${OUTPUT_LOGS_DIR}/arns-api.log
+	docker logs ${PROJECT_NAME}-integrations-api-1 > ${OUTPUT_LOGS_DIR}/integrations-api.log
 
 db-port-forward-pod: ## Creates a DB port-forwarding pod in your currently active Kubernetes context
 	kubectl delete pod --ignore-not-found=true port-forward-pod
