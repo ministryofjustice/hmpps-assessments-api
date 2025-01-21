@@ -1,8 +1,6 @@
 package uk.gov.justice.digital.assessments.testutils
 
-import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -38,34 +36,6 @@ abstract class IntegrationTest {
   @Autowired
   internal lateinit var jwtHelper: JwtAuthHelper
 
-  companion object {
-    internal val deliusIntegrationMockServer = DeliusIntegrationMockServer()
-    internal val assessmentApiMockServer = AssessmentApiMockServer()
-    internal val assessRisksAndNeedsApiMockServer = AssessRisksAndNeedsApiMockServer()
-    internal val auditApiMockServer = AuditMockServer()
-    internal val oauthMockServer = OAuthMockServer()
-
-    @BeforeAll
-    @JvmStatic
-    fun startMocks() {
-      assessmentApiMockServer.start()
-      assessRisksAndNeedsApiMockServer.start()
-      auditApiMockServer.start()
-      oauthMockServer.start()
-      deliusIntegrationMockServer.start()
-    }
-
-    @AfterAll
-    @JvmStatic
-    fun stopMocks() {
-      assessmentApiMockServer.stop()
-      assessRisksAndNeedsApiMockServer.stop()
-      auditApiMockServer.stop()
-      oauthMockServer.stop()
-      deliusIntegrationMockServer.stop()
-    }
-  }
-
   init {
     SecurityContextHolder.getContext().authentication = TestingAuthenticationToken("user", "pw")
     // Resolves an issue where Wiremock keeps previous sockets open from other tests causing connection resets
@@ -74,13 +44,6 @@ abstract class IntegrationTest {
 
   @BeforeEach
   fun resetStubs() {
-    deliusIntegrationMockServer.resetAll()
-    assessmentApiMockServer.stubGetAssessment()
-    assessRisksAndNeedsApiMockServer.resetAll()
-    auditApiMockServer.stubAuditEvents()
-    oauthMockServer.stubGrantToken()
-    deliusIntegrationMockServer.stubGetCaseData()
-    deliusIntegrationMockServer.stubGetUserAccess()
     RequestContextHolder.getRequestAttributes()
     startSession()
     startRequest()

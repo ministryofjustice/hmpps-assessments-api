@@ -27,9 +27,6 @@ class WebClientConfig {
   @Value("\${assess-risks-and-needs-api.base-url}")
   private lateinit var assessRisksAndNeedsBaseUrl: String
 
-  @Value("\${audit.base-url}")
-  private lateinit var auditBaseUrl: String
-
   @Value("\${delius-integration.base-url}")
   private lateinit var deliusIntegrationBaseUrl: String
 
@@ -70,18 +67,6 @@ class WebClientConfig {
     )
 
     return AuthenticatingRestClient(webClient, "delius-integration-client", disableAuthentication)
-  }
-
-  @Bean
-  fun auditWebClient(
-    @Qualifier(value = "authorizedClientManager") authorizedClientManager: OAuth2AuthorizedClientManager,
-  ): AuthenticatingRestClient {
-    val webClient = webClientFactory(
-      authorizedClientManager,
-      auditBaseUrl,
-    )
-
-    return AuthenticatingRestClient(webClient, "audit-client", disableAuthentication)
   }
 
   private fun webClientFactory(

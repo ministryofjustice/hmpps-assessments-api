@@ -11,22 +11,3 @@ server:
 graceful:
   shutdown:
     enabled: false
-
-oauth:
-  endpoint:
-    url: http://localhost:9010/auth
-
-assessment-update-api:
-  base-url: http://localhost:9003
-
-assessment-api:
-  base-url: http://localhost:9004
-
-delius-integration:
-  base-url: http://localhost:9097
-
-assess-risks-and-needs-api:
-  base-url: http://localhost:9007
-
-audit:
-  base-url: http://localhost:9008
