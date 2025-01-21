@@ -18,13 +18,6 @@ spring:
             client-authentication-method: client_secret_basic
             authorization-grant-type: client_credentials
             provider: oauth-service
-          audit-client:
-            client-name: audit-client
-            client-id: ${audit-client-id:delius-integration-client}
-            client-secret: ${audit-client-secret:clientsecret}
-            client-authentication-method: client_secret_basic
-            authorization-grant-type: client_credentials
-            provider: oauth-service
           delius-integration-client:
             client-name: delius-integration-client
             client-id: ${delius-integration-client-id:delius-integration-client}
@@ -125,14 +118,11 @@ web:
     write-timeout-ms: 5000
     byte-buffer-size: 20971520
 
-audit:
-  base-url: http://localhost:9080
-
 assess-risks-and-needs-api:
   base-url: http://localhost:9080
 
 delius-integration:
-  base-url: http://localhost:9080
+  base-url: http://localhost:9082
 
 cache:
   ttlDays:

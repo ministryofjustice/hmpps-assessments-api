@@ -49,10 +49,8 @@ class PersistenceAssessmentsConfiguration : WebMvcConfigurer {
   @Primary
   @Bean(name = ["assessmentsDataSource"])
   @ConfigurationProperties(prefix = "spring.hmppsassessmentsapi.datasource")
-  fun assessmentsDataSource(): DataSource? {
-    return DataSourceBuilder
-      .create()
-      .url(assessmentsDataSourceUrl)
-      .build()
-  }
+  fun assessmentsDataSource(): DataSource? = DataSourceBuilder
+    .create()
+    .url(assessmentsDataSourceUrl)
+    .build()
 }

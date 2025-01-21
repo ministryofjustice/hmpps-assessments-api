@@ -1,0 +1,185 @@
+services:
+  postgres:
+    image: postgres
+    restart: always
+    networks:
+      - hmpps
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: dev
+    tmpfs:
+      - /var/lib/postgresql
+
+  redis:
+    image: "redis:6.2.3-alpine"
+    networks:
+      - hmpps
+
+  auth-db:
+    image: postgres:16
+    restart: always
+    networks:
+      - hmpps
+    environment:
+      - POSTGRES_PASSWORD=admin_password
+      - POSTGRES_USER=admin
+      - POSTGRES_DB=auth-db
+
+  hmpps-auth:
+    image: quay.io/hmpps/hmpps-auth:latest
+    networks:
+      - hmpps
+    depends_on:
+      - delius
+      - auth-db
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://hmpps-auth:9090/auth/health" ]
+      interval: 5s
+      retries: 60
+    environment:
+      - SERVER_PORT=9090
+      - SPRING_PROFILES_ACTIVE=dev,delius,local-postgres
+      - APPLICATION_AUTHENTICATION_UI_ALLOWLIST=0.0.0.0/0
+      - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY=DEBUG
+      - DELIUS_ENDPOINT_URL=http://delius:8080
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://auth-db:5432/auth-db
+
+  gotenberg:
+    image: thecodingmachine/gotenberg:7
+    restart: always
+    networks:
+      - hmpps
+
+  localstack:
+    image: localstack/localstack:latest
+    networks:
+      - hmpps
+    environment:
+      - SERVICES=sns,s3
+      - LOCALSTACK_HOST=localstack:4566
+      - DEBUG=1
+      - DEFAULT_REGION=eu-west-2
+      - AWS_DEFAULT_REGION=eu-west-2
+      - USE_SSL=false
+    volumes:
+      - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
+      - "./scripts/localstack/init:/etc/localstack/init/ready.d"
+      - "./scripts/localstack/wait:/scripts/wait"
+    healthcheck:
+      test: [ "CMD", "bash", "/scripts/wait/healthcheck.sh" ]
+      interval: 5s
+      timeout: 10s
+      retries: 50
+
+  arns-api:
+    image: rodolpheche/wiremock
+    networks:
+      - hmpps
+    volumes:
+      - ./wiremock-arns-api:/home/wiremock
+    command:
+      - -verbose
+      - -global-response-templating
+
+  integrations-api:
+    image: rodolpheche/wiremock
+    networks:
+      - hmpps
+    volumes:
+      - ./wiremock-integrations-api:/home/wiremock
+    command:
+      - -verbose
+      - -global-response-templating
+
+  delius:
+    image: rodolpheche/wiremock
+    networks:
+      - hmpps
+    volumes:
+      - ./wiremock-delius:/home/wiremock
+    command:
+      - -verbose
+      - -global-response-templating
+
+  api:
+    image: quay.io/hmpps/hmpps-assessments-api:${API_IMAGE_TAG:-latest}
+    build:
+      context: .
+      target: production
+    networks:
+      - hmpps
+    depends_on:
+      - hmpps-auth
+      - postgres
+      - localstack
+      - redis
+      - arns-api
+      - integrations-api
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://api:8080/health"]
+      interval: 5s
+      retries: 100
+    environment:
+      - SERVER_PORT=8080
+      - SPRING_PROFILES_ACTIVE=dev,postgres
+      - OAUTH_ENDPOINT_URL=${OAUTH_ENDPOINT_URL:-http://hmpps-auth:9090/auth}
+      - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY=DEBUG
+      - DATABASE_ENDPOINT=postgres:5432
+      - AWS_ENDPOINT_URL=http://localstack:4566
+      - AWS_ACCESS_KEY_ID=local
+      - AWS_SECRET_ACCESS_KEY=local
+      - SPRING_DATA_REDIS_HOST=redis
+      - SPRING_DATA_REDIS_SSL_ENABLED=false
+      - HMPPS_SQS_USE_WEB_TOKEN=false
+      - ASSESS_RISKS_AND_NEEDS_API_BASE_URL=http://arns-api:8080/
+      - ASSESS_RISKS_AND_NEEDS_API_ID=${API_CLIENT_CREDENTIALS_ID:-hmpps-community-payback-api-client}
+      - ASSESS_RISKS_AND_NEEDS_API_CLIENT_SECRET=${API_CLIENT_CREDENTIALS_SECRET:-clientsecret}
+      - DELIUS_INTEGRATION_BASE_URL=http://integrations-api:8080
+      - DELIUS_INTEGRATION_CLIENT_ID=${API_CLIENT_CREDENTIALS_ID:-hmpps-community-payback-api-client}
+      - DELIUS_INTEGRATION_CLIENT_SECRET=${API_CLIENT_CREDENTIALS_SECRET:-clientsecret}
+
+  ui:
+    image: quay.io/hmpps/hmpps-risk-assessment-ui:${UI_IMAGE_TAG:-latest}
+    hostname: community-payback-assessment-ui
+    networks:
+      - hmpps
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://community-payback-assessment-ui:3000/health"]
+      interval: 5s
+      retries: 60
+    environment:
+      - OAUTH_ENDPOINT_URL=${OAUTH_ENDPOINT_URL:-http://hmpps-auth:9090/auth}
+      - OAUTH_EXTERNAL_URL=${OAUTH_EXTERNAL_URL:-http://hmpps-auth:9090/auth}
+      - HMPPS_ASSESSMENT_API_URL=http://api:8080
+      - PDF_CONVERTER_ENDPOINT=http://gotenberg:3000/forms/chromium/convert/html
+      - API_CLIENT_ID=${UI_CLIENT_CREDENTIALS_ID:-hmpps-community-payback-api-client}
+      - API_CLIENT_SECRET=${UI_CLIENT_CREDENTIALS_SECRET:-clientsecret}
+      - AUTH_CLIENT_ID=${UI_AUTHORIZATION_CODE_ID:-hmpps-community-payback-ui-client}
+      - AUTH_CLIENT_SECRET=${UI_AUTHORIZATION_CODE_SECRET:-clientsecret}
+      - OAUTH_VERIFY_TOKEN=false
+      - SHOW_DETAILED_ERRORS=true
+      - SHOW_REQUEST_ID_ON_ERROR_PAGE=true
+      - USE_LOCALSTACK=true
+      - SHOW_NOTIFICATION=false
+      - NOTIFICATION_HEADER=
+      - NOTIFICATION_BODY=
+      - AWS_ENDPOINT_URL=http://localstack:4566
+      - AWS_ACCESS_KEY_ID=local
+      - AWS_SECRET_ACCESS_KEY=local
+      - S3_REGION=eu-west-2
+      - S3_BUCKET_NAME=hmpps-assessments-s3
+      - SNS_REGION=eu-west-2
+      - SNS_TOPIC_ARN=arn:aws:sns:eu-west-2:000000000000:hmpps-assessments-topic
+      - REDIS_HOST=redis
+      - REDIS_TLS_ENABLED=false
+      - LOGGING_LEVEL=debug
+      - INGRESS_URL=http://community-payback-assessment-ui:3000
+      - NODE_ENV=development
+    depends_on:
+      - hmpps-auth
+      - localstack
+      - api
+      - gotenberg
+
+networks:
+  hmpps:

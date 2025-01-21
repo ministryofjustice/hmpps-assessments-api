@@ -61,13 +61,20 @@ data class PreviousOffences(
 data class CurrentOffence(val offenceCode: String, val offenceSubcode: String)
 
 enum class EmploymentType {
-  NO, NOT_AVAILABLE_FOR_WORK, YES, MISSING
+  NO,
+  NOT_AVAILABLE_FOR_WORK,
+  YES,
+  MISSING,
 }
 
 enum class Gender {
-  MALE, FEMALE
+  MALE,
+  FEMALE,
 }
 
 enum class ProblemsLevel(val score: Int? = null) {
-  NO_PROBLEMS, SOME_PROBLEMS, SIGNIFICANT_PROBLEMS, MISSING
+  NO_PROBLEMS,
+  SOME_PROBLEMS,
+  SIGNIFICANT_PROBLEMS,
+  MISSING,
 }

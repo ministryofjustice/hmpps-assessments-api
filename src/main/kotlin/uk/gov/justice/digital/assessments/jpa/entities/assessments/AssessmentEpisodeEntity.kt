@@ -70,17 +70,13 @@ data class AssessmentEpisodeEntity(
   @Column(name = "closed_date")
   var closedDate: LocalDateTime? = null,
 ) {
-  fun isComplete(): Boolean {
-    return endDate != null
-  }
+  fun isComplete(): Boolean = endDate != null
 
   fun complete() {
     endDate = LocalDateTime.now()
   }
 
-  fun isClosed(): Boolean {
-    return closedDate != null
-  }
+  fun isClosed(): Boolean = closedDate != null
 
   fun close() {
     closedDate = LocalDateTime.now()
@@ -195,11 +191,9 @@ data class AssessmentEpisodeEntity(
     mapEmergencyContacts(caseDetails, this)
   }
 
-  private fun mapGenderIdentity(genderIdentity: String?): String? {
-    return genderIdentity?.uppercase()
-      ?.replace(' ', '_')
-      ?.replace('-', '_')
-  }
+  private fun mapGenderIdentity(genderIdentity: String?): String? = genderIdentity?.uppercase()
+    ?.replace(' ', '_')
+    ?.replace('-', '_')
 
   private fun mapReadingWriting(
     caseDetails: CaseDetails,
@@ -328,7 +322,9 @@ data class AssessmentEpisodeEntity(
     episode.addAnswer("emergency_contact_details", EmergencyContactDetailsAnswerDto.from(emergencyContacts) as List<Any>)
   }
 
-  private fun yesNoFieldType(answerList: List<String?>?): List<String> {
-    return if (answerList?.isNotEmpty() == true) { listOf("YES") } else { emptyList() }
+  private fun yesNoFieldType(answerList: List<String?>?): List<String> = if (answerList?.isNotEmpty() == true) {
+    listOf("YES")
+  } else {
+    emptyList()
   }
 }

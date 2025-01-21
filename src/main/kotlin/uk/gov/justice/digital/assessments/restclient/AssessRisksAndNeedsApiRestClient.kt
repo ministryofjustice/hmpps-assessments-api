@@ -8,10 +8,6 @@ import org.springframework.cache.annotation.Cacheable
 import org.springframework.http.HttpMethod
 import org.springframework.stereotype.Component
 import uk.gov.justice.digital.assessments.api.RoshRiskSummaryDto
-import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.OffenderAndOffencesDto
-import uk.gov.justice.digital.assessments.restclient.assessrisksandneedsapi.RiskPredictorsDto
-import uk.gov.justice.digital.assessments.services.dto.PredictorType
-import java.util.UUID
 
 @Component
 class AssessRisksAndNeedsApiRestClient {
@@ -22,38 +18,6 @@ class AssessRisksAndNeedsApiRestClient {
 
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
-  }
-
-  fun getRiskPredictors(
-    predictorType: PredictorType,
-    offenderAndOffencesDto: OffenderAndOffencesDto,
-    final: Boolean,
-    episodeUuid: UUID,
-  ): RiskPredictorsDto? {
-    log.info("Calculating Risk Predictors for $predictorType")
-    val path =
-      "/risks/predictors/$predictorType?final=$final&source=${ExternalService.ASSESSMENTS_API}&sourceId=$episodeUuid"
-    return webClient
-      .post(path, offenderAndOffencesDto)
-      .retrieve()
-      .onStatus({ it.is4xxClientError }) {
-        handle4xxError(
-          it,
-          HttpMethod.POST,
-          path,
-          ExternalService.ASSESS_RISKS_AND_NEEDS_API,
-        )
-      }
-      .onStatus({ it.is5xxServerError }) {
-        handle5xxError(
-          "Failed to calculate and retrieve Risk Predictors $predictorType for crn ${offenderAndOffencesDto.crn}",
-          HttpMethod.POST,
-          path,
-          ExternalService.ASSESS_RISKS_AND_NEEDS_API,
-        )
-      }
-      .bodyToMono(RiskPredictorsDto::class.java)
-      .block().also { log.info("Retrieve Risk Predictors $predictorType for crn ${offenderAndOffencesDto.crn}") }
   }
 
   @Cacheable("roshRiskWidget")

@@ -25,15 +25,13 @@ data class CheckboxGroupDto(
   val contents: List<GroupContentDto>,
 ) : GroupContentDto {
   companion object {
-    fun from(group: GroupEntity, contents: List<GroupContentDto>): CheckboxGroupDto {
-      return CheckboxGroupDto(
-        checkboxGroupId = group.groupUuid,
-        checkboxGroupCode = group.groupCode,
-        title = group.heading,
-        subheading = group.subheading,
-        helpText = group.helpText,
-        contents = contents,
-      )
-    }
+    fun from(group: GroupEntity, contents: List<GroupContentDto>): CheckboxGroupDto = CheckboxGroupDto(
+      checkboxGroupId = group.groupUuid,
+      checkboxGroupCode = group.groupCode,
+      title = group.heading,
+      subheading = group.subheading,
+      helpText = group.helpText,
+      contents = contents,
+    )
   }
 }

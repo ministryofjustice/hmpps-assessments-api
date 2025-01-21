@@ -28,27 +28,23 @@ data class AssessmentDto(
 
   companion object {
 
-    fun from(assessment: AssessmentEntity): AssessmentDto {
-      return AssessmentDto(
-        assessment.assessmentUuid,
-        assessment.createdDate,
-        assessment.completedDate,
-        assessment.subject.toSubjectDto(),
-        assessment.let { AssessmentEpisodeDto.from(it.episodes) },
-      )
-    }
+    fun from(assessment: AssessmentEntity): AssessmentDto = AssessmentDto(
+      assessment.assessmentUuid,
+      assessment.createdDate,
+      assessment.completedDate,
+      assessment.subject.toSubjectDto(),
+      assessment.let { AssessmentEpisodeDto.from(it.episodes) },
+    )
 
-    private fun SubjectEntity?.toSubjectDto(): SubjectDto? {
-      return this?.let {
-        SubjectDto(
-          it.subjectUuid,
-          it.name,
-          it.pnc,
-          it.crn,
-          it.dateOfBirth,
-          it.gender,
-        )
-      }
+    private fun SubjectEntity?.toSubjectDto(): SubjectDto? = this?.let {
+      SubjectDto(
+        it.subjectUuid,
+        it.name,
+        it.pnc,
+        it.crn,
+        it.dateOfBirth,
+        it.gender,
+      )
     }
   }
 }

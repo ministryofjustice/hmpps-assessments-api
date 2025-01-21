@@ -24,15 +24,13 @@ class GroupSummaryDto(
   val questionCount: Long,
 ) {
   companion object {
-    fun from(entity: GroupSummaryEntity): GroupSummaryDto {
-      return GroupSummaryDto(
-        UUID.fromString(entity.groupUuid),
-        entity.groupCode,
-        entity.heading,
-        entity.contentCount,
-        entity.groupCount,
-        entity.questionCount,
-      )
-    }
+    fun from(entity: GroupSummaryEntity): GroupSummaryDto = GroupSummaryDto(
+      UUID.fromString(entity.groupUuid),
+      entity.groupCode,
+      entity.heading,
+      entity.contentCount,
+      entity.groupCount,
+      entity.questionCount,
+    )
   }
 }

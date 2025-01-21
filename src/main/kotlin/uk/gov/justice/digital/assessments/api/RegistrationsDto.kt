@@ -12,20 +12,18 @@ data class RegistrationsDto(
   val flags: List<Flag> = emptyList(),
 ) {
   companion object {
-    fun from(caseDetails: CaseDetails): RegistrationsDto {
-      return RegistrationsDto(
-        caseDetails.mappaRegistration?.let {
-          Mappa(
-            it.level.code,
-            it.level.description,
-            it.category.code,
-            it.category.description,
-            it.startDate,
-          )
-        },
-        caseDetails.registerFlags.orEmpty().map { Flag(it.code, it.description, it.riskColour.orEmpty()) },
-      )
-    }
+    fun from(caseDetails: CaseDetails): RegistrationsDto = RegistrationsDto(
+      caseDetails.mappaRegistration?.let {
+        Mappa(
+          it.level.code,
+          it.level.description,
+          it.category.code,
+          it.category.description,
+          it.startDate,
+        )
+      },
+      caseDetails.registerFlags.orEmpty().map { Flag(it.code, it.description, it.riskColour.orEmpty()) },
+    )
   }
 }
 

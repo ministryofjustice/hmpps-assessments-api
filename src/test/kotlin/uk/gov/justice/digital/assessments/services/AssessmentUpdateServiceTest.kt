@@ -247,21 +247,19 @@ class AssessmentUpdateServiceTest {
     }
   }
 
-  private fun assessmentEntity(answers: Answers): AssessmentEntity {
-    return AssessmentEntity(
-      assessmentId = assessmentId,
-      episodes = mutableListOf(
-        AssessmentEpisodeEntity(
-          episodeUuid = episodeUuid,
-          episodeId = episodeId2,
-          changeReason = "Change of Circs 2",
-          answers = answers,
-          createdDate = LocalDateTime.now(),
-          assessmentType = AssessmentType.UPW,
-          author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
-          assessment = AssessmentEntity(),
-        ),
+  private fun assessmentEntity(answers: Answers): AssessmentEntity = AssessmentEntity(
+    assessmentId = assessmentId,
+    episodes = mutableListOf(
+      AssessmentEpisodeEntity(
+        episodeUuid = episodeUuid,
+        episodeId = episodeId2,
+        changeReason = "Change of Circs 2",
+        answers = answers,
+        createdDate = LocalDateTime.now(),
+        assessmentType = AssessmentType.UPW,
+        author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name"),
+        assessment = AssessmentEntity(),
       ),
-    )
-  }
+    ),
+  )
 }

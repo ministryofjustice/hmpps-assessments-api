@@ -35,9 +35,7 @@ class RisksController(
       description = "CRN",
       required = true,
     ) @PathVariable crn: String,
-  ): RegistrationsDto {
-    return risksService.getRegistrationsForAssessment(crn, eventId)
-  }
+  ): RegistrationsDto = risksService.getRegistrationsForAssessment(crn, eventId)
 
   @RequestMapping(path = ["/assessments/{crn}/ROSH/summary"], method = [RequestMethod.GET])
   @Operation(description = "Get ROSH risk summary for the assessment")
@@ -53,7 +51,5 @@ class RisksController(
       description = "CRN",
       required = true,
     ) @PathVariable crn: String,
-  ): RoshRiskSummaryDto {
-    return risksService.getRoshRiskSummaryForAssessment(crn)
-  }
+  ): RoshRiskSummaryDto = risksService.getRoshRiskSummaryForAssessment(crn)
 }

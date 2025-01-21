@@ -124,7 +124,7 @@ class RisksServiceTest {
         riskInCommunity = mapOf(
           "Public" to "HIGH",
           "Known Adult" to "MEDIUM",
-          "Staff" to "MEDIUM",
+          "Staff" to "VERY_HIGH",
           "Children" to "LOW",
         ),
       )
@@ -135,7 +135,7 @@ class RisksServiceTest {
       assertThat(riskSummary.assessedOn).isEqualTo(LocalDate.parse("2021-10-10"))
       assertThat(riskSummary.riskInCommunity["Children"]).isEqualTo("LOW")
       assertThat(riskSummary.riskInCommunity["Known Adult"]).isEqualTo("MEDIUM")
-      assertThat(riskSummary.riskInCommunity["Staff"]).isEqualTo("MEDIUM")
+      assertThat(riskSummary.riskInCommunity["Staff"]).isEqualTo("VERY_HIGH")
       assertThat(riskSummary.riskInCommunity["Public"]).isEqualTo("HIGH")
     }
 

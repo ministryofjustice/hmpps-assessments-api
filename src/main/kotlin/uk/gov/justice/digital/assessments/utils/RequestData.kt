@@ -81,9 +81,7 @@ class RequestData(excludeUris: String?) : HandlerInterceptor {
     return if (authSource.isNullOrEmpty()) null else authSource
   }
 
-  private fun initialiseIsClientGrantType(request: HttpServletRequest): String? {
-    return if (request.userPrincipal != null) (request.userPrincipal as AuthAwareAuthenticationToken).principal.isClientGrantType.toString() else null
-  }
+  private fun initialiseIsClientGrantType(request: HttpServletRequest): String? = if (request.userPrincipal != null) (request.userPrincipal as AuthAwareAuthenticationToken).principal.isClientGrantType.toString() else null
 
   companion object {
     val log: Logger = LoggerFactory.getLogger(this::class.java)
@@ -97,24 +95,14 @@ class RequestData(excludeUris: String?) : HandlerInterceptor {
     const val HAS_USER_TOKEN = "hasUserToken"
     val isLoggingAllowed: Boolean = "true" != MDC.get(SKIP_LOGGING)
 
-    fun getUserId(): String {
-      return MDC.get(USER_ID_HEADER) ?: throw MdcPropertyException("User Id is mandatory to access this method")
-    }
+    fun getUserId(): String = MDC.get(USER_ID_HEADER) ?: throw MdcPropertyException("User Id is mandatory to access this method")
 
-    fun getUserName(): String {
-      return MDC.get(USER_NAME_HEADER) ?: throw MdcPropertyException("User Name is mandatory to access this method")
-    }
+    fun getUserName(): String = MDC.get(USER_NAME_HEADER) ?: throw MdcPropertyException("User Name is mandatory to access this method")
 
-    fun getUserFullName(): String? {
-      return MDC.get(USER_FULL_NAME_HEADER)
-    }
+    fun getUserFullName(): String? = MDC.get(USER_FULL_NAME_HEADER)
 
-    fun getUserAuthSource(): String? {
-      return MDC.get(USER_AUTH_SOURCE_HEADER)
-    }
+    fun getUserAuthSource(): String? = MDC.get(USER_AUTH_SOURCE_HEADER)
 
-    fun isClientGrantType(): Boolean {
-      return MDC.get(HAS_USER_TOKEN).toBoolean()
-    }
+    fun isClientGrantType(): Boolean = MDC.get(HAS_USER_TOKEN).toBoolean()
   }
 }

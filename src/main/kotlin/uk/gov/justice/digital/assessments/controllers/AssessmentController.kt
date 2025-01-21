@@ -43,9 +43,7 @@ class AssessmentController(
     ],
   )
   @PreAuthorize("hasRole('ROLE_PROBATION')")
-  fun createNewAssessment(@RequestBody createAssessmentDto: CreateAssessmentDto): AssessmentDto {
-    return assessmentService.createNewAssessment(createAssessmentDto)
-  }
+  fun createNewAssessment(@RequestBody createAssessmentDto: CreateAssessmentDto): AssessmentDto = assessmentService.createNewAssessment(createAssessmentDto)
 
   @RequestMapping(path = ["/assessments/{assessmentUuid}/subject"], method = [RequestMethod.GET])
   @Operation(description = "Details of the person who is the subject of the assessment")
@@ -61,9 +59,7 @@ class AssessmentController(
       description = "Assessment UUID",
       required = true,
     ) @PathVariable assessmentUuid: UUID,
-  ): AssessmentSubjectDto {
-    return assessmentService.getAssessmentSubject(assessmentUuid)
-  }
+  ): AssessmentSubjectDto = assessmentService.getAssessmentSubject(assessmentUuid)
 
   @RequestMapping(path = ["/assessments/{assessmentUuid}/episodes"], method = [RequestMethod.POST])
   @Operation(description = "Creates a new episode for an assessment")
@@ -105,9 +101,7 @@ class AssessmentController(
       required = true,
       example = "1234",
     ) @PathVariable assessmentUuid: UUID,
-  ): Collection<AssessmentEpisodeDto>? {
-    return assessmentService.getAssessmentEpisodes(assessmentUuid)
-  }
+  ): Collection<AssessmentEpisodeDto>? = assessmentService.getAssessmentEpisodes(assessmentUuid)
 
   @RequestMapping(path = ["/assessments/{assessmentUuid}/episodes/current"], method = [RequestMethod.GET])
   @Operation(description = "Get the current episodes for an assessment")
@@ -124,9 +118,7 @@ class AssessmentController(
       required = true,
       example = "1234",
     ) @PathVariable assessmentUuid: UUID,
-  ): AssessmentEpisodeDto {
-    return assessmentService.getCurrentAssessmentEpisode(assessmentUuid)
-  }
+  ): AssessmentEpisodeDto = assessmentService.getCurrentAssessmentEpisode(assessmentUuid)
 
   @RequestMapping(path = ["/assessments/subject/{crn}/episodes/current"], method = [RequestMethod.GET])
   @Operation(description = "Get the current episodes for a given crn")
@@ -162,9 +154,7 @@ class AssessmentController(
       required = true,
       example = "1234",
     ) @PathVariable episodeUuid: UUID,
-  ): AssessmentEpisodeDto {
-    return AssessmentEpisodeDto.from(assessmentService.getEpisode(assessmentUuid, episodeUuid))
-  }
+  ): AssessmentEpisodeDto = AssessmentEpisodeDto.from(assessmentService.getEpisode(assessmentUuid, episodeUuid))
 
   @RequestMapping(path = ["/episode/{episodeUuid}"], method = [RequestMethod.GET])
   @Operation(description = "Get an episode")
@@ -181,9 +171,7 @@ class AssessmentController(
       required = true,
       example = "08206a0b-563a-49b3-8cd2-b21fabdc79ca",
     ) @PathVariable episodeUuid: UUID,
-  ): AssessmentEpisodeDto {
-    return AssessmentEpisodeDto.from(assessmentService.getEpisodeById(episodeUuid))
-  }
+  ): AssessmentEpisodeDto = AssessmentEpisodeDto.from(assessmentService.getEpisodeById(episodeUuid))
 
   @RequestMapping(path = ["/assessments/{assessmentUuid}/episodes/{episodeUuid}"], method = [RequestMethod.POST])
   @Operation(description = "updates the answers for an episode")
@@ -281,7 +269,5 @@ class AssessmentController(
 
   private fun updateResponse(
     assessmentEpisode: AssessmentEpisodeDto,
-  ): ResponseEntity<AssessmentEpisodeDto> {
-    return ResponseEntity(assessmentEpisode, HttpStatus.OK)
-  }
+  ): ResponseEntity<AssessmentEpisodeDto> = ResponseEntity(assessmentEpisode, HttpStatus.OK)
 }

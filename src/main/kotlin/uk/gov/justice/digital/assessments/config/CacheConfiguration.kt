@@ -32,46 +32,38 @@ class CacheConfiguration {
   @Value("\${cache.ttlMinutes.default}")
   var defaultCacheTtlMinutes: Long = 5
 
-  private fun objectMapper(): ObjectMapper {
-    return ObjectMapper()
-      .registerModule(Jdk8Module())
-      .registerModule(JavaTimeModule())
-      .registerKotlinModule()
-      .apply {
-        activateDefaultTyping(polymorphicTypeValidator, ObjectMapper.DefaultTyping.EVERYTHING, JsonTypeInfo.As.PROPERTY)
-      }
-      .configure(FAIL_ON_UNKNOWN_PROPERTIES, false)
-  }
+  private fun objectMapper(): ObjectMapper = ObjectMapper()
+    .registerModule(Jdk8Module())
+    .registerModule(JavaTimeModule())
+    .registerKotlinModule()
+    .apply {
+      activateDefaultTyping(polymorphicTypeValidator, ObjectMapper.DefaultTyping.EVERYTHING, JsonTypeInfo.As.PROPERTY)
+    }
+    .configure(FAIL_ON_UNKNOWN_PROPERTIES, false)
 
-  private fun getDefaultCacheConfiguration(): RedisCacheConfiguration {
-    return RedisCacheConfiguration
-      .defaultCacheConfig()
-      .serializeKeysWith(SerializationPair.fromSerializer(StringRedisSerializer()))
-      .serializeValuesWith(SerializationPair.fromSerializer(GenericJackson2JsonRedisSerializer(objectMapper())))
-  }
+  private fun getDefaultCacheConfiguration(): RedisCacheConfiguration = RedisCacheConfiguration
+    .defaultCacheConfig()
+    .serializeKeysWith(SerializationPair.fromSerializer(StringRedisSerializer()))
+    .serializeValuesWith(SerializationPair.fromSerializer(GenericJackson2JsonRedisSerializer(objectMapper())))
 
   @Bean
-  fun defaultRedisCacheConfiguration(): RedisCacheConfiguration {
-    return getDefaultCacheConfiguration()
-      .entryTtl(Duration.ofMinutes(defaultCacheTtlMinutes))
-  }
+  fun defaultRedisCacheConfiguration(): RedisCacheConfiguration = getDefaultCacheConfiguration()
+    .entryTtl(Duration.ofMinutes(defaultCacheTtlMinutes))
 
   @Bean
-  fun cacheManagerBuilderCustomizer(): RedisCacheManagerBuilderCustomizer? {
-    return RedisCacheManagerBuilderCustomizer { builder: RedisCacheManagerBuilder ->
-      val defaultConfigWithRefDataTtl = getDefaultCacheConfiguration()
-        .entryTtl(Duration.ofDays(referenceDataCacheTtlDays))
+  fun cacheManagerBuilderCustomizer(): RedisCacheManagerBuilderCustomizer? = RedisCacheManagerBuilderCustomizer { builder: RedisCacheManagerBuilder ->
+    val defaultConfigWithRefDataTtl = getDefaultCacheConfiguration()
+      .entryTtl(Duration.ofDays(referenceDataCacheTtlDays))
 
-      arrayOf(
-        ASSESSMENT_CACHE_KEY,
-        QUESTIONS_FOR_ASSESSMENT_TYPE_CACHE_KEY,
-        ASSESSMENT_SUMMARY_CACHE_KEY,
-        QUESTION_CACHE_KEY,
-        LIST_QUESTION_GROUPS_CACHE_KEY,
-        QUESTION_GROUP_SECTIONS_CACHE_KEY,
-      ).forEach {
-        builder.withCacheConfiguration(it, defaultConfigWithRefDataTtl)
-      }
+    arrayOf(
+      ASSESSMENT_CACHE_KEY,
+      QUESTIONS_FOR_ASSESSMENT_TYPE_CACHE_KEY,
+      ASSESSMENT_SUMMARY_CACHE_KEY,
+      QUESTION_CACHE_KEY,
+      LIST_QUESTION_GROUPS_CACHE_KEY,
+      QUESTION_GROUP_SECTIONS_CACHE_KEY,
+    ).forEach {
+      builder.withCacheConfiguration(it, defaultConfigWithRefDataTtl)
     }
   }
 }

@@ -29,21 +29,19 @@ class EmergencyContactDetailsAnswerDtoTest {
     assertThat(emergencyContactDetailsAnswerDto.mobileNumber).isEmpty()
   }
 
-  private fun createEmptyPersonalContact(): PersonalContact {
-    return PersonalContact(
-      relationship = "",
-      relationshipType = RelationshipType(
-        code = "",
-        description = "",
-      ),
-      name = Name(
-        forename = "",
-        middleName = null,
-        surname = "",
-      ),
-      telephoneNumber = null,
-      mobileNumber = null,
-      address = null,
-    )
-  }
+  private fun createEmptyPersonalContact(): PersonalContact = PersonalContact(
+    relationship = "",
+    relationshipType = RelationshipType(
+      code = "",
+      description = "",
+    ),
+    name = Name(
+      forename = "",
+      middleName = null,
+      surname = "",
+    ),
+    telephoneNumber = null,
+    mobileNumber = null,
+    address = null,
+  )
 }

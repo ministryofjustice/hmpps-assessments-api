@@ -315,68 +315,66 @@ class AssessmentServiceTest {
     }
   }
 
-  private fun caseDetails(): CaseDetails {
-    return CaseDetails(
-      crn = "crn",
-      name = Name(
-        forename = "forename",
-        middleName = "middlename",
-        surname = "surname",
-      ),
-      dateOfBirth = LocalDate.of(1989, 1, 1),
-      genderIdentity = "PREFER TO SELF DESCRIBE",
+  private fun caseDetails(): CaseDetails = CaseDetails(
+    crn = "crn",
+    name = Name(
+      forename = "forename",
+      middleName = "middlename",
+      surname = "surname",
+    ),
+    dateOfBirth = LocalDate.of(1989, 1, 1),
+    genderIdentity = "PREFER TO SELF DESCRIBE",
 
-      mainAddress = Address(
-        buildingName = "HMPPS Digital Studio",
-        addressNumber = "32",
-        district = "Sheffield City Centre",
-        county = "South Yorkshire",
-        postcode = "S3 7BS",
-        town = "Sheffield",
-      ),
-      personalContacts = listOf(
-        PersonalContact(
-          relationship = "GP",
-          relationshipType = RelationshipType(
-            code = "RT02",
-            description = "Primary GP",
-          ),
-          name = Name(
-            forename = "Charles",
-            surname = "Europe",
-          ),
-          mobileNumber = "07123456789",
-          address = Address(
-            addressNumber = "32",
-            streetName = "Scotland Street",
-            district = "Sheffield",
-            town = "Sheffield",
-            county = "South Yorkshire",
-            postcode = "S3 7DQ",
-          ),
+    mainAddress = Address(
+      buildingName = "HMPPS Digital Studio",
+      addressNumber = "32",
+      district = "Sheffield City Centre",
+      county = "South Yorkshire",
+      postcode = "S3 7BS",
+      town = "Sheffield",
+    ),
+    personalContacts = listOf(
+      PersonalContact(
+        relationship = "GP",
+        relationshipType = RelationshipType(
+          code = "RT02",
+          description = "Primary GP",
         ),
-        PersonalContact(
-          relationship = "Emergency Contact",
-          relationshipType = RelationshipType(
-            code = "ME",
-            description = "Father",
-          ),
-          name = Name(
-            forename = "UPW",
-            surname = "Testing",
-          ),
-          telephoneNumber = "020 2000 0000",
-          address = Address(
-            buildingName = "Petty France",
-            addressNumber = "102",
-            streetName = "Central London",
-            district = "London",
-            town = "London",
-            county = "London",
-            postcode = "SW1H 9AJ",
-          ),
+        name = Name(
+          forename = "Charles",
+          surname = "Europe",
+        ),
+        mobileNumber = "07123456789",
+        address = Address(
+          addressNumber = "32",
+          streetName = "Scotland Street",
+          district = "Sheffield",
+          town = "Sheffield",
+          county = "South Yorkshire",
+          postcode = "S3 7DQ",
         ),
       ),
-    )
-  }
+      PersonalContact(
+        relationship = "Emergency Contact",
+        relationshipType = RelationshipType(
+          code = "ME",
+          description = "Father",
+        ),
+        name = Name(
+          forename = "UPW",
+          surname = "Testing",
+        ),
+        telephoneNumber = "020 2000 0000",
+        address = Address(
+          buildingName = "Petty France",
+          addressNumber = "102",
+          streetName = "Central London",
+          district = "London",
+          town = "London",
+          county = "London",
+          postcode = "SW1H 9AJ",
+        ),
+      ),
+    ),
+  )
 }

@@ -21,22 +21,20 @@ class AuthAwareTokenConverter : Converter<Jwt, AbstractAuthenticationToken> {
 
   private fun isUserGrantType(claims: Map<String, Any?>) = claims.containsKey("grant_type") && claims["grant_type"] == "authorization_code"
 
-  private fun findPrincipal(claims: Map<String, Any?>): Principal {
-    return if (isUserGrantType(claims)) {
-      Principal(
-        claims["user_name"] as String,
-        claims["user_id"] as String,
-        claims["name"] as String,
-        claims["auth_source"] as String,
-        false,
-      )
-    } else {
-      Principal(
-        userName = claims["sub"] as String,
-        userId = claims["client_id"] as String,
-        isClientGrantType = true,
-      )
-    }
+  private fun findPrincipal(claims: Map<String, Any?>): Principal = if (isUserGrantType(claims)) {
+    Principal(
+      claims["user_name"] as String,
+      claims["user_id"] as String,
+      claims["name"] as String,
+      claims["auth_source"] as String,
+      false,
+    )
+  } else {
+    Principal(
+      userName = claims["sub"] as String,
+      userId = claims["client_id"] as String,
+      isClientGrantType = true,
+    )
   }
 
   private fun extractAuthorities(jwt: Jwt): Collection<GrantedAuthority> {
@@ -55,9 +53,7 @@ class AuthAwareAuthenticationToken(
   private val aPrincipal: Principal,
   authorities: Collection<GrantedAuthority>,
 ) : JwtAuthenticationToken(jwt, authorities) {
-  override fun getPrincipal(): Principal {
-    return aPrincipal
-  }
+  override fun getPrincipal(): Principal = aPrincipal
 }
 
 class Principal(

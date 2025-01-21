@@ -45,10 +45,8 @@ class PersistenceRefDataConfiguration : WebMvcConfigurer {
 
   @Bean(name = ["refDataDataSource"])
   @ConfigurationProperties(prefix = "spring.hmppsassessmentsschemas.datasource")
-  fun refDataDataSource(): DataSource? {
-    return DataSourceBuilder
-      .create()
-      .url(refDataDataSourceUrl)
-      .build()
-  }
+  fun refDataDataSource(): DataSource? = DataSourceBuilder
+    .create()
+    .url(refDataDataSourceUrl)
+    .build()
 }

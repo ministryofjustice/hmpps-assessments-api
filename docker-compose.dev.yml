@@ -1,0 +1,17 @@
+services:
+  api:
+    image: quay.io/hmpps/hmpps-assessments-api:local
+    build:
+      target: development
+    command: gradle --parallel --build-cache --configuration-cache bootRun
+    volumes:
+      - ./.git:/app/.git
+      - ./.gradle:/home/gradle/.gradle
+      - ./build:/app/build
+      - ./src:/app/src
+      - ./build.gradle.kts:/app/build.gradle.kts
+      - ./settings.gradle.kts:/app/settings.gradle.kts
+      - ./suppressions.xml:/app/suppressions.xml
+    ports:
+      - "8082:8080"
+      - "5005:5005"

@@ -43,30 +43,26 @@ data class EmergencyContactDetailsAnswerDto(
 ) {
   companion object {
 
-    fun from(personalContacts: List<PersonalContact>?): List<EmergencyContactDetailsAnswerDto> {
-      return if (personalContacts.isNullOrEmpty()) {
-        emptyList()
-      } else {
-        personalContacts.map { from(it) }
-      }
+    fun from(personalContacts: List<PersonalContact>?): List<EmergencyContactDetailsAnswerDto> = if (personalContacts.isNullOrEmpty()) {
+      emptyList()
+    } else {
+      personalContacts.map { from(it) }
     }
 
-    fun from(personalContact: PersonalContact): EmergencyContactDetailsAnswerDto {
-      return EmergencyContactDetailsAnswerDto(
+    fun from(personalContact: PersonalContact): EmergencyContactDetailsAnswerDto = EmergencyContactDetailsAnswerDto(
 
-        firstName = listOfNotNull(personalContact.name.forename),
-        familyName = listOfNotNull(personalContact.name.surname),
-        relationship = listOfNotNull(personalContact.relationship),
-        addressNumber = listOfNotNull(personalContact.address?.addressNumber),
-        buildingName = listOfNotNull(personalContact.address?.buildingName),
-        streetName = listOfNotNull(personalContact.address?.streetName),
-        district = listOfNotNull(personalContact.address?.district),
-        town = listOfNotNull(personalContact.address?.town),
-        county = listOfNotNull(personalContact.address?.county),
-        postcode = listOfNotNull(personalContact.address?.postcode),
-        telephoneNumber = listOfNotNull(personalContact.telephoneNumber),
-        mobileNumber = listOfNotNull(personalContact.mobileNumber),
-      )
-    }
+      firstName = listOfNotNull(personalContact.name.forename),
+      familyName = listOfNotNull(personalContact.name.surname),
+      relationship = listOfNotNull(personalContact.relationship),
+      addressNumber = listOfNotNull(personalContact.address?.addressNumber),
+      buildingName = listOfNotNull(personalContact.address?.buildingName),
+      streetName = listOfNotNull(personalContact.address?.streetName),
+      district = listOfNotNull(personalContact.address?.district),
+      town = listOfNotNull(personalContact.address?.town),
+      county = listOfNotNull(personalContact.address?.county),
+      postcode = listOfNotNull(personalContact.address?.postcode),
+      telephoneNumber = listOfNotNull(personalContact.telephoneNumber),
+      mobileNumber = listOfNotNull(personalContact.mobileNumber),
+    )
   }
 }

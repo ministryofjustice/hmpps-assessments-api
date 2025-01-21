@@ -14,8 +14,7 @@ open class AuthenticatingRestClient(
   fun get(path: String, queryParams: MultiValueMap<String, String>? = MultiValueMapAdapter(emptyMap())): WebClient.RequestHeadersSpec<*> {
     val request = webClient
       .get()
-      .uri {
-          uriBuilder ->
+      .uri { uriBuilder ->
         uriBuilder.path(path)
           .queryParams(queryParams)
           .build()
