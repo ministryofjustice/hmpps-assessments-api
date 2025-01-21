@@ -1,0 +1,32 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/users/([a-zA-Z0-9/-/.]*)/access/D000403"
+      },
+      "priority": 2,
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "verify-access/denied.json"
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/users/([a-zA-Z0-9/-]*)/access/(OX[a-zA-Z0-9]*)"
+      },
+      "priority": 2,
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "verify-access/denied.json"
+      }
+    }
+  ]
+}

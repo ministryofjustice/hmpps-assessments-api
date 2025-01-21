@@ -1,0 +1,14 @@
+services:
+  cypress:
+    image: cypress/included
+    networks:
+      - hmpps
+    working_dir: /e2e
+    volumes:
+      - ./:/e2e
+    environment:
+      CYPRESS_BASE_URL: http://community-payback-assessment-ui:3000
+      CYPRESS_AUTH_URL: http://hmpps-auth:9090/auth/oauth/token?grant_type=client_credentials&username=foobar
+
+volumes:
+  test_results:

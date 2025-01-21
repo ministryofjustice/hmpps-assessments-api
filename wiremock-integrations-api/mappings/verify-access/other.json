@@ -1,0 +1,72 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/users/([a-zA-Z0-9/-]*)/access/invalidNotFound"
+      },
+      "priority": 1,
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 404,
+        "jsonBody": {
+          "status": "404",
+          "developerMessage": "The offender is not found"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/users/user1/access/invalidBadRequest"
+      },
+      "priority": 1,
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 400,
+        "jsonBody": {
+          "status": "400",
+          "developerMessage": "invalidBadRequest"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/users/user1/access/invalidNotAuthorised"
+      },
+      "priority": 1,
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 401,
+        "jsonBody": {
+          "status": "401",
+          "developerMessage": "Not authorised"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/users/user1/access/invalidNotKnow"
+      },
+      "priority": 1,
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 422,
+        "jsonBody": {
+          "status": "422",
+          "developerMessage": "unprocessable"
+        }
+      }
+    }
+  ]
+}
