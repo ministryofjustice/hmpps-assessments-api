@@ -15,34 +15,22 @@ services:
     networks:
       - hmpps
 
-  auth-db:
-    image: postgres:16
-    restart: always
-    networks:
-      - hmpps
-    environment:
-      - POSTGRES_PASSWORD=admin_password
-      - POSTGRES_USER=admin
-      - POSTGRES_DB=auth-db
-
   hmpps-auth:
     image: quay.io/hmpps/hmpps-auth:latest
     networks:
       - hmpps
     depends_on:
       - delius
-      - auth-db
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://hmpps-auth:9090/auth/health" ]
       interval: 5s
       retries: 60
     environment:
       - SERVER_PORT=9090
-      - SPRING_PROFILES_ACTIVE=dev,delius,local-postgres
+      - SPRING_PROFILES_ACTIVE=dev,delius
       - APPLICATION_AUTHENTICATION_UI_ALLOWLIST=0.0.0.0/0
       - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY=DEBUG
       - DELIUS_ENDPOINT_URL=http://delius:8080
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://auth-db:5432/auth-db
 
   gotenberg:
     image: thecodingmachine/gotenberg:7
