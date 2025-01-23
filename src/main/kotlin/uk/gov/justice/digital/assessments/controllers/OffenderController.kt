@@ -40,7 +40,7 @@ class OffenderController(val offenderService: OffenderService) {
     @Parameter(description = "Delius Event ID", required = true) @PathVariable eventId: Long,
   ): OffenderDto? {
     log.debug("Entered getOffenderDetails($crn, $eventId)")
-
+    offenderService.validateUserAccess(crn)
     return offenderService.getOffender(crn, eventId)
   }
 }
