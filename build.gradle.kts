@@ -43,7 +43,7 @@ dependencies {
   implementation("com.zaxxer:HikariCP:6.2.1")
   implementation("com.vladmihalcea:hibernate-types-60:2.21.1")
   implementation("com.beust:klaxon:5.6")
-  implementation("com.google.code.gson:gson:2.12.0")
+  implementation("com.google.code.gson:gson:2.12.1")
   implementation("com.google.guava:guava:33.4.0-jre")
   implementation("org.apache.commons:commons-lang3:3.17.0")
   implementation("org.postgresql:postgresql:42.7.5")
