@@ -60,7 +60,7 @@ services:
       retries: 50
 
   arns-api:
-    image: rodolpheche/wiremock
+    image: wiremock/wiremock
     networks:
       - hmpps
     volumes:
@@ -70,7 +70,7 @@ services:
       - -global-response-templating
 
   integrations-api:
-    image: rodolpheche/wiremock
+    image: wiremock/wiremock
     networks:
       - hmpps
     volumes:
@@ -80,7 +80,7 @@ services:
       - -global-response-templating
 
   delius:
-    image: rodolpheche/wiremock
+    image: wiremock/wiremock
     networks:
       - hmpps
     volumes:
@@ -90,7 +90,7 @@ services:
       - -global-response-templating
 
   api:
-    image: quay.io/hmpps/hmpps-assessments-api:${API_IMAGE_TAG:-latest}
+    image: ghcr.io/ministryofjustice/hmpps-assessments-api:${API_IMAGE_TAG:-latest}
     build:
       context: .
       target: production
@@ -127,7 +127,7 @@ services:
       - DELIUS_INTEGRATION_CLIENT_SECRET=${API_CLIENT_CREDENTIALS_SECRET:-clientsecret}
 
   ui:
-    image: quay.io/hmpps/hmpps-risk-assessment-ui:${UI_IMAGE_TAG:-latest}
+    image: ghcr.io/ministryofjustice/hmpps-risk-assessment-ui:${UI_IMAGE_TAG:-latest}
     hostname: community-payback-assessment-ui
     networks:
       - hmpps

@@ -1,7 +1,6 @@
 SHELL = '/bin/bash'
-DEV_COMPOSE_FILES = -f docker-compose.yml -f docker-compose.local.yml -f docker-compose.dev.yml
-TEST_COMPOSE_FILES = -f docker-compose.yml -f docker-compose.test.yml
 LOCAL_COMPOSE_FILES = -f docker-compose.yml -f docker-compose.local.yml
+DEV_COMPOSE_FILES = -f docker-compose.yml -f docker-compose.local.yml -f docker-compose.dev.yml
 PROJECT_NAME = community-payback-assessment
 
 export COMPOSE_PROJECT_NAME=${PROJECT_NAME}
@@ -49,13 +48,6 @@ lint: ## Runs the Kotlin linter.
 
 lint-fix: ## Runs the Kotlin linter and auto-fixes.
 	docker compose ${DEV_COMPOSE_FILES} exec api gradle ktlintFormat --parallel
-
-test-up: ## Stands up a test environment.
-	docker compose pull --policy missing
-	docker compose ${TEST_COMPOSE_FILES} -p ${PROJECT_NAME}-test up --wait --force-recreate
-
-test-down: ## Stops and removes all of the test containers.
-	docker compose ${TEST_COMPOSE_FILES} -p ${PROJECT_NAME}-test down
 
 clean: ## Stops and removes all project containers. Deletes local build/cache directories.
 	docker compose down

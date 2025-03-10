@@ -6,7 +6,7 @@ generic-service:
   serviceAccountName: hmpps-assessments-service-account
 
   image:
-    repository: quay.io/hmpps/hmpps-assessments-api
+    repository: ghcr.io/ministryofjustice/hmpps-assessments-api
     tag: app_version # override at deployment time
     port: 8080
 

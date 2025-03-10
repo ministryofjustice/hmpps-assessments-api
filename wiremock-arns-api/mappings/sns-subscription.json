@@ -1,0 +1,67 @@
+{
+  "mappings": [
+    {
+      "request": {
+        "method": "POST",
+        "url": "/sns",
+        "bodyPatterns": [
+          { "matchesJsonPath": "$.UnsubscribeURL" }
+        ]
+      },
+      "response": {
+        "status": 201,
+        "jsonBody": {
+          "crn": "{{parseJson (jsonPath request.body '$.Message') 'snsMessage'}}{{jsonPath snsMessage '$.personReference.identifiers[0].value'}}",
+          "episodeId": "{{parseJson (jsonPath request.body '$.Message') 'snsMessage'}}{{jsonPath snsMessage '$.additionalInformation.episodeId'}}"
+        }
+      },
+      "serveEventListeners": [
+        {
+          "name": "webhook",
+          "parameters": {
+            "url": "http://localhost:8080/__admin/mappings",
+            "method": "POST",
+            "headers": {
+              "Content-Type": "application/json"
+            },
+            "body": "{{parseJson (jsonPath originalRequest.body '$.Message') 'snsMessage'}}{\n      \"request\": {\n        \"method\": \"GET\",\n        \"url\": \"/sns/localhost/{{jsonPath snsMessage '$.personReference.identifiers[0].value'}}\"\n      },\n      \"response\": {\n        \"status\": 200,\n        \"body\": \"<html><head><title>PDF</title></head><body><iframe style=\\\"width:100%; height: 10000px;\\\" src=\\\"http://localhost:4566/hmpps-assessments-s3/documents/{{jsonPath snsMessage '$.additionalInformation.episodeId'}}.pdf\\\" /></body></html>\"\n      }\n    }"
+          }
+        },
+        {
+          "name": "webhook",
+          "parameters": {
+            "url": "http://localhost:8080/__admin/mappings",
+            "method": "POST",
+            "headers": {
+              "Content-Type": "application/json"
+            },
+            "body": "{{parseJson (jsonPath originalRequest.body '$.Message') 'snsMessage'}}{\n      \"request\": {\n        \"method\": \"GET\",\n        \"url\": \"/sns/localstack/{{jsonPath snsMessage '$.personReference.identifiers[0].value'}}\"\n      },\n      \"response\": {\n        \"status\": 200,\n        \"body\": \"<html><head><title>PDF</title></head><body><iframe style=\\\"width:100%; height: 10000px;\\\" src=\\\"http://localstack:4566/hmpps-assessments-s3/documents/{{jsonPath snsMessage '$.additionalInformation.episodeId'}}.pdf\\\" /></body></html>\"\n      }\n    }"
+          }
+        }
+      ]
+    },
+    {
+      "request": {
+        "method": "POST",
+        "url": "/sns",
+        "bodyPatterns": [
+          { "matchesJsonPath": "$.SubscribeURL" }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "jsonBody": {
+          "subscribeUrl": "{{jsonPath request.body '$.SubscribeURL'}}"
+        }
+      },
+      "serveEventListeners": [
+        {
+          "name": "webhook",
+          "parameters": {
+            "url": "{{jsonPath originalRequest.body '$.SubscribeURL'}}"
+          }
+        }
+      ]
+    }
+  ]
+}
