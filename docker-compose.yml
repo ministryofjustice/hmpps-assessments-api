@@ -60,7 +60,7 @@ services:
       retries: 50
 
   arns-api:
-    image: rodolpheche/wiremock
+    image: wiremock/wiremock
     networks:
       - hmpps
     volumes:
@@ -70,7 +70,7 @@ services:
       - -global-response-templating
 
   integrations-api:
-    image: rodolpheche/wiremock
+    image: wiremock/wiremock
     networks:
       - hmpps
     volumes:
@@ -80,7 +80,7 @@ services:
       - -global-response-templating
 
   delius:
-    image: rodolpheche/wiremock
+    image: wiremock/wiremock
     networks:
       - hmpps
     volumes:
