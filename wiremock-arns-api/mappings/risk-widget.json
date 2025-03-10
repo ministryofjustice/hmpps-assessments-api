@@ -1,13 +1,97 @@
 {
-  "request": {
-    "method": "GET",
-    "urlPathPattern": "/risks/crn/([A-Z0-9]*)/widget"
-  },
-  "response": {
-    "headers": {
-      "Content-Type": "application/json"
+  "mappings": [
+    {
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/risks/crn/invalidNotFound/widget"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 404,
+        "jsonBody": {
+          "status": "404",
+          "developerMessage": "The offender is not found"
+        }
+      }
     },
-    "status": 200,
-    "bodyFileName": "risk-widget.json"
-  }
+    {
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/risks/crn/invalidBadRequest/widget"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 400,
+        "jsonBody": {
+          "status": "400",
+          "developerMessage": "Invalid CRN invalidBadRequest"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/risks/crn/invalidUnauthorized/widget"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 401,
+        "jsonBody": {
+          "status": "401",
+          "developerMessage": "Not authorised"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/risks/crn/invalidForbidden/widget"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 403,
+        "jsonBody": {
+          "status": "403",
+          "developerMessage": "Forbidden"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/risks/crn/invalidNotKnow/widget"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 422,
+        "jsonBody": {
+          "status": "422",
+          "developerMessage": "unprocessable"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/risks/crn/([A-Z0-9]*)/widget"
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "risk-widget.json"
+      }
+    }
+  ]
 }

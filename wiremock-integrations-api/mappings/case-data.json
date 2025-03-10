@@ -33,6 +33,136 @@
     {
       "request": {
         "method": "GET",
+        "urlPathPattern": "/case-data/(?:DX5678A|X1356|CRN1|X1355|X1346)/123456"
+      },
+      "priority": 1,
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "case-data/withPersonalContactsAndCircumstances.json",
+        "transformers": ["response-template"]
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/case-data/(?:DX5678A|X1356|CRN1|X1355|X1346)/1"
+      },
+      "priority": 1,
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "case-data/withPersonalContactsAndCircumstances.json",
+        "transformers": ["response-template"]
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/case-data/DX5678B/1"
+      },
+      "priority": 1,
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "bodyFileName": "case-data/withPersonalContactsAndCircumstances.json",
+        "transformers": ["response-template"]
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/case-data/(?:invalidNotFound|X1404)/123456"
+      },
+      "priority": 1,
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 404,
+        "jsonBody": {
+          "status": "404",
+          "developerMessage": "The case details are not found"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/case-data/invalidBadRequest/123456"
+      },
+      "priority": 1,
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 400,
+        "jsonBody": {
+          "status": "400",
+          "developerMessage": "Invalid CRN invalidBadRequest"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/case-data/invalidUnauthorized/123456"
+      },
+      "priority": 1,
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 401,
+        "jsonBody": {
+          "status": "401",
+          "developerMessage": "Not authorised"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/case-data/invalidForbidden/123456"
+      },
+      "priority": 1,
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 403,
+        "jsonBody": {
+          "status": "403",
+          "developerMessage": "Forbidden"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
+        "urlPathPattern": "/case-data/invalidNotKnow/123456"
+      },
+      "priority": 1,
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 422,
+        "jsonBody": {
+          "status": "422",
+          "developerMessage": "unprocessable"
+        }
+      }
+    },
+    {
+      "request": {
+        "method": "GET",
         "urlPathPattern": "/case-data/Y([A-Z0-9]*)/([0-9]*)"
       },
       "priority": 1,
