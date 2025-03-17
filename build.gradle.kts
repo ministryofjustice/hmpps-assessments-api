@@ -4,7 +4,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.springframework.boot.gradle.tasks.run.BootRun
 
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "7.1.3"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "7.1.4"
   kotlin("plugin.spring") version "2.1.10"
   kotlin("plugin.jpa") version "2.1.10"
   id("org.jetbrains.kotlinx.kover") version "0.9.1"
@@ -36,7 +36,7 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-aop")
   implementation("org.springframework.security:spring-security-oauth2-client")
   implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:5.3.2")
-  implementation("org.springframework.data:spring-data-redis:3.4.3")
+  implementation("org.springframework.data:spring-data-redis:3.4.4")
   implementation("redis.clients:jedis:5.2.0")
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5")
   implementation("commons-io:commons-io:2.18.0")
