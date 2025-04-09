@@ -41,7 +41,7 @@ class AssessmentReferenceDataControllerTest : IntegrationTest() {
     assertThat(section.title).isEqualTo("Diversity section")
 
     val subsections = section.contents!!
-    assertThat(subsections.size).isEqualTo(3)
+    assertThat(subsections.size).isEqualTo(4)
 
     val subsection1 = subsections[0]
     assertThat(subsection1.groupId).isEqualTo(UUID.fromString(subgroupUuid1))
@@ -69,6 +69,6 @@ class AssessmentReferenceDataControllerTest : IntegrationTest() {
       .returnResult()
       .responseBody
 
-    assertThat(assessmentGroup).hasSize(169)
+    assertThat(assessmentGroup).hasSize(186)
   }
 }
