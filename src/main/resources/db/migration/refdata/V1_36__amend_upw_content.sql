@@ -16,3 +16,6 @@ WHERE question_code = 'availability_intensive_working';
 UPDATE hmppsassessmentsschemas.question
 SET question_text = 'If the person on probation is unemployed, are they available to work Mon-Fri?'
 WHERE question_code = 'availability_availability_weekdays';
+UPDATE hmppsassessmentsschemas.question
+SET question_text = 'Mark the other adjustments section as complete?', answer_group_uuid = '8067ff6e-7400-4d1e-ae2a-87dee7e124ec'
+WHERE question_code = 'other_adjustments_complete';
