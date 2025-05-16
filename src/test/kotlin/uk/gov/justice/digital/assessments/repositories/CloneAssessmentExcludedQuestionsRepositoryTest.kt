@@ -35,6 +35,7 @@ class CloneAssessmentExcludedQuestionsRepositoryTest(
       "current_disabilities",
       "current_provisions",
       "active_disabilities",
+      "other_adjustments_complete",
     )
   }
 }
