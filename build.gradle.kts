@@ -38,7 +38,7 @@ dependencies {
   implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:5.4.5")
   implementation("org.springframework.data:spring-data-redis:3.5.0")
   implementation("redis.clients:jedis:6.0.0")
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.8")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
   implementation("commons-io:commons-io:2.19.0")
   implementation("com.zaxxer:HikariCP:6.3.0")
   implementation("com.vladmihalcea:hibernate-types-60:2.21.1")
@@ -46,7 +46,7 @@ dependencies {
   implementation("com.google.code.gson:gson:2.13.1")
   implementation("com.google.guava:guava:33.4.8-jre")
   implementation("org.apache.commons:commons-lang3:3.17.0")
-  implementation("org.postgresql:postgresql:42.7.6")
+  implementation("org.postgresql:postgresql:42.7.7")
   implementation("org.flywaydb:flyway-core")
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
   implementation("net.logstash.logback:logstash-logback-encoder:8.1")
@@ -60,7 +60,7 @@ dependencies {
   testImplementation("com.ninja-squad:springmockk:4.0.2")
   testImplementation("io.jsonwebtoken:jjwt-impl:0.12.6")
   testImplementation("io.jsonwebtoken:jjwt-jackson:0.12.6")
-  testImplementation("org.wiremock:wiremock-standalone:3.13.0")
+  testImplementation("org.wiremock:wiremock-standalone:3.13.1")
 }
 
 kotlin {
