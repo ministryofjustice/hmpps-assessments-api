@@ -2,6 +2,11 @@ name: Validate
 
 on:
   workflow_call:
+    inputs:
+      app_version:
+        description: App version
+        required: true
+        type: string
 
 permissions:
   contents: read
