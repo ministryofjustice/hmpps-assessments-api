@@ -13,11 +13,14 @@ permissions:
   actions: write
 
 jobs:
+  validate:
+    uses: ./.github/workflows/validate.yml
+
   helm_lint:
     name: Helm lint
     strategy:
       matrix:
-        environments: ['dev', 'preprod', 'prod']
+        environments: [ 'dev', 'preprod', 'prod' ]
     uses: ministryofjustice/hmpps-github-actions/.github/workflows/test_helm_lint.yml@v2
     secrets: inherit
     with:
@@ -35,12 +38,6 @@ jobs:
       docker_multiplatform: false
       upload_image_artifact: true
       image_artifact_retention_days: 2
-
-  validate:
-    needs: build_docker
-    uses: ./.github/workflows/validate.yml
-    with:
-      app_version: ${{ needs.build_docker.outputs.app_version }}
 
   e2e_test:
     needs: build_docker
