@@ -13,9 +13,6 @@ permissions:
   actions: write
 
 jobs:
-  validate:
-    uses: ./.github/workflows/validate.yml
-
   helm_lint:
     name: Helm lint
     strategy:
@@ -38,6 +35,9 @@ jobs:
       docker_multiplatform: false
       upload_image_artifact: true
       image_artifact_retention_days: 2
+
+  validate:
+    uses: ./.github/workflows/validate.yml
 
   e2e_test:
     needs: build_docker
