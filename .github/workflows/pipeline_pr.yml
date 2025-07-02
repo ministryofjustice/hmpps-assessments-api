@@ -37,7 +37,10 @@ jobs:
       image_artifact_retention_days: 2
 
   validate:
+    needs: build_docker
     uses: ./.github/workflows/validate.yml
+    with:
+      app_version: ${{ needs.build_docker.outputs.app_version }}
 
   e2e_test:
     needs: build_docker
