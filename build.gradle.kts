@@ -4,7 +4,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.springframework.boot.gradle.tasks.run.BootRun
 
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "8.3.0"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "8.3.1"
   kotlin("plugin.spring") version "2.2.0"
   kotlin("plugin.jpa") version "2.2.0"
   id("org.jetbrains.kotlinx.kover") version "0.9.1"
@@ -35,7 +35,7 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-cache")
   implementation("org.springframework.boot:spring-boot-starter-aop")
   implementation("org.springframework.security:spring-security-oauth2-client")
-  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:5.4.6")
+  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:5.4.7")
   implementation("org.springframework.data:spring-data-redis:3.5.1")
   implementation("redis.clients:jedis:6.0.0")
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
@@ -45,7 +45,7 @@ dependencies {
   implementation("com.beust:klaxon:5.6")
   implementation("com.google.code.gson:gson:2.13.1")
   implementation("com.google.guava:guava:33.4.8-jre")
-  implementation("org.apache.commons:commons-lang3:3.17.0")
+  implementation("org.apache.commons:commons-lang3:3.18.0")
   implementation("org.postgresql:postgresql:42.7.7")
   implementation("org.flywaydb:flyway-core")
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
