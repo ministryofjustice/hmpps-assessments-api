@@ -33,7 +33,7 @@ class AssessRisksAndNeedsApiRestClient {
       .onStatus({ it.is4xxClientError }) {
         handle4xxError(
           it,
-          HttpMethod.POST,
+          HttpMethod.GET,
           path,
           ExternalService.ASSESS_RISKS_AND_NEEDS_API,
         )
@@ -41,7 +41,7 @@ class AssessRisksAndNeedsApiRestClient {
       .onStatus({ it.is5xxServerError }) {
         handle5xxError(
           "Failed to fetch ROSH risk summary for crn $crn",
-          HttpMethod.POST,
+          HttpMethod.GET,
           path,
           ExternalService.ASSESS_RISKS_AND_NEEDS_API,
         )

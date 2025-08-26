@@ -11,8 +11,7 @@
         },
         "status": 404,
         "jsonBody": {
-          "status": "404",
-          "developerMessage": "The offender is not found"
+          "status": "404"
         }
       }
     },
