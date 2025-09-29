@@ -45,7 +45,7 @@ dependencies {
   implementation("com.beust:klaxon:5.6")
   implementation("com.google.code.gson:gson:2.13.2")
   implementation("com.google.guava:guava:33.5.0-jre")
-  implementation("org.apache.commons:commons-lang3:3.18.0")
+  implementation("org.apache.commons:commons-lang3:3.19.0")
   implementation("org.postgresql:postgresql:42.7.8")
   implementation("org.flywaydb:flyway-core")
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
