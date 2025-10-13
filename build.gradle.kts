@@ -37,7 +37,7 @@ dependencies {
   implementation("org.springframework.security:spring-security-oauth2-client")
   implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:5.5.0")
   implementation("org.springframework.data:spring-data-redis:3.5.4")
-  implementation("redis.clients:jedis:6.2.0")
+  implementation("redis.clients:jedis:7.0.0")
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.13")
   implementation("commons-io:commons-io:2.20.0")
   implementation("com.zaxxer:HikariCP:7.0.2")
