@@ -33,7 +33,7 @@ services:
       - DELIUS_ENDPOINT_URL=http://delius:8080
 
   gotenberg:
-    image: thecodingmachine/gotenberg:7
+    image: thecodingmachine/gotenberg:8
     restart: always
     networks:
       - hmpps
