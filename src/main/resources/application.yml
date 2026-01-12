@@ -33,11 +33,15 @@ spring:
           issuer-uri: ${oauth.endpoint.url:http://localhost:9090/auth}/issuer
   hmppsassessmentsapi:
     datasource:
-      url: 'jdbc:postgresql://${database.endpoint:localhost:5432}/${database.name:postgres}?currentSchema=${database.schema.name:hmppsassessmentsapi}&user=${database.username:root}&password=${database.password:dev}&stringtype=unspecified'
+      url: 'jdbc:postgresql://${database.endpoint:localhost:5432}/${database.name:postgres}?currentSchema=${database.schema.name:hmppsassessmentsapi}&stringtype=unspecified'
+      username: ${database.username:root}
+      password: ${database.password:dev}
       type: com.zaxxer.hikari.HikariDataSource
   hmppsassessmentsschemas:
     datasource:
-      url: 'jdbc:postgresql://${database.endpoint:localhost:5432}/${database.name:postgres}?currentSchema=${database.schema.name:hmppsassessmentsschemas}&user=${database.username:root}&password=${database.password:dev}&stringtype=unspecified'
+      url: 'jdbc:postgresql://${database.endpoint:localhost:5432}/${database.name:postgres}?currentSchema=${database.schema.name:hmppsassessmentsschemas}&stringtype=unspecified'
+      username: ${database.username:root}
+      password: ${database.password:dev}
       type: com.zaxxer.hikari.HikariDataSource
   jpa:
     hibernate:
