@@ -67,7 +67,7 @@ save-logs: ## Saves docker container logs in a directory defined by OUTPUT_LOGS_
 
 db-port-forward-pod: ## Creates a DB port-forwarding pod in your currently active Kubernetes context
 	kubectl delete pod --ignore-not-found=true port-forward-pod
-	INSTANCE_ADDRESS=$$(kubectl get secret hmpps-assessments-api-rds-instance -o json | jq -r '.data.rds_instance_address' | base64 --decode) \
+	INSTANCE_ADDRESS=$$(kubectl get secret hmpps-assessments-rds-instance-output -o json | jq -r '.data.rds_instance_address' | base64 --decode) \
 	; kubectl run port-forward-pod --image=ministryofjustice/port-forward --port=5432 --env="REMOTE_HOST=$$INSTANCE_ADDRESS" --env="LOCAL_PORT=5432" --env="REMOTE_PORT=5432"
 
 DB_PORT_FORWARD_PORT=5434
