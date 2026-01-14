@@ -60,6 +60,7 @@ jobs:
         uses: cypress-io/github-action@v6.10.8
         with:
           working-directory: e2e-test-ui
+          install-command: npm run setup
           publish-summary: false
           browser: chrome
         env:
