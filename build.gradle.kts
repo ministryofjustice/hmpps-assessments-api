@@ -38,7 +38,7 @@ dependencies {
   implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:5.6.3")
   implementation("org.springframework.data:spring-data-redis:4.0.2")
   implementation("redis.clients:jedis:7.2.1")
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.15")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.1")
   implementation("commons-io:commons-io:2.21.0")
   implementation("com.zaxxer:HikariCP:7.0.2")
   implementation("com.vladmihalcea:hibernate-types-60:2.21.1")
