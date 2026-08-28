@@ -22,11 +22,15 @@ services:
     depends_on:
       - delius
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://hmpps-auth:9090/auth/health" ]
+      # The hmpps-auth image no longer ships curl, so probe over bash's /dev/tcp instead
+      test: [ "CMD", "bash", "-c", "exec 3<>/dev/tcp/localhost/9090 && printf 'GET /auth/health HTTP/1.1\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3 && read -u 3 line && [[ \"$$line\" == *' 200'* ]]" ]
       interval: 5s
       retries: 60
     environment:
       - SERVER_PORT=9090
+      # The reworked hmpps-auth mints a fixed issuer from auth.endpoint.url (default localhost),
+      # which the API rejects - point it at the in-network hostname instead
+      - AUTH_ENDPOINT_URL=http://hmpps-auth:9090/auth
       - SPRING_PROFILES_ACTIVE=dev,delius
       - APPLICATION_AUTHENTICATION_UI_ALLOWLIST=0.0.0.0/0
       - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY=DEBUG
@@ -39,7 +43,7 @@ services:
       - hmpps
 
   localstack:
-    image: localstack/localstack:latest
+    image: localstack/localstack:4
     networks:
       - hmpps
     environment:
