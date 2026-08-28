@@ -28,6 +28,9 @@ services:
       retries: 60
     environment:
       - SERVER_PORT=9090
+      # The reworked hmpps-auth mints a fixed issuer from auth.endpoint.url (default localhost),
+      # which the API rejects - point it at the in-network hostname instead
+      - AUTH_ENDPOINT_URL=http://hmpps-auth:9090/auth
       - SPRING_PROFILES_ACTIVE=dev,delius
       - APPLICATION_AUTHENTICATION_UI_ALLOWLIST=0.0.0.0/0
       - LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_SECURITY=DEBUG
