@@ -39,7 +39,7 @@ services:
       - hmpps
 
   localstack:
-    image: localstack/localstack:latest
+    image: localstack/localstack:4
     networks:
       - hmpps
     environment:
