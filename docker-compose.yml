@@ -11,7 +11,7 @@ services:
       - /var/lib/postgresql
 
   redis:
-    image: "redis:6.2.21-alpine"
+    image: "redis:6.2.24-alpine"
     networks:
       - hmpps
 
