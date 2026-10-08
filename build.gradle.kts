@@ -5,9 +5,9 @@ import org.springframework.boot.gradle.tasks.run.BootRun
 
 plugins {
   id("uk.gov.justice.hmpps.gradle-spring-boot") version "9.7.1"
-  kotlin("plugin.spring") version "2.4.10"
-  kotlin("plugin.jpa") version "2.4.10"
-  id("org.jetbrains.kotlinx.kover") version "0.9.9"
+  kotlin("plugin.spring") version "2.4.21"
+  kotlin("plugin.jpa") version "2.4.21"
+  id("org.jetbrains.kotlinx.kover") version "0.9.11"
 }
 
 allOpen {
@@ -38,15 +38,15 @@ dependencies {
   implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:5.6.3")
   implementation("org.springframework.data:spring-data-redis:4.1.1")
   implementation("redis.clients:jedis:7.5.3")
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.9.0")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.9.1")
   implementation("commons-io:commons-io:2.22.0")
   implementation("com.zaxxer:HikariCP:7.1.0")
   implementation("com.vladmihalcea:hibernate-types-60:2.21.1")
   implementation("com.beust:klaxon:5.6")
   implementation("com.google.code.gson:gson:2.14.0")
-  implementation("com.google.guava:guava:33.7.1-jre")
-  implementation("org.apache.commons:commons-lang3:3.20.0")
-  implementation("org.postgresql:postgresql:42.7.13")
+  implementation("com.google.guava:guava:33.7.2-jre")
+  implementation("org.apache.commons:commons-lang3:3.21.0")
+  implementation("org.postgresql:postgresql:42.7.14")
   implementation("org.flywaydb:flyway-core")
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
   implementation("net.logstash.logback:logstash-logback-encoder:9.0")
