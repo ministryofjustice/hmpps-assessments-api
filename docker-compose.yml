@@ -136,7 +136,8 @@ services:
     networks:
       - hmpps
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://community-payback-assessment-ui:3000/health"]
+      # The UI runtime image has no curl, so probe with Node's built-in fetch instead
+      test: ["CMD", "node", "-e", "fetch('http://community-payback-assessment-ui:3000/health').then((res) => process.exit(res.ok ? 0 : 1)).catch(() => process.exit(1))"]
       interval: 5s
       retries: 60
     environment:
