@@ -4,6 +4,7 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient
 import org.springframework.http.HttpHeaders
 import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.mock.web.MockHttpSession
@@ -25,6 +26,7 @@ import java.time.Duration
   webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
 )
 @ActiveProfiles(profiles = ["test"])
+@AutoConfigureWebTestClient
 abstract class IntegrationTest {
 
   var session: MockHttpSession? = null
@@ -65,9 +67,10 @@ abstract class IntegrationTest {
   }
 
   fun startRequest() {
-    request = MockHttpServletRequest()
-    request!!.session = session
-    RequestContextHolder.setRequestAttributes(ServletRequestAttributes(request))
+    val newRequest = MockHttpServletRequest()
+    session?.let { newRequest.setSession(it) }
+    request = newRequest
+    RequestContextHolder.setRequestAttributes(ServletRequestAttributes(newRequest))
   }
 
   fun endRequest() {

@@ -15,7 +15,7 @@ fun handle4xxError(
   method: HttpMethod,
   url: String,
   client: ExternalService,
-): Mono<out Throwable?>? = when (clientResponse.statusCode()) {
+): Mono<out Throwable> = when (clientResponse.statusCode()) {
   HttpStatus.BAD_REQUEST -> {
     clientResponse.bodyToMono(ApiErrorResponse::class.java)
       .map { error -> ExternalApiInvalidRequestException(error.developerMessage, method, url, client) }
@@ -40,7 +40,7 @@ fun handle5xxError(
   method: HttpMethod,
   path: String,
   service: ExternalService,
-): Mono<out Throwable?>? = throw ExternalApiUnknownException(
+): Mono<out Throwable> = throw ExternalApiUnknownException(
   message,
   method,
   path,
@@ -52,7 +52,7 @@ fun handleError(
   method: HttpMethod,
   url: String,
   client: ExternalService,
-): Mono<out Throwable?>? {
+): Mono<out Throwable> {
   val httpStatus = clientResponse.statusCode()
   return clientResponse.bodyToMono(String::class.java).map { error ->
     ExternalApiUnknownException(error, method, url, client)

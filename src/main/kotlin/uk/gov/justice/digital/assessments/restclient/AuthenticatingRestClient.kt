@@ -11,7 +11,7 @@ open class AuthenticatingRestClient(
   private val oauthClient: String,
   private val disableAuth: Boolean,
 ) {
-  fun get(path: String, queryParams: MultiValueMap<String, String>? = MultiValueMapAdapter(emptyMap())): WebClient.RequestHeadersSpec<*> {
+  fun get(path: String, queryParams: MultiValueMap<String, String> = MultiValueMapAdapter(emptyMap())): WebClient.RequestHeadersSpec<*> {
     val request = webClient
       .get()
       .uri { uriBuilder ->

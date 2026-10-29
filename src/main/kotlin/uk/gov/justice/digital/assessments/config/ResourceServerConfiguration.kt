@@ -14,10 +14,11 @@ import org.springframework.security.web.SecurityFilterChain
 class ResourceServerConfiguration {
   @Bean
   fun filterChain(http: HttpSecurity): SecurityFilterChain {
-    http.headers().frameOptions().sameOrigin()
-      .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+    http
+      .headers { it.frameOptions { frameOptions -> frameOptions.sameOrigin() } }
+      .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
       // Can't have CSRF protection as requires session
-      .and().csrf().disable()
+      .csrf { it.disable() }
       .authorizeHttpRequests {
         it.requestMatchers(
           "/webjars/**", "/favicon.ico", "/csrf",
@@ -27,7 +28,8 @@ class ResourceServerConfiguration {
           .permitAll()
           .anyRequest()
           .authenticated()
-      }.oauth2ResourceServer().jwt().jwtAuthenticationConverter(AuthAwareTokenConverter())
+      }
+      .oauth2ResourceServer { it.jwt { jwt -> jwt.jwtAuthenticationConverter(AuthAwareTokenConverter()) } }
 
     return http.build()
   }

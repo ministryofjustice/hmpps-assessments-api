@@ -1,7 +1,7 @@
 package uk.gov.justice.digital.assessments.restclient
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.stereotype.Service
+import tools.jackson.databind.ObjectMapper
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
 import uk.gov.justice.digital.assessments.services.AuditService
 import uk.gov.justice.hmpps.sqs.HmppsQueueService

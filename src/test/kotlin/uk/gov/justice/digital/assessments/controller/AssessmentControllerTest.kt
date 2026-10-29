@@ -4,7 +4,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
+import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient
 import org.springframework.http.MediaType
 import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.context.jdbc.SqlConfig
@@ -84,7 +84,7 @@ class AssessmentControllerTest : IntegrationTest() {
         .responseBody
 
       // then
-      assertThat(assessmentEpisode.episodeUuid).isEqualTo(UUID.fromString("f3569440-efd5-4289-8fdd-4560360e5279"))
+      assertThat(assessmentEpisode?.episodeUuid).isEqualTo(UUID.fromString("f3569440-efd5-4289-8fdd-4560360e5279"))
     }
 
     @Test

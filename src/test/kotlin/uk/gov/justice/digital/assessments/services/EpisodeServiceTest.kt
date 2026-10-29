@@ -1,12 +1,6 @@
 package uk.gov.justice.digital.assessments.services
 
 import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.mockk.every
 import io.mockk.junit5.MockKExtension
 import io.mockk.justRun
@@ -18,6 +12,11 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import tools.jackson.databind.DeserializationFeature
+import tools.jackson.databind.ObjectMapper
+import tools.jackson.databind.cfg.DateTimeFeature
+import tools.jackson.databind.json.JsonMapper
+import tools.jackson.module.kotlin.KotlinModule
 import uk.gov.justice.digital.assessments.api.answers.EmergencyContactDetailsAnswerDto
 import uk.gov.justice.digital.assessments.api.answers.GPDetailsAnswerDto
 import uk.gov.justice.digital.assessments.api.groups.GroupQuestionDto
@@ -77,15 +76,13 @@ class EpisodeServiceTest {
     objectMapper = objectMapper()
   }
 
-  private fun objectMapper(): ObjectMapper = ObjectMapper()
-    .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-    .configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true)
-    .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
-    .setSerializationInclusion(JsonInclude.Include.NON_NULL)
-    .setSerializationInclusion(JsonInclude.Include.NON_ABSENT)
-    .registerModule(Jdk8Module())
-    .registerModule(JavaTimeModule())
-    .registerKotlinModule()
+  private fun objectMapper(): ObjectMapper = JsonMapper.builder()
+    .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+    .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+    .disable(DateTimeFeature.WRITE_DATES_AS_TIMESTAMPS)
+    .changeDefaultPropertyInclusion { JsonInclude.Value.construct(JsonInclude.Include.NON_ABSENT, JsonInclude.Include.USE_DEFAULTS) }
+    .addModule(KotlinModule.Builder().build())
+    .build()
 
   private fun createEpisode(assessmentType: AssessmentType): AssessmentEpisodeEntity = AssessmentEpisodeEntity(
     episodeId = 1,

@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.assessments.services
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import io.mockk.every
 import io.mockk.junit5.MockKExtension
 import io.mockk.justRun
@@ -12,6 +11,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.extension.ExtendWith
+import tools.jackson.databind.ObjectMapper
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
 import uk.gov.justice.digital.assessments.restclient.AuditClient
 import uk.gov.justice.digital.assessments.restclient.AuditDetail

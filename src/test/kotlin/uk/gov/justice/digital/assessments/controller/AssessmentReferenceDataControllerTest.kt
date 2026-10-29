@@ -2,7 +2,7 @@ package uk.gov.justice.digital.assessments.controller
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
+import org.springframework.boot.webtestclient.autoconfigure.AutoConfigureWebTestClient
 import org.springframework.test.web.reactive.server.expectBody
 import uk.gov.justice.digital.assessments.api.groups.GroupContentDto
 import uk.gov.justice.digital.assessments.api.groups.GroupSectionsDto

@@ -63,7 +63,7 @@ class AssessmentUpdateServiceTest {
         ),
       )
       justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
-      every { assessmentRepository.save(any()) } returns null
+      every { assessmentRepository.save(any()) } answers { firstArg() }
       val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
       every { authorService.getOrCreateAuthor() } returns author
 
@@ -94,7 +94,7 @@ class AssessmentUpdateServiceTest {
         ),
       )
       justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
-      every { assessmentRepository.save(any()) } returns null
+      every { assessmentRepository.save(any()) } answers { firstArg() }
 
       val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
       every { authorService.getOrCreateAuthor() } returns author
@@ -121,7 +121,7 @@ class AssessmentUpdateServiceTest {
         ),
       )
       justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
-      every { assessmentRepository.save(any()) } returns null
+      every { assessmentRepository.save(any()) } answers { firstArg() }
       val author = AuthorEntity(authorUuid = UUID.randomUUID(), userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
       every { authorService.getOrCreateAuthor() } returns author
 
@@ -151,7 +151,7 @@ class AssessmentUpdateServiceTest {
         ),
       )
       justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
-      every { assessmentRepository.save(any()) } returns null
+      every { assessmentRepository.save(any()) } answers { firstArg() }
       val author = AuthorEntity(authorUuid = UUID.randomUUID(), userId = "2", userName = "USER2", userAuthSource = "source", userFullName = "full name 2")
       every { authorService.getOrCreateAuthor() } returns author
 
@@ -193,7 +193,7 @@ class AssessmentUpdateServiceTest {
         ),
       )
       justRun { auditService.createAuditEvent(any(), any(), any(), any(), any(), any()) }
-      every { assessmentRepository.save(any()) } returns null
+      every { assessmentRepository.save(any()) } answers { firstArg() }
 
       val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
       every { authorService.getOrCreateAuthor() } returns author

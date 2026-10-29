@@ -1,20 +1,16 @@
 package uk.gov.justice.digital.assessments.config
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo
-import com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.autoconfigure.cache.RedisCacheManagerBuilderCustomizer
+import org.springframework.boot.cache.autoconfigure.RedisCacheManagerBuilderCustomizer
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.redis.cache.RedisCacheConfiguration
 import org.springframework.data.redis.cache.RedisCacheManager.RedisCacheManagerBuilder
-import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer
+import org.springframework.data.redis.serializer.GenericJacksonJsonRedisSerializer
 import org.springframework.data.redis.serializer.RedisSerializationContext.SerializationPair
 import org.springframework.data.redis.serializer.StringRedisSerializer
+import tools.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES
+import tools.jackson.module.kotlin.KotlinModule
 import uk.gov.justice.digital.assessments.config.CacheConstants.ASSESSMENT_CACHE_KEY
 import uk.gov.justice.digital.assessments.config.CacheConstants.ASSESSMENT_SUMMARY_CACHE_KEY
 import uk.gov.justice.digital.assessments.config.CacheConstants.LIST_QUESTION_GROUPS_CACHE_KEY
@@ -32,19 +28,20 @@ class CacheConfiguration {
   @Value("\${cache.ttlMinutes.default}")
   var defaultCacheTtlMinutes: Long = 5
 
-  private fun objectMapper(): ObjectMapper = ObjectMapper()
-    .registerModule(Jdk8Module())
-    .registerModule(JavaTimeModule())
-    .registerKotlinModule()
-    .apply {
-      activateDefaultTyping(polymorphicTypeValidator, ObjectMapper.DefaultTyping.EVERYTHING, JsonTypeInfo.As.PROPERTY)
-    }
-    .configure(FAIL_ON_UNKNOWN_PROPERTIES, false)
+  // Cached values are read back as Any, so type info is written for every value. This matches the
+  // Jackson 2 setup it replaces, which also accepted any type when reading.
+  private fun valueSerializer(): GenericJacksonJsonRedisSerializer = GenericJacksonJsonRedisSerializer.builder()
+    .enableUnsafeDefaultTyping()
+    .customize { it.addModule(KotlinModule.Builder().build()).disable(FAIL_ON_UNKNOWN_PROPERTIES) }
+    .build()
 
+  // Entries written before the move to Jackson 3 use a different format, so the "v2" prefix makes
+  // the new build ignore them; the old entries expire on their normal TTL.
   private fun getDefaultCacheConfiguration(): RedisCacheConfiguration = RedisCacheConfiguration
     .defaultCacheConfig()
+    .prefixCacheNameWith("v2:")
     .serializeKeysWith(SerializationPair.fromSerializer(StringRedisSerializer()))
-    .serializeValuesWith(SerializationPair.fromSerializer(GenericJackson2JsonRedisSerializer(objectMapper())))
+    .serializeValuesWith(SerializationPair.fromSerializer(valueSerializer()))
 
   @Bean
   fun defaultRedisCacheConfiguration(): RedisCacheConfiguration = getDefaultCacheConfiguration()
