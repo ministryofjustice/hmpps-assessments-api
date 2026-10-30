@@ -40,7 +40,7 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-data-redis") {
     exclude(group = "io.lettuce", module = "lettuce-core")
   }
-  implementation("redis.clients:jedis:7.5.3")
+  implementation("redis.clients:jedis:8.0.2")
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.2.0")
   implementation("tools.jackson.module:jackson-module-kotlin")
   implementation("commons-io:commons-io:2.22.0")
