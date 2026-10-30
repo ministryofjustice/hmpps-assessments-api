@@ -104,7 +104,7 @@ class AssessmentService(
     offenderService.validateUserAccess(crn)
     val caseDetails = offenderService.getDeliusCaseDetails(crn, eventId)
     val arnAssessment = getOrCreateAssessment(crn, eventId, OffenderDto.from(caseDetails, eventId))
-    val subject = subjectRepository.save(arnAssessment.subject?.copy())
+    val subject = arnAssessment.subject?.copy()?.let { subjectRepository.save(it) }
       ?: throw EntityNotFoundException("Unable to save null subject with crn: $crn")
     createPrePopulatedEpisode(
       arnAssessment,

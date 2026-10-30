@@ -75,7 +75,7 @@ class WebClientConfig {
     clientRegistrationId: String? = null,
   ): WebClient {
     val oauth2Client = ServletOAuth2AuthorizedClientExchangeFilterFunction(authorizedClientManager)
-    clientRegistrationId.let {
+    clientRegistrationId?.let {
       oauth2Client.setDefaultClientRegistrationId(it)
     }
     val httpClient = HttpClient.create()
@@ -98,8 +98,8 @@ class WebClientConfig {
 
   @Bean
   fun authorizedClientManager(
-    clientRegistrationRepository: ClientRegistrationRepository?,
-    authorizedClientRepository: OAuth2AuthorizedClientRepository?,
+    clientRegistrationRepository: ClientRegistrationRepository,
+    authorizedClientRepository: OAuth2AuthorizedClientRepository,
   ): OAuth2AuthorizedClientManager {
     val authorizedClientProvider = OAuth2AuthorizedClientProviderBuilder.builder()
       .clientCredentials()

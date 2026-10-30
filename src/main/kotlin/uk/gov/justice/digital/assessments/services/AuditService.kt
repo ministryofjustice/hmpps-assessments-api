@@ -1,10 +1,10 @@
 package uk.gov.justice.digital.assessments.services
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
+import tools.jackson.databind.ObjectMapper
 import uk.gov.justice.digital.assessments.jpa.entities.assessments.AuthorEntity
 import uk.gov.justice.digital.assessments.restclient.AuditClient
 import uk.gov.justice.digital.assessments.restclient.AuditDetail

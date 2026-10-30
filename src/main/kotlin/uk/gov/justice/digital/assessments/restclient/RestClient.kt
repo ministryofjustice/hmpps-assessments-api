@@ -5,6 +5,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken
 import org.springframework.util.MultiValueMap
+import org.springframework.util.MultiValueMapAdapter
 import org.springframework.web.reactive.function.client.WebClient
 import java.nio.charset.StandardCharsets
 
@@ -14,7 +15,7 @@ class RestClient(
 ) {
   fun get(
     uri: String,
-    queryParams: MultiValueMap<String, String>? = null,
+    queryParams: MultiValueMap<String, String> = MultiValueMapAdapter(emptyMap()),
   ): WebClient.RequestHeadersSpec<*> {
     val spec = webClient
       .get()
@@ -30,7 +31,7 @@ class RestClient(
       .withAuth(SecurityContextHolder.getContext().authentication as JwtAuthenticationToken)
   }
 
-  fun <T> post(
+  fun <T : Any> post(
     uri: String,
     body: T,
   ): WebClient.RequestHeadersSpec<*> {

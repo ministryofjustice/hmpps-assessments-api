@@ -1,19 +1,15 @@
 package uk.gov.justice.digital.assessments.config
 
 import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.jackson.autoconfigure.JsonMapperBuilderCustomizer
 import org.springframework.cache.annotation.EnableCaching
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Primary
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
+import tools.jackson.databind.DeserializationFeature
+import tools.jackson.databind.cfg.DateTimeFeature
 import uk.gov.justice.digital.assessments.utils.RequestData
 
 @Configuration
@@ -23,17 +19,15 @@ class SpringConfiguration : WebMvcConfigurer {
   @Value("\${logging.uris.exclude.regex}")
   private val excludedLogUrls: String? = null
 
-  @Bean(name = ["globalObjectMapper"])
-  @Primary
-  fun objectMapper(): ObjectMapper = ObjectMapper()
-    .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
-    .configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true)
-    .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
-    .setSerializationInclusion(JsonInclude.Include.NON_NULL)
-    .setSerializationInclusion(JsonInclude.Include.NON_ABSENT)
-    .registerModule(Jdk8Module())
-    .registerModule(JavaTimeModule())
-    .registerKotlinModule()
+  // Applied to the JsonMapper Spring Boot builds, which serves HTTP requests and responses and is injected elsewhere
+  @Bean
+  fun jsonMapperCustomizer(): JsonMapperBuilderCustomizer = JsonMapperBuilderCustomizer {
+    it
+      .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+      .enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
+      .disable(DateTimeFeature.WRITE_DATES_AS_TIMESTAMPS)
+      .changeDefaultPropertyInclusion { JsonInclude.Value.construct(JsonInclude.Include.NON_ABSENT, JsonInclude.Include.USE_DEFAULTS) }
+  }
 
   @Bean
   fun createRequestData(): RequestData = RequestData(excludedLogUrls)

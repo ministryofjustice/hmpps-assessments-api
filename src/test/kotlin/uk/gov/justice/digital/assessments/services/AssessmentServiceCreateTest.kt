@@ -95,7 +95,7 @@ class AssessmentServiceCreateTest {
       dateOfBirth = LocalDate.of(1989, 1, 1),
       createdDate = LocalDateTime.now(),
     )
-    every { assessmentRepository.save(any()) } returns AssessmentEntity(assessmentId = assessmentId)
+    every { assessmentRepository.save(any()) } returns AssessmentEntity(assessmentId = assessmentId, subject = SubjectEntity(crn = crn, dateOfBirth = LocalDate.of(1989, 1, 1)))
     val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
     every { authorService.getOrCreateAuthor() } returns author
 
@@ -114,7 +114,7 @@ class AssessmentServiceCreateTest {
     // Given
     every { subjectRepository.findByCrn(crn) } returns
       SubjectEntity(
-        assessments = listOf(AssessmentEntity(assessmentId = assessmentId, assessmentUuid = assessmentUuid)),
+        assessments = listOf(AssessmentEntity(assessmentId = assessmentId, assessmentUuid = assessmentUuid, subject = SubjectEntity(crn = crn, dateOfBirth = LocalDate.of(1989, 1, 1)))),
         dateOfBirth = LocalDate.of(1989, 1, 1),
         crn = crn,
       )
@@ -146,7 +146,7 @@ class AssessmentServiceCreateTest {
     val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
     every { authorService.getOrCreateAuthor() } returns author
 
-    val assessment = AssessmentEntity(assessmentId = assessmentId, assessmentUuid = assessmentUuid)
+    val assessment = AssessmentEntity(assessmentId = assessmentId, assessmentUuid = assessmentUuid, subject = SubjectEntity(crn = crn, dateOfBirth = LocalDate.of(1989, 1, 1)))
     assessment.newEpisode("reason", assessmentType, null, author)
 
     every { subjectRepository.findByCrn(crn) } returns
@@ -224,7 +224,7 @@ class AssessmentServiceCreateTest {
       dateOfBirth = LocalDate.of(1989, 1, 1),
       createdDate = LocalDateTime.now(),
     )
-    every { assessmentRepository.save(any()) } returns AssessmentEntity(assessmentId = assessmentId)
+    every { assessmentRepository.save(any()) } returns AssessmentEntity(assessmentId = assessmentId, subject = SubjectEntity(crn = crn, dateOfBirth = LocalDate.of(1989, 1, 1)))
     val author = AuthorEntity(userId = "1", userName = "USER", userAuthSource = "source", userFullName = "full name")
     every { authorService.getOrCreateAuthor() } returns author
 
@@ -263,6 +263,7 @@ class AssessmentServiceCreateTest {
     val assessment = AssessmentEntity(
       assessmentId = assessmentId,
       assessmentUuid = assessmentUuid,
+      subject = SubjectEntity(crn = crn, dateOfBirth = LocalDate.of(1989, 1, 1)),
     )
     assessment.newEpisode("reason", assessmentType, null, author)
 

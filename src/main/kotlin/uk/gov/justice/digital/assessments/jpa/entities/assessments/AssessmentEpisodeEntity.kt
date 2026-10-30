@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.assessments.jpa.entities.assessments
 
-import com.vladmihalcea.hibernate.type.json.JsonType
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -12,7 +11,8 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
-import org.hibernate.annotations.Type
+import org.hibernate.annotations.JdbcTypeCode
+import org.hibernate.type.SqlTypes
 import uk.gov.justice.digital.assessments.api.answers.CarerCommitmentsAnswerDto
 import uk.gov.justice.digital.assessments.api.answers.DisabilityAnswerDto
 import uk.gov.justice.digital.assessments.api.answers.EmergencyContactDetailsAnswerDto
@@ -60,7 +60,7 @@ data class AssessmentEpisodeEntity(
   @JoinColumn(name = "offence_uuid", referencedColumnName = "offence_uuid")
   val offence: OffenceEntity? = null,
 
-  @Type(JsonType::class)
+  @JdbcTypeCode(SqlTypes.JSON)
   @Column(name = "answers", columnDefinition = "jsonb")
   var answers: Answers = mutableMapOf(),
 
