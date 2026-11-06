@@ -31,7 +31,7 @@ jobs:
       timings-1: ${{ steps.timings.outputs.t1 }}
       timings-2: ${{ steps.timings.outputs.t2 }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Download docker image
         uses: actions/download-artifact@v8
@@ -43,7 +43,7 @@ jobs:
         run: docker load --input ${{ runner.temp }}/build_image.tar
 
       - name: Clone UI repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: ministryofjustice/hmpps-risk-assessment-ui
           path: e2e-test-ui
