@@ -35,7 +35,7 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-webflux")
   implementation("org.springframework.boot:spring-boot-starter-cache")
   implementation("org.springframework.boot:spring-boot-starter-aspectj")
-  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:7.4.1")
+  implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:7.6.0")
   // Keep Jedis as the Redis client rather than switching to the starter's default (Lettuce)
   implementation("org.springframework.boot:spring-boot-starter-data-redis") {
     exclude(group = "io.lettuce", module = "lettuce-core")
@@ -48,7 +48,7 @@ dependencies {
   implementation("com.beust:klaxon:5.6")
   implementation("com.google.code.gson:gson:2.15.0")
   implementation("com.google.guava:guava:33.7.2-jre")
-  implementation("org.apache.commons:commons-lang3:3.21.0")
+  implementation("org.apache.commons:commons-lang3:3.22.0")
   implementation("org.postgresql:postgresql:42.7.14")
   implementation("org.springframework.boot:spring-boot-starter-flyway")
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
