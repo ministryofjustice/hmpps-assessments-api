@@ -1,4 +1,4 @@
-FROM gradle:9-jdk21-alpine AS builder
+FROM gradle:9-jdk25-alpine AS builder
 
 FROM ghcr.io/ministryofjustice/hmpps-eclipse-temurin:25-jre-jammy AS runtime
 
