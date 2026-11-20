@@ -1,10 +1,12 @@
 package uk.gov.justice.digital.assessments
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 import org.springframework.boot.flyway.autoconfigure.FlywayAutoConfiguration
 import org.springframework.boot.runApplication
 
 @SpringBootApplication(scanBasePackages = ["uk.gov.justice.digital"], exclude = [FlywayAutoConfiguration::class])
+@ConfigurationPropertiesScan
 class HmppsAssessmentApiApplication
 
 fun main(args: Array<String>) {

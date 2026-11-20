@@ -4,7 +4,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.springframework.boot.gradle.tasks.run.BootRun
 
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "11.0.15"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "11.1.1"
   kotlin("plugin.spring") version "2.4.21"
   kotlin("plugin.jpa") version "2.4.21"
   id("org.jetbrains.kotlinx.kover") version "0.9.11"
@@ -36,11 +36,7 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-cache")
   implementation("org.springframework.boot:spring-boot-starter-aspectj")
   implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:7.6.0")
-  // Keep Jedis as the Redis client rather than switching to the starter's default (Lettuce)
-  implementation("org.springframework.boot:spring-boot-starter-data-redis") {
-    exclude(group = "io.lettuce", module = "lettuce-core")
-  }
-  implementation("redis.clients:jedis:7.5.3")
+  implementation("org.springframework.boot:spring-boot-starter-data-redis")
   implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.2.0")
   implementation("tools.jackson.module:jackson-module-kotlin")
   implementation("commons-io:commons-io:2.22.0")
@@ -68,12 +64,12 @@ dependencies {
 }
 
 kotlin {
-  jvmToolchain(21)
+  jvmToolchain(25)
 }
 
 tasks {
   withType<KotlinCompile> {
-    compilerOptions.jvmTarget = JvmTarget.JVM_21
+    compilerOptions.jvmTarget = JvmTarget.JVM_25
   }
   withType<BootRun> {
     jvmArgs = listOf(
