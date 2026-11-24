@@ -4,7 +4,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.springframework.boot.gradle.tasks.run.BootRun
 
 plugins {
-  id("uk.gov.justice.hmpps.gradle-spring-boot") version "11.1.1"
+  id("uk.gov.justice.hmpps.gradle-spring-boot") version "11.1.2"
   kotlin("plugin.spring") version "2.4.21"
   kotlin("plugin.jpa") version "2.4.21"
   id("org.jetbrains.kotlinx.kover") version "0.9.11"
@@ -37,7 +37,7 @@ dependencies {
   implementation("org.springframework.boot:spring-boot-starter-aspectj")
   implementation("uk.gov.justice.service.hmpps:hmpps-sqs-spring-boot-starter:7.6.0")
   implementation("org.springframework.boot:spring-boot-starter-data-redis")
-  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.2.0")
+  implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:3.2.1")
   implementation("tools.jackson.module:jackson-module-kotlin")
   implementation("commons-io:commons-io:2.22.0")
   implementation("com.zaxxer:HikariCP:7.1.0")
@@ -45,7 +45,7 @@ dependencies {
   implementation("com.google.code.gson:gson:2.15.0")
   implementation("com.google.guava:guava:33.7.2-jre")
   implementation("org.apache.commons:commons-lang3:3.22.0")
-  implementation("org.postgresql:postgresql:42.7.14")
+  implementation("org.postgresql:postgresql:42.7.15")
   implementation("org.springframework.boot:spring-boot-starter-flyway")
   runtimeOnly("org.flywaydb:flyway-database-postgresql")
   implementation("net.logstash.logback:logstash-logback-encoder:9.0")
